@@ -1,0 +1,416 @@
+---
+layout: layouts/slide-deck.njk
+title: "1.1 Number Representation | St George's CS"
+backHref: igcse/topic1/index.html
+courseFooter: "IGCSE Computer Science"
+deckScripts: |
+  // Date Script
+          const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+---
+{% import "../../../templates/igcse/macros.njk" as ig %}
+<!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">1.1 Number Representation</h1>
+                        <h3 class="sub-title">Topic 1: Data Representation | Binary, Hex & Two's Complement</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+
+            <!-- 2. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-microchip"></i> CPU Reality</h4>
+                        <p>CPUs only see <strong>on/off</strong> states. How do we store <em>2025</em> or <em>9F</em> with that?</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-layer-group"></i> Bridge</h4>
+                        <p>We need consistent rules to hop between <strong>binary</strong>, <strong>denary</strong>, and <strong>hex</strong>.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. BINARY: DEFINE & WHY -->
+            <section>
+                <h3>What Is Binary?</h3>
+                <div class="key-term fragment">
+                    <h3>Binary</h3>
+                    <p>Base-2 system using only 0 and 1, matching digital electronics (OFF/ON).</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Voltage low/high → 0/1, reliable for hardware</li>
+                            <li>Noise-tolerant; simple switching</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Clarify</strong>
+                        <p class="small-text">Is binary chosen because it is <em>easy for humans</em> or because it is <em>robust for circuits</em>?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. BINARY: HOW IT WORKS & DECODING -->
+            <section>
+                <h3>How Do Bits Make Numbers?</h3>
+                <p class="small-text">Place values (128 64 32 16 8 4 2 1) add up where bits are 1.</p>
+                <div class="box">
+                    <table style="width:100%; text-align:center; font-size:0.9em;">
+                        <tr>
+                            <th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th>
+                        </tr>
+                        <tr>
+                            <td class="fragment">1</td><td class="fragment">0</td><td class="fragment">1</td><td class="fragment">1</td><td class="fragment">0</td><td class="fragment">1</td><td class="fragment">0</td><td class="fragment">1</td>
+                        </tr>
+                        <tr>
+                            <td class="fragment gold">128</td><td class="fragment gold">0</td><td class="fragment gold">32</td><td class="fragment gold">16</td><td class="fragment gold">0</td><td class="fragment gold">4</td><td class="fragment gold">0</td><td class="fragment gold">1</td>
+                        </tr>
+                    </table>
+                </div>
+                <p class="fragment"><strong>Sum:</strong> 181 (denary)</p>
+            </section>
+
+            <!-- 5. BINARY: HOW TO CONVERT DENARY -> BINARY (VERTICAL STEPS) -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do we convert 156<sub>10</sub> to binary?</strong></p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Write place values 128 64 32 16 8 4 2 1</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> 156 − 128 = 28 → leftmost bit = 1</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> 28 fits 64 or 32? No → bits = 0 0</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 4:</strong> 28 fits 16 → remaining 12 → bit = 1</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 5:</strong> 12 fits 8 → remaining 4 → bit = 1</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 6:</strong> 4 fits 4 → remaining 0 → bit = 1</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 7:</strong> Remaining bits 2,1 = 0 0 → <strong>10011100<sub>2</sub></strong></p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> 128 + 16 + 8 + 4 = 156</p>
+                        <p class="small-text">Clarify: Which bit positions were 1?</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 6. Clarification Question (Binary) -->
+            <section>
+                <h3>Clarify: Binary Understanding</h3>
+                <div class="question-box">Why does adding more bits increase the maximum value?</div>
+                <div class="fragment box-blue">
+                    <p><strong>Because</strong> each new bit doubles the available range (next power of 2 place value).</p>
+                </div>
+            </section>
+
+            <!-- 7. HEX: DEFINE & WHY -->
+            <section>
+                <h3>What Is Hexadecimal?</h3>
+                <div class="key-term fragment">
+                    <h3>Hexadecimal</h3>
+                    <p>Base-16 system using digits 0–9 and A–F (10–15) to represent values compactly.</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Human-friendly shorthand for long binary strings</li>
+                            <li>Maps neatly to 4-bit nibbles (1 hex digit = 4 bits)</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Question</strong>
+                        <p class="small-text">Where do we see hex in real products?</p>
+                        <p class="small-text fragment">Examples: error codes (0x8007…), MAC addresses, colour codes (#3FA7D6).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. HEX TABLE (BINARY <-> HEX) -->
+            <section>
+                <h3>Denary → Binary → Hex (0–15)</h3>
+                <div class="box">
+                    <table style="width:100%; text-align:center; font-size:0.95em;">
+                        <tr>
+                            <th>Denary</th><th>Binary</th><th>Hex</th>
+                            <th>Denary</th><th>Binary</th><th>Hex</th>
+                        </tr>
+                        <tr>
+                            <td>0</td><td>0000</td><td>0</td>
+                            <td>8</td><td>1000</td><td>8</td>
+                        </tr>
+                        <tr>
+                            <td>1</td><td>0001</td><td>1</td>
+                            <td>9</td><td>1001</td><td>9</td>
+                        </tr>
+                        <tr>
+                            <td>2</td><td>0010</td><td>2</td>
+                            <td>10</td><td>1010</td><td>A</td>
+                        </tr>
+                        <tr>
+                            <td>3</td><td>0011</td><td>3</td>
+                            <td>11</td><td>1011</td><td>B</td>
+                        </tr>
+                        <tr>
+                            <td>4</td><td>0100</td><td>4</td>
+                            <td>12</td><td>1100</td><td>C</td>
+                        </tr>
+                        <tr>
+                            <td>5</td><td>0101</td><td>5</td>
+                            <td>13</td><td>1101</td><td>D</td>
+                        </tr>
+                        <tr>
+                            <td>6</td><td>0110</td><td>6</td>
+                            <td>14</td><td>1110</td><td>E</td>
+                        </tr>
+                        <tr>
+                            <td>7</td><td>0111</td><td>7</td>
+                            <td>15</td><td>1111</td><td>F</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 9. HEX: DENARY -> HEX (VERTICAL STEPS) -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do we convert 94<sub>10</sub> to hex?</strong></p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Divide by 16 → 94 ÷ 16 = 5 remainder 14</p>
+                        <p class="small-text">(14 in hex is E)</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Write quotient then remainder → <strong>5E<sub>16</sub></strong></p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> (5 × 16) + 14 = 80 + 14 = 94</p>
+                        <p class="small-text">Clarify: What if the quotient ≥ 16? Divide again.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 10. HEX: HEX -> DENARY -->
+            <section>
+                <h3>Hex → Denary</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Question:</strong> What is <code>3C</code><sub>16</sub> in denary?</p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Answer:</strong></p>
+                        <p>(3 × 16) + (12 × 1) = 48 + 12 = <strong>60</strong></p>
+                        <p class="small-text">C=12, D=13, E=14, F=15.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 11. HEX: Clarification -->
+            <section>
+                <h3>Clarify: Hex Understanding</h3>
+                <div class="question-box">Why is hex preferred over binary for humans?</div>
+                <div class="fragment box-blue">
+                    <p><strong>Because</strong> it is shorter to read/write and maps cleanly to 4-bit groups, reducing mistakes.</p>
+                </div>
+            </section>
+
+            <!-- 12. BINARY ADDITION -->
+            <section>
+                <section>
+                    <h2>Binary Addition (8-bit)</h2>
+                    <p class="small-text">Add two positive 8-bit integers; watch the carry.</p>
+                    <div class="box-blue">
+                        <p><strong>Example:</strong> 01010101 + 00111001</p>
+                        <p class="small-text fragment">1+1 = 0 (carry 1); propagate carries across</p>
+                    </div>
+                    <div class="fragment box">
+                        <p><strong>Result:</strong> 10000110 (no overflow because we kept 8 bits?)</p>
+                        <p class="small-text">Carry into bit 9? then overflow.</p>
+                    </div>
+                    <p class="small-text" style="margin-top:1rem;"><i class="fa-solid fa-arrow-down blue"></i> Overflow check</p>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Overflow</h3>
+                    <div class="box">
+                        <p><strong>Example:</strong> 11110000 + 11110000</p>
+                        <p class="fragment"><strong>Work:</strong> result bits = <code>11100000</code> with a carry out of the 8th bit</p>
+                        <p class="fragment"><strong>Meaning:</strong> Sum needs 9 bits → <span class="gold">overflow</span> (too big for 8-bit register)</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 12. BINARY ADDITION stays as-is -->
+
+            <!-- 13. LOGICAL SHIFTS -->
+            <section>
+                <h3>What Are Logical Shifts?</h3>
+                <div class="key-term fragment">
+                    <h3>Logical Shift</h3>
+                    <p>Moving all bits left or right, filling with zeros; bits shifted out are lost.</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Fast multiply/divide by 2 for unsigned values</li>
+                            <li>Bit-manipulation in low-level code</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Clarify</strong>
+                        <p class="small-text">Left shift multiplies by 2; right shift divides by 2 (truncates).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do logical shifts change a number?</strong></p>
+                        <p class="small-text">Press Down to see examples.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Left Shift by 1:</strong> 00110101 → 01101010 (×2)</p>
+                        <p class="small-text">53 → 106</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Right Shift by 2:</strong> 10110000 → 00101100 (÷4)</p>
+                        <p class="small-text">176 → 44</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> What happens to bits that fall off the edge?</p>
+                        <p class="small-text">They are lost forever; zeros fill the gaps.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 14. TWO'S COMPLEMENT INTRO -->
+            <section>
+                <h3>What Is Two's Complement?</h3>
+                <div class="key-term fragment">
+                    <h3>Two's Complement</h3>
+                    <p>Binary system to represent negative integers using the MSB as a sign and inversion+1 to form negatives.</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Enables addition/subtraction with the same adder hardware</li>
+                            <li>Only one representation of zero</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Range</strong>
+                        <p class="small-text">8-bit: -128 to +127 (MSB = 1 means negative)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 15. TWO'S COMPLEMENT: HOW (VERTICAL STEPS) -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do we represent -25 in two's complement (8-bit)?</strong></p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Write +25 in 8 bits → 00011001</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Invert bits → 11100110</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> Add 1 → <strong>11100111</strong></p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> Convert back: invert (00011000) +1 → 00011001 = 25 → sign bit 1 → -25</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 16. TWO'S COMPLEMENT Clarification -->
+            <section>
+                <h3>Clarify: Two's Complement</h3>
+                <div class="question-box">Why is there only one zero in two's complement?</div>
+                <div class="fragment box-blue">
+                    <p><strong>Because</strong> the inversion+1 method makes the all-zeros pattern unique; no negative zero.</p>
+                </div>
+            </section>
+
+            <!-- 17. MISCONCEPTION CHECK (TRUE/FALSE) -->
+            {{ ig.trueFalseDeck([
+                {
+                    statement: "\"A left shift always divides a number by 2.\"",
+                    answer: "False",
+                    explanation: "Left shifts multiply by 2 per shift; right shifts divide by 2."
+                },
+                {
+                    statement: "\"Overflow happens when a sum needs more bits than the register size.\"",
+                    answer: "True",
+                    explanation: "Carry out of the most significant bit indicates overflow in fixed-width arithmetic."
+                },
+                {
+                    statement: "\"Two's complement -25 is made by flipping bits and subtracting one.\"",
+                    answer: "False",
+                    explanation: "You invert the bits and then add one, not subtract one."
+                }
+            ], "True or False?") }}

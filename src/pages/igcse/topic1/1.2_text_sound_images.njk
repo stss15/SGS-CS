@@ -1,0 +1,226 @@
+---
+layout: layouts/slide-deck.njk
+title: "1.2 Text, Sound & Images | St George's CS"
+backHref: igcse/topic1/index.html
+courseFooter: "IGCSE Computer Science"
+deckScripts: |
+  // Date Script
+          const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+---
+{% import "../../../templates/igcse/macros.njk" as ig %}
+<!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">1.2 Text, Sound & Images</h1>
+                        <h3 class="sub-title">Topic 1: Data Representation | Making Media Digital</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            {{ ig.retrievalDeck([
+                { question: "How many bits are in standard ASCII?", answer: "7 bits (128 codes)" },
+                { question: "What does sample rate measure?", answer: "Samples per second (Hz) in digital audio" },
+                { question: "What does sample resolution measure?", answer: "Bits per sample (detail of amplitude)" },
+                { question: "How do you calculate bitmap image size in bits?", answer: "width × height × colour depth" },
+                { question: "Which encoding supports emojis and global scripts beyond ASCII?", answer: "Unicode encodings (e.g., UTF-8)" }
+            ], "Retrieval Practice", "Quick recap of 1.2 Text, Sound & Images") }}
+
+            <!-- TEXT REPRESENTATION -->
+            <section>
+                <h3>What Is a Character Set?</h3>
+                <div class="key-term fragment">
+                    <h3>Character Set</h3>
+                    <p>A list of characters matched to numeric codes so text can be stored in binary (e.g., ASCII, Unicode).</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>ASCII (7-bit) covers basic English keyboard</li>
+                            <li>Unicode (UTF-8/16/32) covers languages/emojis globally</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Question</strong>
+                        <p class="small-text">Why did we move from ASCII to Unicode?</p>
+                        <p class="small-text fragment">ASCII is limited to 128 symbols; Unicode supports thousands of scripts/emojis.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 style="margin-bottom:1rem;">How Does Text Become Bits?</h3>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Question:</strong> How do we encode text for storage?</p>
+                        <p class="small-text">Press Down to see the steps.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Text Become Bits?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Look up the code point for each character.</p>
+                        <p class="small-text">Example: 'A' = 65 (ASCII) = U+0041 (Unicode).</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Text Become Bits?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Choose an encoding (ASCII, UTF-8, UTF-16, UTF-32).</p>
+                        <p class="small-text">UTF-8 is variable length (1–4 bytes); ASCII is 1 byte.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Text Become Bits?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> Store the binary pattern for each code point.</p>
+                        <p class="small-text">Example: 'A' in ASCII → 01000001.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Text Become Bits?</h3>
+                    <div class="box-blue">
+                        <p><strong>Spot Check:</strong> Which encoding is best for mixed-language text?</p>
+                        <p class="small-text">UTF-8 (compact for ASCII, flexible for other scripts).</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SOUND REPRESENTATION -->
+            <section>
+                <h3>How Do We Store Sound?</h3>
+                <div class="key-term fragment">
+                    <h3>Digital Audio</h3>
+                    <p>Sound captured as regular samples (sample rate) with each sample stored using a fixed number of bits (sample resolution).</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Converts continuous waves into data computers can process</li>
+                            <li>Enables editing, streaming, and compression</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Question</strong>
+                        <p class="small-text">What happens to quality and size if we double the sample rate?</p>
+                        <p class="small-text fragment">Quality ↑ (captures higher frequencies); file size ↑ proportionally.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 style="margin-bottom:1rem;">How Does Sampling Work?</h3>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Question:</strong> How do we turn a sound wave into binary?</p>
+                        <p class="small-text">Press Down to see the steps.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Sampling Work?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Sample the wave at a fixed rate (e.g., 44.1 kHz).</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Sampling Work?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Quantise each sample using the resolution (e.g., 16 bits).</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Sampling Work?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> Store samples sequentially (mono) or interleaved (stereo).</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does Sampling Work?</h3>
+                    <div class="box-blue">
+                        <p><strong>File Size (bits):</strong> sample rate × resolution × channels × duration</p>
+                        <p class="small-text">Bytes = (rate × res × ch × seconds) ÷ 8</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- IMAGE REPRESENTATION -->
+            <section>
+                <h3>How Do We Store Images?</h3>
+                <div class="key-term fragment">
+                    <h3>Bitmap Image</h3>
+                    <p>A grid of pixels, each pixel encoded with a colour value using a fixed number of bits (colour depth).</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Pixels map directly to screen dots</li>
+                            <li>Simple math for size and scaling</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Question</strong>
+                        <p class="small-text">What changes if we double the colour depth?</p>
+                        <p class="small-text fragment">More colours, smoother gradients, but file size doubles.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 style="margin-bottom:1rem;">How Does an Image Become Bits?</h3>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Question:</strong> How do we encode a picture as binary?</p>
+                        <p class="small-text">Press Down to see the steps.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does an Image Become Bits?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Decide resolution (width × height pixels).</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does an Image Become Bits?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Choose colour depth (bits per pixel, e.g., 8, 16, 24).</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does an Image Become Bits?</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> Store each pixel's binary colour value.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3 style="margin-bottom:1rem;">How Does an Image Become Bits?</h3>
+                    <div class="box-blue">
+                        <p><strong>File Size (bits):</strong> width × height × colour depth</p>
+                        <p class="small-text">Bytes = (pixels × depth) ÷ 8</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TRUE / FALSE (MISCONCEPTIONS) -->
+            {{ ig.trueFalseDeck([
+                {
+                    statement: "\"ASCII can store every emoji.\"",
+                    answer: "False",
+                    explanation: "ASCII is 7-bit and limited to basic English symbols; emojis need Unicode encodings like UTF-8."
+                },
+                {
+                    statement: "\"Doubling the sample rate doubles the sound file size if everything else is constant.\"",
+                    answer: "True",
+                    explanation: "File size is directly proportional to sample rate (and resolution, channels, duration)."
+                },
+                {
+                    statement: "\"Increasing colour depth reduces the image file size.\"",
+                    answer: "False",
+                    explanation: "Higher colour depth uses more bits per pixel, increasing size."
+                }
+            ], "True or False?") }}

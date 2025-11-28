@@ -12,28 +12,73 @@
 {% endmacro %}
 
 {# Retrieval: list on one slide, then per-question slides with Q/A #}
-{% macro retrievalDeck(questions=[], prompt='Retrieval Practice') %}
-<section data-background="#e6f0fa">
-    <h3><i class="fa-solid fa-brain"></i> {{ prompt }}</h3>
-    <div class="question-box">
-        <ul style="list-style:none; padding:0;">
-            {% for qa in questions %}
-                <li style="margin-bottom:12px;">
-                    {{ loop.index }}. {{ qa.question }}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</section>
-{% for qa in questions %}
+{% macro retrievalDeck(questions=[], prompt='Retrieval Practice', intro='Recall previous learning before we dive in.') %}
 <section>
-    <h3><i class="fa-solid fa-question-circle"></i> Retrieval {{ loop.index }}</h3>
-    <div class="box">
-        <p>{{ qa.question }}</p>
-        {% if qa.answer %}<p class="fragment gold">{{ qa.answer }}</p>{% endif %}
-    </div>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> {{ prompt }}</h3>
+        {% if intro %}
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">{{ intro }}</p>
+        </div>
+        {% endif %}
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            {% for qa in questions %}
+                <li>{{ qa.question }}</li>
+            {% endfor %}
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+        </p>
+    </section>
+
+    {% for qa in questions %}
+    <section>
+        <h3>Question {{ loop.index }}</h3>
+        <div class="question-box">{{ qa.question }}</div>
+        {% if qa.answer %}
+        <div class="fragment box-blue">
+            <p><strong>Answer:</strong></p>
+            <p>{{ qa.answer }}</p>
+        </div>
+        {% endif %}
+    </section>
+    {% endfor %}
 </section>
-{% endfor %}
+{% endmacro %}
+
+{% macro trueFalseDeck(items=[], title='True or False?', intro='Answer these misconception checks in your book:') %}
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> {{ title }}</h2>
+        {% if intro %}
+        <div class="box-blue">
+            <p style="margin:0;">{{ intro }}</p>
+        </div>
+        {% endif %}
+        <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+            {% for item in items %}
+                <li>{{ item.statement }}</li>
+            {% endfor %}
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+        </p>
+    </section>
+
+    {% for item in items %}
+    <section>
+        <h3>Question {{ loop.index }}</h3>
+        <div class="question-box">{{ item.statement }}</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: {{ item.answer | default('True/False') }}</strong></p>
+            {% if item.explanation %}
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>{{ item.explanation }}</p>
+            {% endif %}
+        </div>
+    </section>
+    {% endfor %}
+</section>
 {% endmacro %}
 
 {% macro objectivesSlide(items=[]) %}
@@ -155,11 +200,12 @@
 
 {% macro renderLesson(lesson) %}
     {% if lesson.title %}{{ titleSlide(lesson.title, lesson.subtitle) }}{% endif %}
-    {% if lesson.retrieval %}{{ retrievalDeck(lesson.retrieval.questions, lesson.retrieval.prompt) }}{% endif %}
+    {% if lesson.retrieval %}{{ retrievalDeck(lesson.retrieval.questions, lesson.retrieval.prompt, lesson.retrieval.intro) }}{% endif %}
     {% if lesson.objectives %}{{ objectivesSlide(lesson.objectives) }}{% endif %}
     {% if lesson.contentBlocks %}
         {% for block in lesson.contentBlocks %}
             {{ renderBlock(block) }}
         {% endfor %}
     {% endif %}
+    {% if lesson.trueFalse %}{{ trueFalseDeck(lesson.trueFalse.items, lesson.trueFalse.title, lesson.trueFalse.intro) }}{% endif %}
 {% endmacro %}

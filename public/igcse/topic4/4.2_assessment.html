@@ -7,6 +7,7 @@
     <title>4.2 Programming Languages Assessment | St George's CS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         :root {
@@ -31,6 +32,36 @@
             background-color: #ffffff;
             line-height: 1.6;
             padding-bottom: 100px;
+        }
+        #startOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        #startCard {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        #startCard h2 { color: var(--sg-blue); margin-bottom: 10px; }
+        #startCard label { font-size: 0.9rem; color: #555; }
+        #startCard input { width: 100%; padding: 10px; margin: 8px 0 16px 0; border: 1px solid #ccc; border-radius: 6px; }
+        #startCard button { width: 100%; padding: 12px; background: var(--sg-blue); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        #startCard button:hover { background: #00264d; }
+        #timerDisplay {
+            position: fixed;
+            top: 18px;
+            right: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            z-index: 900;
         }
 
         /* Header */
@@ -417,6 +448,20 @@
 </head>
 
 <body>
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Start Assessment</h2>
+            <p class="subtitle" style="margin-bottom:12px;">Enter your details to begin. Attempts are tracked until you reach full marks.</p>
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="First name">
+            <label for="surname">Surname</label>
+            <input type="text" id="surname" placeholder="Surname">
+            <label for="teacherName">Teacher</label>
+            <input type="text" id="teacherName" placeholder="Teacher name">
+            <button onclick="startAssessment()">Start</button>
+        </div>
+    </div>
+    <div id="timerDisplay" style="display:none;">Time: <span id="timer">00:00</span></div>
 
 
 
@@ -431,7 +476,7 @@
         <p class="subtitle">Programming Languages, Translators & IDEs</p>
     </header>
 
-    <main>
+    <main style="display:none;">
 
         <!-- Q1: True/False Grid -->
         <div class="question-block" id="q1-block">
@@ -697,6 +742,38 @@
     </main>
 
     <script>
+        // --- SESSION / TRACKING ---
+        let startTime;
+        let timerInterval;
+        let timeTakenStr = "";
+        let studentDetails = {};
+        const mistakeCounts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0, q7: 0 };
+        const completed = { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false, q7: false };
+        let assessmentFinished = false;
+
+        function startAssessment() {
+            const first = document.getElementById('firstName').value.trim();
+            const surname = document.getElementById('surname').value.trim();
+            const teacher = document.getElementById('teacherName').value.trim();
+            if (!first || !surname || !teacher) {
+                alert("Please fill in first name, surname and teacher.");
+                return;
+            }
+            studentDetails = { first, surname, teacher };
+            document.getElementById('startOverlay').style.display = 'none';
+            document.querySelector('main').style.display = 'block';
+            document.getElementById('timerDisplay').style.display = 'block';
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const delta = Date.now() - startTime;
+                const seconds = Math.floor((delta / 1000) % 60);
+                const minutes = Math.floor((delta / (1000 * 60)) % 60);
+                const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                document.getElementById('timer').innerText = timeStr;
+                timeTakenStr = timeStr;
+            }, 1000);
+        }
+
         // --- DRAG & DROP LOGIC ---
         function allowDrop(ev) { ev.preventDefault(); }
         function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
@@ -920,19 +997,28 @@
             s7 += checkSelect('q7c', 'High-Level');
             updateStatus('q7', s7 === 3);
 
-            // Final Check
-            const allCorrect = q1Correct && s2 === 4 && q3Correct && (c4a && c4b && c4c && c4d) && s5 === 3 && q6Correct && s7 === 3;
+            const correctness = { q1: q1Correct, q2: s2 === 4, q3: q3Correct, q4: (c4a && c4b && c4c && c4d), q5: s5 === 3, q6: q6Correct, q7: s7 === 3 };
+            Object.keys(correctness).forEach(key => {
+                if (!correctness[key] && !completed[key]) {
+                    mistakeCounts[key] += 1;
+                }
+                if (correctness[key]) {
+                    completed[key] = true;
+                }
+            });
 
             const finalDiv = document.getElementById('finalScore');
             finalDiv.style.display = 'block';
-            if (allCorrect) {
-                finalDiv.innerHTML = "Assessment Complete! All Correct. <i class='fa-solid fa-check-circle'></i>";
-                finalDiv.style.color = "var(--correct-green)";
-                document.getElementById('btnSubmit').style.display = 'none';
-                document.getElementById('btnReturn').style.display = 'inline-block';
-            } else {
-                finalDiv.innerHTML = "Incorrect answers have been reset. Try again.";
-                finalDiv.style.color = "var(--wrong-red)";
+            finalDiv.innerHTML = `Current score: ${Object.values(correctness).filter(Boolean).length} / 7 (keep trying until all are correct)`;
+            finalDiv.style.color = "#333";
+
+            const allCorrect = Object.values(correctness).every(Boolean);
+            if (allCorrect && !assessmentFinished) {
+                assessmentFinished = true;
+                clearInterval(timerInterval);
+                alert("Great work! Full marks achieved. Your feedback PDF will download next.");
+                generatePDF();
+                setTimeout(() => { window.location.href = "index.html"; }, 1500);
             }
         }
 
@@ -945,6 +1031,91 @@
                 el.innerText = "Incorrect";
                 el.className = "q-status wrong";
             }
+        }
+
+        const questionMeta = [
+            { id: 'q1', title: 'IDE Features', answer: 'Drag/drop features into the correct buckets (Editor, Debugger, Explorer, Output, Variable Watch)', explanation: 'Editors write code, debuggers trace, explorers manage files, output shows results, watches inspect variables.' },
+            { id: 'q2', title: 'IDE Benefits', answer: 'Error diagnostics; prettyprinting; compiler; interpreter', explanation: 'Diagnostics spot syntax; prettyprinting formats; compilers build binaries; interpreters run line-by-line.' },
+            { id: 'q3', title: 'Compiler vs Interpreter', answer: 'Compile-time vs run-time responsibilities sorted correctly', explanation: 'Compilers translate whole programs; interpreters execute line-by-line without building executables.' },
+            { id: 'q4', title: 'IDE Layout', answer: 'Editor → Debugger → Explorer → Output placed correctly', explanation: 'Each tool sits in its correct UI region supporting development workflow.' },
+            { id: 'q5', title: 'Language Choice Scenarios', answer: 'Low-level for drivers/microcontrollers, high-level for cross-platform app', explanation: 'Assembly for hardware-critical/limited memory; high-level for portability and speed of development.' },
+            { id: 'q6', title: 'Compilation Steps Order', answer: 'Source → Compiler → Object code → Executable', explanation: 'Compilation pipeline transforms source into runnable machine code.' },
+            { id: 'q7', title: 'Identify Code Type', answer: 'Assembly, Machine code, High-Level code identified correctly', explanation: 'Mnemonics = assembly; binary = machine; English-like syntax = high-level.' }
+        ];
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 20;
+            const contentWidth = pageWidth - margin * 2;
+            let yPos = 20;
+
+            function checkPageBreak(heightNeeded) {
+                if (yPos + heightNeeded > pageHeight - margin) {
+                    doc.addPage(); yPos = 20;
+                }
+            }
+            function addWrapped(text, size = 11, style = 'normal', color = '#000000', indent = 0, spacing = 4) {
+                doc.setFontSize(size);
+                doc.setFont('helvetica', style);
+                doc.setTextColor(color);
+                const lines = doc.splitTextToSize(text, contentWidth - indent);
+                checkPageBreak(lines.length * (size * 0.5));
+                doc.text(lines, margin + indent, yPos);
+                yPos += lines.length * (size * 0.5) + spacing;
+            }
+
+            try {
+                const logo = await getBase64ImageFromUrl('../../images/Logo.png');
+                doc.addImage(logo, 'PNG', pageWidth - 40, 10, 25, 25);
+            } catch (e) { console.warn('Logo load failed', e); }
+
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor('#003366');
+            doc.text('Topic 4.2 Assessment Feedback', margin, yPos); yPos += 8;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor('#666666');
+            doc.text('Cambridge IGCSE Computer Science (0478)', margin, yPos); yPos += 12;
+
+            doc.setDrawColor(220); doc.setFillColor(245,245,245); doc.rect(margin, yPos, contentWidth, 24, 'FD');
+            yPos += 8; doc.setFontSize(10); doc.setTextColor('#000');
+            doc.text(`Student: ${studentDetails.first || '-'} ${studentDetails.surname || '-'}`, margin + 4, yPos);
+            doc.text(`Teacher: ${studentDetails.teacher || '-'}`, margin + 90, yPos);
+            yPos += 7;
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 4, yPos);
+            doc.text(`Time Taken: ${timeTakenStr || 'N/A'}`, margin + 90, yPos);
+            yPos += 12;
+
+            questionMeta.forEach((q, idx) => {
+                addWrapped(`${idx + 1}. ${q.title}`, 12, 'bold', '#003366', 0, 3);
+                addWrapped(`Correct answer: ${q.answer}`, 10, 'bold', '#222', 4, 2);
+                addWrapped(`Explanation: ${q.explanation}`, 10, 'normal', '#444', 4, 4);
+                const attempts = mistakeCounts[q.id] || 0;
+                addWrapped(`Times incorrect before correct: ${attempts}`, 10, 'normal', '#dc3545', 4, 6);
+                doc.setDrawColor(235); doc.line(margin, yPos, pageWidth - margin, yPos); yPos += 4;
+            });
+
+            addWrapped('Feedback Focus', 12, 'bold', '#003366', 0, 4);
+            const weak = questionMeta.filter(q => (mistakeCounts[q.id] || 0) > 0);
+            if (weak.length === 0) addWrapped('No issues flagged. Strong performance across all questions.', 10, 'normal', '#444', 4, 4);
+            else weak.forEach(q => addWrapped(`• ${q.title}: ${q.explanation}`, 10, 'normal', '#444', 4, 3));
+
+            doc.save(`Topic4_4.2_Assessment_${studentDetails.surname || 'student'}.pdf`);
+        }
+
+        function getBase64ImageFromUrl(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width; canvas.height = img.height;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = err => reject(err);
+                img.src = url;
+            });
         }
 
         // Start Sortable

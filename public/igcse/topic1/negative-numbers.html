@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bit Stacker: Two's Complement Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --bg-panel: #0f172a;
+            --border: #1e293b;
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.5);
+            --orange: #f97316;
+            --orange-glow: rgba(249, 115, 22, 0.5);
+            --red: #ef4444;
+            --green: #10b981;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --row-height: 80px;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            max-height: 800px;
+            display: flex;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Left Side - Game Area */
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-row,
+        .footer-row {
+            height: 60px;
+            display: flex;
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid var(--border);
+            z-index: 20;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-row {
+            border-top: 1px solid var(--border);
+            border-bottom: none;
+        }
+
+        .col-header {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            font-weight: bold;
+            border-right: 1px solid var(--border);
+            position: relative;
+        }
+
+        /* Style for the MSB (Negative Indicator) */
+        .col-header.msb {
+            color: var(--orange);
+            background: rgba(249, 115, 22, 0.1);
+        }
+        
+        .col-header.msb::after {
+            content: "SIGN";
+            position: absolute;
+            bottom: 4px;
+            font-size: 0.5rem;
+            color: var(--orange);
+            opacity: 0.8;
+        }
+
+        .target-header {
+            width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border);
+        }
+
+        .grid-layer {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at center, #1e293b 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .danger-line {
+            position: absolute;
+            bottom: 560px; /* 7 * 80px */
+            width: 100%;
+            height: 2px;
+            background: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 15px var(--red);
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .danger-label {
+            position: absolute;
+            right: 10px;
+            top: -20px;
+            color: var(--red);
+            font-size: 0.7rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .game-row {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: var(--row-height);
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            transition: bottom 0.5s ease-out;
+            z-index: 10;
+        }
+
+        .row-content {
+            width: 100%;
+            height: 60px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.1);
+            transition: all 0.2s;
+        }
+
+        .row-content.error {
+            border-color: var(--red);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        .row-content.solved {
+            border-color: var(--green);
+            box-shadow: 0 0 15px var(--green);
+            transform: scale(1.02);
+            opacity: 0;
+        }
+
+        .bits-container {
+            flex: 1;
+            display: flex;
+            gap: 4px;
+            padding: 0 10px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .bit-btn {
+            flex: 1;
+            height: 40px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(30, 41, 59, 0.5);
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .bit-btn.active {
+            background: var(--cyan);
+            color: #fff;
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+        
+        /* MSB Button Style */
+        .bit-btn.msb-btn {
+            border-color: rgba(249, 115, 22, 0.3);
+        }
+        
+        .bit-btn.msb-btn.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            box-shadow: 0 0 10px var(--orange-glow);
+        }
+
+        .target-box {
+            width: 140px;
+            height: 100%;
+            border-left: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .input-display {
+            width: 80%;
+            height: 70%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cyan);
+            cursor: pointer;
+        }
+
+        .input-display.active {
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        /* HUD Sidebar */
+        .hud-sidebar {
+            width: 300px;
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 30;
+        }
+
+        .stat-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--cyan);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: #22d3ee;
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #334155;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: var(--red);
+            color: #fff;
+        }
+
+        /* Overlays */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .title span {
+            color: var(--cyan);
+        }
+        
+        .title span.neg {
+            color: var(--orange);
+        }
+
+        /* Numpad */
+        .numpad-overlay {
+            position: absolute;
+            right: 150px;
+            bottom: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            backdrop-filter: blur(10px);
+        }
+
+        .num-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--border);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .num-btn:hover {
+            background: var(--cyan);
+            color: var(--bg-dark);
+        }
+
+        .num-btn.check {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .num-btn.check:hover {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .num-btn.neg {
+            background: rgba(249, 115, 22, 0.2);
+            color: var(--orange);
+            border: 1px solid var(--orange);
+        }
+        
+        .num-btn.neg:hover {
+            background: var(--orange);
+            color: #fff;
+        }
+
+        .num-btn.del {
+            grid-column: span 3;
+            height: 30px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container">
+        <!-- Game Area -->
+        <div class="game-area">
+            <!-- Header -->
+            <div class="header-row">
+                <div class="col-header msb">-128</div>
+                <div class="col-header">64</div>
+                <div class="col-header">32</div>
+                <div class="col-header">16</div>
+                <div class="col-header">8</div>
+                <div class="col-header">4</div>
+                <div class="col-header">2</div>
+                <div class="col-header">1</div>
+                <div class="target-header">TARGET</div>
+            </div>
+
+            <!-- Grid -->
+            <div class="grid-layer" id="gridLayer">
+                <div class="danger-line"><div class="danger-label">SYSTEM CRITICAL LIMIT</div></div>
+                <!-- Rows will be injected here -->
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-row">
+                <div class="col-header msb">-128</div>
+                <div class="col-header">64</div>
+                <div class="col-header">32</div>
+                <div class="col-header">16</div>
+                <div class="col-header">8</div>
+                <div class="col-header">4</div>
+                <div class="col-header">2</div>
+                <div class="col-header">1</div>
+                <div class="target-header">TARGET</div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="startScreen" class="overlay">
+                <div class="title">BIT <span class="neg">STACKER</span></div>
+                <h2 style="color: var(--text-muted); margin-top: 0;">Two's Complement Edition</h2>
+                <div style="background: rgba(30,41,59,0.5); padding: 20px; border-radius: 8px; margin-bottom: 30px; max-width: 500px; text-align: center;">
+                    <p>Convert between <strong>8-bit Binary</strong> and <strong>Denary</strong> using Two's Complement.</p>
+                    <p style="color: var(--orange); font-weight: bold;">⚠️ Remember: The first bit (MSB) is -128!</p>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 200px;" onclick="game.start()">
+                    <i class="fa-solid fa-play"></i> START MISSION
+                </button>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="gameOverScreen" class="overlay hidden">
+                <h1 style="color: var(--red); font-size: 4rem; margin-bottom: 10px;">SYSTEM FAILURE</h1>
+                <p style="color: var(--red); opacity: 0.7; letter-spacing: 2px; margin-bottom: 40px;">BUFFER OVERFLOW DETECTED</p>
+
+                <div style="display: flex; gap: 20px; margin-bottom: 40px;">
+                    <div class="stat-box" style="text-align: center; width: 150px;">
+                        <div class="stat-label">Final Score</div>
+                        <div class="stat-value" id="finalScore">0</div>
+                    </div>
+                    <div class="stat-box" style="text-align: center; width: 150px;">
+                        <div class="stat-label">Level</div>
+                        <div class="stat-value" id="finalLevel">1</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px;">
+                    <button class="btn btn-primary" style="width: 180px;" onclick="game.start()">
+                        <i class="fa-solid fa-rotate-right"></i> REBOOT
+                    </button>
+                    <button class="btn btn-secondary" style="width: 180px;" onclick="window.location.reload()">
+                        <i class="fa-solid fa-xmark"></i> EXIT
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="hud-sidebar">
+            <div style="flex: 1;">
+                <div class="stat-label" style="margin-bottom: 20px;">Mission Status</div>
+
+                <div class="stat-box">
+                    <div class="stat-label" style="color: var(--cyan);">Score</div>
+                    <div class="stat-value" id="scoreDisplay">000000</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label" style="color: var(--green);">Level</div>
+                    <div class="stat-value" id="levelDisplay">1</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label" style="color: #a855f7;">Spawn Rate</div>
+                    <div class="stat-value" style="font-size: 1.2rem;" id="rateDisplay">8.0s</div>
+                </div>
+                
+                <div class="stat-box" style="border-color: var(--orange);">
+                    <div class="stat-label" style="color: var(--orange);">Logic Mode</div>
+                    <div style="font-size: 0.9rem; color: #fff;">Two's Complement<br><span style="color: var(--text-muted)">Range: -128 to 127</span></div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 20px;">
+                <button class="btn btn-secondary" onclick="game.togglePause()">
+                    <i class="fa-solid fa-pause"></i> <span id="pauseText">PAUSE</span>
+                </button>
+                <button class="btn btn-secondary" onclick="game.toggleAudio()">
+                    <i class="fa-solid fa-volume-high" id="audioIcon"></i> AUDIO
+                </button>
+                <button class="btn btn-danger" onclick="game.gameOver()">
+                    <i class="fa-solid fa-power-off"></i> TERMINATE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Numpad (Dynamic) -->
+    <div id="numpad" class="numpad-overlay hidden">
+        <button class="num-btn" onclick="game.handleInput('7')">7</button>
+        <button class="num-btn" onclick="game.handleInput('8')">8</button>
+        <button class="num-btn" onclick="game.handleInput('9')">9</button>
+        <button class="num-btn" onclick="game.handleInput('4')">4</button>
+        <button class="num-btn" onclick="game.handleInput('5')">5</button>
+        <button class="num-btn" onclick="game.handleInput('6')">6</button>
+        <button class="num-btn" onclick="game.handleInput('1')">1</button>
+        <button class="num-btn" onclick="game.handleInput('2')">2</button>
+        <button class="num-btn" onclick="game.handleInput('3')">3</button>
+        <button class="num-btn neg" onclick="game.handleInput('-')">-</button>
+        <button class="num-btn" onclick="game.handleInput('0')">0</button>
+        <button class="num-btn check" onclick="game.handleInput('CHECK')"><i class="fa-solid fa-check"></i></button>
+        <button class="num-btn del" onclick="game.handleInput('DEL')">Backspace</button>
+        <button class="num-btn del" style="background: rgba(239, 68, 68, 0.2); color: var(--red); border-color: var(--red); margin-top: 5px;" onclick="game.closeNumpad()">CLOSE</button>
+    </div>
+
+    <script>
+        // --- Audio Engine ---
+        class RetroSound {
+            constructor() {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                this.enabled = true;
+            }
+            playTone(freq, type, duration, vol = 0.1) {
+                if (!this.enabled || !this.ctx) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + duration);
+            }
+            click() { this.playTone(800, 'sine', 0.05, 0.05); }
+            success() {
+                this.playTone(1200, 'square', 0.1, 0.05);
+                setTimeout(() => this.playTone(1800, 'square', 0.2, 0.05), 100);
+            }
+            error() { this.playTone(150, 'sawtooth', 0.3, 0.1); }
+            levelUp() {
+                this.playTone(440, 'sine', 0.1);
+                setTimeout(() => this.playTone(554, 'sine', 0.1), 100);
+                setTimeout(() => this.playTone(659, 'sine', 0.1), 200);
+                setTimeout(() => this.playTone(880, 'sine', 0.4), 300);
+            }
+            gameOver() {
+                this.playTone(300, 'sawtooth', 0.5);
+                setTimeout(() => this.playTone(200, 'sawtooth', 0.5), 400);
+                setTimeout(() => this.playTone(100, 'sawtooth', 1.0), 800);
+            }
+        }
+
+        // --- Game Logic ---
+        // MSB is now negative weight
+        const COLUMNS = [-128, 64, 32, 16, 8, 4, 2, 1];
+        const ROW_HEIGHT = 80;
+        const MAX_ROWS = 7;
+
+        // Complexity Calculation for 2s Comp
+        const COMPLEXITY_POOL = [];
+        (function initComplexity() {
+            // Generate all values from -128 to 127
+            for (let i = -128; i <= 127; i++) {
+                // Determine bits needed
+                // Convert to 8-bit unsigned representation for bit counting
+                let unsigned = i < 0 ? 256 + i : i;
+                
+                let bits = 0;
+                let n = unsigned;
+                while (n > 0) {
+                    if (n & 1) bits++;
+                    n >>= 1;
+                }
+
+                // Complexity scoring
+                // Values close to boundaries or with many bits are "harder"
+                let score = bits;
+                
+                // Special edge cases for teaching
+                if (i === -128) score = 1; // 10000000 (actually simple pattern, but concept is hard)
+                if (i === -1) score = 4;   // 11111111
+                if (i === 0) score = 0;
+                
+                // Prioritize "learning" numbers first (small positives, small negatives)
+                // Distance from 0 roughly correlates to difficulty for mental math
+                let magnitude = Math.abs(i);
+                
+                COMPLEXITY_POOL.push({ val: i, difficulty: magnitude + (bits * 5) });
+            }
+            // Sort by difficulty
+            COMPLEXITY_POOL.sort((a, b) => a.difficulty - b.difficulty);
+        })();
+
+        class Game {
+            constructor() {
+                this.rows = [];
+                this.state = {
+                    playing: false,
+                    paused: false,
+                    score: 0,
+                    level: 1,
+                    linesCleared: 0,
+                    linesForNext: 3,
+                    spawnRate: 8000,
+                    lastSpawn: 0
+                };
+                this.activeRowId = null;
+                this.audio = new RetroSound();
+                this.gridEl = document.getElementById('gridLayer');
+                this.numpadEl = document.getElementById('numpad');
+
+                // Keyboard Listener
+                this.handleKeyDown = this.handleKeyDown.bind(this);
+                window.addEventListener('keydown', this.handleKeyDown);
+
+                this.loop = this.loop.bind(this);
+                requestAnimationFrame(this.loop);
+            }
+
+            start() {
+                this.rows = [];
+                this.state = {
+                    playing: true,
+                    paused: false,
+                    score: 0,
+                    level: 1,
+                    linesCleared: 0,
+                    linesForNext: 3,
+                    spawnRate: 10000, // Slower start for 2s comp
+                    lastSpawn: performance.now()
+                };
+                this.gridEl.innerHTML = '<div class="danger-line"><div class="danger-label">SYSTEM CRITICAL LIMIT</div></div>';
+                document.getElementById('startScreen').classList.add('hidden');
+                document.getElementById('gameOverScreen').classList.add('hidden');
+                this.updateHUD();
+
+                // Spawn initial rows
+                this.spawnRow();
+                this.spawnRow();
+                this.audio.success();
+            }
+
+            getDifficulty(level) {
+                // Progression logic
+                const range = Math.min(COMPLEXITY_POOL.length, 20 + (level - 1) * 25);
+                const poolSlice = COMPLEXITY_POOL.slice(0, range);
+                const item = poolSlice[Math.floor(Math.random() * poolSlice.length)];
+                return item.val;
+            }
+
+            spawnRow() {
+                if (this.rows.length >= MAX_ROWS) {
+                    this.gameOver();
+                    return;
+                }
+
+                const target = this.getDifficulty(this.state.level);
+                const type = Math.random() > 0.5 ? 'BINARY' : 'DECIMAL';
+
+                // Initial bits state
+                // If Decimal mode: bits represent 0 (which is 00000000)
+                // If Binary mode: we need to find 8-bit pattern for 0? No, just start blank.
+                
+                const row = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    type: type,
+                    target: target,
+                    // currentVal keeps track of the integer value of current bit configuration
+                    currentVal: 0, 
+                    // To track which bits are technically on:
+                    bitMask: 0, // 0 to 255 unsigned representation
+                    input: '',
+                    el: null
+                };
+
+                this.rows.push(row);
+                this.renderRow(row, this.rows.length - 1);
+            }
+
+            calculateValue(bitMask) {
+                let total = 0;
+                // Check MSB (128 position in unsigned, which is bit 7)
+                if (bitMask & 128) {
+                    total -= 128;
+                }
+                // Add rest
+                total += (bitMask & 127);
+                return total;
+            }
+
+            renderRow(row, index) {
+                const el = document.createElement('div');
+                el.className = 'game-row';
+                el.style.bottom = (index * ROW_HEIGHT) + 'px';
+                el.id = row.id;
+
+                let bitsHtml = '';
+                COLUMNS.forEach((val, idx) => {
+                    // We check against positive column weights for the mask 
+                    // The weights in COLUMNS are for math, but for bitwise check we need 128, 64, 32...
+                    const maskVal = Math.abs(val); 
+                    const isSet = (row.bitMask & maskVal) !== 0;
+                    const activeClass = isSet ? 'active' : '';
+                    const msbClass = idx === 0 ? 'msb-btn' : ''; // Special style for first bit
+                    const clickHandler = row.type === 'BINARY' ? `onclick="game.toggleBit('${row.id}', ${maskVal})"` : '';
+                    const cursorStyle = row.type === 'DECIMAL' ? 'cursor: default; opacity: 0.8;' : '';
+
+                    bitsHtml += `<div class="bit-btn ${activeClass} ${msbClass}" style="${cursorStyle}" ${clickHandler}>${isSet ? 1 : 0}</div>`;
+                });
+
+                let targetHtml = '';
+                if (row.type === 'DECIMAL') {
+                    // User sees binary, needs to type decimal
+                    // We must show the binary pattern corresponding to the target
+                    // Wait, logic correction:
+                    // If type is DECIMAL, user INPUTS decimal. So we must SHOW the binary.
+                    // So we must pre-fill the bits to match the target.
+                    if (row.bitMask === 0 && row.currentVal === 0 && row.target !== 0) {
+                        // Initialize bits to match target
+                        let unsigned = row.target < 0 ? 256 + row.target : row.target;
+                        row.bitMask = unsigned;
+                        row.currentVal = row.target;
+                    }
+                    
+                    // Re-generate bits HTML with pre-filled values
+                     bitsHtml = '';
+                     COLUMNS.forEach((val, idx) => {
+                        const maskVal = Math.abs(val);
+                        const isSet = (row.bitMask & maskVal) !== 0;
+                        const activeClass = isSet ? 'active' : '';
+                        const msbClass = idx === 0 ? 'msb-btn' : '';
+                        // No click handler for decimal mode
+                        bitsHtml += `<div class="bit-btn ${activeClass} ${msbClass}" style="cursor: default;">${isSet ? 1 : 0}</div>`;
+                    });
+
+                    targetHtml = `<div class="input-display" onclick="game.openNumpad('${row.id}')" id="input-${row.id}">?</div>`;
+                } else {
+                    // Binary Mode: User toggles bits to match decimal target
+                    targetHtml = `<div style="font-family: 'JetBrains Mono'; font-size: 1.5rem; font-weight: bold;">${row.target}</div>`;
+                }
+
+                el.innerHTML = `
+                    <div class="row-content" id="content-${row.id}">
+                        <div class="bits-container">${bitsHtml}</div>
+                        <div class="target-box">${targetHtml}</div>
+                    </div>
+                `;
+
+                this.gridEl.appendChild(el);
+                row.el = el;
+                this.updateFocus();
+            }
+
+            updateRowVisuals(row) {
+                if (!row.el) return;
+                const bits = row.el.querySelectorAll('.bit-btn');
+
+                COLUMNS.forEach((val, idx) => {
+                    const maskVal = Math.abs(val);
+                    const isSet = (row.bitMask & maskVal) !== 0;
+                    
+                    if (isSet) bits[idx].classList.add('active');
+                    else bits[idx].classList.remove('active');
+                    
+                    bits[idx].innerText = isSet ? '1' : '0';
+                });
+
+                if (row.type === 'DECIMAL') {
+                    const inputEl = document.getElementById(`input-${row.id}`);
+                    if (inputEl) {
+                        inputEl.innerText = row.input || '?';
+                        if (this.activeRowId === row.id) inputEl.classList.add('active');
+                        else inputEl.classList.remove('active');
+                    }
+                }
+            }
+
+            updateFocus() {
+                this.rows.forEach((r, i) => {
+                    if (r.el) {
+                        const content = r.el.querySelector('.row-content');
+                        if (i === 0) content.style.border = '2px solid var(--cyan)';
+                        else content.style.border = '1px solid var(--border)';
+                    }
+                });
+            }
+
+            toggleBit(rowId, val) {
+                if (this.state.paused || !this.state.playing) return;
+                const row = this.rows.find(r => r.id === rowId);
+                if (!row || row.type !== 'BINARY') return;
+
+                // Toggle bit in mask
+                row.bitMask ^= val;
+                
+                // Recalculate signed value
+                row.currentVal = this.calculateValue(row.bitMask);
+
+                this.audio.click();
+                this.updateRowVisuals(row);
+
+                if (row.currentVal === row.target) {
+                    this.solveRow(rowId);
+                }
+            }
+
+            openNumpad(rowId) {
+                if (this.state.paused || !this.state.playing) return;
+                this.activeRowId = rowId;
+                this.numpadEl.classList.remove('hidden');
+                
+                // Clear previous input if ?
+                const row = this.rows.find(r => r.id === rowId);
+                this.updateRowVisuals(row);
+            }
+
+            closeNumpad() {
+                this.activeRowId = null;
+                this.numpadEl.classList.add('hidden');
+                this.rows.forEach(r => this.updateRowVisuals(r));
+            }
+
+            handleInput(key) {
+                if (!this.activeRowId) return;
+                const row = this.rows.find(r => r.id === this.activeRowId);
+                if (!row) return;
+
+                this.audio.click();
+
+                if (key === 'CHECK') {
+                    if (row.input === '-' || row.input === '') return; // Invalid
+                    if (parseInt(row.input) === row.target) {
+                        this.solveRow(row.id);
+                        this.closeNumpad();
+                    } else {
+                        this.audio.error();
+                        document.getElementById(`content-${row.id}`).classList.add('error');
+                        setTimeout(() => document.getElementById(`content-${row.id}`).classList.remove('error'), 500);
+                    }
+                } else if (key === 'DEL') {
+                    row.input = row.input.slice(0, -1);
+                } else if (key === '-') {
+                    // Only allow minus at start
+                    if (row.input.length === 0) row.input = '-';
+                    // Toggle minus if already there
+                    else if (row.input.startsWith('-')) row.input = row.input.substring(1);
+                    else row.input = '-' + row.input;
+                } else {
+                    if (row.input.length < 5) row.input += key; // Allow space for -128
+                    // Optional: Auto check if input matches length of target string
+                    if (parseInt(row.input) === row.target) {
+                        this.solveRow(row.id);
+                        this.closeNumpad();
+                    }
+                }
+                this.updateRowVisuals(row);
+            }
+
+            solveRow(rowId) {
+                const rowIdx = this.rows.findIndex(r => r.id === rowId);
+                if (rowIdx === -1) return;
+
+                const row = this.rows[rowIdx];
+                this.audio.success();
+
+                const content = document.getElementById(`content-${row.id}`);
+                content.classList.add('solved');
+
+                this.state.score += 100 * this.state.level;
+                this.state.linesCleared++;
+                this.state.linesForNext--;
+
+                if (this.state.linesForNext <= 0) {
+                    this.levelUp();
+                }
+
+                setTimeout(() => {
+                    if (row.el) row.el.remove();
+                    this.rows.splice(rowIdx, 1);
+                    this.rows.forEach((r, idx) => {
+                        if (r.el) r.el.style.bottom = (idx * ROW_HEIGHT) + 'px';
+                    });
+
+                    if (this.rows.length === 0) {
+                        this.spawnRow();
+                        this.state.lastSpawn = performance.now();
+                    }
+                    this.updateFocus();
+                }, 200);
+
+                this.updateHUD();
+            }
+
+            levelUp() {
+                this.state.level++;
+                this.state.linesForNext = 3 + Math.floor(this.state.level * 1.5);
+                this.state.spawnRate = Math.max(3000, 10000 - (this.state.level * 800));
+                this.audio.levelUp();
+            }
+
+            updateHUD() {
+                document.getElementById('scoreDisplay').innerText = this.state.score.toString().padStart(6, '0');
+                document.getElementById('levelDisplay').innerText = this.state.level;
+                document.getElementById('rateDisplay').innerText = (this.state.spawnRate / 1000).toFixed(1) + 's';
+            }
+
+            togglePause() {
+                this.state.paused = !this.state.paused;
+                document.getElementById('pauseText').innerText = this.state.paused ? "RESUME" : "PAUSE";
+            }
+
+            toggleAudio() {
+                this.audio.enabled = !this.audio.enabled;
+                const icon = document.getElementById('audioIcon');
+                icon.className = this.audio.enabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+            }
+
+            gameOver() {
+                this.state.playing = false;
+                this.audio.gameOver();
+                document.getElementById('finalScore').innerText = this.state.score;
+                document.getElementById('finalLevel').innerText = this.state.level;
+                document.getElementById('gameOverScreen').classList.remove('hidden');
+            }
+
+            handleKeyDown(e) {
+                if (!this.state.playing || this.state.paused) return;
+
+                // 1-8 Keys for Binary Toggle on Bottom Row
+                if (e.key >= '1' && e.key <= '8') {
+                    const row = this.rows[0]; // Bottom row
+                    if (row && row.type === 'BINARY') {
+                        // Map 1 -> -128 (MSB), 2 -> 64, etc.
+                        const idx = parseInt(e.key) - 1;
+                        const val = Math.abs(COLUMNS[idx]); // Get unsigned mask value
+                        this.toggleBit(row.id, val);
+                    }
+                }
+            }
+
+            loop(time) {
+                if (this.state.playing && !this.state.paused) {
+                    if (time - this.state.lastSpawn > this.state.spawnRate) {
+                        this.spawnRow();
+                        this.state.lastSpawn = time;
+                    }
+                }
+                requestAnimationFrame(this.loop);
+            }
+        }
+
+        const game = new Game();
+
+    </script>
+</body>
+
+</html>

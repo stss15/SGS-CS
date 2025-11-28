@@ -7,6 +7,7 @@
     <title>4.1 System Software Assessment | St George's CS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         :root {
@@ -31,6 +32,36 @@
             background-color: #ffffff;
             line-height: 1.6;
             padding-bottom: 100px;
+        }
+        #startOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        #startCard {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        #startCard h2 { color: var(--sg-blue); margin-bottom: 10px; }
+        #startCard label { font-size: 0.9rem; color: #555; }
+        #startCard input { width: 100%; padding: 10px; margin: 8px 0 16px 0; border: 1px solid #ccc; border-radius: 6px; }
+        #startCard button { width: 100%; padding: 12px; background: var(--sg-blue); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        #startCard button:hover { background: #00264d; }
+        #timerDisplay {
+            position: fixed;
+            top: 18px;
+            right: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            z-index: 900;
         }
 
         /* Header */
@@ -369,6 +400,20 @@
 </head>
 
 <body>
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Start Assessment</h2>
+            <p class="subtitle" style="margin-bottom:12px;">Enter your details to begin. Your attempts will be tracked until you reach full marks.</p>
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="First name">
+            <label for="surname">Surname</label>
+            <input type="text" id="surname" placeholder="Surname">
+            <label for="teacherName">Teacher</label>
+            <input type="text" id="teacherName" placeholder="Teacher name">
+            <button onclick="startAssessment()">Start</button>
+        </div>
+    </div>
+    <div id="timerDisplay" style="display:none;">Time: <span id="timer">00:00</span></div>
 
 
 
@@ -383,7 +428,7 @@
         <p class="subtitle">Comprehensive Check: Software Types, Operating Systems & Interrupts</p>
     </header>
 
-    <main>
+    <main style="display:none;">
 
         <!-- Q1: Categorisation -->
         <div class="question-block" id="q1-block">
@@ -671,6 +716,38 @@
     </main>
 
     <script>
+        // --- SESSION / TRACKING ---
+        let startTime;
+        let timerInterval;
+        let timeTakenStr = "";
+        let studentDetails = {};
+        const mistakeCounts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0, q7: 0, q8: 0, q9: 0 };
+        const completed = { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false, q7: false, q8: false, q9: false };
+        let assessmentFinished = false;
+
+        function startAssessment() {
+            const first = document.getElementById('firstName').value.trim();
+            const surname = document.getElementById('surname').value.trim();
+            const teacher = document.getElementById('teacherName').value.trim();
+            if (!first || !surname || !teacher) {
+                alert("Please fill in first name, surname and teacher.");
+                return;
+            }
+            studentDetails = { first, surname, teacher };
+            document.getElementById('startOverlay').style.display = 'none';
+            document.querySelector('main').style.display = 'block';
+            document.getElementById('timerDisplay').style.display = 'block';
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const delta = Date.now() - startTime;
+                const seconds = Math.floor((delta / 1000) % 60);
+                const minutes = Math.floor((delta / (1000 * 60)) % 60);
+                const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                document.getElementById('timer').innerText = timeStr;
+                timeTakenStr = timeStr;
+            }, 1000);
+        }
+
         // --- DRAG & DROP LOGIC ---
         function allowDrop(ev) { ev.preventDefault(); }
         function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
@@ -919,16 +996,31 @@
             updateStatus('q9', q9Correct);
             if (q9Correct) score++;
 
+            // Track mistakes (only if not yet completed)
+            const correctness = { q1: q1Correct, q2: s2 === 4, q3: s3 === 4, q4: s4 === 2, q5: s5 === 4, q6: s6 === 5, q7: s7 === 5, q8: q8Correct, q9: q9Correct };
+            Object.keys(correctness).forEach(key => {
+                if (!correctness[key] && !completed[key]) {
+                    mistakeCounts[key] += 1;
+                }
+                if (correctness[key]) {
+                    completed[key] = true;
+                }
+            });
+
             // Show Score
             const finalScore = document.getElementById('finalScore');
             finalScore.style.display = 'block';
-            finalScore.innerText = `You scored ${score} / 9`;
+            finalScore.innerText = `Current score: ${score} / 9 (keep trying until all are correct)`;
 
-            // Show Return Button, Hide Submit
-            document.getElementById('btnSubmit').style.display = 'none';
-            document.getElementById('btnReturn').style.display = 'inline-block';
-
-            window.scrollTo(0, document.body.scrollHeight);
+            if (score === 9 && !assessmentFinished) {
+                assessmentFinished = true;
+                clearInterval(timerInterval);
+                alert("Congratulations! You achieved full marks. Your feedback PDF will download next.");
+                generatePDF();
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
+            }
         }
 
         function updateStatus(id, isCorrect) {
@@ -940,6 +1032,107 @@
                 el.innerText = "Incorrect";
                 el.className = "q-status wrong";
             }
+        }
+
+        const questionMeta = [
+            { id: 'q1', title: 'System vs Application', correctAnswer: 'System: OS, utilities, drivers, translators. Application: user-task programs (word, browser, games).', explanation: 'System software manages hardware and platform services; applications help users perform tasks.' },
+            { id: 'q2', title: 'OS Concepts', correctAnswer: 'Buffer, Interrupt, Multitask, Hardware Driver', explanation: 'Buffers smooth speed gaps; interrupts request CPU attention; multitasking shares CPU; drivers interface hardware.' },
+            { id: 'q3', title: 'OS Functions', correctAnswer: 'HCI, Security, Memory Mgmt, Multitasking', explanation: 'Interfaces let users interact; security protects access; memory allocates RAM; multitasking shares CPU time.' },
+            { id: 'q4', title: 'USB Descriptors', correctAnswer: 'Vendor ID + device driver', explanation: 'Descriptors identify the vendor/device so the OS can load the correct driver.' },
+            { id: 'q5', title: 'BIOS/CMOS', correctAnswer: 'BIOS stored in EEPROM; settings in CMOS; RAM is volatile', explanation: 'BIOS boots hardware from non-volatile chip; CMOS stores config; RAM clears on power-off.' },
+            { id: 'q6', title: 'Match Components', correctAnswer: 'Correct pairs of OS services', explanation: 'Each term matches its definition (e.g., scheduler, device manager, file system, interface, security).' },
+            { id: 'q7', title: 'Interrupt Cycle Order', correctAnswer: 'Signal → Save → ISR → Restore → Resume', explanation: 'CPU pauses, saves state, runs ISR, restores registers, continues previous task.' },
+            { id: 'q8', title: 'Interrupt Types', correctAnswer: 'Hardware: printer/keyboard/power; Software: divide by zero/overflow/syscall', explanation: 'Hardware interrupts come from devices; software from code/events.' },
+            { id: 'q9', title: 'Software Stack Order', correctAnswer: 'Application → OS → Firmware → Hardware', explanation: 'Apps call OS services; OS uses firmware; firmware talks to hardware.' }
+        ];
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 20;
+            const contentWidth = pageWidth - margin * 2;
+            let yPos = 20;
+
+            function checkPageBreak(heightNeeded) {
+                if (yPos + heightNeeded > pageHeight - margin) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+            }
+
+            function addWrapped(text, size = 11, style = 'normal', color = '#000000', indent = 0, spacing = 4) {
+                doc.setFontSize(size);
+                doc.setFont('helvetica', style);
+                doc.setTextColor(color);
+                const lines = doc.splitTextToSize(text, contentWidth - indent);
+                checkPageBreak(lines.length * (size * 0.5));
+                doc.text(lines, margin + indent, yPos);
+                yPos += lines.length * (size * 0.5) + spacing;
+            }
+
+            // Logo
+            try {
+                const logo = await getBase64ImageFromUrl('../../images/Logo.png');
+                doc.addImage(logo, 'PNG', pageWidth - 40, 10, 25, 25);
+            } catch (e) { console.warn('Logo load failed', e); }
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            doc.setTextColor('#003366');
+            doc.text('Topic 4.1 Assessment Feedback', margin, yPos); yPos += 8;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor('#666666');
+            doc.text('Cambridge IGCSE Computer Science (0478)', margin, yPos); yPos += 12;
+
+            // Student box
+            doc.setDrawColor(220); doc.setFillColor(245,245,245); doc.rect(margin, yPos, contentWidth, 24, 'FD');
+            yPos += 8; doc.setFontSize(10); doc.setTextColor('#000');
+            doc.text(`Student: ${studentDetails.first || '-'} ${studentDetails.surname || '-'}`, margin + 4, yPos);
+            doc.text(`Teacher: ${studentDetails.teacher || '-'}`, margin + 90, yPos);
+            yPos += 7;
+            const timeStr = timeTakenStr || 'N/A';
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 4, yPos);
+            doc.text(`Time Taken: ${timeStr}`, margin + 90, yPos);
+            yPos += 12;
+
+            // Questions
+            questionMeta.forEach((q, idx) => {
+                addWrapped(`${idx + 1}. ${q.title}`, 12, 'bold', '#003366', 0, 3);
+                addWrapped(`Correct answer: ${q.correctAnswer}`, 10, 'bold', '#222', 4, 2);
+                addWrapped(`Explanation: ${q.explanation}`, 10, 'normal', '#444', 4, 4);
+                const attempts = mistakeCounts[q.id] || 0;
+                addWrapped(`Times incorrect before correct: ${attempts}`, 10, 'normal', '#dc3545', 4, 6);
+                doc.setDrawColor(235); doc.line(margin, yPos, pageWidth - margin, yPos); yPos += 4;
+            });
+
+            // Feedback summary
+            addWrapped('Feedback Focus', 12, 'bold', '#003366', 0, 4);
+            const weakAreas = questionMeta.filter(q => (mistakeCounts[q.id] || 0) > 0);
+            if (weakAreas.length === 0) {
+                addWrapped('No issues flagged. Great work—keep revising the core definitions and processes.', 10, 'normal', '#444', 4, 4);
+            } else {
+                weakAreas.forEach(q => addWrapped(`• ${q.title} (review: ${q.explanation})`, 10, 'normal', '#444', 4, 3));
+            }
+
+            doc.save(`Topic4_4.1_Assessment_${studentDetails.surname || 'student'}.pdf`);
+        }
+
+        function getBase64ImageFromUrl(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = err => reject(err);
+                img.src = url;
+            });
         }
 
         // Start Sortable
