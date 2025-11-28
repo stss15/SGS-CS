@@ -1,0 +1,165 @@
+{% macro titleSlide(title, subtitle) %}
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">{{ title }}</h1>
+            {% if subtitle %}<h3 class="sub-title">{{ subtitle }}</h3>{% endif %}
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+{% endmacro %}
+
+{# Retrieval: list on one slide, then per-question slides with Q/A #}
+{% macro retrievalDeck(questions=[], prompt='Retrieval Practice') %}
+<section data-background="#e6f0fa">
+    <h3><i class="fa-solid fa-brain"></i> {{ prompt }}</h3>
+    <div class="question-box">
+        <ul style="list-style:none; padding:0;">
+            {% for qa in questions %}
+                <li style="margin-bottom:12px;">
+                    {{ loop.index }}. {{ qa.question }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% for qa in questions %}
+<section>
+    <h3><i class="fa-solid fa-question-circle"></i> Retrieval {{ loop.index }}</h3>
+    <div class="box">
+        <p>{{ qa.question }}</p>
+        {% if qa.answer %}<p class="fragment gold">{{ qa.answer }}</p>{% endif %}
+    </div>
+</section>
+{% endfor %}
+{% endmacro %}
+
+{% macro objectivesSlide(items=[]) %}
+<section>
+    <h3><i class="fa-solid fa-bullseye"></i> Lesson Objectives</h3>
+    <div class="box-blue">
+        <ul class="fa-ul" style="margin-left:2em;">
+            {% for item in items %}
+            <li class="fragment" style="margin-bottom:0.6rem;">
+                <span class="fa-li"><i class="fa-solid fa-check-circle gold"></i></span>
+                {{ item }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endmacro %}
+
+{% macro keyTermsSlide(title, terms=[]) %}
+<section>
+    <h3>{{ title | default('Key Terms') }}</h3>
+    <div class="igcse-terms-grid">
+        {% for term in terms %}
+            <div class="igcse-term-card fragment">
+                <h4>{{ term.term }}</h4>
+                <p class="small-text">{{ term.definition }}</p>
+                {% if term.prompt %}<p class="small-text gold">{{ term.prompt }}</p>{% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endmacro %}
+
+{% macro conceptSlide(title, prompt='', bullets=[]) %}
+<section>
+    <h2>{{ title }}</h2>
+    {% if prompt %}<p class="small-text">{{ prompt }}</p>{% endif %}
+    {% if bullets %}
+    <ul>
+        {% for item in bullets %}
+            <li class="fragment">{{ item }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</section>
+{% endmacro %}
+
+{% macro discussionSlide(title, question, points=[]) %}
+<section>
+    <h3>{{ title | default('Discussion') }}</h3>
+    <div class="box">
+        <p><strong>{{ question }}</strong></p>
+        {% if points %}
+        <ul>
+            {% for p in points %}<li class="fragment">{{ p }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</section>
+{% endmacro %}
+
+{% macro compareSlide(title, leftTitle, rightTitle, leftPoints=[], rightPoints=[]) %}
+<section>
+    <h3>{{ title }}</h3>
+    <div class="cols">
+        <div class="box">
+            <h4>{{ leftTitle }}</h4>
+            <ul>{% for p in leftPoints %}<li class="fragment">{{ p }}</li>{% endfor %}</ul>
+        </div>
+        <div class="box-blue">
+            <h4>{{ rightTitle }}</h4>
+            <ul>{% for p in rightPoints %}<li class="fragment">{{ p }}</li>{% endfor %}</ul>
+        </div>
+    </div>
+</section>
+{% endmacro %}
+
+{% macro stepsSlide(title, steps=[]) %}
+<section>
+    <h3>{{ title }}</h3>
+    <ol>
+        {% for step in steps %}
+            <li class="fragment">{{ step }}</li>
+        {% endfor %}
+    </ol>
+</section>
+{% endmacro %}
+
+{% macro qnaSlide(question, answers=[]) %}
+<section>
+    <h3><i class="fa-solid fa-lightbulb"></i> {{ question }}</h3>
+    {% if answers %}
+    <div class="box-blue">
+        <ul>
+            {% for a in answers %}
+                <li class="fragment">{{ a }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</section>
+{% endmacro %}
+
+{% macro renderBlock(block) %}
+    {% if block.type == 'key-terms' %}
+        {{ keyTermsSlide(block.title, block.items) }}
+    {% elif block.type == 'concept' %}
+        {{ conceptSlide(block.title, block.prompt, block.bullets) }}
+    {% elif block.type == 'discussion' %}
+        {{ discussionSlide(block.title, block.question, block.points) }}
+    {% elif block.type == 'compare' %}
+        {{ compareSlide(block.title, block.leftTitle, block.rightTitle, block.leftPoints, block.rightPoints) }}
+    {% elif block.type == 'steps' %}
+        {{ stepsSlide(block.title, block.steps) }}
+    {% elif block.type == 'qna' %}
+        {{ qnaSlide(block.question, block.answers) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro renderLesson(lesson) %}
+    {% if lesson.title %}{{ titleSlide(lesson.title, lesson.subtitle) }}{% endif %}
+    {% if lesson.retrieval %}{{ retrievalDeck(lesson.retrieval.questions, lesson.retrieval.prompt) }}{% endif %}
+    {% if lesson.objectives %}{{ objectivesSlide(lesson.objectives) }}{% endif %}
+    {% if lesson.contentBlocks %}
+        {% for block in lesson.contentBlocks %}
+            {{ renderBlock(block) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}

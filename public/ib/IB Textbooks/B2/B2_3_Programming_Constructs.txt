@@ -1,0 +1,2151 @@
+Programming constructs
+
+SYLLABUS CONTENT
+By the end of this chapter, you should be able to:
+» B2.3.1 Construct programs that implement the correct sequence of code instructions to
+meet program objectives
+P B2.3.2 Construct programs utilizing appropriate selection structures
+» B2.3.3 Construct programs that utilize looping structures to perform repeated actions
+» B2.3.4 Construct functions and modularization
+
+B2.3.1 Sequencing
+When solving problems, the order in which the statements are executed matters. Taking the
+swapping example in section B2.1, if you were to change the order of the instructions it would
+
+produce an incorrect output:
+a
+
+=>=5
+
+b =7
+a=>b
+
+// 7 is stored into a
+
+temp = a
+
+// 7 is saved into the temporary variable temp
+
+b = temp
+
+// 7
+
+(from temporary variable)
+
+is stored into b
+
+Here, even if they are the same statements, the result will be incorrect just because they are not
+in the right order. In this example, in the end both variables, a and b, will store the value 7. As
+such, no swapping occurred, even if a temporary variable was introduced exactly as was done
+in the correct algorithm.
+# Sequence: to
+
+Sequence refers to the instructions being executed once and in the exact order they are written.
+
+execute instructions
+one after another in the
+
+outcome, which could lead to incorrect functionality (as demonstrated above), logic errors or
+
+given order.
+
+Tollowing the right order of the instructions is important in programming, as this impacts the
+infinite loops.
+
+B2.3.2 Selection structures
+B Selection or branching structures
+Selection is a programming construct used to decide what statement(s), if any, are to be
+executed based on one or more given conditions.
+Conditions are usually built using logic operators. IF statements are an example of selection
+or branching structures. The condition in the IF statement is evaluated: if it evaluates to
+true, specific statements are executed; otherwise, nothing happens, or other statements
+
+are executed.
+
+B2.3 Programming constructs
+
+condition
+False
+
+True
+
+statement 1
+statement 2
+
+)
+
+statement 3
+statement 4
+
+M IF statements flowchart
+
+In this flowchart, if the condition is met, statements 1 and 2 will be executed; otherwise,
+statermnents 3 and 4.
+IF condition THEN
+END IF
+B General structure
+
+condition
+
+Yes
+
+statement
+
+M Selection statement flowchart
+
+In this case, nothing happens if the condition is not met. As an example, this structure could
+
+be used in a situation where a buyer receives a discount of 20 per cent if their purchase value is
+100 or more. As such, if their purchase value is below 100, nothing happens.
+
+B2 Programming
+
+Java
+private static Scanner read;
+public static void main(String[] args)
+read = new Scanner (System.in) ;
+double purchaseValue,
+
+{
+
+discount;
+
+discount=0;
+
+System.out .println("enter value of goods purchased:
+H
+
+");
+:
+
+purchaseValue = read.nextDouble
+() ;
+if
+
+(purchaseValue>=100)
+
+discount = purchaseValue * 0.2;
+System.out.println("Your discount is:
+
+"
+
++ discount);
+
+In this example, the purchaseValue and discount variables have been declared as
+double because they are meant to store an amount of money, which could be a decimal value.
+
+As the discount is only calculated if the condition is met, we had to initialize it to 0 in the
+beginning, so there is a value to display if no calculation occurs. The indentation inside the
+IF statement in the Python below shows what instruction is going to be executed when the
+
+condition is met. In Java, the indentation is replaced by curly brackets and, if those are missing,
+
+e e e e ee e e e e R e e R e R R R e e e e e R e e e e e e
+r e
+
+:
+]
+1
+]
+]
+I
+]
+
+Python
+discount = 0
+purchaseValue= float (input ("Enter the value of your goods:"))
+
+if purchasevValue>=100:
+discount = purchaseValue * 0.2
+print ("Your discount is
+
+",
+
+discount)
+
+o
+
+]
+]
+1
+]
+
+o
+
+then the next line will be interpreted as belonging to the selection statement. Therefore, the output
+statement will be run independently of the given condition, as it is not included in the IF statement.
+
+o
+
+[
+
+In Python, there is no need to declare the variables, so only the discount variable is
+initialized to 0. However, the input value is converted to £loat, to ensure the user will enter a
+decimal number (integers are included into the range of decimal values). If the float conversion
+
+did not happen, the user’s input value would be a text, and this would throw an error when
+attempting to use it in calculations.
+
+You can further expand this code and include a variable to store and display the due amount:
+
+: Java
+E
+
+:
+
+double purchaseValue,toPay,
+
+discount;
+
+E
+
+i toPay=0;
+
+|
+
+i System.out.println("enter the wvalue of your goods:
+E
+
+purchaseValue = read.nextDouble
+() ;
+
+");
+
+i
+E
+
+i if
+
+(purchasevalue>=100)
+
+E
+
+discount = purchaseValue * 0.2;
+
+E
+
+i
+
+toPay = purchaseValue - discount;
+
+]
+
+{
+
+! System.out.println("You need to pay:
+
+B2.3 Programming constructs
+
+:
+
+" + toPay);
+
+i
+
+In the example above, you need the brackets to indicate that both calculations will happen
+only if the condition is met.
+
+toPay = 0
+
+purchaseValue= float (input ("Enter the walue of your goods:"))
+if purchaseValue>=100:
+discount = purchaseValue * 0.2
+toPay = purchaseValue - discount
+print ("You need to pay: ", toPay)
+
+In Python, the indentarion replaces the brackets, so they are not included.
+The IF statement can be further expanded to include an ELSE. The statements corresponding
+to the ELSE are the statements that will be executed if the condition evaluates to false instead.
+IF condition THEN
+ELSE
+
+END IF
+M General structure
+
+No
+
+Yes
+
+statement 2
+
+statement 1
+
+N
+
+M Selection statement flowchart
+
+Java
+if
+
+(purchasevValue>=100) {
+toPay= purchaseValue * 0.8;
+
+} else {
+toPay = purchaseValue;
+
+}
+System.out.println("You need to pay:
+
+" + toPay);
+
+B2 Programming
+
+Note that the brackets can still be used even if only a single instruction is included in the IF or
+ELSE part.
+
+'
+
+' Python
+:
+
+toPay = 0
+
+1 purchaseValue= float (input ("Enter the value of your goods:"))
+:
+
+if purchaseValue>=100:
+
+:
+
+discount = purchaseValue * 0.2
+
+:
+
+toPay = purchaseValue - discount
+
+| else:
+:
+
+toPay = purchasevValue
+
+: print ("You need to pay:
+
+",
+
+toPay)
+
+As you may have realized, the block of code can even be further expanded to include another
+I statement inside the current one. (One IF statement inside another is called a “nested IF".)
+IF condition THEN
+IF condition 2 THEN
+
+ELSE
+ENDIF
+ELSE
+
+END IF
+M General structure
+
+condition 1
+
+statement 3
+
+o
+
+Yes
+
+7
+M Nested IF flowchart
+
+B2.3 Programming constructs
+
+statement 1
+
+—L
+
+statement 2
+
+Java
+boolean member = false;
+toPay=0;
+
+System.out.println("do you have a membership card(true/
+false):
+
+");
+
+member = read.nextBoolean();
+
+if
+
+:
+
+(purchaseValue>=100)
+
+if (member == true)
+
+{
+
+:
+
+{
+
+i
+
+discount = purchaseValue * 0.2;
+toPay = purchaseValue-discount;
+
+} else {
+toPay = purchaseValue*0.9;
+
+}
+} else {
+toPay = purchaseValue;
+¢
+
+System.out.println("You should pay:
+
+" + toPay);
+
+In this case, a new variable was included that will decide whether the discount is 20 per cent
+or 10 per cent, depending on whether or not the buyer is a member. Also, observe that, as there
+is no requirement to display the discount value, you could have calculated the due amount by
+
+simply multiplying the purchase price by 0.9, thus applying the discount of 10 per cent.
+i
+1
+
+g
+
+gy iy Sy
+
+S
+1
+
+i1 Python
+
+i
+
+1
+
+:
+
+1
+
+toPay = 0
+
+:
+
+I purchaseValue= flcat (input ("Enter the value of ycur goeds:"))
+
+1
+
+:
+
+:
+
+member = input("Do you have a membership card
+
+(true/false)?")
+
+: member = eval (member)
+
+:
+
+: if purchaseValue>=100:
+
+:
+
+:
+
+:
+
+if member == True:
+
+1
+1
+1
+:
+
+discount = purchaseValue * 0.2
+toPay = purchaseValue - discount
+else:
+
+:
+1i
+
+1
+1
+1
+:
+
+toPay = purchaseValue * 0.9
+
+:
+
+else:.
+
+1
+toPay = purchaseValue
+1
+1 print ("You need to pay: ",
+1
+
+1i
+
+1
+1
+1
+1
+
+toPay)
+
+L
+
+4
+
+The value input and stored into the member variable should be a Boolean value. However, if
+there is an attempt to check whether the value entered is True or False by using the bool
+keyword instead of eval, it will not return the right answer: bool checks whether or not
+the string entered is empty and, as the user will write True or False, the value of the variable
+member will always be True as the string is not empty. Therefore, the eval function is used
+in this situation, to ensure the value entered is evaluated to True or False and then stored
+
+into the member variable.
+
+B2 Programming
+
+However, there is another way of solving this problem, by using the and logic operator in
+the condition.
+
+if
+
+(purchaseValue>=100 && member==true)
+
+{
+
+discount = purchaseValue * 0.2;
+toPay = purchaseValue-discount;
+} else if
+
+(purchasevValue>=100 && member==false)
+
+{
+
+;
+
+toPay = purchaseValue*0.9;
+
+} else {
+toPay = purchaseValue;
+
+!
+System.out .println("You should pay:
+
+" + toPay);
+
+........................................................................................................ Baessssasasssitstisisntattn
+
+In the example above, both conditions should be met (to be a member and purchase value to be
+
+100 or above) for the discount of 20 per cent to be applied. The second condition is checking
+whether both conditions are met again, but this time they should have a purchase value of 100
+or above, but not be a member. The statement executed on the else branch is the statement
+happening if the purchase is not 100 or above.
+I,
+
+o,
+
+i
+
+i
+
+s
+
+s
+
+S
+
+1 L]
+
+E Python
+
+i
+
+: toPay = 0
+
+:
+
+:
+
+purchaseValue= float (input ("Enter the value of your goods:"))
+
+:
+
+I
+
+member = input ("Do you have a membership card
+
+1
+
+:
+
+member = eval (member)
+
+:
+
+:
+
+if purchaseValue>=100 and member==True:
+
+:
+
+(True/False)?")
+
+:
+
+discount = purchaseValue * 0.2
+
+:
+
+:
+
+toPay = purchaseValue - discount
+
+:
+
+| elif purchaseValue>=100 and member == False:
+
+!
+
+:
+
+:
+
+:
+
+toPay = purchaseValue * 0.9
+else:
+
+:
+
+:
+
+toPay = purchaseValue
+
+: print ("You need to pay:
+o
+
+R
+
+:
+
+",
+
+R
+
+toPay)
+R
+
+R
+
+R
+
+:
+R
+
+R
+
+e e R
+
+R
+
+e e e e e e e
+
+e e e me em ee ee o
+
+In Python, else if isreplaced by the keyword elif.
+Conditions can use other logic operators, such as OR and NOT.
+In case you wanted the discount to be applied if the purchase value was 100 or above or the
+
+buyer owned a membership card, the OR operator would replace the AND operator in the
+condition above, for example:
+[
+
+: Java
+
+i Python
+
+H
+
+if
+
+(purchaseValue>=100
+
+B2.3 Programming constructs
+
+||
+
+member)
+
+(I
+:
+1
+g
+
+if purchasevValue>=100 or member:
+
+1
+
+1
+1
+1
+1
+
+As in the example above, a comparison with a true value can be written by using the
+conditional statement if, followed by the variable that needs to be evaluated to true:
+if (member)
+
+This will evaluate to TRUE if the member stores the value true, and to FALSE otherwise.
+Therefore, the expression if
+
+(!
+
+member) inJavaor if not member: in Python would
+
+return TRUE if the member variable stores a value of false, and it would return FALSE if the
+
+variable stores true; this expression being read as if not member.
+Other relational operators can be part of the comparison, such as: ==, 1=, <, >, <=
+Because = is used in assignments, == is used in comparisons to check for equality.
+
+1
+
+Construct code to let the user input their favourite food. If the user enters pasta, PASTA or
+
+Pasta, output the message “Go to Italy”. Otherwise, output the message "[favouriteFood]
+will never replace pasta!”
+2
+3
+
+Construct code that requires the user to input a number and a Boolean variable £1ag. If the
+flagis true, output double the number. Otherwise, output the squared number.
+Retirement ages differ for men and women. In some countries, women can retire at the age
+
+of 62 and men at 65. Construct a program that asks the user to enter their name, gender and
+age. Calculate and output whether the user is eligible for retirement, or how many years they
+need to wait to get their pension.
+4
+
+Construct a program that requires the user to enter the measurements of the sides of a right-
+
+angled triangle. Calculate and display its area.
+5
+6
+
+Construct code to create a calculator that converts temperatures between Celsius
+and Fahrenheit.
+(Construct code to create a quiz that asks the user to guess the capital city of five different
+countries of your choice. Add a score to your quiz. At the end, display the right answers for
+
+the missed questions and the score.
+7
+
+Construct a program that asks the user to enter their favourite colour and their lucky number.
+If their favourite colour is green and their lucky number is between 4 and 7, output the
+message “In [LuckyNumber] years, you'll buy a [colour] bicycle”. Otherwise, if the lucky
+number is below 4 and above 1, output the message "I suppose you wanted a [colour]
+ball [LuckyNumbex] years ago”. Otherwise, display the message *[LuckyNumber] is not
+50 lucky!”
+
+8
+
+Construct code that requires the user to input two numbers. Compare the two numbers
+and output the larger one. If the two numbers are the same, output an appropriate
+
+message instead.
+
+B2 Programming
+
+(®Tok
+How does reasoning affect decision-making?
+Reasoning involves analyzing, evaluating and drawing conclusions from given facts, data and
+processes between them. Those are important skills in making effective decisions, as they allow you
+to clearly define problems and goals, by selecting the relevant details and ignoring the unnecessary
+ones, analysing possible solutions, generating ideas and proposing efficient solutions.
+The word “decision” cames from the Latin decidere, meaning "to cut off”. In order to make a
+decision you need to consider and cut off alternative solutions. Reasoning plays a critical role in first
+identifying available options and then evaluating their consequences. However, decision-making
+often involves a blend of reasoning and other factors that may constrain rationality, such as biases
+and emotions.
+In exploring the role of reasoning in dedision-making, discuss the importance of logic, analysis,
+critical thinking, problem-solving techniques, acquired skills and purpose in reaching well-informed
+and effective conclusions.
+
+Thinkers: Use critical and creative thinking skills to analyse and take responsible action
+on complex problems. Exercise initiative in making reasoned decisions.
+
+B2.3.3 Loops and iteration
+Consider a scenario where you need to display your name multiple times. Initially, you might
+achieve this by writing individual print statements for each repetition. However, this approach
+
+quickly becomes cumbersome when dealing with a larger number of repetitions, such as
+100 times. Moreover, if you want to repeat the actions based on user input or until a certain
+
+condition is met, manually writing each repetition becomes impractical. To handle such
+situations efficiently, loops come into play.
+Loops provide a way to execute a block of cade repeatedly, either for a predetermined number
+of iterations or until a specific condition is satisfied. Whether you know the exact number of
+
+repetitions in advance, or need to iterate dynamically based on runtime conditions, loops offer
+a flexible and concise solution.
+Loops are used to repeat different instructions or blocks of code. One loop refers to one
+repetition. There are several types of loops, such as count-controlled loops (FOR loops) and
+conditional loops. Conditional loops can be pre-condition loops (WHILE loops) or postcondition loops (REPEAT-UNTIL loops).
+
+B Count-controlled loop
+A count-controlled loop (FOR loop) is used when the number of repetitions is known in advance,
+prior to the execution of the code. For example, if you need to write all the numbers between
+
+1 and 100, before writing any code it can be said that the program will repeat 100 times.
+loopifrom0Oton
+end loop
+
+M General structure
+
+B2.3 Programming constructs
+
+True
+
+statement
+
+False
+
+i=i+1
+
+B Count-controlled loop flowchart
+
+If n is the number of repetitions required, a FOR loop would look like this:
+
+Python
+for(int i = 0; i<n; i++)
+
+{
+
+for i in range
+
+//code to be repeated
+
+(0,n):
+
+#code to be repeated
+
+}
+In Java, i = 0 is the starting point of the repetition, so 1 is initialized to 0.
+
+1<n is the
+
+condition to be met so, when 1 is no longer smaller than n, the repetition will stop. As the
+variable 1 was initially 0 to avoid running the code to infinite, the value of i needs to be
+changed with every reperition. In this case, i is incremented (i++).
+In Python, the range indicates the initial value of i (in this case, 0) and the ending value of i
+(in this case, n). Note here that the code will stop when i becomes n-1. For example, ifn =
+5, 1 will take the values of 0, 1, 2, 3, 4. There are five repetitions in total; when i reaches the
+
+value of 5, the repetition will stop and so the value won't be displayed.
+In the example above, because the starting point is 0, which is the default value, the statement
+could have been written as for i in range (n) : and it would have had the same effect.
+In both Java and Python, the starting point can be changed. Consider that you must display all
+the numbers between 1 and 100. To solve this problem, you can set the starting point to 1 and
+the ending point to 101, ensuring 100 is also included.
+
+.
+:
+8
+:
+
+for(int i = 1;
+
+i<101;
+
+i++)
+
+)
+System.out.println(i);
+
+{
+
+1
+
+1 Python
+:
+
+i
+1
+-
+
+for i in range
+
+print (i)
+
+(1,101):
+
+1
+1
+1
+1
+1
+1
+1
+
+e
+e
+Ll
+
+Fesssssnsssssassssasnnnes rerransanas sessssssssssasanarsrnnnrans
+
+B2 Programming
+
+The Java example could have used the less-than-or-equal-to sign in the condition to ensure the
+upper bound of 100 is included. Alternatively, the loop could have been maintained to iterate
+from 0 to 100, with the printing statement adjusted to display the value of 1+1
+vem te
+
+T
+
+M
+
+A
+
+R
+
+: Java
+
+A
+
+TP
+
+I
+
+R
+
+instead.
+U
+
+PN v
+
+' Python
+
+for(int 1 = 1;
+
+i<=100;
+
+i++)
+
+{
+
+System.out.println(i);
+}
+
+:
+
+:
+
+for i in range
+
+1
+1
+
+print (i+1)
+
+o
+
+(100):
+
+:
+
+1
+1
+
+e e
+
+e
+
+e
+
+e
+
+e e
+
+-
+
+Imagine wanting to display all the odd numbers between 1 and 100. A solution would be to
+keep the same structure as before, but to check whether or not the number is odd.
+
+T
+e———
+
+¢ Java
+
+g
+
+'
+
+T
+
+3 e
+
+E Python
+
+for(int 1 = 1;
+
+i<=100;
+
+if (i%2 == 1)
+
+}
+
+i
+
+i++)
+
+{
+
+i
+
+:
+
+-
+
+i
+
+for i in range
+
+(1,100):
+
+:
+
+{
+
+:
+
+if (1%2 == 1):
+
+L
+
+System.out.println(i);
+
+1
+
+print (i)
+
+1
+
+o
+
+i A S SR
+T ST H
+
+}
+i%2==1 checks whether the remainder of division by 2 of the variable i is 1. In other words,
+if there is a remainder, the number is odd; if there is no remainder, the number is even.
+The same problem can be solved without the need to use an IT statement. A step can be
+included to change the incrementation so, instead of incrementing the value of i by 1, which is
+the default value, it increments it by a ditferent value.
+
+R
+Y PP e
+
+Java
+for(int i = 1;
+
+}
+
+.
+i<=100;
+
+i=i+2)
+
+{
+
+System.out.println(i);
+
+eT
+
+1 Python
+:
+
+|
+
+for i in range
+
+i
+(1,100,2):
+
+print (i)
+
+:
+
+1
+
+A ———— :
+
+In this situation, in Java, the increment was changed, so the value of i is increased by 2, and in
+
+Python a step was included: 2, to specify the same thing. So, the variable i will take the values:
+1,3,5,...99
+
+But what if you are requested to display the numbers from 100 to 1 instead?
+
+[
+
+e N RGeS v
+
+: Java
+
+' Python
+
+i for(int i = 100; i»0;
+H
+
+System.out.println(i);
+
+H
+
+E
+
+i=i-1)
+
+{
+
+:
+
+: for i in range
+1
+|
+
+}
+
+B2.3 Programming constructs
+
+print (i)
+
+:
+(100,0,-1):
+
+:
+1
+1
+
+T
+—— a
+
+In Java, the starting point is set to 100, so that value is displayed first. The condition is
+changed, as you want to repeat as long as the value is greater than 0, and also the step is
+changed to decrement the value instead of incrementing it. i=1-1 could be written as i--.
+
+In Python, the range is changed to start at 100. It should stop when it reaches 1 (0 is not
+touched) and the step is set to —1, so the number is decremented by 1.
+
+B Pre-condition loop
+-0
+loop while
+
+i=1+1
+
+end loop
+
+M General structure
+
+l
+initialization
+
+True
+
+EFalse
+
+'
+
+# Termination
+condition: a condition
+in a loop that interrupts
+or stops the repetition.
+# Validation: a process
+to ensure input data is
+
+statements
+
+M Pre-condition loop flowchart
+
+A pre-condition (WHILE) loop is used when the number of repetitions is not known prior to
+the execution of the code. The code is expected to be repeated as long as a condition is met, or
+
+it evaluates to true.
+When the condition is no longer met, called termination condition, the loop execution will
+
+sensible or reasonable.
+
+stop. In a WHILE loop, the repetition might not run at all; this happens when the condition is
+
+# Verification: a
+
+never met. WHILE loops are loops that are often used for validation or verification purposes.
+
+process to ensure input
+
+For example, when the user is asked to enter a password twice, the computer will compare
+
+data is accurately copied
+from one source to
+another.
+
+the two entries to check if they match (double entry verification). In this case, a loop would be
+
+used to repeat entering the password until the two inputs match.
+
+B2 Programming
+
+Java
+String password, pass;
+password = "apple";
+System.out.println("Re-enter the password:");
+
+$
+
+pass = read.nextLine();
+
+while
+
+(! password.equals(pass))
+
+{
+
+System.out .println("Re-enter the password:");
+pass = read.nextLine();
+
+}
+System.out.println("The two passwords matched");
+........... T T
+
+L
+
+I
+
+T
+
+ey
+
+In this case, .equals is used to compare the value stored in password with the one stored
+in pass, as those two values are of type string. If the two values were numbers, then ==
+would be used for comparison. The ! is a negation, therefore, in this case, it is checking if the
+
+two values are not the same, and the user is asked to re-enter the password until the two values
+match. The outpur at the end will be displayed only after the loop is exited. If the second
+
+password never matches the first, the code inside the loop will continuously repeat.
+Any FOR loop can be rewritten as a WHILE loop. Considering our example that displays all
+the numbers between 1 and 100, using a WHILE loop the code would look like this:
+
+Java
+int i = 1;
+while (i<101)
+:
+
+{
+
+E Python
+
+i
+
+:
+
+:
+
+i=1
+
+: while(i<101):
+
+System.out .println(i);
+
+:
+
+print (i)
+
+:
+
+i = i+1;
+
+:
+
+i=i+1
+
+:
+
+In the example above, the loop will repeat as long as i is smaller than 101. The termination
+condition will be that 1 >=101. The role of the incrementation is to change the value ot i, so
+the loop will stop at one moment. Otherwise, without that statement, the loop would run
+to infinite.
+
+B Post-condition loop
+i=0
+repeat
+
+i=i+1
+
+until i >=n
+
+M General structure
+
+B2.3 Programming constructs
+
+:
+
+statements
+
+i=i+1
+
+Yes
+
+l
+
+M Post-condition loop flowchart
+
+In the post-condition (REPEAT-UNTIL) loop, the condition is checked at the end. In this case,
+
+the code inside the loop will execute at least once.
+Both in Java and Python, post-condition loop structures are written using WHILE loops.
+
+Java
+
+i Python
+
+i
+
+int 1 = 1;
+
+:
+
+:
+
+do {
+
+: while (True) :
+System.cut.println(i);
+
+:
+
+} while(i<=100);
+
+B
+
+R
+
+e
+
+e e
+
+:
+
+print (i)
+
+:
+
+-
+
+i=isl
+
+:
+
+i
+
+:
+
+if i-100:
+
+:
+
+ee
+
+1
+
+break
+
+1
+
+i= di+1;
+:
+
+i=1
+
+R|
+
+In the example above, the variable 1 is initially set to 1. This value is displayed and then
+incremented. This happens no matter what the condirion evaluates to. If the condition
+evaluates to true, the loop is repeated; if the condition evaluates to false, the repetition stops.
+
+B2 Programming
+
+Non
+AR W N =
+
+Define the term “loop”.
+Explain why it is useful to use loops in coding.
+Explain the difference between a pre-condition and a post-condition loop.
+
+Identify a situation when you would use a count-controlled loop.
+Define the term “termination condition”.
+Explain why it is important to avoid infinite loops.
+Identify a situation where an infinite loop could occur.
+
+1
+
+Construct a program that allows the user to entera number. Output all numbers between 1
+and that number.
+
+2
+
+Construct code that requires the user to enter a number and a word. Display each letter in
+the word on a separate line. Repeat the process the user's number of times.
+
+3
+
+Construct code that asks the user to input ten numbers. Calculate and display the sum of all
+even numbers entered.
+
+4
+
+Construct a program that creates a variable and initializes it to the value 7. Ask the user to
+guess a number between 1 and 20. If the user guesses the value 7, output the number of
+attempts. Do not allow the user to try to guess the number more than three times. If the user
+doesn’t guess the number after three attempts, output the message: "The game is locked.
+
+Try again later!”
+5
+
+Construct a program that asks the user whether they want an apple. Repeat the question
+until their answer is yes. At the end, output the message: “Apples are delicious, aren't they?
+Let's have one!”
+
+Use your answers to the programming exercises above to answer the following questions.
+
+( .TDP tlp'
+
+When you are asked
+
+1
+
+2
+
+to identify the type
+of loop exemplified
+
+What loop did you use to solve question 1? Could you replace that loop with another
+one? How would you do that?
+
+Did the program you constructed to solve question 2 handle user input correctly? Can
+you think of an easier way to extract each letter from a given word?
+
+3
+
+in a piece of code,
+
+Did your program for question 3 extract the even numbers correctly? What change
+
+would calculate the sum of all the odd numbers instead?
+
+refer to them as
+
+4
+
+count-controlled,
+
+5 What termination condition did you use for question 57
+
+Why do you think a FOR loop is not appropriate for solving question 4?
+
+pre-condition or postcondition loops. For
+
+eS
+
+a FOR loop instead of
+
+( ® Key information
+
+a "count-controlled”
+
+FOR loops are called "count-controlled” loops, WHILE loops are called “pre-condition” loops and
+
+loop is not enough, as
+
+REPEAT-UNTIL loops are called “post-condition” loops.
+
+it is not clear that you
+know what type of
+loop a FOR loop is.
+
+Count-controlled loops are used when the number of repetitions is known prior to the execution
+of the code. Pre-condition loops might not be executed at all (if the condition is not met). Postcondition loops will execute at least once, even if the condition is never met.
+
+B2.3 Programming constructs
+
+B2.3.4 Functions and modularization
+TFunctions represent blocks of code that can be reused in various parts of the program and
+# Maintainable code:
+clear, easy-to-read and
+
+modify code that can be
+reused within the same
+program or in other
+programs, by the same
+or other programmers.
+@ Procedure: a set of
+
+statements that can be
+grouped together and
+called in a program
+
+include a return value. Using functions makes the code look neater, and it saves development
+time as they can be reused as needed. At the same time, they allow for modularity, meaning
+multiple programmers can work together, each developing a function and then those functions
+can be put together to build up a more complex program. Once a function has been written
+and tested, the programmer can reuse it without worrying about its functionality.
+Writing maintainable code is an important skill for any programmer. Maintainable code refers
+to code that is clear; easy to read and modify; and can be reused by the programmer themself
+or by other programmers. Using functions aids in the creation of maintainable code.
+Such a reusable block of code is called a procedure or a function; the difference between the
+two being the returned value(s). A procedure can take several parameters or none and it has no
+
+as needed; they don't
+
+return value, so it could update a variable or output a message or a value. However, a function
+
+return a value.
+
+will return a value. This returned value can further be used in a mathematical expression, or it
+
+# Function: a set of
+statements that can be
+grouped together and
+called in a program as
+needed, they always
+return at least one value.
+
+can simply be displayed.
+Consider the following problem: A user is required to provide two whole numbers. Construct a
+program that calculates the sum of the two numbers and displays it.
+A simple solution would be to ask the user to enter the two numbers, add them together and
+display the result, such as:
+
+Java
+read = new Scanner (System.in) ;
+:
+
+int nol,
+
+!
+
+System.out.println("enter
+nol:");
+(
+
+no2,
+
+sum;
+
+i:
+
+nol = read.nextInt();
+(
+
+ii
+
+System.out.println("enter no2:");
+
+i
+
+(
+
+no2 = read.nextInt ()
+sum = nol+noz;
+System.out.println("The result is
+
+"+ sum);
+
+e
+T
+
+E Python
+
+i
+
+:
+
+nol = int(input ("enter nol:"))
+
+:
+
+: no2 = int(input ("enter no2:"))
+
+:
+
+:
+
+:
+
+sum = nol + no2
+
+: print ("The result is ", sum)
+:
+e
+———————
+M Solution 1
+
+But if you needed to perform the same operation again, with different values, you would have
+to rewrite the code, which is not very time or memory efficient. Therefore, to complete such
+
+tasks, a procedure is required.
+
+B2 Programming
+
+private static Scanner read;
+public static void add()
+int nol,
+
+no2,
+
+({
+
+sum;
+
+System.out.println("enter
+the first number:");
+(
+nol = read.nextInt ( )i
+
+sasasssssssrsnnnrerenrrrnnnay
+
+Java
+
+sum = nol+no2;
+
+System.out.println("The result is "+ sum);
+public static void main(String[]
+
+args)
+
+{
+
+read = new Scanner (System.in);
+
+H
+H
+
+H
+
+H
+HH
+HH
+H
+
+H
+HH
+:H
+H
+
+HH
+HH
+
+add
+() ;
+
+HH
+
+T T TR TR T T P TP TPP TP R T TT TP
+
+Y
+
+System.out .println ( "enter the second number:");
+no2 = read.nextInt/();
+(
+
+Python
+def add():
+nol = int (input("enter nol:"))
+no2 = int(input("enter noZ2:"))
+sum = nol + no2
+print ("The result is
+
+",
+
+sum)
+
+add ()
+
+M Solution 2
+
+Because this does not return the sum, but only prints it, it is a procedure.
+Java
+HH
+H
+HH
+HH
+
+private static Scanner read;
+public static void add(int nol,
+
+H
+
+int no2)
+
+int sum;
+
+HH
+
+sum = nol+no2;
+
+H
+
+System.out.println("The result is "+ sum);
+H
+
+}
+public static void main(Stringl[]
+
+args)
+
+{
+
+read = new Scanner (System.in);
+int valuel,
+
+value2;
+
+System.out.println("enter the first number:");
+valuel = read.nextInt();
+System.out.println("enter the second number:");
+value2 = read.nextInt
+()
+add (valuel,
+
+B2.3 Programming constructs
+
+wvalue2);
+
+Python
+def add(nol,no2):
+sum = nol
+
++ no2
+
+print ("The result is ",
+
+sum)
+
+valuel = int (input ("enter nol:"))
+
+value2 = int(input ("enter no2:"))
+add (valuel,
+
+value2)
+
+M Solution 3
+
+In the code above, the same procedure is created, but two parameters are passed to it {(nol
+and no2). When the procedure is called in the main program, the values being passed to it are
+called “arguments” (valuel and value2).
+
+When a return is added to the block of code, the procedure becomes a function. The returned
+value can be displayed on the screen or used in other mathematical expressions. The number
+of parameters also differs when it comes to functions: one, none or more parameters can be
+passed to a function.
+
+When implementing functions in Java, the void keyword from the method signature is
+replaced by the data type of the value being returned.
+
+. Java
+
+:
+
+: private static Scanner read;
+public static int add(int nol,
+
+i
+int no2)
+
+{
+
+int sum;
+g
+
+sum = nol+no2;
+
+E
+
+return sum;
+public static void main(Stringl[]
+
+;
+args)
+
+{
+
+read = new Scanner (System.in);
+int valuel, value2;
+System.out.println("enter the first number:");
+valuel = read.nextInt();
+System.out.println("enter the second number:");
+value2 = read.nextInt();
+System.out.println("The result is "+ add(valuel,
+
+value2));
+
+int newVal = 3;
+newvVal = newVal + add();
+
+System.ocut.println("The new value is "+newVal);
+
+B2 Programming
+
+Python
+def add(nol,no2):
+sum = nol + no2
+return
+
+sum
+
+valuel = int (input("enter nol:"))
+
+value2 = int (input("enter no2:"))
+print ("The result is
+
+",
+
+add(valuel,
+
+wvalue2))
+
+newVal = 3
+newVal = newVal + add(valuel,
+
+print ("The new value is ",
+
+wvalue2)
+
+newVal)
+
+In the example above, the function add will return a value of data type integer.
+The function is called once to be displayed and the other time to increase the value of the
+
+variable newval.
+
+Compare functions and procedures.
+Identify three things you can do to keep a maintainable code.
+3
+
+Qutline the difference between validation and verification. Provide an example where a
+selection can be used for validation checks.
+
+4
+
+Differentiate between pre- and post-condition loops.
+
+1
+
+Construct code to let the user create a function called factorial that takes a natural
+number (n) as a parameter. The function should return the factorial value of that number (n!).
+
+2
+
+Construct a program that consists of a procedure called odds that takes a natural number (n)
+as a parameter. The procedure should display all the odd numbers from 1 to that number (n).
+
+3
+
+Construct code that creates a function called perfect that takes n (a natural number) as a
+
+parameter. The function should return true/false if n is a perfect number.
+A perfect number is a positive integer that is equal to the sum of its positive proper divisors,
+
+excluding the number itself. For example, 28 is a perfect number as its proper divisors
+are: 1, 2,4, 7, 14. Adding those values together we get 28, and this result is equal to the
+initial number.
+4
+
+Construct a function called palindrome that takes a word as a parameter. The function
+
+should return true/false if the given word is a palindrome.
+A palindrome is a word that reads the same forwards or backwards. For example, kayak,
+racecar, level and civic are all palindromes.
+Reflect on the errors you encountered when constructing your code, and how you resolved them.
+B
+
+How did you go about debugging the issues?
+
+B Did you notice any patterns in the errors you encountered?
+B What can you do to avoid such errors in the future?
+
+B2.3 Programming constructs
+
+B Scope of variables
+# Local variable: a
+variable that exists only
+within the block of code
+where it is defined.
+# Global variable:
+a variable that exists
+
+Based on their scope, variables can be classified into various categories, such as local or
+global variables.
+The scope of the variable defines its lifetime in the program, meaning the block of code where
+it has been declared, where it can be used and modified. How and where the variables are
+declared detines the scope.
+
+throughout a program.
+
+Local variables
+
+4 Variable scope: the
+lifetime of a variable
+
+Local variables are variables that have their scope limited to the block of code within which
+
+within a program; it
+
+determines whether you
+can access and maodify
+the variable within a
+specific block of code.
+
+they are declared and used.
+Once that block of code is executed, the variable is automarically removed from the memory.
+
+It is recommended to use local variables as often as possible. An example of a local variable
+is when using a counter in a FOR loop. That counter is required only within the body of the
+
+loop for storing temporary data but, once the loop is finished, you do not need that counter
+any longer.
+
+¢ Java: i is a local variable
+
+for(int i=0; i<3;i++) {
+System.out.println("helloc world");
+T
+P T PP srrrrrsnrens srrrrssnrane B
+L R TP PR TP PPCETTRYS sarasrsanans s
+
+As i is a local variable, it exists within the loop, and it will take values trom 0 to 3. When it
+
+reaches 3, the variable is no longer smaller than 3 and the repetition will stop. After this loop,
+the variable i does not exist any longer.
+
+Python: text is a local variable
+def hello():
+# text is the local wvariable
+text =
+
+"hello world"
+
+print (text)
+# code to text
+hello()
+# the print below will throw an error as text does not exist
+# outside the procedure
+print (text)
+
+In this example, text is the local variable. When printing the variable text inside the
+subprocedure, the message “hello world” will be displayed. However, when attempting to print
+the text again, after the call of the method, an error will be thrown as text is used without
+
+having an initial value.
+
+Global variables
+Global variables are variables that are visible and accessible throughout the program.
+In Python, the global variables are initialized at the top of the code or module and, whenever
+
+they are used within a function or procedure, they are declared as global. As Java is an
+
+B2 Programming
+
+object-oriented programming language, it does not use the concept of global variables.
+However, by using the static or static final keywords, the variables can have all the
+properties of global variables.
+
+Python
+text =
+
+"hello
+
+"
+
+def hello():
+# text is a global wvariable
+
+global text
+# text is concatenated with a new text wvalue
+text = text +
+
+"world"
+
+# Driver code
+hello()
+print (text)
+
+B
+
+e
+
+L
+
+T
+
+L L
+
+e
+
+In this example, the text is a global variable, which means that, by calling the hello
+
+procedure, the content of the variable text is changed and, once it is printed, even if it is
+printed outside the procedure, it will display the updated content: hello world.
+
+(.-Top tip!
+When writing code, aim to preponderantly use local variables rather than global variables. Local
+variables are confined to the function or block in which they are dedared, promoting encapsulation
+and modularity. This makes functions self-contained and easier to understand, test and debug.
+Global variables can be madified by any part of the code, leading to unintended side effects that
+can make the program behaviour difficult to predict and debug. Local variables prevent such side
+effects by limiting the scope of variable modifications.
+
+1
+
+Trace the following program to determine its output.
+
+. Java
+static String student = "Bob";
+public static void changeOfName (String st)
+
+{
+
+System.out.println("Student inside the method:
+
+"+st);
+
+}
+public static void main(String[]
+
+args)
+
+{
+
+changeOfName (student) ;
+
+System.out.println("Student outside the method:
+student) ; }
+
+B2.3 Programming constructs
+
+" +
+
+student =
+
+"Bob"
+
+def changeOfName
+(st) :
+
+st = "Bobby"
+print ("Student inside the method:
+
+",
+
+st)
+
+changeOfName (student)
+print ("Student outside the method:
+
+",
+
+student)
+
+Identify a local variable in the code above. Explain why the chosen variable is not a
+global variable.
+Construct a program that changes the code above so that, after the method is executed,
+both outputs display the name lim, without changing the first line of code.
+Construct code to update the method above to include a validation check: the new name
+
+should be input from the keyboard and the change should occur only if the new name is
+different from the previous name. Display a message if the new name is not different and
+display the current name.
+
+Identify the scope and data type of the variable you have created to validate the
+name change.
+
+B2 Programming
+
+Programming fundamentals
+(part 2)
+How can we apply programming to solve problems?
+
+SYLLABUS CONTENT
+By the end of this chapter, you should be able to:
+P B2.1.3 Describe how programs use common exception handling techniques
+» B2.1.4 Construct and use common debugging techniques
+
+B2.1.3 Exception handling
+‘When a computer program is run, different reasons or events might cause the program to halt
+or produce an unexpected outcome. These reasons could include logical errors in the code,
+unexpected user inputs or resource unavailability.
+# Logic error: an error
+
+in a program that makes
+it operate incorrectly;
+it will not crash the
+program.
+# Runtime error: an
+
+error that occurs when
+executing a program,
+the program might stop
+unexpectedly.
+# Exception handling:
+a process of responding
+to an exception, so the
+
+Logic errors refer to incorrect sequences in the logic of the program, incorrect choices of
+condition or incorrect calculations. For example, when attempting to calculate the average of
+three numbers, dividing the sum of the three numbers by 2 instead of dividing it by 3 would
+
+produce an incorrect outcome.
+Such errors can only be detected through testing, as they would pass the compilation stage.
+Runtime errors could cause the program to crash. These errors refer to problems occurring
+as the program runs, such as division by 0; a file not being found; truncation; overflow or
+underflow errors; a hardware device not being available, such as a printer not being ready; or a
+class tile not being found.
+
+Also, a user can enter unexpected inputs, such as entering text instead of a number or entering
+values that would lead to an attempt to divide by 0, or entering the wrong file location to read
+
+system does not halt
+unexpectedly.
+
+data from or write data to.
+
+# Exception: an
+
+operation, such as a file not being found or a printer not being ready for the operation.
+
+unexpected event that
+stops the execution of
+
+All those events can be dealt with, so the program does not crash, using exception handling.
+
+Resource unavailability refers to hardware and software equipment not being available for the
+
+a program, e.g. division
+
+Even if the desired operation would not be achieved, the user can get an idea of what went
+
+by 0.
+
+wrong, and they can continue attempting other features of the program.
+The role of exception handling techniques is to maintain the normal flow of the program, by
+
+catching and throwing exceptions that cannot be handled locally. In Java, this takes the form
+of try/catch blocks, while in Python they are found as try/except blocks. The code
+
+that might throw an error is written within the try block and the exception is caught and
+displayed, if needed, in the catch/except block. Both languages allow for a finally block
+that is found at the end of the try/catch or try/except block and this includes code
+that will always execute after leaving the try statement, regardless of the try block outcome:
+
+whether or not it raises an error.
+

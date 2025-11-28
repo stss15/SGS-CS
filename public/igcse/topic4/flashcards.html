@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 4 Revision Arcade | St George's CS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --sg-blue: #003366;
+            --sg-gold: #D4AF37;
+            --sg-text: #333333;
+            --sg-light-blue: #e6f0fa;
+            --sg-grey: #f4f6f8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--sg-text);
+            background-color: #ffffff;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Top Navigation Button */
+        .nav-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: white;
+            color: var(--sg-blue);
+            border: 2px solid var(--sg-blue);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn:hover {
+            background: var(--sg-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Game Container */
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 60px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            width: 600px;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .restart-btn {
+            background: none;
+            border: none;
+            color: var(--sg-blue);
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .restart-btn:hover {
+            color: var(--sg-gold);
+        }
+
+        /* Card Scene */
+        .card-scene {
+            width: 600px;
+            height: 380px;
+            perspective: 1000px;
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 51, 102, 0.15);
+            background: white;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Animation Classes for Deck Reset */
+        .fly-in {
+            animation: flyIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes flyIn {
+            0% {
+                transform: translate(-300px, 200px) scale(0.5) rotate(-20deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+
+        /* Card Faces */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: white;
+            border: 1px solid #eee;
+        }
+
+        .card-front {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-top: 8px solid var(--sg-gold);
+        }
+
+        .card-back {
+            background: var(--sg-blue);
+            color: white;
+            transform: rotateY(180deg);
+            border: none;
+        }
+
+        /* Card Text */
+        .card-label {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .card-back .card-label {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .card-content {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--sg-blue);
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .card-back .card-content {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        /* Controls Area */
+        .controls-area {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        /* Visual Piles */
+        .pile {
+            width: 90px;
+            height: 110px;
+            background: white;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: #999;
+            position: relative;
+            transition: all 0.3s;
+            cursor: default;
+            /* Piles are just visual indicators/counters now */
+        }
+
+        .pile-count {
+            font-weight: 800;
+            font-size: 1.4rem;
+            margin-top: 5px;
+        }
+
+        .pile.has-cards {
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 2px 2px 0 #eee, 4px 4px 0 #ddd, 6px 6px 0 #ccc;
+            /* Stack effect */
+        }
+
+        .pile-unknown.has-cards {
+            border-left: 4px solid #dc3545;
+        }
+
+        .pile-known.has-cards {
+            border-left: 4px solid #28a745;
+        }
+
+        /* Pile Animation Target */
+        .pile-fly-target {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--sg-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            /* Only shown during animation logic */
+        }
+
+        /* Feedback Buttons */
+        .feedback-container {
+            display: flex;
+            gap: 30px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .feedback-container.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .action-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .btn-miss {
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        .btn-miss:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .btn-got {
+            color: #28a745;
+            border: 2px solid #28a745;
+        }
+
+        .btn-got:hover {
+            background: #28a745;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-scene {
+                width: 90vw;
+                height: 55vh;
+            }
+
+            .top-bar {
+                width: 90vw;
+            }
+
+            .controls-area {
+                gap: 15px;
+            }
+
+            .pile {
+                width: 70px;
+                height: 90px;
+                font-size: 0.65rem;
+            }
+
+            .action-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="nav-overlay">
+        <a href="/igcse/topic4/index.html" class="nav-btn"><i class="fa-solid fa-arrow-left"></i> Topic 4</a>
+    </div>
+
+    <div class="game-container">
+
+        <div class="top-bar">
+            <div id="progressText">Card 1 of 50</div>
+            <button class="restart-btn" onclick="fullReset()"><i class="fa-solid fa-rotate"></i> Full Restart</button>
+        </div>
+
+        <div class="card-scene" onclick="flip()">
+            <div class="card" id="flashcard">
+                <!-- Front -->
+                <div class="card-face card-front">
+                    <div class="card-label">Question</div>
+                    <div class="card-content" id="qText">Loading...</div>
+                    <div style="margin-top:30px; color:#ccc; font-size:0.8rem"><i class="fa-solid fa-hand-pointer"></i>
+                        Tap to flip</div>
+                </div>
+                <!-- Back -->
+                <div class="card-face card-back">
+                    <div class="card-label">Answer</div>
+                    <div class="card-content" id="aText">...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-area">
+
+            <!-- Unknown Pile -->
+            <div class="pile pile-unknown" id="pileUnknown" title="Cards to review">
+                <div class="pile-count" id="countUnknown">0</div>
+                <div>To Learn</div>
+            </div>
+
+            <!-- Feedback Buttons -->
+            <div class="feedback-container" id="feedbackBtns">
+                <button class="action-btn btn-miss" onclick="rateCard('miss', event)" title="Still Learning"><i
+                        class="fa-solid fa-xmark"></i></button>
+                <button class="action-btn btn-got" onclick="rateCard('got', event)" title="I Know This"><i
+                        class="fa-solid fa-check"></i></button>
+            </div>
+
+            <!-- Known Pile -->
+            <div class="pile pile-known" id="pileKnown" title="Mastered cards">
+                <div class="pile-count" id="countKnown">0</div>
+                <div>Mastered</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // --- FULL DATA SET (50 items) ---
+        // All 'q' fields are now QUESTIONS or PROMPTS.
+        const allData = [
+            // 4.1 Types of Software
+            { q: "What are Utility Programs?", a: "System software performing specific maintenance tasks like virus checking, defragmentation, and backups." },
+            { q: "Define: Malware", a: "Software designed to disrupt, damage, or gain unauthorized access to a computer system (viruses, worms, Trojans)." },
+            { q: "How does Anti-virus Software work?", a: "It scans for, quarantines, and deletes malicious software using signature databases and heuristic checking." },
+            { q: "What is Heuristic Checking?", a: "Analyzing software behavior to find *new* viruses that don't match known signatures yet." },
+            { q: "What is the purpose of Quarantine?", a: "To isolate an infected file in a secure area so it cannot execute or spread before deletion." },
+            { q: "Explain the process of Defragmentation", a: "Moving file blocks on a HDD so they are contiguous (next to each other) to speed up read/write access." },
+            { q: "Define: Contiguous", a: "Adjoining or next to each other in sequence. Crucial for HDD efficiency." },
+            { q: "Why is Back-up software important?", a: "It creates copies of data on separate media to restore files if the original is lost, corrupted, or deleted." },
+            { q: "Why do modern systems use Screensavers?", a: "Originally to prevent CRT burn-in; now primarily for security (locking the screen after inactivity)." },
+            { q: "What is the role of a Device Driver?", a: "It acts as a translator, converting generic OS commands into signals the specific hardware device understands." },
+            { q: "What information is in a USB Descriptor?", a: "Data identifying a device (Vendor ID, Product ID) sent to the OS so it can load the correct driver." },
+
+            // 4.1 OS & Booting
+            { q: "What is an Operating System?", a: "System software that manages hardware resources, provides the user interface, and runs applications." },
+            { q: "What does the Bootstrap Loader do?", a: "It is a small firmware program that runs at startup to load the main OS into RAM." },
+            { q: "What is EEPROM used for?", a: "Electrically Erasable Programmable ROM stores firmware (like the BIOS) that can be updated/flashed." },
+            { q: "Define: HCI", a: "Human Computer Interface. The boundary where the user interacts with the machine (e.g., CLI or GUI)." },
+            { q: "Compare CLI vs GUI", a: "CLI: Text-based, low memory, fast for experts. GUI: Visual (WIMP), intuitive, high memory usage." },
+            { q: "What does WIMP stand for?", a: "Windows, Icons, Menu, Pointer. The standard interaction model for GUIs." },
+            { q: "What is a Post-WIMP interface?", a: "Touchscreen interfaces allowing complex actions like pinching, rotating, and swiping." },
+            { q: "What is Memory Management?", a: "The OS function that allocates RAM to programs and ensures they don't overwrite each other's data." },
+            { q: "What is Security Management?", a: "The OS function ensuring data integrity and confidentiality via user accounts, passwords, and privileges." },
+            { q: "What is Hardware Management?", a: "The OS function controlling input/output devices via drivers and managing buffers/queues." },
+            { q: "What is File Management?", a: "The OS function for organising storage: creating, deleting, moving, and renaming files/folders." },
+            { q: "How does Multitasking work?", a: "The OS executes multiple processes seemingly at once by rapidly switching CPU time between them." },
+            { q: "What is Error Handling?", a: "The OS routine that detects faults (e.g., printer jam) and prevents the system from crashing." },
+            { q: "Define: User Account", a: "A profile with a username/password providing a secure, personal area for files and settings." },
+
+            // 4.1 Interrupts
+            { q: "What is an Interrupt?", a: "A signal sent to the CPU to suspend the current task and handle a high-priority event." },
+            { q: "What is a Buffer?", a: "A temporary memory area used to smooth out speed differences between devices (e.g., fast CPU -> slow Printer)." },
+            { q: "Define: Firmware", a: "Permanent software programmed into Read-Only Memory (ROM) or EEPROM." },
+            { q: "Why do Interrupts have Priorities?", a: "To ensure urgent events (Hardware Failure) are serviced before less urgent ones (Printer ready)." },
+            { q: "What is an ISR?", a: "Interrupt Service Routine. The specific software code the CPU runs to handle a specific interrupt." },
+            { q: "Scenario: Why buffer video streaming?", a: "The buffer fills with data so playback remains smooth even if the internet speed drops temporarily." },
+            { q: "List the steps when an Interrupt occurs", a: "1. Pause Task. 2. Save Registers. 3. Run ISR. 4. Restore Registers. 5. Resume Task." },
+
+            // 4.2 Languages
+            { q: "What is Machine Code?", a: "Binary instructions (1s and 0s) that the CPU executes directly without translation." },
+            { q: "Describe High-Level Languages", a: "Code close to English (Python, Java). Easy to read/write, portable, but must be translated." },
+            { q: "Describe Low-Level Languages", a: "Code close to hardware (Assembly, Machine Code). Fast, memory efficient, but hard to write/debug." },
+            { q: "What is Assembly Language?", a: "Low-level code using Mnemonics (e.g., LDA, ADD) to represent binary machine code instructions." },
+            { q: "What does an Assembler do?", a: "Translates Assembly Language into Machine Code." },
+            { q: "What does a Compiler do?", a: "Translates ALL high-level code at once to create an executable (.exe) file. Reports errors at the end." },
+            { q: "What does an Interpreter do?", a: "Translates and executes high-level code line-by-line. Stops at the first error. No .exe created." },
+            { q: "Why choose a Compiler?", a: "To protect source code (user gets .exe), for faster execution speed, and so the user doesn't need translation software." },
+            { q: "Why choose an Interpreter?", a: "Better for development/debugging as it reports errors immediately on the line they occur." },
+
+            // 4.2 IDEs
+            { q: "What is an IDE?", a: "Integrated Development Environment. A software suite for coding (Editor + Translator + Debugger)." },
+            { q: "Define: Debugging", a: "The process of finding and fixing errors in a computer program." },
+            { q: "What is Prettyprinting?", a: "An IDE feature that colour-codes keywords and auto-indents code to make it readable." },
+            { q: "What is Auto-completion?", a: "An IDE feature that predicts what you are typing (e.g., variable names) to speed up coding." },
+            { q: "What is a Report Window?", a: "An IDE window showing output, variable values, or error messages during execution." },
+            { q: "Why use an IDE over a Text Editor?", a: "It combines all necessary tools (writing, running, testing) in one interface, increasing efficiency." }
+        ];
+
+        // --- GAME STATE ---
+        let deck = [];
+        let activeDeck = []; // Cards currently in play
+        let unknownPile = []; // Cards missed
+        let knownPile = [];   // Cards mastered
+
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        function init() {
+            fullReset();
+        }
+
+        function fullReset() {
+            // Start fresh with all cards
+            activeDeck = [...allData];
+            shuffleArray(activeDeck);
+
+            unknownPile = [];
+            knownPile = [];
+            currentIndex = 0;
+            isFlipped = false;
+
+            updateVisuals();
+            loadCard();
+        }
+
+        function startNextRound() {
+            // This is called when the deck is empty but there are unknown cards
+            // Animation logic happens here
+
+            // Move unknown cards back to active deck
+            activeDeck = [...unknownPile];
+            shuffleArray(activeDeck);
+
+            // Reset piles for the new round
+            unknownPile = [];
+            // knownPile stays as is (visually) or could accrue. 
+            // For this logic, let's keep knownPile separate as "Banked" knowledge.
+
+            currentIndex = 0;
+            isFlipped = false;
+
+            // Trigger animation: Card flies from Unknown Pile to Center
+            const card = document.getElementById('flashcard');
+            card.classList.add('fly-in');
+
+            setTimeout(() => {
+                card.classList.remove('fly-in');
+                updateVisuals();
+                loadCard();
+            }, 800);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadCard() {
+            const cardEl = document.getElementById('flashcard');
+            const feedback = document.getElementById('feedbackBtns');
+            const progress = document.getElementById('progressText');
+
+            // Reset visual state
+            isFlipped = false;
+            cardEl.classList.remove('flipped');
+            feedback.classList.remove('visible');
+
+            // Check if deck complete
+            if (currentIndex >= activeDeck.length) {
+                handleDeckComplete();
+                return;
+            }
+
+            // Load Content
+            const item = activeDeck[currentIndex];
+            document.getElementById('qText').innerHTML = item.q;
+            document.getElementById('aText').innerHTML = item.a;
+            progress.innerText = `Card ${currentIndex + 1} of ${activeDeck.length}`;
+        }
+
+        function handleDeckComplete() {
+            const qText = document.getElementById('qText');
+            const aText = document.getElementById('aText');
+            const feedback = document.getElementById('feedbackBtns');
+
+            if (unknownPile.length > 0) {
+                qText.innerHTML = "<i class='fa-solid fa-rotate'></i> Round Complete!";
+                aText.innerHTML = `You have ${unknownPile.length} cards to review.<br><br><button class='nav-btn' onclick='startNextRound()'>Review Now</button>`;
+            } else {
+                qText.innerHTML = "<i class='fa-solid fa-trophy'></i> All Mastered!";
+                aText.innerHTML = "Great job! You've cleared the deck.<br><br><button class='nav-btn' onclick='fullReset()'>Start Over</button>";
+            }
+
+            // Auto-flip to back to show the message
+            document.getElementById('flashcard').classList.add('flipped');
+            feedback.classList.remove('visible');
+        }
+
+        function flip() {
+            // Don't flip if session is over (buttons are on the back face)
+            if (currentIndex >= activeDeck.length) return;
+
+            const cardEl = document.getElementById('flashcard');
+            const feedback = document.getElementById('feedbackBtns');
+
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                cardEl.classList.add('flipped');
+                feedback.classList.add('visible');
+            } else {
+                cardEl.classList.remove('flipped');
+                feedback.classList.remove('visible');
+            }
+        }
+
+        function rateCard(rating, event) {
+            event.stopPropagation(); // Prevent card flip when clicking buttons
+
+            const currentCard = activeDeck[currentIndex];
+
+            if (rating === 'miss') {
+                unknownPile.push(currentCard);
+            } else {
+                knownPile.push(currentCard);
+            }
+
+            currentIndex++;
+            updateVisuals();
+            loadCard();
+        }
+
+        function updateVisuals() {
+            // Update Pile Counts
+            document.getElementById('countUnknown').innerText = unknownPile.length;
+            document.getElementById('countKnown').innerText = knownPile.length;
+
+            // Visual styling for empty/full piles
+            const pU = document.getElementById('pileUnknown');
+            const pK = document.getElementById('pileKnown');
+
+            unknownPile.length > 0 ? pU.classList.add('has-cards') : pU.classList.remove('has-cards');
+            knownPile.length > 0 ? pK.classList.add('has-cards') : pK.classList.remove('has-cards');
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+
+</html>

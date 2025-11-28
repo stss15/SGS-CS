@@ -1,0 +1,225 @@
+{% extends "layouts/slide-deck.njk" %}
+
+{# KS3 layout aligned with KS3_Master_Tempalte.html and ks3-theme.css #}
+{% set extraStyles = (extraStyles or []).concat(['css/ks3-deck.css']) %}
+
+{% macro titleSlide(title, subtitle) %}
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">{{ title }}</h1>
+            {% if subtitle %}<h3 class="sub-title">{{ subtitle }}</h3>{% endif %}
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+{% endmacro %}
+
+{% macro retrievalStack(recall) %}
+    {% set recall = recall or {} %}
+    {% set questions = recall.questions or [] %}
+    <section>
+        <section>
+            <h3><i class="fa-solid fa-brain"></i> {{ recall.title or 'Retrieval Practice' }}</h3>
+            {% if recall.prompt %}<div class="box-blue"><p>{{ recall.prompt }}</p></div>{% endif %}
+            {% if questions %}
+                <ol style="font-size: 1.2em; line-height: 1.6;">
+                    {% for qa in questions %}
+                        <li>{{ qa.question }}</li>
+                    {% endfor %}
+                </ol>
+                <p class="small-text" style="margin-top: 30px; color: #666;">
+                    <i class="fa-solid fa-arrow-down"></i> Press Down to check answers
+                </p>
+            {% endif %}
+        </section>
+        {% for qa in questions %}
+            <section>
+                <h3>Question {{ loop.index }}</h3>
+                <div class="question-box">{{ qa.question }}</div>
+                {% if qa.answer %}
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong> {{ qa.answer }}</p>
+                    </div>
+                {% endif %}
+            </section>
+        {% endfor %}
+    </section>
+{% endmacro %}
+
+{% macro conceptSkillSlide(concept, skill) %}
+{% set concept = concept or {} %}
+{% set skill = skill or {} %}
+{% set conceptTitle = concept.title or 'Concept' %}
+{% if concept is string %}
+    {% set conceptBody = concept %}
+{% else %}
+    {% set conceptBody = concept.detail or concept.summary or '' %}
+{% endif %}
+{% set skillTitle = skill.title or 'Skill' %}
+{% if skill is string %}
+    {% set skillBody = skill %}
+{% else %}
+    {% set skillBody = skill.detail or skill.summary or '' %}
+{% endif %}
+<section>
+    <h2>Concepts & Skills</h2>
+    <div class="cols">
+        <div class="box-blue fragment fade-right">
+            <h4><i class="fa-solid fa-lightbulb"></i> {{ conceptTitle }}</h4>
+            <p class="small-text">{{ conceptBody }}</p>
+        </div>
+        <div class="box fragment fade-left">
+            <h4><i class="fa-solid fa-tools"></i> {{ skillTitle }}</h4>
+            <p class="small-text">{{ skillBody }}</p>
+        </div>
+    </div>
+</section>
+{% endmacro %}
+
+{% macro objectivesSlide(objectives=[]) %}
+<section>
+    <h3><i class="fa-solid fa-bullseye"></i> Lesson Objectives</h3>
+    <div class="box-blue">
+        <ul class="fa-ul" style="margin-left: 2.5em;">
+            {% for item in objectives %}
+                <li class="fragment custom-blur" style="margin-bottom: 1rem;">
+                    <span class="fa-li"><i class="fa-solid fa-check-circle gold"></i></span>
+                    {{ item }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endmacro %}
+
+{% macro hookSlide(hook) %}
+{% set hook = hook or {} %}
+{% if hook.question %}
+    {% set hookQuestion = hook.question %}
+{% elif hook.prompt %}
+    {% set hookQuestion = hook.prompt %}
+{% elif hook.title is defined or hook.detail is defined %}
+    {% set hookQuestion = '' %}
+{% else %}
+    {% set hookQuestion = hook %}
+{% endif %}
+<section {% if hook.background %}data-background-image="{{ hook.background }}" data-background-opacity="{{ hook.opacity | default(0.3) }}"{% endif %}>
+    <div style="padding: 30px; border-radius: 15px; max-width: 85%; margin: 0 auto; border: 1px solid var(--sg-gold); {% if hook.background %}background: rgba(0,0,0,0.85); color: white;{% endif %}">
+        <h2>{{ hook.title or 'The Big Question' }}</h2>
+        {% if hookQuestion %}<h3 style="color: var(--sg-gold);">{{ hookQuestion }}</h3>{% endif %}
+        {% if hook.detail %}<h3>{{ hook.detail }}</h3>{% endif %}
+        <hr style="border-color: var(--sg-gold);">
+        {% if hook.duration %}
+            <div style="margin-top: 20px;">
+                <button class="timer-btn" onclick="startTimer('hook-timer', {{ hook.duration }})"><i class="fa-solid fa-play"></i> Start {{ hook.duration }}s Timer</button>
+                <div id="hook-timer" class="timer-display">{{ hook.duration }}</div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endmacro %}
+
+{% macro keyTermSlide(keyTerm) %}
+{% set keyTerm = keyTerm or {} %}
+{% set termName = keyTerm.term or keyTerm.title or 'Key Term' %}
+{% if keyTerm.definition or keyTerm.detail or keyTerm.description %}
+    {% set termDefinition = keyTerm.definition or keyTerm.detail or keyTerm.description %}
+{% elif keyTerm.term is defined or keyTerm.title is defined %}
+    {% set termDefinition = '' %}
+{% else %}
+    {% set termDefinition = keyTerm %}
+{% endif %}
+<section {% if keyTerm.background %}data-background-image="{{ keyTerm.background }}" data-background-opacity="{{ keyTerm.opacity | default(0.2) }}"{% endif %}>
+    <h2>{{ keyTerm.title or 'Core Concept' }}</h2>
+    <div class="key-term fragment">
+        <h3>{{ termName }}</h3>
+        <p>{{ termDefinition }}</p>
+        {% if keyTerm.note %}<p class="small-text">{{ keyTerm.note }}</p>{% endif %}
+    </div>
+</section>
+{% endmacro %}
+
+{% macro miniTaskSlide(miniTask) %}
+{% set miniTask = miniTask or {} %}
+<section>
+    <h3><i class="fa-solid fa-list-check"></i> {{ miniTask.title or 'Mini Task' }}</h3>
+    {% if miniTask.prompt %}<p>{{ miniTask.prompt }}</p>{% endif %}
+    {% if miniTask.items %}
+        <div class="box-blue">
+            <ul>
+                {% for item in miniTask.items %}
+                    <li class="fragment">{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</section>
+{% endmacro %}
+
+{% macro mainTaskSlide(mainTask) %}
+{% set mainTask = mainTask or {} %}
+<section>
+    <h2><i class="fa-solid fa-pen-to-square"></i> {{ mainTask.title or 'Main Task' }}</h2>
+    <div class="box">
+        {% if mainTask.overview %}<p>{{ mainTask.overview }}</p>{% endif %}
+        {% if mainTask.steps %}
+            <ul>
+                {% for step in mainTask.steps %}
+                    <li class="fragment">{{ step }}</li>
+                {% endfor %}
+            </ul>
+            <hr>
+        {% endif %}
+        <div class="cols-3">
+            <div>
+                <h4><i class="fa-solid fa-stopwatch"></i> Time</h4>
+                <p>{{ mainTask.time | default('15 mins') }}</p>
+            </div>
+            <div>
+                <h4><i class="fa-solid fa-users"></i> Grouping</h4>
+                <p>{{ mainTask.grouping | default('Pairs') }}</p>
+            </div>
+            <div>
+                <h4><i class="fa-solid fa-file"></i> Resource</h4>
+                <p>{{ mainTask.resource | default('Worksheet') }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endmacro %}
+
+{% macro plenarySlide(plenary) %}
+{% set plenary = plenary or {} %}
+<section>
+    <h3><i class="fa-solid fa-check-double"></i> {{ plenary.title or 'Plenary' }}</h3>
+    <div class="box-blue">
+        {% if plenary.prompt %}<p>{{ plenary.prompt }}</p>{% endif %}
+        {% if plenary.items %}
+            <ul>
+                {% for item in plenary.items %}
+                    <li class="fragment">{{ item }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</section>
+{% endmacro %}
+
+{% macro renderLesson(lesson) %}
+    {% if lesson.title %}{{ titleSlide(lesson.title, lesson.subtitle) }}{% endif %}
+    {% if lesson.recall %}{{ retrievalStack(lesson.recall) }}{% endif %}
+    {% if lesson.concept or lesson.skill %}{{ conceptSkillSlide(lesson.concept, lesson.skill) }}{% endif %}
+    {% if lesson.objectives %}{{ objectivesSlide(lesson.objectives) }}{% endif %}
+    {% if lesson.hook %}{{ hookSlide(lesson.hook) }}{% endif %}
+    {% if lesson.keyTerm %}{{ keyTermSlide(lesson.keyTerm) }}{% endif %}
+    {% if lesson.miniTask %}{{ miniTaskSlide(lesson.miniTask) }}{% endif %}
+    {% if lesson.mainTask %}{{ mainTaskSlide(lesson.mainTask) }}{% endif %}
+    {% if lesson.plenary %}{{ plenarySlide(lesson.plenary) }}{% endif %}
+{% endmacro %}
+
+{% block content %}
+    {% if lesson %}{{ renderLesson(lesson) }}{% endif %}
+    {{ content | safe }}
+{% endblock %}

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Topic X.X Lesson Title | IGCSE Computer Science</title>
+
+    <!-- Reveal.js Core -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Code Highlighting -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- House Style -->
+    <link rel="stylesheet" href="./slide-deck-template.css">
+</head>
+
+<body>
+    <!-- ============================================
+         GLOBAL FIXED ELEMENTS (Always Present)
+         ============================================ -->
+    <a href="index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../public/images/Logo.png" id="sg-logo" alt="St George's Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 PATTERN 1: TITLE SLIDE (TEXT ONLY)
+                 - Centered layout
+                 - Gold/Blue lines
+                 - No image (academic style)
+                 ============================================ -->
+            <section>
+                <div style="height: 85vh; display: flex; align-items: center; justify-content: center;">
+                    <div class="title-container" style="max-width: 90%;">
+                        <div class="title-line-top"></div>
+                        <div>
+                            <h1 class="main-title">4.1 Types of Software & Interrupts</h1>
+                            <h3 class="sub-title">Topic 4: Software | The Bridge Between Hardware & User</h3>
+                        </div>
+                        <div class="title-line-bottom"></div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Welcome to Topic 4.1. Today covers System Software, Application Software, and Interrupts.
+                    TIMING: 1 minute
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 2: RETRIEVAL STARTER (TECHNICAL)
+                 - Question + Fragment reveal answer
+                 - Max 3 questions per slide
+                 - Gold text for answers
+                 ============================================ -->
+            <section data-background="#e6f0fa">
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="margin-bottom: 2rem;">
+                        <i class="fa-solid fa-brain"></i> Retrieval Practice
+                    </h3>
+                    <p style="font-size: 0.8em; color: #666; margin-bottom: 2rem;">
+                        Recall previous topics before we begin...
+                    </p>
+
+                    <div class="question-box" style="padding: 2rem;">
+                        <ul style="list-style: none; padding: 0; font-size: 0.9em;">
+                            <li class="fragment" data-fragment-index="0"
+                                style="margin-bottom: 1.5rem; text-align: left;">
+                                <strong>1.</strong> Which memory type is volatile?<br>
+                                <span class="fragment gold" data-fragment-index="1"
+                                    style="margin-left: 1.5rem; display: inline-block; margin-top: 0.5rem;">
+                                    → RAM (Random Access Memory)
+                                </span>
+                            </li>
+
+                            <li class="fragment" data-fragment-index="2"
+                                style="margin-bottom: 1.5rem; text-align: left;">
+                                <strong>2.</strong> What component fetches instructions from memory?<br>
+                                <span class="fragment gold" data-fragment-index="3"
+                                    style="margin-left: 1.5rem; display: inline-block; margin-top: 0.5rem;">
+                                    → CPU (Central Processing Unit)
+                                </span>
+                            </li>
+
+                            <li class="fragment" data-fragment-index="4" style="text-align: left;">
+                                <strong>3.</strong> What does ADC stand for?<br>
+                                <span class="fragment gold" data-fragment-index="5"
+                                    style="margin-left: 1.5rem; display: inline-block; margin-top: 0.5rem;">
+                                    → Analogue to Digital Converter
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Give 5 seconds think time per question. Check understanding before moving on.
+                    TIMING: 3 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 3: THE HOOK (LAYERED CONCEPT BUILD)
+                 - r-stack for sequential reveals
+                 - Building complexity layer by layer
+                 - Visual hierarchy with icons
+                 ============================================ -->
+            <section>
+                <div style="height: 85vh; display: flex; flex-direction: column; justify-content: center;">
+                    <h2 style="margin-bottom: 2rem;">The Connection</h2>
+                    <p style="font-size: 0.9em; color: #666; margin-bottom: 2rem;">
+                        Hardware alone is useless metal. Software gives it life.
+                    </p>
+
+                    <div class="r-stack" style="width: 100%;">
+                        <!-- Layer 1: Just Hardware -->
+                        <div class="fragment fade-out" data-fragment-index="1" style="width: 80%; margin: 0 auto;">
+                            <div class="box box-blue" style="text-align: center; padding: 2rem;">
+                                <i class="fa-solid fa-microchip"
+                                    style="font-size: 3em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <h4 style="margin-bottom: 0.5rem;">Hardware</h4>
+                                <p style="font-size: 0.85em; color: #666; margin: 0;">
+                                    CPU, RAM, Storage, Peripherals
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Layer 2: Add System Software -->
+                        <div class="fragment current-visible" data-fragment-index="1"
+                            style="width: 80%; margin: 0 auto;">
+                            <div class="box" style="text-align: center; padding: 1.5rem; margin-bottom: 1rem;">
+                                <i class="fa-solid fa-gears" style="font-size: 2.5em; color: var(--sg-blue);"></i>
+                                <h4 style="font-size: 1em; margin: 0.5rem 0 0 0;">System Software</h4>
+                                <p style="font-size: 0.75em; color: #666; margin: 0;">OS, Drivers, Utilities</p>
+                            </div>
+                            <div class="box box-blue" style="text-align: center; padding: 1.5rem; opacity: 0.5;">
+                                <i class="fa-solid fa-microchip" style="font-size: 2em;"></i>
+                                <h4 style="font-size: 1em; margin: 0.5rem 0 0 0;">Hardware</h4>
+                            </div>
+                        </div>
+
+                        <!-- Layer 3: Complete Stack -->
+                        <div class="fragment" data-fragment-index="2" style="width: 80%; margin: 0 auto;">
+                            <div class="box"
+                                style="text-align: center; padding: 1.2rem; margin-bottom: 0.8rem; background: var(--sg-gold); color: white; border: none;">
+                                <i class="fa-solid fa-gamepad" style="font-size: 2em;"></i>
+                                <h4 style="font-size: 0.95em; margin: 0.5rem 0 0 0;">Application Software</h4>
+                                <p style="font-size: 0.7em; margin: 0;">Word, Browsers, Games</p>
+                            </div>
+                            <div class="box" style="text-align: center; padding: 1.2rem; margin-bottom: 0.8rem;">
+                                <i class="fa-solid fa-gears" style="font-size: 1.8em; color: var(--sg-blue);"></i>
+                                <h4 style="font-size: 0.9em; margin: 0.5rem 0 0 0;">System Software</h4>
+                            </div>
+                            <div class="box box-blue" style="text-align: center; padding: 1.2rem; opacity: 0.5;">
+                                <i class="fa-solid fa-microchip" style="font-size: 1.5em;"></i>
+                                <h4 style="font-size: 0.9em; margin: 0.5rem 0 0 0;">Hardware</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Build the software stack layer by layer. Each layer depends on the one below.
+                    TIMING: 2 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 4: KEY DEFINITION (HIT OVER THE HEAD)
+                 - Use key-term class
+                 - Bold crucial phrases
+                 - Clear, exam-ready definition
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h2 style="margin-bottom: 2rem;">Core Concept</h2>
+
+                    <div class="key-term fragment" data-fragment-index="0" style="max-width: 85%; margin: 0 auto;">
+                        <h3>System Software</h3>
+                        <p style="font-size: 0.95em; line-height: 1.6;">
+                            Programs that <strong>manage the computer's hardware</strong> and provide a
+                            <strong>platform for application software</strong> to run. System software
+                            operates in the background and is essential for basic computer functionality.
+                        </p>
+                    </div>
+
+                    <p class="fragment fade-up" data-fragment-index="1"
+                        style="font-size: 0.75em; color: #666; margin-top: 2rem; text-align: center;">
+                        <i class="fa-solid fa-pencil"></i> Write this definition in your notes
+                    </p>
+                </div>
+
+                <aside class="notes">
+                    Students must write this down verbatim. This is exam vocabulary.
+                    TIMING: 2 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 5: TWO-COLUMN COMPARISON
+                 - Side-by-side comparison
+                 - Icons for visual distinction
+                 - Lists for key points
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h2 style="margin-bottom: 1.5rem;">Two Main Categories</h2>
+
+                    <div class="cols" style="gap: 2rem; align-items: stretch;">
+                        <div class="fragment fade-right" data-fragment-index="0">
+                            <div class="box box-blue" style="height: 100%; display: flex; flex-direction: column;">
+                                <h4 style="margin-bottom: 1rem;">
+                                    <i class="fa-solid fa-gears"></i> System Software
+                                </h4>
+                                <p style="font-size: 0.8em; color: #666; margin-bottom: 1rem; line-height: 1.5;">
+                                    Manages hardware and provides platform for applications
+                                </p>
+                                <ul style="font-size: 0.85em; margin: 0; padding-left: 1.5rem; flex-grow: 1;">
+                                    <li style="margin-bottom: 0.8rem;">Operating System (OS)</li>
+                                    <li style="margin-bottom: 0.8rem;">Utility Programs</li>
+                                    <li style="margin-bottom: 0.8rem;">Device Drivers</li>
+                                    <li>Translators (Compilers)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="fragment fade-left" data-fragment-index="0">
+                            <div class="box" style="height: 100%; display: flex; flex-direction: column;">
+                                <h4 style="margin-bottom: 1rem;">
+                                    <i class="fa-solid fa-pen-ruler"></i> Application Software
+                                </h4>
+                                <p style="font-size: 0.8em; color: #666; margin-bottom: 1rem; line-height: 1.5;">
+                                    Allows users to perform specific tasks
+                                </p>
+                                <ul style="font-size: 0.85em; margin: 0; padding-left: 1.5rem; flex-grow: 1;">
+                                    <li style="margin-bottom: 0.8rem;">Word Processors</li>
+                                    <li style="margin-bottom: 0.8rem;">Spreadsheets</li>
+                                    <li style="margin-bottom: 0.8rem;">Databases</li>
+                                    <li>Graphics/Photo Editing</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Key distinction: System = background; Application = user-facing.
+                    TIMING: 3 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 6: VERTICAL NAVIGATION (DEEP DIVE)
+                 - Main concept on horizontal
+                 - Technical details below
+                 - Arrow indicator for navigation
+                 ============================================ -->
+            <section>
+                <!-- Main Horizontal Slide -->
+                <section>
+                    <div
+                        style="height: 85vh; display: flex; flex-direction: column; justify-content: space-between; padding: 2rem 0;">
+                        <div>
+                            <h3 style="margin-bottom: 1.5rem;">The Operating System</h3>
+                            <p style="font-size: 0.85em; color: #666; margin-bottom: 2rem;">
+                                The most important piece of system software
+                            </p>
+                        </div>
+
+                        <div class="cols-3" style="flex-grow: 1; align-items: stretch; font-size: 0.8em;">
+                            <div class="box-blue fragment" data-fragment-index="0"
+                                style="display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 1.5rem;">
+                                <i class="fa-solid fa-desktop"
+                                    style="font-size: 2.5em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <strong>HCI</strong>
+                                <p style="font-size: 0.85em; color: #666; margin: 0.5rem 0 0 0;">User Interface</p>
+                            </div>
+
+                            <div class="box-blue fragment" data-fragment-index="1"
+                                style="display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 1.5rem;">
+                                <i class="fa-solid fa-memory"
+                                    style="font-size: 2.5em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <strong>Memory</strong>
+                                <p style="font-size: 0.85em; color: #666; margin: 0.5rem 0 0 0;">RAM Allocation</p>
+                            </div>
+
+                            <div class="box-blue fragment" data-fragment-index="2"
+                                style="display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 1.5rem;">
+                                <i class="fa-solid fa-layer-group"
+                                    style="font-size: 2.5em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <strong>Multitasking</strong>
+                                <p style="font-size: 0.85em; color: #666; margin: 0.5rem 0 0 0;">CPU Time Sharing</p>
+                            </div>
+
+                            <div class="box-blue fragment" data-fragment-index="3"
+                                style="display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 1.5rem;">
+                                <i class="fa-solid fa-shield-halved"
+                                    style="font-size: 2.5em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <strong>Security</strong>
+                                <p style="font-size: 0.85em; color: #666; margin: 0.5rem 0 0 0;">Access Control</p>
+                            </div>
+
+                            <div class="box-blue fragment" data-fragment-index="4"
+                                style="display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 1.5rem;">
+                                <i class="fa-solid fa-folder-open"
+                                    style="font-size: 2.5em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <strong>File Mgmt</strong>
+                                <p style="font-size: 0.85em; color: #666; margin: 0.5rem 0 0 0;">Organising Data</p>
+                            </div>
+
+                            <div class="box-blue fragment" data-fragment-index="5"
+                                style="display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 1.5rem;">
+                                <i class="fa-solid fa-print"
+                                    style="font-size: 2.5em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <strong>I/O Control</strong>
+                                <p style="font-size: 0.85em; color: #666; margin: 0.5rem 0 0 0;">Device Management</p>
+                            </div>
+                        </div>
+
+                        <div class="fragment fade-in" data-fragment-index="6"
+                            style="text-align: center; margin-top: 1.5rem;">
+                            <i class="fa-solid fa-arrow-down blue bounce"></i>
+                            <span class="small-text blue"> Deep Dive: HCI Types</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Vertical Deep Dive: HCI -->
+                <section data-background="#f4f6f8">
+                    <div style="max-height: 85vh; overflow: hidden; padding: 2rem;">
+                        <h3 style="margin-bottom: 1.5rem;">
+                            <i class="fa-solid fa-layer-group"></i> Deep Dive: Human-Computer Interaction
+                        </h3>
+                        <p style="font-size: 0.8em; color: #666; margin-bottom: 2rem;">
+                            How do humans communicate with machines?
+                        </p>
+
+                        <div class="cols" style="gap: 2rem;">
+                            <div class="box" style="padding: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--sg-blue);">
+                                    <i class="fa-solid fa-terminal"></i> CLI (Command Line)
+                                </h4>
+                                <ul style="font-size: 0.85em; margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+                                    <li class="fragment" data-fragment-index="0">User types text commands</li>
+                                    <li class="fragment" data-fragment-index="1">Fast for experts</li>
+                                    <li class="fragment" data-fragment-index="2">Low memory usage</li>
+                                    <li class="fragment" data-fragment-index="3">Steep learning curve</li>
+                                </ul>
+                                <div class="fragment" data-fragment-index="4"
+                                    style="background: #000; color: #0f0; padding: 0.8rem; border-radius: 5px; margin-top: 1rem; font-family: monospace; font-size: 0.7em;">
+                                    C:\> dir /s *.txt
+                                </div>
+                            </div>
+
+                            <div class="box-blue" style="padding: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--sg-blue);">
+                                    <i class="fa-solid fa-window-maximize"></i> GUI (Graphical)
+                                </h4>
+                                <ul style="font-size: 0.85em; margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+                                    <li class="fragment" data-fragment-index="0">WIMP: Windows, Icons, Menus, Pointer
+                                    </li>
+                                    <li class="fragment" data-fragment-index="1">Intuitive/Visual</li>
+                                    <li class="fragment" data-fragment-index="2">Uses more memory</li>
+                                    <li class="fragment" data-fragment-index="3">Easy for beginners</li>
+                                </ul>
+                                <div class="fragment" data-fragment-index="4"
+                                    style="background: #e3f2fd; padding: 0.8rem; border-radius: 5px; margin-top: 1rem; text-align: center; font-size: 0.75em;">
+                                    <i class="fa-solid fa-folder" style="font-size: 2em; color: #1976d2;"></i><br>
+                                    <span style="font-size: 0.85em;">Documents</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 7: CODE WALKTHROUGH (LINE TRACING)
+                 - Progressive line highlighting
+                 - Predict output pattern
+                 - Answer reveal
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Code Walkthrough</h3>
+                    <p style="font-size: 0.8em; color: #666; margin-bottom: 2rem;">
+                        Trace through this code. What will be the output?
+                    </p>
+
+                    <div style="max-width: 80%; margin: 0 auto;">
+                        <pre style="margin: 0;"><code class="python" data-trim data-line-numbers="|1-2|4-5|7-8">
+score = 10
+print("Start")
+
+if score > 5:
+    print("Win")
+else:
+    print("Lose")
+                        </code></pre>
+                    </div>
+
+                    <div class="fragment box-blue" data-fragment-index="7"
+                        style="max-width: 60%; margin: 2rem auto 0 auto; text-align: center; padding: 1.5rem;">
+                        <strong style="display: block; margin-bottom: 0.8rem;">Output:</strong>
+                        <div
+                            style="background: #000; color: #0f0; padding: 1rem; border-radius: 5px; font-family: monospace; font-size: 0.85em; text-align: left;">
+                            Start<br>
+                            Win
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Step through line by line. Ask students to predict before revealing.
+                    TIMING: 3 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 8: FIX THE BUG (ERROR ANALYSIS)
+                 - Buggy code on left
+                 - Fixed code on right
+                 - Highlight the fix
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Fix The Bug</h3>
+                    <p style="font-size: 0.8em; color: #666; margin-bottom: 1.5rem;">
+                        This loop doesn't work. What's wrong?
+                    </p>
+
+                    <div class="cols" style="gap: 2rem; align-items: start;">
+                        <div class="box-blue" style="padding: 1.5rem;">
+                            <strong style="display: block; margin-bottom: 1rem; color: var(--error);">
+                                <i class="fa-solid fa-bug"></i> Buggy Code
+                            </strong>
+                            <pre style="margin: 0;"><code class="python" data-trim>
+count = 0
+while count < 5:
+    print(count)
+# Loop runs forever!
+                            </code></pre>
+                        </div>
+
+                        <div class="fragment box" data-fragment-index="0" style="padding: 1.5rem;">
+                            <strong style="display: block; margin-bottom: 1rem; color: var(--success);">
+                                <i class="fa-solid fa-check"></i> Fixed Code
+                            </strong>
+                            <pre style="margin: 0;"><code class="python" data-trim data-line-numbers="4">
+count = 0
+while count < 5:
+    print(count)
+    count = count + 1  # Increment!
+                            </code></pre>
+                        </div>
+                    </div>
+
+                    <p class="fragment fade-up" data-fragment-index="1"
+                        style="font-size: 0.75em; color: #666; margin-top: 1.5rem; text-align: center;">
+                        <i class="fa-solid fa-lightbulb"></i> Always increment your counter in loops!
+                    </p>
+                </div>
+
+                <aside class="notes">
+                    Common error: forgetting to increment. Ask students to identify the problem first.
+                    TIMING: 3 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 9: HINGE QUESTION (MISCONCEPTION CHECK)
+                 - Multiple choice options
+                 - Reveal correct answer with explanation
+                 - Use r-stack for clean transition
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">
+                        <i class="fa-solid fa-scale-balanced"></i> Hinge Question
+                    </h3>
+                    <p style="font-size: 0.9em; margin-bottom: 2rem;">
+                        A <strong>web browser</strong> allows you to access websites. Which category is it?
+                    </p>
+
+                    <div class="r-stack" style="width: 100%;">
+                        <!-- Options -->
+                        <div class="fragment fade-out" data-fragment-index="1" style="width: 85%; margin: 0 auto;">
+                            <div class="cols" style="gap: 1.5rem;">
+                                <div class="box" style="cursor: pointer; padding: 1.5rem; text-align: center;">
+                                    <strong style="display: block; font-size: 1.1em; margin-bottom: 0.8rem;">
+                                        A) System Software
+                                    </strong>
+                                    <p style="font-size: 0.8em; color: #666; margin: 0;">
+                                        Because I need it to use the computer
+                                    </p>
+                                </div>
+
+                                <div class="box" style="cursor: pointer; padding: 1.5rem; text-align: center;">
+                                    <strong style="display: block; font-size: 1.1em; margin-bottom: 0.8rem;">
+                                        B) Application Software
+                                    </strong>
+                                    <p style="font-size: 0.8em; color: #666; margin: 0;">
+                                        Because it performs a specific task
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Answer Reveal -->
+                        <div class="fragment fade-in" data-fragment-index="1" style="width: 85%; margin: 0 auto;">
+                            <div class="question-box" style="background: var(--sg-gold); padding: 2.5rem;">
+                                <h1 style="font-size: 3em; margin: 0 0 1rem 0;">B</h1>
+                                <p style="font-size: 1.1em; margin-bottom: 1.5rem;">
+                                    <strong>Application Software</strong>
+                                </p>
+                                <p style="font-size: 0.85em; line-height: 1.6; margin: 0;">
+                                    The OS provides network capability (System Software), but the browser
+                                    is a tool you launch to perform the specific task of web browsing (Application).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Common misconception. Wait for hands up before revealing.
+                    Key: System = essential background; Application = user task.
+                    TIMING: 3 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 10: THINK-PAIR-SHARE (DISCUSSION)
+                 - Three-stage progression
+                 - Visual icons for each stage
+                 - Timer optional
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="margin-bottom: 1rem;">
+                        <i class="fa-solid fa-comments"></i> Ethics Discussion
+                    </h3>
+                    <p style="font-size: 0.8em; color: #666; margin-bottom: 2rem;">
+                        Scenario: Apple sold MacBooks with 8GB RAM that could not be upgraded by users.
+                    </p>
+
+                    <div class="r-stack" style="width: 100%;">
+                        <!-- Stage 1: THINK -->
+                        <div class="fragment fade-in-then-out" data-fragment-index="0"
+                            style="width: 85%; margin: 0 auto;">
+                            <div class="question-box" style="padding: 2.5rem;">
+                                <i class="fa-solid fa-head-side-virus" style="font-size: 3em; margin-bottom: 1rem;"></i>
+                                <h4 style="margin-bottom: 1.5rem;">1. THINK (Silent - 30 seconds)</h4>
+                                <p style="font-size: 0.9em; line-height: 1.6;">
+                                    Is this "Planned Obsolescence" (forcing upgrades) or just efficient engineering?
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Stage 2: PAIR -->
+                        <div class="fragment fade-in-then-out" data-fragment-index="1"
+                            style="width: 85%; margin: 0 auto;">
+                            <div class="question-box" style="background: var(--sg-gold); padding: 2.5rem;">
+                                <i class="fa-solid fa-people-arrows" style="font-size: 3em; margin-bottom: 1rem;"></i>
+                                <h4 style="margin-bottom: 1.5rem;">2. PAIR (Discuss - 1 minute)</h4>
+                                <p style="font-size: 0.9em; line-height: 1.6;">
+                                    Turn to your partner. Compare your views. Do you agree or disagree?
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Stage 3: SHARE -->
+                        <div class="fragment fade-in" data-fragment-index="2" style="width: 85%; margin: 0 auto;">
+                            <div class="question-box"
+                                style="background: var(--bg-light); color: #333; border: 2px solid var(--sg-blue); padding: 2.5rem;">
+                                <i class="fa-solid fa-bullhorn"
+                                    style="font-size: 3em; color: var(--sg-blue); margin-bottom: 1rem;"></i>
+                                <h4 style="margin-bottom: 1.5rem; color: var(--sg-blue);">3. SHARE</h4>
+                                <p style="font-size: 0.9em; line-height: 1.6;">
+                                    Hands up: Who thinks it's planned obsolescence?<br>
+                                    Who thinks it's just design efficiency?
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    No right answer. Focus on reasoning. Both sides have valid points.
+                    TIMING: 4 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 11: COMPARISON TABLE (3-COLUMN)
+                 - Technical feature comparison
+                 - Check/cross icons for clarity
+                 - Fragment reveals for engagement
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="margin-bottom: 2rem;">Compiler vs Interpreter</h3>
+
+                    <div class="cols" style="gap: 2rem; font-size: 0.85em;">
+                        <div class="box box-blue" style="padding: 1.5rem;">
+                            <h4 style="margin-bottom: 1.5rem; text-align: center;">
+                                <i class="fa-solid fa-file-code"></i> Compiler
+                            </h4>
+                            <ul style="margin: 0; padding-left: 1.5rem; line-height: 2;">
+                                <li class="fragment" data-fragment-index="0">
+                                    <i class="fa-solid fa-check" style="color: var(--success);"></i>
+                                    Translates whole program at once
+                                </li>
+                                <li class="fragment" data-fragment-index="1">
+                                    <i class="fa-solid fa-check" style="color: var(--success);"></i>
+                                    Creates executable file (.exe)
+                                </li>
+                                <li class="fragment" data-fragment-index="2">
+                                    <i class="fa-solid fa-check" style="color: var(--success);"></i>
+                                    Fast execution
+                                </li>
+                                <li class="fragment" data-fragment-index="3">
+                                    <i class="fa-solid fa-xmark" style="color: var(--error);"></i>
+                                    Reports errors at end
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="box" style="padding: 1.5rem;">
+                            <h4 style="margin-bottom: 1.5rem; text-align: center;">
+                                <i class="fa-solid fa-terminal"></i> Interpreter
+                            </h4>
+                            <ul style="margin: 0; padding-left: 1.5rem; line-height: 2;">
+                                <li class="fragment" data-fragment-index="0">
+                                    <i class="fa-solid fa-check" style="color: var(--success);"></i>
+                                    Translates line by line
+                                </li>
+                                <li class="fragment" data-fragment-index="1">
+                                    <i class="fa-solid fa-xmark" style="color: var(--error);"></i>
+                                    No executable created
+                                </li>
+                                <li class="fragment" data-fragment-index="2">
+                                    <i class="fa-solid fa-xmark" style="color: var(--error);"></i>
+                                    Slower execution
+                                </li>
+                                <li class="fragment" data-fragment-index="3">
+                                    <i class="fa-solid fa-check" style="color: var(--success);"></i>
+                                    Stops at first error
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="fragment fade-up" data-fragment-index="4"
+                        style="margin-top: 2rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px;">
+                        <strong>When to use:</strong> Compiler for distribution | Interpreter for development/testing
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Crucial distinction for exam. Emphasize: Compiler = finished product; Interpreter = debugging.
+                    TIMING: 4 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 12: SCENARIO APPLICATION
+                 - Real-world scenario
+                 - Apply knowledge to solve
+                 - Reveal reasoning
+                 ============================================ -->
+            <section data-background="#003366">
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="color: white; margin-bottom: 2rem;">
+                        Real-World Scenario
+                    </h3>
+                    <p style="color: white; font-size: 0.9em; line-height: 1.6; margin-bottom: 2rem;">
+                        You've written a video game and want to sell it online. You don't want
+                        customers to see or steal your source code. Which translator should you use?
+                    </p>
+
+                    <div class="fragment fade-in" data-fragment-index="0"
+                        style="background: white; color: #333; padding: 2rem; border-radius: 10px; border-left: 5px solid var(--sg-gold);">
+                        <h4 style="color: var(--sg-blue); margin-bottom: 1rem;">
+                            <i class="fa-solid fa-lightbulb"></i> Answer: Compiler
+                        </h4>
+                        <p style="font-size: 0.9em; line-height: 1.6; margin: 0;">
+                            A compiler creates a standalone <strong>executable file</strong> (.exe).
+                            The customer doesn't need the source code or a translator installed.
+                            Your code remains proprietary.
+                        </p>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Link technical knowledge to real-world application. This is exam-style reasoning.
+                    TIMING: 2 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 13: EXIT TICKET (SEQUENTIAL QUIZ)
+                 - Multiple questions in sequence
+                 - r-stack for clean transitions
+                 - Variety of question types
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">
+                        <i class="fa-solid fa-rocket"></i> Exit Ticket
+                    </h3>
+                    <p style="font-size: 0.8em; color: #666; margin-bottom: 2rem;">
+                        Quick check of today's learning...
+                    </p>
+
+                    <div class="r-stack" style="width: 100%;">
+                        <!-- Q1: True/False -->
+                        <div class="fragment fade-out" data-fragment-index="1" style="width: 85%; margin: 0 auto;">
+                            <div class="box-blue" style="padding: 2rem;">
+                                <p style="font-size: 1em; margin-bottom: 1.5rem;">
+                                    <strong>Q1: True or False?</strong>
+                                </p>
+                                <p style="font-size: 1.1em; margin-bottom: 2rem; line-height: 1.6;">
+                                    "An interpreter creates an executable file."
+                                </p>
+                                <div class="cols" style="gap: 1.5rem;">
+                                    <div class="box" style="text-align: center; cursor: pointer; padding: 1rem;">
+                                        TRUE
+                                    </div>
+                                    <div class="box" style="text-align: center; cursor: pointer; padding: 1rem;">
+                                        FALSE
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Q1 Answer -->
+                        <div class="fragment current-visible" data-fragment-index="1"
+                            style="width: 85%; margin: 0 auto;">
+                            <div class="question-box" style="background: var(--sg-gold); padding: 2.5rem;">
+                                <h1 style="font-size: 3em; margin-bottom: 1rem;">FALSE</h1>
+                                <p style="font-size: 0.9em; line-height: 1.6; margin: 0;">
+                                    A <strong>compiler</strong> creates an executable. An interpreter
+                                    translates and runs code line-by-line without creating a separate file.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Q2: Fill in blank -->
+                        <div class="fragment current-visible" data-fragment-index="2"
+                            style="width: 85%; margin: 0 auto;">
+                            <div class="box-blue" style="padding: 2rem;">
+                                <p style="font-size: 1em; margin-bottom: 1.5rem;">
+                                    <strong>Q2: Identify the Language Type</strong>
+                                </p>
+                                <pre
+                                    style="margin: 1.5rem 0; background: #000; color: #0f0; padding: 1rem; border-radius: 5px;"><code class="text" style="text-align: center;">
+LDA 50
+ADD 20
+STO 60
+                                </code></pre>
+                                <p style="font-size: 1em; margin: 0;">
+                                    Is this <strong>High-Level</strong> or <strong>Low-Level</strong>?
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Q2 Answer -->
+                        <div class="fragment current-visible" data-fragment-index="3"
+                            style="width: 85%; margin: 0 auto;">
+                            <div class="question-box" style="background: var(--sg-gold); padding: 2.5rem;">
+                                <h1 style="font-size: 2.5em; margin-bottom: 1rem;">Low-Level</h1>
+                                <p style="font-size: 0.9em; line-height: 1.6; margin: 0;">
+                                    This is <strong>Assembly Language</strong> - a low-level language using
+                                    mnemonics (LDA = Load, ADD = Add, STO = Store).
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Q3: Multiple choice -->
+                        <div class="fragment" data-fragment-index="4" style="width: 85%; margin: 0 auto;">
+                            <div class="box-blue" style="padding: 2rem;">
+                                <p style="font-size: 1em; margin-bottom: 1.5rem;">
+                                    <strong>Q3: Which IDE feature helps debug?</strong>
+                                </p>
+                                <div class="cols-3" style="gap: 1rem; margin-top: 1.5rem; font-size: 0.85em;">
+                                    <div class="box" style="text-align: center; padding: 1rem;">
+                                        Pretty-printing
+                                    </div>
+                                    <div class="box" style="text-align: center; padding: 1rem;">
+                                        Debugger
+                                    </div>
+                                    <div class="box" style="text-align: center; padding: 1rem;">
+                                        Auto-complete
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Final knowledge check. Don't skip - this informs next lesson planning.
+                    TIMING: 4 minutes
+                </aside>
+            </section>
+
+            <!-- ============================================
+                 PATTERN 14: LESSON SUMMARY
+                 - Recap key points
+                 - Link to objectives
+                 - Next lesson preview
+                 ============================================ -->
+            <section>
+                <div
+                    style="height: 85vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2rem;">
+                    <h2 style="margin-bottom: 2rem;">Lesson Summary</h2>
+
+                    <div class="cols" style="gap: 2rem; margin-bottom: 2rem;">
+                        <div class="box" style="padding: 1.5rem;">
+                            <strong style="display: block; margin-bottom: 1rem; color: var(--sg-blue);">
+                                Software Types
+                            </strong>
+                            <ul style="font-size: 0.85em; margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+                                <li><strong>System:</strong> OS, Drivers, Utilities</li>
+                                <li><strong>Application:</strong> User tasks</li>
+                            </ul>
+                        </div>
+
+                        <div class="box box-blue" style="padding: 1.5rem;">
+                            <strong style="display: block; margin-bottom: 1rem; color: var(--sg-blue);">
+                                Translators
+                            </strong>
+                            <ul style="font-size: 0.85em; margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+                                <li><strong>Compiler:</strong> All at once (.exe)</li>
+                                <li><strong>Interpreter:</strong> Line by line</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="fragment zoom-in" data-fragment-index="0"
+                        style="background: var(--sg-gold); color: white; padding: 1.5rem; border-radius: 10px; text-align: center; font-size: 1.1em; font-weight: bold;">
+                        <i class="fa-solid fa-forward"></i> Next Lesson: Operating System Functions in Detail
+                    </div>
+                </div>
+
+                <aside class="notes">
+                    Quick recap. Emphasize links between topics. Preview builds anticipation.
+                    TIMING: 2 minutes
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
+
+    <script>
+        Reveal.initialize({
+            // Core Settings
+            hash: false,
+            history: false,
+            slideNumber: 'c/t',
+            showSlideNumber: 'all',
+
+            // Navigation
+            controls: true,
+            controlsLayout: 'bottom-right',
+            progress: true,
+            center: true,
+
+            // Sizing
+            width: 960,
+            height: '100%',
+            margin: 0.04,
+
+            // Transitions
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+
+            // Auto-Animate
+            autoAnimate: true,
+            autoAnimateDuration: 0.6,
+            autoAnimateEasing: 'ease-out',
+
+            // Plugins
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Live Date Display
+        const dateOptions = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+        document.getElementById('live-date-display').innerText =
+            new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+    <!-- IGCSE-Specific Custom Styles -->
+    <style>
+        /* Ensure no content bleeds */
+        .reveal .slides section {
+            overflow: hidden !important;
+        }
+
+        /* Code block styling */
+        .reveal pre {
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            margin: 1rem 0;
+        }
+
+        .reveal pre code {
+            max-height: none;
+            padding: 1rem;
+        }
+
+        /* Comparison lists with icons */
+        .reveal ul li i.fa-check {
+            margin-right: 8px;
+        }
+
+        .reveal ul li i.fa-xmark {
+            margin-right: 8px;
+        }
+
+        /* Bounce animation for arrows */
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Terminal/console styling */
+        .terminal {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 1rem;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+
+        /* Quiz button hover effects */
+        .box[style*="cursor: pointer"]:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s;
+            background: var(--bg-accent);
+        }
+
+        /* Ensure vertical alignment */
+        .cols {
+            align-items: stretch;
+        }
+
+        .cols>div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cols {
+                grid-template-columns: 1fr !important;
+            }
+
+            .cols-3 {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+
+</html>

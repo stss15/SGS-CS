@@ -1,0 +1,246 @@
+---
+layout: layouts/slide-deck.njk
+title: "B2.1 Programming Fundamentals | IB Computer Science"
+backHref: ib/B2/index.html
+headContent: |
+  <style>
+  /* House Style Variables */
+          :root {
+              --sg-blue: #003366;
+              --sg-gold: #D4AF37;
+              --sg-text: #333333;
+              --sg-accent: #e6f0fa;
+          }
+  
+          .reveal {
+              color: var(--sg-text);
+              font-family: 'Inter', sans-serif;
+          }
+  
+          .reveal h1,
+          .reveal h2,
+          .reveal h3,
+          .reveal h4 {
+              color: var(--sg-blue);
+              font-weight: 700;
+          }
+  
+          /* Standard Boxes */
+          .box {
+              background: #f8f9fa;
+              border-left: 5px solid var(--sg-gold);
+              padding: 15px;
+              margin: 10px 0;
+              text-align: left;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+              font-size: 0.85em;
+              border-radius: 0 8px 8px 0;
+          }
+  
+          .box-blue {
+              background: var(--sg-accent);
+              border-left-color: var(--sg-blue);
+          }
+  
+          .box-code {
+              background: #1e1e1e;
+              color: #d4d4d4;
+              border-left: 5px solid #4CAF50;
+              font-family: 'Courier New', monospace;
+          }
+  
+          /* Question Box */
+          .question-box {
+              background: var(--sg-blue);
+              color: white;
+              padding: 25px;
+              border-radius: 12px;
+              text-align: center;
+              margin-top: 20px;
+              box-shadow: 0 8px 15px rgba(0, 51, 102, 0.2);
+          }
+  
+          /* Key Definition Component */
+          .key-term {
+              border: 3px solid var(--sg-gold);
+              background: white;
+              padding: 20px;
+              position: relative;
+              margin: 30px 0;
+              box-shadow: 8px 8px 0px rgba(212, 175, 55, 0.2);
+              text-align: left;
+              border-radius: 8px;
+          }
+  
+          .key-term::before {
+              content: "KEY DEFINITION";
+              position: absolute;
+              top: -15px;
+              left: 20px;
+              background: var(--sg-gold);
+              color: white;
+              padding: 5px 15px;
+              font-weight: bold;
+              font-size: 0.6em;
+              border-radius: 4px;
+              letter-spacing: 1px;
+          }
+  
+          /* Interactive Python Console */
+          .python-console {
+              background: #1e1e1e;
+              border-radius: 8px;
+              padding: 10px;
+              margin-top: 15px;
+              text-align: left;
+              box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+          }
+  
+          .python-editor {
+              width: 100%;
+              height: 150px;
+              background: #2d2d2d;
+              color: #f8f8f2;
+              border: 1px solid #444;
+              border-radius: 4px;
+              padding: 10px;
+              font-family: 'Courier New', monospace;
+              font-size: 0.8em;
+              resize: none;
+              outline: none;
+          }
+  
+          .python-output {
+              background: #000;
+              color: #0f0;
+              padding: 10px;
+              margin-top: 5px;
+              border-radius: 4px;
+              font-family: 'Courier New', monospace;
+              font-size: 0.7em;
+              min-height: 40px;
+              white-space: pre-wrap;
+          }
+  
+          .run-btn {
+              background: #4CAF50;
+              color: white;
+              border: none;
+              padding: 8px 16px;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: bold;
+              margin-top: 5px;
+              transition: background 0.2s;
+          }
+  
+          .run-btn:hover {
+              background: #45a049;
+          }
+  
+          .run-btn:disabled {
+              background: #666;
+              cursor: wait;
+          }
+  
+          /* Text Utilities */
+          .gold {
+              color: var(--sg-gold);
+              font-weight: bold;
+          }
+  
+          .blue {
+              color: var(--sg-blue);
+          }
+  
+          .small-text {
+              font-size: 0.7em;
+              line-height: 1.4;
+          }
+  
+          /* Layouts */
+          .cols {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 30px;
+              align-items: start;
+          }
+  
+          .grid-3 {
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              gap: 20px;
+          }
+  
+          /* Navigation Icons */
+          #back-btn {
+              position: fixed;
+              top: 20px;
+              left: 20px;
+              z-index: 1001;
+              font-size: 1.5rem;
+              color: var(--sg-blue);
+              text-decoration: none;
+              transition: transform 0.2s;
+          }
+  
+          #back-btn:hover {
+              transform: scale(1.1);
+          }
+  
+          #sg-logo {
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              width: 80px;
+              z-index: 1000;
+          }
+  </style>
+deckScripts: |
+  // Pyodide Setup
+          async function main() {
+              let pyodide = await loadPyodide();
+              console.log("Pyodide ready");
+  
+              // Expose run function globally
+              window.runPython = async function (codeId, outputId) {
+                  const code = document.getElementById(codeId).value;
+                  const outputDiv = document.getElementById(outputId);
+                  const btn = document.querySelector(`button[onclick="runPython('${codeId}', '${outputId}')"]`);
+  
+                  outputDiv.innerText = "Running...";
+                  outputDiv.style.color = "#aaa";
+                  btn.disabled = true;
+  
+                  try {
+                      // Capture stdout
+                      pyodide.runPython(`
+                          import sys
+                          from io import StringIO
+                          sys.stdout = StringIO()
+                      `);
+  
+                      await pyodide.runPythonAsync(code);
+  
+                      let stdout = pyodide.runPython("sys.stdout.getvalue()");
+                      outputDiv.innerText = stdout || "(No output)";
+                      outputDiv.style.color = "#0f0";
+                  } catch (err) {
+                      outputDiv.innerText = err;
+                      outputDiv.style.color = "#ff5555";
+                  } finally {
+                      btn.disabled = false;
+                  }
+              };
+          }
+          main();
+---
+<!-- 1. Title Slide -->
+            <section data-background-gradient="linear-gradient(135deg, #ffffff 0%, #e6f0fa 100%)">
+                <div
+                    style="background: rgba(255,255,255,0.9); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <h1>Programming Fundamentals</h1>
+                    <h3 style="color: var(--sg-gold);">Topic B2.1</h3>
+                    <p>Variables, Substrings, Exceptions & Debugging</p>
+                    <div style="margin-top: 30px; font-size: 0.8em; color: #666;">
+                        <i class="fa-brands fa-python"></i> IB Computer Science

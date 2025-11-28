@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    {% if description %}<meta name="description" content="{{ description }}">{% endif %}
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ basePath }}css/style.css">
+    {% if extraStyles %}
+        {% for style in extraStyles %}
+            <link rel="stylesheet" href="{{ basePath }}{{ style }}">
+        {% endfor %}
+    {% endif %}
+
+    {% if headContent %}{{ headContent | safe }}{% endif %}
+</head>
+
+<body class="{{ bodyClass | default('') }}">
+    <header>
+        <div class="logo-container">
+            <a href="{{ basePath }}index.html">
+                <img src="{{ basePath }}images/Logo.png" alt="St George's Logo" class="logo-img">
+            </a>
+            <a href="{{ basePath }}index.html" style="text-decoration: none;">
+                <div class="site-title">SGSD Computer Science</div>
+            </a>
+        </div>
+        {% if backLink %}
+            <nav>
+                <a href="{{ basePath }}{{ backLink.href }}"
+                    style="text-decoration: none; color: var(--primary-color); font-weight: 600;">
+                    {% if backLink.icon %}<i class="{{ backLink.icon }}"></i> {% else %}<i class="fa-solid fa-arrow-left"></i> {% endif %}
+                    {{ backLink.label | default('Back') }}
+                </a>
+            </nav>
+        {% endif %}
+    </header>
+
+    <main class="{{ mainClass | default('') }}">
+        {% if hero %}
+            <div class="hero-text">
+                <h1 class="hero-title">{{ hero.title }}</h1>
+                {% if hero.subtitle %}
+                    <p class="hero-subtitle">{{ hero.subtitle }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% block content %}{{ content | safe }}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ currentYear }} SGSD Computer Science. All rights reserved.</p>
+    </footer>
+
+    {% if scripts %}
+        {% for script in scripts %}
+            <script src="{{ basePath }}{{ script }}"></script>
+        {% endfor %}
+    {% endif %}
+    {% if inlineScripts %}{{ inlineScripts | safe }}{% endif %}
+</body>
+
+</html>

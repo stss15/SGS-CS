@@ -1,0 +1,73 @@
+{% macro cardGrid(cards, basePath='./') %}
+<div class="arcade-grid">
+    {% for card in cards %}
+        <a href="{{ card.href }}" class="game-card">
+            {% if card.image %}
+                <img src="{{ basePath }}{{ card.image }}" alt="{{ card.alt | default(card.title) }}" class="game-thumb">
+            {% endif %}
+            <div class="game-info">
+                <h3 class="game-title">{{ card.title }}</h3>
+                {% if card.subtitle %}<p class="game-type">{{ card.subtitle }}</p>{% endif %}
+            </div>
+        </a>
+    {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro resourceGrid(items, basePath='./') %}
+<div class="resource-grid">
+    {% for item in items %}
+        {% set isProtected = item.password %}
+        <a href="{{ item.href }}" class="resource-btn" {% if item.onclick %}onclick="{{ item.onclick }}"{% endif %}
+            {% if isProtected %}data-protected-password="{{ item.password }}"{% endif %}
+            {% if item.protectedMessage %}data-protected-message="{{ item.protectedMessage }}"{% endif %}>
+            <span class="resource-number">
+                {% if item.icon %}<i class="{{ item.icon }}"></i>{% else %}{{ item.number }}{% endif %}
+            </span>
+            <div class="resource-info">
+                <span class="resource-name">{{ item.name }}</span>
+                {% if item.type %}<span class="resource-type">{{ item.type }}</span>{% endif %}
+            </div>
+            <i class="{% if isProtected %}fa-solid fa-lock{% else %}fa-solid fa-arrow-right{% endif %} resource-arrow"></i>
+        </a>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro topicSections(sections, basePath='./', wrapperClass='') %}
+<div class="papers-wrapper {{ wrapperClass }}">
+    {% for section in sections %}
+        <section class="paper-section">
+            <div class="paper-header">
+                <h2 class="paper-title">{{ section.title }}</h2>
+                {% if section.subtitle %}<p class="paper-subtitle">{{ section.subtitle }}</p>{% endif %}
+            </div>
+            <ul class="topic-list">
+                {% for topic in section.items %}
+                    <li>
+                        <a href="{{ topic.href }}" class="topic-item">
+                            <span class="topic-number">{{ topic.number }}</span>
+                            <span class="topic-name">{{ topic.name }}</span>
+                            <i class="fa-solid fa-chevron-right topic-arrow"></i>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro featureCards(cards) %}
+<div class="cards-container">
+    {% for card in cards %}
+        <a href="{{ card.href }}" class="card" {% if card.id %}id="{{ card.id }}"{% endif %}>
+            {% if card.icon %}
+                <div class="card-icon"><i class="{{ card.icon }}"></i></div>
+            {% endif %}
+            <h2 class="card-title">{{ card.title }}</h2>
+            {% if card.desc %}<p class="card-desc">{{ card.desc }}</p>{% endif %}
+        </a>
+    {% endfor %}
+</div>
+{% endmacro %}

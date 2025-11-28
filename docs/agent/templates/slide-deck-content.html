@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>St George's CS | Delivery Pedagogy Template</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js for Code -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- MASTER STYLESHEET -->
+    <link rel="stylesheet" href="slide-deck-template.css">
+</head>
+
+<body>
+
+    <!-- FIXED GLOBAL ELEMENTS -->
+    <a href="#" id="back-btn" title="Back"><i class="fa-solid fa-circle-arrow-left"></i></a>
+    <img src="../../../public/images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+
+    <!-- 
+        NAMING CONVENTION:
+        - IGCSE: "IGCSE Computer Science"
+        - IB: "IB Computer Science"
+        - KS3: "Year 7 Computer Science", "Year 8 Computer Science", or "Year 9 Computer Science"
+    -->
+    <div class="footer-text course-footer">Year X Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE (Standard Lesson Arc) -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">4.2 Memory & Storage</h1>
+                        <h3 class="sub-title">Topic 4: Hardware | IGCSE Context</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER (Mandatory Start) -->
+            <section data-background="#e6f0fa">
+                <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+                <p class="small-text">Recall previous topics before we begin.</p>
+                <div class="question-box">
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="fragment" style="margin-bottom: 20px;">
+                            1. Define 'Algorithm'.<br>
+                            <span class="fragment gold">A step-by-step set of instructions to solve a problem.</span>
+                        </li>
+                        <li class="fragment" style="margin-bottom: 20px;">
+                            2. What is the base of Hexadecimal?<br>
+                            <span class="fragment gold">Base 16.</span>
+                        </li>
+                        <li class="fragment">
+                            3. Which logic gate outputs 1 only if BOTH inputs are 1?<br>
+                            <span class="fragment gold">AND Gate.</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 3. THE HOOK (Connection) -->
+            <section>
+                <h2>The Connection</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-earth-americas"></i> Real World</h4>
+                        <p>Why does your phone slow down when you have too many apps open?</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-microchip"></i> CS Concept</h4>
+                        <p>We need to understand <strong>Primary Memory (RAM)</strong> and how the CPU uses it as a
+                            workspace.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. CONCEPT LOOP: EXPOSITION (Chunking) -->
+            <section>
+                <h2>Primary Storage</h2>
+                <p>The CPU cannot access the HDD directly. It's too slow.</p>
+
+                <div class="r-stack">
+                    <div class="fragment fade-out" data-fragment-index="1">
+                        <div class="box">
+                            <strong>1. The Bottleneck</strong><br>
+                            The CPU processes billions of instructions per second. The Hard Drive can only deliver
+                            millions.
+                        </div>
+                    </div>
+                    <div class="fragment current-visible" data-fragment-index="1">
+                        <div class="box box-blue">
+                            <strong>2. The Solution</strong><br>
+                            We need a "middle-man". Fast memory that sits close to the CPU.
+                        </div>
+                    </div>
+                    <div class="fragment" data-fragment-index="2">
+                        <div class="cols">
+                            <div class="box" style="text-align: center;">
+                                <i class="fa-solid fa-hard-drive" style="font-size: 2em; color:#999;"></i><br>
+                                HDD (Slow)
+                            </div>
+                            <div class="box box-blue" style="text-align: center;">
+                                <i class="fa-solid fa-memory gold" style="font-size: 2em;"></i><br>
+                                <strong>RAM (Fast)</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. "HIT OVER THE HEAD" DEFINITION (Explicit Instruction) -->
+            <section>
+                <h2>Core Concept</h2>
+                <div class="key-term fragment">
+                    <h3>Volatile Memory</h3>
+                    <p>Computer memory that requires power to maintain the stored information. <strong>If power is lost,
+                            the data is lost.</strong></p>
+                </div>
+                <aside class="notes">
+                    Write this down verbatim. "Volatile" comes from chemistry (evaporates easily).
+                </aside>
+            </section>
+
+            <!-- 6. VERTICAL DEEP DIVE (Differentiation/Depth) -->
+            <section>
+                <section>
+                    <h2>RAM vs ROM</h2>
+                    <p class="small-text">The two main types of Primary Memory.</p>
+                    <div class="cols">
+                        <div class="fragment box">
+                            <h4>RAM</h4>
+                            <ul>
+                                <li>Random Access Memory</li>
+                                <li>Read & Write</li>
+                                <li><strong>Volatile</strong></li>
+                            </ul>
+                        </div>
+                        <div class="fragment box">
+                            <h4>ROM</h4>
+                            <ul>
+                                <li>Read Only Memory</li>
+                                <li>Read Only (can't change)</li>
+                                <li><strong>Non-Volatile</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive:
+                            Firmware</span>
+                    </div>
+                </section>
+
+                <!-- THE VERTICAL SLIDE (vv) -->
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-layer-group"></i> Deep Dive: Firmware</h3>
+                    <p>Why do we need ROM if we can't write to it?</p>
+                    <div class="box-blue fragment">
+                        <strong>The Bootstrap Loader</strong><br>
+                        When the computer turns on, RAM is empty (volatile). The CPU needs instructions immediately. It
+                        looks to the ROM for the <strong>BIOS</strong> to start the system.
+                    </div>
+                </section>
+            </section>
+
+            <!-- 7. HINGE QUESTION (Misconception Check) -->
+            <section>
+                <h3><i class="fa-solid fa-scale-balanced"></i> Hinge Question</h3>
+                <p>You are writing a Word document but haven't saved it yet. The power cuts. What happens?</p>
+
+                <div class="r-stack">
+                    <!-- Options -->
+                    <div class="fragment fade-out" data-fragment-index="1" style="width: 100%;">
+                        <div class="box" style="cursor: pointer;">A) It is saved in ROM, so it is safe.</div>
+                        <div class="box" style="cursor: pointer;">B) It is lost because it was in RAM (Volatile).</div>
+                        <div class="box" style="cursor: pointer;">C) It is saved to the Hard Drive automatically.</div>
+                    </div>
+
+                    <!-- The Reveal -->
+                    <div class="fragment fade-in" data-fragment-index="1">
+                        <div class="question-box" style="background: var(--sg-gold);">
+                            <h1>B</h1>
+                            <p><strong>It is lost.</strong></p>
+                            <p class="small-text">Open documents live in RAM. RAM is volatile. No power = No Data.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. CODING WALKTHROUGH (Live Coding Pattern) -->
+            <section>
+                <h3>Code Walkthrough</h3>
+                <p class="small-text">Predict what happens next.</p>
+                <pre><code class="python" data-trim data-line-numbers="|1-2|4|6-7">
+score = 10
+print("Start")
+
+if score > 5:
+    print("Win")
+else:
+    print("Lose")
+                </code></pre>
+                <div class="fragment box-blue small-text">
+                    <strong>Output:</strong><br>
+                    Start<br>
+                    Win
+                </div>
+            </section>
+
+            <!-- 9. FIX THE BUG (Error Analysis) -->
+            <section>
+                <h3>Fix The Bug</h3>
+                <div class="cols">
+                    <div class="box-blue">
+                        <strong>Buggy Code</strong>
+                        <pre><code class="python" data-trim>
+count = 0
+while count < 5:
+    print(count)
+# Loop runs forever
+                        </code></pre>
+                    </div>
+                    <div class="fragment box">
+                        <strong>The Fix</strong>
+                        <pre><code class="python" data-trim>
+count = 0
+while count < 5:
+    print(count)
+    count = count + 1  # Added increment
+                        </code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 10. THINK-PAIR-SHARE (Discussion) -->
+            <section>
+                <h3><i class="fa-solid fa-comments"></i> Ethics: RAM Upgrades</h3>
+                <p class="small-text">Scenario: Apple sold MacBooks with 8GB RAM that could not be upgraded.</p>
+
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">
+                            <i class="fa-solid fa-head-side-virus" style="font-size: 2em;"></i><br>
+                            <strong>1. THINK (Silent)</strong><br>
+                            Is this "Planned Obsolescence" or just efficient engineering?
+                        </div>
+                    </div>
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box" style="background: var(--sg-gold);">
+                            <i class="fa-solid fa-people-arrows" style="font-size: 2em;"></i><br>
+                            <strong>2. PAIR (Discuss)</strong><br>
+                            Compare your view with your partner.
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="question-box"
+                            style="background: var(--bg-light); color: #333; border: 2px solid var(--sg-blue);">
+                            <i class="fa-solid fa-bullhorn" style="font-size: 2em; color: var(--sg-blue);"></i><br>
+                            <strong>3. SHARE</strong><br>
+                            Class feedback.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 11. EXIT TICKET (Plenary) -->
+            <section>
+                <h3><i class="fa-solid fa-door-open"></i> Exit Ticket</h3>
+                <div class="cols">
+                    <div class="box">
+                        <strong>1. Define</strong><br>
+                        What does "Volatile" mean in CS?
+                    </div>
+                    <div class="box">
+                        <strong>2. Distinguish</strong><br>
+                        One difference between RAM and ROM.
+                    </div>
+                </div>
+                <p class="small-text center-footer" style="position:relative; margin-top:20px;">Write on your
+                    mini-whiteboards.</p>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: false,
+            history: false,
+            slideNumber: true,
+            center: true,
+            width: 960,
+            height: '100%',
+            plugins: [RevealHighlight]
+        });
+
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+</body>
+
+</html>

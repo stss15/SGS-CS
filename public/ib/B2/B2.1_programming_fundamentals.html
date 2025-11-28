@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B2.1 Programming Fundamentals | IB Computer Science</title>
+    
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../../ib/B2/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    
+
+    <div class="reveal">
+        <div class="slides">
+            <!-- 1. Title Slide -->
+            <section data-background-gradient="linear-gradient(135deg, #ffffff 0%, #e6f0fa 100%)">
+                <div
+                    style="background: rgba(255,255,255,0.9); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <h1>Programming Fundamentals</h1>
+                    <h3 style="color: var(--sg-gold);">Topic B2.1</h3>
+                    <p>Variables, Substrings, Exceptions & Debugging</p>
+                    <div style="margin-top: 30px; font-size: 0.8em; color: #666;">
+                        <i class="fa-brands fa-python"></i> IB Computer Science
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../js/slide-deck.js"></script>
+    
+        <script>
+            // Pyodide Setup
+        async function main() {
+            let pyodide = await loadPyodide();
+            console.log("Pyodide ready");
+
+            // Expose run function globally
+            window.runPython = async function (codeId, outputId) {
+                const code = document.getElementById(codeId).value;
+                const outputDiv = document.getElementById(outputId);
+                const btn = document.querySelector(`button[onclick="runPython('${codeId}', '${outputId}')"]`);
+
+                outputDiv.innerText = "Running...";
+                outputDiv.style.color = "#aaa";
+                btn.disabled = true;
+
+                try {
+                    // Capture stdout
+                    pyodide.runPython(`
+                        import sys
+                        from io import StringIO
+                        sys.stdout = StringIO()
+                    `);
+
+                    await pyodide.runPythonAsync(code);
+
+                    let stdout = pyodide.runPython("sys.stdout.getvalue()");
+                    outputDiv.innerText = stdout || "(No output)";
+                    outputDiv.style.color = "#0f0";
+                } catch (err) {
+                    outputDiv.innerText = err;
+                    outputDiv.style.color = "#ff5555";
+                } finally {
+                    btn.disabled = false;
+                }
+            };
+        }
+        main();
+
+        </script>
+    
+</body>
+
+</html>

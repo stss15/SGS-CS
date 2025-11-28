@@ -1,0 +1,58 @@
+# KS3 Lesson Building Guide
+
+Everything for KS3 slide decks now lives in four files only:
+- `docs/agent/templates/KS3 Templates/KS3_Master_Tempalte.html` — the canonical master deck (standard arc + pattern library).
+- `docs/agent/templates/KS3 Templates/ks3-theme.css` — the only KS3-specific stylesheet (mirrored to `public/css/ks3-deck.css`).
+- `docs/agent/templates/KS3 Templates/KS3 AI Agent Guide` — this playbook.
+- `src/templates/layouts/ks3-slide.njk` — the runtime layout that pulls in the theme and optional lesson data.
+
+## Core Rules
+- Start from the master deck; never spin up new KS3 HTML or CSS files.
+- Keep the **standard arc**: Title → Recall → Concepts/Skills → Objectives → Hook → Key Definition.
+- Respect height: content must fit without scrolling; split slides if needed.
+- Images are **functional** (visual metaphor or explanation), high contrast, and include `alt`.
+- One CSS: any KS3 styling changes go in `ks3-theme.css` (then sync to `public/css/ks3-deck.css`).
+
+## Build Workflow
+1) Duplicate & rename `KS3_Master_Tempalte.html` for the lesson.
+2) Update the standard arc:
+   - Title slide `h1`/`h3`.
+   - Recall list (5 questions) + matching answer slides.
+   - Concepts & Skills two-column cards.
+   - Objectives list (bold verbs).
+   - Hook question/timer text.
+   - Key term box (single, clear definition).
+3) Phase 2 Mini Task: choose ONE widget from the library, paste into the Phase 2 slot, and edit the content.
+4) Phase 3 Main Task: fill in title, instructions, timing, grouping, and resource.
+5) Phase 4 Plenary: choose ONE plenary widget, paste into the Phase 4 slot, and edit the prompt.
+6) Final checks: view height, contrast, fragments order, image paths (`images/...`), and timers wired to the right IDs.
+
+## Slide Archetypes (copy from the master deck)
+- **Title (Bleed)**: text left, image right, image max-height 60vh, no animations.
+- **Hook / Big Question**: background image + dark overlay box (`data-background-opacity ~0.3–0.4`), optional timer bar.
+- **Core Concept**: `.key-term` box, minimal text; can sit on subtle background image.
+- **Hinge A/B**: two columns with small images (`max-height: 25–30vh`), discussion box underneath.
+- **Retrieval Stack**: overview slide with list → vertical slides for each Q/A; keep content <75vh.
+
+## Image Strategy
+- Style: concept art / visual metaphor / cinematic lighting; avoid bland stock photos.
+- Be explicit in prompts about composition and lighting.
+- Typical needs: background metaphors, concept diagrams, hinge (A vs B) comparisons.
+
+## Widget Library Reference (Phase 2)
+- MCQ Grid; Spot the Error; Ranking; True/False; Odd One Out; Before & After; Prediction; Match Pairs; Connection Finder; Debug Challenge; Understanding Scale; Two Truths & a Lie; Quick Sketch; Consequence Chain; Complete the Blank.
+
+## Plenary Library Reference (Phase 4)
+- Countdown Quiz; Headline News; One Word; Tweet; Question Generator; Connect the Dots; Crystal Ball; Elevator Pitch; Mystery Question; Reverse Engineering; Desert Island.
+
+## Technical Checklist
+- No overflow: if it scrolls, split it.
+- Contrast: light text on dark backgrounds; dark text on light backgrounds.
+- Fragments: logical reveal order, avoid over-nesting.
+- Paths: images live in `images/`; keep filenames lowercase with hyphens.
+- Timers: IDs in HTML match the function calls (e.g., `startTimer('countdown-timer', 10)`).
+
+## CSS Variables (quick reference)
+- `--sg-blue`, `--sg-gold`, `--sg-text`, `--bg-light`, `--bg-accent`, `--success`, `--error`, `--warning`/`--warning-orange`, `--purple-accent`.
+
+Troubleshooting: if the timer or a widget feels off, check that the class names and IDs match the versions in `ks3-theme.css` and that fragments are not hiding required content.

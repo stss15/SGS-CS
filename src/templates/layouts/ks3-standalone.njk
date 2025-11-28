@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- UNIFIED THEME -->
+    <link rel="stylesheet" href="{{ basePath }}css/ks3-deck.css">
+</head>
+
+<body>
+    <!-- FIXED GLOBAL ELEMENTS -->
+    <a href="{{ basePath }}{{ backHref | default('ks3/year7/unit2.html') }}" id="back-btn"><i class="fa-solid fa-circle-arrow-left"></i></a>
+    <img src="{{ basePath }}images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">{{ courseFooter }}</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">{{ lesson.title }}</h1>
+                        <h3 class="sub-title">{{ lesson.subtitle }}</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RECALL (VERTICAL STACK) -->
+            {% if lesson.recall %}
+            <section>
+                <!-- 2.0: The Overview List -->
+                <section>
+                    <h3><i class="fa-solid fa-brain"></i> {{ lesson.recall.title }}</h3>
+                    {% if lesson.recall.prompt %}
+                    <div class="box-blue">
+                        <p>{{ lesson.recall.prompt }}</p>
+                    </div>
+                    {% endif %}
+                    <ol style="font-size: 1.2em; line-height: 1.6;">
+                        {% for q in lesson.recall.questions %}
+                        <li>{{ q.question }}</li>
+                        {% endfor %}
+                    </ol>
+                    <p class="small-text" style="margin-top: 30px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check answers
+                    </p>
+                </section>
+
+                <!-- Deep Dives -->
+                {% for q in lesson.recall.questions %}
+                <section>
+                    <h3>Question {{ loop.index }}</h3>
+                    <div class="question-box">{{ q.question }}</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>{{ q.answer }}</p>
+                    </div>
+                </section>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            <!-- 3. CONCEPTS & SKILLS -->
+            {% if lesson.concept or lesson.skill %}
+            <section>
+                <h2>Concepts & Skills</h2>
+                <div class="cols">
+                    <div class="box-blue fragment fade-right">
+                        <h4><i class="{{ lesson.concept.icon | default('fa-solid fa-database') }}"></i> {{ lesson.concept.title }}</h4>
+                        <p>{{ lesson.concept.detail }}</p>
+                    </div>
+                    <div class="box fragment fade-left">
+                        <h4><i class="{{ lesson.skill.icon | default('fa-solid fa-tools') }}"></i> {{ lesson.skill.title }}</h4>
+                        <p>{{ lesson.skill.detail }}</p>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- 4. OBJECTIVES -->
+            {% if lesson.objectives %}
+            <section>
+                <h3><i class="fa-solid fa-bullseye"></i> Lesson Objectives</h3>
+                <div class="box-blue">
+                    <ul class="fa-ul" style="margin-left: 2.5em;">
+                        {% for obj in lesson.objectives %}
+                        <li class="fragment fade-up" style="margin-bottom: 20px;">
+                            <span class="fa-li"><i class="fa-solid fa-check-circle gold"></i></span>
+                            {{ obj }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- 5. THE HOOK / BIG QUESTION -->
+            {% if lesson.hook %}
+            <section data-background-color="#ffffff" style="position: relative;">
+                <div style="text-align: left; margin-top: 40px;">
+                    <h2 style="color: var(--sg-blue); margin-bottom: 20px;">{{ lesson.hook.title }}</h2>
+                    <h3 style="color: var(--sg-gold); font-size: 2em; line-height: 1.3; margin-bottom: 40px;">
+                        {{ lesson.hook.question }}
+                    </h3>
+
+                    <div class="box-blue" style="display: inline-block; padding: 20px 40px;">
+                        <p style="margin: 0; font-size: 1.2em;">
+                            <i class="fa-solid fa-comments"></i> <strong>Task:</strong> {{ lesson.hook.detail }}
+                        </p>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- CONTENT INJECTED FROM PAGE -->
+            {{ content | safe }}
+
+            <!-- 8. MAIN TASK -->
+            {% if lesson.mainTask %}
+            <section>
+                <h2><i class="fa-solid fa-pen-to-square"></i> {{ lesson.mainTask.title }}</h2>
+                <div class="box-blue">
+                    <p>{{ lesson.mainTask.overview }}</p>
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- 9. PLENARY -->
+            {% if lesson.plenary %}
+            <section>
+                <!-- Overview Slide -->
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> {{ lesson.plenary.title }}</h2>
+                    <div class="box-blue">
+                        <p>{{ lesson.plenary.prompt }}</p>
+                    </div>
+                    <ol style="font-size: 1.2em; line-height: 1.6; margin-top: 30px;">
+                        {% for q in lesson.plenary.questions %}
+                        <li>{{ q.question }}</li>
+                        {% endfor %}
+                    </ol>
+                    <p class="small-text" style="margin-top: 30px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+                
+                <!-- Deep Dive Slides -->
+                {% for q in lesson.plenary.questions %}
+                <section>
+                    <h3>Question {{ loop.index }}</h3>
+                    <div class="question-box">{{ q.question }}</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: {{ q.answer }}</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>{{ q.reason }}</p>
+                    </div>
+                </section>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: false,
+            history: false,
+            slideNumber: 'c/t',
+            showSlideNumber: 'all',
+            controls: true,
+            progress: true,
+            center: true,
+            width: 960,
+            height: 700,
+            margin: 0.04,
+            transition: 'slide',
+            backgroundTransition: 'fade',
+            autoAnimate: true,
+            autoAnimateDuration: 0.6,
+            autoAnimateEasing: 'ease-out',
+            plugins: [RevealHighlight, RevealNotes]
+        });
+
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+
+        /* --- WIDGET FUNCTIONS --- */
+        // (Including all the widget functions from L5)
+        
+        let timerInterval;
+        let isRunning = false;
+        let remainingTime = 0;
+
+        function toggleTimer() {
+            const input = document.getElementById('hook-timer');
+            const icon = document.getElementById('timer-icon');
+            const sound = document.getElementById('timer-sound');
+
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            } else {
+                if (remainingTime === 0) {
+                    const parts = input.value.split(':');
+                    const mins = parseInt(parts[0]) || 0;
+                    const secs = parseInt(parts[1]) || 0;
+                    remainingTime = (mins * 60) + secs;
+                }
+
+                if (remainingTime <= 0) {
+                    alert("Please set a time (mm:ss)!");
+                    return;
+                }
+
+                isRunning = true;
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+                input.disabled = true;
+
+                timerInterval = setInterval(() => {
+                    remainingTime--;
+                    updateDisplay(remainingTime);
+                    if (remainingTime <= 0) {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        input.disabled = false;
+                        icon.classList.remove('fa-pause');
+                        icon.classList.add('fa-play');
+                        if (sound) sound.play();
+                    }
+                }, 1000);
+            }
+        }
+
+        function updateDisplay(time) {
+            const m = Math.floor(time / 60).toString().padStart(2, '0');
+            const s = (time % 60).toString().padStart(2, '0');
+            document.getElementById('hook-timer').value = `${m}:${s}`;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            remainingTime = 0;
+            const input = document.getElementById('hook-timer');
+            const icon = document.getElementById('timer-icon');
+
+            input.value = "00:00";
+            input.disabled = false;
+            icon.classList.remove('fa-pause');
+            icon.classList.add('fa-play');
+        }
+
+        /* --- FLOATING TIMER LOGIC --- */
+        let ftInterval;
+        let ftRunning = false;
+        let ftTime = 0;
+
+        function initFloatingTimer() {
+            const minInput = document.getElementById('ft-min');
+            const secInput = document.getElementById('ft-sec');
+
+            if(!minInput || !secInput) return;
+
+            [minInput, secInput].forEach(input => {
+                input.addEventListener('focus', () => input.select());
+                input.addEventListener('change', () => {
+                    let val = parseInt(input.value) || 0;
+                    if (val < 0) val = 0;
+                    if (input.id === 'ft-sec' && val > 59) val = 59;
+                    input.value = val.toString().padStart(2, '0');
+
+                    let m = parseInt(minInput.value) || 0;
+                    let s = parseInt(secInput.value) || 0;
+                    ftTime = m * 60 + s;
+                });
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') input.blur();
+                });
+            });
+        }
+
+        function toggleTimerExpand() {
+            const widget = document.getElementById('floating-timer');
+            widget.classList.toggle('expanded');
+            const icon = widget.querySelector('.ft-toggle-btn i');
+            if (widget.classList.contains('expanded')) {
+                icon.classList.remove('fa-clock');
+                icon.classList.add('fa-chevron-left');
+            } else {
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-clock');
+            }
+        }
+
+        function toggleFloatingTimer() {
+            const btn = document.getElementById('ft-toggle');
+            const icon = btn.querySelector('i');
+
+            if (ftRunning) {
+                clearInterval(ftInterval);
+                ftRunning = false;
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            } else {
+                if (ftTime === 0 || !ftRunning) {
+                    let m = parseInt(document.getElementById('ft-min').value) || 0;
+                    let s = parseInt(document.getElementById('ft-sec').value) || 0;
+                    ftTime = m * 60 + s;
+                }
+
+                if (ftTime > 0) {
+                    ftRunning = true;
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                    ftInterval = setInterval(() => {
+                        ftTime--;
+                        if (ftTime <= 0) {
+                            clearInterval(ftInterval);
+                            ftRunning = false;
+                            ftTime = 0;
+                            icon.classList.remove('fa-pause');
+                            icon.classList.add('fa-play');
+                            try {
+                                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                                const osc = ctx.createOscillator();
+                                osc.connect(ctx.destination);
+                                osc.frequency.value = 880;
+                                osc.start();
+                                setTimeout(() => osc.stop(), 500);
+                            } catch (e) { console.log('Audio error', e); }
+                        }
+                        updateFTDisplay();
+                    }, 1000);
+                }
+            }
+        }
+
+        function resetFloatingTimer() {
+            clearInterval(ftInterval);
+            ftRunning = false;
+            ftTime = 0;
+            updateFTDisplay();
+            const icon = document.getElementById('ft-toggle').querySelector('i');
+            icon.classList.remove('fa-pause');
+            icon.classList.add('fa-play');
+        }
+
+        function updateFTDisplay() {
+            const m = Math.floor(ftTime / 60).toString().padStart(2, '0');
+            const s = (ftTime % 60).toString().padStart(2, '0');
+            document.getElementById('ft-min').value = m;
+            document.getElementById('ft-sec').value = s;
+        }
+
+        window.addEventListener('load', initFloatingTimer);
+    </script>
+
+    <!-- FLOATING TIMER WIDGET -->
+    <div id="floating-timer" class="floating-timer">
+        <button class="ft-toggle-btn" onclick="toggleTimerExpand()">
+            <i class="fa-regular fa-clock"></i>
+        </button>
+        <div class="ft-content">
+            <div class="ft-display">
+                <input type="text" id="ft-min" class="ft-input" value="00" maxlength="2">
+                <span>:</span>
+                <input type="text" id="ft-sec" class="ft-input" value="00" maxlength="2">
+            </div>
+            <div class="ft-controls">
+                <button id="ft-toggle" class="ft-action-btn primary" onclick="toggleFloatingTimer()">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <button id="ft-reset" class="ft-action-btn secondary" onclick="resetFloatingTimer()">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

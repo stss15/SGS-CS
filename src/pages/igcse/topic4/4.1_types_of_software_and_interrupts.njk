@@ -1,0 +1,425 @@
+---
+layout: layouts/slide-deck.njk
+title: "4.1 Types of Software & Interrupts | St George's CS"
+backHref: igcse/topic4/index.html
+courseFooter: "IGCSE Computer Science"
+deckScripts: |
+  // Date Script
+          const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+---
+<!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">4.1 Types of Software & Interrupts</h1>
+                        <h3 class="sub-title">Topic 4: Software | The Link Between Hardware & You</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section data-background="#e6f0fa">
+                <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+                <p class="small-text">Recall Topic 3 (Hardware) before we move on.</p>
+                <div class="question-box">
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="fragment" style="margin-bottom: 20px;">
+                            1. Which memory is volatile?<br>
+                            <span class="fragment gold">RAM (Random Access Memory)</span>
+                        </li>
+                        <li class="fragment" style="margin-bottom: 20px;">
+                            2. What device converts analogue sound to digital?<br>
+                            <span class="fragment gold">ADC (Analogue to Digital Converter)</span>
+                        </li>
+                        <li class="fragment">
+                            3. Where does the CPU fetch instructions from?<br>
+                            <span class="fragment gold">Primary Memory (RAM)</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Picture</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-microchip"></i> Hardware</h4>
+                        <p>The physical components (Engine).</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-code"></i> Software</h4>
+                        <p>The programs that control the hardware (Driver).</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="text-align:center; margin-top:20px; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> Hardware is useless without Software to tell it what to do.
+                </div>
+            </section>
+
+            <!-- 4. CONCEPT LOOP: System vs Application -->
+            <section>
+                <section>
+                    <h2>Two Families of Software</h2>
+                    <div class="cols">
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-gears"></i> System Software</h4>
+                            <p class="small-text">Programs that <strong>manage</strong> the computer's hardware and
+                                provide a platform for applications.</p>
+                            <ul class="small-text">
+                                <li>Operating System (OS)</li>
+                                <li>Utilities (Antivirus)</li>
+                                <li>Drivers</li>
+                                <li>Translators (Compilers)</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment" style="border-left: 5px solid var(--sg-gold);">
+                            <h4><i class="fa-solid fa-pen-ruler"></i> Application Software</h4>
+                            <p class="small-text">Programs that allow the <strong>user</strong> to perform specific
+                                tasks.</p>
+                            <ul class="small-text">
+                                <li>Word Processor</li>
+                                <li>Spreadsheet</li>
+                                <li>Games</li>
+                                <li>Web Browser</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Application
+                            Examples</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Application Examples -->
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-layer-group"></i> Application Software Examples</h3>
+                    <div class="cols-3">
+                        <div class="box fragment">
+                            <strong>Word Processor</strong><br>
+                            <span class="small-text">Manipulate text, format documents (Word, Docs).</span>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <strong>Spreadsheet</strong><br>
+                            <span class="small-text">Organize numbers, formulas, graphs (Excel, Sheets).</span>
+                        </div>
+                        <div class="box fragment">
+                            <strong>Database</strong><br>
+                            <span class="small-text">Store, query, and analyze data (Access, SQL).</span>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <strong>Control</strong><br>
+                            <span class="small-text">Interface with sensors to control devices.</span>
+                        </div>
+                        <div class="box fragment">
+                            <strong>Photo Editing</strong><br>
+                            <span class="small-text">Manipulate digital images (Photoshop).</span>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <strong>Video Editing</strong><br>
+                            <span class="small-text">Cut, arrange, and enhance video clips.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- HINGE QUESTION -->
+
+                <section>
+                    <div class="box-blue"
+                        style="width: 80%; margin: 0 auto; padding: 40px; background: var(--sg-blue);">
+                        <h3 style="color:white"><i class="fa-solid fa-scale-balanced"></i> Check Your Understanding</h3>
+                        <p style="color:white">A Web Browser allows you to access the internet. Which category is it?
+                        </p>
+                        <div class="r-stack">
+                            <div class="fragment fade-out" data-fragment-index="1" style="width: 100%;">
+                                <div class="cols">
+                                    <div class="box"
+                                        style="cursor: pointer; text-align: center; color: #003366; background: white;">
+                                        A) System Software</div>
+                                    <div class="box"
+                                        style="cursor: pointer; text-align: center; color: #003366; background: white;">
+                                        B) Application Software</div>
+                                </div>
+                            </div>
+                            <div class="fragment fade-in" data-fragment-index="1">
+                                <div class="question-box" style="background: var(--sg-gold); color: #003366;">
+                                    <h1>B) Application Software</h1>
+                                    <p>It is a tool you <strong>choose</strong> to use to perform a specific task
+                                        (browsing).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 5. CONCEPT LOOP: Operating System -->
+            <section>
+                <section>
+                    <h2>The Operating System (OS)</h2>
+                    <div class="key-term fragment">
+                        <h3>Operating System</h3>
+                        <p>Software running in the background that <strong>manages basic functions</strong> and provides
+                            a <strong>platform</strong> for applications.</p>
+                    </div>
+                    <div class="fragment fade-in">
+                        <p class="small-text">Examples: Windows, macOS, Linux, Android, iOS.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: OS
+                            Functions</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: OS Functions -->
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-list-check"></i> Key Functions of the OS</h3>
+                    <div class="cols-3">
+                        <div class="box fragment">
+                            <strong>1. HCI</strong><br>
+                            <span class="small-text">Human Computer Interface (GUI/CLI).</span>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <strong>2. Memory Mgmt</strong><br>
+                            <span class="small-text">Allocates RAM to programs.</span>
+                        </div>
+                        <div class="box fragment">
+                            <strong>3. Multitasking</strong><br>
+                            <span class="small-text">Shares CPU time between processes.</span>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <strong>4. Security</strong><br>
+                            <span class="small-text">Logins, passwords, permissions.</span>
+                        </div>
+                        <div class="box fragment">
+                            <strong>5. File Mgmt</strong><br>
+                            <span class="small-text">Save, delete, move files.</span>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <strong>6. Hardware</strong><br>
+                            <span class="small-text">Manages peripherals via Drivers.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: HCI Deep Dive -->
+                <section>
+                    <h3>Deep Dive: HCI</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-terminal"></i> CLI (Command Line)</h4>
+                            <ul class="small-text">
+                                <li>Type commands.</li>
+                                <li>Fast, low memory.</li>
+                                <li>Hard to learn.</li>
+                                <li>Used by technicians.</li>
+                            </ul>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-window-maximize"></i> GUI (Graphical)</h4>
+                            <ul class="small-text">
+                                <li>WIMP (Windows, Icons, Menus, Pointers).</li>
+                                <li>Easy to use (intuitive).</li>
+                                <li>Uses more memory.</li>
+                                <li>Used by everyday users.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 6. CONCEPT LOOP: Utilities -->
+            <section>
+                <h2>Utility Software</h2>
+                <p class="small-text">Programs that help manage, maintain, and control computer resources.</p>
+                <div class="cols-3">
+                    <div class="box fragment">
+                        <strong><i class="fa-solid fa-shield-virus"></i> Virus Checkers</strong><br>
+                        <span class="small-text">Scan for malware, quarantine infected files.</span>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <strong><i class="fa-solid fa-boxes-stacked"></i> Defragmentation</strong><br>
+                        <span class="small-text">Reorganize files on HDD to speed up access.</span>
+                    </div>
+                    <div class="box fragment">
+                        <strong><i class="fa-solid fa-floppy-disk"></i> Backup</strong><br>
+                        <span class="small-text">Create copies of data (Local or Cloud).</span>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <strong><i class="fa-solid fa-lock"></i> Security</strong><br>
+                        <span class="small-text">Firewalls, Encryption.</span>
+                    </div>
+                    <div class="box fragment">
+                        <strong><i class="fa-solid fa-desktop"></i> Screensavers</strong><br>
+                        <span class="small-text">Prevent screen burn (old) or lock screen (security).</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. CONCEPT LOOP: Interrupts -->
+            <section>
+                <section>
+                    <h2>Interrupts</h2>
+                    <div class="key-term fragment">
+                        <h3>Interrupt</h3>
+                        <p>A signal sent to the CPU to <strong>stop</strong> the current process and handle a
+                            high-priority task.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top: 20px;">
+                        <strong>Why?</strong> To allow multitasking and handle hardware events (e.g., printer out of
+                        paper).
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: The
+                            Process</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Interrupt Process -->
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-rotate"></i> The Interrupt Process</h3>
+                    <div class="r-stack">
+                        <div class="fragment fade-out" data-fragment-index="1">
+                            <div class="box">
+                                <strong>1. Normal Operation</strong><br>
+                                CPU is executing a program.
+                            </div>
+                        </div>
+                        <div class="fragment current-visible" data-fragment-index="1">
+                            <div class="box box-blue">
+                                <strong>2. Interrupt Signal</strong><br>
+                                A device (e.g., Printer) sends a signal.
+                            </div>
+                        </div>
+                        <div class="fragment current-visible" data-fragment-index="2">
+                            <div class="box">
+                                <strong>3. Pause</strong><br>
+                                CPU pauses current task. Saves state (registers) to stack.
+                            </div>
+                        </div>
+                        <div class="fragment current-visible" data-fragment-index="3">
+                            <div class="box box-blue">
+                                <strong>4. Service</strong><br>
+                                CPU runs the <strong>Interrupt Service Routine (ISR)</strong>.
+                            </div>
+                        </div>
+                        <div class="fragment" data-fragment-index="4">
+                            <div class="box">
+                                <strong>5. Resume</strong><br>
+                                CPU restores saved state and continues original task.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Buffers -->
+                <section>
+                    <h3>Buffers</h3>
+                    <p class="small-text">How do we handle speed differences?</p>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4>The Problem</h4>
+                            <p class="small-text">CPU is super fast. Printer is slow.</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4>The Solution: Buffer</h4>
+                            <p class="small-text">A temporary memory area. CPU fills the buffer, then goes back to work.
+                                Printer empties the buffer slowly.</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top: 20px; background: var(--sg-gold); color: white;">
+                        <strong>Link:</strong> When buffer is empty -> <strong>Interrupt</strong> sent to CPU to refill
+                        it.
+                    </div>
+                </section>
+            </section>
+
+            <!-- 8. EXIT TICKET -->
+            <section>
+                <h3><i class="fa-solid fa-rocket"></i> Quick Fire Exit Ticket</h3>
+                <div class="r-stack">
+                    <!-- Q1 -->
+                    <div class="fragment fade-out" data-fragment-index="1">
+                        <div class="box-blue">
+                            <p><strong>Q1: True or False?</strong></p>
+                            <p>"The Operating System is Application Software."</p>
+                        </div>
+                        <div class="cols" style="margin-top:20px;">
+                            <div class="box" style="text-align:center; cursor:pointer;">TRUE</div>
+                            <div class="box" style="text-align:center; cursor:pointer;">FALSE</div>
+                        </div>
+                    </div>
+                    <!-- Q1 Answer -->
+                    <div class="fragment current-visible" data-fragment-index="1">
+                        <div class="question-box" style="background: var(--sg-gold);">
+                            <h1>FALSE!</h1>
+                            <p>The OS is <strong>System Software</strong>.</p>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="fragment current-visible" data-fragment-index="2">
+                        <div class="box-blue">
+                            <p><strong>Q2: Identify the Utility</strong></p>
+                            <p>Which utility reorganizes files on the disk to speed up access?</p>
+                        </div>
+                    </div>
+                    <!-- Q2 Answer -->
+                    <div class="fragment current-visible" data-fragment-index="3">
+                        <div class="question-box" style="background: var(--sg-gold);">
+                            <h1>Defragmentation</h1>
+                            <p>It moves file blocks to be contiguous.</p>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="fragment current-visible" data-fragment-index="4">
+                        <div class="box-blue">
+                            <p><strong>Q3: Interrupts</strong></p>
+                            <p>What happens to the current task when an interrupt occurs?</p>
+                        </div>
+                    </div>
+                    <!-- Q3 Answer -->
+                    <div class="fragment" data-fragment-index="5">
+                        <div class="question-box" style="background: var(--sg-gold);">
+                            <h1>It is Paused</h1>
+                            <p>Its state is saved, the interrupt is serviced, then it resumes.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. SUMMARY -->
+            <section>
+                <h2>Summary</h2>
+                <div class="cols">
+                    <div class="box">
+                        <strong>Software Types</strong>
+                        <ul class="small-text">
+                            <li><strong>System:</strong> OS, Utilities, Drivers.</li>
+                            <li><strong>Application:</strong> Word, Games, Browser.</li>
+                        </ul>
+                    </div>
+                    <div class="box box-blue">
+                        <strong>Key Concepts</strong>
+                        <ul class="small-text">
+                            <li><strong>OS:</strong> Manages hardware & resources.</li>
+                            <li><strong>Interrupts:</strong> Signals to stop CPU.</li>
+                            <li><strong>Buffers:</strong> Temp storage for speed diffs.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <a href="index.html" style="font-size: 0.7em; color: #666; text-decoration: none;"><i
+                            class="fa-solid fa-house"></i> Return to Menu</a>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->

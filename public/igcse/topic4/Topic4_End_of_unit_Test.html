@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 4 End of Unit Test | St George's CS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --sg-blue: #003366;
+            --sg-gold: #D4AF37;
+            --sg-text: #333333;
+            --sg-light-blue: #e6f0fa;
+            --sg-grey: #f4f6f8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--sg-text);
+            background-color: #f9f9f9;
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 51, 102, 0.95);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-top: 10px solid var(--sg-gold);
+        }
+
+        .modal-title {
+            color: var(--sg-blue);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .modal-form input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .start-btn {
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .start-btn:hover {
+            background: var(--sg-gold);
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 2rem;
+            border-bottom: 5px solid var(--sg-gold);
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--sg-blue);
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-weight: 700;
+            color: var(--sg-blue);
+            border: 2px solid var(--sg-blue);
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: white;
+        }
+
+        .student-info {
+            display: none;
+            margin-top: 10px;
+            font-weight: 600;
+            color: var(--sg-blue);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 2rem;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            display: none;
+            /* Hidden until start */
+        }
+
+        /* Questions */
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .q-num {
+            font-weight: 800;
+            color: var(--sg-gold);
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .q-text {
+            font-weight: 600;
+            color: var(--sg-blue);
+            font-size: 1.05rem;
+            display: inline;
+        }
+
+        .marks {
+            float: right;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .sub-q {
+            margin-left: 20px;
+            margin-top: 15px;
+        }
+
+        .sub-label {
+            font-weight: 600;
+            color: #555;
+            margin-right: 10px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Input Areas */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: var(--sg-blue);
+            outline: none;
+            background: white;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Matching Question Styles */
+        .match-row {
+            display: grid;
+            grid-template-columns: 1fr 20px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .match-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        .match-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--sg-blue);
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Multiple Choice Styles */
+        .mcq-options {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mcq-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .mcq-label:hover {
+            background: var(--sg-light-blue);
+        }
+
+        .mcq-input {
+            margin-top: 5px;
+        }
+
+        /* Footer Controls */
+        .controls {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 3px solid var(--sg-grey);
+            display: none;
+            /* Hidden until start */
+        }
+
+        .btn {
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            background: var(--sg-gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-download {
+            background: var(--sg-gold);
+            color: var(--sg-blue);
+            display: none;
+        }
+
+        /* Print/PDF Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            header {
+                border-bottom: 2px solid black;
+            }
+
+            .btn,
+            .timer-display {
+                display: none !important;
+            }
+
+            input,
+            textarea,
+            select {
+                border: 1px solid #999 !important;
+                background: none !important;
+                color: black !important;
+            }
+
+            .match-item {
+                border: 1px solid #999;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Start Screen Modal -->
+    <div class="modal-overlay" id="startModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Topic 4 Assessment</h2>
+            <p style="margin-bottom:20px; color:#666;">Enter your details to start the 50-minute timer.</p>
+            <div class="modal-form">
+                <input type="text" id="firstName" placeholder="First Name" required>
+                <input type="text" id="surname" placeholder="Surname" required>
+                <input type="text" id="teacherName" placeholder="Teacher Name" required>
+                <button class="start-btn" onclick="startTest()">Start Test</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-content"> <!-- Wrapper for PDF generation -->
+
+        <header>
+            <h1>Topic 4: End of Unit Test</h1>
+            <p>Cambridge IGCSE Computer Science (0478)</p>
+            <div class="timer-display" id="timer">00:00</div>
+            <div class="student-info" id="studentInfoDisplay"></div>
+        </header>
+
+        <main id="test-content">
+
+            <p style="text-align:center; margin-bottom:30px; font-style:italic; color:#666;">Total Marks: 45 | Time
+                Allowed: 50 Minutes</p>
+
+            <!-- Q1: Hardware/Software Mapping (Matching - 5 Marks) -->
+            <div class="question-block">
+                <span class="q-num">1.</span>
+                <p class="q-text">Match each software item to the hardware item where it will reside.</p>
+                <span class="marks">[5]</span>
+
+                <div style="margin-top:20px;">
+                    <div class="match-row">
+                        <div class="match-item">Part of a program or OS currently in use</div>
+                        <i class="fa-solid fa-arrow-right" style="color:var(--sg-gold)"></i>
+                        <select class="match-select">
+                            <option value="" disabled selected>Select Hardware...</option>
+                            <option>CMOS</option>
+                            <option>Flash Memory</option>
+                            <option>Hard Disk Drive (HDD)</option>
+                            <option>Random Access Memory (RAM)</option>
+                        </select>
+                    </div>
+                    <div class="match-row">
+                        <div class="match-item">The actual BIOS settings</div>
+                        <i class="fa-solid fa-arrow-right" style="color:var(--sg-gold)"></i>
+                        <select class="match-select">
+                            <option value="" disabled selected>Select Hardware...</option>
+                            <option>CMOS</option>
+                            <option>Flash Memory</option>
+                            <option>Hard Disk Drive (HDD)</option>
+                            <option>Random Access Memory (RAM)</option>
+                        </select>
+                    </div>
+                    <div class="match-row">
+                        <div class="match-item">The actual BIOS software</div>
+                        <i class="fa-solid fa-arrow-right" style="color:var(--sg-gold)"></i>
+                        <select class="match-select">
+                            <option value="" disabled selected>Select Hardware...</option>
+                            <option>CMOS</option>
+                            <option>Flash Memory</option>
+                            <option>Hard Disk Drive (HDD)</option>
+                            <option>Random Access Memory (RAM)</option>
+                        </select>
+                    </div>
+                    <div class="match-row">
+                        <div class="match-item">Operating system software (stored)</div>
+                        <i class="fa-solid fa-arrow-right" style="color:var(--sg-gold)"></i>
+                        <select class="match-select">
+                            <option value="" disabled selected>Select Hardware...</option>
+                            <option>CMOS</option>
+                            <option>Flash Memory</option>
+                            <option>Hard Disk Drive (HDD)</option>
+                            <option>Random Access Memory (RAM)</option>
+                        </select>
+                    </div>
+                    <div class="match-row">
+                        <div class="match-item">Virus scanner software (stored)</div>
+                        <i class="fa-solid fa-arrow-right" style="color:var(--sg-gold)"></i>
+                        <select class="match-select">
+                            <option value="" disabled selected>Select Hardware...</option>
+                            <option>CMOS</option>
+                            <option>Flash Memory</option>
+                            <option>Hard Disk Drive (HDD)</option>
+                            <option>Random Access Memory (RAM)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q2: Utility Programs (5 Marks) -->
+            <div class="question-block">
+                <span class="q-num">2.</span>
+                <p class="q-text">Which utility programs are being described below?</p>
+                <span class="marks">[5]</span>
+
+                <div class="sub-q">
+                    <span class="sub-label">a) Software that runs in the background and checks for malware; suspect
+                        programs are quarantined and deleted if necessary. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">b) Software that rearranges data on a hard disk drive (HDD) to reduce the
+                        scattering of the data stored on the HDD. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">c) Software that manages access control and user accounts and also protects
+                        network interfaces. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">d) Program that supplies static or moving images on a monitor when the
+                        computer has been idle for a period of time. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">e) Software that communicates with the operating system and translates data
+                        into a format understood by an input/output device. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+            </div>
+
+            <!-- Q3: OS Concepts (8 Marks) -->
+            <div class="question-block">
+                <span class="q-num">3.</span>
+                <p class="q-text">Answer the following questions about Operating Systems.</p>
+                <span class="marks">[8]</span>
+
+                <div class="sub-q">
+                    <span class="sub-label">a) Describe the purpose of an operating system. [2]</span>
+                    <textarea style="min-height:60px;"></textarea>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">b) What is meant by virtual memory? [2]</span>
+                    <textarea style="min-height:60px;"></textarea>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">c) What is meant by multitasking? [2]</span>
+                    <textarea style="min-height:60px;"></textarea>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">d) Describe what an interrupt is. [2]</span>
+                    <textarea style="min-height:60px;"></textarea>
+                </div>
+            </div>
+
+            <!-- Q4: Interfaces (5 Marks) -->
+            <div class="question-block">
+                <span class="q-num">4.</span>
+                <p class="q-text">User Interfaces.</p>
+                <span class="marks">[5]</span>
+
+                <div class="sub-q">
+                    <span class="sub-label">a) Explain the differences between a Graphical User Interface (GUI) and a
+                        Command Line Interface (CLI). [3]</span>
+                    <textarea style="min-height:80px;"></textarea>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">b) Give one advantage of using a GUI interface. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">c) Give one advantage of using a CLI interface. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+            </div>
+
+            <!-- Q5: Multiple Choice (10 Marks) -->
+            <div class="question-block">
+                <span class="q-num">5.</span>
+                <p class="q-text">Select the correct answer for each statement.</p>
+                <span class="marks">[10]</span>
+
+                <div class="sub-q">
+                    <span class="sub-label">a) What is meant by the term buffer? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5a" value="A"> A) part of the RAM which is
+                            used to store the operating system in use</label>
+                        <label class="mcq-label"><input type="radio" name="q5a" value="B"> B) unused areas on a hard
+                            disk drive</label>
+                        <label class="mcq-label"><input type="radio" name="q5a" value="C"> C) an area in memory that
+                            temporarily holds data</label>
+                        <label class="mcq-label"><input type="radio" name="q5a" value="D"> D) an example of
+                            firmware</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">b) What is the function of a printer driver? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5b" value="A"> A) area of memory that holds
+                            data waiting to be printed out</label>
+                        <label class="mcq-label"><input type="radio" name="q5b" value="B"> B) software that communicates
+                            with the operating system and translates data into a format which can be printed out</label>
+                        <label class="mcq-label"><input type="radio" name="q5b" value="C"> C) an area in memory that
+                            temporarily holds data</label>
+                        <label class="mcq-label"><input type="radio" name="q5b" value="D"> D) an example of firmware
+                            used to interface with the printer</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">c) Which of these options describes a task carried out by the operating
+                        system? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5c" value="A"> A) preventing unauthorised
+                            access to a computer system</label>
+                        <label class="mcq-label"><input type="radio" name="q5c" value="B"> B) handling the HTTPS
+                            requests from a website</label>
+                        <label class="mcq-label"><input type="radio" name="q5c" value="C"> C) allocating memory to
+                            competing applications running on a computer system</label>
+                        <label class="mcq-label"><input type="radio" name="q5c" value="D"> D) booting up the computer
+                            motherboard when the computer is powered up</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">d) Which of these is the correct name for the operating system function that
+                        allows many programs to run simultaneously? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5d" value="A"> A) utility program</label>
+                        <label class="mcq-label"><input type="radio" name="q5d" value="B"> B) application
+                            package</label>
+                        <label class="mcq-label"><input type="radio" name="q5d" value="C"> C) embedded system</label>
+                        <label class="mcq-label"><input type="radio" name="q5d" value="D"> D) multitasking</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">e) Which of these is the name of a type of interface that allows the user to
+                        type in commands on a keyboard which gives the computer instructions? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5e" value="A"> A) command line interface
+                            (CLI)</label>
+                        <label class="mcq-label"><input type="radio" name="q5e" value="B"> B) graphical user interface
+                            (GUI)</label>
+                        <label class="mcq-label"><input type="radio" name="q5e" value="C"> C) touchscreen
+                            interface</label>
+                        <label class="mcq-label"><input type="radio" name="q5e" value="D"> D) drop down menu
+                            interface</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">f) Which of these descriptions is the main purpose of a GUI? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5f" value="A"> A) allows a user to directly
+                            carry out very complex tasks on a computer</label>
+                        <label class="mcq-label"><input type="radio" name="q5f" value="B"> B) the apps will run faster
+                            in a GUI environment</label>
+                        <label class="mcq-label"><input type="radio" name="q5f" value="C"> C) a GUI interface makes it
+                            much easier to use the computer</label>
+                        <label class="mcq-label"><input type="radio" name="q5f" value="D"> D) it is a type of app that
+                            allows a user to create drawings and images on the screen</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">g) Which of the following will produce a signal which is sent to the CPU to
+                        suspend its current operation? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5g" value="A"> A) bootstrap</label>
+                        <label class="mcq-label"><input type="radio" name="q5g" value="B"> B) buffer</label>
+                        <label class="mcq-label"><input type="radio" name="q5g" value="C"> C) interrupt</label>
+                        <label class="mcq-label"><input type="radio" name="q5g" value="D"> D) quarantine</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">h) On which one of the following memories are the BIOS settings stored?
+                        [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5h" value="A"> A) ROM</label>
+                        <label class="mcq-label"><input type="radio" name="q5h" value="B"> B) RAM</label>
+                        <label class="mcq-label"><input type="radio" name="q5h" value="C"> C) EEPROM</label>
+                        <label class="mcq-label"><input type="radio" name="q5h" value="D"> D) CMOS</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">i) Which one of the following statements is TRUE? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5i" value="A"> A) any device plugged into
+                            the USB port of a computer must have a unique serial number</label>
+                        <label class="mcq-label"><input type="radio" name="q5i" value="B"> B) the BIOS settings are
+                            stored in ROM so that they cannot be altered at any time by the user</label>
+                        <label class="mcq-label"><input type="radio" name="q5i" value="C"> C) interrupts from software
+                            always have a higher priority than an app currently being run on a computer</label>
+                        <label class="mcq-label"><input type="radio" name="q5i" value="D"> D) user accounts allow users
+                            to share resources, such as printers</label>
+                    </div>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">j) Which one of the following statements is FALSE? [1]</span>
+                    <div class="mcq-options">
+                        <label class="mcq-label"><input type="radio" name="q5j" value="A"> A) security management is
+                            part of a typical operating system</label>
+                        <label class="mcq-label"><input type="radio" name="q5j" value="B"> B) post-WIMP interfaces make
+                            use of the more modern optical mouse to select icons</label>
+                        <label class="mcq-label"><input type="radio" name="q5j" value="C"> C) logical errors include
+                            errors such as ‘division by zero’</label>
+                        <label class="mcq-label"><input type="radio" name="q5j" value="D"> D) printers use interrupts
+                            when they need more data to continue a printing job</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q6: Translators (6 Marks) -->
+            <div class="question-block">
+                <span class="q-num">6.</span>
+                <p class="q-text">Translators.</p>
+                <span class="marks">[6]</span>
+
+                <div class="sub-q">
+                    <span class="sub-label">a) Describe the differences between a compiler and an interpreter.
+                        [4]</span>
+                    <textarea></textarea>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">b) Give one advantage of using a compiler. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">c) Give one advantage of using an interpreter. [1]</span>
+                    <input type="text" placeholder="Answer...">
+                </div>
+            </div>
+
+            <!-- Q7: IDE (6 Marks) -->
+            <div class="question-block">
+                <span class="q-num">7.</span>
+                <p class="q-text">Integrated Development Environment (IDE).</p>
+                <span class="marks">[6]</span>
+
+                <div class="sub-q">
+                    <span class="sub-label">a) Explain what is meant by the term IDE. [2]</span>
+                    <textarea style="min-height:60px;"></textarea>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">b) Describe one feature of an IDE that helps with writing code. [2]</span>
+                    <textarea style="min-height:60px;"></textarea>
+                </div>
+                <div class="sub-q">
+                    <span class="sub-label">c) Describe one feature of an IDE that helps with finding errors. [2]</span>
+                    <textarea style="min-height:60px;"></textarea>
+                </div>
+            </div>
+
+        </main>
+
+    </div> <!-- End PDF Wrapper -->
+
+    <div class="controls" id="controls">
+        <button class="btn" id="btnSubmit" onclick="submitTest()"><i class="fa-solid fa-check-circle"></i> Finish &
+            Submit</button>
+        <button class="btn btn-download" id="btnDownload" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i>
+            Download PDF</button>
+    </div>
+
+    <script>
+        let startTime;
+        let timerInterval;
+        let timeTakenStr = "";
+        let studentDetails = {};
+
+        function startTest() {
+            const first = document.getElementById('firstName').value;
+            const surname = document.getElementById('surname').value;
+            const teacher = document.getElementById('teacherName').value;
+
+            if (!first || !surname || !teacher) {
+                alert("Please fill in all details.");
+                return;
+            }
+
+            studentDetails = { first, surname, teacher };
+
+            // Hide modal
+            document.getElementById('startModal').style.display = 'none';
+
+            // Show content
+            document.querySelector('main').style.display = 'block';
+            document.getElementById('controls').style.display = 'block';
+
+            // Update header info
+            document.getElementById('studentInfoDisplay').innerText = `Candidate: ${first} ${surname} | Teacher: ${teacher}`;
+            document.getElementById('studentInfoDisplay').style.display = 'block';
+
+            // Start Timer
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                let delta = Date.now() - startTime;
+                let seconds = Math.floor((delta / 1000) % 60);
+                let minutes = Math.floor((delta / (1000 * 60)) % 60);
+
+                let timeStr = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+                document.getElementById('timer').innerText = timeStr;
+                timeTakenStr = timeStr;
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+
+            // Disable inputs
+            document.querySelectorAll('input, textarea, select').forEach(el => el.disabled = true);
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+
+            document.getElementById('btnSubmit').style.display = 'none';
+            document.getElementById('btnDownload').style.display = 'inline-flex';
+
+            alert("Test Submitted. You may now download the PDF.");
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // PDF Config
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 20;
+            const contentWidth = pageWidth - (margin * 2);
+            let yPos = 20;
+
+            // Helper: Check Page Break
+            function checkPageBreak(heightNeeded) {
+                if (yPos + heightNeeded > pageHeight - margin) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+            }
+
+            // Helper: Add Text with Wrapping
+            function addWrappedText(text, fontSize, fontStyle, color = '#000000', indent = 0) {
+                doc.setFontSize(fontSize);
+                doc.setFont("helvetica", fontStyle);
+                doc.setTextColor(color);
+
+                const lines = doc.splitTextToSize(text, contentWidth - indent);
+                const lineHeight = fontSize * 0.5; // Approx mm
+
+                checkPageBreak(lines.length * lineHeight);
+
+                doc.text(lines, margin + indent, yPos);
+                yPos += (lines.length * lineHeight) + 2;
+            }
+
+            // 1. Load Logo
+            const logoUrl = '../../images/Logo.png';
+            try {
+                const logoData = await getBase64ImageFromUrl(logoUrl);
+                doc.addImage(logoData, 'PNG', pageWidth - 40, 10, 25, 25); // Top Right
+            } catch (e) {
+                console.warn("Logo could not be loaded", e);
+            }
+
+            // 2. Header Info
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor('#003366'); // SG Blue
+            doc.text("Topic 4: End of Unit Test", margin, yPos);
+            yPos += 10;
+
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor('#666666');
+            doc.text("Cambridge IGCSE Computer Science (0478)", margin, yPos);
+            yPos += 15;
+
+            // Student Details Box
+            doc.setDrawColor(200);
+            doc.setFillColor(245, 245, 245);
+            doc.rect(margin, yPos, contentWidth, 25, 'FD');
+
+            yPos += 7;
+            doc.setFontSize(10);
+            doc.setTextColor('#000000');
+            doc.text(`Candidate Name: ${studentDetails.first} ${studentDetails.surname}`, margin + 5, yPos);
+            doc.text(`Teacher: ${studentDetails.teacher}`, margin + 100, yPos);
+            yPos += 8;
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 5, yPos);
+            doc.text(`Time Taken: ${timeTakenStr}`, margin + 100, yPos);
+            yPos += 15; // Exit box
+
+            // 3. Iterate Questions
+            const questionBlocks = document.querySelectorAll('.question-block');
+
+            questionBlocks.forEach((block, index) => {
+                yPos += 5; // Spacing before question
+                checkPageBreak(30); // Ensure at least header fits
+
+                // Question Header
+                const qNum = block.querySelector('.q-num').innerText;
+                const qText = block.querySelector('.q-text').innerText;
+                const marks = block.querySelector('.marks').innerText;
+
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor('#003366');
+                doc.text(`${qNum} ${qText}`, margin, yPos);
+
+                // Marks aligned right
+                doc.setFont("helvetica", "italic");
+                doc.setTextColor('#666666');
+                doc.text(marks, pageWidth - margin - doc.getTextWidth(marks), yPos);
+                yPos += 8;
+
+                // Handle Question Content
+
+                // Type 1: Matching (Q1)
+                const matchRows = block.querySelectorAll('.match-row');
+                if (matchRows.length > 0) {
+                    matchRows.forEach(row => {
+                        const itemText = row.querySelector('.match-item').innerText;
+                        const selectVal = row.querySelector('select').value || "(No Answer)";
+
+                        checkPageBreak(15);
+                        doc.setFontSize(10);
+                        doc.setFont("helvetica", "normal");
+                        doc.setTextColor('#000000');
+                        doc.text(`• ${itemText}`, margin + 5, yPos);
+
+                        // Draw arrow
+                        doc.setTextColor('#D4AF37'); // Gold
+                        doc.text("->", margin + 90, yPos);
+
+                        // Answer
+                        doc.setFont("helvetica", "bold");
+                        doc.setTextColor('#003366');
+                        doc.text(selectVal, margin + 100, yPos);
+                        yPos += 7;
+                    });
+                }
+
+                // Type 2: Sub-questions (Q2, Q3, Q4, Q6, Q7)
+                const subQs = block.querySelectorAll('.sub-q');
+                if (subQs.length > 0) {
+                    subQs.forEach(sub => {
+                        const label = sub.querySelector('.sub-label').innerText;
+
+                        // Get Answer based on input type
+                        let answer = "";
+                        const input = sub.querySelector('input[type="text"]');
+                        const textarea = sub.querySelector('textarea');
+                        const radios = sub.querySelectorAll('input[type="radio"]');
+
+                        if (input) answer = input.value;
+                        else if (textarea) answer = textarea.value;
+                        else if (radios.length > 0) {
+                            // MCQ
+                            radios.forEach(r => {
+                                if (r.checked) {
+                                    // Find the label text for this radio
+                                    answer = r.parentElement.innerText.trim();
+                                }
+                            });
+                        }
+
+                        if (!answer) answer = "(No Answer Provided)";
+
+                        // Print Sub-label
+                        checkPageBreak(20);
+                        addWrappedText(label, 10, "normal", '#333333', 5);
+
+                        // Print Answer
+                        checkPageBreak(10);
+                        doc.setFontSize(10);
+                        doc.setFont("helvetica", "bold"); // Bold for student answer
+                        doc.setTextColor('#003366'); // Blue for student answer
+
+                        // Indent answer slightly
+                        const ansLines = doc.splitTextToSize(answer, contentWidth - 10);
+                        doc.text(ansLines, margin + 10, yPos);
+                        yPos += (ansLines.length * 5) + 5; // Spacing after answer
+                    });
+                }
+
+                // Divider line
+                doc.setDrawColor(230);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 5;
+            });
+
+            // Save
+            doc.save(`Topic4_Exam_${studentDetails.surname}_${studentDetails.first}.pdf`);
+        }
+
+        // Helper to load image
+        function getBase64ImageFromUrl(url) {
+            return new Promise((resolve, reject) => {
+                var img = new Image();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = () => {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    var dataURL = canvas.toDataURL("image/png");
+                    resolve(dataURL);
+                };
+                img.onerror = error => reject(error);
+                img.src = url;
+            });
+        }
+
+    </script>
+</body>
+
+</html>

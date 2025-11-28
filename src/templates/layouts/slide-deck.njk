@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ title }}</title>
+    {% if description %}<meta name="description" content="{{ description }}">{% endif %}
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="{{ basePath }}css/slide-deck.css">
+    {% if extraStyles %}
+        {% for style in extraStyles %}
+            <link rel="stylesheet" href="{{ basePath }}{{ style }}">
+        {% endfor %}
+    {% endif %}
+</head>
+
+<body>
+    <a href="{{ basePath }}{{ backHref | default('index.html') }}" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="{{ basePath }}images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    {% if courseFooter %}<div class="footer-text course-footer">{{ courseFooter }}</div>{% endif %}
+
+    <div class="reveal">
+        <div class="slides">
+            {% block content %}{{ content | safe }}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    {% if deckOptions %}<script>window.__deckOptions = {{ deckOptions | json(2) }};</script>{% endif %}
+    <script src="{{ basePath }}js/slide-deck.js"></script>
+    {% if deckScripts %}
+        <script>
+            {{ deckScripts | safe }}
+        </script>
+    {% endif %}
+</body>
+
+</html>
