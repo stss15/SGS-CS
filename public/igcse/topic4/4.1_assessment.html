@@ -822,35 +822,48 @@
         }
 
         // --- MATCHING LOGIC ---
-        let selectedDef = null;
+        let selectedDefId = null;
+        const defEls = Array.from(document.querySelectorAll('.match-def'));
+        const termEls = Array.from(document.querySelectorAll('.match-term'));
 
-        document.querySelectorAll('.match-def').forEach(item => {
-            item.addEventListener('click', function () {
-                if (this.classList.contains('match-solved')) return;
-                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('match-selected'));
-                this.classList.add('match-selected');
-                selectedDef = this;
+        function clearSelectedDef() {
+            defEls.forEach(d => d.classList.remove('match-selected'));
+            selectedDefId = null;
+        }
+
+        defEls.forEach(def => {
+            def.addEventListener('click', () => {
+                if (def.classList.contains('match-solved')) return;
+                clearSelectedDef();
+                def.classList.add('match-selected');
+                selectedDefId = def.dataset.id;
             });
         });
 
-        document.querySelectorAll('.match-term').forEach(item => {
-            item.addEventListener('click', function () {
-                if (this.classList.contains('match-solved')) return;
-                if (!selectedDef) return;
+        termEls.forEach(term => {
+            term.addEventListener('click', () => {
+                if (term.classList.contains('match-solved')) return;
+                if (!selectedDefId) return;
 
-                // Deselect other terms
-                document.querySelectorAll('.match-term').forEach(t => {
-                    if (t !== this) t.classList.remove('match-selected');
-                });
+                // Remove previous link from any def assigned to this term
+                const prevDefId = term.dataset.linkedDef;
+                if (prevDefId) {
+                    const prevDef = defEls.find(d => d.dataset.id === prevDefId);
+                    if (prevDef) prevDef.classList.remove('match-linked');
+                }
 
-                // Link visually
-                this.setAttribute('data-linked-def', selectedDef.getAttribute('data-id'));
-                this.classList.add('match-selected');
+                // Link term to selected definition
+                term.dataset.linkedDef = selectedDefId;
+                termEls.forEach(t => t.classList.remove('match-selected'));
+                term.classList.add('match-linked');
 
-                // Reset def selection state
-                selectedDef.classList.remove('match-selected');
-                selectedDef.classList.add('match-linked');
-                selectedDef = null;
+                const defEl = defEls.find(d => d.dataset.id === selectedDefId);
+                if (defEl) {
+                    defEl.classList.remove('match-selected');
+                    defEl.classList.add('match-linked');
+                }
+
+                clearSelectedDef();
             });
         });
 
@@ -937,6 +950,7 @@
                     s6++;
                 } else {
                     term.classList.remove('match-selected');
+                    term.classList.remove('match-linked');
                     term.removeAttribute('data-linked-def');
                     if (linkedId) {
                         let def = document.querySelector(`.match-def[data-id="${linkedId}"]`);
@@ -944,8 +958,8 @@
                     }
                 }
             });
-            updateStatus('q6', s6 === 5);
-            if (s6 === 5) score++;
+            updateStatus('q6', s6 === 7);
+            if (s6 === 7) score++;
 
             // Q7 Interrupt Cycle
             let s7 = 0;
@@ -1049,7 +1063,7 @@
             { id: 'q3', title: 'OS Functions', correctAnswer: 'HCI, Security, Memory Mgmt, Multitasking', explanation: 'Interfaces let users interact; security protects access; memory allocates RAM; multitasking shares CPU time.', feedback: ['Memorise core OS functions: HCI, Security, Memory, Multitasking.'] },
             { id: 'q4', title: 'USB Descriptors', correctAnswer: 'Vendor ID + device driver', explanation: 'Descriptors identify the vendor/device so the OS can load the correct driver.', feedback: ['Drivers load using device/vendor IDs.'] },
             { id: 'q5', title: 'BIOS/CMOS', correctAnswer: 'BIOS stored in EEPROM; settings in CMOS; RAM is volatile', explanation: 'BIOS boots hardware from non-volatile chip; CMOS stores config; RAM clears on power-off.', feedback: ['BIOS in ROM/EEPROM, CMOS holds settings, RAM is volatile.'] },
-            { id: 'q6', title: 'Match Components', correctAnswer: 'Correct pairs of OS services', explanation: 'Each term matches its definition (e.g., scheduler, device manager, file system, interface, security).', feedback: ['Review OS component roles (scheduler, device/file managers).'] },
+            { id: 'q6', title: 'Match Components', correctAnswer: 'All 7 term-definition pairs linked correctly', explanation: 'Each term matches its definition (e.g., bootstrap loader, printer driver, multitasking, firmware, screensaver, interrupt, buffer).', feedback: ['Review each term-definition pair and relink any mismatches.'] },
             { id: 'q7', title: 'Interrupt Cycle Order', correctAnswer: 'Signal → Save → ISR → Restore → Resume', explanation: 'CPU pauses, saves state, runs ISR, restores registers, continues previous task.', feedback: ['Practise the interrupt cycle order.'] },
             { id: 'q8', title: 'Interrupt Types', correctAnswer: 'Hardware: printer/keyboard/power; Software: divide by zero/overflow/syscall', explanation: 'Hardware interrupts come from devices; software from code/events.', feedback: ['Differentiate hardware vs software interrupts.'] },
             { id: 'q9', title: 'Software Stack Order', correctAnswer: 'Application → OS → Firmware → Hardware', explanation: 'Apps call OS services; OS uses firmware; firmware talks to hardware.', feedback: ['Remember stack order: App → OS → Firmware → HW.'] }
