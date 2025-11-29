@@ -10,9 +10,16 @@ Source lives under `src/` and the compiled site lives in `public/`. Run `npm run
 - `public/`: compiled site root and legacy static content.
   - `public/css`: global theme + variants (`style.css`, `resource-style.css`, `specification.css`, `unit.css`, `toolkit.css`, `slide-deck.css`, `ks3-deck.css`, `igcse-deck.css`).
   - `public/js`: shared behaviours (`slide-deck.js`, `site.js`, `toolkit.js`).
-  - `public/images`: logo and thumbnails.
+- `public/images`: logo and thumbnails.
 - `docs/agent`: AI-facing guides and slide/lesson templates.
 - `meta/site-manifest.json`: generated index of templated pages (paths, titles, layouts).
+
+## AI agent references
+- `docs/agent/igcse-slide-deck-agent.md`: deck workflow and structure/pedagogy pattern.
+- `docs/agent/pedagogy.md`: voice, sequencing, and modelling guidance for slide content.
+- `docs/agent/templating-guide.md`: how Nunjucks templates/macros/layouts fit together.
+- `docs/agent/build-deploy-log.md`: log every build/push to main; follow the build/deploy steps inside.
+- Edit source templates under `src/pages/...` (not the compiled `public/`) so CI/Pages stays in sync.
 
 ## Usage
 
