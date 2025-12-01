@@ -2,8 +2,9 @@
 import os
 import re
 
-# Configuration
-BASE_DIR = "/Users/StevenStewart/SGS-CSC/public/igcse"
+# Configuration - use relative path from script location for CI compatibility
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = SCRIPT_DIR  # Script is in public/igcse/
 CHAPTER_FILES_DIR = os.path.join(BASE_DIR, "chapter text files")
 
 # Regex to find definition boxes (assuming they don't have nested divs for now, or simple nesting)
