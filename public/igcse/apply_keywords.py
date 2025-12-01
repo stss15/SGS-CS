@@ -98,6 +98,8 @@ def process_html_file(file_path, keywords):
         
         return matched_text
 
+    in_title = False
+    
     for token in tokens:
         if not token:
             continue
@@ -106,11 +108,14 @@ def process_html_file(file_path, keywords):
             # It's a tag
             tag_lower = token.lower()
             
-            # Check for script/style
-            if tag_lower.startswith('<script') or tag_lower.startswith('<style'):
+            # Check for script/style/title (don't apply keywords inside these)
+            if tag_lower.startswith('<script') or tag_lower.startswith('<style') or tag_lower.startswith('<title'):
                 in_script_style = True
-            elif tag_lower.startswith('</script') or tag_lower.startswith('</style'):
+                if tag_lower.startswith('<title'):
+                    in_title = True
+            elif tag_lower.startswith('</script') or tag_lower.startswith('</style') or tag_lower.startswith('</title'):
                 in_script_style = False
+                in_title = False
             
             # Check for keyword span
             # We want to avoid wrapping inside an existing keyword span
