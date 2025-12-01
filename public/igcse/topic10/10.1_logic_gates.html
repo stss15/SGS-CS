@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>10.1 Logic Gates | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic10/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">10.1 <span class="keyword" data-def="an electronic circuit that relies on 'on/off' logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR">Logic Gates</span></h1>
+                        <h3 class="sub-title">Topic 10: Boolean Logic | The Building Blocks</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (Topic 8)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What values can a BOOLEAN store?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">TRUE or FALSE only</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> In binary, what two values are there?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">0 and 1</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do computers "think"?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Computers are just metal and silicon. They don't have brains.</p>
+                        <p class="small-text">Yet they can play chess, recognize faces, and drive cars!</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>The secret:</strong> Billions of tiny electronic switches called <span class="keyword" data-def="an electronic circuit that relies on 'on/off' logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR">logic gates</span>.</p>
+                        <p class="small-text">By combining simple ON/OFF decisions, we can do anything!</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">What is a logic gate?</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What is a <span class="keyword" data-def="an electronic circuit that relies on 'on/off' logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR">Logic Gate</span>?</h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A <span class="keyword" data-def="an electronic circuit that relies on 'on/off' logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR">logic gate</span> is an electronic circuit that takes binary inputs (0 or 1) and produces a binary output.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-right-to-bracket"></i> Inputs</h4>
+                            <p class="small-text">One or more binary values (0 or 1)</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-right-from-bracket"></i> Output</h4>
+                            <p class="small-text">A single binary value (0 or 1)</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Think of it as:</strong> A decision-maker that follows simple rules.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 THE 6 GATES
+                 ============================================ -->
+            <section>
+                <h2>The 6 <span class="keyword" data-def="an electronic circuit that relies on 'on/off' logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR">Logic Gates</span></h2>
+                <div class="cols-3" style="gap:10px;">
+                    <div class="box fragment">
+                        <h4>NOT</h4>
+                        <p class="small-text">Reverses the input</p>
+                    </div>
+                    <div class="box fragment">
+                        <h4>AND</h4>
+                        <p class="small-text">Both must be 1</p>
+                    </div>
+                    <div class="box fragment">
+                        <h4>OR</h4>
+                        <p class="small-text">Either can be 1</p>
+                    </div>
+                </div>
+                <div class="cols-3" style="gap:10px; margin-top:10px;">
+                    <div class="box box-blue fragment">
+                        <h4>NAND</h4>
+                        <p class="small-text">NOT AND</p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4>NOR</h4>
+                        <p class="small-text">NOT OR</p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4>XOR</h4>
+                        <p class="small-text">Either but not both</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 NOT GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The NOT Gate</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">The simplest gate: it <strong>reverses</strong> the input.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> An opposite day machine.</p>
+                        <p class="small-text">If you say YES (1), it says NO (0). If you say NO (0), it says YES (1).</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Expression:</strong> X = NOT A</p>
+                        <p class="small-text"><em>It's the only gate with just ONE input!</em></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>NOT Gate <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth Table</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Expression</h4>
+                            <p><code>X = NOT A</code></p>
+                            <p class="small-text">Output is opposite of input.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <table style="width:100%; font-size:1em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:10px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:10px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding:10px;">0</td>
+                                    <td style="padding:10px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:10px;">1</td>
+                                    <td style="padding:10px; background:#f8d7da; font-weight:bold;">0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Memory trick:</strong> Whatever goes in, the opposite comes out!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 AND GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The AND Gate</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Output is 1 only if <strong>BOTH</strong> inputs are 1.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> A strict parent who says:</p>
+                        <p class="small-text">"You can go out IF you've done your homework AND tidied your room."</p>
+                        <p class="small-text"><em>Both must be true!</em></p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Expression:</strong> X = A AND B</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>AND Gate <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth Table</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Expression</h4>
+                            <p><code>X = A AND B</code></p>
+                            <p class="small-text">Both must be 1 to get 1.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <table style="width:100%; font-size:1em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Memory trick:</strong> Only the last row gives 1 (when both are 1)!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 OR GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The OR Gate</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Output is 1 if <strong>EITHER</strong> input (or both) is 1.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> A relaxed parent who says:</p>
+                        <p class="small-text">"You can go out IF you've done your homework OR tidied your room."</p>
+                        <p class="small-text"><em>Either one (or both) is enough!</em></p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Expression:</strong> X = A OR B</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>OR Gate <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth Table</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Expression</h4>
+                            <p><code>X = A OR B</code></p>
+                            <p class="small-text">Either (or both) gives 1.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <table style="width:100%; font-size:1em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Memory trick:</strong> Only 0 when both are 0!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 NAND & NOR GATES
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>NAND & NOR Gates</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What's the opposite of AND and OR?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>NAND</h4>
+                            <p class="small-text"><strong>NOT AND</strong></p>
+                            <p class="small-text">Do AND, then flip the result.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>NOR</h4>
+                            <p class="small-text"><strong>NOT OR</strong></p>
+                            <p class="small-text">Do OR, then flip the result.</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth tables</span></span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>NAND <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth Table</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Expression</h4>
+                            <p><code>X = NOT (A AND B)</code></p>
+                            <p class="small-text">Opposite of AND.</p>
+                            <p class="small-text">0 only when both are 1.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <table style="width:100%; font-size:1em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>NOR <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth Table</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Expression</h4>
+                            <p><code>X = NOT (A OR B)</code></p>
+                            <p class="small-text">Opposite of OR.</p>
+                            <p class="small-text">1 only when both are 0.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <table style="width:100%; font-size:1em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 XOR GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The XOR Gate</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Output is 1 if inputs are <strong>DIFFERENT</strong>.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> A two-way light switch.</p>
+                        <p class="small-text">If both switches are the same position → light OFF.</p>
+                        <p class="small-text">If switches are different positions → light ON.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Expression:</strong> X = A XOR B</p>
+                        <p class="small-text"><strong>XOR</strong> = "Exclusive OR" – one or the other, but <em>not both</em>.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>XOR <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth Table</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Expression</h4>
+                            <p><code>X = A XOR B</code></p>
+                            <p class="small-text">Different inputs → 1</p>
+                            <p class="small-text">Same inputs → 0</p>
+                        </div>
+                        <div class="box box-blue">
+                            <table style="width:100%; font-size:1em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">0</td>
+                                    <td style="padding:8px; background:#d4edda; font-weight:bold;">1</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px;">1</td>
+                                    <td style="padding:8px; background:#f8d7da;">0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Memory trick:</strong> XOR = "eXclusive" – only one can be 1!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <table style="width:100%; font-size:0.85em; text-align:center;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Gate</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Rule</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Outputs 1 when...</th>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"><strong>NOT</strong></td>
+                            <td style="padding:6px;">Reverses</td>
+                            <td style="padding:6px;">Input is 0</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"><strong>AND</strong></td>
+                            <td style="padding:6px;">Both must be 1</td>
+                            <td style="padding:6px;">A=1 AND B=1</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"><strong>OR</strong></td>
+                            <td style="padding:6px;">Either can be 1</td>
+                            <td style="padding:6px;">A=1 OR B=1</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"><strong>NAND</strong></td>
+                            <td style="padding:6px;">NOT AND</td>
+                            <td style="padding:6px;">NOT both 1</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"><strong>NOR</strong></td>
+                            <td style="padding:6px;">NOT OR</td>
+                            <td style="padding:6px;">Both are 0</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"><strong>XOR</strong></td>
+                            <td style="padding:6px;">Different</td>
+                            <td style="padding:6px;">A ≠ B</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>A NOT gate has two inputs.</li>
+                        <li>An AND gate outputs 1 if any input is 1.</li>
+                        <li>XOR outputs 1 if the inputs are different.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">A NOT gate has two inputs.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>NOT is the only gate with just <strong>one</strong> input. It simply reverses it.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">An AND gate outputs 1 if any input is 1.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>AND needs <strong>BOTH</strong> inputs to be 1. That's OR you're thinking of!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">XOR outputs 1 if the inputs are different.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>XOR = "eXclusive OR". It outputs 1 when A ≠ B (different inputs).</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

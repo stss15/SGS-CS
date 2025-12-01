@@ -1,9 +1,17 @@
 /* ST GEORGE'S COMPUTER SCIENCE - MASTER STYLESHEET
    Combined Delivery & Interactive Pedagogy Styles
-   v1.0
+   v1.1 - Fixed viewport clipping issue
 */
 
 /* --- 1. CORE VARIABLES & HOUSE STYLE --- */
+html,
+body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 :root {
     /* Brand Colors */
     --sg-blue: #003366;
@@ -21,12 +29,25 @@
     /* Red for incorrect answers */
     --warning-orange: #f97316;
     --purple-accent: #8b5cf6;
+
+    /* Layout - Reserved space for fixed UI elements */
+    --header-reserved: 60px;  /* Space for logo and back button */
+    --footer-reserved: 55px;  /* Space for footer text and course footer */
 }
 
 /* --- 2. REVEAL.JS OVERRIDES --- */
+
+/* Critical: Constrain Reveal container to account for fixed UI elements */
 .reveal {
     color: var(--sg-text);
     font-family: 'Inter', sans-serif;
+    /* Reserve space for fixed header/footer elements */
+    position: absolute !important;
+    top: var(--header-reserved) !important;
+    bottom: var(--footer-reserved) !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: auto !important;
 }
 
 .reveal h1,
@@ -52,32 +73,49 @@
     display: flex !important;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100%;
-    height: 100%;
-    padding: clamp(1rem, 2vh, 3rem) clamp(2rem, 4vw, 6rem) !important;
+    justify-content: flex-start;
+    min-height: auto;
+    height: auto;
+    max-height: 100%;
+    padding: clamp(0.5rem, 1.5vh, 2rem) clamp(1.5rem, 3vw, 4rem) !important;
     box-sizing: border-box;
-    gap: clamp(0.6rem, 1vh, 1.2rem);
+    gap: clamp(0.4rem, 0.8vh, 1rem);
     overflow: visible !important;
 }
 
+/* Slide inner wrapper - contains actual slide content */
 .reveal .slide-inner {
     max-width: 100%;
-    max-height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: clamp(0.6rem, 1vh, 1.2rem);
+    gap: clamp(0.4rem, 0.8vh, 1rem);
+    /* Allow content to shrink to fit available space */
+    flex-shrink: 1;
 }
 
+/* AutoFit plugin styling */
 .reveal .js-autofit {
-    transform-origin: top left;
+    transform-origin: top center;
 }
 
+/* Optional scrollable mode - use sparingly */
 .reveal .slide-inner.scrollable {
     max-height: 100%;
     overflow-y: auto;
+}
+
+/* Ensure slides container respects the constrained reveal viewport */
+.reveal .slides {
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 

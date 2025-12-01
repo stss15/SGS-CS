@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2.2 Error Checking | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic2/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">2.2 Error Checking</h1>
+                        <h3 class="sub-title">Topic 2: Data Transmission | Trust but Verify</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall 2.1 (Data Transmission) before we move on.</p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What is the difference between serial and parallel transmission?</li>
+                        <li>What is an example of <span class="keyword"
+                                data-def="data that can be sent in both directions at the same time (simultaneously)">full-duplex</span>
+                            communication?</li>
+                        <li>What does USB stand for?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What is the difference between serial and parallel transmission?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Serial sends one bit at a time. Parallel sends multiple bits at once.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What is an example of <span class="keyword"
+                            data-def="data that can be sent in both directions at the same time (simultaneously)">full-duplex</span>
+                        communication?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Phone call, Internet (both ways simultaneously)</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What does USB stand for?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Universal Serial Bus</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-bug"></i> The Glitch</h4>
+                        <p>What happens if a 0 flips to a 1?</p>
+                        <p class="small-text">Interference can corrupt data during transmission.</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-magnifying-glass"></i> The Check</h4>
+                        <p>How do we know if data is corrupt?</p>
+                        <p class="small-text">We need a way to verify it arrived correctly.</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> Interference (noise) can corrupt data. We need to check it - trust but
+                    verify!
+                </div>
+            </section>
+
+            <!-- 4. PARITY CHECK -->
+            <section>
+                <section>
+                    <h2>The <span class="keyword"
+                            data-def="a bit (either 0 or 1) added to a byte of data in the most significant bit position; this ensures that the byte follows the correct even parity or odd parity protocol">Parity
+                            Bit</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How can one extra bit help us detect errors?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Simple Trick:</strong> Add an extra bit to make the total count of
+                            1s either even or odd.</p>
+                        <p class="small-text">If it doesn't match when received, we know there's an error!</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-equals"></i> Even Parity</h4>
+                            <p class="small-text">Total number of 1s must be <strong>Even</strong></p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Example:</strong> If 3 ones, add a 1
+                                (Total 4 - even!)</p>
+                            <p class="small-text">If 4 ones, add a 0 (Total 4 - already even!)</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like checking if a number is divisible by
+                                    2.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-not-equal"></i> Odd Parity</h4>
+                            <p class="small-text">Total number of 1s must be <strong>Odd</strong></p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Example:</strong> If 3 ones, add a 0
+                                (Total 3 - odd!)</p>
+                            <p class="small-text">If 4 ones, add a 1 (Total 5 - odd!)</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Opposite of even - must end in odd
+                                    count.</em></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: The Parity
+                            Block</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Parity Check</h3>
+                    <img src="2.2 images/parity check.png" class="r-stretch" alt="Parity Check Example"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: Parity Block -->
+                <section data-background="#f4f6f8">
+                    <h3>The <span class="keyword"
+                            data-def="a horizontal and vertical parity check on a block of data being transmitted">Parity
+                            Block</span></h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">What if two bits flip? Simple parity fails!</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-exclamation-triangle"></i> Simple Parity Problem</h4>
+                            <p class="small-text"><strong>The Flaw:</strong> If 2 bits flip, the check passes!</p>
+                            <p class="small-text" style="margin-top:10px;">Example: 3 ones → 2 bits flip → 1 one (still
+                                odd!)</p>
+                            <p class="small-text"><strong>Error not detected.</strong></p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like two wrongs making a right - the
+                                    count still matches!</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-check-double"></i> <span class="keyword"
+                                    data-def="a horizontal and vertical parity check on a block of data being transmitted">Parity
+                                    Block</span> Solution</h4>
+                            <p class="small-text">Arranging data in a <strong>grid</strong></p>
+                            <p class="small-text" style="margin-top:10px;">Checking rows <strong>AND</strong> columns
+                            </p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Benefit:</strong> Can identify
+                                exactly <em>which</em> bit flipped</p>
+                            <p class="small-text">By cross-referencing row and column, we can <strong>correct</strong>
+                                it!</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like coordinates on a map - row and
+                                    column pinpoint the error.</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Parity Block</h3>
+                <img src="2.2 images/parity block.png" class="r-stretch" alt="Parity Block Example"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 5. CHECKSUM -->
+            <section>
+                <h2>The <span class="keyword"
+                        data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">Checksum</span>
+                </h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">How can we use math to verify data integrity?</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Analogy:</strong> Like a receipt total. If the numbers don't add up,
+                        something's wrong!</p>
+                </div>
+                <div class="r-stack fragment" style="margin-top:20px;">
+                    <div class="fragment fade-in-then-out">
+                        <div class="box">
+                            <strong><i class="fa-solid fa-calculator"></i> 1. Calculate</strong><br>
+                            <p class="small-text" style="margin-top:10px;">Sender calculates a value from the data
+                                (using math).</p>
+                            <p class="small-text"><em>Like adding up all the numbers on a receipt.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in-then-out">
+                        <div class="box box-blue">
+                            <strong><i class="fa-solid fa-paper-plane"></i> 2. Send</strong><br>
+                            <p class="small-text" style="margin-top:10px;">Sends data + <span class="keyword"
+                                    data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">checksum</span>
+                                value.</p>
+                            <p class="small-text"><em>Like sending the receipt with the total.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="box">
+                            <strong><i class="fa-solid fa-check-double"></i> 3. Verify</strong><br>
+                            <p class="small-text" style="margin-top:10px;">Receiver recalculates the <span
+                                    class="keyword"
+                                    data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">checksum</span>.
+                            </p>
+                            <p class="small-text">If values match <i class="fa-solid fa-check green"></i> OK</p>
+                            <p class="small-text">If not <i class="fa-solid fa-xmark red"></i> Error</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like checking if your calculation matches
+                                    the receipt total.</em></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Real-World Use:</strong> Credit Cards, ISBNs, File downloads (to
+                        verify file integrity)</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Check Digits</h3>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text">Used in barcodes (ISBN, EAN) to verify data entry.</p>
+                </div>
+                <img src="2.2 images/check digit.png" class="r-stretch" alt="Check Digit Example"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 20px;">
+            </section>
+
+            <!-- 6. ECHO CHECK & ARQ -->
+            <section>
+                <section>
+                    <h2>Other Methods</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What if we just ask "did you get that?"</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-rotate-left"></i> <span class="keyword"
+                                    data-def="a method used to check if data has been transferred correctly; data is sent to a receiver and then immediately sent back to the sender; the sender then checks if the received data matches the sent data">Echo
+                                    Check</span></h4>
+                            <p class="small-text">Receiver sends the data <em>back</em> to the sender</p>
+                            <p class="small-text">Sender compares original with echo</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Problem:</strong> Inefficient
+                                (doubles the data sent)</p>
+                            <p class="small-text"><em>Like repeating everything you say - wastes bandwidth.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-question"></i> ARQ</h4>
+                            <p class="small-text"><strong>Automatic Repeat Request</strong></p>
+                            <p class="small-text" style="margin-top:10px;">"Did you get that?"</p>
+                            <p class="small-text">More efficient - just sends a confirmation, not the whole message</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a simple "yes" or "no"
+                                    response.</em></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: ARQ</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Echo Check</h3>
+                    <img src="2.2 images/echo check.png" class="r-stretch" alt="Echo Check Process"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: ARQ -->
+                <section data-background="#f4f6f8">
+                    <h3>ARQ (Automatic Repeat Request)</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">How does ARQ automatically handle errors?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-check"></i> 1. <span class="keyword"
+                                    data-def="a message sent to the receiver indicating that data has been received correctly (used in the ARQ error detection method)">Acknowledgement</span>
+                                (ACK)</h4>
+                            <p class="small-text">Receiver confirms receipt</p>
+                            <p class="small-text" style="margin-top:10px;">Sends a small "ACK" message back</p>
+                            <p class="small-text"><em>Like saying "got it!" after receiving a message.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-clock"></i> 2. <span class="keyword"
+                                    data-def="the time interval allowed to elapse before an acknowledgement is received (in the ARQ error detection method)">Timeout</span>
+                            </h4>
+                            <p class="small-text">Sender waits for ACK</p>
+                            <p class="small-text" style="margin-top:10px;">If no ACK received in time,
+                                <strong>Resend</strong></p>
+                            <p class="small-text"><em>Like waiting for a reply - if no answer, ask again!</em></p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Automatic:</strong> The system
+                                handles this without human intervention.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>ARQ Process</h3>
+                <img src="2.2 images/arq.png" class="r-stretch" alt="ARQ Process"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 6. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"A <span class="keyword"
+                                data-def="a method used to check if data has been transferred correctly; it makes use of even parity (an even number of 1-bits) or odd parity (an odd number of 1-bits)">parity
+                                check</span> can detect if 2 bits flip."</li>
+                        <li>"A <span class="keyword"
+                                data-def="a horizontal and vertical parity check on a block of data being transmitted">parity
+                                block</span> check can correct errors."</li>
+                        <li>"ARQ relies on the receiver sending the data back."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"A <span class="keyword"
+                            data-def="a method used to check if data has been transferred correctly; it makes use of even parity (an even number of 1-bits) or odd parity (an odd number of 1-bits)">parity
+                            check</span> can detect if 2 bits flip."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It will still look even/odd (e.g. two 0s become two 1s, count increases by 2, parity remains
+                            same).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"A <span class="keyword"
+                            data-def="a horizontal and vertical parity check on a block of data being transmitted">parity
+                            block</span> check can correct errors."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: True</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>By cross-referencing row and column, the exact bad bit is found.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"ARQ relies on the receiver sending the data back."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>That's <span class="keyword"
+                                data-def="a method used to check if data has been transferred correctly; data is sent to a receiver and then immediately sent back to the sender; the sender then checks if the received data matches the sent data">Echo
+                                Check</span>. ARQ sends an <span class="keyword"
+                                data-def="a message sent to the receiver indicating that data has been received correctly (used in the ARQ error detection method)">Acknowledgement</span>
+                            (ACK).</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

@@ -87,11 +87,13 @@
         controls: true,
         progress: true,
         center: true,
-        margin: 0.06,
+        // Increased margin to create space for fixed header/footer elements
+        // This tells Reveal to leave space around slides
+        margin: 0.08,
         width: 1600,
         height: 900,
-        minScale: 0.5,
-        maxScale: 1.5,
+        minScale: 0.15,
+        maxScale: 1.2,
         transition: 'slide',
         backgroundTransition: 'fade',
         autoAnimate: true,
@@ -122,4 +124,67 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         dateEl.innerText = new Date().toLocaleDateString('en-GB', options);
     }
+})();
+
+/* --- INTERACTIVE KEYWORDS MODAL LOGIC --- */
+(function () {
+    // 1. Inject Modal HTML if not present
+    if (!document.getElementById('keyword-modal')) {
+        const modalHTML = `
+            <div id="keyword-modal">
+                <div id="keyword-modal-overlay"></div>
+                <div id="keyword-modal-content">
+                    <button id="keyword-modal-close"><i class="fa-solid fa-times"></i></button>
+                    <h3 id="keyword-modal-title"></h3>
+                    <div id="keyword-modal-def"></div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    const modal = document.getElementById('keyword-modal');
+    const titleEl = document.getElementById('keyword-modal-title');
+    const defEl = document.getElementById('keyword-modal-def');
+    const closeBtn = document.getElementById('keyword-modal-close');
+    const overlay = document.getElementById('keyword-modal-overlay');
+
+    // 2. Open Modal Function
+    function openModal(keyword, definition) {
+        titleEl.textContent = keyword;
+        defEl.textContent = definition;
+        modal.classList.add('active');
+        // Blur the main content
+        const reveal = document.querySelector('.reveal');
+        if (reveal) reveal.style.filter = 'blur(5px)';
+    }
+
+    // 3. Close Modal Function
+    function closeModal() {
+        modal.classList.remove('active');
+        // Unblur
+        const reveal = document.querySelector('.reveal');
+        if (reveal) reveal.style.filter = 'none';
+    }
+
+    // 4. Event Listeners
+    // Use delegation for keywords (as they might be dynamically added or inside slides)
+    document.body.addEventListener('click', function (e) {
+        if (e.target.classList.contains('keyword')) {
+            const keyword = e.target.textContent;
+            // Use data-def attribute, fallback to text content if missing (shouldn't happen)
+            const definition = e.target.getAttribute('data-def') || "No definition found.";
+            openModal(keyword, definition);
+        }
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
 })();

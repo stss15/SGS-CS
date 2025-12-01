@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7.3 Decomposition and Algorithms | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic7/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">7.3 Decomposition and <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span></h1>
+                        <h3 class="sub-title">Topic 7: <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span> Design and Problem Solving</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (7.1-7.2)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is <span class="keyword" data-def="a method of designing a solution in which the problem is broken down into its major sub-systems, each of which is then further broken down into its major sub-systems, and so on">Top-Down Design</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Breaking a big problem into smaller <span class="keyword" data-def="a smaller system that is part of the larger computer system">sub-systems</span></p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What are the 4 parts of any sub-system?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);"><span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span>, <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span>, <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span>, <span class="keyword" data-def="data values already held by the system before it starts its operation; data values held by the system after it stops its operation">Storage</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How would you teach a robot to make tea?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">A robot doesn't know what "make tea" means. You need to give <strong>exact, step-by-step</strong> instructions.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text">Those step-by-step instructions are called an <strong><span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span></strong>.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Let's define it properly</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What is an <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span>?</h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> An <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> is an <strong>ordered set of steps</strong> to solve a problem.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-list-ol"></i> Ordered</h4>
+                            <p class="small-text">Steps must be in a specific sequence</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-bullseye"></i> Precise</h4>
+                            <p class="small-text">No ambiguity – each step is clear</p>
+                        </div>
+                        <div class="box">
+                            <h4><i class="fa-solid fa-flag-checkered"></i> Finite</h4>
+                            <p class="small-text">It must eventually <strong>end</strong></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 THE TEA ALGORITHM
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Example: The Tea <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Step-by-step instructions for making tea</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Watch each step</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Building the <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span></h3>
+                    <div class="box" style="text-align:left; font-family:monospace; line-height:1.8; padding:20px;">
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">1.</span> Fill kettle with water</p>
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">2.</span> Turn kettle on</p>
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">3.</span> Wait until water boils</p>
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">4.</span> Put teabag in cup</p>
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">5.</span> Pour water into cup</p>
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">6.</span> Wait 2 minutes</p>
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">7.</span> Remove teabag</p>
+                        <p class="fragment"><span style="color:var(--primary-blue); font-weight:bold;">8.</span> Add milk (if wanted)</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Why Order Matters</h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-check" style="color:green;"></i> Correct Order</h4>
+                            <p class="small-text">1. Put teabag in cup</p>
+                            <p class="small-text">2. Pour hot water</p>
+                            <p class="small-text">3. Remove teabag</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-times" style="color:red;"></i> Wrong Order</h4>
+                            <p class="small-text">1. Remove teabag</p>
+                            <p class="small-text">2. Pour hot water</p>
+                            <p class="small-text">3. Put teabag in cup</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key Point:</strong> <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span> must be in the <strong>correct sequence</strong> to work!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 DECOMPOSITION IN ALGORITHMS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be subdivided into even smaller parts that can be solved more easily">Decomposition</span> in <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What if one step is too complex?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Example:</strong> "Fill kettle with water" is actually multiple steps:</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <ol class="small-text">
+                            <li>Pick up kettle</li>
+                            <li>Take to tap</li>
+                            <li>Open lid</li>
+                            <li>Turn on tap</li>
+                            <li>Wait until full</li>
+                            <li>Turn off tap</li>
+                            <li>Close lid</li>
+                        </ol>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">This is <span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be subdivided into even smaller parts that can be solved more easily">Decomposition</span></span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>When to Decompose</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Rule of Thumb:</strong> If a step could be misunderstood or needs sub-steps, <strong>break it down</strong>.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-circle-check" style="color:green;"></i> Simple Enough</h4>
+                            <p class="small-text">"Turn on kettle"</p>
+                            <p class="small-text"><em>Clear, single action</em></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-circle-xmark" style="color:orange;"></i> Needs Decomposition</h4>
+                            <p class="small-text">"Make breakfast"</p>
+                            <p class="small-text"><em>Too vague, many sub-tasks</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 EXPLAINING ALGORITHMS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Explaining <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Can you describe what this does in plain English?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">Total ← 0
+INPUT Number1
+INPUT Number2
+Total ← Number1 + Number2
+OUTPUT Total</code></pre>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Let's break it down</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Step-by-Step Explanation</h3>
+                    <table style="width:100%; font-size:0.9em;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:10px;">Line</th>
+                            <th style="background:var(--primary-blue); color:white; padding:10px;">What it does</th>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:10px; font-family:monospace;">Total ← 0</td>
+                            <td style="padding:10px;">Create a storage space called Total, start at 0</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:10px; font-family:monospace;">INPUT Number1</td>
+                            <td style="padding:10px;">Ask the user to enter the first number</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:10px; font-family:monospace;">INPUT Number2</td>
+                            <td style="padding:10px;">Ask the user to enter the second number</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:10px; font-family:monospace;">Total ← Number1 + Number2</td>
+                            <td style="padding:10px;">Add both numbers and store in Total</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:10px; font-family:monospace;">OUTPUT Total</td>
+                            <td style="padding:10px;">Display the result to the user</td>
+                        </tr>
+                    </table>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Purpose:</strong> This <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> adds two numbers and shows the result.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 A MORE COMPLEX EXAMPLE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>A Bigger Example</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What does this <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> do?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">Total ← 0
+FOR Count ← 1 TO 5
+    INPUT Mark
+    Total ← Total + Mark
+NEXT Count
+Average ← Total / 5
+OUTPUT Average</code></pre>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Break it down</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Explanation</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-play"></i> Setup</h4>
+                            <p class="small-text"><code>Total ← 0</code></p>
+                            <p class="small-text">Start with an empty total</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-repeat"></i> Loop</h4>
+                            <p class="small-text"><code>FOR Count ← 1 TO 5</code></p>
+                            <p class="small-text">Repeat 5 times</p>
+                        </div>
+                    </div>
+                    <div class="cols" style="margin-top:10px;">
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-plus"></i> Inside Loop</h4>
+                            <p class="small-text"><code>INPUT Mark</code></p>
+                            <p class="small-text"><code>Total ← Total + Mark</code></p>
+                            <p class="small-text">Get a mark and add it to Total</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-divide"></i> After Loop</h4>
+                            <p class="small-text"><code>Average ← Total / 5</code></p>
+                            <p class="small-text"><code>OUTPUT Average</code></p>
+                            <p class="small-text">Calculate and show average</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Purpose:</strong> Input 5 marks, calculate and display the average.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 INPUTS, PROCESSES, OUTPUTS
+                 ============================================ -->
+            <section>
+                <h2>Identifying <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span>, <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span>, <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span></h2>
+                <div class="box" style="margin-top:20px;">
+                    <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">Total ← 0
+FOR Count ← 1 TO 5
+    INPUT Mark
+    Total ← Total + Mark
+NEXT Count
+Average ← Total / 5
+OUTPUT Average</code></pre>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span></h4>
+                        <p class="small-text">Mark (entered 5 times)</p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4><span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span></h4>
+                        <p class="small-text">Add marks together</p>
+                        <p class="small-text">Divide by 5</p>
+                    </div>
+                    <div class="box">
+                        <h4><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span></h4>
+                        <p class="small-text">Average</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 YOUR TURN
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-lightbulb"></i> Your Turn</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Explain what this <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> does:</p>
+                    </div>
+                    <div class="box" style="margin-top:20px;">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">INPUT Temperature
+IF Temperature > 30 THEN
+    OUTPUT "It's hot!"
+ELSE
+    OUTPUT "It's not hot"
+ENDIF</code></pre>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Check your answer</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Answer</h3>
+                    <div class="box box-blue">
+                        <ol class="small-text" style="line-height:1.8;">
+                            <li><strong>INPUT Temperature</strong> – Ask user to enter a temperature</li>
+                            <li><strong>IF Temperature > 30</strong> – Check if it's above 30</li>
+                            <li><strong>THEN OUTPUT "It's hot!"</strong> – If yes, display "It's hot!"</li>
+                            <li><strong>ELSE OUTPUT "It's not hot"</strong> – If no, display "It's not hot"</li>
+                        </ol>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Purpose:</strong> Get a temperature and tell the user if it's hot (above 30°) or not.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Input</span></h4>
+                            <p class="small-text">Temperature</p>
+                        </div>
+                        <div class="box">
+                            <h4><span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Process</span></h4>
+                            <p class="small-text">Compare to 30</p>
+                        </div>
+                        <div class="box">
+                            <h4><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Output</span></h4>
+                            <p class="small-text">A message</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:1em; line-height:1.8;">
+                        <li class="fragment">An <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> is an <strong>ordered set of steps</strong> to solve a problem</li>
+                        <li class="fragment"><span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span> must be <strong>precise</strong>, <strong>ordered</strong>, and <strong>finite</strong></li>
+                        <li class="fragment">Use <span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be subdivided into even smaller parts that can be solved more easily">decomposition</span> to break complex steps into simpler ones</li>
+                        <li class="fragment">Always identify the <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span>, <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span>, and <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span></li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>The order of steps in an <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> doesn't matter.</li>
+                        <li>An <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> must eventually stop.</li>
+                        <li><span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be subdivided into even smaller parts that can be solved more easily">Decomposition</span> means making steps more complex.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">The order of steps in an <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> doesn't matter.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span> must be <strong>ordered</strong> – the sequence of steps is crucial!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">An <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> must eventually stop.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span> must be <strong>finite</strong> – they must reach an end.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box"><span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be subdivided into even smaller parts that can be solved more easily">Decomposition</span> means making steps more complex.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be subdivided into even smaller parts that can be solved more easily">Decomposition</span> means <strong>breaking down</strong> complex steps into simpler, more manageable ones.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>
+
+

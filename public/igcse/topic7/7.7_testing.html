@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7.7 Testing | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic7/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">7.7 <span class="keyword" data-def="part of the program development life cycle; systematic checks done on a program to make sure that it works under all conditions">Testing</span></h1>
+                        <h3 class="sub-title">Choosing the Right Test Data</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (7.6)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is <span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">validation</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Automatic checks that data is reasonable</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> Name 2 <span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">validation</span> checks.</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);"><span class="keyword" data-def="a validation check carried out by a program that ensures data is within a given range or set of values">Range</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures data contains a specific number of characters">Length</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures data is of a specific data type">Type</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures some data has been entered into a field">Presence</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures data conforms to a specific pattern or layout">Format</span>, <span class="keyword" data-def="a final digit in a code used to check the other digits are correct; this can be calculated using a program">Check Digit</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Why do car companies crash their own cars?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">They're not trying to destroy them – they're <strong>testing</strong> them!</p>
+                        <p class="small-text">They test with normal driving, extreme speeds, and edge cases.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Same with software:</strong> We need to test with different types of data to make sure our program works in ALL situations.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Four types of test data</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Types of Test Data</h3>
+                    <div class="cols-2" style="gap:15px;">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-check" style="color:green;"></i> <span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">Normal Data</span></h4>
+                            <p class="small-text">Typical, expected data</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-times" style="color:red;"></i> <span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">Abnormal Data</span></h4>
+                            <p class="small-text">Data that should be rejected</p>
+                        </div>
+                    </div>
+                    <div class="cols-2" style="gap:15px; margin-top:15px;">
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-arrows-left-right" style="color:orange;"></i> <span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme Data</span></h4>
+                            <p class="small-text">At the very edges of valid</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-border-all" style="color:purple;"></i> <span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary Data</span></h4>
+                            <p class="small-text">Right at the boundary</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 SCENARIO
+                 ============================================ -->
+            <section>
+                <h2>Let's Use an Example</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">A program accepts exam marks from 0 to 100</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <pre style="font-size:1em; margin:0;"><code class="language-plaintext">INPUT Mark
+IF Mark >= 0 AND Mark <= 100 THEN
+    OUTPUT "Valid mark"
+ELSE
+    OUTPUT "Invalid mark"
+ENDIF</code></pre>
+                </div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p class="small-text">What test data should we use to test this properly?</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 NORMAL DATA
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">Normal Data</span></h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">Typical data that <strong>should be accepted</strong></p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4>Definition</h4>
+                        <p class="small-text"><span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">Normal data</span> is typical, sensible data that the program should accept and process correctly.</p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4>Examples (0-100)</h4>
+                        <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 45</p>
+                        <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 73</p>
+                        <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 50</p>
+                        <p class="small-text">All within the valid range</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 ABNORMAL DATA
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">Abnormal Data</span></h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">Data that <strong>should be rejected</strong></p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4>Definition</h4>
+                        <p class="small-text"><span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">Abnormal data</span> (also called erroneous data) is data the program should NOT accept.</p>
+                        <p class="small-text"><em>The program should reject it without crashing!</em></p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4>Examples (0-100)</h4>
+                        <p class="small-text"><i class="fa-solid fa-times" style="color:red;"></i> -5 (below range)</p>
+                        <p class="small-text"><i class="fa-solid fa-times" style="color:red;"></i> 150 (above range)</p>
+                        <p class="small-text"><i class="fa-solid fa-times" style="color:red;"></i> "fifty" (wrong type)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 EXTREME DATA
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme Data</span></h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">Data at the <strong>edges</strong> of valid range (but still valid)</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4>Definition</h4>
+                        <p class="small-text"><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme data</span> is at the very limits of what's accepted.</p>
+                        <p class="small-text"><em>Tests the edges of your validation.</em></p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4>Examples (0-100)</h4>
+                        <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 0 (minimum valid)</p>
+                        <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 100 (maximum valid)</p>
+                        <p class="small-text">Both should be accepted!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 BOUNDARY DATA
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary Data</span></h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">Data <strong>right at the boundary</strong> between valid and invalid</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4>Definition</h4>
+                        <p class="small-text"><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary data</span> tests the exact point where data changes from valid to invalid.</p>
+                        <p class="small-text"><em>Always test in pairs: one that passes, one that fails.</em></p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4>Examples (0-100)</h4>
+                        <p class="small-text"><strong>Lower boundary:</strong></p>
+                        <p class="small-text"><i class="fa-solid fa-times" style="color:red;"></i> -1 (just below)</p>
+                        <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 0 (just passes)</p>
+                        <p class="small-text"><strong>Upper boundary:</strong></p>
+                        <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 100 (just passes)</p>
+                        <p class="small-text"><i class="fa-solid fa-times" style="color:red;"></i> 101 (just above)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 VISUAL NUMBER LINE
+                 ============================================ -->
+            <section>
+                <h2>Visualising Test Data</h2>
+                <div class="box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Mark must be 0-100:</strong></p>
+                </div>
+                <div style="text-align:center; margin-top:30px;">
+                    <pre style="font-size:0.85em; background:#fff; padding:20px; border-radius:8px; display:inline-block;">
+                <span style="color:red;">Abnormal</span>  │  <span style="color:green;">Valid Range</span>  │  <span style="color:red;">Abnormal</span>
+                           │                │
+    ◄────────────┼────────────────┼────────────►
+                 │                │
+   -5   <span style="color:purple;">-1  0</span>          50         <span style="color:purple;">100  101</span>   150
+         │   │                      │    │
+    <span style="color:purple;">Boundary</span>   <span style="color:orange;">Extreme</span>             <span style="color:orange;">Extreme</span>  <span style="color:purple;">Boundary</span>
+                </pre>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong><span style="color:green;">Normal:</span></strong> 45, 73, 50</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong><span style="color:red;">Abnormal:</span></strong> -5, 150, "text"</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong><span style="color:orange;">Extreme:</span></strong> 0, 100</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong><span style="color:purple;">Boundary:</span></strong> -1/0, 100/101</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TEST TABLE
+                 ============================================ -->
+            <section>
+                <h2>Test Data Table</h2>
+                <div class="box" style="margin-top:20px;">
+                    <p class="small-text">For the rule: Mark must be 0-100</p>
+                </div>
+                <table style="width:100%; font-size:0.85em; margin-top:20px;">
+                    <tr>
+                        <th style="background:var(--primary-blue); color:white; padding:8px;">Type</th>
+                        <th style="background:var(--primary-blue); color:white; padding:8px;">Test Data</th>
+                        <th style="background:var(--primary-blue); color:white; padding:8px;">Expected Result</th>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">Normal</span></td>
+                        <td style="padding:8px;">45</td>
+                        <td style="padding:8px; color:green;">Accepted ✓</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">Abnormal</span></td>
+                        <td style="padding:8px;">-5, 150</td>
+                        <td style="padding:8px; color:red;">Rejected ✗</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme</span></td>
+                        <td style="padding:8px;">0, 100</td>
+                        <td style="padding:8px; color:green;">Accepted ✓</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary</span></td>
+                        <td style="padding:8px;">-1, 0, 100, 101</td>
+                        <td style="padding:8px;">-1 ✗, 0 ✓, 100 ✓, 101 ✗</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- ============================================
+                 YOUR TURN
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-lightbulb"></i> Your Turn</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">A password must be 8-20 characters long.</p>
+                    </div>
+                    <div class="box" style="margin-top:20px;">
+                        <p class="small-text">Give examples of:</p>
+                        <ul class="small-text">
+                            <li><span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">Normal</span> data</li>
+                            <li><span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">Abnormal</span> data</li>
+                            <li><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme</span> data</li>
+                            <li><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary</span> data</li>
+                        </ul>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Check answers</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Answers</h3>
+                    <table style="width:100%; font-size:0.85em;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Type</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Example</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Why?</th>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">Normal</span></td>
+                            <td style="padding:8px;">12 characters</td>
+                            <td style="padding:8px;">Typical length, should work</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">Abnormal</span></td>
+                            <td style="padding:8px;">3 characters, 25 characters</td>
+                            <td style="padding:8px;">Too short / too long</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme</span></td>
+                            <td style="padding:8px;">8 characters, 20 characters</td>
+                            <td style="padding:8px;">Min and max valid lengths</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary</span></td>
+                            <td style="padding:8px;">7/8 and 20/21 characters</td>
+                            <td style="padding:8px;">Just below/at each limit</td>
+                        </tr>
+                    </table>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:0.95em; line-height:1.6;">
+                        <li class="fragment"><span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">Normal</span> = Typical data that <strong>should work</strong></li>
+                        <li class="fragment"><span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">Abnormal</span> = Data that should be <strong>rejected</strong></li>
+                        <li class="fragment"><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme</span> = At the <strong>very edges</strong> of valid (but still valid)</li>
+                        <li class="fragment"><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary</span> = <strong>Pairs</strong> at the exact boundary (one valid, one invalid)</li>
+                        <li class="fragment">Always test with <strong>all four types</strong>!</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme data</span> should be rejected by the program.</li>
+                        <li><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary data</span> tests values at the very edge of valid and invalid.</li>
+                        <li>You only need to test with <span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">normal data</span>.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box"><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme data</span> should be rejected by the program.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">Extreme data</span> is at the edges but still <strong>valid</strong>. It should be accepted!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box"><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary data</span> tests values at the very edge of valid and invalid.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">Boundary data</span> tests the exact point where data goes from valid to invalid (both sides of the boundary).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">You only need to test with <span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">normal data</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>You need to test with <strong>all four types</strong>: <span class="keyword" data-def="typical, sensible data that the program should accept and be able to process to produce the expected output">normal</span>, <span class="keyword" data-def="data that the program should not accept or should be able to handle without crashing">abnormal</span>, <span class="keyword" data-def="data that falls at the extreme edges of the accepted range; also known as limit data">extreme</span>, and <span class="keyword" data-def="data values at the boundary between acceptable and unacceptable values">boundary</span> data to test thoroughly.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

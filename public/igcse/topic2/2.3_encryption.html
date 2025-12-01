@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2.3 <span class="keyword"
+            data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span>
+        | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic2/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">2.3 <span class="keyword"
+                                data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span>
+                        </h1>
+                        <h3 class="sub-title">Topic 2: Data Transmission | Keeping Secrets Safe</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall 2.2 (Error Checking) before we move on.</p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What is the difference between even and odd parity?</li>
+                        <li>What is a <span class="keyword"
+                                data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">checksum</span>
+                            used for?</li>
+                        <li>What does ARQ stand for?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What is the difference between even and odd parity?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Even parity makes total 1s even. Odd parity makes total 1s odd.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What is a <span class="keyword"
+                            data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">checksum</span>
+                        used for?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>To verify data integrity by calculating a value from the data and comparing it.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What does ARQ stand for?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Automatic Repeat Request</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-user-secret"></i> The Secret</h4>
+                        <p>How do you send a secret message through a crowd?</p>
+                        <p class="small-text">Anyone could intercept it!</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-key"></i> The Key</h4>
+                        <p>Who has the key to unlock it?</p>
+                        <p class="small-text">This is the critical question.</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> <span class="keyword"
+                        data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span>
+                    doesn't hide the message; it makes it unreadable. Only the right key can unlock it.
+                </div>
+            </section>
+
+            <section>
+                <h3>Encryption Terminology</h3>
+                <img src="2.3 images/encryption terminology.png" class="r-stretch" alt="Encryption Terminology"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 4. SYMMETRIC ENCRYPTION -->
+            <section>
+                <h2><span class="keyword"
+                        data-def="a type of encryption in which the same encryption key is used both to encrypt and decrypt a message">Symmetric
+                        Encryption</span></h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">What if we use the same key to lock and unlock?</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Analogy:</strong> Like a padlock with one key. You lock it, send it,
+                        and the receiver uses the same key to unlock it.</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-key"></i> Single Key</h4>
+                        <p class="small-text">One key to Lock (Encrypt)</p>
+                        <p class="small-text">Same key to Unlock (Decrypt)</p>
+                        <p class="small-text" style="margin-top:10px;"><em>Simple and fast - same key for both
+                                operations.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-exclamation-triangle"></i> The Problem</h4>
+                        <p class="small-text"><strong>Key Exchange Problem:</strong> How do you send the key safely?</p>
+                        <p class="small-text" style="margin-top:10px;">If the key is intercepted, the secret is out</p>
+                        <p class="small-text"><em>Like sending a locked box with the key in the same package - if
+                                someone steals it, they have both!</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Symmetric Encryption</h3>
+                <img src="2.3 images/symmetric encryption.png" class="r-stretch" alt="Symmetric Encryption"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 5. ASYMMETRIC ENCRYPTION -->
+            <section>
+                <section>
+                    <h2><span class="keyword"
+                            data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric
+                            Encryption</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What if we use two different keys?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>The Solution:</strong> One key for locking (public), one key for
+                            unlocking (private).</p>
+                        <p class="small-text">This solves the key exchange problem!</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-unlock"></i> <span class="keyword"
+                                    data-def="a type of encryption key that is known to all users">Public Key</span>
+                            </h4>
+                            <p class="small-text">Everyone has it</p>
+                            <p class="small-text" style="margin-top:10px;">Used to <strong>Encrypt</strong></p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a mailbox slot - anyone can put mail
+                                    in.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-lock"></i> <span class="keyword"
+                                    data-def="a type of encryption key which is known only to the single computer/user">Private
+                                    Key</span></h4>
+                            <p class="small-text">Only you have it</p>
+                            <p class="small-text" style="margin-top:10px;">Used to <strong>Decrypt</strong></p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like your house key - only you can open
+                                    the mailbox.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Anyone can drop a letter in your mailbox
+                            (Public), but only you have the key to open it (Private).</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: The
+                            Process</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Asymmetric Encryption</h3>
+                    <img src="2.3 images/asymetric encryption.png" class="r-stretch" alt="Asymmetric Encryption"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: The Process -->
+                <section data-background="#f4f6f8">
+                    <h3>How It Works</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">Step-by-step: How does <span class="keyword"
+                                data-def="a type of encryption that uses public keys and private keys to ensure data is secure">asymmetric
+                                encryption</span> work?</p>
+                    </div>
+                    <div class="r-stack fragment" style="margin-top:20px;">
+                        <div class="fragment fade-in-then-out">
+                            <div class="box">
+                                <strong><i class="fa-solid fa-paper-plane"></i> 1. Sending</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Sender looks up Receiver's <strong><span
+                                            class="keyword"
+                                            data-def="a type of encryption key that is known to all users">Public
+                                            Key</span></strong> (it's public, so easy to find!)</p>
+                                <p class="small-text">Encrypts message using the <span class="keyword"
+                                        data-def="a type of encryption key that is known to all users">public key</span>
+                                </p>
+                                <p class="small-text" style="margin-top:10px;"><em>Like putting mail in someone's
+                                        mailbox - you use their public address.</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box box-blue">
+                                <strong><i class="fa-solid fa-inbox"></i> 2. Receiving</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Receiver uses their <strong><span
+                                            class="keyword"
+                                            data-def="a type of encryption key which is known only to the single computer/user">Private
+                                            Key</span></strong> (only they have it!)</p>
+                                <p class="small-text">Decrypts message</p>
+                                <p class="small-text" style="margin-top:10px;"><em>Like opening your mailbox with your
+                                        key - only you can do it.</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong><i class="fa-solid fa-shield"></i> Security:</strong> Even if
+                            someone intercepts the message, they can't decrypt it (they don't have the <span
+                                class="keyword"
+                                data-def="a type of encryption key which is known only to the single computer/user">private
+                                key</span>).</p>
+                        <p class="small-text" style="margin-top:10px;"><em>This solves the key exchange problem! The
+                                <span class="keyword"
+                                    data-def="a type of encryption key that is known to all users">public key</span> can
+                                be shared freely.</em></p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>How Encryption Works</h3>
+                <img src="2.3 images/how encryption works.png" class="r-stretch" alt="Encryption Process"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 5. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"<span class="keyword"
+                                data-def="a type of encryption in which the same encryption key is used both to encrypt and decrypt a message">Symmetric
+                                encryption</span> uses two different keys."</li>
+                        <li>"In <span class="keyword"
+                                data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric
+                                encryption</span>, you share your <span class="keyword"
+                                data-def="a type of encryption key which is known only to the single computer/user">Private
+                                Key</span>."</li>
+                        <li>"<span class="keyword"
+                                data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span>
+                            prevents data from being intercepted."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"<span class="keyword"
+                            data-def="a type of encryption in which the same encryption key is used both to encrypt and decrypt a message">Symmetric
+                            encryption</span> uses two different keys."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It uses the same key (Single Key).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"In <span class="keyword"
+                            data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric
+                            encryption</span>, you share your <span class="keyword"
+                            data-def="a type of encryption key which is known only to the single computer/user">Private
+                            Key</span>."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False!</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Never share the <span class="keyword"
+                                data-def="a type of encryption key which is known only to the single computer/user">Private
+                                Key</span>. Share the <span class="keyword"
+                                data-def="a type of encryption key that is known to all users">Public Key</span>.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"<span class="keyword"
+                            data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span>
+                        prevents data from being intercepted."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It prevents it from being <em>understood</em>. It can still be stolen.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

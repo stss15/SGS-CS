@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>9.2 SQL | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic9/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">9.2 <span class="keyword" data-def="the standard query language for writing scripts to obtain useful information from a database">SQL</span></h1>
+                        <h3 class="sub-title">Structured Query Language | Talking to <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">Databases</span></h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (9.1)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is a <span class="keyword" data-def="a field in a database that uniquely identifies a record">primary key</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">A <span class="keyword" data-def="a single category of data in a database table">field</span> that uniquely identifies each <span class="keyword" data-def="a collection of fields that describe one item">record</span></p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What is a <span class="keyword" data-def="a collection of fields that describe one item">record</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">A row in a <span class="keyword" data-def="a collection of related records in a database">table</span> (one complete entry)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do you find a needle in a haystack?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">If the haystack is a <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span> with millions of rows...</p>
+                        <p class="small-text">You don't search manually – you <strong>ask for it</strong>!</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong><span class="keyword" data-def="the standard query language for writing scripts to obtain useful information from a database">SQL</span></strong> (Structured Query Language) is the language we use to "talk" to <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">databases</span>.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Learn the magic words</span>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 THE SAMPLE TABLE
+                 ============================================ -->
+            <section>
+                <h2>Our Example <span class="keyword" data-def="a collection of related records in a database">Table</span>: Students</h2>
+                <table style="width:100%; font-size:0.8em;">
+                    <tr>
+                        <th style="background:var(--primary-blue); color:white; padding:6px;">StudentID</th>
+                        <th style="background:var(--primary-blue); color:white; padding:6px;">FirstName</th>
+                        <th style="background:var(--primary-blue); color:white; padding:6px;">Surname</th>
+                        <th style="background:var(--primary-blue); color:white; padding:6px;">Age</th>
+                        <th style="background:var(--primary-blue); color:white; padding:6px;">House</th>
+                        <th style="background:var(--primary-blue); color:white; padding:6px;">Score</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:6px;">S001</td>
+                        <td style="padding:6px;">Ali</td>
+                        <td style="padding:6px;">Khan</td>
+                        <td style="padding:6px;">14</td>
+                        <td style="padding:6px;">Red</td>
+                        <td style="padding:6px;">85</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:6px;">S002</td>
+                        <td style="padding:6px;">Sara</td>
+                        <td style="padding:6px;">Jones</td>
+                        <td style="padding:6px;">15</td>
+                        <td style="padding:6px;">Blue</td>
+                        <td style="padding:6px;">72</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:6px;">S003</td>
+                        <td style="padding:6px;">John</td>
+                        <td style="padding:6px;">Smith</td>
+                        <td style="padding:6px;">14</td>
+                        <td style="padding:6px;">Red</td>
+                        <td style="padding:6px;">91</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:6px;">S004</td>
+                        <td style="padding:6px;">Mei</td>
+                        <td style="padding:6px;">Chen</td>
+                        <td style="padding:6px;">16</td>
+                        <td style="padding:6px;">Blue</td>
+                        <td style="padding:6px;">88</td>
+                    </tr>
+                </table>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text">We'll use this <span class="keyword" data-def="a collection of related records in a database">table</span> for all our examples!</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 SELECT FROM WHERE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Three Magic Words</h2>
+                    <div class="cols" style="margin-top:20px;">
+                        <div class="box fragment">
+                            <h4><span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span></h4>
+                            <p class="small-text">Which <strong>columns</strong> do you want?</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><span class="keyword" data-def="an SQL command that identifies the table to use">FROM</span></h4>
+                            <p class="small-text">Which <strong><span class="keyword" data-def="a collection of related records in a database">table</span></strong> is the data in?</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span></h4>
+                            <p class="small-text">Which <strong>rows</strong> match your condition?</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Build a query step-by-step</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Building a Query</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Question:</strong> Show the names of students in Red house.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:1.1em; margin:0;"><code class="sql">SELECT FirstName, Surname
+FROM Students
+WHERE House = 'Red'</code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span></h4>
+                            <p class="small-text">FirstName, Surname</p>
+                            <p class="small-text"><em>(the columns we want)</em></p>
+                        </div>
+                        <div class="box">
+                            <h4><span class="keyword" data-def="an SQL command that identifies the table to use">FROM</span></h4>
+                            <p class="small-text">Students</p>
+                            <p class="small-text"><em>(the table name)</em></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span></h4>
+                            <p class="small-text">House = 'Red'</p>
+                            <p class="small-text"><em>(the filter)</em></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>The Result</h3>
+                    <table style="width:60%; margin:auto; font-size:0.9em;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">FirstName</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Surname</th>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px;">Ali</td>
+                            <td style="padding:8px;">Khan</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px;">John</td>
+                            <td style="padding:8px;">Smith</td>
+                        </tr>
+                    </table>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Note:</strong> Only shows the columns we asked for, and only rows matching the condition!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY SYNTAX RULES
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="the standard query language for writing scripts to obtain useful information from a database">SQL</span> Syntax Rules</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box fragment">
+                        <h4><i class="fa-solid fa-star"></i> SELECT *</h4>
+                        <p class="small-text">The asterisk means "all columns".</p>
+                        <pre style="font-size:0.8em;"><code class="sql">SELECT * FROM Students</code></pre>
+                    </div>
+                    <div class="box fragment">
+                        <h4><i class="fa-solid fa-quote-right"></i> Text in Quotes</h4>
+                        <p class="small-text">Text values need single quotes.</p>
+                        <pre style="font-size:0.8em;"><code class="sql">WHERE House = 'Red'</code></pre>
+                    </div>
+                </div>
+                <div class="cols fragment" style="margin-top:10px;">
+                    <div class="box box-blue">
+                        <h4><i class="fa-solid fa-hashtag"></i> Numbers: No Quotes</h4>
+                        <p class="small-text">Numbers don't need quotes.</p>
+                        <pre style="font-size:0.8em;"><code class="sql">WHERE Age = 14</code></pre>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-text-height"></i> Not Case Sensitive</h4>
+                        <p class="small-text">SELECT = select = SeLeCt</p>
+                        <p class="small-text"><em>But we write keywords in CAPS by convention.</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 AND, OR, NOT
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Multiple Conditions</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What if we need more specific filters?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>AND</h4>
+                            <p class="small-text"><strong>Both</strong> conditions must be true.</p>
+                        </div>
+                        <div class="box">
+                            <h4>OR</h4>
+                            <p class="small-text"><strong>Either</strong> condition can be true.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>NOT</h4>
+                            <p class="small-text">The <strong>opposite</strong> of the condition.</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Examples</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>AND Example</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Question:</strong> Students in Red house who are 14.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:1em; margin:0;"><code class="sql">SELECT FirstName, Surname
+FROM Students
+WHERE House = 'Red' AND Age = 14</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Result:</strong> Ali Khan, John Smith (both Red AND 14)</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>OR Example</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Question:</strong> Students in Red OR Blue house.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:1em; margin:0;"><code class="sql">SELECT FirstName, Surname
+FROM Students
+WHERE House = 'Red' OR House = 'Blue'</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Result:</strong> All 4 students (everyone is in Red or Blue!)</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 ORDER BY
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="an SQL command that sorts the results from a query by a given column either alphabetically or numerically">ORDER BY</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we sort the results?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-arrow-up-a-z"></i> ASC</h4>
+                            <p class="small-text">Ascending order (A→Z, 0→9)</p>
+                            <p class="small-text"><em>Default if not specified.</em></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-arrow-down-z-a"></i> DESC</h4>
+                            <p class="small-text">Descending order (Z→A, 9→0)</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See examples</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="an SQL command that sorts the results from a query by a given column either alphabetically or numerically">ORDER BY</span> Examples</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Sort by surname alphabetically:</strong></p>
+                        <pre style="font-size:0.95em; margin:0;"><code class="sql">SELECT * FROM Students
+ORDER BY Surname ASC</code></pre>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Sort by score (highest first):</strong></p>
+                        <pre style="font-size:0.95em; margin:0;"><code class="sql">SELECT * FROM Students
+ORDER BY Score DESC</code></pre>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Result:</strong> John (91), Mei (88), Ali (85), Sara (72)</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COUNT AND SUM
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="an SQL command that counts the number of records (rows) in which the field (column) matches a specified condition">COUNT</span> and <span class="keyword" data-def="an SQL command that returns the sum of all the values in a field (column)">SUM</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What if we want to count or add up values?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-hashtag"></i> <span class="keyword" data-def="an SQL command that counts the number of records (rows) in which the field (column) matches a specified condition">COUNT</span></h4>
+                            <p class="small-text">Counts how many <span class="keyword" data-def="a collection of fields that describe one item">records</span> match.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-plus"></i> <span class="keyword" data-def="an SQL command that returns the sum of all the values in a field (column)">SUM</span></h4>
+                            <p class="small-text">Adds up all values in a column.</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Examples</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Function Examples</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>How many students in Red house?</strong></p>
+                        <pre style="font-size:0.95em; margin:0;"><code class="sql">SELECT COUNT(StudentID)
+FROM Students
+WHERE House = 'Red'</code></pre>
+                        <p class="small-text"><strong>Result:</strong> 2</p>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>What's the total of all scores?</strong></p>
+                        <pre style="font-size:0.95em; margin:0;"><code class="sql">SELECT SUM(Score)
+FROM Students</code></pre>
+                        <p class="small-text"><strong>Result:</strong> 336 (85 + 72 + 91 + 88)</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:0.95em; line-height:1.6;">
+                        <li class="fragment"><span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span> = columns, <span class="keyword" data-def="an SQL command that identifies the table to use">FROM</span> = <span class="keyword" data-def="a collection of related records in a database">table</span>, <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> = filter rows</li>
+                        <li class="fragment">Use * to select all columns</li>
+                        <li class="fragment">Text needs 'quotes', numbers don't</li>
+                        <li class="fragment">AND = both true, OR = either true</li>
+                        <li class="fragment"><span class="keyword" data-def="an SQL command that sorts the results from a query by a given column either alphabetically or numerically">ORDER BY</span> sorts results (ASC or DESC)</li>
+                        <li class="fragment"><span class="keyword" data-def="an SQL command that counts the number of records (rows) in which the field (column) matches a specified condition">COUNT</span> = how many, <span class="keyword" data-def="an SQL command that returns the sum of all the values in a field (column)">SUM</span> = add up</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li><span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span> * returns all rows.</li>
+                        <li>Numbers in <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> need quotes.</li>
+                        <li><span class="keyword" data-def="an SQL command that sorts the results from a query by a given column either alphabetically or numerically">ORDER BY</span> defaults to ascending.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box"><span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span> * returns all rows.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span> * returns all <strong>columns</strong>. <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> filters which rows are returned.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">Numbers in <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> need quotes.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Only <strong>text</strong> values need quotes. Numbers are written without quotes: <code>WHERE Age = 14</code></p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box"><span class="keyword" data-def="an SQL command that sorts the results from a query by a given column either alphabetically or numerically">ORDER BY</span> defaults to ascending.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>If you don't specify ASC or DESC, it defaults to ASC (A→Z, 0→9).</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

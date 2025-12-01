@@ -3,7 +3,7 @@
 Purpose: keep all Reveal.js decks filling the viewport without scrollbars or clipped content. Applies to KS3 templated decks and standalone IGCSE decks (Topic 4.1/4.2).
 
 ## Approach overview
-- Use a single shared config in `public/js/slide-deck.js` (1600x900, margin 0.06, minScale 0.5, maxScale 1.5, slide numbers `c/t`, auto-animate enabled).
+- Use a single shared config in `public/js/slide-deck.js` (1600x900, margin 0.04, minScale 0.2, maxScale 1.5, slide numbers `c/t`, auto-animate enabled).
 - Auto-wrap every leaf slide in `.slide-inner.js-autofit` so a helper plugin can scale the block to the available space.
 - Base CSS pins each slide to full height, centres with flex, keeps `.slide-inner` flex (with gap) for stacked content, and sets `transform-origin: top left` for smooth scaling. Optional `.scrollable` class remains as an escape hatch.
 - Auto-fit plugin scales per-slide on `ready`, `slidechanged`, `fragment` events, and `resize`, and skips overview/print modes.

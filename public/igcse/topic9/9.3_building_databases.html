@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>9.3 Building Databases | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic9/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">9.3 Building <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">Databases</span></h1>
+                        <h3 class="sub-title">Creating and Modifying Tables (Extension)</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (9.2)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What does <span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span> do?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Chooses which columns to return</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What does <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> do?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Filters which rows are returned</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Where does the <span class="keyword" data-def="a collection of related records in a database">table</span> come from in the first place?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Before we can <span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span> data, someone has to <strong>create</strong> the <span class="keyword" data-def="a collection of related records in a database">table</span>!</p>
+                        <p class="small-text">It's like building a house before you can live in it.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text">This uses <strong>DDL</strong> (Data Definition Language) – the <span class="keyword" data-def="the standard query language for writing scripts to obtain useful information from a database">SQL</span> commands for building structure.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Two types of SQL</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Two Types of <span class="keyword" data-def="the standard query language for writing scripts to obtain useful information from a database">SQL</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-magnifying-glass"></i> DML</h4>
+                            <p class="small-text"><strong>Data Manipulation Language</strong></p>
+                            <p class="small-text">Works with the <em>data</em>.</p>
+                            <p class="small-text"><code><span class="keyword" data-def="an SQL command that fetches specified fields (columns) from a table">SELECT</span></code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></p>
+                            <p class="small-text"><em>What you learned in 9.2!</em></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-hammer"></i> DDL</h4>
+                            <p class="small-text"><strong>Data Definition Language</strong></p>
+                            <p class="small-text">Works with the <em>structure</em>.</p>
+                            <p class="small-text"><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code></p>
+                            <p class="small-text"><em>What we're learning today!</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 CREATE TABLE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>CREATE TABLE</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we make a new <span class="keyword" data-def="a collection of related records in a database">table</span>?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">We define the <span class="keyword" data-def="a single category of data in a database table">field</span> names and their <span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">data types</span>.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the syntax</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>CREATE TABLE Syntax</h3>
+                    <div class="box">
+                        <pre style="font-size:0.9em; margin:0;"><code class="sql">CREATE TABLE Students (
+    StudentID VARCHAR(10),
+    FirstName VARCHAR(50),
+    Surname VARCHAR(50),
+    Age INT,
+    House VARCHAR(20)
+)</code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Breakdown</h4>
+                            <p class="small-text"><code>StudentID</code> = <span class="keyword" data-def="a single category of data in a database table">field</span> name</p>
+                            <p class="small-text"><code>VARCHAR(10)</code> = <span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">data type</span></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><span class="keyword" data-def="the standard query language for writing scripts to obtain useful information from a database">SQL</span> <span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">Data Types</span></h4>
+                            <p class="small-text"><code>VARCHAR(n)</code> = Text up to n chars</p>
+                            <p class="small-text"><code>INT</code> = Integer</p>
+                            <p class="small-text"><code>DATE</code> = Date</p>
+                            <p class="small-text"><code>BOOLEAN</code> = True/False</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Adding the <span class="keyword" data-def="a field in a database that uniquely identifies a record">Primary Key</span></h3>
+                    <div class="box">
+                        <pre style="font-size:0.9em; margin:0;"><code class="sql">CREATE TABLE Students (
+    StudentID VARCHAR(10) PRIMARY KEY,
+    FirstName VARCHAR(50),
+    Surname VARCHAR(50),
+    Age INT,
+    House VARCHAR(20)
+)</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text">Adding <code>PRIMARY KEY</code> after a <span class="keyword" data-def="a single category of data in a database table">field</span> makes it the unique identifier.</p>
+                        <p class="small-text">The <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span> will enforce uniqueness automatically!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 INSERT INTO
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>INSERT INTO</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we add data to the <span class="keyword" data-def="a collection of related records in a database">table</span>?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">After creating the structure, we add <span class="keyword" data-def="a collection of fields that describe one item">records</span>.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the syntax</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>INSERT INTO Syntax</h3>
+                    <div class="box">
+                        <pre style="font-size:0.9em; margin:0;"><code class="sql">INSERT INTO Students (StudentID, FirstName, Surname, Age, House)
+VALUES ('S001', 'Ali', 'Khan', 14, 'Red')</code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Breakdown</h4>
+                            <p class="small-text">1. Name the <span class="keyword" data-def="a collection of related records in a database">table</span></p>
+                            <p class="small-text">2. List the <span class="keyword" data-def="a single category of data in a database table">fields</span></p>
+                            <p class="small-text">3. Provide the VALUES</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>Remember!</h4>
+                            <p class="small-text">Text needs 'quotes'</p>
+                            <p class="small-text">Numbers don't need quotes</p>
+                            <p class="small-text">Values must match the order!</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 ALTER TABLE
+                 ============================================ -->
+            <section>
+                <h2>ALTER TABLE</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">What if we need to change the structure later?</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Adding a new column:</strong></p>
+                    <pre style="font-size:0.9em; margin:0;"><code class="sql">ALTER TABLE Students
+ADD Email VARCHAR(100)</code></pre>
+                </div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p class="small-text"><strong>Removing a column:</strong></p>
+                    <pre style="font-size:0.9em; margin:0;"><code class="sql">ALTER TABLE Students
+DROP COLUMN Email</code></pre>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 UPDATE AND DELETE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>UPDATE & DELETE</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we change or remove existing data?</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the commands</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>UPDATE</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Change Ali's house to Blue:</strong></p>
+                        <pre style="font-size:0.9em; margin:0;"><code class="sql">UPDATE Students
+SET House = 'Blue'
+WHERE StudentID = 'S001'</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Warning:</strong> Without <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span>, it would change <em>every</em> <span class="keyword" data-def="a collection of fields that describe one item">record</span>!</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>DELETE</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Remove student S002:</strong></p>
+                        <pre style="font-size:0.9em; margin:0;"><code class="sql">DELETE FROM Students
+WHERE StudentID = 'S002'</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Warning:</strong> Without <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span>, it would delete <em>every</em> <span class="keyword" data-def="a collection of fields that describe one item">record</span>!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 SUMMARY TABLE
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="the standard query language for writing scripts to obtain useful information from a database">SQL</span> Commands Summary</h2>
+                <table style="width:100%; font-size:0.85em; margin-top:20px;">
+                    <tr>
+                        <th style="background:var(--primary-blue); color:white; padding:8px;">Command</th>
+                        <th style="background:var(--primary-blue); color:white; padding:8px;">Purpose</th>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>CREATE TABLE</code></td>
+                        <td style="padding:8px;">Make a new <span class="keyword" data-def="a collection of related records in a database">table</span></td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>INSERT INTO</code></td>
+                        <td style="padding:8px;">Add a new <span class="keyword" data-def="a collection of fields that describe one item">record</span></td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>ALTER TABLE</code></td>
+                        <td style="padding:8px;">Change the <span class="keyword" data-def="a collection of related records in a database">table</span> structure</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>UPDATE</code></td>
+                        <td style="padding:8px;">Change existing data</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>DELETE</code></td>
+                        <td style="padding:8px;">Remove <span class="keyword" data-def="a collection of fields that describe one item">records</span></td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:0.95em; line-height:1.6;">
+                        <li class="fragment">DDL = commands that build/change structure</li>
+                        <li class="fragment"><code>CREATE TABLE</code> defines <span class="keyword" data-def="a single category of data in a database table">fields</span> and <span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">data types</span></li>
+                        <li class="fragment"><code>INSERT INTO</code> adds new <span class="keyword" data-def="a collection of fields that describe one item">records</span></li>
+                        <li class="fragment"><code>UPDATE</code> and <code>DELETE</code> always need <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span>!</li>
+                        <li class="fragment">VARCHAR = variable text, INT = integer</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>VARCHAR is for variable length text.</li>
+                        <li>ALTER TABLE is used to add new <span class="keyword" data-def="a collection of fields that describe one item">records</span>.</li>
+                        <li>DELETE without <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> removes all <span class="keyword" data-def="a collection of fields that describe one item">records</span>.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">VARCHAR is for variable length text.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>VAR-CHAR = Variable Character. CHAR is fixed length.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">ALTER TABLE is used to add new <span class="keyword" data-def="a collection of fields that describe one item">records</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>ALTER TABLE changes the <strong>structure</strong> (columns). INSERT INTO adds <span class="keyword" data-def="a collection of fields that describe one item">records</span> (data).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">DELETE without <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> removes all <span class="keyword" data-def="a collection of fields that describe one item">records</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Without <span class="keyword" data-def="an SQL command to include only those records (rows) in a query that match a given condition">WHERE</span> to filter, it affects <strong>all</strong> <span class="keyword" data-def="a collection of fields that describe one item">records</span>. Very dangerous!</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

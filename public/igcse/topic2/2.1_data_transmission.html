@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2.1 Data Transmission | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic2/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">2.1 Data Transmission</h1>
+                        <h3 class="sub-title">Topic 2: Data Transmission | Moving Bits Around</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall Topic 1 (Data Representation) before we move on.
+                        </p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What is the base of the binary number system?</li>
+                        <li>What is the formula for calculating image file size?</li>
+                        <li>What is the difference between lossy and lossless compression?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What is the base of the binary number system?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Base 2 (uses only 0 and 1)</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What is the formula for calculating image file size?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Width × Height × Colour Depth (in bits)</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What is the difference between lossy and lossless compression?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Lossy permanently deletes data. Lossless shrinks without losing data.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-road"></i> The Motorway</h4>
+                        <p>Why is a 4-lane highway faster than a country lane?</p>
+                        <p class="small-text">More lanes = more cars at once</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-microchip"></i> The Computer</h4>
+                        <p>How do we move data quickly?</p>
+                        <p class="small-text">Same principle applies!</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> More lanes = More data at once. (Parallel vs Serial).
+                </div>
+            </section>
+
+            <!-- 4. TYPES OF TRANSMISSION (DIRECTION) -->
+            <section>
+                <section>
+                    <h2>Which Way?</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Can data travel both ways, or just one way?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Like a road - one-way street, two-way street, or
+                            highway with lanes going both ways.</p>
+                    </div>
+                    <div class="cols-3 fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-arrow-right"></i> <span class="keyword"
+                                    data-def="data that can be sent on one direction only">Simplex</span></h4>
+                            <p class="small-text">One way only</p>
+                            <p class="small-text" style="margin-top:10px;"><i class="fa-solid fa-tv"></i> TV, Radio</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a one-way street - data only flows
+                                    one direction.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-arrow-right-arrow-left"></i> <span class="keyword"
+                                    data-def="data that can be sent in both directions but not at the same time">Half-Duplex</span>
+                            </h4>
+                            <p class="small-text">Both ways, but one at a time</p>
+                            <p class="small-text" style="margin-top:10px;"><i class="fa-solid fa-walkie-talkie"></i>
+                                Walkie-Talkie</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a narrow bridge - only one car at a
+                                    time, but can go both ways.</em></p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-arrows-left-right"></i> <span class="keyword"
+                                    data-def="data that can be sent in both directions at the same time (simultaneously)">Full-Duplex</span>
+                            </h4>
+                            <p class="small-text">Both ways simultaneously</p>
+                            <p class="small-text" style="margin-top:10px;"><i class="fa-solid fa-phone"></i> Phone,
+                                Internet</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a highway - separate lanes going
+                                    both ways at the same time.</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Transmission Modes</h3>
+                <img src="2.1 images/simplex, half and full duplex.png" class="r-stretch"
+                    alt="Simplex, Half and Full Duplex"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 5. METHODS OF TRANSMISSION (LANES) -->
+            <section>
+                <section>
+                    <h2>How Many Lanes?</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How many bits can travel at the same time?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Like a single-lane road vs a multi-lane highway.
+                        </p>
+                        <p class="small-text">More lanes = more traffic at once, but also more complexity.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-road"></i> Serial</h4>
+                            <p class="small-text">One bit at a time</p>
+                            <p class="small-text">Single wire</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a single-lane road - one car at a
+                                    time.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-road-bridge"></i> Parallel</h4>
+                            <p class="small-text">Multiple bits at once</p>
+                            <p class="small-text">Multiple wires</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a multi-lane highway - many cars
+                                    side by side.</em></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Serial vs
+                            Parallel</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Serial vs Parallel -->
+                <section data-background="#f4f6f8">
+                    <h3>Serial vs Parallel: The Trade-off</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">Which is better? It depends on the situation!</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-check-circle"></i> Serial</h4>
+                            <p class="small-text"><strong>Pros:</strong></p>
+                            <ul class="small-text">
+                                <li>Cheap (one wire)</li>
+                                <li>Reliable over long distances</li>
+                                <li>No skew (timing issues)</li>
+                            </ul>
+                            <p class="small-text" style="margin-top:10px;"><strong>Cons:</strong> Slower (historically)
+                            </p>
+                            <p class="small-text"><strong>Use:</strong> USB, Internet, modern connections</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Modern serial is actually faster than old
+                                    parallel!</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-times-circle"></i> Parallel</h4>
+                            <p class="small-text"><strong>Pros:</strong> Fast (historically)</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Cons:</strong></p>
+                            <ul class="small-text">
+                                <li>Expensive (thick cables with many wires)</li>
+                                <li>Interference (crosstalk between wires)</li>
+                                <li>Skew (bits arrive at different times)</li>
+                            </ul>
+                            <p class="small-text"><strong>Use:</strong> Internal CPU buses (short distances only)</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a highway - fast but complex and
+                                    expensive.</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Serial vs Parallel</h3>
+                <img src="2.1 images/serial vs parallel.png" class="r-stretch" alt="Serial vs Parallel"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 6. USB -->
+            <section>
+                <section>
+                    <h2>The Universal Standard</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Why does everything use USB now?</p>
+                    </div>
+
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key Feature:</strong> It is <strong>Serial</strong>.</p>
+                        <p class="small-text">Despite being "one bit at a time", modern USB is incredibly fast!</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Why USB
+                            Won</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Why USB Won -->
+                <section data-background="#f4f6f8">
+                    <h3>Why USB Won</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">What made USB the winner over all other connection types?
+                        </p>
+                    </div>
+                    <div class="r-stack fragment" style="margin-top:20px;">
+                        <div class="fragment fade-in-then-out">
+                            <div class="box">
+                                <strong><i class="fa-solid fa-user"></i> 1. User Friendly</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Impossible to plug in wrong (mostly).</p>
+                                <p class="small-text">Drivers load automatically.</p>
+                                <p class="small-text" style="margin-top:10px;"><em>No more "which way does this go?"
+                                        frustration!</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box box-blue">
+                                <strong><i class="fa-solid fa-bolt"></i> 2. Power</strong><br>
+                                <p class="small-text" style="margin-top:10px;">It powers the device (5V).</p>
+                                <p class="small-text">No need for extra power bricks.</p>
+                                <p class="small-text" style="margin-top:10px;"><em>One cable does everything - data AND
+                                        power!</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box">
+                                <strong><i class="fa-solid fa-link"></i> 3. Compatibility</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Backwards compatible (old devices work
+                                    with new ports).</p>
+                                <p class="small-text">Industry standard (everyone uses it).</p>
+                                <p class="small-text" style="margin-top:10px;"><em>Like a universal language - everyone
+                                        speaks USB!</em></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Universal Serial Bus (USB)</h3>
+                <img src="2.1 images/usb.png" class="r-stretch" alt="USB Connection"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- EXTRA: PACKETS -->
+            <section>
+                <section>
+                    <h2>Data Packets</h2>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Data is broken down into small chunks called <strong>Packets</strong>
+                            before transmission.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <img src="2.1 images/data packet structure.png" class="r-stretch" alt="Data Packet Structure"
+                            style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    </div>
+                </section>
+                <section>
+                    <h3>Packet Switching</h3>
+                    <img src="2.1 images/packet switching.png" class="r-stretch" alt="Packet Switching"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+            </section>
+
+            <!-- 6. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"Parallel transmission is always faster than serial."</li>
+                        <li>"A walkie-talkie is an example of <span class="keyword"
+                                data-def="data that can be sent in both directions at the same time (simultaneously)">Full-Duplex</span>."
+                        </li>
+                        <li>"USB stands for Universal Serial Bus."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"Parallel transmission is always faster than serial."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Modern serial (USB-C, Fibre) is faster than old parallel because of synchronization issues
+                            (skew).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"A walkie-talkie is an example of <span class="keyword"
+                            data-def="data that can be sent in both directions at the same time (simultaneously)">Full-Duplex</span>."
+                    </div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It is <span class="keyword"
+                                data-def="data that can be sent in both directions but not at the same time">Half-Duplex</span>
+                            (Only one person can speak at a time).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"USB stands for Universal Serial Bus."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: True</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It is the industry standard for serial communication.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

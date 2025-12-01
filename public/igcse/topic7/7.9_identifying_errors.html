@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7.9 Identifying Errors | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic7/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 1. TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">7.9 Identifying Errors</h1>
+                        <h3 class="sub-title">Topic 7: <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span> <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">Design</span> and Problem Solving | The Expensive Typo</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 2. RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <!-- Overview Slide -->
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall concepts from 7.8.</p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What is a Dry Run?</li>
+                        <li>What does each row in a Trace Table represent?</li>
+                        <li>Why shouldn't you erase values in a Trace Table?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <!-- Individual Question Slides -->
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What is a Dry Run?</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Manually working through an <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> on paper (without a computer).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What does each row in a Trace Table represent?</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>A single step or instruction in the <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span>.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">Why shouldn't you erase values in a Trace Table?</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Because we need to see the history of how variables change over time.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 3. THE HOOK (The Big Question)
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How much can a typo cost?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box-blue">
+                            <h4><i class="fa-solid fa-rocket"></i> Mariner 1 (1962)</h4>
+                            <p class="small-text">NASA's first planetary mission.</p>
+                            <p class="small-text">Exploded 293 seconds after launch.</p>
+                        </div>
+                        <div class="box">
+                            <h4><i class="fa-solid fa-magnifying-glass"></i> The Cause</h4>
+                            <p class="small-text">A missing hyphen (<code>-</code>) in the code.</p>
+                            <p class="small-text"><strong>Cost:</strong> $18.5 Million (in 1962!).</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Lesson:</strong> Small errors (bugs) have big consequences.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Types of Errors</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Grammar vs Meaning</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-spell-check"></i> Syntax Error</h4>
+                            <p class="small-text"><strong>"Me Tarzan, You Jane"</strong></p>
+                            <p class="small-text">Bad grammar. The computer doesn't understand.</p>
+                            <p class="small-text" style="color:red;">Program Crashes.</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-brain"></i> Logic Error</h4>
+                            <p class="small-text"><strong>"Turn Left" (when you meant Right)</strong></p>
+                            <p class="small-text">Perfect grammar. Wrong instruction.</p>
+                            <p class="small-text" style="color:orange;">Program Runs (but fails).</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 4. CONCEPT: SYNTAX ERRORS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Syntax Errors</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Breaking the Rules</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Every language has rules. If you break them, the code won't run.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Bug Hunter: Level
+                            1</span>
+                    </div>
+                </section>
+
+                <!-- Vertical Deep Dive: Bug Hunter Level 1 -->
+                <section data-background="#f4f6f8">
+                    <h3>Bug Hunter: Level 1</h3>
+                    <p class="small-text">Find the Syntax Errors.</p>
+
+                    <div class="r-stack" style="margin-top:20px;">
+                        <div class="fragment fade-in-then-out box">
+                            <pre><code class="language-plaintext">PRNT "Hello World"</code></pre>
+                            <p class="small-text fragment" style="color:red;"><strong>Error:</strong> Misspelled Command
+                                (PRINT).</p>
+                        </div>
+                        <div class="fragment fade-in-then-out box">
+                            <pre><code class="language-plaintext">IF Age > 18
+  <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> "Adult"
+ENDIF</code></pre>
+                            <p class="small-text fragment" style="color:red;"><strong>Error:</strong> Missing THEN.</p>
+                        </div>
+                        <div class="fragment fade-in box">
+                            <pre><code class="language-plaintext">Total = (5 + 10</code></pre>
+                            <p class="small-text fragment" style="color:red;"><strong>Error:</strong> Missing closing
+                                bracket <code>)</code>.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 5. CONCEPT: LOGIC ERRORS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Logic Errors</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">The Silent Killer</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">The code runs perfectly... but gives the wrong answer.</p>
+                        <p class="small-text"><em>Harder to find because the computer doesn't tell you!</em></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Bug Hunter: Level
+                            2</span>
+                    </div>
+                </section>
+
+                <!-- Vertical Deep Dive: Bug Hunter Level 2 -->
+                <section data-background="#f4f6f8">
+                    <h3>Bug Hunter: Level 2</h3>
+                    <p class="small-text">Find the Logic Errors.</p>
+
+                    <div class="r-stack" style="margin-top:20px;">
+                        <div class="fragment fade-in-then-out box">
+                            <p class="small-text"><strong>Goal:</strong> Average of A and B.</p>
+                            <pre><code class="language-plaintext">Average <- A + B / 2</code></pre>
+                            <div class="fragment box-blue" style="margin-top:10px;">
+                                <p class="small-text"><strong>Error:</strong> Order of Operations (BODMAS).</p>
+                                <p class="small-text"><strong>Fix:</strong> <code>(A + B) / 2</code></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out box">
+                            <p class="small-text"><strong>Goal:</strong> Loop 10 times.</p>
+                            <pre><code class="language-plaintext">FOR K <- 1 TO 100
+  OUTPUT K
+NEXT K</code></pre>
+                            <div class="fragment box-blue" style="margin-top:10px;">
+                                <p class="small-text"><strong>Error:</strong> Wrong loop limit.</p>
+                                <p class="small-text"><strong>Fix:</strong> <code>1 TO 10</code></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in box">
+                            <p class="small-text"><strong>Goal:</strong> Check if Adult (18+).</p>
+                            <pre><code class="language-plaintext">IF Age > 18 THEN
+  <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> "Adult"
+ENDIF</code></pre>
+                            <div class="fragment box-blue" style="margin-top:10px;">
+                                <p class="small-text"><strong>Error:</strong> Excludes 18 year olds.</p>
+                                <p class="small-text"><strong>Fix:</strong> <code>>= 18</code></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 6. TRUE/FALSE MISCONCEPTION CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>A Syntax Error allows the program to run but gives wrong results.</li>
+                        <li>Trace Tables are useful for finding Logic Errors.</li>
+                        <li>Misspelling a variable name is a Logic Error.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">A Syntax Error allows the program to run but gives wrong results.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>That describes a Logic Error. A Syntax Error prevents the program from running at all.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">Trace Tables are useful for finding Logic Errors.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: True</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>By stepping through manually, you can see exactly where the values go wrong.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">Misspelling a variable name is a Logic Error.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It is usually a <strong>Syntax Error</strong> (Undeclared Identifier), unless you
+                            accidentally spell another valid variable's name!</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

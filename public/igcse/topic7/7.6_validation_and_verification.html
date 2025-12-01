@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7.6 Validation and Verification | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic7/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">7.6 <span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> & <span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span></h1>
+                        <h3 class="sub-title">Keeping Data Clean</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (7.5)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is <span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">totalling</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Adding up values (initialize to 0, then add each)</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> How does <span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">linear search</span> work?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Check each item one by one until found</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What's the difference between a <span style="color:red;">wrong</span> answer and a <span style="color:red;">silly</span> answer?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Question:</strong> What is your age?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-times" style="color:red;"></i> Wrong Answer</h4>
+                            <p class="small-text">"I'm 25" (but really 26)</p>
+                            <p class="small-text"><em>It's plausible, just incorrect</em></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-skull" style="color:red;"></i> Silly Answer</h4>
+                            <p class="small-text">"I'm 500 years old"</p>
+                            <p class="small-text"><em>Obviously not reasonable!</em></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">How do we catch these?</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Two Types of Checking</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-robot"></i> <span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span></h4>
+                            <p class="small-text"><strong>Is it reasonable?</strong></p>
+                            <p class="small-text">Automated checks done by the computer.</p>
+                            <p class="small-text"><em>Catches "silly" data.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-user-check"></i> <span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span></h4>
+                            <p class="small-text"><strong>Is it correct?</strong></p>
+                            <p class="small-text">Checking by a human or double-entry.</p>
+                            <p class="small-text"><em>Catches "wrong" data.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key:</strong> <span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> does NOT mean data is correct – just that it's reasonable!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 VALIDATION CHECKS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> Checks</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What automatic checks can a program do?</p>
+                    </div>
+                    <div class="cols-2 fragment" style="margin-top:20px; gap:10px;">
+                        <div class="box">
+                            <p class="small-text"><strong><span class="keyword" data-def="a validation check carried out by a program that ensures data is within a given range or set of values">Range Check</span></strong></p>
+                        </div>
+                        <div class="box">
+                            <p class="small-text"><strong><span class="keyword" data-def="a validation check carried out by a program that ensures data contains a specific number of characters">Length Check</span></strong></p>
+                        </div>
+                    </div>
+                    <div class="cols-2 fragment" style="gap:10px; margin-top:10px;">
+                        <div class="box">
+                            <p class="small-text"><strong><span class="keyword" data-def="a validation check carried out by a program that ensures data is of a specific data type">Type Check</span></strong></p>
+                        </div>
+                        <div class="box">
+                            <p class="small-text"><strong><span class="keyword" data-def="a validation check carried out by a program that ensures some data has been entered into a field">Presence Check</span></strong></p>
+                        </div>
+                    </div>
+                    <div class="cols-2 fragment" style="gap:10px; margin-top:10px;">
+                        <div class="box box-blue">
+                            <p class="small-text"><strong><span class="keyword" data-def="a validation check carried out by a program that ensures data conforms to a specific pattern or layout">Format Check</span></strong></p>
+                        </div>
+                        <div class="box box-blue">
+                            <p class="small-text"><strong><span class="keyword" data-def="a final digit in a code used to check the other digits are correct; this can be calculated using a program">Check Digit</span></strong></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Learn each one</span>
+                    </div>
+                </section>
+
+                <!-- RANGE CHECK -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a validation check carried out by a program that ensures data is within a given range or set of values">Range Check</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Definition:</strong> Ensures data is within a specified range of values.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Example</h4>
+                            <p class="small-text">Age must be between 0 and 120</p>
+                            <p class="small-text">Exam mark must be 0-100</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><span class="keyword" data-def="a simple method of showing an algorithm; it describes what the algorithm does by using English keywords that are very similar to those used in a high-level programming language but without the strict syntax rules">Pseudocode</span></h4>
+                            <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">IF Age >= 0 AND Age <= 120 THEN
+    Accept data
+ELSE
+    Reject data
+ENDIF</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- LENGTH CHECK -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a validation check carried out by a program that ensures data contains a specific number of characters">Length Check</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Definition:</strong> Ensures data has the correct number of characters.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Example</h4>
+                            <p class="small-text">Password must be at least 8 characters</p>
+                            <p class="small-text">Phone number must be 11 digits</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><span class="keyword" data-def="a simple method of showing an algorithm; it describes what the algorithm does by using English keywords that are very similar to those used in a high-level programming language but without the strict syntax rules">Pseudocode</span></h4>
+                            <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">IF LENGTH(Password) >= 8 THEN
+    Accept data
+ELSE
+    Reject data
+ENDIF</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TYPE CHECK -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a validation check carried out by a program that ensures data is of a specific data type">Type Check</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Definition:</strong> Ensures data is the correct data type.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Example</h4>
+                            <p class="small-text">Age must be an integer (not "twenty")</p>
+                            <p class="small-text">Name must be text (not 12345)</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>Real Example</h4>
+                            <p class="small-text"><strong>Price field:</strong></p>
+                            <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> 29.99</p>
+                            <p class="small-text"><i class="fa-solid fa-times" style="color:red;"></i> "twenty nine"</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PRESENCE CHECK -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a validation check carried out by a program that ensures some data has been entered into a field">Presence Check</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Definition:</strong> Ensures the field is not left empty.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Example</h4>
+                            <p class="small-text">Email address is required</p>
+                            <p class="small-text">Name cannot be blank</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><span class="keyword" data-def="a simple method of showing an algorithm; it describes what the algorithm does by using English keywords that are very similar to those used in a high-level programming language but without the strict syntax rules">Pseudocode</span></h4>
+                            <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">IF Name != "" THEN
+    Accept data
+ELSE
+    OUTPUT "Name required"
+ENDIF</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FORMAT CHECK -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a validation check carried out by a program that ensures data conforms to a specific pattern or layout">Format Check</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Definition:</strong> Ensures data matches a specific pattern.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Example</h4>
+                            <p class="small-text">Email must contain @ and .</p>
+                            <p class="small-text">Date must be DD/MM/YYYY</p>
+                            <p class="small-text">Postcode: AA00 0AA</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>Valid vs Invalid</h4>
+                            <p class="small-text"><i class="fa-solid fa-check" style="color:green;"></i> user@email.com</p>
+                            <p class="small-text"><i class="fa-solid fa-times" style="color:red;"></i> useremail</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CHECK DIGIT -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a final digit in a code used to check the other digits are correct; this can be calculated using a program">Check Digit</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Definition:</strong> An extra digit calculated from the other digits to detect errors.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4>Where are they used?</h4>
+                        <div class="cols" style="margin-top:10px;">
+                            <div style="text-align:center;">
+                                <i class="fa-solid fa-barcode" style="font-size:2em;"></i>
+                                <p class="small-text">Barcodes</p>
+                            </div>
+                            <div style="text-align:center;">
+                                <i class="fa-solid fa-book" style="font-size:2em;"></i>
+                                <p class="small-text">ISBN (books)</p>
+                            </div>
+                            <div style="text-align:center;">
+                                <i class="fa-solid fa-credit-card" style="font-size:2em;"></i>
+                                <p class="small-text">Card numbers</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>How it works:</strong> A calculation is done on all the digits. If someone enters a number incorrectly, the check digit won't match.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 VERIFICATION
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we check data is actually correct?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> can't tell if "John" should be "Jon".</p>
+                        <p class="small-text">Both are reasonable – but one might be wrong!</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Two methods</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span> Methods</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-keyboard"></i> <span class="keyword" data-def="a verification method where data is entered twice and the two versions are compared">Double Entry</span></h4>
+                            <p class="small-text">Enter the data <strong>twice</strong>.</p>
+                            <p class="small-text">The computer compares both entries.</p>
+                            <p class="small-text"><em>Used for: Passwords, emails</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-eye"></i> <span class="keyword" data-def="a verification method where a human manually checks that data is correctly copied by comparing it with the original source">Visual Check</span></h4>
+                            <p class="small-text">Display data back to the user.</p>
+                            <p class="small-text">Ask them to confirm it's correct.</p>
+                            <p class="small-text"><em>Used for: Delivery addresses, orders</em></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a verification method where data is entered twice and the two versions are compared">Double Entry</span> Example</h3>
+                    <div class="box">
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">OUTPUT "Enter your email:"
+INPUT Email1
+OUTPUT "Confirm your email:"
+INPUT Email2
+IF Email1 = Email2 THEN
+    OUTPUT "Email confirmed"
+ELSE
+    OUTPUT "Emails do not match!"
+ENDIF</code></pre>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Why this works:</strong> It's unlikely you'd make the same typo twice!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COMPARISON TABLE
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> vs <span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span></h2>
+                <table style="width:100%; font-size:0.9em; margin-top:20px;">
+                    <tr>
+                        <th style="background:var(--primary-blue); color:white; padding:10px;"></th>
+                        <th style="background:var(--primary-blue); color:white; padding:10px;"><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span></th>
+                        <th style="background:var(--primary-blue); color:white; padding:10px;"><span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span></th>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:10px;"><strong>Question</strong></td>
+                        <td style="padding:10px;">Is it reasonable?</td>
+                        <td style="padding:10px;">Is it correct?</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:10px;"><strong>Done by</strong></td>
+                        <td style="padding:10px;">Computer (automatic)</td>
+                        <td style="padding:10px;">Human or double-entry</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:10px;"><strong>Example</strong></td>
+                        <td style="padding:10px;">Age can't be 500</td>
+                        <td style="padding:10px;">Is it really 25, not 26?</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:10px;"><strong>Can catch</strong></td>
+                        <td style="padding:10px;">Silly mistakes</td>
+                        <td style="padding:10px;">Typing errors</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:0.95em; line-height:1.6;">
+                        <li class="fragment"><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> = Is it <strong>reasonable</strong>? (automatic)</li>
+                        <li class="fragment"><span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span> = Is it <strong>correct</strong>? (human/double-entry)</li>
+                        <li class="fragment"><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> checks: <span class="keyword" data-def="a validation check carried out by a program that ensures data is within a given range or set of values">Range</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures data contains a specific number of characters">Length</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures data is of a specific data type">Type</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures some data has been entered into a field">Presence</span>, <span class="keyword" data-def="a validation check carried out by a program that ensures data conforms to a specific pattern or layout">Format</span>, <span class="keyword" data-def="a final digit in a code used to check the other digits are correct; this can be calculated using a program">Check Digit</span></li>
+                        <li class="fragment"><span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">Verification</span> methods: <span class="keyword" data-def="a verification method where data is entered twice and the two versions are compared">Double Entry</span>, <span class="keyword" data-def="a verification method where a human manually checks that data is correctly copied by comparing it with the original source">Visual Check</span></li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> guarantees that data is correct.</li>
+                        <li>A <span class="keyword" data-def="a validation check carried out by a program that ensures data is within a given range or set of values">range check</span> ensures data is within specific limits.</li>
+                        <li><span class="keyword" data-def="a verification method where data is entered twice and the two versions are compared">Double entry</span> is a type of <span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">verification</span>.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box"><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> guarantees that data is correct.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="automated checks carried out by a program that data is reasonable before it is accepted into a computer system">Validation</span> only checks if data is <strong>reasonable</strong>, not if it's actually correct. An age of 25 passes validation even if you're really 26.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">A <span class="keyword" data-def="a validation check carried out by a program that ensures data is within a given range or set of values">range check</span> ensures data is within specific limits.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>A <span class="keyword" data-def="a validation check carried out by a program that ensures data is within a given range or set of values">range check</span> verifies that data falls within a defined minimum and maximum value.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box"><span class="keyword" data-def="a verification method where data is entered twice and the two versions are compared">Double entry</span> is a type of <span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">verification</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="a verification method where data is entered twice and the two versions are compared">Double entry</span> is a <span class="keyword" data-def="checking that data has been accurately copied from another source and input into a computer or transferred from one part of a computer system to another">verification</span> method that checks if data was entered correctly by comparing two inputs.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

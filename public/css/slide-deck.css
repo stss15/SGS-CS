@@ -1,14 +1,24 @@
 /* ST GEORGE'S COMPUTER SCIENCE - MASTER STYLESHEET
    Combined Delivery & Interactive Pedagogy Styles
-   v1.0
+   v1.1 - Fixed viewport clipping issue
 */
 
 /* --- 1. CORE VARIABLES & HOUSE STYLE --- */
+html,
+body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 :root {
     /* Brand Colors */
     --sg-blue: #003366;
     --sg-gold: #D4AF37;
     --sg-text: #333333;
+    --sg-green: #28a745;
+    --sg-red: #dc3545;
 
     /* Functional Colors */
     --bg-light: #f4f6f8;
@@ -21,12 +31,27 @@
     /* Red for incorrect answers */
     --warning-orange: #f97316;
     --purple-accent: #8b5cf6;
+
+    /* Layout - Reserved space for fixed UI elements */
+    --header-reserved: 60px;  /* Space for logo and back button */
+    --footer-reserved: 55px;  /* Space for footer text and course footer */
 }
 
 /* --- 2. REVEAL.JS OVERRIDES --- */
+
+/* The reveal container - we need to let Reveal manage its own positioning
+   but inform it about the reduced available height via margin */
 .reveal {
     color: var(--sg-text);
     font-family: 'Inter', sans-serif;
+}
+
+/* Add padding to the reveal viewport element to create safe zones */
+.reveal .slides {
+    /* Create safe margins for fixed UI elements */
+    padding-top: 10px !important;
+    padding-bottom: 20px !important;
+    box-sizing: border-box !important;
 }
 
 .reveal h1,
@@ -52,29 +77,34 @@
     display: flex !important;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100%;
-    height: 100%;
-    padding: clamp(1rem, 2vh, 3rem) clamp(2rem, 4vw, 6rem) !important;
+    justify-content: flex-start;
+    min-height: auto;
+    height: auto;
+    max-height: 100%;
+    padding: clamp(0.5rem, 1.5vh, 2rem) clamp(1.5rem, 3vw, 4rem) !important;
     box-sizing: border-box;
-    gap: clamp(0.6rem, 1vh, 1.2rem);
+    gap: clamp(0.4rem, 0.8vh, 1rem);
     overflow: visible !important;
 }
 
+/* Slide inner wrapper - contains actual slide content */
 .reveal .slide-inner {
     max-width: 100%;
-    max-height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: clamp(0.6rem, 1vh, 1.2rem);
+    gap: clamp(0.4rem, 0.8vh, 1rem);
+    /* Allow content to shrink to fit available space */
+    flex-shrink: 1;
 }
 
+/* AutoFit plugin styling */
 .reveal .js-autofit {
-    transform-origin: top left;
+    transform-origin: top center;
 }
 
+/* Optional scrollable mode - use sparingly */
 .reveal .slide-inner.scrollable {
     max-height: 100%;
     overflow-y: auto;
@@ -1483,10 +1513,7 @@
 
 /* --- 8. IGCSE SPECIFIC CUSTOM STYLES (Migrated from Template HTML) --- */
 
-/* Ensure no content bleeds */
-.reveal .slides section {
-    overflow: hidden !important;
-}
+/* Note: Removed overflow: hidden that was clipping slide content */
 
 /* Code block styling */
 .reveal pre {
@@ -1569,4 +1596,104 @@
     .cols-3 {
         grid-template-columns: 1fr !important;
     }
+}
+
+/* --- 8. INTERACTIVE KEYWORDS & MODAL --- */
+
+.keyword {
+    color: var(--sg-red);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+    border-bottom: 1px dashed var(--sg-red);
+}
+
+.keyword:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Modal Container */
+#keyword-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#keyword-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Blur Overlay */
+#keyword-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Modal Content Box */
+#keyword-modal-content {
+    position: relative;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+    z-index: 2001;
+    border-left: 8px solid var(--sg-gold);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+#keyword-modal.active #keyword-modal-content {
+    transform: translateY(0);
+}
+
+/* Close Button */
+#keyword-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    padding: 5px;
+}
+
+#keyword-modal-close:hover {
+    color: var(--sg-red);
+}
+
+#keyword-modal-title {
+    color: var(--sg-blue);
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    border-bottom: 2px solid var(--sg-gold);
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+#keyword-modal-def {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--sg-text);
 }

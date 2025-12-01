@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7.5 Standard Methods of Solution | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic7/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">7.5 Standard Methods of Solution</h1>
+                        <h3 class="sub-title">The Essential <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span> Patterns</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (7.4)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is <span class="keyword" data-def="a simple method of showing an algorithm; it describes what the algorithm does by using English keywords that are very similar to those used in a high-level programming language but without the strict syntax rules">pseudocode</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">A structured text way to write <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithms</span></p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What shape is a decision in a <span class="keyword" data-def="a diagram that shows the steps required for a task (sub-system) and the order in which the steps are to be performed">flowchart</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Diamond</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Why do chefs learn to chop onions the same way?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Because it's a <strong>standard technique</strong> that works every time.</p>
+                        <p class="small-text">Once you learn it, you can use it in thousands of recipes!</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text">Programming has the same thing: <strong>standard <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithms</span></strong> that solve common problems.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">The "Big 5" Patterns</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>The Standard Methods</h3>
+                    <div class="cols-2" style="gap:10px;">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-calculator"></i> <span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">Totalling</span></h4>
+                            <p class="small-text">Adding up values</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-hashtag"></i> <span class="keyword" data-def="keeping a count by incrementing a variable; the count is usually initialised to zero at the start">Counting</span></h4>
+                            <p class="small-text">Counting how many</p>
+                        </div>
+                    </div>
+                    <div class="cols-2" style="gap:10px; margin-top:10px;">
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-arrow-up"></i> Max/Min/Avg</h4>
+                            <p class="small-text">Finding extremes</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-magnifying-glass"></i> <span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">Linear Search</span></h4>
+                            <p class="small-text">Finding an item</p>
+                        </div>
+                    </div>
+                    <div class="box box-blue fragment" style="margin-top:10px;">
+                        <h4><i class="fa-solid fa-sort"></i> <span class="keyword" data-def="a type of sorting algorithm that works through a list of data comparing pairs of adjacent items; if the items are in the wrong order they are swapped and the sort continues comparing pairs until the end of the list">Bubble Sort</span></h4>
+                        <p class="small-text">Putting things in order</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 TOTALLING
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">Totalling</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we add up a list of numbers?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Adding items to a shopping cart.</p>
+                        <p class="small-text">Start with £0, then add each item's price as you go.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the pattern</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">Totalling</span> Pattern</h3>
+                    <div class="box">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">Total ← 0
+FOR Count ← 1 TO 5
+    INPUT Number
+    Total ← Total + Number
+NEXT Count
+OUTPUT Total</code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-play"></i> Key Step 1</h4>
+                            <p class="small-text"><code>Total ← 0</code></p>
+                            <p class="small-text"><strong>Initialize</strong> - start with an empty total</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-plus"></i> Key Step 2</h4>
+                            <p class="small-text"><code>Total ← Total + Number</code></p>
+                            <p class="small-text"><strong>Accumulate</strong> - add each value</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COUNTING
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="keeping a count by incrementing a variable; the count is usually initialised to zero at the start">Counting</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we count items that match a condition?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Example:</strong> Count how many students passed (mark ≥ 50)</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the pattern</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="keeping a count by incrementing a variable; the count is usually initialised to zero at the start">Counting</span> Pattern</h3>
+                    <div class="box">
+                        <pre style="font-size:0.95em; margin:0;"><code class="language-plaintext">PassCount ← 0
+FOR Student ← 1 TO 30
+    INPUT Mark
+    IF Mark >= 50 THEN
+        PassCount ← PassCount + 1
+    ENDIF
+NEXT Student
+OUTPUT PassCount</code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-play"></i> Key Step 1</h4>
+                            <p class="small-text"><code>PassCount ← 0</code></p>
+                            <p class="small-text"><strong>Initialize</strong> - start at zero</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-plus"></i> Key Step 2</h4>
+                            <p class="small-text"><code>PassCount ← PassCount + 1</code></p>
+                            <p class="small-text"><strong>Increment</strong> - add 1 each time</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 MAXIMUM / MINIMUM
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Finding Maximum & Minimum</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we find the highest (or lowest) value?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Finding the tallest person in a room.</p>
+                        <p class="small-text">Assume the first person is tallest. Then compare each new person – if taller, they become the new record holder.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the pattern</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Maximum Pattern</h3>
+                    <div class="box">
+                        <pre style="font-size:0.95em; margin:0;"><code class="language-plaintext">INPUT FirstNumber
+Max ← FirstNumber
+FOR Count ← 2 TO 10
+    INPUT Number
+    IF Number > Max THEN
+        Max ← Number
+    ENDIF
+NEXT Count
+OUTPUT "Highest: ", Max</code></pre>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key:</strong> Set Max to the <strong>first value</strong>, then compare each new value. If bigger, update Max.</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Minimum Pattern</h3>
+                    <div class="box">
+                        <pre style="font-size:0.95em; margin:0;"><code class="language-plaintext">INPUT FirstNumber
+Min ← FirstNumber
+FOR Count ← 2 TO 10
+    INPUT Number
+    IF Number < Max THEN
+        Min ← Number
+    ENDIF
+NEXT Count
+OUTPUT "Lowest: ", Min</code></pre>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Same pattern!</strong> Just change <code>&gt;</code> to <code>&lt;</code></p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 AVERAGE
+                 ============================================ -->
+            <section>
+                <h2>Finding the Average</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">How do we calculate an average?</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Average = Total ÷ Count</strong></p>
+                    <p class="small-text">First <span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">total</span> all values, then divide by how many there are.</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <pre style="font-size:0.95em; margin:0;"><code class="language-plaintext">Total ← 0
+FOR Count ← 1 TO 10
+    INPUT Number
+    Total ← Total + Number
+NEXT Count
+Average ← Total / 10
+OUTPUT Average</code></pre>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 LINEAR SEARCH
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">Linear Search</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we find a specific item in a list?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Finding a book on a messy bookshelf.</p>
+                        <p class="small-text">Start at the beginning, check each book one by one until you find it.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the pattern</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">Linear Search</span> Pattern</h3>
+                    <div class="box">
+                        <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">INPUT SearchValue
+Found ← FALSE
+Position ← 0
+FOR Index ← 1 TO 10
+    IF List[Index] = SearchValue THEN
+        Found ← TRUE
+        Position ← Index
+    ENDIF
+NEXT Index
+IF Found = TRUE THEN
+    OUTPUT "Found at position ", Position
+ELSE
+    OUTPUT "Not found"
+ENDIF</code></pre>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key:</strong> Check each item in turn. Use a <code>Found</code> flag to remember if we found it.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 BUBBLE SORT - INTRODUCTION
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a type of sorting algorithm that works through a list of data comparing pairs of adjacent items; if the items are in the wrong order they are swapped and the sort continues comparing pairs until the end of the list">Bubble Sort</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we put a list in order?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Bubbles rising to the top of a glass.</p>
+                        <p class="small-text">Compare pairs of items. If they're in the wrong order, swap them. Keep going until no more swaps are needed.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Watch it work</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a type of sorting algorithm that works through a list of data comparing pairs of adjacent items; if the items are in the wrong order they are swapped and the sort continues comparing pairs until the end of the list">Bubble Sort</span> Demo</h3>
+                    <div class="box">
+                        <p class="small-text"><strong>Sort this list:</strong> [5, 3, 8, 1]</p>
+                    </div>
+                    <div style="text-align:center; margin-top:10px;">
+                        <div class="fragment">
+                            <p class="small-text"><strong>Pass 1:</strong></p>
+                            <p class="small-text">[<span style="color:red;">5, 3</span>, 8, 1] → [<span style="color:green;">3, 5</span>, 8, 1] (swap)</p>
+                            <p class="small-text">[3, <span style="color:red;">5, 8</span>, 1] → [3, 5, 8, 1] (no swap)</p>
+                            <p class="small-text">[3, 5, <span style="color:red;">8, 1</span>] → [3, 5, <span style="color:green;">1, 8</span>] (swap)</p>
+                        </div>
+                        <div class="fragment">
+                            <p class="small-text"><strong>Pass 2:</strong></p>
+                            <p class="small-text">[<span style="color:red;">3, 5</span>, 1, 8] → [3, 5, 1, 8] (no swap)</p>
+                            <p class="small-text">[3, <span style="color:red;">5, 1</span>, 8] → [3, <span style="color:green;">1, 5</span>, 8] (swap)</p>
+                        </div>
+                        <div class="fragment">
+                            <p class="small-text"><strong>Pass 3:</strong></p>
+                            <p class="small-text">[<span style="color:red;">3, 1</span>, 5, 8] → [<span style="color:green;">1, 3</span>, 5, 8] (swap)</p>
+                        </div>
+                        <div class="fragment box-blue" style="margin-top:10px;">
+                            <p class="small-text"><strong>Result:</strong> [1, 3, 5, 8] ✓ Sorted!</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a type of sorting algorithm that works through a list of data comparing pairs of adjacent items; if the items are in the wrong order they are swapped and the sort continues comparing pairs until the end of the list">Bubble Sort</span> <span class="keyword" data-def="a simple method of showing an algorithm; it describes what the algorithm does by using English keywords that are very similar to those used in a high-level programming language but without the strict syntax rules">Pseudocode</span></h3>
+                    <div class="box">
+                        <pre style="font-size:0.8em; margin:0;"><code class="language-plaintext">REPEAT
+    Swapped ← FALSE
+    FOR Index ← 1 TO Length - 1
+        IF List[Index] > List[Index + 1] THEN
+            Temp ← List[Index]
+            List[Index] ← List[Index + 1]
+            List[Index + 1] ← Temp
+            Swapped ← TRUE
+        ENDIF
+    NEXT Index
+UNTIL Swapped = FALSE</code></pre>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key:</strong> Keep making passes until no swaps happen (<code>Swapped = FALSE</code>).</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:0.95em; line-height:1.6;">
+                        <li class="fragment"><span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">Totalling</span>: Initialize to 0, then add each value</li>
+                        <li class="fragment"><span class="keyword" data-def="keeping a count by incrementing a variable; the count is usually initialised to zero at the start">Counting</span>: Initialize to 0, then add 1 for each match</li>
+                        <li class="fragment">Max/Min: Set to first value, compare and update</li>
+                        <li class="fragment">Average: Total ÷ Count</li>
+                        <li class="fragment"><span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">Linear Search</span>: Check each item one by one</li>
+                        <li class="fragment"><span class="keyword" data-def="a type of sorting algorithm that works through a list of data comparing pairs of adjacent items; if the items are in the wrong order they are swapped and the sort continues comparing pairs until the end of the list">Bubble Sort</span>: Compare pairs and swap until sorted</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>When <span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">totalling</span>, you should initialize the total to 1.</li>
+                        <li><span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">Linear search</span> checks every item until it finds a match.</li>
+                        <li><span class="keyword" data-def="a type of sorting algorithm that works through a list of data comparing pairs of adjacent items; if the items are in the wrong order they are swapped and the sort continues comparing pairs until the end of the list">Bubble sort</span> stops when no swaps are made in a pass.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">When <span class="keyword" data-def="keeping a running total by adding each value to this total; the total is usually initialised to zero at the start">totalling</span>, you should initialize the total to 1.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Always initialize to <strong>0</strong>. If you started at 1, your total would be 1 more than it should be!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box"><span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">Linear search</span> checks every item until it finds a match.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="a type of search algorithm that finds an item in a list by checking each item in turn until the required one is found or the end of the list is reached">Linear search</span> goes through items one by one from the start until it finds what it's looking for (or reaches the end).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box"><span class="keyword" data-def="a type of sorting algorithm that works through a list of data comparing pairs of adjacent items; if the items are in the wrong order they are swapped and the sort continues comparing pairs until the end of the list">Bubble sort</span> stops when no swaps are made in a pass.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>If no swaps are made, the list must already be sorted, so we can stop!</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

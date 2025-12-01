@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5.3 Cyber <span class="keyword"
+            data-def="an algorithm for wireless networks to protect them against data interception">Security</span> | St
+        George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic5/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">5.3 Cyber <span class="keyword"
+                                data-def="an algorithm for wireless networks to protect them against data interception">Security</span>
+                        </h1>
+                        <h3 class="sub-title">Topic 5: The <span class="keyword"
+                                data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span>
+                            and its Uses | Protecting the Digital Fortress</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall 5.2 (<span class="keyword"
+                                data-def="currency (a system of money) that exists in electronic form only; it has no physical form and is essentially data on a database">Digital
+                                Currency</span>) before we move on.</p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What is the difference between <span class="keyword"
+                                data-def="currency (a system of money) that exists in electronic form only; it has no physical form and is essentially data on a database">Digital
+                                Currency</span> and <span class="keyword"
+                                data-def="a form of digital currency that uses a chain of decentralised computers to control and monitor transactions">Cryptocurrency</span>?
+                        </li>
+                        <li>What makes <span class="keyword"
+                                data-def="a decentralised database where all transactions are stored; it consists of a number of interconnected computers but not a central server">blockchain</span>
+                            data immutable?</li>
+                        <li>What does "decentralized" mean?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What is the difference between <span class="keyword"
+                            data-def="currency (a system of money) that exists in electronic form only; it has no physical form and is essentially data on a database">Digital
+                            Currency</span> and <span class="keyword"
+                            data-def="a form of digital currency that uses a chain of decentralised computers to control and monitor transactions">Cryptocurrency</span>?
+                    </div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p><span class="keyword"
+                                data-def="currency (a system of money) that exists in electronic form only; it has no physical form and is essentially data on a database">Digital
+                                Currency</span> is centralized (banks control it). <span class="keyword"
+                                data-def="a form of digital currency that uses a chain of decentralised computers to control and monitor transactions">Cryptocurrency</span>
+                            is decentralized (community/algorithm controls it).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What makes <span class="keyword"
+                            data-def="a decentralised database where all transactions are stored; it consists of a number of interconnected computers but not a central server">blockchain</span>
+                        data immutable?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Each block contains the hash of the previous block. Changing data breaks the chain.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What does "decentralized" mean?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>No single authority controls it. It's distributed across many computers.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-user-secret"></i> The Threat</h4>
+                        <p>Who is trying to steal your data?</p>
+                        <p class="small-text">Every second, thousands of attacks happen.</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-shield-halved"></i> The Defense</h4>
+                        <p>How do we keep the vault locked?</p>
+                        <p class="small-text">We need multiple layers of protection.</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> Data is the new oil. It's valuable, so criminals want it. We must protect
+                    it.
+                </div>
+            </section>
+
+            <!-- 4. THE THREATS -->
+            <section>
+                <section>
+                    <h2>The Attackers' Arsenal</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What weapons do cybercriminals use?</p>
+                    </div>
+                    <div class="cols-3 fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-keyboard"></i> <span class="keyword"
+                                    data-def="the act of gaining illegal access to a computer system without the owner’s permission">Hacking</span>
+                            </h4>
+                            <p class="small-text">Illegal access.</p>
+                            <p class="small-text">Brute Force, DDoS.</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-bug"></i> <span class="keyword"
+                                    data-def="programs (such as viruses, worms and Trojan horses) installed on a user’s computer with the aim of deleting, corrupting or manipulating data illegally">Malware</span>
+                            </h4>
+                            <p class="small-text">Malicious Software.</p>
+                            <p class="small-text"><span class="keyword"
+                                    data-def="a program or program code that replicates itself with the intention of deleting or corrupting files or by causing the computer system to malfunction">Viruses</span>,
+                                <span class="keyword"
+                                    data-def="a stand-alone type of malware that can selfreplicate; unlike viruses, worms don’t need an active host; they can spread throughout a network without the need for any action by an end-user">Worms</span>,
+                                <span class="keyword"
+                                    data-def="a type of malware that encrypts data on a user’s computer and ‘holds the data hostage’ until a ransom is paid">Ransomware</span>.
+                            </p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-user-ninja"></i> <span class="keyword"
+                                    data-def="manipulating people into breaking normal security procedures (such as giving away their password) in order to gain illegal access to computer systems or to place malware on their computer">Social
+                                    Engineering</span></h4>
+                            <p class="small-text">Manipulating people.</p>
+                            <p class="small-text"><span class="keyword"
+                                    data-def="sending out legitimate-looking emails designed to trick the recipients into giving their personal details to the sender of the email">Phishing</span>,
+                                <span class="keyword"
+                                    data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span>.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: The
+                            Attacks</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Hacking -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword"
+                            data-def="the act of gaining illegal access to a computer system without the owner’s permission">Hacking</span>
+                        & Brute Force</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-hammer"></i> Brute Force</h4>
+                            <p class="small-text"><strong>The Method:</strong> Guessing every password combination.</p>
+                            <p class="small-text">"123456" <i class="fa-solid fa-arrow-right"></i> "password" <i
+                                    class="fa-solid fa-arrow-right"></i> "qwerty"</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Defense:</strong> Strong passwords,
+                                lockout after 3 tries.</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-flood"></i> DDoS</h4>
+                            <p class="small-text"><strong>Distributed Denial of Service</strong></p>
+                            <p class="small-text">Flooding a server with traffic to crash it.</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Analogy:</strong> Like thousands of
+                                people calling a phone line at once.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Malware -->
+                <section>
+                    <h3><span class="keyword"
+                            data-def="programs (such as viruses, worms and Trojan horses) installed on a user’s computer with the aim of deleting, corrupting or manipulating data illegally">Malware</span>
+                        Types</h3>
+                    <img src="5.3 images/common malware.png" class="r-stretch" alt="Common Malware Types"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-virus"></i> <span class="keyword"
+                                    data-def="a program or program code that replicates itself with the intention of deleting or corrupting files or by causing the computer system to malfunction">Virus</span>
+                                vs <span class="keyword"
+                                    data-def="a stand-alone type of malware that can selfreplicate; unlike viruses, worms don’t need an active host; they can spread throughout a network without the need for any action by an end-user">Worm</span>
+                            </h4>
+                            <p class="small-text"><strong><span class="keyword"
+                                        data-def="a program or program code that replicates itself with the intention of deleting or corrupting files or by causing the computer system to malfunction">Virus</span>:</strong>
+                                Needs a host file. User must run it.</p>
+                            <p class="small-text"><em>Like a parasite.</em></p>
+                            <p class="small-text" style="margin-top:10px;"><strong><span class="keyword"
+                                        data-def="a stand-alone type of malware that can selfreplicate; unlike viruses, worms don’t need an active host; they can spread throughout a network without the need for any action by an end-user">Worm</span>:</strong>
+                                Standalone. Spreads itself automatically.</p>
+                            <p class="small-text"><em>Like a self-replicating robot.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-lock"></i> <span class="keyword"
+                                    data-def="a type of malware that encrypts data on a user’s computer and ‘holds the data hostage’ until a ransom is paid">Ransomware</span>
+                            </h4>
+                            <p class="small-text">Encrypts your files.</p>
+                            <p class="small-text">Demands money (Bitcoin) to unlock them.</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Example:</strong> "Your files are
+                                locked. Pay $500 to unlock."</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong><i class="fa-solid fa-horse"></i> <span class="keyword"
+                                    data-def="a type of malware that is designed to look like legitimate software but contains malicious code that can cause damage to a computer system">Trojan
+                                    Horse</span>:</strong> Disguised as legitimate software (e.g., "Free Game").</p>
+                        <p class="small-text">Opens a backdoor for hackers once installed.</p>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Social Engineering -->
+                <section>
+                    <h3>Phishing vs Pharming</h3>
+                    <img src="5.3 images/phishing vs pharming.png" class="r-stretch" alt="Phishing vs Pharming"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword"
+                            data-def="manipulating people into breaking normal security procedures (such as giving away their password) in order to gain illegal access to computer systems or to place malware on their computer">Social
+                            Engineering</span></h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-fish"></i> <span class="keyword"
+                                    data-def="sending out legitimate-looking emails designed to trick the recipients into giving their personal details to the sender of the email">Phishing</span>
+                            </h4>
+                            <p class="small-text">Fake emails (e.g., "Your bank account is locked").</p>
+                            <p class="small-text"><strong>Goal:</strong> Steal credentials.</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Signs:</strong> Bad spelling, urgent
+                                tone, generic greeting.</p>
+                            <p class="small-text"><em>Like a fake letter in your mailbox.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-route"></i> <span class="keyword"
+                                    data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span>
+                            </h4>
+                            <p class="small-text">Malicious code redirects you to a fake website <em>even if you type
+                                    the right URL</em>.</p>
+                            <p class="small-text"><strong>Mechanism:</strong> DNS Poisoning.</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like road signs pointing to the wrong
+                                    place.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>The Human Factor:</strong> Exploiting fear, curiosity, or trust.
+                        </p>
+                        <p class="small-text">"You won a prize!" or "Urgent <span class="keyword"
+                                data-def="an algorithm for wireless networks to protect them against data interception">Security</span>
+                            Alert!"</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 5. THE DEFENSES -->
+            <section>
+                <section>
+                    <h2>The Shield</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we protect ourselves?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Like a castle with multiple defenses:</p>
+                        <p class="small-text">Walls (<span class="keyword"
+                                data-def="software or hardware that sits between a computer and an external network (for example, the internet); the firewall monitors and filters all incoming and outgoing traffic">Firewalls</span>),
+                            Guards (<span class="keyword"
+                                data-def="the process of proving a user’s identity by using something they know, something they have or something unique to them">Authentication</span>),
+                            Secret Codes (Encryption).</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-user-check"></i> <span class="keyword"
+                                    data-def="the process of proving a user’s identity by using something they know, something they have or something unique to them">Authentication</span>
+                            </h4>
+                            <p class="small-text">Proving who you are.</p>
+                            <p class="small-text">Passwords, <span class="keyword"
+                                    data-def="type of authentication that uses a unique human characteristic, such as fingerprints, voice or retina blood vessel pattern">Biometrics</span>,
+                                2FA.</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-shield"></i> Technical</h4>
+                            <p class="small-text">Software defenses.</p>
+                            <p class="small-text"><span class="keyword"
+                                    data-def="software or hardware that sits between a computer and an external network (for example, the internet); the firewall monitors and filters all incoming and outgoing traffic">Firewalls</span>,
+                                Encryption, Anti-<span class="keyword"
+                                    data-def="programs (such as viruses, worms and Trojan horses) installed on a user’s computer with the aim of deleting, corrupting or manipulating data illegally">Malware</span>.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Defense
+                            Strategies</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Authentication -->
+                <section>
+                    <h3>Authentication Methods</h3>
+                    <img src="5.3 images/biometric authentication.png" class="r-stretch" alt="Biometric Authentication"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section>
+                    <h3>Two-Step Verification</h3>
+                    <img src="5.3 images/two step verification.png" class="r-stretch" alt="Two Step Verification"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword"
+                            data-def="the process of proving a user’s identity by using something they know, something they have or something unique to them">Authentication</span>:
+                        Proving Who You Are</h3>
+                    <div class="cols-3">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-key"></i> Passwords</h4>
+                            <p class="small-text">Something you <strong>know</strong>.</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Strong:</strong> Mixed case, numbers,
+                                symbols.</p>
+                            <p class="small-text"><em>Like a secret code.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-fingerprint"></i> <span class="keyword"
+                                    data-def="type of authentication that uses a unique human characteristic, such as fingerprints, voice or retina blood vessel pattern">Biometrics</span>
+                            </h4>
+                            <p class="small-text">Something you <strong>are</strong>.</p>
+                            <p class="small-text">Fingerprint, Face ID, Retina.</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Pros:</strong> Unique, can't lose it.
+                            </p>
+                            <p class="small-text"><strong>Cons:</strong> Privacy concerns, can't reset it.</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-mobile-screen"></i> 2FA</h4>
+                            <p class="small-text">Two-Factor <span class="keyword"
+                                    data-def="the process of proving a user’s identity by using something they know, something they have or something unique to them">Authentication</span>.
+                            </p>
+                            <p class="small-text">Password + Phone Code.</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like needing two keys to open a
+                                    safe.</em></p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Technical -->
+                <section>
+                    <h3>Data Access Levels</h3>
+                    <img src="5.3 images/data access levels.png" class="r-stretch" alt="Data Access Levels"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section>
+                    <h3>Technical Defenses</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-fire"></i> <span class="keyword"
+                                    data-def="software or hardware that sits between a computer and an external network (for example, the internet); the firewall monitors and filters all incoming and outgoing traffic">Firewall</span>
+                            </h4>
+                            <p class="small-text">Monitors traffic in/out.</p>
+                            <p class="small-text">Blocks unauthorized access.</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a <span class="keyword"
+                                        data-def="an algorithm for wireless networks to protect them against data interception">security</span>
+                                    guard checking IDs.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-lock"></i> Encryption</h4>
+                            <p class="small-text">Scrambling data so it's unreadable.</p>
+                            <p class="small-text" style="margin-top:10px;"><strong>Important:</strong> Does NOT stop
+                                interception, but makes the data useless to the thief.</p>
+                            <p class="small-text"><em>Like writing in a secret code.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4><i class="fa-solid fa-shield-virus"></i> Anti-<span class="keyword"
+                                data-def="programs (such as viruses, worms and Trojan horses) installed on a user’s computer with the aim of deleting, corrupting or manipulating data illegally">Malware</span>
+                        </h4>
+                        <p class="small-text">Scans for known <span class="keyword"
+                                data-def="a program or program code that replicates itself with the intention of deleting or corrupting files or by causing the computer system to malfunction">virus</span>
+                            signatures and suspicious behavior.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 5. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"A strong password prevents <span class="keyword"
+                                data-def="the act of gaining illegal access to a computer system without the owner’s permission">hacking</span>."
+                        </li>
+                        <li>"<span class="keyword"
+                                data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span>
+                            requires the user to click a link."</li>
+                        <li>"Encryption stops data from being stolen."</li>
+                        <li>"<span class="keyword"
+                                data-def="type of authentication that uses a unique human characteristic, such as fingerprints, voice or retina blood vessel pattern">Biometrics</span>
+                            are 100% secure."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"A strong password prevents <span class="keyword"
+                            data-def="the act of gaining illegal access to a computer system without the owner’s permission">hacking</span>."
+                    </div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It helps against Brute Force, but not <span class="keyword"
+                                data-def="sending out legitimate-looking emails designed to trick the recipients into giving their personal details to the sender of the email">Phishing</span>
+                            or Keyloggers.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"<span class="keyword"
+                            data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span>
+                        requires the user to click a link."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>That's <span class="keyword"
+                                data-def="sending out legitimate-looking emails designed to trick the recipients into giving their personal details to the sender of the email">Phishing</span>.
+                            <span class="keyword"
+                                data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span>
+                            redirects you automatically (DNS poisoning).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"Encryption stops data from being stolen."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It stops it from being <em>read</em>. It can still be stolen or deleted.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 4</h3>
+                    <div class="question-box">"<span class="keyword"
+                            data-def="type of authentication that uses a unique human characteristic, such as fingerprints, voice or retina blood vessel pattern">Biometrics</span>
+                        are 100% secure."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Fingerprints can be lifted, faces can be spoofed (though it's hard).</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

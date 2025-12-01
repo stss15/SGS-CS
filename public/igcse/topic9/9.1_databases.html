@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>9.1 Databases | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic9/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">9.1 <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">Databases</span></h1>
+                        <h3 class="sub-title">Topic 9: Organising the World's Information</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (Topic 8)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is a <span class="keyword" data-def="a named data store that contains a value that can change during the execution of a program">variable</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">A named storage location for data</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What is an <span class="keyword" data-def="a data structure containing several elements of the same data type">array</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">A list of multiple values of the same type</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How does Spotify find your favourite song in milliseconds?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Spotify has over <strong>100 million songs</strong>.</p>
+                        <p class="small-text">Yet it finds exactly what you want instantly.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>The secret?</strong> It's all stored in a <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span> – a structured collection of data designed for fast searching.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">What is a database?</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What is a <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">Database</span>?</h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span> is a persistent, structured collection of data that allows people to extract information.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-hard-drive"></i> Persistent</h4>
+                            <p class="small-text">Data is saved permanently (not lost when turned off)</p>
+                        </div>
+                        <div class="box">
+                            <h4><i class="fa-solid fa-table-cells"></i> Structured</h4>
+                            <p class="small-text">Organised in a specific way (rows and columns)</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-magnifying-glass"></i> Searchable</h4>
+                            <p class="small-text">Easy to find and filter data</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 DATABASE STRUCTURE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">Database</span> Structure</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What's inside a <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span>?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Think of a spreadsheet!</p>
+                        <p class="small-text">A <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span> is made up of <span class="keyword" data-def="a collection of related records in a database">tables</span> with rows and columns.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the parts</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>The Three Key Parts</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-table"></i> <span class="keyword" data-def="a collection of related records in a database">Table</span></h4>
+                            <p class="small-text">A collection of related data about one thing.</p>
+                            <p class="small-text"><em>e.g., Students, Books, Orders</em></p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-grip-lines"></i> <span class="keyword" data-def="a collection of fields that describe one item">Record</span> (Row)</h4>
+                            <p class="small-text">One complete entry in the table.</p>
+                            <p class="small-text"><em>e.g., One specific student</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-grip-lines-vertical"></i> <span class="keyword" data-def="a single category of data in a database table">Field</span> (Column)</h4>
+                            <p class="small-text">A single category of information.</p>
+                            <p class="small-text"><em>e.g., Name, Age, ID</em></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Example <span class="keyword" data-def="a collection of related records in a database">Table</span>: Students</h3>
+                    <table style="width:100%; font-size:0.85em; margin-top:20px;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">StudentID</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">FirstName</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Surname</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Age</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">House</th>
+                        </tr>
+                        <tr class="fragment" style="background:#d4edda;">
+                            <td style="padding:8px;">S001</td>
+                            <td style="padding:8px;">Ali</td>
+                            <td style="padding:8px;">Khan</td>
+                            <td style="padding:8px;">14</td>
+                            <td style="padding:8px;">Red</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;">S002</td>
+                            <td style="padding:8px;">Sara</td>
+                            <td style="padding:8px;">Jones</td>
+                            <td style="padding:8px;">15</td>
+                            <td style="padding:8px;">Blue</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;">S003</td>
+                            <td style="padding:8px;">John</td>
+                            <td style="padding:8px;">Smith</td>
+                            <td style="padding:8px;">14</td>
+                            <td style="padding:8px;">Red</td>
+                        </tr>
+                    </table>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong><span class="keyword" data-def="a single category of data in a database table">Fields</span></strong> = Columns (StudentID, FirstName, Surname, Age, House)</p>
+                        <p class="small-text"><strong><span class="keyword" data-def="a collection of fields that describe one item">Records</span></strong> = Rows (each student is one <span class="keyword" data-def="a collection of fields that describe one item">record</span>)</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 DATA TYPES
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">Data Types</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Why can't we store everything as text?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">The <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span> needs to know what kind of data to expect.</p>
+                        <p class="small-text">You can't sort "twenty" before "five" as numbers!</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">The main types</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Common <span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">Data Types</span></h3>
+                    <table style="width:100%; font-size:0.85em;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Type</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Description</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Examples</th>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><strong>Text / String</strong></td>
+                            <td style="padding:8px;">Letters, numbers, symbols</td>
+                            <td style="padding:8px;">"John", "AB12 3CD"</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><strong>Integer</strong></td>
+                            <td style="padding:8px;">Whole numbers</td>
+                            <td style="padding:8px;">15, -3, 0</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><strong>Real</strong></td>
+                            <td style="padding:8px;">Decimal numbers</td>
+                            <td style="padding:8px;">3.14, 99.99</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><strong>Boolean</strong></td>
+                            <td style="padding:8px;">True or False only</td>
+                            <td style="padding:8px;">TRUE, FALSE</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"><strong>Date/Time</strong></td>
+                            <td style="padding:8px;">Dates and times</td>
+                            <td style="padding:8px;">15/03/2024, 14:30</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-triangle-exclamation"></i> Common Trap!</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What <span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">data type</span> should a phone number be?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-times" style="color:red;"></i> Wrong: Integer</h4>
+                            <p class="small-text">07123456789 would lose the leading 0!</p>
+                            <p class="small-text">We don't do maths with phone numbers.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-check" style="color:green;"></i> Correct: Text</h4>
+                            <p class="small-text">Keeps the leading 0.</p>
+                            <p class="small-text">Phone numbers aren't used for calculations.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 PRIMARY KEYS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a field in a database that uniquely identifies a record">Primary Keys</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we tell two "John Smiths" apart?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Names are not unique. Two people can have the same name, birthday, and even address!</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">The solution</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>The <span class="keyword" data-def="a field in a database that uniquely identifies a record">Primary Key</span></h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A <span class="keyword" data-def="a field in a database that uniquely identifies a record">primary key</span> is a <span class="keyword" data-def="a single category of data in a database table">field</span> that <strong>uniquely identifies</strong> every <span class="keyword" data-def="a collection of fields that describe one item">record</span> in a <span class="keyword" data-def="a collection of related records in a database">table</span>.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-key"></i> Rules</h4>
+                            <ul class="small-text">
+                                <li>Must be <strong>unique</strong></li>
+                                <li>Cannot be <strong>empty</strong></li>
+                                <li>Should <strong>never change</strong></li>
+                            </ul>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-lightbulb"></i> Examples</h4>
+                            <ul class="small-text">
+                                <li>StudentID (S001, S002...)</li>
+                                <li>ISBN (for books)</li>
+                                <li>OrderNumber</li>
+                                <li>NI Number</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 FLAT FILE vs RELATIONAL
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="a database contains only one table">Single-Table Database</span></h2>
+                <div class="box" style="margin-top:20px;">
+                    <p class="small-text">For IGCSE, we focus on <strong>flat file</strong> (single-table) <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">databases</span>.</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-file"></i> <span class="keyword" data-def="a database contains only one table">Flat File</span></h4>
+                        <p class="small-text">All data in <strong>one table</strong>.</p>
+                        <p class="small-text">Simple but can have repeated data.</p>
+                        <p class="small-text"><em>What we use at IGCSE.</em></p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4><i class="fa-solid fa-diagram-project"></i> Relational</h4>
+                        <p class="small-text">Data split across <strong>multiple linked tables</strong>.</p>
+                        <p class="small-text">More complex but avoids repetition.</p>
+                        <p class="small-text"><em>A-Level topic!</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:0.95em; line-height:1.6;">
+                        <li class="fragment">A <span class="keyword" data-def="a persistent structured collection of data that allows people to extract information in a way that meets their needs">database</span> is a structured collection of data</li>
+                        <li class="fragment"><span class="keyword" data-def="a collection of related records in a database">Tables</span> contain <span class="keyword" data-def="a collection of fields that describe one item">records</span> (rows) and <span class="keyword" data-def="a single category of data in a database table">fields</span> (columns)</li>
+                        <li class="fragment">Each <span class="keyword" data-def="a single category of data in a database table">field</span> has a <span class="keyword" data-def="a classification of how data is stored and displayed, and of which operations that can be performed on the stored value">data type</span> (Text, Integer, Boolean, etc.)</li>
+                        <li class="fragment">A <span class="keyword" data-def="a field in a database that uniquely identifies a record">primary key</span> uniquely identifies each <span class="keyword" data-def="a collection of fields that describe one item">record</span></li>
+                        <li class="fragment">Phone numbers should be stored as <strong>Text</strong>, not Integer!</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>A phone number should be stored as an Integer.</li>
+                        <li>A <span class="keyword" data-def="a field in a database that uniquely identifies a record">primary key</span> can have the same value for two <span class="keyword" data-def="a collection of fields that describe one item">records</span>.</li>
+                        <li>A <span class="keyword" data-def="a collection of fields that describe one item">record</span> is a row in a <span class="keyword" data-def="a collection of related records in a database">table</span>.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">A phone number should be stored as an Integer.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Phone numbers should be <strong>Text</strong>. Integers would lose leading zeros, and we don't do maths with phone numbers!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">A <span class="keyword" data-def="a field in a database that uniquely identifies a record">primary key</span> can have the same value for two <span class="keyword" data-def="a collection of fields that describe one item">records</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>A <span class="keyword" data-def="a field in a database that uniquely identifies a record">primary key</span> must be <strong>unique</strong> for every <span class="keyword" data-def="a collection of fields that describe one item">record</span>.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">A <span class="keyword" data-def="a collection of fields that describe one item">record</span> is a row in a <span class="keyword" data-def="a collection of related records in a database">table</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>A <span class="keyword" data-def="a collection of fields that describe one item">record</span> (row) contains all the data for one item. A <span class="keyword" data-def="a single category of data in a database table">field</span> is a column.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

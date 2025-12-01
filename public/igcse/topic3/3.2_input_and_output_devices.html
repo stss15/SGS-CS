@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3.2 Input and Output Devices | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic3/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">3.2 Input & Output Devices</h1>
+                        <h3 class="sub-title">Topic 3: Hardware | The Senses of the Machine</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall 3.1 (Computer Architecture) before we move on.
+                        </p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What are the three steps of the Fetch-Decode-Execute cycle?</li>
+                        <li>What does ALU stand for?</li>
+                        <li>What is an <span class="keyword"
+                                data-def="a combination of hardware and software designed to carry out a specific set of functions">embedded
+                                system</span>?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What are the three steps of the Fetch-Decode-Execute cycle?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Fetch (get instruction), Decode (understand it), Execute (do it)</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What does ALU stand for?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Arithmetic Logic Unit</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What is an <span class="keyword"
+                            data-def="a combination of hardware and software designed to carry out a specific set of functions">embedded
+                            system</span>?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>A computer system built into a larger device with a dedicated function</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-eye"></i> The Senses</h4>
+                        <p>How does a computer see, hear, and speak?</p>
+                        <p class="small-text">It needs ways to interact with the world.</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-right-left"></i> I/O</h4>
+                        <p>Input = <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">Data</span> IN
+                        </p>
+                        <p>Output = Information OUT</p>
+                        <p class="small-text">Like our senses and actions.</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> Without I/O devices, a computer is just a box of silicon. They're the
+                    bridge to the real world.
+                </div>
+            </section>
+
+            <!-- 4. INPUT: SCANNERS -->
+            <section>
+                <section>
+                    <h2>Reading the World</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do computers "read" physical objects?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-file-image"></i> 2D Scanners</h4>
+                            <p class="small-text">Documents to Images</p>
+                            <p class="small-text" style="margin-top:10px;">Uses <strong>OCR</strong> (<span
+                                    class="keyword"
+                                    data-def="technology that can convert hard copy text or images into a digital format to be stored in a computer memory">Optical
+                                    Character Recognition</span>) to convert to text</p>
+                            <p class="small-text"><em>Like taking a photo and extracting the <span class="keyword"
+                                        data-def="a group of bits used by a computer to represent a single unit; for example, modern computers often use 64-bit word lengths">words</span>.</em>
+                            </p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-cube"></i> 3D Scanners</h4>
+                            <p class="small-text">Objects to 3D Models</p>
+                            <p class="small-text" style="margin-top:10px;">Used for CAD and 3D Printing</p>
+                            <p class="small-text"><em>Like creating a digital copy of a real object.</em></p>
+                        </div>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-barcode"></i> <span class="keyword"
+                                    data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">Barcode</span>
+                                Scanners</h4>
+                            <p class="small-text">Laser reads black/white lines</p>
+                            <p class="small-text" style="margin-top:10px;">Supermarkets, Libraries</p>
+                            <p class="small-text"><em>Every product has one!</em></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-qrcode"></i> QR Codes</h4>
+                            <p class="small-text">2D <span class="keyword"
+                                    data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">Barcodes</span>
+                                (much more <span class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">data</span>)
+                            </p>
+                            <p class="small-text" style="margin-top:10px;">Read by phones. Holds URLs, text, <span
+                                    class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">data</span>
+                            </p>
+                            <p class="small-text"><em>Like a <span class="keyword"
+                                        data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">barcode</span>
+                                    but smarter.</em></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: <span
+                                class="keyword"
+                                data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">Barcode</span>
+                            vs
+                            QR</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Barcode vs QR -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword"
+                            data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">Barcode</span>
+                        vs QR Code</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">Why did we need QR codes when <span class="keyword"
+                                data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">barcodes</span>
+                            already existed?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-barcode"></i> <span class="keyword"
+                                    data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">Barcode</span>
+                                (1D)</h4>
+                            <p class="small-text">Holds ~30 digits</p>
+                            <p class="small-text" style="margin-top:10px;">Read horizontally only</p>
+                            <p class="small-text">Need laser scanner</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a single line of text.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-qrcode"></i> QR Code (2D)</h4>
+                            <p class="small-text">Holds ~7000 digits (200x more!)</p>
+                            <p class="small-text" style="margin-top:10px;">Read horizontally AND vertically</p>
+                            <p class="small-text">Read by camera (any phone)</p>
+                            <p class="small-text">Built-in error correction</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a whole page of text in a
+                                    square!</em></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Barcode vs QR Code</h3>
+                    <img src="3.2 images/barcode vs qr code.png" class="r-stretch" alt="Barcode vs QR Code"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+            </section>
+
+            <!-- 5. INPUT: CAPTURING REALITY -->
+            <section>
+                <h2>Capturing Reality</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">How do we turn light and sound into digital <span
+                            class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span>?</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-camera"></i> Digital Cameras</h4>
+                        <p class="small-text">Light hits sensor (CCD/CMOS)</p>
+                        <p class="small-text" style="margin-top:10px;">Converted to digital by <strong>ADC</strong></p>
+                        <p class="small-text"><em>Like your eye, but it saves what it sees.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-microphone"></i> Microphones</h4>
+                        <p class="small-text">Sound vibrates diaphragm</p>
+                        <p class="small-text" style="margin-top:10px;">Converted to digital by <strong>ADC</strong></p>
+                        <p class="small-text"><em>Like your ear, but it records what it hears.</em></p>
+                    </div>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong><i class="fa-solid fa-bridge"></i> ADC (Analogue to Digital
+                            Converter)</strong> is essential for all real-world input.</p>
+                    <p class="small-text">The real world is analogue (continuous). Computers need digital (discrete).
+                    </p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Inside a Digital Camera</h3>
+                <img src="3.2 images/inside digital camera.png" class="r-stretch" alt="Digital Camera Sensor"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 6. INPUT: INTERACTION -->
+            <section>
+                <section>
+                    <h2>Interaction</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we tell the computer what we want?</p>
+                    </div>
+                    <div class="cols-3 fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-keyboard"></i> Keyboards</h4>
+                            <p class="small-text">Membrane or Mechanical</p>
+                            <p class="small-text" style="margin-top:10px;">Risk of RSI (Repetitive Strain Injury)</p>
+                            <p class="small-text"><em>The classic way to type.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-computer-mouse"></i> Mice</h4>
+                            <p class="small-text">Optical (most common now)</p>
+                            <p class="small-text" style="margin-top:10px;">Uses camera + DSP to track movement</p>
+                            <p class="small-text"><em>Like a tiny camera watching the desk.</em></p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-hand-pointer"></i> <span class="keyword"
+                                    data-def="a screen that allows the user to select or manipulate a screen image using the touch of a finger or stylus; touch screens most frequently use capacitive, infrared or resistive technology">Touch
+                                    Screens</span></h4>
+                            <p class="small-text">Input AND Output</p>
+                            <p class="small-text" style="margin-top:10px;"><em>The modern way - touch to interact.</em>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Touch
+                            Technologies</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Touch Screens -->
+                <section data-background="#f4f6f8">
+                    <h3>Touch Technologies</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">How does a screen know you're touching it?</p>
+                    </div>
+                    <div class="r-stack fragment" style="margin-top:20px;">
+                        <div class="fragment fade-in-then-out">
+                            <div class="box">
+                                <strong><i class="fa-solid fa-hand"></i> Resistive</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Pressure sensitive - two layers touch</p>
+                                <p class="small-text">Cheap, works with gloves/stylus</p>
+                                <p class="small-text" style="margin-top:10px;"><em>Like pressing two sheets
+                                        together.</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box box-blue">
+                                <strong><i class="fa-solid fa-bolt"></i> Capacitive</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Electrical charge - current flows to
+                                    finger</p>
+                                <p class="small-text">Multi-touch, durable, needs bare skin</p>
+                                <p class="small-text" style="margin-top:10px;"><em>Like static electricity - your finger
+                                        conducts!</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box">
+                                <strong><i class="fa-solid fa-lightbulb"></i> Infra-red</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Grid of light beams - finger breaks the
+                                    beam</p>
+                                <p class="small-text">Durable, works with anything</p>
+                                <p class="small-text" style="margin-top:10px;"><em>Like a laser security system - break
+                                        the beam!</em></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Touch Screen Technologies</h3>
+                    <img src="3.2 images/touch screen tech.png" class="r-stretch" alt="Touch Screen Technologies"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+            </section>
+
+            <!-- 7. SENSORS -->
+            <section>
+                <section>
+                    <h2>Sensors</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How does a computer "feel" the world around it?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Definition:</strong> Devices that read physical <span
+                                class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span> from
+                            the environment.</p>
+                        <p class="small-text"><em>Like the computer's senses - it can "feel" temperature, light,
+                                pressure, etc.</em></p>
+                    </div>
+                    <div class="cols-3 fragment" style="margin-top:20px;">
+                        <div class="box"><i class="fa-solid fa-temperature-half"></i> Temperature</div>
+                        <div class="box fragment"><i class="fa-solid fa-lightbulb"></i> Light</div>
+                        <div class="box fragment"><i class="fa-solid fa-wind"></i> Pressure</div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">Data</span> is
+                            <strong>Analogue</strong>. Needs <strong>ADC</strong> to convert to digital.</p>
+                        <p class="small-text"><em>Remember: Real world = Analogue, Computer = Digital!</em></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Control vs
+                            Monitoring</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Sensors Cheat Sheet</h3>
+                    <img src="3.2 images/sensors cheat sheet.png" class="r-stretch" alt="Sensors Overview"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: Control vs Monitoring -->
+                <section data-background="#f4f6f8">
+                    <h3>Control vs Monitoring</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">Does the system just watch, or does it act?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-eye"></i> Monitoring</h4>
+                            <p class="small-text">Just watching</p>
+                            <p class="small-text" style="margin-top:10px;">e.g., Weather Station, Patient Monitor</p>
+                            <p class="small-text">No action taken by system</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a security camera - just
+                                    records.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-gears"></i> Control</h4>
+                            <p class="small-text">Watching AND Acting</p>
+                            <p class="small-text" style="margin-top:10px;">e.g., AC Unit, Greenhouse</p>
+                            <p class="small-text"><strong>Feedback Loop:</strong> Input → Process → Output → Input</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a thermostat - senses and
+                                    responds!</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 8. OUTPUT: DISPLAY & PRINT -->
+            <section>
+                <h2>Showing Results</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">How does the computer show us information?</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-display"></i> Screens</h4>
+                        <p class="small-text"><strong>LCD:</strong> Liquid Crystal (needs backlight)</p>
+                        <p class="small-text" style="margin-top:10px;"><strong>OLED:</strong> Organic (self-lit,
+                            thinner, better black)</p>
+                        <p class="small-text" style="margin-top:10px;"><em>Like windows into the digital world.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-print"></i> Printers</h4>
+                        <p class="small-text"><strong>Inkjet:</strong> Liquid ink (Photos, color)</p>
+                        <p class="small-text" style="margin-top:10px;"><strong>Laser:</strong> Toner powder (Text, Fast)
+                        </p>
+                        <p class="small-text" style="margin-top:10px;"><strong>3D:</strong> Additive manufacturing
+                            (layers)</p>
+                        <p class="small-text" style="margin-top:10px;"><em>Like creating physical copies of digital
+                                <span class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">data</span>.</em>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <section>
+                    <h3>LCD vs OLED</h3>
+                    <img src="3.2 images/lcd vs oled.png" class="r-stretch" alt="LCD vs OLED Screens"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+                <section>
+                    <h3>Inkjet vs Laser</h3>
+                    <img src="3.2 images/inkjet vs laser.png" class="r-stretch" alt="Inkjet vs Laser Printers"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+                <section>
+                    <h3>3D Printing</h3>
+                    <img src="3.2 images/3d printing.png" class="r-stretch" alt="3D Printing Process"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+            </section>
+
+            <!-- 9. OUTPUT: ACTION -->
+            <section>
+                <h2>Moving Things</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">How does the computer affect the physical world?</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-gears"></i> <span class="keyword"
+                                data-def="an output device that converts electrical energy into mechanical movement">Actuators</span>
+                        </h4>
+                        <p class="small-text">Motors, Pumps, Switches</p>
+                        <p class="small-text" style="margin-top:10px;">Used in Control Systems</p>
+                        <p class="small-text"><em>Like the computer's "muscles" - they move things.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-volume-high"></i> Speakers</h4>
+                        <p class="small-text">Digital <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span> →
+                            <strong>DAC</strong> → Sound</p>
+                        <p class="small-text" style="margin-top:10px;"><em>Like the computer's "voice" - converts
+                                digital to sound waves.</em></p>
+                        <p class="small-text" style="margin-top:10px;"><strong>DAC:</strong> Digital to Analogue
+                            Converter (opposite of ADC!)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"A QR code holds less <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span> than
+                            a <span class="keyword"
+                                data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">barcode</span>."
+                        </li>
+                        <li>"<span class="keyword"
+                                data-def="a type of touch screen that uses the change in the screen’s capacitance (the ability to store an electrical charge) when it is touched by a finger or stylus">Capacitive
+                                touch screens</span> work with gloves."</li>
+                        <li>"Sensors send digital <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span>
+                            directly to the CPU."</li>
+                        <li>"OLED screens need a backlight."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"A QR code holds less <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span> than a
+                        <span class="keyword"
+                            data-def="a series of dark and light lines of varying thickness used to represent data; the code has to be scanned using laser or LED light source">barcode</span>."
+                    </div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>QR codes hold thousands of times more <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span> (2D
+                            vs 1D).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"<span class="keyword"
+                            data-def="a type of touch screen that uses the change in the screen’s capacitance (the ability to store an electrical charge) when it is touched by a finger or stylus">Capacitive
+                            touch screens</span> work with gloves."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False (Usually)</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>They rely on the electrical conductivity of skin. Resistive screens work with gloves.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"Sensors send digital <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span> directly
+                        to the CPU."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Sensors are Analogue. They need an <strong>ADC</strong> to convert <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span>
+                            first.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 4</h3>
+                    <div class="question-box">"OLED screens need a backlight."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>OLED pixels generate their own light. LCDs need a backlight.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

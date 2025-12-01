@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3.1 Computer Architecture | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic3/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">3.1 Computer Architecture</h1>
+                        <h3 class="sub-title">Topic 3: Hardware | The Brain of the Machine</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall Topic 2 (<span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">Data</span>
+                            Transmission) before we move on.</p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What is the difference between serial and parallel transmission?</li>
+                        <li>What does ARQ stand for?</li>
+                        <li>What is the difference between symmetric and asymmetric encryption?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What is the difference between serial and parallel transmission?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Serial sends one bit at a time. Parallel sends multiple bits at once.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What does ARQ stand for?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Automatic Repeat Request</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What is the difference between symmetric and asymmetric encryption?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Symmetric uses one key. Asymmetric uses two keys (public and private).</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-brain"></i> The Brain</h4>
+                        <p>How does a pile of metal and silicon actually "think"?</p>
+                        <p class="small-text">It seems like magic, but it's not.</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-microchip"></i> The Machine</h4>
+                        <p>It doesn't think. It follows instructions.</p>
+                        <p class="small-text">Billions of instructions per second!</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> The CPU processes instructions one by one, incredibly fast. Like a
+                    super-fast robot following a recipe.
+                </div>
+            </section>
+
+            <!-- 4. THE CPU -->
+            <section>
+                <h2>The Central Processing Unit (CPU)</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">What actually makes a computer "compute"?</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-crown"></i> The Role</h4>
+                        <p class="small-text">The "Brain" of the computer</p>
+                        <p class="small-text" style="margin-top:10px;">Responsible for the <strong>execution</strong> of
+                            instructions</p>
+                        <p class="small-text"><em>Like the conductor of an orchestra - coordinates everything.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-microchip"></i> Microprocessor</h4>
+                        <p class="small-text">A CPU on a single <span class="keyword"
+                                data-def="usually a chip made from a semiconductor material which carries out the same tasks as a larger circuit made from individual components">integrated
+                                circuit</span> (chip)</p>
+                        <p class="small-text" style="margin-top:10px;">Used in PCs, phones, and washing machines</p>
+                        <p class="small-text"><em>All the power of a computer in one tiny chip!</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. VON NEUMANN ARCHITECTURE -->
+            <section>
+                <section>
+                    <h2><span class="keyword"
+                            data-def="a type of computer architecture which introduced the concept of the stored program in the 1940s">Von
+                            Neumann Architecture</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How should a computer be organized?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h3><i class="fa-solid fa-lightbulb"></i> The Stored Program Concept</h3>
+                        <p class="small-text">Programs and <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span> are
+                            stored in the <strong>SAME</strong> <span class="keyword"
+                                data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>.
+                        </p>
+                        <p class="small-text" style="margin-top:10px;">Instructions are fetched and executed
+                            sequentially (one after another).</p>
+                        <p class="small-text" style="margin-top:10px;"><em>Revolutionary idea: The computer can modify
+                                its own instructions!</em></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: The
+                            Components</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Von Neumann Architecture</h3>
+                    <img src="3.1 images/von neumann architecture.png" class="r-stretch" alt="Von Neumann Architecture"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: Components -->
+                <section data-background="#f4f6f8">
+                    <h3>Inside the CPU</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">What are the key parts that make the CPU work?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-calculator"></i> ALU</h4>
+                            <p class="small-text"><strong>Arithmetic Logic Unit</strong></p>
+                            <p class="small-text">Does the maths (+, -, ×, ÷) and logic (AND, OR, NOT)</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a calculator built into the
+                                    CPU.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-traffic-light"></i> CU</h4>
+                            <p class="small-text"><strong><span class="keyword"
+                                        data-def="the component of a computer’s CPU that ensures synchronisation of data flow and programs throughout the computer by sending out control signals along the control bus">Control
+                                        Unit</span></strong></p>
+                            <p class="small-text">The conductor. Decodes instructions and sends control signals</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a traffic controller - tells
+                                    everything what to do.</em></p>
+                        </div>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-memory"></i> <span class="keyword"
+                                    data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">Registers</span>
+                            </h4>
+                            <p class="small-text">Tiny, super-fast storage spots inside the CPU</p>
+                            <p class="small-text" style="margin-top:10px;">PC, MAR, MDR, CIR, ACC</p>
+                            <p class="small-text"><em>Like a desk drawer - right there, instant access.</em></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-bus"></i> Buses</h4>
+                            <p class="small-text">The wires connecting everything</p>
+                            <p class="small-text" style="margin-top:10px;"><span class="keyword"
+                                    data-def="the system bus that carries the addresses throughout the computer system">Address
+                                    Bus</span>, <span class="keyword"
+                                    data-def="the system bus that allows data to be carried from CPU to memory (and vice versa) or to and from input/ output devices">Data
+                                    Bus</span>, <span class="keyword"
+                                    data-def="the system bus that carries signals from control unit to all other computer components">Control
+                                    Bus</span></p>
+                            <p class="small-text"><em>Like highways - <span class="keyword"
+                                        data-def="other examples include web cache, database cache, DNS cache">data</span>
+                                    travels on these roads.</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 6. FDE CYCLE -->
+            <section>
+                <section>
+                    <h2>Fetch-Decode-Execute Cycle</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How does the CPU actually process instructions?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Like a chef following a recipe. Get the
+                            instruction (Fetch), understand it (Decode), do it (Execute).</p>
+                    </div>
+                    <div class="r-stack fragment" style="margin-top:20px;">
+                        <div class="fragment fade-in-then-out">
+                            <div class="box">
+                                <strong><i class="fa-solid fa-download"></i> 1. Fetch</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Get the next instruction from <span
+                                        class="keyword"
+                                        data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>
+                                    (RAM)</p>
+                                <p class="small-text"><em>Like getting the next step from the recipe book.</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box box-blue">
+                                <strong><i class="fa-solid fa-book-open"></i> 2. Decode</strong><br>
+                                <p class="small-text" style="margin-top:10px;">The <span class="keyword"
+                                        data-def="the component of a computer’s CPU that ensures synchronisation of data flow and programs throughout the computer by sending out control signals along the control bus">Control
+                                        Unit</span> figures out what the instruction means</p>
+                                <p class="small-text"><em>Like reading and understanding what "add 2 eggs" means.</em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box">
+                                <strong><i class="fa-solid fa-play"></i> 3. Execute</strong><br>
+                                <p class="small-text" style="margin-top:10px;">Carry out the instruction (e.g., Add
+                                    numbers, Load <span class="keyword"
+                                        data-def="other examples include web cache, database cache, DNS cache">data</span>)
+                                </p>
+                                <p class="small-text"><em>Like actually adding the eggs to the bowl.</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: The
+                            <span class="keyword"
+                                data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">Register</span>
+                            Dance</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>The FDE Cycle</h3>
+                    <img src="3.1 images/fde cycle.png" class="r-stretch" alt="Fetch Decode Execute Cycle"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section>
+                    <h3>Machine Code Instruction</h3>
+                    <img src="3.1 images/machine code instruction breakdown.png" class="r-stretch"
+                        alt="Machine Code Breakdown"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: Register Steps -->
+                <section data-background="#f4f6f8">
+                    <h3>The <span class="keyword"
+                            data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">Register</span>
+                        Dance</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">Step-by-step: How do <span class="keyword"
+                                data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">registers</span>
+                            work together?</p>
+                    </div>
+                    <ol style="font-size: 0.9em; margin-top:20px; line-height:1.8;">
+                        <li class="fragment"><strong>PC (Program Counter)</strong> holds the <span class="keyword"
+                                data-def="a label for a memory location used by the CPU to track data">address</span> of
+                            the next instruction.</li>
+                        <li class="fragment"><span class="keyword"
+                                data-def="a label for a memory location used by the CPU to track data">Address</span> is
+                            copied to <strong>MAR (<span class="keyword"
+                                    data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">Memory</span>
+                                <span class="keyword"
+                                    data-def="a label for a memory location used by the CPU to track data">Address</span>
+                                <span class="keyword"
+                                    data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">Register</span>)</strong>
+                            - "Where to look"</li>
+                        <li class="fragment">Instruction at that <span class="keyword"
+                                data-def="a label for a memory location used by the CPU to track data">address</span> is
+                            fetched to <strong>MDR (<span class="keyword"
+                                    data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">Memory</span>
+                                <span class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">Data</span>
+                                <span class="keyword"
+                                    data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">Register</span>)</strong>
+                            - "What we found"</li>
+                        <li class="fragment">Instruction copied to <strong>CIR (Current Instruction <span
+                                    class="keyword"
+                                    data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">Register</span>)</strong>
+                            - "What we're working on"</li>
+                        <li class="fragment"><strong>PC</strong> is incremented (PC + 1) - "Get ready for next
+                            instruction"</li>
+                        <li class="fragment">Instruction in CIR is <strong>Decoded</strong> - "What does this mean?"
+                        </li>
+                        <li class="fragment">Instruction is <strong>Executed</strong> (result might go to <strong>ACC
+                                (Accumulator)</strong>) - "Do it!"</li>
+                    </ol>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><em>This happens billions of times per second!</em></p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 7. PERFORMANCE -->
+            <section>
+                <h2>CPU Performance</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">What makes one CPU faster than another?</p>
+                </div>
+                <div class="cols-3 fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-gauge-high"></i> Clock Speed</h4>
+                        <p class="small-text">Measured in <strong>GHz</strong> (billions of cycles per second)</p>
+                        <p class="small-text" style="margin-top:10px;">More = Faster</p>
+                        <p class="small-text"><em>Like RPM in a car - more revolutions = faster processing.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-layer-group"></i> <span class="keyword"
+                                data-def="a unit on a CPU made up of an ALU, control unit and registers; a CPU may contain a number of cores">Cores</span>
+                        </h4>
+                        <p class="small-text">Multiple CPUs on one chip</p>
+                        <p class="small-text" style="margin-top:10px;"><span class="keyword"
+                                data-def="a CPU containing two cores">Dual Core</span>, <span class="keyword"
+                                data-def="a CPU containing four cores">Quad Core</span>, Octa <span class="keyword"
+                                data-def="a unit on a CPU made up of an ALU, control unit and registers; a CPU may contain a number of cores">Core</span>
+                        </p>
+                        <p class="small-text">More = Better multitasking</p>
+                        <p class="small-text" style="margin-top:10px;"><em>Like having multiple workers instead of
+                                one.</em></p>
+                    </div>
+                    <div class="box fragment">
+                        <h4><i class="fa-solid fa-bolt"></i> <span class="keyword"
+                                data-def="is temporary memory using static RAM to hold frequently used data/instructions by the CPU thereby increasing CPU performance. More generally, cache means any area of storage used to quickly access frequently-used">Cache</span>
+                        </h4>
+                        <p class="small-text">Super fast <span class="keyword"
+                                data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>
+                            <strong>ON</strong> the CPU</p>
+                        <p class="small-text" style="margin-top:10px;">Stores frequently used <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span></p>
+                        <p class="small-text">More = Less waiting for RAM</p>
+                        <p class="small-text" style="margin-top:10px;"><em>Like a desk drawer vs filing cabinet -
+                                instant access!</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Factors Affecting Performance</h3>
+                <img src="3.1 images/clock, multi-core cahce.png" class="r-stretch" alt="CPU Performance Factors"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 8. EMBEDDED SYSTEMS -->
+            <section>
+                <section>
+                    <h2><span class="keyword"
+                            data-def="a combination of hardware and software designed to carry out a specific set of functions">Embedded
+                            Systems</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Where else do we find computers besides laptops and
+                            phones?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Reality:</strong> There are more computers in your house than you
+                            think!</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-microchip"></i> Definition</h4>
+                            <p class="small-text">A computer system built <strong>INTO</strong> a larger device</p>
+                            <p class="small-text" style="margin-top:10px;">Designed for a <strong>dedicated
+                                    function</strong></p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a computer hidden inside another
+                                    device.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-list"></i> Examples</h4>
+                            <p class="small-text"><i class="fa-solid fa-car"></i> Car Engine Unit</p>
+                            <p class="small-text"><i class="fa-solid fa-soap"></i> Washing Machine</p>
+                            <p class="small-text"><i class="fa-solid fa-microwave"></i> Microwave</p>
+                            <p class="small-text" style="margin-top:10px;"><em>They're everywhere!</em></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Pros &
+                            Cons</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Embedded Systems</h3>
+                    <img src="3.1 images/embedded systems.png" class="r-stretch" alt="Embedded Systems Examples"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: Pros & Cons -->
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword"
+                            data-def="a combination of hardware and software designed to carry out a specific set of functions">Embedded
+                            Systems</span>: The Trade-off</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-check-circle"></i> Advantages</h4>
+                            <ul class="small-text">
+                                <li><strong>Reliable:</strong> Simple software (does one job well)</li>
+                                <li><strong>Cheap:</strong> Mass produced in millions</li>
+                                <li><strong>Low power:</strong> Designed to be efficient</li>
+                                <li><strong>Small size:</strong> Fits inside the device</li>
+                            </ul>
+                            <p class="small-text" style="margin-top:10px;"><em>Perfect for dedicated tasks!</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-times-circle"></i> Disadvantages</h4>
+                            <ul class="small-text">
+                                <li><strong>Hard to upgrade:</strong> Built into the device</li>
+                                <li><strong>Hard to fix:</strong> Often need to replace entire device</li>
+                                <li><strong>Limited resources:</strong> Small <span class="keyword"
+                                        data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>/slow
+                                    speed (but enough for the job)</li>
+                            </ul>
+                            <p class="small-text" style="margin-top:10px;"><em>Not designed for flexibility.</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 8. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"<span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">Data</span> and
+                            programs are stored in separate memories in <span class="keyword"
+                                data-def="a type of computer architecture which introduced the concept of the stored program in the 1940s">Von
+                                Neumann architecture</span>."</li>
+                        <li>"The ALU controls the flow of <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span>."
+                        </li>
+                        <li>"An <span class="keyword"
+                                data-def="a combination of hardware and software designed to carry out a specific set of functions">embedded
+                                system</span> is a general-purpose computer."</li>
+                        <li>"More <span class="keyword"
+                                data-def="a unit on a CPU made up of an ALU, control unit and registers; a CPU may contain a number of cores">cores</span>
+                            always means double the speed."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"<span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">Data</span> and
+                        programs are stored in separate memories in Von Neumann
+                        architecture."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>They share the SAME <span class="keyword"
+                                data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>.
+                            This is the key feature.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"The ALU controls the flow of <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span>."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>The <strong><span class="keyword"
+                                    data-def="the component of a computer’s CPU that ensures synchronisation of data flow and programs throughout the computer by sending out control signals along the control bus">Control
+                                    Unit</span> (CU)</strong> controls the flow. The ALU does the maths.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"An <span class="keyword"
+                            data-def="a combination of hardware and software designed to carry out a specific set of functions">embedded
+                            system</span> is a general-purpose computer."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It has a <strong>dedicated function</strong> (e.g., washing clothes).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 4</h3>
+                    <div class="question-box">"More <span class="keyword"
+                            data-def="a unit on a CPU made up of an ALU, control unit and registers; a CPU may contain a number of cores">cores</span>
+                        always means double the speed."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Communication between <span class="keyword"
+                                data-def="a unit on a CPU made up of an ALU, control unit and registers; a CPU may contain a number of cores">cores</span>
+                            takes time, and not all software is written to use multiple
+                            <span class="keyword"
+                                data-def="a unit on a CPU made up of an ALU, control unit and registers; a CPU may contain a number of cores">cores</span>.
+                        </p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

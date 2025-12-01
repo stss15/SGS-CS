@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>10.3 Truth Tables | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic10/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">10.3 <span class="keyword"
+                                data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth
+                                Tables</span></h1>
+                        <h3 class="sub-title">Topic 10: Boolean Logic | Testing Every Possibility</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (10.2)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What do we call the wires between gates?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Intermediate points (P, Q,
+                            R...)</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> In <code>(A OR B) AND C</code>, what do we solve
+                            first?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">The brackets: A OR B</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we PROVE a circuit works?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box-blue">
+                            <h4><i class="fa-solid fa-question"></i> The Problem</h4>
+                            <p class="small-text">We've built a circuit, but...</p>
+                            <p class="small-text">Does it give the right answer for <em>every possible input</em>?</p>
+                        </div>
+                        <div class="box">
+                            <h4><i class="fa-solid fa-table"></i> The Solution</h4>
+                            <p class="small-text">A <strong><span class="keyword"
+                                        data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth
+                                        Table</span></strong>!</p>
+                            <p class="small-text">It tests EVERY combination systematically.</p>
+                        </div>
+                    </div>
+                    <div class="fragment box"
+                        style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                        <strong>Key Idea:</strong> If the <span class="keyword"
+                            data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth
+                            table</span> is correct, the circuit is correct.
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">What is a truth
+                            table?</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What is a <span class="keyword"
+                            data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth
+                            Table</span>?</h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A table that lists ALL possible input combinations and their
+                            corresponding outputs.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-list"></i> Structure</h4>
+                            <p class="small-text"><strong>Columns:</strong> One per input + output(s)</p>
+                            <p class="small-text"><strong>Rows:</strong> Every possible combination of 0s and 1s</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-check"></i> Purpose</h4>
+                            <p class="small-text">Proves how a circuit behaves</p>
+                            <p class="small-text">Finds errors in logic</p>
+                            <p class="small-text">Documents the design</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COUNTING ROWS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Counting Rows: The 2<sup>n</sup> Rule</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">How many rows does a <span class="keyword"
+                                data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth
+                                table</span> need?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4><i class="fa-solid fa-calculator"></i> The Formula</h4>
+                        <p style="font-size:1.3em;"><strong>Rows = 2<sup>n</sup></strong></p>
+                        <p class="small-text">Where <strong>n</strong> = number of inputs</p>
+                    </div>
+                    <div class="cols-3 fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>2 Inputs</h4>
+                            <p class="small-text">2² = <strong>4</strong> rows</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>3 Inputs</h4>
+                            <p class="small-text">2³ = <strong>8</strong> rows</p>
+                        </div>
+                        <div class="box">
+                            <h4>4 Inputs</h4>
+                            <p class="small-text">2⁴ = <strong>16</strong> rows</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Standard Binary
+                            Order</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-sort-numeric-down"></i> Standard Binary Order</h3>
+                    <div class="box">
+                        <p class="small-text" style="margin:0;"><strong>Always write inputs in ascending binary
+                                order!</strong></p>
+                    </div>
+                    <div class="cols" style="margin-top:15px;">
+                        <div class="box fragment">
+                            <h4>2 Inputs (A, B)</h4>
+                            <table style="width:100%; font-size:0.9em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">Row</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">B</th>
+                                    <th style="background:#888; color:white; padding:6px;">Decimal</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>0</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>3</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4>3 Inputs (A, B, C)</h4>
+                            <table style="width:100%; font-size:0.8em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:4px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:4px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:4px;">C</th>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>1</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:15px;">
+                        <p class="small-text"><strong>Memory Trick:</strong> It's just counting 0, 1, 2, 3... in binary!
+                        </p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COMPLETING A TRUTH TABLE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Completing a <span class="keyword"
+                            data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth
+                            Table</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">How do we fill in the outputs?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4><i class="fa-solid fa-lightbulb"></i> Golden Rule</h4>
+                        <p class="small-text">Don't try to do it all in your head!</p>
+                        <p class="small-text"><strong>Break it into steps using intermediate columns.</strong></p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <h4>Strategy</h4>
+                        <ol class="small-text">
+                            <li>Add columns for intermediate points (P, Q, R)</li>
+                            <li>Calculate each column step-by-step</li>
+                            <li>Final column = output</li>
+                        </ol>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Worked Example</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-calculator"></i> Worked Example: Part 1</h3>
+                    <div class="box">
+                        <p style="margin:0;"><strong>Expression:</strong> <code>(A AND B) OR C</code></p>
+                        <p class="small-text">Let P = A AND B. Then X = P OR C</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:15px;">
+                        <h4>Step 1: Calculate P = A AND B</h4>
+                        <table style="width:100%; font-size:0.85em; text-align:center;">
+                            <tr>
+                                <th style="background:var(--primary-blue); color:white; padding:6px;">A</th>
+                                <th style="background:var(--primary-blue); color:white; padding:6px;">B</th>
+                                <th style="background:var(--primary-blue); color:white; padding:6px;">C</th>
+                                <th style="background:var(--sg-gold); color:white; padding:6px;">P (A AND B)</th>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td style="background:#d4edda; font-weight:bold;">1</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td style="background:#d4edda; font-weight:bold;">1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-calculator"></i> Worked Example: Part 2</h3>
+                    <div class="box">
+                        <p style="margin:0;"><strong>Step 2: Calculate X = P OR C</strong></p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:15px;">
+                        <table style="width:100%; font-size:0.85em; text-align:center;">
+                            <tr>
+                                <th style="background:var(--primary-blue); color:white; padding:6px;">A</th>
+                                <th style="background:var(--primary-blue); color:white; padding:6px;">B</th>
+                                <th style="background:var(--primary-blue); color:white; padding:6px;">C</th>
+                                <th style="background:var(--sg-gold); color:white; padding:6px;">P</th>
+                                <th style="background:#28a745; color:white; padding:6px;">X (P OR C)</th>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td style="background:#d4edda; font-weight:bold;">1</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td style="background:#d4edda; font-weight:bold;">1</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td style="background:#f8d7da;">0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td style="background:#d4edda; font-weight:bold;">1</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td style="background:#d4edda; font-weight:bold;">1</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td style="background:#d4edda; font-weight:bold;">1</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="fragment box" style="margin-top:15px;">
+                        <p class="small-text"><strong>Done!</strong> The X column shows all possible outputs.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 FROM TRUTH TABLE TO CIRCUIT
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>From <span class="keyword"
+                            data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth
+                            Table</span> to Circuit</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">Can we go backwards?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Sometimes we have the requirements (<span class="keyword"
+                                data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth
+                                table</span>) and need to build the circuit.</p>
+                        <p class="small-text">This is called <strong>logic synthesis</strong>.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <h4><i class="fa-solid fa-magnifying-glass"></i> The Strategy</h4>
+                        <ol class="small-text">
+                            <li>Find rows where output = <strong>1</strong></li>
+                            <li>Write an AND expression for each row</li>
+                            <li>Join all expressions with OR</li>
+                        </ol>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See Example</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-microchip"></i> Logic Synthesis: Simple Example</h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Given <span class="keyword"
+                                    data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth
+                                    Table</span></h4>
+                            <table style="width:100%; font-size:0.9em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>1</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr style="background:#d4edda;">
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td><strong>1</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>0</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4>Steps</h4>
+                            <p class="small-text"><strong>1. Find rows where X=1:</strong></p>
+                            <p class="small-text">Only row 3: A=1, B=0</p>
+                            <p class="small-text"><strong>2. Write the expression:</strong></p>
+                            <p class="small-text">A=1 → A, B=0 → NOT B</p>
+                            <p class="small-text"><strong>Result:</strong></p>
+                            <p><code>X = A AND (NOT B)</code></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-microchip"></i> Logic Synthesis: Multiple Rows</h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4>Given Table</h4>
+                            <table style="width:100%; font-size:0.9em; text-align:center;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">X</th>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr style="background:#d4edda;">
+                                    <td>0</td>
+                                    <td>1</td>
+                                    <td><strong>1</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr style="background:#d4edda;">
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td><strong>1</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4>Steps</h4>
+                            <p class="small-text"><strong>1. Rows where X=1:</strong></p>
+                            <p class="small-text">Row 2: A=0, B=1 → <code>(NOT A) AND B</code></p>
+                            <p class="small-text">Row 4: A=1, B=1 → <code>A AND B</code></p>
+                            <p class="small-text"><strong>2. Join with OR:</strong></p>
+                            <p><code>X = ((NOT A) AND B) OR (A AND B)</code></p>
+                            <p class="small-text"><em>(This simplifies to X = B, but you don't need to simplify!)</em>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 REAL-WORLD APPLICATION
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Real-World Application</h2>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-wind"></i> Wind Turbine Safety System</h4>
+                        <p class="small-text" style="margin:0;">A turbine shuts down (X=1) based on sensor readings.</p>
+                    </div>
+                    <div class="fragment" style="margin-top:15px;">
+                        <table style="width:100%; font-size:0.8em; text-align:left;">
+                            <tr>
+                                <th style="background:var(--primary-blue); color:white; padding:8px;">Sensor</th>
+                                <th style="background:var(--primary-blue); color:white; padding:8px;">0 means</th>
+                                <th style="background:var(--primary-blue); color:white; padding:8px;">1 means</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:6px;"><strong>S</strong> (Speed)</td>
+                                <td style="padding:6px;">Speed ≤ 1000 rpm</td>
+                                <td style="padding:6px;">Speed > 1000 rpm</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:6px;"><strong>T</strong> (Temperature)</td>
+                                <td style="padding:6px;">Temp ≤ 80°C</td>
+                                <td style="padding:6px;">Temp > 80°C</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:6px;"><strong>W</strong> (Wind)</td>
+                                <td style="padding:6px;">Wind ≤ 120 kph</td>
+                                <td style="padding:6px;">Wind > 120 kph</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the
+                            conditions</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-list-check"></i> The Shutdown Conditions</h3>
+                    <div class="box">
+                        <p class="small-text" style="margin:0;"><strong>Turbine shuts down (X=1) if:</strong></p>
+                    </div>
+                    <div class="cols" style="margin-top:15px;">
+                        <div class="box fragment">
+                            <h4>Condition 1</h4>
+                            <p class="small-text">Speed ≤ 1000 rpm AND Temp > 80°C</p>
+                            <p class="small-text"><code>(NOT S) AND T</code></p>
+                        </div>
+                        <div class="box fragment">
+                            <h4>Condition 2</h4>
+                            <p class="small-text">Speed > 1000 rpm AND Wind > 120 kph</p>
+                            <p class="small-text"><code>S AND W</code></p>
+                        </div>
+                    </div>
+                    <div class="box fragment" style="margin-top:15px;">
+                        <h4>Condition 3</h4>
+                        <p class="small-text">Temp ≤ 80°C AND Wind > 120 kph → <code>(NOT T) AND W</code></p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:15px;">
+                        <h4>Full Expression</h4>
+                        <p><code>X = ((NOT S) AND T) OR (S AND W) OR ((NOT T) AND W)</code></p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-star"></i> Key Takeaways</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box fragment">
+                        <h4>Rows = 2<sup>n</sup></h4>
+                        <p class="small-text">2 inputs = 4 rows</p>
+                        <p class="small-text">3 inputs = 8 rows</p>
+                        <p class="small-text">4 inputs = 16 rows</p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4>Standard Order</h4>
+                        <p class="small-text">Binary counting: 00, 01, 10, 11</p>
+                        <p class="small-text">This is 0, 1, 2, 3 in decimal</p>
+                    </div>
+                </div>
+                <div class="cols" style="margin-top:15px;">
+                    <div class="box fragment">
+                        <h4>Use Intermediate Columns</h4>
+                        <p class="small-text">Break complex expressions into steps (P, Q, R...)</p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4>Synthesis Strategy</h4>
+                        <p class="small-text">Find 1s → AND each row → OR together</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 PLENARY - TRUE/FALSE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.05em; line-height:1.6; margin-top: 20px;">
+                        <li>A 3-input <span class="keyword"
+                                data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth
+                                table</span> has 6 rows.</li>
+                        <li>We should calculate intermediate values first.</li>
+                        <li>00, 01, 10, 11 is the standard binary order for 2 inputs.</li>
+                        <li>To build a circuit from a <span class="keyword"
+                                data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth
+                                table</span>, we look at rows where output is 0.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"A 3-input truth table has 6 rows."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It has <strong>8 rows</strong> (2³ = 8). The formula is 2<sup>n</sup>.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"We should calculate intermediate values first."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Breaking it into steps (P, Q, R) reduces mistakes and makes tracing easier.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"00, 01, 10, 11 is the standard binary order for 2 inputs."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>This represents counting 0, 1, 2, 3 in binary and covers all 2² = 4 combinations.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 4</h3>
+                    <div class="question-box">"To build a circuit from a truth table, we look at rows where output is
+                        0."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>We look at rows where output is <strong>1</strong>. Then we AND each row's conditions and OR
+                            them together.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>
+
+</html>
+
+

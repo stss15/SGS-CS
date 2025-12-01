@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3.3 <span class="keyword" data-def="other examples include web cache, database cache, DNS cache">Data</span>
+        Storage | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic3/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">3.3 <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">Data</span>
+                            Storage</h1>
+                        <h3 class="sub-title">Topic 3: Hardware | Where <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">Data</span> Lives
+                        </h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall 3.2 (Input & Output Devices) before we move on.
+                        </p>
+                    </div>
+
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What does ADC stand for?</li>
+                        <li>What is the difference between monitoring and control systems?</li>
+                        <li>What does DAC stand for?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What does ADC stand for?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Analogue to Digital Converter</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What is the difference between monitoring and control systems?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Monitoring just watches. Control watches AND acts (feedback loop).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What does DAC stand for?</div>
+
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Digital to Analogue Converter</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="cols">
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-desktop"></i> The Desk</h4>
+                        <p>Where you do your work (Fast, Temporary)</p>
+                        <p class="small-text">Quick access, but limited space</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-file-zipper"></i> The Cabinet</h4>
+                        <p>Where you store your files (Slow, Permanent)</p>
+                        <p class="small-text">Lots of space, but takes time to access</p>
+                    </div>
+                </div>
+                <div class="fragment box"
+                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                    <strong>Key Idea:</strong> We need both. RAM (Desk) for speed, HDD/SSD (Cabinet) for storage.
+                    Different jobs, different tools!
+                </div>
+            </section>
+
+            <section>
+                <h3>Storage Hierarchy</h3>
+                <img src="3.3 images/cpu to secondary storage.png" class="r-stretch"
+                    alt="CPU to Secondary Storage Hierarchy"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 4. PRIMARY MEMORY -->
+            <section>
+                <section>
+                    <h2>Primary <span class="keyword"
+                            data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">Memory</span>
+                    </h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What <span class="keyword"
+                                data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>
+                            does the CPU access directly?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Definition:</strong> Directly accessible by the CPU.</p>
+                        <p class="small-text"><em>Like the CPU's immediate workspace - no waiting!</em></p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-memory"></i> RAM</h4>
+                            <p class="small-text"><strong>Random Access <span class="keyword"
+                                        data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">Memory</span></strong>
+                            </p>
+                            <p class="small-text" style="margin-top:10px;"><span class="keyword"
+                                    data-def="describes memory that loses its contents when the power is turned off">Volatile</span>
+                                (Lost when power off)</p>
+                            <p class="small-text">Read/Write</p>
+                            <p class="small-text">Stores running programs/<span class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">data</span>
+                            </p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like your desk - temporary
+                                    workspace.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-book"></i> ROM</h4>
+                            <p class="small-text"><strong>Read Only <span class="keyword"
+                                        data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">Memory</span></strong>
+                            </p>
+                            <p class="small-text" style="margin-top:10px;">Non-<span class="keyword"
+                                    data-def="describes memory that loses its contents when the power is turned off">Volatile</span>
+                                (Kept when power off)</p>
+                            <p class="small-text">Read Only</p>
+                            <p class="small-text">Stores BIOS/Bootstrap</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a permanent instruction manual.</em>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: DRAM vs
+                            SRAM</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>RAM vs ROM</h3>
+                    <img src="3.3 images/ram vs rom.png" class="r-stretch" alt="RAM vs ROM Comparison"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <!-- VERTICAL: DRAM vs SRAM -->
+                <section data-background="#f4f6f8">
+                    <h3>DRAM vs SRAM</h3>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">Why are there two types of RAM?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-rotate"></i> DRAM (Dynamic)</h4>
+                            <p class="small-text">Needs constant refreshing (<span class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">data</span>
+                                leaks away!)</p>
+                            <p class="small-text" style="margin-top:10px;">Cheaper, Higher density</p>
+                            <p class="small-text">Used for <strong>Main RAM</strong></p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a bucket with a leak - needs
+                                    constant refilling.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-lock"></i> SRAM (Static)</h4>
+                            <p class="small-text">No <span class="keyword"
+                                    data-def="recharge every few seconds in order to maintain charge; for example with a device such as a capacitor">refresh</span>
+                                needed (uses flip-flops - stable!)</p>
+                            <p class="small-text" style="margin-top:10px;">Faster, Expensive</p>
+                            <p class="small-text">Used for <strong><span class="keyword"
+                                        data-def="is temporary memory using static RAM to hold frequently used data/instructions by the CPU thereby increasing CPU performance. More generally, cache means any area of storage used to quickly access frequently-used">Cache</span></strong>
+                            </p>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a sealed container - holds <span
+                                        class="keyword"
+                                        data-def="other examples include web cache, database cache, DNS cache">data</span>
+                                    without leaking.</em></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 5. SECONDARY STORAGE -->
+            <section>
+                <h2>Secondary Storage</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">Where do we store <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span>
+                        permanently?</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Characteristics:</strong> Non-<span class="keyword"
+                            data-def="describes memory that loses its contents when the power is turned off">volatile</span>,
+                        Slower, Larger Capacity</p>
+                    <p class="small-text"><em>Like a filing cabinet - permanent storage, but takes time to access.</em>
+                    </p>
+                </div>
+                <div class="cols-3 fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-compact-disc"></i> Magnetic</h4>
+                        <p class="small-text">HDD (Hard Disk Drive)</p>
+                        <p class="small-text" style="margin-top:10px;">Platters, Read/Write heads</p>
+                        <p class="small-text"><em>Like a record player - spinning disks.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-circle"></i> Optical</h4>
+                        <p class="small-text">CD, DVD, Blu-ray</p>
+                        <p class="small-text" style="margin-top:10px;">Lasers, Pits & Lands</p>
+                        <p class="small-text"><em>Like a CD player - laser reads the surface.</em></p>
+                    </div>
+                    <div class="box fragment">
+                        <h4><i class="fa-solid fa-microchip"></i> Solid State</h4>
+                        <p class="small-text">SSD, USB</p>
+                        <p class="small-text" style="margin-top:10px;">Flash <span class="keyword"
+                                data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">Memory</span>
+                            (Electrons)</p>
+                        <p class="small-text"><em>Like a <span class="keyword"
+                                    data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>
+                                card - no moving parts!</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Optical Media</h3>
+                <img src="3.3 images/cd dvd blu ray.png" class="r-stretch" alt="CD DVD Blu-ray Comparison"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 6. COMPARISON -->
+            <section>
+                <h2>Which to Choose?</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">HDD, SSD, or Optical? It depends on what you need!</p>
+                </div>
+                <div class="r-stack fragment" style="margin-top:20px;">
+                    <div class="fragment fade-in-then-out">
+                        <div class="box">
+                            <strong><i class="fa-solid fa-hard-drive"></i> HDD (Hard Disk Drive)</strong><br>
+                            <p class="small-text" style="margin-top:10px;"><span class="green">Pros:</span> Cheap, Huge
+                                Capacity</p>
+                            <p class="small-text"><span class="red">Cons:</span> Fragile (Moving parts), Slower</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Best for: Large files, backups, budget
+                                    builds.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in-then-out">
+                        <div class="box box-blue">
+                            <strong><i class="fa-solid fa-memory"></i> SSD (Solid State Drive)</strong><br>
+                            <p class="small-text" style="margin-top:10px;"><span class="green">Pros:</span> Very Fast,
+                                Durable, Silent</p>
+                            <p class="small-text"><span class="red">Cons:</span> Expensive (per GB)</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Best for: Operating system, games,
+                                    speed-critical tasks.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="box">
+                            <strong><i class="fa-solid fa-compact-disc"></i> Optical (Blu-ray/DVD)</strong><br>
+                            <p class="small-text" style="margin-top:10px;"><span class="green">Pros:</span> Portable,
+                                Cheap distribution</p>
+                            <p class="small-text"><span class="red">Cons:</span> Slow, Can get scratched</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Best for: Movies, software distribution,
+                                    archives.</em></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>HDD vs SSD</h3>
+                <img src="3.3 images/hdd vs sdd.png" class="r-stretch" alt="HDD vs SSD Comparison"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 7. VIRTUAL MEMORY -->
+            <section>
+                <h2><span class="keyword"
+                        data-def="a memory management system that makes use of secondary storage and software to enable a computer to compensate for the shortage of actual physical RAM memory">Virtual
+                        Memory</span></h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">What happens when RAM runs out?</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <h3><i class="fa-solid fa-exclamation-triangle"></i> The Problem</h3>
+                    <p class="small-text">RAM is full. The computer is about to crash.</p>
+                    <p class="small-text" style="margin-top:10px;"><em>Like your desk overflowing with papers!</em></p>
+                </div>
+                <div class="fragment box box-blue" style="margin-top:20px;">
+                    <h3><i class="fa-solid fa-lightbulb"></i> The Solution</h3>
+                    <p class="small-text">Use part of the HDD/SSD as "fake RAM"</p>
+                    <p class="small-text" style="margin-top:10px;">Move inactive <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span> (pages)
+                        out of RAM to the HDD</p>
+                    <p class="small-text" style="margin-top:10px;"><em>Like moving old papers to a filing cabinet to
+                            make room on your desk.</em></p>
+                </div>
+                <div class="fragment box" style="margin-top:20px; background-color: #ffebee;">
+                    <p class="small-text"><strong><i class="fa-solid fa-warning"></i> Warning:</strong> Disk Thrashing.
+                        If you swap too much, the computer becomes incredibly slow.</p>
+                    <p class="small-text" style="margin-top:10px;"><em>Like constantly moving papers back and forth -
+                            very inefficient!</em></p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Virtual Memory System</h3>
+                <img src="3.3 images/virtual memory system.png" class="r-stretch" alt="Virtual Memory Diagram"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 8. CLOUD STORAGE -->
+            <section>
+                <h2><span class="keyword"
+                        data-def="a method of data storage where data is stored on offsite servers; the physical storage may be on hundreds of servers in many locations">Cloud
+                        Storage</span></h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">What if we store <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span> somewhere
+                        else entirely?</p>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>Definition:</strong> Storing <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span> on remote
+                        servers (The Internet)</p>
+                    <p class="small-text"><em>Like a filing cabinet in someone else's building, accessible via the
+                            internet.</em></p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-check-circle"></i> Advantages</h4>
+                        <ul class="small-text">
+                            <li><strong>Access from anywhere:</strong> Any device, any location</li>
+                            <li><strong>Automatic backups:</strong> Your <span class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">data</span>
+                                is safe</li>
+                            <li><strong>Easy to share:</strong> Send links instead of files</li>
+                        </ul>
+                        <p class="small-text" style="margin-top:10px;"><em>Like having your files follow you
+                                everywhere.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-times-circle"></i> Disadvantages</h4>
+                        <ul class="small-text">
+                            <li><strong>Need internet:</strong> No connection = no access</li>
+                            <li><strong>Security risks:</strong> Hacking, <span class="keyword"
+                                    data-def="other examples include web cache, database cache, DNS cache">data</span>
+                                breaches</li>
+                            <li><strong>Monthly costs:</strong> Subscription fees</li>
+                        </ul>
+                        <p class="small-text" style="margin-top:10px;"><em>Like trusting someone else with your
+                                important documents.</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Cloud Storage</h3>
+                <img src="3.3 images/cloud storage.png" class="r-stretch" alt="Cloud Storage Concept"
+                    style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </section>
+
+            <!-- 8. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"RAM keeps its <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span> when
+                            power is off."</li>
+                        <li>"SSD has moving parts."</li>
+                        <li>"<span class="keyword"
+                                data-def="a memory management system that makes use of secondary storage and software to enable a computer to compensate for the shortage of actual physical RAM memory">Virtual
+                                memory</span> is faster than RAM."</li>
+                        <li>"Blu-ray uses a red laser."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"RAM keeps its <span class="keyword"
+                            data-def="other examples include web cache, database cache, DNS cache">data</span> when
+                        power is off."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>RAM is <strong><span class="keyword"
+                                    data-def="describes memory that loses its contents when the power is turned off">Volatile</span></strong>.
+                            ROM is Non-<span class="keyword"
+                                data-def="describes memory that loses its contents when the power is turned off">Volatile</span>.
+                        </p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"SSD has moving parts."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Solid State means NO moving parts. HDD has moving parts.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"<span class="keyword"
+                            data-def="a memory management system that makes use of secondary storage and software to enable a computer to compensate for the shortage of actual physical RAM memory">Virtual
+                            memory</span> is faster than RAM."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It uses the HDD/SSD, which is much slower than RAM.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 4</h3>
+                    <div class="question-box">"Blu-ray uses a red laser."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It uses a <strong>Blue/Violet</strong> laser (shorter wavelength = more <span class="keyword"
+                                data-def="other examples include web cache, database cache, DNS cache">data</span>).
+                            CD/DVD use
+                            Red.</p>
+                    </div>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    <script>
+        // Date Script
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+    </script>
+
+</body>
+
+</html>

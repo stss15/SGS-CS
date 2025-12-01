@@ -1,18 +1,41 @@
-# IGCSE Slide Deck Changes (2025-11-28)
+# IGCSE Slide Deck Changelog
 
-- Tightened slide container sizing (full-height sections + flex `.slide-inner` + trimmed box padding) so key definitions/question boxes auto-fit without clipping or scrollbars in all IGCSE decks. Updated `public/css/slide-deck.css`, `docs/agent/templates/slide-deck-template.css`, and documented in `docs/agent/igcse-slide-deck-agent.md`/`reveal-slide-deck-sizing-guide.md`.
-- Shifted IGCSE retrieval practice to the KS3-style vertical stack (overview + one-question-per-slide) in:
-  - `docs/agent/templates/igcse-slide-deck-template.html`
-  - `docs/agent/templates/slide-deck-content.html`
-  - `docs/agent/templates/slide-deck-pedagogy.html`
-  - `public/igcse/topic4/4.1_types_of_software_and_interrupts.html`
-  - `public/igcse/topic4/4.2_languages_translators_and_IDEs.html`
-- Added end-of-deck True/False misconception checkers to the same templates and Topic 4.1/4.2 decks (HTML + NJK sources).
-- Introduced reusable macros for retrieval and True/False blocks in `src/templates/igcse/macros.njk`, and wired Topic 4.1/4.2 NJK files to use them.
-- Documented the AI build workflow in `docs/agent/igcse-slide-deck-agent.md` so new decks follow the question-first, non-textbook pattern automatically.
-- Created new Topic 1 deck: `1.1 Number Representation` (`src/pages/igcse/topic1/1.1_number_representation.njk`, `public/igcse/topic1/1.1_number_representation.html`) covering binary/denary/hex conversions, addition & overflow, logical shifts, and two's complement with a True/False misconception check.
-- Refined 1.1 deck pedagogy (definitions for hex/shifts/two's complement, vertical stepper conversions, clarification questions) and updated the agent guide to enforce the define → why → how (steps) → clarify pattern for all specs.
-- Added Topic 1 deck: `1.2 Text, Sound & Images` (`src/pages/igcse/topic1/1.2_text_sound_images.njk`, `public/igcse/topic1/1.2_text_sound_images.html`) covering character sets, sound sampling, and bitmap images with stepper explanations, formulas, and True/False checks; linked from Topic 1 teacher resources.
-- Agent guide now notes to include mapping tables for code sets and core media formulas (sound/image) with clear stepwise presentations.
-- Added retrieval practice (5 Q) to 1.1 and enforced question-first steppers; agent guide updated to require a leading question before any step stack.
-- Removed retrieval from 1.1 per request and ensured 1.2 steppers keep visible titles/question-first pattern on every step slide.
+## 2025-11-29: Pedagogical Rebrand Complete
+
+### Major Changes
+- **Complete pedagogical transformation** of all IGCSE slide decks (Topics 1-6)
+- **Question-first approach** implemented throughout
+- **Enhanced hooks** with engaging analogies and real-world connections
+- **Retrieval practice** added to all non-first lessons
+- **True/False misconception checks** added to all decks
+- **Vertical deep dives** for complex concepts
+- **Progressive disclosure** using fragments
+
+### Documentation Consolidation
+- Created single comprehensive guide: `igcse-slide-deck-guide.md`
+- Consolidated templates into one master template
+- Removed redundant documentation files
+- Updated all templates to reflect new pedagogical style
+
+### Key Improvements
+1. Every concept now starts with a question
+2. Abstract concepts explained with analogies
+3. Information revealed progressively (fragments)
+4. Misconception checks at end of every deck
+5. Engaging hooks that create curiosity
+6. Step-by-step processes in vertical slides
+
+### Files Updated
+- All Topic 1-6 slide decks transformed
+- Documentation consolidated and simplified
+- Templates updated to match new style
+
+---
+
+## Previous Changes
+
+### 2025-11-28: Slide Sizing & Retrieval Practice
+- Tightened slide container sizing for auto-fit
+- Shifted retrieval practice to vertical stack format
+- Added True/False misconception checkers
+- Introduced reusable macros for retrieval and True/False blocks

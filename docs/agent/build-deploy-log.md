@@ -10,4 +10,5 @@ Use this file to record every full-site build and deploy. Append a new entry eac
 - Add a log entry below.
 
 ## Log entries (newest first)
+- 2025-11-29: Complete pedagogical rebrand of all IGCSE slide decks. Consolidated documentation. Updated templates.
 - 2025-11-29: Built site (`npm run build`), committed topic 1/6 resource sync and pushed to `main` (commit `941e132`). Triggered GitHub Pages deploy.
