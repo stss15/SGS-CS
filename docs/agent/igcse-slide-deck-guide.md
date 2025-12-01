@@ -612,6 +612,69 @@ Study these for:
 
 ---
 
+## 11. Keyword System (Red Click-to-Define Highlighting)
+
+After creating or modifying slide decks, **you must run the keyword application script** to add red clickable definitions.
+
+### How It Works
+- Keywords are defined in `public/igcse/chapter text files/Chapter X key words.txt`
+- The script `public/igcse/apply_keywords.py` wraps keywords in `<span class="keyword" data-def="...">` tags
+- When clicked, these display a modal with the definition
+- Keywords appear in **red** with a dashed underline
+
+### When to Run
+Run after ANY changes to IGCSE HTML content:
+```bash
+python3 public/igcse/apply_keywords.py
+```
+
+### Keyword File Format
+Each line in the chapter keyword files follows this format:
+```
+term – definition text here
+```
+
+Example from Chapter 1:
+```
+bit – the basic computing element that is either 0 or 1
+hexadecimal number system – a number system based on the value 16
+```
+
+### CSS for Keywords
+The `.keyword` class is styled in `public/css/slide-deck.css`:
+```css
+.keyword,
+.reveal .keyword,
+.reveal h1 .keyword,
+.reveal h2 .keyword,
+.reveal h3 .keyword {
+    color: var(--sg-red) !important;
+    cursor: pointer;
+    font-weight: bold;
+    border-bottom: 1px dashed var(--sg-red);
+}
+```
+
+### Important Notes
+1. **Always run after editing** - The script removes old keyword wrapping and re-applies fresh
+2. **Definition boxes removed** - Old `<div class="key-term">` yellow boxes are automatically removed
+3. **Plurals handled** - Script automatically adds plural forms (keyword → keywords, keywordes)
+4. **Case insensitive** - Keywords match regardless of capitalization
+
+---
+
+## 12. Post-Edit Checklist
+
+After creating or modifying ANY IGCSE content:
+
+- [ ] Run `python3 public/igcse/apply_keywords.py`
+- [ ] Run `npm run build` (if modifying .njk templates)
+- [ ] `git add -A && git commit -m "message" && git push origin main`
+- [ ] Verify GitHub Actions deployment completes
+- [ ] Hard refresh browser (`Cmd+Shift+R`) to test changes
+
+---
+
 **Remember:** The goal is not to display information. The goal is to create a learning experience that engages students, checks understanding, and builds knowledge progressively through questions, analogies, and interactive reveals.
 
 

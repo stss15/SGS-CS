@@ -2,7 +2,45 @@
 
 This directory contains all documentation and templates for creating pedagogically sound IGCSE Computer Science slide decks.
 
-## Quick Start
+---
+
+## ⚠️ CRITICAL: Build & Deploy Workflow
+
+**After making ANY changes to IGCSE content, you MUST follow this complete workflow:**
+
+### Step 1: Apply Keywords (Red Click-to-Define Highlighting)
+```bash
+cd /Users/StevenStewart/SGS-CSC
+python3 public/igcse/apply_keywords.py
+```
+
+This script:
+- Reads keyword definitions from `public/igcse/chapter text files/Chapter X key words.txt`
+- Wraps all keywords in `<span class="keyword" data-def="...">` tags (red highlighting)
+- Removes any old yellow `<div class="key-term">` definition boxes
+- Processes all HTML files in topics 1-10
+
+### Step 2: Build the Site (if using Nunjucks templates)
+```bash
+npm run build
+```
+This generates `public/` from `src/pages/` templates.
+
+### Step 3: Commit and Push
+```bash
+git add -A
+git commit -m "Description of changes"
+git push origin main
+```
+
+### Step 4: Verify Deployment
+- Check GitHub Actions: https://github.com/stss15/SGS-CS/actions
+- Wait for green checkmark
+- **Hard refresh browser** (`Cmd+Shift+R`) to clear CSS cache
+
+---
+
+## Quick Start for Creating Slide Decks
 
 **Read this first:** [`igcse-slide-deck-guide.md`](./igcse-slide-deck-guide.md)
 
@@ -23,6 +61,8 @@ This template shows all the patterns and structures you need. Copy and modify as
 **CSS Reference:** [`templates/slide-deck-template.css`](./templates/slide-deck-template.css)
 
 Reference for styling classes and components.
+
+**Live CSS (deployed):** `public/css/slide-deck.css` - This is the actual CSS used by deployed slides.
 
 ## Key Principles
 
