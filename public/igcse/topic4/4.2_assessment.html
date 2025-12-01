@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4.2 Programming Languages Assessment | St George's CS</title>
-    <!-- version: retryable-assessment v2 -->
+    <!-- version: retryable-assessment v3 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -19,6 +19,8 @@
             --sg-grey: #f4f6f8;
             --correct-green: #28a745;
             --wrong-red: #dc3545;
+            --reflection-green: #28a745;
+            --teacher-purple: #6f42c1;
         }
 
         * {
@@ -34,35 +36,106 @@
             line-height: 1.6;
             padding-bottom: 100px;
         }
+
+        /* Start Modal */
         #startOverlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,51,102,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2000;
         }
+
         #startCard {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 420px;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 450px;
             width: 90%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            border-top: 6px solid var(--sg-gold);
         }
-        #startCard h2 { color: var(--sg-blue); margin-bottom: 10px; }
-        #startCard label { font-size: 0.9rem; color: #555; }
-        #startCard input { width: 100%; padding: 10px; margin: 8px 0 16px 0; border: 1px solid #ccc; border-radius: 6px; }
-        #startCard button { width: 100%; padding: 12px; background: var(--sg-blue); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
-        #startCard button:hover { background: #00264d; }
+
+        #startCard h2 {
+            color: var(--sg-blue);
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        #startCard .test-name {
+            color: var(--sg-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        #startCard .instructions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        #startCard label {
+            font-size: 0.9rem;
+            color: #555;
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        #startCard select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            background: white;
+        }
+
+        #startCard select:focus {
+            border-color: var(--sg-blue);
+            outline: none;
+        }
+
+        #startCard button {
+            width: 100%;
+            padding: 14px;
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #startCard button:hover {
+            background: var(--sg-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Timer Display */
         #timerDisplay {
             position: fixed;
             top: 18px;
-            right: 20px;
-            color: #666;
-            font-size: 0.9rem;
+            right: 100px;
+            color: var(--sg-blue);
+            font-size: 1rem;
+            font-weight: 600;
             z-index: 900;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid var(--sg-blue);
         }
 
         /* Header */
@@ -106,12 +179,13 @@
             margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .q-status {
             font-size: 0.8rem;
-            padding: 2px 8px;
-            border-radius: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
             background: #ddd;
             color: #666;
         }
@@ -126,7 +200,7 @@
             color: white;
         }
 
-        /* --- True/False Grid (Q1) --- */
+        /* True/False Grid */
         .tf-grid {
             display: grid;
             grid-template-columns: 1fr 80px 80px;
@@ -162,6 +236,7 @@
             cursor: pointer;
             border: 2px solid transparent;
             transition: all 0.2s;
+            min-height: 40px;
         }
 
         .tf-option:hover {
@@ -185,7 +260,7 @@
             color: white;
         }
 
-        /* --- Drag & Drop Styles --- */
+        /* Drag & Drop Styles */
         .bucket-container {
             display: flex;
             gap: 20px;
@@ -244,7 +319,7 @@
             cursor: default;
         }
 
-        /* --- Dropdown Styles --- */
+        /* Dropdown Styles */
         .cloze-text {
             line-height: 2.2;
             font-size: 1.05rem;
@@ -273,7 +348,7 @@
             background: #f8d7da;
         }
 
-        /* --- Visual Diagram (Simulated) --- */
+        /* IDE Diagram */
         .ide-diagram {
             position: relative;
             width: 100%;
@@ -315,7 +390,7 @@
             font-size: 0.8rem;
         }
 
-        /* --- Sortable List --- */
+        /* Sortable List */
         .sortable-list {
             list-style: none;
             padding: 0;
@@ -356,7 +431,7 @@
             background-color: #fff5f5;
         }
 
-        /* --- Footer --- */
+        /* Footer */
         .controls {
             text-align: center;
             margin-top: 40px;
@@ -425,13 +500,33 @@
             transition: all 0.3s;
             text-decoration: none;
             display: none;
-            /* Hidden initially */
             margin-left: 10px;
         }
 
         .btn-return:hover {
             background: #e0e0e0;
             transform: translateY(-2px);
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, var(--correct-green), #20c997);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .completion-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .completion-message p {
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
         /* Responsive */
@@ -449,22 +544,27 @@
 </head>
 
 <body>
+    <!-- Start Modal -->
     <div id="startOverlay">
         <div id="startCard">
-            <h2>Start Assessment</h2>
-            <p class="subtitle" style="margin-bottom:12px;">Enter your details to begin. Attempts are tracked until you reach full marks.</p>
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" placeholder="First name">
-            <label for="surname">Surname</label>
-            <input type="text" id="surname" placeholder="Surname">
-            <label for="teacherName">Teacher</label>
-            <input type="text" id="teacherName" placeholder="Teacher name">
-            <button onclick="startAssessment()">Start</button>
+            <h2>Assessment</h2>
+            <div class="test-name">4.2 Programming Languages, Translators & IDEs</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or choosing True/False. 
+                You must get all answers correct to complete the assessment. 
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
         </div>
     </div>
-    <div id="timerDisplay" style="display:none;">Time: <span id="timer">00:00</span></div>
 
-
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
 
     <!-- Back Button -->
     <a href="index.html" id="back-btn" title="Back to Topic 4"><i class="fa-solid fa-circle-arrow-left"></i></a>
@@ -473,16 +573,16 @@
     <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
 
     <header>
-        <h1>Topic 4.2 Assessment</h1>
-        <p class="subtitle">Programming Languages, <span class="keyword" data-def="converts a program written in a high-level language program into machine code">Translators</span> & IDEs</p>
+        <h1>4.2 Assessment</h1>
+        <p class="subtitle">Programming Languages, Translators & IDEs</p>
     </header>
 
     <main style="display:none;">
 
         <!-- Q1: True/False Grid -->
-        <div class="question-block" id="q1-block">
+        <div class="question-block" id="q1-block" data-summary="True/False statements about translators">
             <div class="q-header">
-                <span>Q1. <span class="keyword" data-def="converts a program written in a high-level language program into machine code">Translator</span> Truths</span>
+                <span>Q1. Translator Truths</span>
                 <span class="q-status" id="q1-status">Unanswered</span>
             </div>
             <p>Select True or False for each statement.</p>
@@ -492,43 +592,36 @@
                 <div class="tf-header">True</div>
                 <div class="tf-header">False</div>
 
-                <!-- Row 1 -->
                 <div class="tf-row">
-                    <div class="tf-statement">An <span class="keyword" data-def="a computer program that translates programming code written in assembly language into machine code">assembler</span> translates high-level language programs.</div>
+                    <div class="tf-statement">An assembler translates high-level language programs.</div>
                     <div class="tf-option" onclick="selectTF(1, true)" id="q1-1-t"></div>
                     <div class="tf-option" onclick="selectTF(1, false)" id="q1-1-f"></div>
                 </div>
-                <!-- Row 2 -->
                 <div class="tf-row">
                     <div class="tf-statement">It is more difficult to write a program in a low-level language.</div>
                     <div class="tf-option" onclick="selectTF(2, true)" id="q1-2-t"></div>
                     <div class="tf-option" onclick="selectTF(2, false)" id="q1-2-f"></div>
                 </div>
-                <!-- Row 3 -->
                 <div class="tf-row">
-                    <div class="tf-statement">Java is an <span class="keyword" data-def="a programming language that is dependent on computer hardware, a program written in an assembly language program needs to be translated into machine code before it is executed">assembly language</span>.</div>
+                    <div class="tf-statement">Java is an assembly language.</div>
                     <div class="tf-option" onclick="selectTF(3, true)" id="q1-3-t"></div>
                     <div class="tf-option" onclick="selectTF(3, false)" id="q1-3-f"></div>
                 </div>
-                <!-- Row 4 -->
                 <div class="tf-row">
                     <div class="tf-statement">It is quicker to develop a program using a high-level language.</div>
                     <div class="tf-option" onclick="selectTF(4, true)" id="q1-4-t"></div>
                     <div class="tf-option" onclick="selectTF(4, false)" id="q1-4-f"></div>
                 </div>
-                <!-- Row 5 -->
                 <div class="tf-row">
-                    <div class="tf-statement">You always need a <span class="keyword" data-def="a computer program that translates a source program written in a high-level language to machine code">compiler</span> to run a compiled program.</div>
+                    <div class="tf-statement">You always need a compiler to run a compiled program.</div>
                     <div class="tf-option" onclick="selectTF(5, true)" id="q1-5-t"></div>
                     <div class="tf-option" onclick="selectTF(5, false)" id="q1-5-f"></div>
                 </div>
-                <!-- Row 6 -->
                 <div class="tf-row">
                     <div class="tf-statement">An interpreted program runs slower than a compiled program.</div>
                     <div class="tf-option" onclick="selectTF(6, true)" id="q1-6-t"></div>
                     <div class="tf-option" onclick="selectTF(6, false)" id="q1-6-f"></div>
                 </div>
-                <!-- Row 7 -->
                 <div class="tf-row">
                     <div class="tf-statement">Low-level languages are machine dependent.</div>
                     <div class="tf-option" onclick="selectTF(7, true)" id="q1-7-t"></div>
@@ -538,73 +631,70 @@
         </div>
 
         <!-- Q2: IDE & Translator Features -->
-        <div class="question-block" id="q2-block">
+        <div class="question-block" id="q2-block" data-summary="IDE features and translator selection">
             <div class="q-header">
                 <span>Q2. IDEs & Translation Concepts</span>
                 <span class="q-status" id="q2-status">Unanswered</span>
             </div>
             <p>Suki is writing a program. Choose the correct features she might use.</p>
             <div class="cloze-text">
-                (a) Suki uses an IDE. To check for syntax errors while typing, she relies on <select id="q2a">
+                (a) Suki uses an IDE. To check for syntax errors while typing, she relies on <select id="q2a" data-answer="error diagnostics">
                     <option value="">---</option>
                     <option value="auto-completion">auto-completion</option>
                     <option value="error diagnostics">error diagnostics</option>
-                    <option value="compiler"><span class="keyword" data-def="a computer program that translates a source program written in a high-level language to machine code">compiler</span></option>
-                </select>. To make the code easier to read with colour-coding, the IDE uses <select id="q2b">
+                    <option value="compiler">compiler</option>
+                </select>. To make the code easier to read with colour-coding, the IDE uses <select id="q2b" data-answer="prettyprinting">
                     <option value="">---</option>
-                    <option value="prettyprinting"><span class="keyword" data-def="displaying source code using different colours and formatting, which make the code easier to read and understand">prettyprinting</span></option>
-                    <option value="debugging"><span class="keyword" data-def="finding errors in a computer program by running or tracing the program">debugging</span></option>
+                    <option value="prettyprinting">prettyprinting</option>
+                    <option value="debugging">debugging</option>
                     <option value="runtime">runtime</option>
                 </select>.<br><br>
                 (b) She wants to distribute the software without giving away the source code. She should use a
-                <select id="q2c">
+                <select id="q2c" data-answer="compiler">
                     <option value="">---</option>
-                    <option value="compiler"><span class="keyword" data-def="a computer program that translates a source program written in a high-level language to machine code">compiler</span></option>
-                    <option value="interpreter"><span class="keyword" data-def="a computer program that analyses and executes a program written in a high-level language line by line">interpreter</span></option>
-                    <option value="assembler"><span class="keyword" data-def="a computer program that translates programming code written in assembly language into machine code">assembler</span></option>
+                    <option value="compiler">compiler</option>
+                    <option value="interpreter">interpreter</option>
+                    <option value="assembler">assembler</option>
                 </select> to create an executable file.<br><br>
                 (c) While testing, she wants to run the code line-by-line to find a logic error. She should use an
-                <select id="q2d">
+                <select id="q2d" data-answer="interpreter">
                     <option value="">---</option>
-                    <option value="compiler"><span class="keyword" data-def="a computer program that translates a source program written in a high-level language to machine code">compiler</span></option>
-                    <option value="interpreter"><span class="keyword" data-def="a computer program that analyses and executes a program written in a high-level language line by line">interpreter</span></option>
-                    <option value="assembler"><span class="keyword" data-def="a computer program that translates programming code written in assembly language into machine code">assembler</span></option>
+                    <option value="compiler">compiler</option>
+                    <option value="interpreter">interpreter</option>
+                    <option value="assembler">assembler</option>
                 </select>.
             </div>
         </div>
 
         <!-- Q3: Compiler vs Interpreter Drag -->
-        <div class="question-block" id="q3-block">
+        <div class="question-block" id="q3-block" data-summary="Categorise compiler vs interpreter features">
             <div class="q-header">
-                <span>Q3. Categorise the <span class="keyword" data-def="converts a program written in a high-level language program into machine code">Translator</span></span>
+                <span>Q3. Categorise the Translator</span>
                 <span class="q-status" id="q3-status">Unanswered</span>
             </div>
-            <p>Drag the statements to the correct <span class="keyword" data-def="converts a program written in a high-level language program into machine code">translator</span> type.</p>
+            <p>Drag the statements to the correct translator type.</p>
 
             <div class="draggable-source" id="q3-source" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="c1">Creates an .exe file</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i1">Stops at first error</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i2">Good for development</div>
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="c2">Translates all at once
-                </div>
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="c3">User doesn't need
-                    <span class="keyword" data-def="converts a program written in a high-level language program into machine code">translator</span>
-                    installed</div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="c2">Translates all at once</div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="c3">User doesn't need translator installed</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i3">Runs slower</div>
             </div>
 
             <div class="bucket-container">
                 <div class="bucket" id="bucket-comp" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4><span class="keyword" data-def="a computer program that translates a source program written in a high-level language to machine code">Compiler</span></h4>
+                    <h4>Compiler</h4>
                 </div>
                 <div class="bucket" id="bucket-int" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4><span class="keyword" data-def="a computer program that analyses and executes a program written in a high-level language line by line">Interpreter</span></h4>
+                    <h4>Interpreter</h4>
                 </div>
             </div>
         </div>
 
         <!-- Q4: IDE Diagram Labeling -->
-        <div class="question-block" id="q4-block">
+        <div class="question-block" id="q4-block" data-summary="Label IDE components">
             <div class="q-header">
                 <span>Q4. Label the IDE</span>
                 <span class="q-status" id="q4-status">Unanswered</span>
@@ -614,14 +704,11 @@
             <div class="draggable-source" id="q4-source" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="lbl-editor">Code Editor</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="lbl-debug">Debugger/Vars</div>
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="lbl-explorer">Project Explorer
-                </div>
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="lbl-output">Output Window
-                </div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="lbl-explorer">Project Explorer</div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="lbl-output">Output Window</div>
             </div>
 
             <div class="ide-diagram">
-                <!-- Simulated IDE Layout -->
                 <div class="ide-panel" style="grid-row: 1 / 2; grid-column: 1 / 2;">
                     <div class="ide-target bucket" id="target-editor" ondrop="drop(event)" ondragover="allowDrop(event)"
                         style="width:100%; height:100%; border:none;">
@@ -650,24 +737,24 @@
         </div>
 
         <!-- Q5: Language Selection -->
-        <div class="question-block" id="q5-block">
+        <div class="question-block" id="q5-block" data-summary="Choose appropriate language level for scenarios">
             <div class="q-header">
                 <span>Q5. Choose the Language</span>
                 <span class="q-status" id="q5-status">Unanswered</span>
             </div>
             <p>Which type of language would be best for these scenarios?</p>
             <div class="cloze-text">
-                1. Writing a <span class="keyword" data-def="software that communicates with the operating system and translates data into a format understood by the device">device driver</span> for a new graphics card to ensure maximum speed: <select id="q5a">
+                1. Writing a device driver for a new graphics card to ensure maximum speed: <select id="q5a" data-answer="Low-Level">
                     <option value="">---</option>
                     <option value="High-Level">High-Level</option>
                     <option value="Low-Level">Low-Level (Assembly)</option>
                 </select><br>
-                2. Writing a cross-platform mobile app for Android and iOS: <select id="q5b">
+                2. Writing a cross-platform mobile app for Android and iOS: <select id="q5b" data-answer="High-Level">
                     <option value="">---</option>
                     <option value="High-Level">High-Level</option>
                     <option value="Low-Level">Low-Level (Assembly)</option>
                 </select><br>
-                3. Programming a microcontroller with very limited memory: <select id="q5c">
+                3. Programming a microcontroller with very limited memory: <select id="q5c" data-answer="Low-Level">
                     <option value="">---</option>
                     <option value="High-Level">High-Level</option>
                     <option value="Low-Level">Low-Level (Assembly)</option>
@@ -676,7 +763,7 @@
         </div>
 
         <!-- Q6: Translation Order (Draggable List) -->
-        <div class="question-block" id="q6-block">
+        <div class="question-block" id="q6-block" data-summary="Order the compilation process steps">
             <div class="q-header">
                 <span>Q6. The Translation Process</span>
                 <span class="q-status" id="q6-status">Unanswered</span>
@@ -689,7 +776,7 @@
         </div>
 
         <!-- Q7: Code Recognition -->
-        <div class="question-block" id="q7-block">
+        <div class="question-block" id="q7-block" data-summary="Identify code types from examples">
             <div class="q-header">
                 <span>Q7. Identify the Code</span>
                 <span class="q-status" id="q7-status">Unanswered</span>
@@ -700,11 +787,11 @@
                     LDA #25<br>ADD #10<br>STO total
                 </div>
                 <div>
-                    Type: <select id="q7a">
+                    Type: <select id="q7a" data-answer="Assembly">
                         <option value="">---</option>
                         <option value="High-Level">High-Level</option>
                         <option value="Assembly">Assembly</option>
-                        <option value="Machine"><span class="keyword" data-def="a binary programming language, a program written in machine code can be loaded and executed without translation">Machine Code</span></option>
+                        <option value="Machine">Machine Code</option>
                     </select>
                 </div>
 
@@ -712,11 +799,11 @@
                     10101100<br>00110101<br>11100010
                 </div>
                 <div>
-                    Type: <select id="q7b">
+                    Type: <select id="q7b" data-answer="Machine">
                         <option value="">---</option>
                         <option value="High-Level">High-Level</option>
                         <option value="Assembly">Assembly</option>
-                        <option value="Machine"><span class="keyword" data-def="a binary programming language, a program written in machine code can be loaded and executed without translation">Machine Code</span></option>
+                        <option value="Machine">Machine Code</option>
                     </select>
                 </div>
 
@@ -724,11 +811,11 @@
                     if x > 10:<br>&nbsp;&nbsp;print("Hello")
                 </div>
                 <div>
-                    Type: <select id="q7c">
+                    Type: <select id="q7c" data-answer="High-Level">
                         <option value="">---</option>
                         <option value="High-Level">High-Level</option>
                         <option value="Assembly">Assembly</option>
-                        <option value="Machine"><span class="keyword" data-def="a binary programming language, a program written in machine code can be loaded and executed without translation">Machine Code</span></option>
+                        <option value="Machine">Machine Code</option>
                     </select>
                 </div>
             </div>
@@ -738,6 +825,10 @@
             <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
             <a href="index.html" class="btn-return" id="btnReturn">Return to Menu</a>
             <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
         </div>
 
     </main>
@@ -747,20 +838,33 @@
         let startTime;
         let timerInterval;
         let timeTakenStr = "";
-        let studentDetails = {};
+        let teacherName = "";
+        const testName = "4.2 Programming Languages, Translators & IDEs";
+        
+        // Attempt tracking (internal)
         const mistakeCounts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0, q7: 0 };
         const completed = { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false, q7: false };
+        let totalAttempts = 0;
         let assessmentFinished = false;
 
+        // Question metadata for PDF
+        const questionMeta = [
+            { id: 'q1', title: 'Translator Truths', correctAnswer: 'F, T, F, T, F, T, T', justification: 'Assembler translates assembly (not HLL); low-level is harder; Java is HLL; HLL is quicker to develop; compiled programs run without compiler; interpreted runs slower; low-level is machine-dependent.' },
+            { id: 'q2', title: 'IDE & Translation', correctAnswer: 'error diagnostics, prettyprinting, compiler, interpreter', justification: 'Error diagnostics check syntax; prettyprinting adds colour; compilers hide source code; interpreters help debug line-by-line.' },
+            { id: 'q3', title: 'Compiler vs Interpreter', correctAnswer: 'Compiler: .exe, all at once, no translator needed. Interpreter: stops at error, good for dev, runs slower.', justification: '(Categorisation exercise)' },
+            { id: 'q4', title: 'IDE Layout', correctAnswer: 'Editor → main area, Explorer → file list, Output → results, Debug → variables', justification: '(Labelling exercise)' },
+            { id: 'q5', title: 'Language Choice', correctAnswer: 'Low-Level, High-Level, Low-Level', justification: 'Device drivers need speed (low-level); cross-platform needs portability (high-level); limited memory needs efficiency (low-level).' },
+            { id: 'q6', title: 'Translation Process', correctAnswer: 'Source Code → Translator → Object Code → Executable', justification: 'Code is written, translated, becomes object code, then linked into an executable.' },
+            { id: 'q7', title: 'Code Identification', correctAnswer: 'Assembly, Machine Code, High-Level', justification: 'LDA/ADD/STO are mnemonics (assembly); binary is machine code; if/print is high-level syntax.' }
+        ];
+
         function startAssessment() {
-            const first = document.getElementById('firstName').value.trim();
-            const surname = document.getElementById('surname').value.trim();
-            const teacher = document.getElementById('teacherName').value.trim();
-            if (!first || !surname || !teacher) {
-                alert("Please fill in first name, surname and teacher.");
+            const teacher = document.getElementById('teacherSelect').value;
+            if (!teacher) {
+                alert("Please select your teacher.");
                 return;
             }
-            studentDetails = { first, surname, teacher };
+            teacherName = teacher;
             document.getElementById('startOverlay').style.display = 'none';
             document.querySelector('main').style.display = 'block';
             document.getElementById('timerDisplay').style.display = 'block';
@@ -775,25 +879,23 @@
             }, 1000);
         }
 
-        // --- DRAG & DROP LOGIC ---
+        // --- DRAG & DROP ---
         function allowDrop(ev) { ev.preventDefault(); }
         function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
 
         function drop(ev) {
             ev.preventDefault();
-            // Allow dropping into buckets, targets, or back to source
             if (ev.target.classList.contains('bucket') || ev.target.classList.contains('draggable-source')) {
                 var data = ev.dataTransfer.getData("text");
                 ev.target.appendChild(document.getElementById(data));
             }
-            // Handle dropping onto the text inside the target
-            if (ev.target.parentNode.classList.contains('bucket')) {
+            if (ev.target.parentNode && ev.target.parentNode.classList.contains('bucket')) {
                 var data = ev.dataTransfer.getData("text");
                 ev.target.parentNode.appendChild(document.getElementById(data));
             }
         }
 
-        // --- SORTABLE LIST LOGIC (Q6) ---
+        // --- SORTABLE LIST (Q6) ---
         const transItems = [
             { id: 't-source', text: 'Source Code (High-Level)' },
             { id: 't-trans', text: 'Translator (Compiler)' },
@@ -804,7 +906,6 @@
         function initSortable() {
             const list = document.getElementById('trans-list');
             let items = [...transItems];
-            // Shuffle
             for (let i = items.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [items[i], items[j]] = [items[j], items[i]];
@@ -817,7 +918,6 @@
                 li.id = item.id;
                 li.innerHTML = `<span>${item.text}</span><i class="fa-solid fa-grip-lines"></i>`;
 
-                // Events
                 li.addEventListener('dragstart', () => li.classList.add('dragging'));
                 li.addEventListener('dragend', () => li.classList.remove('dragging'));
 
@@ -852,20 +952,11 @@
             }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
-        // --- TRUE/FALSE LOGIC ---
-        const tfAnswers = {
-            1: false, // Assembler translates Assembly, not High Level
-            2: true,
-            3: false, // Java is High Level
-            4: true,
-            5: false, // Once compiled, you don't need the compiler
-            6: true,
-            7: true
-        };
+        // --- TRUE/FALSE ---
+        const tfAnswers = { 1: false, 2: true, 3: false, 4: true, 5: false, 6: true, 7: true };
         let tfSelections = {};
 
         function selectTF(row, val) {
-            // Visually select
             document.getElementById(`q1-${row}-t`).classList.remove('selected');
             document.getElementById(`q1-${row}-f`).classList.remove('selected');
 
@@ -875,9 +966,13 @@
             tfSelections[row] = val;
         }
 
-        // --- MARKING LOGIC ---
+        // --- MARKING ---
         function checkAnswers() {
-            // Q1 Check
+            totalAttempts++;
+            let totalQuestions = 7;
+            let correctCount = 0;
+
+            // Q1 True/False
             let q1Correct = true;
             for (let i = 1; i <= 7; i++) {
                 let tBtn = document.getElementById(`q1-${i}-t`);
@@ -897,10 +992,12 @@
                 }
             }
             updateStatus('q1', q1Correct);
+            if (q1Correct) correctCount++;
 
             // Helper
-            function checkSelect(id, ans) {
+            function checkSelect(id) {
                 let el = document.getElementById(id);
+                let ans = el.dataset.answer;
                 if (el.value === ans) {
                     el.classList.add('correct');
                     el.classList.remove('wrong');
@@ -912,13 +1009,10 @@
                 }
             }
 
-            // Q2 Dropdowns
-            let s2 = 0;
-            s2 += checkSelect('q2a', 'error diagnostics');
-            s2 += checkSelect('q2b', 'prettyprinting');
-            s2 += checkSelect('q2c', 'compiler');
-            s2 += checkSelect('q2d', 'interpreter');
+            // Q2
+            let s2 = checkSelect('q2a') + checkSelect('q2b') + checkSelect('q2c') + checkSelect('q2d');
             updateStatus('q2', s2 === 4);
+            if (s2 === 4) correctCount++;
 
             // Q3 Drag Drop
             const compAns = ['c1', 'c2', 'c3'];
@@ -938,9 +1032,9 @@
                 }
             });
             updateStatus('q3', q3Correct);
+            if (q3Correct) correctCount++;
 
             // Q4 Diagram
-            let q4Correct = true;
             function checkTarget(targetId, itemId) {
                 const target = document.getElementById(targetId);
                 const item = document.getElementById(itemId);
@@ -958,18 +1052,16 @@
             let c4b = checkTarget('target-debug', 'lbl-debug');
             let c4c = checkTarget('target-explorer', 'lbl-explorer');
             let c4d = checkTarget('target-output', 'lbl-output');
+            let q4Correct = c4a && c4b && c4c && c4d;
+            updateStatus('q4', q4Correct);
+            if (q4Correct) correctCount++;
 
-            if (c4a && c4b && c4c && c4d) updateStatus('q4', true);
-            else updateStatus('q4', false);
-
-            // Q5 Scenarios
-            let s5 = 0;
-            s5 += checkSelect('q5a', 'Low-Level');
-            s5 += checkSelect('q5b', 'High-Level');
-            s5 += checkSelect('q5c', 'Low-Level');
+            // Q5
+            let s5 = checkSelect('q5a') + checkSelect('q5b') + checkSelect('q5c');
             updateStatus('q5', s5 === 3);
+            if (s5 === 3) correctCount++;
 
-            // Q6 Sortable List
+            // Q6 Sortable
             const listItems = document.querySelectorAll('#trans-list li');
             const correctOrder = ['t-source', 't-trans', 't-obj', 't-exe'];
             let currentOrder = Array.from(listItems).map(li => li.id);
@@ -990,15 +1082,15 @@
                 }, 1000);
             }
             updateStatus('q6', q6Correct);
+            if (q6Correct) correctCount++;
 
-            // Q7 Code ID
-            let s7 = 0;
-            s7 += checkSelect('q7a', 'Assembly');
-            s7 += checkSelect('q7b', 'Machine');
-            s7 += checkSelect('q7c', 'High-Level');
+            // Q7
+            let s7 = checkSelect('q7a') + checkSelect('q7b') + checkSelect('q7c');
             updateStatus('q7', s7 === 3);
+            if (s7 === 3) correctCount++;
 
-            const correctness = { q1: q1Correct, q2: s2 === 4, q3: q3Correct, q4: (c4a && c4b && c4c && c4d), q5: s5 === 3, q6: q6Correct, q7: s7 === 3 };
+            // Track mistakes
+            const correctness = { q1: q1Correct, q2: s2 === 4, q3: q3Correct, q4: q4Correct, q5: s5 === 3, q6: q6Correct, q7: s7 === 3 };
             Object.keys(correctness).forEach(key => {
                 if (!correctness[key] && !completed[key]) {
                     mistakeCounts[key] += 1;
@@ -1008,18 +1100,17 @@
                 }
             });
 
+            // Show Score
             const finalDiv = document.getElementById('finalScore');
             finalDiv.style.display = 'block';
-            finalDiv.innerHTML = `Current score: ${Object.values(correctness).filter(Boolean).length} / 7 (keep trying until all are correct)`;
-            finalDiv.style.color = "#333";
+            finalDiv.innerText = `Score: ${correctCount} / ${totalQuestions} — ${correctCount < totalQuestions ? 'Keep trying!' : ''}`;
 
-            const allCorrect = Object.values(correctness).every(Boolean);
-            if (allCorrect && !assessmentFinished) {
+            if (correctCount === totalQuestions && !assessmentFinished) {
                 assessmentFinished = true;
                 clearInterval(timerInterval);
-                alert("Great work! Full marks achieved. Your feedback PDF will download next.");
+                document.getElementById('completionMessage').style.display = 'block';
+                document.getElementById('btnSubmit').style.display = 'none';
                 generatePDF();
-                setTimeout(() => { window.location.href = "index.html"; }, 1500);
             }
         }
 
@@ -1034,16 +1125,6 @@
             }
         }
 
-        const questionMeta = [
-            { id: 'q1', title: 'IDE Features', answer: 'Drag/drop features into the correct buckets (Editor, Debugger, Explorer, Output, Variable Watch)', explanation: 'Editors write code, debuggers trace, explorers manage files, output shows results, watches inspect variables.', feedback: ['Match IDE features to the correct pane.', 'Remember variable watch/debugger purpose.'] },
-            { id: 'q2', title: 'IDE Benefits', answer: 'Error diagnostics; prettyprinting; compiler; interpreter', explanation: 'Diagnostics spot syntax; prettyprinting formats; compilers build binaries; interpreters run line-by-line.', feedback: ['Link each IDE tool to its benefit (diagnostics, formatting, translation).'] },
-            { id: 'q3', title: 'Compiler vs Interpreter', answer: 'Compile-time vs run-time responsibilities sorted correctly', explanation: 'Compilers translate whole programs; interpreters execute line-by-line without building executables.', feedback: ['Differentiate compile vs interpret responsibilities.'] },
-            { id: 'q4', title: 'IDE Layout', answer: 'Editor → Debugger → Explorer → Output placed correctly', explanation: 'Each tool sits in its correct UI region supporting development workflow.', feedback: ['Know where editor/debugger/output panels live.'] },
-            { id: 'q5', title: 'Language Choice Scenarios', answer: 'Low-level for drivers/microcontrollers, high-level for cross-platform app', explanation: 'Assembly for hardware-critical/limited memory; high-level for portability and speed of development.', feedback: ['Choose low-level for speed/hardware, high-level for portability/productivity.'] },
-            { id: 'q6', title: 'Compilation Steps Order', answer: 'Source → Compiler → Object code → Executable', explanation: 'Compilation pipeline transforms source into runnable machine code.', feedback: ['Memorise compilation pipeline steps.'] },
-            { id: 'q7', title: 'Identify Code Type', answer: 'Assembly, Machine code, High-Level code identified correctly', explanation: 'Mnemonics = assembly; binary = machine; English-like syntax = high-level.', feedback: ['Spot assembly mnemonics vs raw binary vs high-level syntax.'] }
-        ];
-
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1055,9 +1136,11 @@
 
             function checkPageBreak(heightNeeded) {
                 if (yPos + heightNeeded > pageHeight - margin) {
-                    doc.addPage(); yPos = 20;
+                    doc.addPage();
+                    yPos = 20;
                 }
             }
+
             function addWrapped(text, size = 11, style = 'normal', color = '#000000', indent = 0, spacing = 4) {
                 doc.setFontSize(size);
                 doc.setFont('helvetica', style);
@@ -1068,43 +1151,123 @@
                 yPos += lines.length * (size * 0.5) + spacing;
             }
 
+            // --- PAGE 1: ANSWERS ---
             try {
                 const logo = await getBase64ImageFromUrl('../../images/Logo.png');
                 doc.addImage(logo, 'PNG', pageWidth - 40, 10, 25, 25);
             } catch (e) { console.warn('Logo load failed', e); }
 
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor('#003366');
-            doc.text('Topic 4.2 Assessment Feedback', margin, yPos); yPos += 8;
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor('#666666');
-            doc.text('Cambridge IGCSE Computer Science (0478)', margin, yPos); yPos += 12;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            doc.setTextColor('#003366');
+            doc.text(testName, margin, yPos); yPos += 10;
 
-            doc.setDrawColor(220); doc.setFillColor(245,245,245); doc.rect(margin, yPos, contentWidth, 24, 'FD');
-            yPos += 8; doc.setFontSize(10); doc.setTextColor('#000');
-            doc.text(`Student: ${studentDetails.first || '-'} ${studentDetails.surname || '-'}`, margin + 4, yPos);
-            doc.text(`Teacher: ${studentDetails.teacher || '-'}`, margin + 90, yPos);
-            yPos += 7;
-            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 4, yPos);
-            doc.text(`Time Taken: ${timeTakenStr || 'N/A'}`, margin + 90, yPos);
-            yPos += 12;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor('#666666');
+            doc.text(`Teacher: ${teacherName}  |  Time: ${timeTakenStr}  |  Date: ${new Date().toLocaleDateString()}`, margin, yPos);
+            yPos += 15;
 
             questionMeta.forEach((q, idx) => {
-                addWrapped(`${idx + 1}. ${q.title}`, 12, 'bold', '#003366', 0, 3);
-                addWrapped(`Correct answer: ${q.answer}`, 10, 'bold', '#222', 4, 2);
-                addWrapped(`Explanation: ${q.explanation}`, 10, 'normal', '#444', 4, 4);
-                const attempts = mistakeCounts[q.id] || 0;
-                addWrapped(`Times incorrect before correct: ${attempts}`, 10, 'normal', '#dc3545', 4, 6);
-                doc.setDrawColor(235); doc.line(margin, yPos, pageWidth - margin, yPos); yPos += 4;
+                checkPageBreak(25);
+                addWrapped(`Q${idx + 1}. ${q.title}`, 12, 'bold', '#003366', 0, 3);
+                addWrapped(`Answer: ${q.correctAnswer}`, 10, 'normal', '#222', 4, 2);
+                if (!q.title.includes('Compiler vs') && !q.title.includes('IDE Layout')) {
+                    addWrapped(`${q.justification}`, 9, 'italic', '#555', 4, 4);
+                }
+                doc.setDrawColor(230);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 4;
             });
 
-            addWrapped('Feedback Focus', 12, 'bold', '#003366', 0, 4);
-            const weak = questionMeta.filter(q => (mistakeCounts[q.id] || 0) > 0);
-            if (weak.length === 0) addWrapped('No issues flagged. Strong performance across all questions.', 10, 'normal', '#444', 4, 4);
-            else weak.forEach(q => {
-                addWrapped(`• ${q.title}`, 11, 'bold', '#003366', 4, 2);
-                (q.feedback || []).forEach(fb => addWrapped(`   - ${fb}`, 10, 'normal', '#444', 8, 2));
+            // --- PAGE 2: FEEDBACK ---
+            doc.addPage();
+            yPos = 20;
+
+            try {
+                const logo = await getBase64ImageFromUrl('../../images/Logo.png');
+                doc.addImage(logo, 'PNG', pageWidth - 40, 10, 25, 25);
+            } catch (e) {}
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            doc.setTextColor('#003366');
+            doc.text('Feedback & Reflection', margin, yPos); yPos += 12;
+
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor('#666');
+            doc.text('Key: C = Content gap | E = Exam technique | L = Language/clarity | T = Time/effort | M = Misread/misapplied', margin, yPos);
+            yPos += 10;
+
+            // Table header
+            doc.setFillColor(0, 51, 102);
+            doc.rect(margin, yPos, contentWidth, 8, 'F');
+            doc.setTextColor('#FFFFFF');
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Q', margin + 3, yPos + 6);
+            doc.text('Topic', margin + 15, yPos + 6);
+            doc.text('Attempts', margin + 100, yPos + 6);
+            doc.text('Code', margin + 130, yPos + 6);
+            yPos += 10;
+
+            doc.setTextColor('#000');
+            doc.setFont('helvetica', 'normal');
+            questionMeta.forEach((q, idx) => {
+                checkPageBreak(10);
+                const attempts = (mistakeCounts[q.id] || 0) + 1;
+                const rowY = yPos;
+
+                if (idx % 2 === 0) {
+                    doc.setFillColor(245, 245, 245);
+                    doc.rect(margin, rowY - 4, contentWidth, 8, 'F');
+                }
+
+                doc.setFontSize(10);
+                doc.text(`${idx + 1}`, margin + 3, rowY);
+                doc.text(q.title.substring(0, 40), margin + 15, rowY);
+                doc.text(`${attempts}`, margin + 105, rowY);
+
+                doc.setDrawColor(150);
+                doc.rect(margin + 130, rowY - 5, 25, 7, 'S');
+
+                yPos += 8;
             });
 
-            doc.save(`Topic4_4.2_Assessment_${studentDetails.surname || 'student'}.pdf`);
+            yPos += 10;
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text(`Total Submission Attempts: ${totalAttempts}`, margin, yPos);
+            yPos += 15;
+
+            // --- REFLECTION BOXES ---
+            checkPageBreak(60);
+
+            doc.setDrawColor(40, 167, 69);
+            doc.setLineWidth(1.5);
+            doc.rect(margin, yPos, contentWidth, 40, 'S');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor('#28a745');
+            doc.text('Student Reflection', margin + 4, yPos + 8);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor('#333');
+            doc.text('Using the codes above, identify your main problem area(s) and explain what you will focus on to improve:', margin + 4, yPos + 16);
+            yPos += 50;
+
+            checkPageBreak(45);
+            doc.setDrawColor(111, 66, 193);
+            doc.setLineWidth(1.5);
+            doc.rect(margin, yPos, contentWidth, 35, 'S');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor('#6f42c1');
+            doc.text('Teacher Comment', margin + 4, yPos + 8);
+
+            doc.save(`${testName.replace(/[^a-zA-Z0-9]/g, '_')}_Feedback.pdf`);
         }
 
         function getBase64ImageFromUrl(url) {
@@ -1113,8 +1276,10 @@
                 img.crossOrigin = 'anonymous';
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    canvas.width = img.width; canvas.height = img.height;
-                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
                     resolve(canvas.toDataURL('image/png'));
                 };
                 img.onerror = err => reject(err);
@@ -1122,9 +1287,8 @@
             });
         }
 
-        // Start Sortable
+        // Initialize
         initSortable();
-
     </script>
 </body>
 

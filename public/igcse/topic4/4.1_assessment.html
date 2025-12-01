@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4.1 System Software Assessment | St George's CS</title>
-    <!-- version: retryable-assessment v2 -->
+    <!-- version: retryable-assessment v3 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -19,6 +19,8 @@
             --sg-grey: #f4f6f8;
             --correct-green: #28a745;
             --wrong-red: #dc3545;
+            --reflection-green: #28a745;
+            --teacher-purple: #6f42c1;
         }
 
         * {
@@ -34,35 +36,106 @@
             line-height: 1.6;
             padding-bottom: 100px;
         }
+
+        /* Start Modal */
         #startOverlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,51,102,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2000;
         }
+
         #startCard {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 420px;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 450px;
             width: 90%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            border-top: 6px solid var(--sg-gold);
         }
-        #startCard h2 { color: var(--sg-blue); margin-bottom: 10px; }
-        #startCard label { font-size: 0.9rem; color: #555; }
-        #startCard input { width: 100%; padding: 10px; margin: 8px 0 16px 0; border: 1px solid #ccc; border-radius: 6px; }
-        #startCard button { width: 100%; padding: 12px; background: var(--sg-blue); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
-        #startCard button:hover { background: #00264d; }
+
+        #startCard h2 {
+            color: var(--sg-blue);
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        #startCard .test-name {
+            color: var(--sg-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        #startCard .instructions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        #startCard label {
+            font-size: 0.9rem;
+            color: #555;
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        #startCard select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            background: white;
+        }
+
+        #startCard select:focus {
+            border-color: var(--sg-blue);
+            outline: none;
+        }
+
+        #startCard button {
+            width: 100%;
+            padding: 14px;
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #startCard button:hover {
+            background: var(--sg-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Timer Display */
         #timerDisplay {
             position: fixed;
             top: 18px;
-            right: 20px;
-            color: #666;
-            font-size: 0.9rem;
+            right: 100px;
+            color: var(--sg-blue);
+            font-size: 1rem;
+            font-weight: 600;
             z-index: 900;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid var(--sg-blue);
         }
 
         /* Header */
@@ -106,12 +179,13 @@
             margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .q-status {
             font-size: 0.8rem;
-            padding: 2px 8px;
-            border-radius: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
             background: #ddd;
             color: #666;
         }
@@ -126,7 +200,7 @@
             color: white;
         }
 
-        /* --- Drag & Drop Styles --- */
+        /* Drag & Drop Styles */
         .bucket-container {
             display: flex;
             gap: 20px;
@@ -185,7 +259,7 @@
             cursor: default;
         }
 
-        /* --- Dropdown Styles --- */
+        /* Dropdown Styles */
         .cloze-text {
             line-height: 2.2;
             font-size: 1.05rem;
@@ -214,7 +288,7 @@
             background: #f8d7da;
         }
 
-        /* --- Ordering Lists (Q7) --- */
+        /* Ordering Lists */
         .order-list {
             list-style: none;
             padding: 0;
@@ -235,7 +309,7 @@
             color: var(--sg-gold);
         }
 
-        /* --- Sortable List (Q9) --- */
+        /* Sortable List */
         .sortable-list {
             list-style: none;
             padding: 0;
@@ -268,7 +342,6 @@
             color: #ccc;
         }
 
-        /* Q9 Correct/Incorrect Styles */
         .sortable-list.correct .sortable-item {
             border-color: var(--correct-green);
             border-left-color: var(--correct-green);
@@ -281,7 +354,7 @@
             background-color: #fff5f5;
         }
 
-        /* --- Matching Pairs --- */
+        /* Matching Pairs */
         .match-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -289,8 +362,7 @@
             align-items: center;
         }
 
-        .match-term,
-        .match-def {
+        .match-term, .match-def {
             background: white;
             padding: 15px;
             border: 1px solid #ccc;
@@ -300,8 +372,7 @@
             font-size: 0.9rem;
         }
 
-        .match-term:hover,
-        .match-def:hover {
+        .match-term:hover, .match-def:hover {
             border-color: var(--sg-gold);
             background: var(--sg-light-blue);
         }
@@ -389,7 +460,6 @@
             transition: all 0.3s;
             text-decoration: none;
             display: none;
-            /* Hidden initially */
             margin-left: 10px;
         }
 
@@ -397,26 +467,52 @@
             background: #e0e0e0;
             transform: translateY(-2px);
         }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, var(--correct-green), #20c997);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .completion-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .completion-message p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Start Modal -->
     <div id="startOverlay">
         <div id="startCard">
-            <h2>Start Assessment</h2>
-            <p class="subtitle" style="margin-bottom:12px;">Enter your details to begin. Your attempts will be tracked until you reach full marks.</p>
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" placeholder="First name">
-            <label for="surname">Surname</label>
-            <input type="text" id="surname" placeholder="Surname">
-            <label for="teacherName">Teacher</label>
-            <input type="text" id="teacherName" placeholder="Teacher name">
-            <button onclick="startAssessment()">Start</button>
+            <h2>Assessment</h2>
+            <div class="test-name">4.1 Types of Software & Interrupts</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs. 
+                You must get all answers correct to complete the assessment. 
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
         </div>
     </div>
-    <div id="timerDisplay" style="display:none;">Time: <span id="timer">00:00</span></div>
 
-
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
 
     <!-- Back Button -->
     <a href="index.html" id="back-btn" title="Back to Topic 4"><i class="fa-solid fa-circle-arrow-left"></i></a>
@@ -425,14 +521,14 @@
     <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
 
     <header>
-        <h1>Topic 4.1 Assessment</h1>
-        <p class="subtitle">Comprehensive Check: Software Types, <span class="keyword" data-def="software that provides an environment in which applications can run and also provides an interface between computer and human operator">Operating Systems</span> & <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupts</span></p>
+        <h1>4.1 Assessment</h1>
+        <p class="subtitle">Types of Software & Interrupts</p>
     </header>
 
     <main style="display:none;">
 
         <!-- Q1: Categorisation -->
-        <div class="question-block" id="q1-block">
+        <div class="question-block" id="q1-block" data-summary="Classify software as System or Application">
             <div class="q-header">
                 <span>Q1. Classify the Software</span>
                 <span class="q-status" id="q1-status">Unanswered</span>
@@ -440,15 +536,15 @@
             <p>Drag each software item into the correct category below.</p>
 
             <div class="draggable-source" id="q1-source" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s1"><span class="keyword" data-def="software that supplies a still or moving image on a monitor if a computer has been inactive for a period of time">Screensaver</span></div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s1">Screensaver</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s2">Anti-virus</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s3">Control Software</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s4">Printer Driver</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s5">Video Editing</div>
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s6"><span class="keyword" data-def="a computer program that translates a source program written in a high-level language to machine code">Compiler</span></div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s6">Compiler</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s7">QR Code Reader</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s8">Spreadsheet</div>
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s9"><span class="keyword" data-def="software that provides an environment in which applications can run and also provides an interface between computer and human operator">Operating System</span></div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="s9">Operating System</div>
             </div>
 
             <div class="bucket-container">
@@ -462,73 +558,73 @@
         </div>
 
         <!-- Q2: Scenario Gap Fill -->
-        <div class="question-block" id="q2-block">
+        <div class="question-block" id="q2-block" data-summary="Buffers and Interrupts scenario completion">
             <div class="q-header">
-                <span>Q2. <span class="keyword" data-def="a memory area used to store data temporarily">Buffers</span> & <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupts</span> Scenario</span>
+                <span>Q2. Buffers & Interrupts Scenario</span>
                 <span class="q-status" id="q2-status">Unanswered</span>
             </div>
             <p>Mike is streaming a video but his internet is slow. He is also printing a document.</p>
             <div class="cloze-text">
-                (a) To stop the video freezing, a <select id="q2a">
+                (a) To stop the video freezing, a <select id="q2a" data-answer="buffer">
                     <option value="">---</option>
-                    <option value="buffer"><span class="keyword" data-def="a memory area used to store data temporarily">buffer</span></option>
+                    <option value="buffer">buffer</option>
                     <option value="driver">driver</option>
-                    <option value="interrupt"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">interrupt</span></option>
+                    <option value="interrupt">interrupt</option>
                 </select> is used to store data temporarily.<br>
-                (b) When the printer <span class="keyword" data-def="a memory area used to store data temporarily">buffer</span> is empty, the printer sends an <select id="q2b">
+                (b) When the printer buffer is empty, the printer sends an <select id="q2b" data-answer="interrupt">
                     <option value="">---</option>
                     <option value="error">error</option>
-                    <option value="interrupt"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">interrupt</span></option>
+                    <option value="interrupt">interrupt</option>
                     <option value="signal">signal</option>
                 </select> to the processor requesting more data.<br>
-                (c) This allows the CPU to <select id="q2c">
+                (c) This allows the CPU to <select id="q2c" data-answer="multitask">
                     <option value="">---</option>
                     <option value="multitask">multitask</option>
                     <option value="stop">stop</option>
                     <option value="reboot">reboot</option>
                 </select> and play the video while printing.<br>
-                (d) If the printer runs out of ink, a <select id="q2d">
+                (d) If the printer runs out of ink, a <select id="q2d" data-answer="hardware">
                     <option value="">---</option>
                     <option value="hardware">hardware</option>
                     <option value="software">software</option>
                     <option value="timing">timing</option>
-                </select> <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">interrupt</span> is generated.
+                </select> interrupt is generated.
             </div>
         </div>
 
         <!-- Q3: OS Features -->
-        <div class="question-block" id="q3-block">
+        <div class="question-block" id="q3-block" data-summary="Match OS functions to descriptions">
             <div class="q-header">
-                <span>Q3. <span class="keyword" data-def="software that provides an environment in which applications can run and also provides an interface between computer and human operator">Operating System</span> Functions</span>
+                <span>Q3. Operating System Functions</span>
                 <span class="q-status" id="q3-status">Unanswered</span>
             </div>
             <p>Match the OS feature to its correct description.</p>
             <div class="cloze-text">
-                1. <select id="q3a">
+                1. <select id="q3a" data-answer="HCI">
                     <option value="">---</option>
                     <option value="HCI">HCI</option>
-                    <option value="Multitasking"><span class="keyword" data-def="a function that allows a computer to process more than one task/process at a time">Multitasking</span></option>
+                    <option value="Multitasking">Multitasking</option>
                     <option value="Security">Security</option>
                     <option value="Memory Mgmt">Memory Mgmt</option>
                 </select>: Allows users to communicate (CLI/GUI).<br>
-                2. <select id="q3b">
+                2. <select id="q3b" data-answer="Security">
                     <option value="">---</option>
                     <option value="HCI">HCI</option>
-                    <option value="Multitasking"><span class="keyword" data-def="a function that allows a computer to process more than one task/process at a time">Multitasking</span></option>
+                    <option value="Multitasking">Multitasking</option>
                     <option value="Security">Security</option>
                     <option value="Memory Mgmt">Memory Mgmt</option>
-                </select>: Managing <span class="keyword" data-def="an agreement that allows an individual to use a computer; the user needs a user name and password to enter the user’s area">user accounts</span> and passwords.<br>
-                3. <select id="q3c">
+                </select>: Managing user accounts and passwords.<br>
+                3. <select id="q3c" data-answer="Memory Mgmt">
                     <option value="">---</option>
                     <option value="HCI">HCI</option>
-                    <option value="Multitasking"><span class="keyword" data-def="a function that allows a computer to process more than one task/process at a time">Multitasking</span></option>
+                    <option value="Multitasking">Multitasking</option>
                     <option value="Security">Security</option>
                     <option value="Memory Mgmt">Memory Mgmt</option>
                 </select>: Allocating RAM to programs.<br>
-                4. <select id="q3d">
+                4. <select id="q3d" data-answer="Multitasking">
                     <option value="">---</option>
                     <option value="HCI">HCI</option>
-                    <option value="Multitasking"><span class="keyword" data-def="a function that allows a computer to process more than one task/process at a time">Multitasking</span></option>
+                    <option value="Multitasking">Multitasking</option>
                     <option value="Security">Security</option>
                     <option value="Memory Mgmt">Memory Mgmt</option>
                 </select>: Sharing CPU time to process multiple tasks.
@@ -536,20 +632,19 @@
         </div>
 
         <!-- Q4: Drivers -->
-        <div class="question-block" id="q4-block">
+        <div class="question-block" id="q4-block" data-summary="USB descriptors and device drivers">
             <div class="q-header">
-                <span>Q4. <span class="keyword" data-def="software that communicates with the operating system and translates data into a format understood by the device">Device Drivers</span></span>
+                <span>Q4. Device Drivers</span>
                 <span class="q-status" id="q4-status">Unanswered</span>
             </div>
             <div class="cloze-text">
-                A <span class="keyword" data-def="a collection of information about a device plugged into a USB port; this can be vendor ID (VID), product ID (PID) or serial number">descriptor</span> contains data such as the <select id="q4a">
+                A descriptor contains data such as the <select id="q4a" data-answer="Vendor ID">
                     <option value="">---</option>
                     <option value="Vendor ID">Vendor ID</option>
                     <option value="IP Address">IP Address</option>
                     <option value="File Size">File Size</option>
-                </select>. When a new USB device is plugged in, the <span class="keyword" data-def="a collection of information about a device plugged into a USB port; this can be vendor ID (VID), product ID (PID) or serial number">descriptor</span> allows the <span class="keyword" data-def="software that provides an environment in which applications can run and also provides an interface between computer and human operator">Operating System</span> to
-                identify
-                it and load the correct <select id="q4b">
+                </select>. When a new USB device is plugged in, the descriptor allows the Operating System to
+                identify it and load the correct <select id="q4b" data-answer="driver">
                     <option value="">---</option>
                     <option value="application">application</option>
                     <option value="driver">driver</option>
@@ -559,37 +654,37 @@
         </div>
 
         <!-- Q5: Booting Up -->
-        <div class="question-block" id="q5-block">
+        <div class="question-block" id="q5-block" data-summary="BIOS, EEPROM and CMOS boot process">
             <div class="q-header">
                 <span>Q5. The Boot Process</span>
                 <span class="q-status" id="q5-status">Unanswered</span>
             </div>
             <div class="cloze-text">
-                (a) BIOS stands for <select id="q5a">
+                (a) BIOS stands for <select id="q5a" data-answer="Basic Input Output System">
                     <option value="">---</option>
                     <option value="Basic Input Output System">Basic Input Output System</option>
                     <option value="Binary Internal OS">Binary Internal OS</option>
-                </select>. Its function is to load the OS into <select id="q5b">
+                </select>. Its function is to load the OS into <select id="q5b" data-answer="RAM">
                     <option value="">---</option>
                     <option value="HDD">HDD</option>
                     <option value="RAM">RAM</option>
                     <option value="ROM">ROM</option>
                 </select>.<br>
-                (b) The BIOS software is stored in <select id="q5c">
+                (b) The BIOS software is stored in <select id="q5c" data-answer="EEPROM">
                     <option value="">---</option>
-                    <option value="EEPROM"><span class="keyword" data-def="stands for electronically erasable programmable ROM">EEPROM</span></option>
+                    <option value="EEPROM">EEPROM</option>
                     <option value="CMOS">CMOS</option>
-                </select> (<span class="keyword" data-def="a program that provides low level control for devices">Firmware</span>).<br>
-                (c) The BIOS <em>settings</em> are stored in <select id="q5d">
+                </select> (Firmware).<br>
+                (c) The BIOS <em>settings</em> are stored in <select id="q5d" data-answer="CMOS">
                     <option value="">---</option>
-                    <option value="EEPROM"><span class="keyword" data-def="stands for electronically erasable programmable ROM">EEPROM</span></option>
+                    <option value="EEPROM">EEPROM</option>
                     <option value="CMOS">CMOS</option>
                 </select> which is battery powered.
             </div>
         </div>
 
         <!-- Q6: Definitions Matching -->
-        <div class="question-block" id="q6-block">
+        <div class="question-block" id="q6-block" data-summary="Match terminology to definitions">
             <div class="q-header">
                 <span>Q6. Terminology Match</span>
                 <span class="q-status" id="q6-status">Unanswered</span>
@@ -607,60 +702,60 @@
                     <div class="match-def" data-id="7">Temporary data storage area</div>
                 </div>
                 <div class="col-terms" id="col-terms">
-                    <div class="match-term" data-id="4"><span class="keyword" data-def="a program that provides low level control for devices">Firmware</span></div>
+                    <div class="match-term" data-id="4">Firmware</div>
                     <div class="match-term" data-id="2">Printer Driver</div>
                     <div class="match-term" data-id="1">Bootstrap Loader</div>
-                    <div class="match-term" data-id="6"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupt</span></div>
-                    <div class="match-term" data-id="5"><span class="keyword" data-def="software that supplies a still or moving image on a monitor if a computer has been inactive for a period of time">Screensaver</span></div>
-                    <div class="match-term" data-id="7"><span class="keyword" data-def="a memory area used to store data temporarily">Buffer</span></div>
-                    <div class="match-term" data-id="3"><span class="keyword" data-def="a function that allows a computer to process more than one task/process at a time">Multitasking</span></div>
+                    <div class="match-term" data-id="6">Interrupt</div>
+                    <div class="match-term" data-id="5">Screensaver</div>
+                    <div class="match-term" data-id="7">Buffer</div>
+                    <div class="match-term" data-id="3">Multitasking</div>
                 </div>
             </div>
         </div>
 
         <!-- Q7: Interrupt Cycle (Ordering) -->
-        <div class="question-block" id="q7-block">
+        <div class="question-block" id="q7-block" data-summary="Order the interrupt cycle steps">
             <div class="q-header">
-                <span>Q7. The <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupt</span> Cycle</span>
+                <span>Q7. The Interrupt Cycle</span>
                 <span class="q-status" id="q7-status">Unanswered</span>
             </div>
-            <p>Order the steps that occur when an <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">interrupt</span> is received.</p>
+            <p>Order the steps that occur when an interrupt is received.</p>
             <div class="order-list">
-                <div class="order-item"><span class="order-num">1.</span> <select id="q7a">
+                <div class="order-item"><span class="order-num">1.</span> <select id="q7a" data-answer="Signal">
                         <option value="">---</option>
-                        <option value="Signal"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupt</span> Signal Received</option>
+                        <option value="Signal">Interrupt Signal Received</option>
                         <option value="Save">Save CPU State (PC/Registers)</option>
                         <option value="ISR">Run ISR</option>
                         <option value="Restore">Restore CPU State</option>
                         <option value="Resume">Resume Original Task</option>
                     </select></div>
-                <div class="order-item"><span class="order-num">2.</span> <select id="q7b">
+                <div class="order-item"><span class="order-num">2.</span> <select id="q7b" data-answer="Save">
                         <option value="">---</option>
-                        <option value="Signal"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupt</span> Signal Received</option>
+                        <option value="Signal">Interrupt Signal Received</option>
                         <option value="Save">Save CPU State (PC/Registers)</option>
                         <option value="ISR">Run ISR</option>
                         <option value="Restore">Restore CPU State</option>
                         <option value="Resume">Resume Original Task</option>
                     </select></div>
-                <div class="order-item"><span class="order-num">3.</span> <select id="q7c">
+                <div class="order-item"><span class="order-num">3.</span> <select id="q7c" data-answer="ISR">
                         <option value="">---</option>
-                        <option value="Signal"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupt</span> Signal Received</option>
+                        <option value="Signal">Interrupt Signal Received</option>
                         <option value="Save">Save CPU State (PC/Registers)</option>
                         <option value="ISR">Run ISR</option>
                         <option value="Restore">Restore CPU State</option>
                         <option value="Resume">Resume Original Task</option>
                     </select></div>
-                <div class="order-item"><span class="order-num">4.</span> <select id="q7d">
+                <div class="order-item"><span class="order-num">4.</span> <select id="q7d" data-answer="Restore">
                         <option value="">---</option>
-                        <option value="Signal"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupt</span> Signal Received</option>
+                        <option value="Signal">Interrupt Signal Received</option>
                         <option value="Save">Save CPU State (PC/Registers)</option>
                         <option value="ISR">Run ISR</option>
                         <option value="Restore">Restore CPU State</option>
                         <option value="Resume">Resume Original Task</option>
                     </select></div>
-                <div class="order-item"><span class="order-num">5.</span> <select id="q7e">
+                <div class="order-item"><span class="order-num">5.</span> <select id="q7e" data-answer="Resume">
                         <option value="">---</option>
-                        <option value="Signal"><span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupt</span> Signal Received</option>
+                        <option value="Signal">Interrupt Signal Received</option>
                         <option value="Save">Save CPU State (PC/Registers)</option>
                         <option value="ISR">Run ISR</option>
                         <option value="Restore">Restore CPU State</option>
@@ -670,33 +765,32 @@
         </div>
 
         <!-- Q8: Interrupt Types (Categorisation) -->
-        <div class="question-block" id="q8-block">
+        <div class="question-block" id="q8-block" data-summary="Categorise hardware vs software interrupts">
             <div class="q-header">
-                <span>Q8. Hardware vs Software <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupts</span></span>
+                <span>Q8. Hardware vs Software Interrupts</span>
                 <span class="q-status" id="q8-status">Unanswered</span>
             </div>
-            <p>Drag the <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">interrupt</span> causes to the correct type.</p>
+            <p>Drag the interrupt causes to the correct type.</p>
             <div class="draggable-source" id="q8-source" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i1">Divide by Zero</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i2">Printer Out of Paper</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i3">Key Press</div>
-                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i4">Array Index Out of Bounds
-                </div>
+                <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i4">Array Index Out of Bounds</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i5">Power Failure</div>
                 <div class="drag-item" draggable="true" ondragstart="drag(event)" id="i6">Software Crash</div>
             </div>
             <div class="bucket-container">
                 <div class="bucket" id="bucket-hw" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>Hardware <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupts</span></h4>
+                    <h4>Hardware Interrupts</h4>
                 </div>
                 <div class="bucket" id="bucket-sw" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h4>Software <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupts</span></h4>
+                    <h4>Software Interrupts</h4>
                 </div>
             </div>
         </div>
 
         <!-- Q9: Hierarchy Ordering (Draggable) -->
-        <div class="question-block" id="q9-block">
+        <div class="question-block" id="q9-block" data-summary="Order the system software hierarchy">
             <div class="q-header">
                 <span>Q9. The System Hierarchy</span>
                 <span class="q-status" id="q9-status">Unanswered</span>
@@ -712,6 +806,10 @@
             <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
             <a href="index.html" class="btn-return" id="btnReturn">Return to Menu</a>
             <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
         </div>
 
     </main>
@@ -721,20 +819,35 @@
         let startTime;
         let timerInterval;
         let timeTakenStr = "";
-        let studentDetails = {};
+        let teacherName = "";
+        const testName = "4.1 Types of Software & Interrupts";
+        
+        // Attempt tracking (internal - not visible)
         const mistakeCounts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0, q7: 0, q8: 0, q9: 0 };
         const completed = { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false, q7: false, q8: false, q9: false };
+        let totalAttempts = 0;
         let assessmentFinished = false;
 
+        // Question metadata for PDF
+        const questionMeta = [
+            { id: 'q1', title: 'Classify the Software', correctAnswer: 'System: OS, Screensaver, Anti-virus, Printer Driver, Compiler. Application: Control Software, Video Editing, QR Code Reader, Spreadsheet.', justification: 'System software manages hardware/platform; Application software helps users perform tasks.' },
+            { id: 'q2', title: 'Buffers & Interrupts', correctAnswer: 'buffer, interrupt, multitask, hardware', justification: 'Buffers store data temporarily; interrupts signal CPU; multitasking shares CPU time; hardware interrupts come from devices.' },
+            { id: 'q3', title: 'OS Functions', correctAnswer: 'HCI, Security, Memory Mgmt, Multitasking', justification: 'HCI enables user communication; Security manages access; Memory Mgmt allocates RAM; Multitasking shares CPU.' },
+            { id: 'q4', title: 'Device Drivers', correctAnswer: 'Vendor ID, driver', justification: 'USB descriptors contain vendor/product IDs so the OS can load the correct driver.' },
+            { id: 'q5', title: 'Boot Process', correctAnswer: 'Basic Input Output System, RAM, EEPROM, CMOS', justification: 'BIOS loads OS into RAM; BIOS code in EEPROM (firmware); settings in battery-powered CMOS.' },
+            { id: 'q6', title: 'Terminology Match', correctAnswer: 'All 7 pairs correctly matched', justification: '(Matching exercise - review any incorrect pairs)' },
+            { id: 'q7', title: 'Interrupt Cycle', correctAnswer: 'Signal → Save → ISR → Restore → Resume', justification: 'CPU receives signal, saves state, runs ISR, restores state, resumes task.' },
+            { id: 'q8', title: 'Interrupt Types', correctAnswer: 'Hardware: Printer, Key Press, Power Failure. Software: Divide by Zero, Array Index, Software Crash.', justification: 'Hardware interrupts from devices; software interrupts from code errors.' },
+            { id: 'q9', title: 'System Hierarchy', correctAnswer: 'Application → OS → Firmware → Hardware', justification: 'Apps use OS services; OS uses firmware; firmware controls hardware.' }
+        ];
+
         function startAssessment() {
-            const first = document.getElementById('firstName').value.trim();
-            const surname = document.getElementById('surname').value.trim();
-            const teacher = document.getElementById('teacherName').value.trim();
-            if (!first || !surname || !teacher) {
-                alert("Please fill in first name, surname and teacher.");
+            const teacher = document.getElementById('teacherSelect').value;
+            if (!teacher) {
+                alert("Please select your teacher.");
                 return;
             }
-            studentDetails = { first, surname, teacher };
+            teacherName = teacher;
             document.getElementById('startOverlay').style.display = 'none';
             document.querySelector('main').style.display = 'block';
             document.getElementById('timerDisplay').style.display = 'block';
@@ -771,7 +884,6 @@
 
         function initSortable() {
             const list = document.getElementById('hierarchy-list');
-            // Shuffle items
             let items = [...hierarchyItems];
             for (let i = items.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -785,7 +897,6 @@
                 li.id = item.id;
                 li.innerHTML = `<span>${item.text}</span><i class="fa-solid fa-grip-lines"></i>`;
 
-                // Events for sorting
                 li.addEventListener('dragstart', () => li.classList.add('dragging'));
                 li.addEventListener('dragend', () => li.classList.remove('dragging'));
 
@@ -809,7 +920,6 @@
 
         function getDragAfterElement(container, y) {
             const draggableElements = [...container.querySelectorAll('.sortable-item:not(.dragging)')];
-
             return draggableElements.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
                 const offset = y - box.top - box.height / 2;
@@ -845,14 +955,12 @@
                 if (term.classList.contains('match-solved')) return;
                 if (!selectedDefId) return;
 
-                // Remove previous link from any def assigned to this term
                 const prevDefId = term.dataset.linkedDef;
                 if (prevDefId) {
                     const prevDef = defEls.find(d => d.dataset.id === prevDefId);
                     if (prevDef) prevDef.classList.remove('match-linked');
                 }
 
-                // Link term to selected definition
                 term.dataset.linkedDef = selectedDefId;
                 termEls.forEach(t => t.classList.remove('match-selected'));
                 term.classList.add('match-linked');
@@ -869,6 +977,7 @@
 
         // --- MARKING LOGIC ---
         function checkAnswers() {
+            totalAttempts++;
             let score = 0;
 
             // Q1: Categorisation
@@ -891,9 +1000,10 @@
             updateStatus('q1', q1Correct);
             if (q1Correct) score++;
 
-            // Helper
-            function checkSelect(id, ans) {
+            // Helper for select checking
+            function checkSelect(id) {
                 let el = document.getElementById(id);
+                let ans = el.dataset.answer;
                 if (el.value === ans) {
                     el.classList.add('correct');
                     el.classList.remove('wrong');
@@ -906,36 +1016,22 @@
             }
 
             // Q2
-            let s2 = 0;
-            s2 += checkSelect('q2a', 'buffer');
-            s2 += checkSelect('q2b', 'interrupt');
-            s2 += checkSelect('q2c', 'multitask');
-            s2 += checkSelect('q2d', 'hardware');
+            let s2 = checkSelect('q2a') + checkSelect('q2b') + checkSelect('q2c') + checkSelect('q2d');
             updateStatus('q2', s2 === 4);
             if (s2 === 4) score++;
 
             // Q3
-            let s3 = 0;
-            s3 += checkSelect('q3a', 'HCI');
-            s3 += checkSelect('q3b', 'Security');
-            s3 += checkSelect('q3c', 'Memory Mgmt');
-            s3 += checkSelect('q3d', 'Multitasking');
+            let s3 = checkSelect('q3a') + checkSelect('q3b') + checkSelect('q3c') + checkSelect('q3d');
             updateStatus('q3', s3 === 4);
             if (s3 === 4) score++;
 
             // Q4
-            let s4 = 0;
-            s4 += checkSelect('q4a', 'Vendor ID');
-            s4 += checkSelect('q4b', 'driver');
+            let s4 = checkSelect('q4a') + checkSelect('q4b');
             updateStatus('q4', s4 === 2);
             if (s4 === 2) score++;
 
             // Q5
-            let s5 = 0;
-            s5 += checkSelect('q5a', 'Basic Input Output System');
-            s5 += checkSelect('q5b', 'RAM');
-            s5 += checkSelect('q5c', 'EEPROM');
-            s5 += checkSelect('q5d', 'CMOS');
+            let s5 = checkSelect('q5a') + checkSelect('q5b') + checkSelect('q5c') + checkSelect('q5d');
             updateStatus('q5', s5 === 4);
             if (s5 === 4) score++;
 
@@ -962,12 +1058,7 @@
             if (s6 === 7) score++;
 
             // Q7 Interrupt Cycle
-            let s7 = 0;
-            s7 += checkSelect('q7a', 'Signal');
-            s7 += checkSelect('q7b', 'Save');
-            s7 += checkSelect('q7c', 'ISR');
-            s7 += checkSelect('q7d', 'Restore');
-            s7 += checkSelect('q7e', 'Resume');
+            let s7 = checkSelect('q7a') + checkSelect('q7b') + checkSelect('q7c') + checkSelect('q7d') + checkSelect('q7e');
             updateStatus('q7', s7 === 5);
             if (s7 === 5) score++;
 
@@ -991,26 +1082,21 @@
             updateStatus('q8', q8Correct);
             if (q8Correct) score++;
 
-            // Q9 Hierarchy Ordering Check
+            // Q9 Hierarchy
             const listItems = document.querySelectorAll('#hierarchy-list li');
             const correctOrder = ['h-app', 'h-os', 'h-firm', 'h-hard'];
             let currentOrder = Array.from(listItems).map(li => li.id);
-
             let q9Correct = JSON.stringify(currentOrder) === JSON.stringify(correctOrder);
 
             const listEl = document.getElementById('hierarchy-list');
             if (q9Correct) {
                 listEl.classList.add('correct');
                 listEl.classList.remove('wrong');
-                // Lock items
                 listItems.forEach(li => li.draggable = false);
             } else {
                 listEl.classList.add('wrong');
-                // Shuffle again to reset
                 setTimeout(() => {
                     listEl.classList.remove('wrong');
-                    // Simple visual shake or just leave as is for retry? 
-                    // Prompt says reset wrong answers. For sorting, re-shuffling is best.
                     for (let i = listEl.children.length; i >= 0; i--) {
                         listEl.appendChild(listEl.children[Math.random() * i | 0]);
                     }
@@ -1019,8 +1105,8 @@
             updateStatus('q9', q9Correct);
             if (q9Correct) score++;
 
-            // Track mistakes (only if not yet completed)
-            const correctness = { q1: q1Correct, q2: s2 === 4, q3: s3 === 4, q4: s4 === 2, q5: s5 === 4, q6: s6 === 5, q7: s7 === 5, q8: q8Correct, q9: q9Correct };
+            // Track mistakes
+            const correctness = { q1: q1Correct, q2: s2 === 4, q3: s3 === 4, q4: s4 === 2, q5: s5 === 4, q6: s6 === 7, q7: s7 === 5, q8: q8Correct, q9: q9Correct };
             Object.keys(correctness).forEach(key => {
                 if (!correctness[key] && !completed[key]) {
                     mistakeCounts[key] += 1;
@@ -1033,16 +1119,14 @@
             // Show Score
             const finalScore = document.getElementById('finalScore');
             finalScore.style.display = 'block';
-            finalScore.innerText = `Current score: ${score} / 9 (keep trying until all are correct)`;
+            finalScore.innerText = `Score: ${score} / 9 — ${score < 9 ? 'Keep trying!' : ''}`;
 
             if (score === 9 && !assessmentFinished) {
                 assessmentFinished = true;
                 clearInterval(timerInterval);
-                alert("Congratulations! You achieved full marks. Your feedback PDF will download next.");
+                document.getElementById('completionMessage').style.display = 'block';
+                document.getElementById('btnSubmit').style.display = 'none';
                 generatePDF();
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 1500);
             }
         }
 
@@ -1056,18 +1140,6 @@
                 el.className = "q-status wrong";
             }
         }
-
-        const questionMeta = [
-            { id: 'q1', title: 'System vs Application', correctAnswer: 'System: OS, utilities, drivers, translators. Application: user-task programs (word, browser, games).', explanation: 'System software manages hardware and platform services; applications help users perform tasks.', feedback: ['Revisit system vs application definitions.', 'Examples: OS/drivers vs Word/browsers.'] },
-            { id: 'q2', title: 'OS Concepts', correctAnswer: 'Buffer, Interrupt, Multitask, Hardware Driver', explanation: 'Buffers smooth speed gaps; interrupts request CPU attention; multitasking shares CPU; drivers interface hardware.', feedback: ['Practise buffer vs interrupt.', 'Link drivers to hardware control.'] },
-            { id: 'q3', title: 'OS Functions', correctAnswer: 'HCI, Security, Memory Mgmt, Multitasking', explanation: 'Interfaces let users interact; security protects access; memory allocates RAM; multitasking shares CPU time.', feedback: ['Memorise core OS functions: HCI, Security, Memory, Multitasking.'] },
-            { id: 'q4', title: 'USB Descriptors', correctAnswer: 'Vendor ID + device driver', explanation: 'Descriptors identify the vendor/device so the OS can load the correct driver.', feedback: ['Drivers load using device/vendor IDs.'] },
-            { id: 'q5', title: 'BIOS/CMOS', correctAnswer: 'BIOS stored in EEPROM; settings in CMOS; RAM is volatile', explanation: 'BIOS boots hardware from non-volatile chip; CMOS stores config; RAM clears on power-off.', feedback: ['BIOS in ROM/EEPROM, CMOS holds settings, RAM is volatile.'] },
-            { id: 'q6', title: 'Match Components', correctAnswer: 'All 7 term-definition pairs linked correctly', explanation: 'Each term matches its definition (e.g., bootstrap loader, printer driver, multitasking, firmware, screensaver, interrupt, buffer).', feedback: ['Review each term-definition pair and relink any mismatches.'] },
-            { id: 'q7', title: 'Interrupt Cycle Order', correctAnswer: 'Signal → Save → ISR → Restore → Resume', explanation: 'CPU pauses, saves state, runs ISR, restores registers, continues previous task.', feedback: ['Practise the interrupt cycle order.'] },
-            { id: 'q8', title: 'Interrupt Types', correctAnswer: 'Hardware: printer/keyboard/power; Software: divide by zero/overflow/syscall', explanation: 'Hardware interrupts come from devices; software from code/events.', feedback: ['Differentiate hardware vs software interrupts.'] },
-            { id: 'q9', title: 'Software Stack Order', correctAnswer: 'Application → OS → Firmware → Hardware', explanation: 'Apps call OS services; OS uses firmware; firmware talks to hardware.', feedback: ['Remember stack order: App → OS → Firmware → HW.'] }
-        ];
 
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
@@ -1095,55 +1167,135 @@
                 yPos += lines.length * (size * 0.5) + spacing;
             }
 
+            // --- PAGE 1: ANSWERS ---
             // Logo
             try {
                 const logo = await getBase64ImageFromUrl('../../images/Logo.png');
                 doc.addImage(logo, 'PNG', pageWidth - 40, 10, 25, 25);
             } catch (e) { console.warn('Logo load failed', e); }
 
+            // Title
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            doc.setTextColor('#003366');
+            doc.text(testName, margin, yPos); yPos += 10;
+
+            // Info line
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor('#666666');
+            doc.text(`Teacher: ${teacherName}  |  Time: ${timeTakenStr}  |  Date: ${new Date().toLocaleDateString()}`, margin, yPos);
+            yPos += 15;
+
+            // Questions with answers
+            questionMeta.forEach((q, idx) => {
+                checkPageBreak(25);
+                addWrapped(`Q${idx + 1}. ${q.title}`, 12, 'bold', '#003366', 0, 3);
+                addWrapped(`Answer: ${q.correctAnswer}`, 10, 'normal', '#222', 4, 2);
+                if (!q.title.includes('Match') && !q.title.includes('Classify') && !q.title.includes('Interrupt Types')) {
+                    addWrapped(`${q.justification}`, 9, 'italic', '#555', 4, 4);
+                }
+                doc.setDrawColor(230);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 4;
+            });
+
+            // --- PAGE 2: FEEDBACK ---
+            doc.addPage();
+            yPos = 20;
+
+            // Logo on feedback page
+            try {
+                const logo = await getBase64ImageFromUrl('../../images/Logo.png');
+                doc.addImage(logo, 'PNG', pageWidth - 40, 10, 25, 25);
+            } catch (e) {}
+
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(16);
             doc.setTextColor('#003366');
-            doc.text('Topic 4.1 Assessment Feedback', margin, yPos); yPos += 8;
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor('#666666');
-            doc.text('Cambridge IGCSE Computer Science (0478)', margin, yPos); yPos += 12;
+            doc.text('Feedback & Reflection', margin, yPos); yPos += 12;
 
-            // Student box
-            doc.setDrawColor(220); doc.setFillColor(245,245,245); doc.rect(margin, yPos, contentWidth, 24, 'FD');
-            yPos += 8; doc.setFontSize(10); doc.setTextColor('#000');
-            doc.text(`Student: ${studentDetails.first || '-'} ${studentDetails.surname || '-'}`, margin + 4, yPos);
-            doc.text(`Teacher: ${studentDetails.teacher || '-'}`, margin + 90, yPos);
-            yPos += 7;
-            const timeStr = timeTakenStr || 'N/A';
-            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 4, yPos);
-            doc.text(`Time Taken: ${timeStr}`, margin + 90, yPos);
-            yPos += 12;
+            // Feedback Key
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor('#666');
+            doc.text('Key: C = Content gap | E = Exam technique | L = Language/clarity | T = Time/effort | M = Misread/misapplied', margin, yPos);
+            yPos += 10;
 
-            // Questions
+            // Table header
+            doc.setFillColor(0, 51, 102);
+            doc.rect(margin, yPos, contentWidth, 8, 'F');
+            doc.setTextColor('#FFFFFF');
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Q', margin + 3, yPos + 6);
+            doc.text('Topic', margin + 15, yPos + 6);
+            doc.text('Attempts', margin + 100, yPos + 6);
+            doc.text('Code', margin + 130, yPos + 6);
+            yPos += 10;
+
+            // Table rows
+            doc.setTextColor('#000');
+            doc.setFont('helvetica', 'normal');
             questionMeta.forEach((q, idx) => {
-                addWrapped(`${idx + 1}. ${q.title}`, 12, 'bold', '#003366', 0, 3);
-                addWrapped(`Correct answer: ${q.correctAnswer}`, 10, 'bold', '#222', 4, 2);
-                addWrapped(`Explanation: ${q.explanation}`, 10, 'normal', '#444', 4, 4);
-                const attempts = mistakeCounts[q.id] || 0;
-                addWrapped(`Times incorrect before correct: ${attempts}`, 10, 'normal', '#dc3545', 4, 6);
-                doc.setDrawColor(235); doc.line(margin, yPos, pageWidth - margin, yPos); yPos += 4;
+                checkPageBreak(10);
+                const attempts = (mistakeCounts[q.id] || 0) + 1;
+                const rowY = yPos;
+
+                // Alternating row bg
+                if (idx % 2 === 0) {
+                    doc.setFillColor(245, 245, 245);
+                    doc.rect(margin, rowY - 4, contentWidth, 8, 'F');
+                }
+
+                doc.setFontSize(10);
+                doc.text(`${idx + 1}`, margin + 3, rowY);
+                doc.text(q.title.substring(0, 40), margin + 15, rowY);
+                doc.text(`${attempts}`, margin + 105, rowY);
+
+                // Empty box for code
+                doc.setDrawColor(150);
+                doc.rect(margin + 130, rowY - 5, 25, 7, 'S');
+
+                yPos += 8;
             });
 
-            // Feedback summary
-            doc.addPage();
-            yPos = 20;
-            addWrapped('Feedback Focus', 14, 'bold', '#003366', 0, 6);
-            const weakAreas = questionMeta.filter(q => (mistakeCounts[q.id] || 0) > 0);
-            if (weakAreas.length === 0) {
-                addWrapped('No issues flagged. Great work—keep revising the core definitions and processes.', 11, 'normal', '#444', 4, 4);
-            } else {
-                weakAreas.forEach(q => {
-                    addWrapped(`• ${q.title}`, 11, 'bold', '#003366', 4, 2);
-                    (q.feedback || []).forEach(fb => addWrapped(`   - ${fb}`, 10, 'normal', '#444', 8, 2));
-                });
-            }
+            yPos += 10;
 
-            doc.save(`Topic4_4.1_Assessment_${studentDetails.surname || 'student'}.pdf`);
+            // Total attempts
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text(`Total Submission Attempts: ${totalAttempts}`, margin, yPos);
+            yPos += 15;
+
+            // --- REFLECTION BOXES ---
+            checkPageBreak(60);
+
+            // Student Reflection (Green)
+            doc.setDrawColor(40, 167, 69);
+            doc.setLineWidth(1.5);
+            doc.rect(margin, yPos, contentWidth, 40, 'S');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor('#28a745');
+            doc.text('Student Reflection', margin + 4, yPos + 8);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor('#333');
+            doc.text('Using the codes above, identify your main problem area(s) and explain what you will focus on to improve:', margin + 4, yPos + 16);
+            yPos += 50;
+
+            // Teacher Comment (Purple)
+            checkPageBreak(45);
+            doc.setDrawColor(111, 66, 193);
+            doc.setLineWidth(1.5);
+            doc.rect(margin, yPos, contentWidth, 35, 'S');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor('#6f42c1');
+            doc.text('Teacher Comment', margin + 4, yPos + 8);
+
+            doc.save(`${testName.replace(/[^a-zA-Z0-9]/g, '_')}_Feedback.pdf`);
         }
 
         function getBase64ImageFromUrl(url) {
@@ -1163,9 +1315,8 @@
             });
         }
 
-        // Start Sortable
+        // Initialize
         initSortable();
-
     </script>
 </body>
 
