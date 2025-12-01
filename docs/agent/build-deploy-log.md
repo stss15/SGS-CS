@@ -6,26 +6,28 @@ Use this file to record every full-site build and deploy. Append a new entry eac
 
 ## Complete Build & Deploy Workflow
 
-### Step 1: Apply Keyword Highlighting (IMPORTANT!)
-```bash
-python3 public/igcse/apply_keywords.py
-```
-This wraps keywords in red `<span class="keyword">` tags using definitions from `chapter text files/`.
+**The CI workflow now handles everything automatically!**
 
-### Step 2: Build Site (if using Nunjucks templates)
-```bash
-npm run build
-```
-Generates `public/` from `src/pages/` templates.
-
-### Step 3: Commit and Push
+### For Production (just push!)
 ```bash
 git add -A
 git commit -m "Description of changes"
 git push origin main
 ```
 
-### Step 4: Verify
+GitHub Actions (`.github/workflows/pages.yml`) will automatically:
+1. Run `npm run build` (generates HTML from templates)
+2. Run `python3 public/igcse/apply_keywords.py` (applies red keywords)
+3. Deploy to GitHub Pages
+
+### For Local Testing
+```bash
+npm run build
+python3 public/igcse/apply_keywords.py
+# Then open public/igcse/topicX/file.html in browser
+```
+
+### Verify Deployment
 - Check GitHub Actions: https://github.com/stss15/SGS-CS/actions
 - Hard refresh browser (`Cmd+Shift+R`) to clear CSS cache
 
@@ -36,7 +38,9 @@ git push origin main
 | File | Purpose |
 |------|---------|
 | `public/igcse/apply_keywords.py` | Python script to apply red keyword highlighting |
-| `public/igcse/chapter text files/` | Keyword definitions for each chapter |
+| `docs/igcse-content/chapter-text-files/` | Keyword definitions for each chapter |
+| `docs/agent/plans/` | Slide deck plans (*.md) |
+| `docs/agent/image-prompts/` | AI image generation prompts |
 | `public/css/slide-deck.css` | Master CSS (includes `.keyword` red styling) |
 | `src/pages/igcse/topicX/index.njk` | Nunjucks templates for topic index pages |
 | `.github/workflows/pages.yml` | GitHub Actions deployment workflow |
@@ -54,12 +58,13 @@ git push origin main
 **Solution:** Fixed in `slide-deck.css` with `.reveal h3 .keyword { color: var(--sg-red) !important; }`
 
 ### apply_keywords.py Not Finding Files
-**Cause:** Incorrect `BASE_DIR` path in script.
-**Solution:** Ensure path is `/Users/StevenStewart/SGS-CSC/public/igcse`
+**Cause:** Incorrect path to chapter-text-files.
+**Solution:** Script now uses relative paths. Keyword files are in `docs/igcse-content/chapter-text-files/`
 
 ---
 
 ## Log entries (newest first)
+- 2025-12-01: **Major reorganization:** Moved all .md/.txt files out of public/ into docs/. Image prompts → docs/agent/image-prompts/, Slide plans → docs/agent/plans/, Chapter text files → docs/igcse-content/chapter-text-files/, IB textbooks → docs/ib-content/textbooks/. Updated apply_keywords.py paths.
 - 2025-12-01: Fixed CI workflow to include apply_keywords.py as part of build process. Keywords now automatically applied on every deploy.
 - 2025-12-01: Fixed apply_keywords.py path typo (SGSD→SGS) and reapplied all keywords. Fixed CSS specificity for .keyword in Reveal.js headings.
 - 2025-12-01: Updated IGCSE topic index pages with slide deck links, flashcard links, simulations, Teaching & Revision buttons.

@@ -5,7 +5,8 @@ import re
 # Configuration - use relative path from script location for CI compatibility
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = SCRIPT_DIR  # Script is in public/igcse/
-CHAPTER_FILES_DIR = os.path.join(BASE_DIR, "chapter text files")
+REPO_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))  # Go up to repo root
+CHAPTER_FILES_DIR = os.path.join(REPO_ROOT, "docs", "igcse-content", "chapter-text-files")
 
 # Regex to find definition boxes (assuming they don't have nested divs for now, or simple nesting)
 DEF_BOX_PATTERN = re.compile(r'<div class="key-term[^"]*"[^>]*>.*?</div>', re.DOTALL | re.IGNORECASE)

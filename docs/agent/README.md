@@ -33,7 +33,7 @@ python3 public/igcse/apply_keywords.py
 ```
 
 The keyword script:
-- Reads definitions from `public/igcse/chapter text files/Chapter X key words.txt`
+- Reads definitions from `docs/igcse-content/chapter-text-files/Chapter X key words.txt`
 - Wraps keywords in `<span class="keyword" data-def="...">` tags (red highlighting)
 - Removes old yellow `<div class="key-term">` definition boxes
 - Skips `<script>`, `<style>`, `<title>`, and existing keyword spans
@@ -86,6 +86,35 @@ Study these completed decks for examples:
 - `public/igcse/topic4/4.1_types_of_software_and_interrupts.html`
 - `public/igcse/topic5/5.1_the_internet_and_the_www.html`
 - `public/igcse/topic6/6.1_automated_systems.html`
+
+## Directory Structure
+
+```
+docs/
+├── agent/                          # AI Agent documentation
+│   ├── README.md                   # This file
+│   ├── build-deploy-log.md         # Deployment records
+│   ├── igcse-slide-deck-guide.md   # Complete slide deck guide
+│   ├── igcse-slide-deck-changelog.md
+│   ├── reveal-slide-deck-sizing-guide.md
+│   ├── plans/                      # Slide deck plans (*.md)
+│   │   ├── 1.1_slide_plan.md
+│   │   ├── 1.2_slide_plan.md
+│   │   └── ...
+│   ├── image-prompts/              # AI image generation prompts
+│   │   ├── Chapter 1/
+│   │   ├── Chapter 2/
+│   │   └── ...
+│   ├── templates/                  # HTML/CSS templates
+│   └── workflows/                  # Step-by-step workflows
+├── igcse-content/
+│   └── chapter-text-files/         # Source content & keywords
+│       ├── Chapter 1 key words.txt
+│       ├── Chapter 1.txt
+│       └── ...
+└── ib-content/
+    └── textbooks/                  # IB course textbooks
+```
 
 ## Other Files
 

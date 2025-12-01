@@ -12,7 +12,7 @@ This workflow outlines the process for creating high-quality, pedagogically soun
 - Review existing slide decks or style guides to understand the required aesthetic and structure.
 
 ## 2. Draft Slide Plan
-Create a new Markdown file named `[topic_id]_slide_plan.md` (e.g., `5.1_slide_plan.md`).
+Create a new Markdown file in `docs/agent/plans/` named `[topic_id]_slide_plan.md` (e.g., `5.1_slide_plan.md`).
 Structure the plan slide-by-slide:
 
 ### Format
