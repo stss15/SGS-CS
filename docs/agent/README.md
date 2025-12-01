@@ -4,36 +4,41 @@ This directory contains all documentation and templates for creating pedagogical
 
 ---
 
-## ⚠️ CRITICAL: Build & Deploy Workflow
+## ⚠️ Build & Deploy Workflow
 
-**After making ANY changes to IGCSE content, you MUST follow this complete workflow:**
+**The CI workflow now handles keyword processing automatically!**
 
-### Step 1: Apply Keywords (Red Click-to-Define Highlighting)
-```bash
-cd /Users/StevenStewart/SGS-CSC
-python3 public/igcse/apply_keywords.py
-```
+### For Production Deploys
 
-This script:
-- Reads keyword definitions from `public/igcse/chapter text files/Chapter X key words.txt`
-- Wraps all keywords in `<span class="keyword" data-def="...">` tags (red highlighting)
-- Removes any old yellow `<div class="key-term">` definition boxes
-- Processes all HTML files in topics 1-10
+Simply commit and push your changes:
 
-### Step 2: Build the Site (if using Nunjucks templates)
-```bash
-npm run build
-```
-This generates `public/` from `src/pages/` templates.
-
-### Step 3: Commit and Push
 ```bash
 git add -A
 git commit -m "Description of changes"
 git push origin main
 ```
 
-### Step 4: Verify Deployment
+The GitHub Actions workflow (`.github/workflows/pages.yml`) will:
+1. Run `npm run build` (generates HTML from Nunjucks templates)
+2. Run `python3 public/igcse/apply_keywords.py` (applies red keyword highlighting)
+3. Deploy to GitHub Pages
+
+### For Local Testing
+
+If you want to test keyword highlighting locally:
+
+```bash
+npm run build
+python3 public/igcse/apply_keywords.py
+```
+
+The keyword script:
+- Reads definitions from `public/igcse/chapter text files/Chapter X key words.txt`
+- Wraps keywords in `<span class="keyword" data-def="...">` tags (red highlighting)
+- Removes old yellow `<div class="key-term">` definition boxes
+- Skips `<script>`, `<style>`, `<title>`, and existing keyword spans
+
+### Verify Deployment
 - Check GitHub Actions: https://github.com/stss15/SGS-CS/actions
 - Wait for green checkmark
 - **Hard refresh browser** (`Cmd+Shift+R`) to clear CSS cache

@@ -60,6 +60,7 @@ git push origin main
 ---
 
 ## Log entries (newest first)
+- 2025-12-01: Fixed CI workflow to include apply_keywords.py as part of build process. Keywords now automatically applied on every deploy.
 - 2025-12-01: Fixed apply_keywords.py path typo (SGSD→SGS) and reapplied all keywords. Fixed CSS specificity for .keyword in Reveal.js headings.
 - 2025-12-01: Updated IGCSE topic index pages with slide deck links, flashcard links, simulations, Teaching & Revision buttons.
 - 2025-12-01: Built site (`npm run build`) and pushed `main` to stss15/SGS-CS to trigger GitHub Pages (first deploy on new repo).
