@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7.4 Standard Methods | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --sg-blue: #003366;
+            --sg-gold: #D4AF37;
+            --sg-text: #333333;
+            --sg-light-blue: #e6f0fa;
+            --sg-grey: #f4f6f8;
+            --correct-green: #28a745;
+            --wrong-red: #dc3545;
+            --paired-amber: #f0ad4e;
+            --reflection-green: #28a745;
+            --teacher-purple: #6f42c1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--sg-text);
+            background-color: #ffffff;
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        /* Start Modal */
+        #startOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 51, 102, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        #startCard {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border-top: 6px solid var(--sg-gold);
+        }
+
+        #startCard h2 {
+            color: var(--sg-blue);
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        #startCard .test-name {
+            color: var(--sg-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        #startCard .instructions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        #startCard label {
+            font-size: 0.9rem;
+            color: #555;
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        #startCard select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            background: white;
+        }
+
+        #startCard select:focus {
+            border-color: var(--sg-blue);
+            outline: none;
+        }
+
+        #startCard button {
+            width: 100%;
+            padding: 14px;
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #startCard button:hover {
+            background: var(--sg-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Timer Display */
+        #timerDisplay {
+            position: fixed;
+            top: 18px;
+            right: 100px;
+            color: var(--sg-blue);
+            font-size: 1rem;
+            font-weight: 600;
+            z-index: 900;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid var(--sg-blue);
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 1.5rem;
+            border-bottom: 4px solid var(--sg-gold);
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: var(--sg-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .question-block {
+            background: var(--sg-grey);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-left: 5px solid var(--sg-blue);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .q-header {
+            font-weight: 700;
+            color: var(--sg-blue);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .q-status {
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: #ddd;
+            color: #666;
+        }
+
+        .q-status.correct {
+            background: var(--correct-green);
+            color: white;
+        }
+
+        .q-status.wrong {
+            background: var(--wrong-red);
+            color: white;
+        }
+
+        /* Drag & Drop Styles */
+        .bucket-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .bucket {
+            flex: 1;
+            background: white;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            min-height: 200px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .bucket h4 {
+            text-align: center;
+            color: var(--sg-blue);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .draggable-source {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            min-height: 60px;
+        }
+
+        .drag-item {
+            background: var(--sg-blue);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .drag-item:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+
+        .drag-item.locked {
+            background: var(--correct-green);
+            cursor: default;
+        }
+
+        /* Matching Pairs */
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .col-defs,
+        .col-terms {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-term,
+        .match-def {
+            background: white;
+            padding: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .match-term:hover,
+        .match-def:hover {
+            border-color: var(--sg-gold);
+            background: var(--sg-light-blue);
+        }
+
+        .match-selected {
+            background: var(--sg-blue) !important;
+            color: white !important;
+            border-color: var(--sg-blue) !important;
+        }
+
+        .match-paired {
+            background: #fff3cd !important;
+            border-color: var(--paired-amber) !important;
+            color: #856404 !important;
+        }
+
+        .match-solved {
+            background: var(--correct-green) !important;
+            color: white !important;
+            border-color: var(--correct-green) !important;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* Ordering List */
+        .sortable-list {
+            list-style: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .sortable-item {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .sortable-item:active {
+            cursor: grabbing;
+            border-color: var(--sg-blue);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sortable-item.correct {
+            border-color: var(--correct-green);
+            background: #e8f5e9;
+        }
+
+        .sortable-item.wrong {
+            border-color: var(--wrong-red);
+        }
+
+        /* MCQ Styles */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mcq-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mcq-option:hover {
+            border-color: var(--sg-gold);
+            background: var(--sg-light-blue);
+        }
+
+        .mcq-option.selected {
+            border-color: var(--sg-blue);
+            background: var(--sg-light-blue);
+        }
+
+        .mcq-option.correct {
+            border-color: var(--correct-green);
+            background: #e8f5e9;
+        }
+
+        .mcq-option.wrong {
+            border-color: var(--wrong-red);
+            background: #fdecea;
+        }
+
+        .mcq-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mcq-option.selected .mcq-radio {
+            border-color: var(--sg-blue);
+        }
+
+        .mcq-option.selected .mcq-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--sg-blue);
+            border-radius: 50%;
+        }
+
+        /* Footer Controls */
+        .controls {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-submit {
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2);
+        }
+
+        .btn-submit:hover {
+            background: var(--sg-gold);
+            transform: translateY(-2px);
+        }
+
+        #finalScore {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sg-blue);
+            display: none;
+        }
+
+        /* Back Button */
+        #back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            font-size: 1.5rem;
+            color: var(--sg-blue);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        #back-btn:hover {
+            color: var(--sg-gold);
+        }
+
+        /* Logo */
+        #sg-logo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            z-index: 1000;
+        }
+
+        .btn-return {
+            background: var(--sg-grey);
+            color: var(--sg-text);
+            border: 2px solid #ccc;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: none;
+            margin-left: 10px;
+        }
+
+        .btn-return:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, var(--correct-green), #20c997);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .completion-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .completion-message p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">7.4 Standard Methods</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 7 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>7.4 Assessment</h1>
+        <p class="subtitle">Standard Methods of Solution</p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: Algorithm Types (Matching) -->
+        <div class="question-block" id="q1-block" data-summary="Algorithm Types">
+            <div class="q-header">
+                <span>Q1. Algorithm Types</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Match the algorithm type to its description.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q1"></div>
+                <div class="col-terms" id="col-terms-q1"></div>
+            </div>
+        </div>
+
+        <!-- Q2: Totalling vs Counting (Categorisation) -->
+        <div class="question-block" id="q2-block" data-summary="Totalling vs Counting">
+            <div class="q-header">
+                <span>Q2. Totalling vs Counting</span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Drag the code snippets or descriptions into the correct category.</p>
+            <div class="draggable-source" id="q2-source" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-total" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Totalling</h4>
+                </div>
+                <div class="bucket" id="bucket-count" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Counting</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: Linear Search Logic (Ordering) -->
+        <div class="question-block" id="q3-block" data-summary="Linear Search Logic">
+            <div class="q-header">
+                <span>Q3. Linear Search Logic</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <p>Order the steps to perform a linear search.</p>
+            <ul class="sortable-list" id="q3-list"></ul>
+        </div>
+
+        <!-- Q4: Bubble Sort Logic (MCQ) -->
+        <div class="question-block" id="q4-block" data-summary="Bubble Sort Logic">
+            <div class="q-header">
+                <span>Q4. Bubble Sort Logic</span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <p>In a Bubble Sort, what happens if two adjacent items are in the wrong order?</p>
+            <div class="mcq-options" id="q4-options"></div>
+        </div>
+
+        <!-- Q5: Algorithm Purpose (Drag & Drop) -->
+        <div class="question-block" id="q5-block" data-summary="Algorithm Purpose">
+            <div class="q-header">
+                <span>Q5. Algorithm Purpose</span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <p>Drag the code snippet to the algorithm it represents.</p>
+            <div class="draggable-source" id="q5-source" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-max" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Maximum</h4>
+                </div>
+                <div class="bucket" id="bucket-min" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Minimum</h4>
+                </div>
+                <div class="bucket" id="bucket-avg" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Average</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- SESSION / TRACKING ---
+        let startTime;
+        let timerInterval;
+        let timeTakenStr = "";
+        let teacherName = "";
+        const testName = "7.4 Standard Methods";
+
+        // Attempt tracking
+        const mistakeCounts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 };
+        const completed = { q1: false, q2: false, q3: false, q4: false, q5: false };
+        let totalAttempts = 0;
+        let assessmentFinished = false;
+
+        // --- DATA FOR QUESTIONS ---
+
+        // Q1 Data (Algorithm Types)
+        const q1Defs = [
+            { id: '1', text: 'Adding values to a running total' },
+            { id: '2', text: 'Incrementing a counter for each occurrence' },
+            { id: '3', text: 'Checking each item in a list sequentially' },
+            { id: '4', text: 'Swapping adjacent items to order a list' }
+        ];
+        const q1Terms = [
+            { id: '1', text: 'Totalling' },
+            { id: '2', text: 'Counting' },
+            { id: '3', text: 'Linear Search' },
+            { id: '4', text: 'Bubble Sort' }
+        ];
+
+        // Q2 Data (Totalling vs Counting)
+        const q2Items = [
+            { id: 't1', text: 'Total <- Total + Mark', correct: 'total' },
+            { id: 't2', text: 'Sum <- Sum + Number', correct: 'total' },
+            { id: 'c1', text: 'Count <- Count + 1', correct: 'count' },
+            { id: 'c2', text: 'Passes <- Passes + 1', correct: 'count' },
+            { id: 't3', text: 'Keeping track of total sales', correct: 'total' },
+            { id: 'c3', text: 'Tracking number of customers', correct: 'count' }
+        ];
+
+        // Q3 Data (Linear Search Logic)
+        const q3Steps = [
+            { id: 's1', text: 'INPUT ValueToFind' },
+            { id: 's2', text: 'FOR Index <- 1 TO Length' },
+            { id: 's3', text: 'IF List[Index] = ValueToFind THEN' },
+            { id: 's4', text: 'OUTPUT "Found"' },
+            { id: 's5', text: 'ENDIF' },
+            { id: 's6', text: 'NEXT Index' }
+        ];
+
+        // Q4 Data (Bubble Sort Logic)
+        const q4Options = [
+            { value: 'They are swapped', correct: true },
+            { value: 'They are deleted', correct: false },
+            { value: 'The algorithm stops', correct: false },
+            { value: 'They are moved to a new list', correct: false }
+        ];
+        let q4Selection = null;
+
+        // Q5 Data (Algorithm Purpose)
+        const q5Items = [
+            { id: 'max1', text: 'IF Mark > Max THEN Max <- Mark', correct: 'max' },
+            { id: 'min1', text: 'IF Mark < Min THEN Min <- Mark', correct: 'min' },
+            { id: 'avg1', text: 'Avg <- Total / Count', correct: 'avg' }
+        ];
+
+        const questionMeta = [
+            { id: 'q1', title: 'Algorithm Types', type: 'match', correctAnswer: { '1': 'Totalling', '2': 'Counting', '3': 'Linear Search', '4': 'Bubble Sort' } },
+            { id: 'q2', title: 'Totalling vs Counting', type: 'drag', correctAnswer: { total: ['Total+', 'Sum+', 'Sales'], count: ['Count+', 'Passes+', 'Customers'] } },
+            { id: 'q3', title: 'Linear Search Logic', type: 'order', correctAnswer: ['Input', 'For', 'If Found', 'Output', 'Endif', 'Next'] },
+            { id: 'q4', title: 'Bubble Sort Logic', type: 'mcq', correctAnswer: 'They are swapped' },
+            { id: 'q5', title: 'Algorithm Purpose', type: 'drag', correctAnswer: { max: ['Max Check'], min: ['Min Check'], avg: ['Calc Avg'] } }
+        ];
+
+        // --- UTILITY ---
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // --- INIT ---
+        function initQuestions() {
+            initMatch('q1', q1Defs, q1Terms);
+            initDrag('q2', q2Items);
+            initOrder('q3', q3Steps);
+            initMCQ('q4', q4Options);
+            initDrag('q5', q5Items);
+        }
+
+        function initMatch(qId, defs, terms) {
+            const dContainer = document.getElementById(`col-defs-${qId}`);
+            const tContainer = document.getElementById(`col-terms-${qId}`);
+            shuffle(defs).forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'match-def';
+                div.dataset.id = d.id;
+                div.textContent = d.text;
+                div.onclick = () => selectDef(div, qId);
+                dContainer.appendChild(div);
+            });
+            shuffle(terms).forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'match-term';
+                div.dataset.id = t.id;
+                div.textContent = t.text;
+                div.onclick = () => selectTerm(div, qId);
+                tContainer.appendChild(div);
+            });
+        }
+
+        function initDrag(qId, items) {
+            const source = document.getElementById(`${qId}-source`);
+            shuffle(items).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'drag-item';
+                div.draggable = true;
+                div.id = item.id;
+                div.textContent = item.text;
+                div.dataset.correct = item.correct;
+                div.ondragstart = drag;
+                source.appendChild(div);
+            });
+        }
+
+        function initOrder(qId, steps) {
+            const list = document.getElementById(`${qId}-list`);
+            shuffle(steps).forEach(step => {
+                const li = document.createElement('li');
+                li.className = 'sortable-item';
+                li.draggable = true;
+                li.dataset.id = step.id;
+                li.innerHTML = `<i class="fa-solid fa-bars"></i> <span>${step.text}</span>`;
+                li.ondragstart = dragList;
+                li.ondragover = allowDropList;
+                li.ondrop = dropList;
+                list.appendChild(li);
+            });
+        }
+
+        function initMCQ(qId, options) {
+            const container = document.getElementById(`${qId}-options`);
+            shuffle(options).forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'mcq-option';
+                div.dataset.value = opt.value;
+                div.dataset.correct = opt.correct;
+                div.innerHTML = `<div class="mcq-radio"></div><span>${opt.value}</span>`;
+                div.onclick = () => selectMCQ(qId, opt.value);
+                container.appendChild(div);
+            });
+        }
+
+        // --- CORE LOGIC ---
+        function startAssessment() {
+            const teacher = document.getElementById('teacherSelect').value;
+            if (!teacher) { alert("Please select your teacher."); return; }
+            teacherName = teacher;
+            document.getElementById('startOverlay').style.display = 'none';
+            document.querySelector('main').style.display = 'block';
+            document.getElementById('timerDisplay').style.display = 'block';
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+            initQuestions();
+        }
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            const m = Math.floor(diff / 60).toString().padStart(2, '0');
+            const s = (diff % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${m}:${s}`;
+            timeTakenStr = `${m}m ${s}s`;
+        }
+
+        // --- DRAG ---
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const el = document.getElementById(data);
+            if (ev.target.classList.contains('bucket') || ev.target.classList.contains('draggable-source')) {
+                ev.target.appendChild(el);
+            } else if (ev.target.closest('.bucket')) {
+                ev.target.closest('.bucket').appendChild(el);
+            }
+        }
+
+        // --- MATCHING ---
+        let selectedDef = {};
+        let selectedTerm = {};
+        let matchedPairs = {};
+
+        function selectDef(el, qId) {
+            if (el.classList.contains('match-solved')) return;
+            if (selectedDef[qId]) selectedDef[qId].classList.remove('match-selected');
+            selectedDef[qId] = el;
+            el.classList.add('match-selected');
+            checkMatch(qId);
+        }
+
+        function selectTerm(el, qId) {
+            if (el.classList.contains('match-solved')) return;
+            if (selectedTerm[qId]) selectedTerm[qId].classList.remove('match-selected');
+            selectedTerm[qId] = el;
+            el.classList.add('match-selected');
+            checkMatch(qId);
+        }
+
+        function checkMatch(qId) {
+            if (!matchedPairs[qId]) matchedPairs[qId] = [];
+            if (selectedDef[qId] && selectedTerm[qId]) {
+                selectedDef[qId].classList.remove('match-selected');
+                selectedTerm[qId].classList.remove('match-selected');
+                selectedDef[qId].classList.add('match-paired');
+                selectedTerm[qId].classList.add('match-paired');
+                matchedPairs[qId] = matchedPairs[qId].filter(p => p.def !== selectedDef[qId] && p.term !== selectedTerm[qId]);
+                matchedPairs[qId].push({
+                    def: selectedDef[qId],
+                    term: selectedTerm[qId],
+                    defId: selectedDef[qId].dataset.id,
+                    termId: selectedTerm[qId].dataset.id
+                });
+                selectedDef[qId] = null;
+                selectedTerm[qId] = null;
+            }
+        }
+
+        // --- ORDERING ---
+        let draggedItem = null;
+        function dragList(e) { draggedItem = this; setTimeout(() => this.style.display = 'none', 0); }
+        function allowDropList(e) { e.preventDefault(); }
+        function dropList(e) {
+            e.preventDefault();
+            if (this !== draggedItem) {
+                let allItems = Array.from(document.querySelectorAll(`#${this.parentNode.id} .sortable-item`));
+                let draggedIdx = allItems.indexOf(draggedItem);
+                let droppedIdx = allItems.indexOf(this);
+                if (draggedIdx < droppedIdx) {
+                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                } else {
+                    this.parentNode.insertBefore(draggedItem, this);
+                }
+            }
+            draggedItem.style.display = 'flex';
+        }
+
+        // --- MCQ ---
+        function selectMCQ(qId, value) {
+            document.querySelectorAll(`#${qId}-options .mcq-option`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            const selected = document.querySelector(`#${qId}-options .mcq-option[data-value="${value}"]`);
+            selected.classList.add('selected');
+            q4Selection = value;
+        }
+
+        // --- CHECK ---
+        function checkAnswers() {
+            totalAttempts++;
+            let allCorrect = true;
+
+            if (!checkMatchQuestion('q1', 4)) allCorrect = false;
+            if (!checkDragQuestion('q2', 'total', 'count')) allCorrect = false;
+            if (!checkOrderQuestion('q3', ['s1', 's2', 's3', 's4', 's5', 's6'])) allCorrect = false;
+            if (!checkMCQQuestion('q4')) allCorrect = false;
+            if (!checkDragQuestion('q5', 'max', 'min', 'avg')) allCorrect = false;
+
+            if (allCorrect && !assessmentFinished) {
+                assessmentFinished = true;
+                clearInterval(timerInterval);
+                document.getElementById('btnSubmit').style.display = 'none';
+                document.getElementById('btnReturn').style.display = 'inline-block';
+                document.getElementById('completionMessage').style.display = 'block';
+                document.getElementById('finalScore').textContent = `Attempts: ${totalAttempts} | Time: ${timeTakenStr}`;
+                document.getElementById('finalScore').style.display = 'block';
+                generatePDF();
+            }
+        }
+
+        function checkMatchQuestion(qId, count) {
+            let correct = true;
+            const pairs = matchedPairs[qId] || [];
+            if (pairs.length !== count) correct = false;
+            else {
+                pairs.forEach(p => { if (p.defId !== p.termId) correct = false; });
+            }
+            if (correct) {
+                markCorrect(qId);
+                pairs.forEach(p => {
+                    p.def.classList.remove('match-paired');
+                    p.term.classList.remove('match-paired');
+                    p.def.classList.add('match-solved');
+                    p.term.classList.add('match-solved');
+                });
+            } else {
+                markWrong(qId);
+            }
+            return correct;
+        }
+
+        function checkDragQuestion(qId, ...buckets) {
+            let correct = true;
+            buckets.forEach(b => {
+                const bucket = document.getElementById(`bucket-${b}`);
+                Array.from(bucket.children).forEach(c => {
+                    if (c.classList.contains('drag-item') && c.dataset.correct !== b) correct = false;
+                });
+            });
+            if (document.getElementById(`${qId}-source`).children.length > 0) correct = false;
+
+            if (correct) {
+                markCorrect(qId);
+                buckets.forEach(b => {
+                    lockDragItems([document.getElementById(`bucket-${b}`)]);
+                });
+            } else {
+                markWrong(qId);
+            }
+            return correct;
+        }
+
+        function checkOrderQuestion(qId, correctOrderIds) {
+            let correct = true;
+            const items = document.querySelectorAll(`#${qId}-list .sortable-item`);
+            items.forEach((item, index) => {
+                if (item.dataset.id !== correctOrderIds[index]) correct = false;
+            });
+            if (correct) {
+                markCorrect(qId);
+                items.forEach(i => i.classList.add('correct'));
+            } else {
+                markWrong(qId);
+                items.forEach(i => i.classList.add('wrong'));
+            }
+            return correct;
+        }
+
+        function checkMCQQuestion(qId) {
+            const correctOpt = q4Options.find(o => o.correct);
+            if (q4Selection === correctOpt.value) {
+                document.querySelector(`#${qId}-options .mcq-option[data-value="${q4Selection}"]`).classList.add('correct');
+                markCorrect(qId);
+                return true;
+            } else {
+                if (q4Selection) document.querySelector(`#${qId}-options .mcq-option[data-value="${q4Selection}"]`).classList.add('wrong');
+                markWrong(qId);
+                return false;
+            }
+        }
+
+        function markCorrect(qId) {
+            if (!completed[qId]) {
+                completed[qId] = true;
+                document.getElementById(`${qId}-status`).textContent = "Correct";
+                document.getElementById(`${qId}-status`).className = "q-status correct";
+                document.getElementById(`${qId}-block`).style.borderLeftColor = "var(--correct-green)";
+            }
+        }
+
+        function markWrong(qId) {
+            if (!completed[qId]) {
+                mistakeCounts[qId]++;
+                document.getElementById(`${qId}-status`).textContent = "Incorrect";
+                document.getElementById(`${qId}-status`).className = "q-status wrong";
+            }
+        }
+
+        function lockDragItems(containers) {
+            containers.forEach(c => {
+                Array.from(c.children).forEach(child => {
+                    if (child.classList.contains('drag-item')) {
+                        child.draggable = false;
+                        child.classList.add('locked');
+                    }
+                });
+            });
+        }
+
+        // --- PDF ---
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(20);
+            doc.setTextColor(0, 51, 102);
+            doc.text(testName, 20, 20);
+            doc.setFontSize(12);
+            doc.setTextColor(50);
+            doc.text(`Teacher: ${teacherName}`, 20, 30);
+            doc.text(`Time Taken: ${timeTakenStr}`, 20, 36);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 42);
+
+            let y = 60;
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Correct Answers", 20, 52);
+            doc.setFontSize(10);
+            questionMeta.forEach(q => {
+                if (y > 270) { doc.addPage(); y = 20; }
+                doc.setFont(undefined, 'bold');
+                doc.text(`${q.id.toUpperCase()}: ${q.title}`, 20, y);
+                y += 5;
+                doc.setFont(undefined, 'normal');
+                let ansStr = typeof q.correctAnswer === 'object' ? JSON.stringify(q.correctAnswer).replace(/"/g, '').replace(/,/g, ', ') : q.correctAnswer;
+                const splitAns = doc.splitTextToSize(`Answer: ${ansStr}`, 170);
+                doc.text(splitAns, 20, y);
+                y += (splitAns.length * 5) + 5;
+            });
+
+            doc.addPage();
+            doc.setFontSize(16);
+            doc.text("Feedback & Reflection", 20, 20);
+            let ty = 40;
+            doc.setFontSize(10);
+            doc.setFillColor(240, 240, 240);
+            doc.rect(20, ty - 5, 170, 8, 'F');
+            doc.text("Question", 25, ty);
+            doc.text("Attempts", 80, ty);
+            doc.text("Feedback Code", 130, ty);
+            ty += 10;
+
+            Object.keys(mistakeCounts).forEach(q => {
+                doc.text(q.toUpperCase(), 25, ty);
+                doc.text((mistakeCounts[q] + 1).toString(), 85, ty);
+                doc.rect(130, ty - 4, 30, 6);
+                ty += 10;
+            });
+
+            ty += 10;
+            doc.setFont(undefined, 'bold');
+            doc.text("Feedback Codes: C=Content, E=Exam Tech, L=Language, T=Time, M=Misread", 20, ty);
+            ty += 15;
+            doc.setDrawColor(40, 167, 69);
+            doc.rect(20, ty, 170, 40);
+            doc.setTextColor(40, 167, 69);
+            doc.text("Student Reflection:", 25, ty + 8);
+            ty += 50;
+            doc.setDrawColor(111, 66, 193);
+            doc.rect(20, ty, 170, 40);
+            doc.setTextColor(111, 66, 193);
+            doc.text("Teacher Comment:", 25, ty + 8);
+
+            doc.save(`${testName.replace(/ /g, '_')}_Feedback.pdf`);
+        }
+    </script>
+</body>
+
+</html>

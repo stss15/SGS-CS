@@ -42,7 +42,7 @@
         #startOverlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,51,102,0.9);
+            background: rgba(0, 51, 102, 0.9);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -55,7 +55,7 @@
             border-radius: 16px;
             max-width: 450px;
             width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             text-align: center;
             border-top: 6px solid var(--sg-gold);
         }
@@ -427,6 +427,89 @@
             cursor: default;
         }
 
+        /* MCQ Styles */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mcq-option {
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mcq-option:hover {
+            border-color: var(--sg-gold);
+            background: var(--sg-light-blue);
+        }
+
+        .mcq-option.selected {
+            background: var(--sg-blue);
+            color: white;
+            border-color: var(--sg-blue);
+        }
+
+        .mcq-option.correct {
+            background: var(--correct-green);
+            color: white;
+            border-color: var(--correct-green);
+            pointer-events: none;
+        }
+
+        .mcq-option.wrong {
+            border-color: var(--wrong-red);
+            background: #f8d7da;
+        }
+
+        /* True/False Table */
+        .tf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tf-table th,
+        .tf-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tf-table th {
+            background: var(--sg-blue);
+            color: white;
+        }
+
+        .tf-table th:nth-child(2),
+        .tf-table th:nth-child(3),
+        .tf-table td:nth-child(2),
+        .tf-table td:nth-child(3) {
+            text-align: center;
+            width: 80px;
+        }
+
+        .tf-table input[type="radio"] {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .tf-table tr.correct-row {
+            background: #e8f5e9;
+        }
+
+        .tf-table tr.wrong-row {
+            background: #f8d7da;
+        }
+
         .sortable-list.wrong .sortable-item {
             border-left-color: var(--wrong-red);
             background-color: #fff5f5;
@@ -551,8 +634,8 @@
             <h2>Assessment</h2>
             <div class="test-name">4.2 Programming Languages, Translators & IDEs</div>
             <p class="instructions">
-                Answer all questions by selecting from dropdowns, dragging items, or choosing True/False. 
-                You must get all answers correct to complete the assessment. 
+                Answer all questions by selecting from dropdowns, dragging items, or choosing True/False.
+                You must get all answers correct to complete the assessment.
                 Your attempts are tracked and a feedback PDF will be generated upon completion.
             </p>
             <label for="teacherSelect">Select Your Teacher</label>
@@ -604,7 +687,9 @@
             </div>
             <p>Suki is writing a program. Choose the correct features she might use.</p>
             <div class="cloze-text">
-                (a) Suki uses an IDE. To check for syntax errors while typing, she relies on <select id="q2a" data-answer="error diagnostics"></select>. To make the code easier to read with colour-coding, the IDE uses <select id="q2b" data-answer="prettyprinting"></select>.<br><br>
+                (a) Suki uses an IDE. To check for syntax errors while typing, she relies on <select id="q2a"
+                    data-answer="error diagnostics"></select>. To make the code easier to read with colour-coding, the
+                IDE uses <select id="q2b" data-answer="prettyprinting"></select>.<br><br>
                 (b) She wants to distribute the software without giving away the source code. She should use a
                 <select id="q2c" data-answer="compiler"></select> to create an executable file.<br><br>
                 (c) While testing, she wants to run the code line-by-line to find a logic error. She should use an
@@ -682,9 +767,12 @@
             </div>
             <p>Which type of language would be best for these scenarios?</p>
             <div class="cloze-text">
-                1. Writing a device driver for a new graphics card to ensure maximum speed: <select id="q5a" data-answer="Low-Level"></select><br>
-                2. Writing a cross-platform mobile app for Android and iOS: <select id="q5b" data-answer="High-Level"></select><br>
-                3. Programming a microcontroller with very limited memory: <select id="q5c" data-answer="Low-Level"></select>
+                1. Writing a device driver for a new graphics card to ensure maximum speed: <select id="q5a"
+                    data-answer="Low-Level"></select><br>
+                2. Writing a cross-platform mobile app for Android and iOS: <select id="q5b"
+                    data-answer="High-Level"></select><br>
+                3. Programming a microcontroller with very limited memory: <select id="q5c"
+                    data-answer="Low-Level"></select>
             </div>
         </div>
 
@@ -732,6 +820,51 @@
             </div>
         </div>
 
+        <!-- Q8: Compiler Advantage (MCQ) -->
+        <div class="question-block" id="q8-block">
+            <div class="q-header">
+                <span>Q8. Compiler Advantages</span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Why might a software company prefer to distribute compiled code rather than interpreted source code?</p>
+            <div class="mcq-options" id="q8-options"></div>
+        </div>
+
+        <!-- Q9: IDE Debugging Features (True/False Grid) -->
+        <div class="question-block" id="q9-block">
+            <div class="q-header">
+                <span>Q9. IDE Debugging Features</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement about IDE debugging.</p>
+            <table class="tf-table" id="q9-table">
+                <thead>
+                    <tr>
+                        <th>Statement</th>
+                        <th>True</th>
+                        <th>False</th>
+                    </tr>
+                </thead>
+                <tbody id="q9-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Q10: Assembler Role (Dropdown) -->
+        <div class="question-block" id="q10-block">
+            <div class="q-header">
+                <span>Q10. The Assembler</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                An assembler translates <select id="q10a" data-answer="assembly language"></select> into machine
+                code.<br>
+                Each assembly instruction corresponds to <select id="q10b"
+                    data-answer="one machine code instruction"></select>.<br>
+                Assembly language uses <select id="q10c" data-answer="mnemonics"></select> like LDA, ADD, and STO.<br>
+                Assembly is considered a <select id="q10d" data-answer="low-level"></select> language.
+            </div>
+        </div>
+
         <div class="controls">
             <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
             <a href="index.html" class="btn-return" id="btnReturn">Return to Menu</a>
@@ -751,10 +884,10 @@
         let timeTakenStr = "";
         let teacherName = "";
         const testName = "4.2 Programming Languages, Translators & IDEs";
-        
+
         // Attempt tracking (internal)
-        const mistakeCounts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0, q7: 0 };
-        const completed = { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false, q7: false };
+        const mistakeCounts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0, q7: 0, q8: 0, q9: 0, q10: 0 };
+        const completed = { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false, q7: false, q8: false, q9: false, q10: false };
         let totalAttempts = 0;
         let assessmentFinished = false;
 
@@ -807,8 +940,36 @@
             { id: 'q4', title: 'IDE Layout', correctAnswer: 'Editor → main, Explorer → files, Output → results, Debug → vars' },
             { id: 'q5', title: 'Language Choice', correctAnswer: 'Low-Level, High-Level, Low-Level' },
             { id: 'q6', title: 'Translation Process', correctAnswer: 'Source → Translator → Object → Executable' },
-            { id: 'q7', title: 'Code Identification', correctAnswer: 'Assembly, Machine Code, High-Level' }
+            { id: 'q7', title: 'Code Identification', correctAnswer: 'Assembly, Machine Code, High-Level' },
+            { id: 'q8', title: 'Compiler Advantages', correctAnswer: 'Protects source code from being seen or copied' },
+            { id: 'q9', title: 'IDE Debugging', correctAnswer: 'T, T, F, T' },
+            { id: 'q10', title: 'The Assembler', correctAnswer: 'assembly language, one machine code instruction, mnemonics, low-level' }
         ];
+
+        // Q8 MCQ Data
+        const q8Options = [
+            { text: 'Protects source code from being seen or copied', correct: true },
+            { text: 'Makes the program easier to debug', correct: false },
+            { text: 'Allows the program to run on any operating system', correct: false },
+            { text: 'Reduces the file size of the program', correct: false }
+        ];
+        let q8Selected = null;
+
+        // Q9 True/False Data
+        const q9Statements = [
+            { id: 'tf9-1', text: 'Breakpoints allow you to pause execution at specific lines', correct: true },
+            { id: 'tf9-2', text: 'Variable watch windows show current values during execution', correct: true },
+            { id: 'tf9-3', text: 'Single-stepping executes the entire program at once', correct: false },
+            { id: 'tf9-4', text: 'Debuggers can help locate logic errors', correct: true }
+        ];
+
+        // Q10 Dropdown Options
+        const q10Options = {
+            q10a: ['assembly language', 'machine code', 'high-level language'],
+            q10b: ['one machine code instruction', 'multiple instructions', 'no instructions'],
+            q10c: ['mnemonics', 'binary numbers', 'English sentences'],
+            q10d: ['low-level', 'high-level', 'markup']
+        };
 
         let tfSelections = {};
 
@@ -890,6 +1051,39 @@
             populateDropdown('q7a', dropdownOptions.q7);
             populateDropdown('q7b', dropdownOptions.q7);
             populateDropdown('q7c', dropdownOptions.q7);
+
+            // Q8: MCQ
+            const q8Container = document.getElementById('q8-options');
+            shuffle(q8Options).forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'mcq-option';
+                div.dataset.correct = opt.correct;
+                div.dataset.value = opt.text;
+                div.textContent = opt.text;
+                div.onclick = () => {
+                    if (completed.q8) return;
+                    q8Container.querySelectorAll('.mcq-option').forEach(o => o.classList.remove('selected'));
+                    div.classList.add('selected');
+                    q8Selected = opt.text;
+                };
+                q8Container.appendChild(div);
+            });
+
+            // Q9: True/False Table
+            const q9Tbody = document.getElementById('q9-tbody');
+            shuffle(q9Statements).forEach(stmt => {
+                const tr = document.createElement('tr');
+                tr.dataset.id = stmt.id;
+                tr.dataset.correct = stmt.correct;
+                tr.innerHTML = `<td>${stmt.text}</td><td><input type="radio" name="${stmt.id}" value="true"></td><td><input type="radio" name="${stmt.id}" value="false"></td>`;
+                q9Tbody.appendChild(tr);
+            });
+
+            // Q10: Dropdowns
+            populateDropdown('q10a', q10Options.q10a);
+            populateDropdown('q10b', q10Options.q10b);
+            populateDropdown('q10c', q10Options.q10c);
+            populateDropdown('q10d', q10Options.q10d);
         }
 
         function startAssessment() {
@@ -899,9 +1093,9 @@
                 return;
             }
             teacherName = teacher;
-            
+
             initializeShuffledContent();
-            
+
             document.getElementById('startOverlay').style.display = 'none';
             document.querySelector('main').style.display = 'block';
             document.getElementById('timerDisplay').style.display = 'block';
@@ -1112,8 +1306,35 @@
             updateStatus('q7', s7 === 3);
             if (s7 === 3) correctCount++;
 
+            // Q8: MCQ
+            const q8Correct = q8Selected === 'Protects source code from being seen or copied';
+            if (q8Correct) {
+                document.querySelectorAll('#q8-options .mcq-option').forEach(opt => { if (opt.dataset.correct === 'true') opt.classList.add('correct'); });
+            } else {
+                document.querySelectorAll('#q8-options .mcq-option.selected').forEach(opt => opt.classList.add('wrong'));
+            }
+            updateStatus('q8', q8Correct);
+            if (q8Correct) correctCount++;
+
+            // Q9: True/False Table
+            let q9Correct = true;
+            document.querySelectorAll('#q9-tbody tr').forEach(row => {
+                const selected = row.querySelector('input[type="radio"]:checked');
+                if (!selected || selected.value !== row.dataset.correct) { q9Correct = false; row.classList.add('wrong-row'); }
+                else row.classList.add('correct-row');
+            });
+            updateStatus('q9', q9Correct);
+            if (q9Correct) correctCount++;
+
+            // Q10: Dropdowns
+            let s10 = checkSelect('q10a') + checkSelect('q10b') + checkSelect('q10c') + checkSelect('q10d');
+            updateStatus('q10', s10 === 4);
+            if (s10 === 4) correctCount++;
+
+            totalQuestions = 10;
+
             // Track mistakes
-            const correctness = { q1: q1Correct, q2: s2 === 4, q3: q3Correct, q4: q4Correct, q5: s5 === 3, q6: q6Correct, q7: s7 === 3 };
+            const correctness = { q1: q1Correct, q2: s2 === 4, q3: q3Correct, q4: q4Correct, q5: s5 === 3, q6: q6Correct, q7: s7 === 3, q8: q8Correct, q9: q9Correct, q10: s10 === 4 };
             Object.keys(correctness).forEach(key => {
                 if (!correctness[key] && !completed[key]) {
                     mistakeCounts[key] += 1;
@@ -1181,83 +1402,209 @@
             doc.text(`Teacher: ${teacherName}  |  Time: ${timeTakenStr}  |  Date: ${new Date().toLocaleDateString()}`, margin, yPos);
             yPos += 12;
 
-            // Q1
-            checkPageBreak(40);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor('#003366');
-            doc.text('Q1. Translator Truths (True/False)', margin, yPos); yPos += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.setTextColor('#333');
-            doc.text('1. An assembler translates high-level language programs. → FALSE', margin + 4, yPos); yPos += 4.5;
-            doc.text('2. It is more difficult to write a program in a low-level language. → TRUE', margin + 4, yPos); yPos += 4.5;
-            doc.text('3. Java is an assembly language. → FALSE', margin + 4, yPos); yPos += 4.5;
-            doc.text('4. It is quicker to develop a program using a high-level language. → TRUE', margin + 4, yPos); yPos += 4.5;
-            doc.text('5. You always need a compiler to run a compiled program. → FALSE', margin + 4, yPos); yPos += 4.5;
-            doc.text('6. An interpreted program runs slower than a compiled program. → TRUE', margin + 4, yPos); yPos += 4.5;
-            doc.text('7. Low-level languages are machine dependent. → TRUE', margin + 4, yPos); yPos += 8;
+            doc.setDrawColor(200);
+            doc.setLineWidth(0.5);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 10;
 
-            // Q2
-            checkPageBreak(25);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor('#003366');
-            doc.text('Q2. IDEs & Translation Concepts', margin, yPos); yPos += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.text('(a) error diagnostics  (b) prettyprinting  (c) compiler  (d) interpreter', margin + 4, yPos); yPos += 8;
+            // Helper for Section Headers
+            function addSectionHeader(title) {
+                checkPageBreak(15);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(12);
+                doc.setTextColor('#003366');
+                doc.text(title, margin, yPos);
+                yPos += 7;
+            }
 
-            // Q3
-            checkPageBreak(25);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor('#003366');
-            doc.text('Q3. Categorise the Translator', margin, yPos); yPos += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.text('Compiler: Creates an .exe file, Translates all at once, User doesn\'t need translator installed', margin + 4, yPos); yPos += 5;
-            doc.text('Interpreter: Stops at first error, Good for development, Runs slower', margin + 4, yPos); yPos += 8;
+            // Helper for Question Text
+            function addQuestionText(text) {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                doc.setTextColor('#333333');
+                const splitText = doc.splitTextToSize(text, contentWidth);
+                checkPageBreak(splitText.length * 5);
+                doc.text(splitText, margin, yPos);
+                yPos += (splitText.length * 5) + 3;
+            }
 
-            // Q4
-            checkPageBreak(25);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor('#003366');
-            doc.text('Q4. Label the IDE', margin, yPos); yPos += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.text('Main Area → Code Editor | Files List → Project Explorer | Results/Errors → Output Window | Variable Watch → Debugger/Vars', margin + 4, yPos); yPos += 8;
+            // Helper for Answer Box
+            function addAnswerBox(label, items, color = '#e6f0fa') {
+                const boxWidth = (contentWidth / 2) - 5;
+                const startY = yPos;
 
-            // Q5
-            checkPageBreak(20);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor('#003366');
-            doc.text('Q5. Choose the Language', margin, yPos); yPos += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.text('1. Low-Level (Assembly)  2. High-Level  3. Low-Level (Assembly)', margin + 4, yPos); yPos += 8;
+                doc.setFillColor(color);
+                doc.roundedRect(margin + (label === 'Interpreter' ? boxWidth + 10 : 0), startY, boxWidth, 40, 3, 3, 'F');
 
-            // Q6
-            checkPageBreak(20);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor('#003366');
-            doc.text('Q6. The Translation Process', margin, yPos); yPos += 6;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.text('1. Source Code → 2. Translator (Compiler) → 3. Object Code → 4. Executable File (.exe)', margin + 4, yPos); yPos += 8;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.setTextColor('#003366');
 
-            // Q7
-            checkPageBreak(20);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor('#003366');
-            doc.text('Q7. Identify the Code', margin, yPos); yPos += 6;
+                const xOffset = margin + (label === 'Interpreter' ? boxWidth + 10 : 0) + 5;
+                doc.text(label, xOffset, startY + 8);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor('#333');
+
+                let itemY = startY + 15;
+                items.forEach(item => {
+                    // Handle long text in boxes
+                    const splitItem = doc.splitTextToSize(`• ${item}`, boxWidth - 10);
+                    doc.text(splitItem, xOffset, itemY);
+                    itemY += (splitItem.length * 4) + 2;
+                });
+
+                return 45; // Fixed height for consistency
+            }
+
+            // Q1: True/False
+            addSectionHeader('Q1. Translator Truths (True/False)');
+            const q1Data = [
+                { t: 'An assembler translates high-level language programs.', a: 'FALSE' },
+                { t: 'It is more difficult to write a program in a low-level language.', a: 'TRUE' },
+                { t: 'Java is an assembly language.', a: 'FALSE' },
+                { t: 'It is quicker to develop a program using a high-level language.', a: 'TRUE' },
+                { t: 'You always need a compiler to run a compiled program.', a: 'FALSE' },
+                { t: 'An interpreted program runs slower than a compiled program.', a: 'TRUE' },
+                { t: 'Low-level languages are machine dependent.', a: 'TRUE' }
+            ];
+            checkPageBreak(q1Data.length * 6);
+            q1Data.forEach((item, i) => {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.text(`${i + 1}. ${item.t}`, margin, yPos);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`→ ${item.a}`, margin + 130, yPos);
+                yPos += 5;
+            });
+            yPos += 8;
+
+            // Q2: Cloze
+            addSectionHeader('Q2. IDEs & Translation Concepts');
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.text('LDA/ADD/STO → Assembly | Binary → Machine Code | if/print → High-Level', margin + 4, yPos);
+            doc.setFontSize(10);
+            const q2Text = `(a) Suki uses an IDE. To check for syntax errors while typing, she relies on error diagnostics. To make the code easier to read with colour-coding, the IDE uses prettyprinting.
+(b) She wants to distribute the software without giving away the source code. She should use a compiler to create an executable file.
+(c) While testing, she wants to run the code line-by-line to find a logic error. She should use an interpreter.`;
+            const splitQ2 = doc.splitTextToSize(q2Text, contentWidth);
+            checkPageBreak(splitQ2.length * 6);
+            doc.text(splitQ2, margin, yPos);
+            yPos += (splitQ2.length * 6) + 10;
+
+            // Q3: Drag & Drop
+            addSectionHeader('Q3. Categorise the Translator');
+            checkPageBreak(50);
+            const q3Height = Math.max(
+                addAnswerBox('Compiler', ['Creates an .exe file', 'Translates all at once', 'User doesn\'t need translator installed']),
+                addAnswerBox('Interpreter', ['Stops at first error', 'Good for development', 'Runs slower'])
+            );
+            yPos += q3Height + 10;
+
+            // Q4: Diagram
+            addSectionHeader('Q4. Label the IDE');
+            const q4Data = [
+                'Main Area → Code Editor',
+                'Files List → Project Explorer',
+                'Results/Errors → Output Window',
+                'Variable Watch → Debugger/Vars'
+            ];
+            checkPageBreak(q4Data.length * 7);
+            q4Data.forEach(item => {
+                doc.setFont('helvetica', 'normal');
+                doc.text(item, margin + 10, yPos);
+                yPos += 6;
+            });
+            yPos += 8;
+
+            // Q5: Scenarios
+            addSectionHeader('Q5. Choose the Language');
+            const q5Data = [
+                '1. Writing a device driver for a new graphics card to ensure maximum speed: Low-Level (Assembly)',
+                '2. Writing a cross-platform mobile app for Android and iOS: High-Level',
+                '3. Programming a microcontroller with very limited memory: Low-Level (Assembly)'
+            ];
+            checkPageBreak(q5Data.length * 8);
+            q5Data.forEach(item => {
+                const splitItem = doc.splitTextToSize(item, contentWidth);
+                doc.text(splitItem, margin, yPos);
+                yPos += (splitItem.length * 5) + 3;
+            });
+            yPos += 5;
+
+            // Q6: Order
+            addSectionHeader('Q6. The Translation Process');
+            const q6Steps = [
+                '1. Source Code (High-Level)',
+                '2. Translator (Compiler)',
+                '3. Object Code (Machine Code)',
+                '4. Executable File (.exe)'
+            ];
+            checkPageBreak(q6Steps.length * 7);
+            q6Steps.forEach(step => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(step, margin + 20, yPos);
+                yPos += 7;
+            });
+            yPos += 8;
+
+            // Q7: Code ID
+            addSectionHeader('Q7. Identify the Code');
+            const q7Data = [
+                { c: 'LDA #25 / ADD #10', t: 'Assembly' },
+                { c: '10101100 00110101', t: 'Machine Code' },
+                { c: 'if x > 10: print("Hello")', t: 'High-Level' }
+            ];
+            checkPageBreak(q7Data.length * 8);
+            q7Data.forEach(item => {
+                doc.setFont('courier', 'normal');
+                doc.text(item.c, margin, yPos);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`→  ${item.t}`, margin + 80, yPos);
+                yPos += 7;
+            });
+            yPos += 8;
+
+            // Q8: MCQ
+            addSectionHeader('Q8. Compiler Advantages');
+            addQuestionText('Why might a software company prefer to distribute compiled code rather than interpreted source code?');
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor('#28a745');
+            doc.text('✔ Protects source code from being seen or copied', margin + 5, yPos);
+            yPos += 10;
+
+            // Q9: True/False Table
+            addSectionHeader('Q9. IDE Debugging Features');
+            const q9Data = [
+                { t: 'Breakpoints allow you to pause execution at specific lines', a: 'TRUE' },
+                { t: 'Variable watch windows show current values during execution', a: 'TRUE' },
+                { t: 'Single-stepping executes the entire program at once', a: 'FALSE' },
+                { t: 'Debuggers can help locate logic errors', a: 'TRUE' }
+            ];
+            checkPageBreak(q9Data.length * 6);
+            q9Data.forEach(item => {
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor('#333');
+                doc.text(item.t, margin, yPos);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`→ ${item.a}`, margin + 140, yPos);
+                yPos += 6;
+            });
+            yPos += 8;
+
+            // Q10: Cloze
+            addSectionHeader('Q10. The Assembler');
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            const q10Text = `An assembler translates assembly language into machine code.
+Each assembly instruction corresponds to one machine code instruction.
+Assembly language uses mnemonics like LDA, ADD, and STO.
+Assembly is considered a low-level language.`;
+            const splitQ10 = doc.splitTextToSize(q10Text, contentWidth);
+            checkPageBreak(splitQ10.length * 6);
+            doc.text(splitQ10, margin, yPos);
+            yPos += (splitQ10.length * 6) + 10;
+
 
             // --- PAGE 2: FEEDBACK ---
             doc.addPage();
@@ -1266,7 +1613,7 @@
             try {
                 const logo = await getBase64ImageFromUrl('../../images/Logo.png');
                 doc.addImage(logo, 'PNG', pageWidth - 35, 8, 22, 22);
-            } catch (e) {}
+            } catch (e) { }
 
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(14);
@@ -1290,19 +1637,19 @@
             doc.setTextColor('#FFFFFF');
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold');
-            
-            doc.text('Q', tableX + colWidths[0]/2, yPos + 5.5, { align: 'center' });
-            doc.text('Topic', tableX + colWidths[0] + colWidths[1]/2, yPos + 5.5, { align: 'center' });
-            doc.text('Attempts', tableX + colWidths[0] + colWidths[1] + colWidths[2]/2, yPos + 5.5, { align: 'center' });
-            doc.text('Code', tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3]/2, yPos + 5.5, { align: 'center' });
+
+            doc.text('Q', tableX + colWidths[0] / 2, yPos + 5.5, { align: 'center' });
+            doc.text('Topic', tableX + colWidths[0] + colWidths[1] / 2, yPos + 5.5, { align: 'center' });
+            doc.text('Attempts', tableX + colWidths[0] + colWidths[1] + colWidths[2] / 2, yPos + 5.5, { align: 'center' });
+            doc.text('Code', tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] / 2, yPos + 5.5, { align: 'center' });
             yPos += rowHeight;
 
             doc.setTextColor('#000');
             doc.setFont('helvetica', 'normal');
-            
+
             questionMeta.forEach((q, idx) => {
                 const attempts = (mistakeCounts[q.id] || 0) + 1;
-                
+
                 if (idx % 2 === 0) {
                     doc.setFillColor(245, 245, 245);
                     doc.rect(tableX, yPos, contentWidth, rowHeight, 'F');
@@ -1315,16 +1662,16 @@
                 doc.rect(tableX + colWidths[0] + colWidths[1] + colWidths[2], yPos, colWidths[3], rowHeight, 'S');
 
                 doc.setFontSize(9);
-                doc.text(`${idx + 1}`, tableX + colWidths[0]/2, yPos + 5.5, { align: 'center' });
+                doc.text(`${idx + 1}`, tableX + colWidths[0] / 2, yPos + 5.5, { align: 'center' });
                 doc.text(q.title, tableX + colWidths[0] + 3, yPos + 5.5);
-                doc.text(`${attempts}`, tableX + colWidths[0] + colWidths[1] + colWidths[2]/2, yPos + 5.5, { align: 'center' });
+                doc.text(`${attempts}`, tableX + colWidths[0] + colWidths[1] + colWidths[2] / 2, yPos + 5.5, { align: 'center' });
 
                 // Editable text field for Code
                 const codeFieldX = tableX + colWidths[0] + colWidths[1] + colWidths[2] + 2;
                 const codeFieldY = yPos + 1;
                 const codeFieldW = colWidths[3] - 4;
                 const codeFieldH = rowHeight - 2;
-                
+
                 const codeField = new doc.AcroFormTextField();
                 codeField.Rect = [codeFieldX, codeFieldY, codeFieldW, codeFieldH];
                 codeField.fieldName = `code_q${idx + 1}`;
@@ -1348,12 +1695,12 @@
             doc.setDrawColor(40, 167, 69);
             doc.setLineWidth(1.5);
             doc.rect(margin, yPos, contentWidth, reflectionHeight, 'S');
-            
+
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.setTextColor('#28a745');
             doc.text('Student Reflection', margin + 4, yPos + 8);
-            
+
             doc.setFont('helvetica', 'italic');
             doc.setFontSize(8);
             doc.setTextColor('#666');
@@ -1369,17 +1716,25 @@
 
             yPos += reflectionHeight + 8;
 
-            // --- TEACHER COMMENT BOX ---
+            // --- TEACHER COMMENT BOX (editable) ---
             checkPageBreak(40);
-            const teacherHeight = 35;
+            const teacherHeight = 45;
             doc.setDrawColor(111, 66, 193);
             doc.setLineWidth(1.5);
             doc.rect(margin, yPos, contentWidth, teacherHeight, 'S');
-            
+
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.setTextColor('#6f42c1');
             doc.text('Teacher Comment', margin + 4, yPos + 8);
+
+            // NEW: Editable Teacher Comment Field
+            const teacherField = new doc.AcroFormTextField();
+            teacherField.Rect = [margin + 2, yPos + 12, contentWidth - 4, teacherHeight - 16];
+            teacherField.fieldName = 'teacher_comment';
+            teacherField.multiline = true;
+            teacherField.maxFontSize = 10;
+            doc.addField(teacherField);
 
             doc.save(`${testName.replace(/[^a-zA-Z0-9]/g, '_')}_Feedback.pdf`);
         }

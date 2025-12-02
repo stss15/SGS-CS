@@ -49,6 +49,13 @@ python3 public/igcse/apply_keywords.py
 
 ## Known Issues & Solutions
 
+### Nunjucks Templates Not Updating (The "njk files not loading" issue)
+**Cause:** The site uses a static site generator (Nunjucks). Browsers cannot read `.njk` files directly. If you edit a `.njk` file but don't run `npm run build`, the `public/` folder will still contain the OLD `.html` files.
+**Solution:**
+1. **Local Dev:** Always run `npm run build` after editing `.njk` files to see changes.
+2. **Deployment:** The GitHub Action (`pages.yml`) runs `npm run build` automatically. **However**, if you have committed the `public/` folder to the repo, there might be conflicts or confusion.
+**Best Practice:** Trust the CI. If you push a change to a `.njk` file, the Action will rebuild the HTML. Ensure your local `public/` folder is not out of sync if you are committing generated files.
+
 ### CSS Not Updating After Deploy
 **Cause:** Browser caching CSS files.
 **Solution:** Hard refresh with `Cmd+Shift+R` or open in incognito.
@@ -64,6 +71,7 @@ python3 public/igcse/apply_keywords.py
 ---
 
 ## Log entries (newest first)
+- 2025-12-02: **Documentation Update:** Added "Nunjucks Templates Not Updating" to Known Issues. Clarified that the GitHub Action handles the build process.
 - 2025-12-01: **Major reorganization:** Moved all .md/.txt files out of public/ into docs/. Image prompts → docs/agent/image-prompts/, Slide plans → docs/agent/plans/, Chapter text files → docs/igcse-content/chapter-text-files/, IB textbooks → docs/ib-content/textbooks/. Updated apply_keywords.py paths.
 - 2025-12-01: Fixed CI workflow to include apply_keywords.py as part of build process. Keywords now automatically applied on every deploy.
 - 2025-12-01: Fixed apply_keywords.py path typo (SGSD→SGS) and reapplied all keywords. Fixed CSS specificity for .keyword in Reveal.js headings.
