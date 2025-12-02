@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Addition Quest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #00f5ff, #ff00ff, #00f5ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+            margin: 0;
+        }
+
+        .global-timer {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffcc00;
+            border: 2px solid #ffcc00;
+            padding: 5px 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00f5ff;
+        }
+
+        .game-area {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .problem-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .bonus-timer-container {
+            flex-grow: 1;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .bonus-label {
+            font-size: 0.8rem;
+            color: #ff6b6b;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bonus-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bonus-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ff00ff);
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+
+        .streak-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .binary-display {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .bits-container {
+            display: flex;
+            gap: 5px;
+        }
+
+        .binary-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+        }
+
+        .row-label {
+            width: 30px;
+            text-align: right;
+            margin-right: 10px;
+            font-weight: bold;
+            color: #888;
+            flex-shrink: 0;
+        }
+
+        .bit {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .bit-a {
+            color: #00f5ff;
+        }
+
+        .bit-b {
+            color: #ff00ff;
+        }
+
+        .separator {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+            margin: 10px 0;
+            margin-left: 40px;
+        }
+
+        .plus-sign {
+            font-size: 1.5rem;
+            color: #fff;
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .interaction-bit {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .interaction-bit:hover {
+            border-color: #00f5ff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .interaction-bit.active-choice {
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+            border-color: #00f5ff;
+        }
+
+        .interaction-bit.locked {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: #888;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .carry-row .interaction-bit {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .carry-label {
+            font-size: 0.8rem;
+            color: #ffa500;
+        }
+
+        .fixed-carry {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: rgba(255, 165, 0, 0.2);
+            border: 2px solid #ffa500;
+            border-radius: 8px;
+            color: #ffa500;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00f5ff, #0080ff);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 245, 255, 0.5);
+        }
+
+        .message {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            min-height: 40px;
+        }
+
+        .message.success {
+            color: #00ff88;
+        }
+
+        .message.error {
+            color: #ff4444;
+        }
+
+        .level-up-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .level-up-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .level-up-text {
+            font-size: 4rem;
+            background: linear-gradient(90deg, #f093fb, #f5576c, #ffecd2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: levelPulse 0.5s ease infinite alternate;
+        }
+
+        @keyframes levelPulse {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
+        }
+
+        .level-up-sub {
+            font-size: 1.5rem;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        .column-index {
+            display: flex;
+            gap: 5px;
+            margin-left: 45px;
+            margin-bottom: 5px;
+        }
+
+        .col-num {
+            width: 40px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #666;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+
+            .bit,
+            .interaction-bit,
+            .carry-row .interaction-bit,
+            .fixed-carry {
+                width: 32px;
+                height: 32px;
+                font-size: 1.2rem;
+            }
+
+            .row-label {
+                width: 20px;
+                font-size: 0.8rem;
+            }
+
+            .column-index {
+                margin-left: 35px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .global-timer {
+                font-size: 1.2rem;
+                padding: 3px 8px;
+            }
+
+            .stats-bar {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" style="text-decoration: none; color: #00f5ff; font-size: 1.5rem; margin-right: 20px;">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h1>⚡ Binary Addition Quest</h1>
+            <div class="global-timer" id="global-timer">2:00</div>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Streak</div>
+                <div class="stat-value" id="streak">0🔥</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="problem-info">
+                <div class="streak-badge" id="multiplier">1x Multiplier</div>
+
+                <div class="bonus-timer-container">
+                    <div class="bonus-label">
+                        <span>Bonus Time</span>
+                        <span id="bonus-time-text">30s</span>
+                    </div>
+                    <div class="bonus-bar-bg">
+                        <div class="bonus-bar-fill" id="bonus-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="binary-display">
+                <div class="column-index" id="col-index"></div>
+
+                <div class="binary-row">
+                    <span class="row-label">A</span>
+                    <div id="num-a" class="bits-container"></div>
+                </div>
+
+                <div class="binary-row">
+                    <span class="plus-sign">+</span>
+                    <span class="row-label">B</span>
+                    <div id="num-b" class="bits-container"></div>
+                </div>
+
+                <div class="separator"></div>
+
+                <div class="binary-row">
+                    <span class="row-label">Q</span>
+                    <div id="output-row" class="bits-container"></div>
+                </div>
+
+                <div class="binary-row carry-row">
+                    <span class="row-label carry-label">C</span>
+                    <div id="carry-row" class="bits-container"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" id="check-btn" onclick="checkAnswer()">Check Answer</button>
+            </div>
+
+            <div class="message" id="message"></div>
+        </div>
+    </div>
+
+    <div class="level-up-overlay" id="level-up-overlay">
+        <div class="level-up-text">🎉 GAME OVER 🎉</div>
+        <div class="level-up-sub" id="level-up-sub"></div>
+        <button class="btn btn-primary" style="margin-top: 30px" onclick="resetGame()">Play Again</button>
+    </div>
+
+    <script>
+        // --- Sound Manager (Space Arcade Theme) ---
+        const SoundFX = {
+            ctx: null,
+            init: function () {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            play: function (type) {
+                if (!this.ctx) return;
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                const now = this.ctx.currentTime;
+
+                if (type === 'flip') {
+                    // Short high-pitched blip
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.06);
+
+                } else if (type === 'correct') {
+                    // Rising arpeggio (Power up)
+                    osc.type = 'triangle';
+                    gain.gain.value = 0.1;
+
+                    // Note 1
+                    osc.frequency.setValueAtTime(440, now); // A4
+                    gain.gain.setValueAtTime(0.1, now);
+
+                    // Note 2
+                    osc.frequency.setValueAtTime(554, now + 0.1); // C#5
+
+                    // Note 3
+                    osc.frequency.setValueAtTime(659, now + 0.2); // E5
+                    gain.gain.linearRampToValueAtTime(0, now + 0.4);
+
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+
+                    // Add a second "sparkle" layer
+                    const osc2 = this.ctx.createOscillator();
+                    const gain2 = this.ctx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(this.ctx.destination);
+                    osc2.type = 'square';
+                    osc2.frequency.setValueAtTime(880, now);
+                    osc2.frequency.linearRampToValueAtTime(1760, now + 0.3);
+                    gain2.gain.setValueAtTime(0.05, now);
+                    gain2.gain.linearRampToValueAtTime(0, now + 0.3);
+                    osc2.start(now);
+                    osc2.stop(now + 0.3);
+
+                } else if (type === 'incorrect') {
+                    // Low buzzing error
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+
+                } else if (type === 'multiplierLost') {
+                    // Descending "power down" slide
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.5);
+
+                    // Add some wobble (tremolo)
+                    const lfo = this.ctx.createOscillator();
+                    lfo.frequency.value = 20;
+                    const lfoGain = this.ctx.createGain();
+                    lfoGain.gain.value = 500;
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(osc.frequency);
+                    lfo.start(now);
+                    lfo.stop(now + 0.5);
+
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                }
+            }
+        };
+
+        // Game State
+        let state = {
+            level: 1,
+            score: 0,
+            streak: 0,
+            currentA: 0,
+            currentB: 0,
+            correctSum: 0,
+            correctCarries: [],
+
+            // Timers
+            globalTimeLeft: 120, // 2 minutes
+            globalTimerInterval: null,
+
+            questionMaxTime: 30, // Starts at 30s
+            questionTimeLeft: 30,
+            questionTimerInterval: null,
+
+            problemsSolved: 0,
+            isGameOver: false
+        };
+
+        const placeValues = [128, 64, 32, 16, 8, 4, 2, 1];
+
+        // Level configurations (Simplified for score scaling)
+        const levelConfigs = {
+            1: { maxSum: 50, basePoints: 100 },
+            2: { maxSum: 100, basePoints: 150 },
+            3: { maxSum: 150, basePoints: 200 },
+            4: { maxSum: 200, basePoints: 250 },
+            5: { maxSum: 230, basePoints: 300 },
+            6: { maxSum: 250, basePoints: 400 },
+            7: { maxSum: 255, basePoints: 500 },
+            8: { maxSum: 255, basePoints: 750 },
+            9: { maxSum: 255, basePoints: 1000 },
+            10: { maxSum: 255, basePoints: 1500 }
+        };
+
+        function getConfig() {
+            return levelConfigs[Math.min(state.level, 10)];
+        }
+
+        function generateProblem() {
+            if (state.isGameOver) return;
+
+            const config = getConfig();
+            const maxSum = config.maxSum;
+
+            // Generate numbers ensuring no overflow (sum < 256)
+            state.currentA = Math.floor(Math.random() * Math.min(maxSum, 255));
+            const maxB = Math.min(255 - state.currentA, maxSum - state.currentA);
+            state.currentB = Math.floor(Math.random() * Math.max(1, maxB + 1));
+
+            // Ensure at least some complexity based on level
+            if (state.level >= 3 && state.currentA + state.currentB < 20) {
+                state.currentA = Math.floor(Math.random() * 50) + 20;
+                state.currentB = Math.floor(Math.random() * Math.min(50, 255 - state.currentA)) + 10;
+            }
+
+            state.correctSum = state.currentA + state.currentB;
+
+            // Calculate correct carries
+            state.correctCarries = calculateCarries(state.currentA, state.currentB);
+
+            renderProblem();
+            resetQuestionTimer();
+        }
+
+        function calculateCarries(a, b) {
+            const carries = [0]; // Rightmost carry is always 0
+            let carry = 0;
+
+            for (let i = 0; i < 8; i++) {
+                const bitA = (a >> i) & 1;
+                const bitB = (b >> i) & 1;
+                const sum = bitA + bitB + carry;
+                carry = sum >= 2 ? 1 : 0;
+                if (i < 7) {
+                    carries.unshift(carry);
+                }
+            }
+
+            return carries;
+        }
+
+        function renderProblem() {
+            // Column indices with Place Values
+            const colIndex = document.getElementById('col-index');
+            colIndex.innerHTML = placeValues.map(val =>
+                `<div class="col-num">${val}</div>`
+            ).join('');
+
+            // Number A
+            const numA = document.getElementById('num-a');
+            numA.innerHTML = Array.from({ length: 8 }, (_, i) => {
+                const bit = (state.currentA >> (7 - i)) & 1;
+                return `<div class="bit bit-a">${bit}</div>`;
+            }).join('');
+
+            // Number B
+            const numB = document.getElementById('num-b');
+            numB.innerHTML = Array.from({ length: 8 }, (_, i) => {
+                const bit = (state.currentB >> (7 - i)) & 1;
+                return `<div class="bit bit-b">${bit}</div>`;
+            }).join('');
+
+            // Output row (Q) - click buttons default 0
+            const outputRow = document.getElementById('output-row');
+            outputRow.innerHTML = Array.from({ length: 8 }, (_, i) =>
+                `<div class="interaction-bit" id="q${i}" onclick="toggleBit(this)">0</div>`
+            ).join('');
+
+            // Carry row (C) - click buttons default 0 + fixed 0
+            const carryRow = document.getElementById('carry-row');
+            carryRow.innerHTML = Array.from({ length: 7 }, (_, i) =>
+                `<div class="interaction-bit" id="c${i}" onclick="toggleBit(this)">0</div>`
+            ).join('') + '<div class="fixed-carry">0</div>';
+
+            document.getElementById('message').textContent = '';
+            document.getElementById('message').className = 'message';
+        }
+
+        function toggleBit(element) {
+            // Initialize audio on first user interaction
+            SoundFX.init();
+
+            if (element.classList.contains('locked') || state.isGameOver) return;
+
+            SoundFX.play('flip'); // Play sound
+
+            const current = element.innerText;
+            if (current === '0') {
+                element.innerText = '1';
+                element.classList.add('active-choice');
+            } else {
+                element.innerText = '0';
+                element.classList.remove('active-choice');
+            }
+        }
+
+        function checkAnswer() {
+            // Initialize audio on button click (fallback)
+            SoundFX.init();
+
+            if (state.isGameOver) return;
+
+            let allCorrect = true;
+
+            // Check Q (output)
+            const correctBits = state.correctSum.toString(2).padStart(8, '0');
+
+            for (let i = 0; i < 8; i++) {
+                const input = document.getElementById(`q${i}`);
+                const userBit = input.innerText;
+                const correctBit = correctBits[i];
+
+                if (userBit !== correctBit) {
+                    allCorrect = false;
+                }
+            }
+
+            // Check C (carries)
+            for (let i = 0; i < 7; i++) {
+                const input = document.getElementById(`c${i}`);
+                const userCarry = input.innerText;
+                const correctCarry = state.correctCarries[i].toString();
+
+                if (userCarry !== correctCarry) {
+                    allCorrect = false;
+                }
+            }
+
+            if (allCorrect) {
+                handleCorrectAnswer();
+            } else {
+                handleIncorrectAnswer();
+            }
+        }
+
+        function handleCorrectAnswer() {
+            SoundFX.play('correct'); // Play correct sound
+            state.problemsSolved++;
+
+            const config = getConfig();
+
+            // Multiplier depends on if Question Timer > 0
+            let multiplier = 1;
+            if (state.questionTimeLeft > 0) {
+                state.streak++;
+                multiplier = Math.min(1 + state.streak * 0.5, 5);
+            } else {
+                state.streak = 1; // Reset streak if too slow
+            }
+
+            const points = Math.floor(config.basePoints * multiplier);
+            state.score += points;
+
+            // Reduce Max time for next question, floor at 6s
+            state.questionMaxTime = Math.max(6, state.questionMaxTime - 2);
+
+            // Level up based on score thresholds (simple implementation)
+            if (state.score > state.level * 1000) {
+                state.level++;
+            }
+
+            updateUI();
+            updateMultiplierDisplay();
+            showMessage(`🎉 Correct! +${points} points`, 'success');
+
+            lockInputs();
+            setTimeout(generateProblem, 1000);
+        }
+
+        function handleIncorrectAnswer() {
+            SoundFX.play('incorrect'); // Play error sound
+            state.streak = 0;
+            updateMultiplierDisplay();
+            updateUI();
+            showMessage('❌ Incorrect! Streak lost.', 'error');
+        }
+
+        function lockInputs() {
+            const bits = document.querySelectorAll('.interaction-bit');
+            bits.forEach(b => b.classList.add('locked'));
+        }
+
+        function updateMultiplierDisplay() {
+            const multiplier = Math.min(1 + state.streak * 0.5, 5);
+            document.getElementById('multiplier').textContent = `${multiplier.toFixed(1)}x Multiplier`;
+        }
+
+        // --- Timers ---
+
+        function startGlobalTimer() {
+            clearInterval(state.globalTimerInterval);
+            state.globalTimerInterval = setInterval(() => {
+                state.globalTimeLeft--;
+
+                const mins = Math.floor(state.globalTimeLeft / 60);
+                const secs = state.globalTimeLeft % 60;
+                document.getElementById('global-timer').textContent =
+                    `${mins}:${secs.toString().padStart(2, '0')}`;
+
+                if (state.globalTimeLeft <= 0) {
+                    gameOver();
+                }
+            }, 1000);
+        }
+
+        function resetQuestionTimer() {
+            clearInterval(state.questionTimerInterval);
+            state.questionTimeLeft = state.questionMaxTime;
+            updateBonusBar();
+
+            state.questionTimerInterval = setInterval(() => {
+                // Decrement by 0.1s for smooth bar
+                state.questionTimeLeft = Math.max(0, state.questionTimeLeft - 0.1);
+                updateBonusBar();
+
+                if (state.questionTimeLeft <= 0) {
+                    // Timer ran out, lost multiplier chance
+                    if (state.streak > 0) {
+                        state.streak = 0;
+                        updateMultiplierDisplay();
+                        SoundFX.play('multiplierLost'); // Play multiplier lost sound
+                    }
+                    clearInterval(state.questionTimerInterval);
+                }
+            }, 100);
+        }
+
+        function updateBonusBar() {
+            const pct = (state.questionTimeLeft / state.questionMaxTime) * 100;
+            const bar = document.getElementById('bonus-bar');
+            const text = document.getElementById('bonus-time-text');
+
+            bar.style.width = `${pct}%`;
+            text.textContent = `${Math.ceil(state.questionTimeLeft)}s`;
+
+            if (pct < 20) {
+                bar.style.background = '#ff4444';
+            } else {
+                bar.style.background = 'linear-gradient(90deg, #ff6b6b, #ff00ff)';
+            }
+        }
+
+        function gameOver() {
+            SoundFX.play('multiplierLost'); // Play game over sound
+            state.isGameOver = true;
+            clearInterval(state.globalTimerInterval);
+            clearInterval(state.questionTimerInterval);
+
+            const overlay = document.getElementById('level-up-overlay');
+            const title = overlay.querySelector('.level-up-text');
+            title.textContent = "⏰ TIME'S UP!";
+
+            document.getElementById('level-up-sub').innerHTML =
+                `Final Score: ${state.score.toLocaleString()}<br>
+                 Problems Solved: ${state.problemsSolved}<br>
+                 Level Reached: ${state.level}`;
+
+            overlay.classList.add('show');
+        }
+
+        function resetGame() {
+            state = {
+                level: 1,
+                score: 0,
+                streak: 0,
+                currentA: 0,
+                currentB: 0,
+                correctSum: 0,
+                correctCarries: [],
+                globalTimeLeft: 120,
+                questionMaxTime: 30,
+                questionTimeLeft: 30,
+                problemsSolved: 0,
+                isGameOver: false
+            };
+
+            document.getElementById('level-up-overlay').classList.remove('show');
+            updateUI();
+            updateMultiplierDisplay();
+            startGlobalTimer();
+            generateProblem();
+        }
+
+        function updateUI() {
+            document.getElementById('level').textContent = state.level;
+            document.getElementById('score').textContent = state.score.toLocaleString();
+            document.getElementById('streak').textContent = `${state.streak}🔥`;
+        }
+
+        function showMessage(text, type) {
+            const msgEl = document.getElementById('message');
+            msgEl.textContent = text;
+            msgEl.className = `message ${type}`;
+        }
+
+        // Initialize game
+        updateUI();
+        startGlobalTimer();
+        generateProblem();
+    </script>
+</body>
+
+</html>
