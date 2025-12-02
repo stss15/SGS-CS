@@ -71,6 +71,7 @@ python3 public/igcse/apply_keywords.py
 ---
 
 ## Log entries (newest first)
+- 2025-12-02: **Documentation Update:** Rewrote `KS3 AI Agent Guide` to correctly document the Nunjucks build system and deployment workflow.
 - 2025-12-02: **Feature Update:** Added "Student Activities" page for KS3 Year 7 Unit 2. Implemented "Who is John Doe?" activity with interactive dossier and mission sidebar. Refined "Digital You" slide deck with plenary discussion.
 - 2025-12-02: **Documentation Update:** Added "Nunjucks Templates Not Updating" to Known Issues. Clarified that the GitHub Action handles the build process.
 - 2025-12-01: **Major reorganization:** Moved all .md/.txt files out of public/ into docs/. Image prompts → docs/agent/image-prompts/, Slide plans → docs/agent/plans/, Chapter text files → docs/igcse-content/chapter-text-files/, IB textbooks → docs/ib-content/textbooks/. Updated apply_keywords.py paths.

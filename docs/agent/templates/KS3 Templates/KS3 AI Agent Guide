@@ -1,58 +1,78 @@
-# KS3 Lesson Building Guide
+# KS3 Development & Build Guide
 
-Everything for KS3 slide decks now lives in four files only:
-- `docs/agent/templates/KS3 Templates/KS3_Master_Tempalte.html` — the canonical master deck (standard arc + pattern library).
-- `docs/agent/templates/KS3 Templates/ks3-theme.css` — the only KS3-specific stylesheet (mirrored to `public/css/ks3-deck.css`).
-- `docs/agent/templates/KS3 Templates/KS3 AI Agent Guide` — this playbook.
-- `src/templates/layouts/ks3-slide.njk` — the runtime layout that pulls in the theme and optional lesson data.
+**CRITICAL:** This project uses **Nunjucks (`.njk`)** templates and a static site generator. **DO NOT EDIT HTML FILES IN `public/` DIRECTLY.** Your changes will be overwritten by the build process.
 
-## Core Rules
-- Start from the master deck; never spin up new KS3 HTML or CSS files.
-- Keep the **standard arc**: Title → Recall → Concepts/Skills → Objectives → Hook → Key Definition.
-- Respect height: content must fit without scrolling; split slides if needed.
-- Images are **functional** (visual metaphor or explanation), high contrast, and include `alt`.
-- One CSS: any KS3 styling changes go in `ks3-theme.css` (then sync to `public/css/ks3-deck.css`).
+## 1. The Build System
 
-## Build Workflow
-1) Duplicate & rename `KS3_Master_Tempalte.html` for the lesson.
-2) Update the standard arc:
-   - Title slide `h1`/`h3`.
-   - Recall list (5 questions) + matching answer slides.
-   - Concepts & Skills two-column cards.
-   - Objectives list (bold verbs).
-   - Hook question/timer text.
-   - Key term box (single, clear definition).
-3) Phase 2 Mini Task: choose ONE widget from the library, paste into the Phase 2 slot, and edit the content.
-4) Phase 3 Main Task: fill in title, instructions, timing, grouping, and resource.
-5) Phase 4 Plenary: choose ONE plenary widget, paste into the Phase 4 slot, and edit the prompt.
-6) Final checks: view height, contrast, fragments order, image paths (`images/...`), and timers wired to the right IDs.
+-   **Source of Truth:** `src/pages/ks3/...` (Nunjucks templates)
+-   **Output:** `public/ks3/...` (Generated HTML)
+-   **Build Command:** `npm run build`
 
-## Slide Archetypes (copy from the master deck)
-- **Title (Bleed)**: text left, image right, image max-height 60vh, no animations.
-- **Hook / Big Question**: background image + dark overlay box (`data-background-opacity ~0.3–0.4`), optional timer bar.
-- **Core Concept**: `.key-term` box, minimal text; can sit on subtle background image.
-- **Hinge A/B**: two columns with small images (`max-height: 25–30vh`), discussion box underneath.
-- **Retrieval Stack**: overview slide with list → vertical slides for each Q/A; keep content <75vh.
+### How it works
+1.  You edit a `.njk` file in `src/pages/`.
+2.  You run `npm run build`.
+3.  The system compiles the `.njk` file + layouts + data into a final `.html` file in `public/`.
 
-## Image Strategy
-- Style: concept art / visual metaphor / cinematic lighting; avoid bland stock photos.
-- Be explicit in prompts about composition and lighting.
-- Typical needs: background metaphors, concept diagrams, hinge (A vs B) comparisons.
+---
 
-## Widget Library Reference (Phase 2)
-- MCQ Grid; Spot the Error; Ranking; True/False; Odd One Out; Before & After; Prediction; Match Pairs; Connection Finder; Debug Challenge; Understanding Scale; Two Truths & a Lie; Quick Sketch; Consequence Chain; Complete the Blank.
+## 2. Workflow for Agents & Developers
 
-## Plenary Library Reference (Phase 4)
-- Countdown Quiz; Headline News; One Word; Tweet; Question Generator; Connect the Dots; Crystal Ball; Elevator Pitch; Mystery Question; Reverse Engineering; Desert Island.
+### Creating a New Lesson
+1.  **Duplicate a Template:** Copy an existing `.njk` file (e.g., `src/pages/ks3/year7/unit2/L1_digital_you.njk`) to a new filename.
+2.  **Update Front Matter:** Edit the YAML at the top of the file:
+    ```yaml
+    ---
+    layout: layouts/ks3-standalone.njk
+    title: "L2: Lesson Title | Year 7 Unit 2"
+    backHref: ks3/year7/unit2.html
+    deckHeader: "Lesson 2 — Title · Year 7 · Unit 2"
+    lesson:
+      title: "Lesson Title"
+      # ... content data ...
+    ---
+    ```
+3.  **Add Content:**
+    -   **YAML Data:** Use the `lesson` object for standard slides (Recall, Concepts, Objectives, Hook).
+    -   **HTML Body:** Write standard HTML/Reveal.js code *below* the second `---` for custom slides (Main Task, Plenary, Widgets).
+4.  **Build:** Run `npm run build` in the terminal.
+5.  **Verify:** Open the generated file in `public/` to check your work.
 
-## Technical Checklist
-- No overflow: if it scrolls, split it.
-- Contrast: light text on dark backgrounds; dark text on light backgrounds.
-- Fragments: logical reveal order, avoid over-nesting.
-- Paths: images live in `images/`; keep filenames lowercase with hyphens.
-- Timers: IDs in HTML match the function calls (e.g., `startTimer('countdown-timer', 10)`).
+### Updating Existing Content
+1.  **Find the Source:** Locate the `.njk` file in `src/pages/ks3/...`.
+2.  **Edit:** Make your changes to the Nunjucks template.
+3.  **Build:** Run `npm run build`.
+4.  **Verify:** Check the output in `public/`.
 
-## CSS Variables (quick reference)
-- `--sg-blue`, `--sg-gold`, `--sg-text`, `--bg-light`, `--bg-accent`, `--success`, `--error`, `--warning`/`--warning-orange`, `--purple-accent`.
+---
 
-Troubleshooting: if the timer or a widget feels off, check that the class names and IDs match the versions in `ks3-theme.css` and that fragments are not hiding required content.
+## 3. Deployment
+
+**The CI/CD pipeline handles the final build.**
+
+1.  **Commit & Push:** When you push to `main`, GitHub Actions will:
+    -   Run `npm run build`.
+    -   Deploy the `public/` folder to GitHub Pages.
+2.  **Do NOT commit `public/` manually** unless you have verified it matches the `npm run build` output locally. It is safer to trust the CI to generate the artifacts.
+
+---
+
+## 4. KS3 Content Guidelines
+
+### Standard Arc
+1.  **Title Slide:** Auto-generated from Front Matter.
+2.  **Recall:** 5 questions to activate prior knowledge.
+3.  **Concepts & Skills:** 1-2 slides defining the core focus.
+4.  **Objectives:** Clear learning goals.
+5.  **Hook:** A "Big Question" or timer-based task to engage students.
+6.  **Main Task:** The core activity (often custom HTML).
+7.  **Plenary:** Assessment or reflection (Quiz, Discussion).
+
+### Widget Library (for Custom Slides)
+-   **Timers:** Use `<div class="timer-widget">...</div>` (see `ks3-theme.css`).
+-   **Fragments:** Use `class="fragment fade-up"` for sequential reveals.
+-   **Layouts:** Use `.cols` for 2-column layouts and `.box-blue` / `.box-yellow` for content containers.
+
+### Technical Rules
+-   **Images:** Store in `public/images/` or relative `images/` folders. Use `alt` text.
+-   **Height:** Content must fit within the slide view (no scrolling).
+-   **CSS:** Global styles are in `src/css/ks3-deck.css`. Do not use inline styles unless necessary.
