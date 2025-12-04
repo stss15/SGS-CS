@@ -102,8 +102,9 @@ export default function App() {
 
   // Finish exploration - return to IB index page
   const handleFinishExploration = () => {
-    // Navigate to the IB index page
-    window.location.href = '../index.html';
+    // Navigate to the IB index page (from dist/ folder, need to go up 4 levels)
+    // dist/ -> ib-python-mission-control/ -> Learn Python Map/ -> ib/ -> index.html
+    window.location.href = '../../../../index.html';
   };
 
   // --- PERSISTENT BACKGROUND RENDER ---
