@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Detective - Digital Footprint Investigation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Mission Control Panel (Left) -->
+    <div class="mission-panel">
+        <div class="panel-header">
+            <div class="panel-icon">🕵️</div>
+            <h2>Mission Control</h2>
+            <p>Data Detective HQ</p>
+        </div>
+        
+        <div class="panel-content">
+            <!-- Current Mission -->
+            <div class="current-mission" id="current-mission">
+                <div class="mission-badge">
+                    <span class="badge-text">ACTIVE MISSION</span>
+                </div>
+                <h3 id="mission-title">Mission Briefing</h3>
+                <div class="mission-steps" id="mission-steps">
+                    <div class="step-item">
+                        <span class="step-icon">💬</span>
+                        <span class="step-text">Open Messages to receive your first mission</span>
+                    </div>
+                </div>
+                <button class="guide-btn" id="open-guide-btn" onclick="openMissionGuide()">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Open Investigation Guide</span>
+                </button>
+            </div>
+
+            <!-- Mission Progress -->
+            <div class="mission-progress">
+                <h4><i class="fa-solid fa-list-check"></i> Missions</h4>
+                <div class="progress-list" id="progress-list">
+                    <div class="progress-item" data-mission="welcome">
+                        <div class="progress-checkbox"><i class="fa-solid fa-check"></i></div>
+                        <span>📱 Start Investigation</span>
+                    </div>
+                    <div class="progress-item locked" data-mission="browser">
+                        <div class="progress-checkbox"><i class="fa-solid fa-lock"></i></div>
+                        <span>🌐 Browser Cookies</span>
+                    </div>
+                    <div class="progress-item locked" data-mission="connectify">
+                        <div class="progress-checkbox"><i class="fa-solid fa-lock"></i></div>
+                        <span>💬 Connectify T&Cs</span>
+                    </div>
+                    <div class="progress-item locked" data-mission="mapme">
+                        <div class="progress-checkbox"><i class="fa-solid fa-lock"></i></div>
+                        <span>🗺️ MapMe Location</span>
+                    </div>
+                    <div class="progress-item locked" data-mission="freegame">
+                        <div class="progress-checkbox"><i class="fa-solid fa-lock"></i></div>
+                        <span>🎮 FreeGame Investigation</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complete Mission Button -->
+            <button class="complete-mission-btn" id="complete-mission-btn" onclick="completeMission()" style="display: none;">
+                <i class="fa-solid fa-flag-checkered"></i>
+                Complete Mission & Next →
+            </button>
+        </div>
+    </div>
+
+    <!-- Phone Simulator (Center) -->
+    <div class="phone-container">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <div class="dynamic-notch"></div>
+                <div class="status-bar" id="status-bar">
+                    <span class="status-time" id="status-time">15:00</span>
+                    <span class="status-icons">
+                        <i class="fa-solid fa-signal"></i>
+                        <i class="fa-solid fa-wifi"></i>
+                    </span>
+                </div>
+
+                <!-- Toast Container for Notifications -->
+                <div class="toast-container" id="toast-container"></div>
+
+                <!-- Home Screen -->
+                <div class="screen home-screen active" id="home-screen">
+                    <div class="app-grid">
+                        <div class="app-icon" data-app="messages">
+                            <div class="app-icon-img messages-icon">
+                                <i class="fa-solid fa-message"></i>
+                                <span class="notification-badge" id="messages-badge">1</span>
+                            </div>
+                            <span class="app-label">Messages</span>
+                        </div>
+                        <div class="app-icon locked" data-app="browser">
+                            <div class="app-icon-img browser-icon">
+                                <i class="fa-solid fa-compass"></i>
+                            </div>
+                            <span class="app-label">Browser</span>
+                        </div>
+                        <div class="app-icon locked" data-app="connectify">
+                            <div class="app-icon-img connectify-icon">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <span class="app-label">Connectify</span>
+                        </div>
+                        <div class="app-icon locked" data-app="mapme">
+                            <div class="app-icon-img mapme-icon">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <span class="app-label">MapMe</span>
+                        </div>
+                        <div class="app-icon locked" data-app="freegame">
+                            <div class="app-icon-img freegame-icon">
+                                <i class="fa-solid fa-gamepad"></i>
+                            </div>
+                            <span class="app-label">FreeGame</span>
+                        </div>
+                        <div class="app-icon" data-app="settings">
+                            <div class="app-icon-img settings-icon">
+                                <i class="fa-solid fa-gear"></i>
+                            </div>
+                            <span class="app-label">Settings</span>
+                        </div>
+                    </div>
+                    <div class="home-indicator"></div>
+                </div>
+
+                <!-- Messages App Screen -->
+                <div class="screen app-screen" id="screen-messages">
+                    <div class="app-header messages-header">
+                        <button class="back-btn" onclick="goHome()">
+                            <i class="fa-solid fa-chevron-left"></i> Back
+                        </button>
+                        <h3>Messages</h3>
+                        <div class="header-spacer"></div>
+                    </div>
+                    <div class="app-body" id="messages-body">
+                        <div class="messages-container" id="messages-container">
+                            <!-- Messages will be inserted by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Browser App Screen -->
+                <div class="screen app-screen" id="screen-browser">
+                    <div class="app-header browser-header">
+                        <button class="back-btn" onclick="goHome()">
+                            <i class="fa-solid fa-chevron-left"></i> Back
+                        </button>
+                        <h3>Browser</h3>
+                        <div class="header-spacer"></div>
+                    </div>
+                    <div class="app-body" id="browser-body">
+                        <!-- Browser content inserted by JS -->
+                    </div>
+                    <!-- Cookie Banner -->
+                    <div class="cookie-banner" id="cookie-banner">
+                        <div class="cookie-content">
+                            <div class="cookie-header">
+                                <i class="fa-solid fa-cookie-bite"></i>
+                                <h4>Cookie Settings</h4>
+                            </div>
+                            <p class="cookie-text">We use cookies to improve your experience. Choose which ones to accept:</p>
+                            <div class="cookie-options">
+                                <div class="cookie-option">
+                                    <div class="cookie-info">
+                                        <strong>Necessary Cookies</strong>
+                                        <span>Required for the site to work</span>
+                                    </div>
+                                    <div class="toggle-switch active locked"></div>
+                                </div>
+                                <div class="cookie-option">
+                                    <div class="cookie-info">
+                                        <strong>Analytics Cookies</strong>
+                                        <span>Track how you use the site</span>
+                                    </div>
+                                    <div class="toggle-switch" data-cookie="analytics" onclick="toggleCookie(this)"></div>
+                                </div>
+                                <div class="cookie-option">
+                                    <div class="cookie-info">
+                                        <strong>Advertising Cookies</strong>
+                                        <span>Show ads based on your browsing</span>
+                                    </div>
+                                    <div class="toggle-switch" data-cookie="advertising" onclick="toggleCookie(this)"></div>
+                                </div>
+                                <div class="cookie-option">
+                                    <div class="cookie-info">
+                                        <strong>Third-Party Cookies</strong>
+                                        <span>Share data with partner companies</span>
+                                    </div>
+                                    <div class="toggle-switch" data-cookie="thirdparty" onclick="toggleCookie(this)"></div>
+                                </div>
+                            </div>
+                            <div class="cookie-buttons">
+                                <button class="cookie-btn accept-all" onclick="handleCookies('all')">Accept All</button>
+                                <button class="cookie-btn accept-selected" onclick="handleCookies('selected')">Save My Choices</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connectify App Screen -->
+                <div class="screen app-screen" id="screen-connectify">
+                    <div class="app-header connectify-header">
+                        <button class="back-btn" onclick="goHome()">
+                            <i class="fa-solid fa-chevron-left"></i> Back
+                        </button>
+                        <h3>Connectify</h3>
+                        <div class="header-spacer"></div>
+                    </div>
+                    <div class="app-body" id="connectify-body">
+                        <!-- Connectify content inserted by JS -->
+                    </div>
+                </div>
+
+                <!-- Connectify Terms Screen -->
+                <div class="screen app-screen" id="screen-connectify-terms">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="showScreen('screen-connectify')">
+                            <i class="fa-solid fa-chevron-left"></i> Back
+                        </button>
+                        <h3>Terms & Conditions</h3>
+                        <div class="header-spacer"></div>
+                    </div>
+                    <div class="app-body terms-body" id="terms-body">
+                        <!-- Terms content inserted by JS -->
+                    </div>
+                </div>
+
+                <!-- MapMe App Screen -->
+                <div class="screen app-screen" id="screen-mapme">
+                    <div class="app-header mapme-header">
+                        <button class="back-btn" onclick="goHome()">
+                            <i class="fa-solid fa-chevron-left"></i> Back
+                        </button>
+                        <h3>MapMe</h3>
+                        <div class="header-spacer"></div>
+                    </div>
+                    <div class="app-body" id="mapme-body">
+                        <!-- MapMe content inserted by JS -->
+                    </div>
+                </div>
+
+                <!-- FreeGame App Screen -->
+                <div class="screen app-screen" id="screen-freegame">
+                    <div class="app-header freegame-header">
+                        <button class="back-btn" onclick="goHome()">
+                            <i class="fa-solid fa-chevron-left"></i> Back
+                        </button>
+                        <h3>Super Puzzle Quest</h3>
+                        <div class="header-spacer"></div>
+                    </div>
+                    <div class="app-body" id="freegame-body">
+                        <!-- FreeGame content inserted by JS -->
+                    </div>
+                </div>
+
+                <!-- Settings App Screen -->
+                <div class="screen app-screen" id="screen-settings">
+                    <div class="app-header settings-header">
+                        <button class="back-btn" onclick="goHome()">
+                            <i class="fa-solid fa-chevron-left"></i> Back
+                        </button>
+                        <h3>Settings</h3>
+                        <div class="header-spacer"></div>
+                    </div>
+                    <div class="app-body" id="settings-body">
+                        <!-- Settings content inserted by JS -->
+                    </div>
+                </div>
+
+                <!-- Permission Dialog Overlay -->
+                <div class="permission-overlay" id="permission-overlay">
+                    <div class="permission-dialog">
+                        <div class="permission-icon" id="permission-icon"></div>
+                        <h4 id="permission-title"></h4>
+                        <p id="permission-desc"></p>
+                        <div class="permission-buttons" id="permission-buttons">
+                            <!-- Buttons inserted by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Digital Footprint Panel (Right) -->
+    <div class="footprint-panel">
+        <div class="panel-header footprint-header">
+            <div class="panel-icon">👣</div>
+            <h2>Your Digital Footprint</h2>
+            <div class="footprint-counter" id="footprint-counter">0</div>
+        </div>
+        
+        <div class="panel-content">
+            <!-- Privacy & Permissions -->
+            <div class="footprint-section">
+                <h4><i class="fa-solid fa-shield-halved"></i> Privacy & Permissions</h4>
+                <div class="permissions-list" id="permissions-list">
+                    <div class="permission-item">
+                        <div class="permission-icon-small location-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <span>Location Services</span>
+                        <span class="permission-status" id="perm-location">Off</span>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-icon-small photos-icon">
+                            <i class="fa-solid fa-image"></i>
+                        </div>
+                        <span>Photo Access</span>
+                        <span class="permission-status" id="perm-photos">Off</span>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-icon-small tracking-icon">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <span>Cross-App Tracking</span>
+                        <span class="permission-status" id="perm-tracking">Off</span>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-icon-small cookies-icon">
+                            <i class="fa-solid fa-cookie"></i>
+                        </div>
+                        <span>Cookies</span>
+                        <span class="permission-status" id="perm-cookies">None</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Collected -->
+            <div class="footprint-section">
+                <h4><i class="fa-solid fa-database"></i> Data Collected About You</h4>
+                <div class="data-list" id="data-list">
+                    <div class="data-empty">
+                        <p>No data collected yet.</p>
+                        <span>Try using some apps to see what they collect about you!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discoveries -->
+            <div class="footprint-section discoveries-section">
+                <h4><i class="fa-solid fa-lightbulb"></i> Your Discoveries</h4>
+                <div class="discoveries-list" id="discoveries-list">
+                    <div class="discovery-empty">
+                        <p>No secrets uncovered yet.</p>
+                        <span>Look for <span class="highlight-yellow">yellow highlighted</span> text in apps!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Button -->
+            <button class="export-btn" id="export-btn" onclick="exportReport()">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                Download Data Summary
+            </button>
+
+            <!-- Reset Button -->
+            <button class="reset-btn" onclick="resetAllPermissions()">
+                <i class="fa-solid fa-rotate-left"></i>
+                Reset All Permissions & Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Investigation Guide Modal -->
+    <div class="modal-overlay" id="guide-modal">
+        <div class="modal-content guide-modal">
+            <div class="modal-header">
+                <h2 id="guide-title"><i class="fa-solid fa-book-open"></i> Investigation Guide</h2>
+                <button class="modal-close" onclick="closeGuideModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="guide-body">
+                <!-- Guide content inserted by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Alert Overlay -->
+    <div class="alert-overlay" id="alert-overlay">
+        <div class="alert-box" id="alert-box">
+            <div class="alert-icon" id="alert-icon-display"></div>
+            <div class="alert-message" id="alert-message"></div>
+            <button class="alert-btn" onclick="dismissAlert()">Got it</button>
+        </div>
+    </div>
+
+    <!-- Mission Complete Modal -->
+    <div class="modal-overlay" id="complete-modal">
+        <div class="modal-content complete-modal">
+            <div class="complete-icon">🎉</div>
+            <h2>Investigation Complete!</h2>
+            <p id="complete-message">Great detective work! You've finished your mission.</p>
+            <div class="complete-stats" id="complete-stats">
+                <!-- Stats inserted by JS -->
+            </div>
+            <button class="modal-btn primary" onclick="closeCompleteModal()">Continue</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
+

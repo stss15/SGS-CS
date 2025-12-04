@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IB Python Mission Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              nasa: {
+                orange: '#CC5500',
+                blue: '#1A2B4C',
+                cream: '#F0EAD6',
+                grey: '#8C8C9E',
+                black: '#0B0D17',
+                teal: '#4D8B8B',
+              }
+            },
+            fontFamily: {
+              mono: ['"Space Mono"', 'monospace'],
+              display: ['"Chakra Petch"', 'sans-serif'],
+            },
+            backgroundImage: {
+              'blueprint': "radial-gradient(#4D8B8B 1px, transparent 1px)",
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-out',
+              'slide-up': 'slideUp 0.5s ease-out',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Custom Scrollbar - Retro NASA Terminal Feel */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+        border-left: 1px solid #222;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #CC5500 0%, #993300 100%);
+        border: 1px solid #CC550040;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #E86A1C 0%, #CC5500 100%);
+      }
+      ::-webkit-scrollbar-corner {
+        background: #0a0a0a;
+      }
+
+      /* Firefox scrollbar */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #CC5500 #0a0a0a;
+      }
+
+      /* Custom scrollbar for horizontal scroll areas */
+      .custom-scrollbar::-webkit-scrollbar {
+        height: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 3px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(204, 85, 0, 0.5);
+        border-radius: 3px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(204, 85, 0, 0.8);
+      }
+
+      /* Base body styles */
+      body {
+        background-color: #0B0D17;
+        color: #F0EAD6;
+        font-family: 'Space Mono', monospace;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Selection colors */
+      ::selection {
+        background-color: #CC5500;
+        color: white;
+      }
+
+      /* Focus styles for accessibility */
+      *:focus-visible {
+        outline: 2px solid #CC5500;
+        outline-offset: 2px;
+      }
+
+      /* Prevent text selection on UI elements */
+      button, .no-select {
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      /* Line clamp utilities */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* Animate utilities */
+      .animate-in {
+        animation-duration: 300ms;
+        animation-timing-function: ease-out;
+        animation-fill-mode: both;
+      }
+      .fade-in {
+        animation-name: fadeIn;
+      }
+      .slide-in-from-top-2 {
+        animation-name: slideInFromTop;
+      }
+      @keyframes slideInFromTop {
+        0% { opacity: 0; transform: translateY(-8px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Tabular numbers for countdown/time displays */
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Hide scrollbar but keep functionality (for certain elements) */
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Wormhole Teleport Animations */
+      @keyframes wormhole-spin {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.05); }
+        100% { transform: rotate(360deg) scale(1); }
+      }
+
+      @keyframes wormhole-pulse {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.05); }
+      }
+
+      @keyframes wormhole-pull {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0) translateY(-50vh); opacity: 0; }
+      }
+
+      @keyframes teleport-flash {
+        0% { opacity: 0; }
+        30% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      @keyframes particle-pull {
+        0% { 
+          transform: translate(0, 0) scale(1);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translate(calc(50vw - 100%), calc(50vh - 100%)) scale(0.5);
+          opacity: 0.8;
+        }
+        100% { 
+          transform: translate(calc(50vw - 100%), calc(50vh - 100%)) scale(0);
+          opacity: 0;
+        }
+      }
+
+      .teleporting {
+        animation: wormhole-pull 0.8s ease-in forwards;
+      }
+
+      /* Vortex gradient effect */
+      .wormhole-vortex {
+        background: conic-gradient(from 0deg, #4D8B8B, #1A2B4C, #CC5500, #0B0D17, #4D8B8B);
+        animation: wormhole-spin 8s linear infinite;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

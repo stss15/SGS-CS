@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipe Scenarios - Online Behaviour</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            /* Center the container */
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* ===== KEY MODAL (shown first) ===== */
+        .key-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 52, 96, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .key-modal-overlay.active {
+            display: flex;
+        }
+
+        .key-modal {
+            background: linear-gradient(145deg, #1e3a5f 0%, #16213e 100%);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .key-modal h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .key-modal .modal-subtitle {
+            font-size: 1rem;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .key-modal-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .key-modal-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-align: left;
+            border: 2px solid;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .key-modal-item.up {
+            border-color: rgba(255, 217, 61, 0.5);
+            background: rgba(255, 217, 61, 0.1);
+        }
+
+        .key-modal-item.down {
+            border-color: rgba(255, 107, 107, 0.5);
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .key-modal-item.left {
+            border-color: rgba(107, 203, 119, 0.5);
+            background: rgba(107, 203, 119, 0.1);
+        }
+
+        .key-modal-item.right {
+            border-color: rgba(77, 150, 255, 0.5);
+            background: rgba(77, 150, 255, 0.1);
+        }
+
+        .key-modal-item .arrow-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            border: 2px solid;
+        }
+
+        .key-modal-item.up .arrow-icon {
+            background: rgba(255, 217, 61, 0.2);
+            border-color: #ffd93d;
+            color: #ffd93d;
+        }
+
+        .key-modal-item.down .arrow-icon {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .key-modal-item.left .arrow-icon {
+            background: rgba(107, 203, 119, 0.2);
+            border-color: #6bcb77;
+            color: #6bcb77;
+        }
+
+        .key-modal-item.right .arrow-icon {
+            background: rgba(77, 150, 255, 0.2);
+            border-color: #4d96ff;
+            color: #4d96ff;
+        }
+
+        .key-modal-item .item-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .key-modal-item .item-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .key-modal-item .item-desc {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            line-height: 1.3;
+        }
+
+        .key-modal .start-btn {
+            padding: 16px 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6bcb77 0%, #4d96ff 100%);
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(107, 203, 119, 0.4);
+        }
+
+        .key-modal .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(107, 203, 119, 0.5);
+        }
+
+        /* ===== KEY SIDE PANEL (shown during game) ===== */
+        #key-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            width: 240px;
+            z-index: 100;
+            animation: slideInLeft 0.4s ease-out;
+        }
+
+        #key-panel.active {
+            display: block;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateY(-50%) translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(-50%) translateX(0);
+            }
+        }
+
+        .key-panel-inner {
+            background: linear-gradient(145deg, rgba(30, 58, 95, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .key-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .key-panel-header .icon {
+            font-size: 1.2rem;
+        }
+
+        .key-panel-header h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .key-panel-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .key-panel-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border-left: 3px solid;
+            background: rgba(0, 0, 0, 0.2);
+            transition: background 0.2s ease;
+        }
+
+        .key-panel-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .key-panel-item.up {
+            border-left-color: #ffd93d;
+        }
+
+        .key-panel-item.down {
+            border-left-color: #ff6b6b;
+        }
+
+        .key-panel-item.left {
+            border-left-color: #6bcb77;
+        }
+
+        .key-panel-item.right {
+            border-left-color: #4d96ff;
+        }
+
+        .key-panel-item .arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .key-panel-item.up .arrow {
+            background: rgba(255, 217, 61, 0.2);
+            color: #ffd93d;
+        }
+
+        .key-panel-item.down .arrow {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        .key-panel-item.left .arrow {
+            background: rgba(107, 203, 119, 0.2);
+            color: #6bcb77;
+        }
+
+        .key-panel-item.right .arrow {
+            background: rgba(77, 150, 255, 0.2);
+            color: #4d96ff;
+        }
+
+        .key-panel-item .text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .key-panel-item .title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .key-panel-item .desc {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            line-height: 1.2;
+        }
+
+        /* Hide panel on smaller screens */
+        @media (max-width: 1100px) {
+            #key-panel {
+                display: none !important;
+            }
+
+            /* No need to reset .container since it no longer has margin-left */
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Instructions Screen */
+        #instructions-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .instructions-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .instructions-box h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .instructions-box .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: #ffd93d;
+            transform: scale(1.3);
+        }
+
+        .step-dot.completed {
+            background: #6bcb77;
+        }
+
+        .step-content {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .step-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffd93d;
+        }
+
+        .step-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .step-content .direction-preview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .direction-item {
+            padding: 15px;
+            border-radius: 12px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .direction-item.left {
+            background: rgba(107, 203, 119, 0.2);
+            border: 2px solid #6bcb77;
+        }
+
+        .direction-item.right {
+            background: rgba(77, 150, 255, 0.2);
+            border: 2px solid #4d96ff;
+        }
+
+        .direction-item.down {
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid #ff6b6b;
+        }
+
+        .direction-item.up {
+            background: rgba(255, 217, 61, 0.2);
+            border: 2px solid #ffd93d;
+        }
+
+        .direction-item .arrow {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .direction-item .label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 217, 61, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        /* Game Screen */
+        #game-screen {
+            position: relative;
+            justify-content: space-between;
+            height: 100vh;
+            padding: 15px;
+        }
+
+        .game-header {
+            text-align: center;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6bcb77, #4d96ff);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .card-with-controls {
+            display: grid;
+            grid-template-areas:
+                ". up ."
+                "left card right"
+                ". down .";
+            grid-template-columns: 80px 1fr 80px;
+            grid-template-rows: 80px 1fr 80px;
+            gap: 15px;
+            align-items: center;
+            justify-items: center;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .control-group.up {
+            grid-area: up;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .control-group.down {
+            grid-area: down;
+            flex-direction: column-reverse;
+            justify-content: flex-start;
+        }
+
+        .control-group.left {
+            grid-area: left;
+            flex-direction: row;
+            justify-content: flex-end;
+            text-align: right;
+        }
+
+        .control-group.right {
+            grid-area: right;
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        .control-label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .control-label .title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-label .subtitle {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .control-group.up .title {
+            color: #ffd93d;
+        }
+
+        .control-group.down .title {
+            color: #ff6b6b;
+        }
+
+        .control-group.left .title {
+            color: #6bcb77;
+        }
+
+        .control-group.right .title {
+            color: #4d96ff;
+        }
+
+        .dir-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            border: 2px solid;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .dir-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .dir-btn:not(:disabled):hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dir-btn .arrow {
+            font-size: 1.5rem;
+        }
+
+        .dir-btn.up {
+            border-color: #ffd93d;
+            color: #ffd93d;
+        }
+
+        .dir-btn.down {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .dir-btn.left {
+            border-color: #6bcb77;
+            color: #6bcb77;
+        }
+
+        .dir-btn.right {
+            border-color: #4d96ff;
+            color: #4d96ff;
+        }
+
+        .card-container {
+            grid-area: card;
+            perspective: 1000px;
+            width: 100%;
+            max-width: 300px;
+            aspect-ratio: 3 / 4;
+            position: relative;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card.swiping {
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        }
+
+        .card.swipe-left {
+            transform: translateX(-200%) rotate(-30deg);
+            opacity: 0;
+        }
+
+        .card.swipe-right {
+            transform: translateX(200%) rotate(30deg);
+            opacity: 0;
+        }
+
+        .card.swipe-up {
+            transform: translateY(-200%) rotate(10deg);
+            opacity: 0;
+        }
+
+        .card.swipe-down {
+            transform: translateY(200%) rotate(-10deg);
+            opacity: 0;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+            border: 1px solid #e0e0e0;
+            color: #1a1a2e;
+        }
+
+        .card-front::before,
+        .card-back::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.01) 2px, rgba(0, 0, 0, 0.01) 4px);
+            border-radius: 16px;
+            pointer-events: none;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 50%, #f0f7ff 100%);
+            border: 1px solid #c5d5e8;
+            color: #1a1a2e;
+            transform: rotateY(180deg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .card-app {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-type {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-content h3 {
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            color: #e67e22;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .card-back .card-content h3 {
+            color: #3498db;
+        }
+
+        .card-content p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+
+        .card-footer {
+            text-align: center;
+            padding-top: 12px;
+            border-top: 2px solid #eee;
+        }
+
+        .flip-hint {
+            font-size: 0.8rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .swipe-hint {
+            font-size: 0.8rem;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .pile-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+        }
+
+        .pile-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            border-radius: 12px;
+            border: 2px solid;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: default;
+            transition: all 0.2s ease;
+        }
+
+        .pile-btn .count {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .pile-btn .label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .pile-btn.left {
+            border-color: #6bcb77;
+            color: #6bcb77;
+        }
+
+        .pile-btn.right {
+            border-color: #4d96ff;
+            color: #4d96ff;
+        }
+
+        .pile-btn.up {
+            border-color: #ffd93d;
+            color: #ffd93d;
+        }
+
+        .pile-btn.down {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .card.dragging {
+            transition: none;
+        }
+
+        /* ===== RESULTS SCREEN ===== */
+        #results-screen {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .results-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 20px;
+        }
+
+        .results-header {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .results-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .results-header p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        /* Tab Navigation */
+        .tabs-container {
+            flex-shrink: 0;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 16px;
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab.left.active {
+            border-color: #6bcb77;
+        }
+
+        .tab.right.active {
+            border-color: #4d96ff;
+        }
+
+        .tab.down.active {
+            border-color: #ff6b6b;
+        }
+
+        .tab.up.active {
+            border-color: #ffd93d;
+        }
+
+        .tab .tab-count {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .tab.left .tab-count {
+            color: #6bcb77;
+        }
+
+        .tab.right .tab-count {
+            color: #4d96ff;
+        }
+
+        .tab.down .tab-count {
+            color: #ff6b6b;
+        }
+
+        .tab.up .tab-count {
+            color: #ffd93d;
+        }
+
+        .tab .tab-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+
+        .tab .tab-arrow {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* Tab Content */
+        .tab-content-container {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .tab-content-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            flex-shrink: 0;
+        }
+
+        .tab-content.left .tab-content-header {
+            background: rgba(107, 203, 119, 0.2);
+        }
+
+        .tab-content.right .tab-content-header {
+            background: rgba(77, 150, 255, 0.2);
+        }
+
+        .tab-content.down .tab-content-header {
+            background: rgba(255, 107, 107, 0.2);
+        }
+
+        .tab-content.up .tab-content-header {
+            background: rgba(255, 217, 61, 0.2);
+        }
+
+        .tab-content-header h2 {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .tab-content.left .tab-content-header h2 {
+            color: #6bcb77;
+        }
+
+        .tab-content.right .tab-content-header h2 {
+            color: #4d96ff;
+        }
+
+        .tab-content.down .tab-content-header h2 {
+            color: #ff6b6b;
+        }
+
+        .tab-content.up .tab-content-header h2 {
+            color: #ffd93d;
+        }
+
+        .tab-content-header .description {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-left: auto;
+        }
+
+        .cards-scroll {
+            flex: 1;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0 0 12px 12px;
+            padding: 12px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+
+        .tab-content.left .result-card {
+            border-left-color: #6bcb77;
+        }
+
+        .tab-content.right .result-card {
+            border-left-color: #4d96ff;
+        }
+
+        .tab-content.down .result-card {
+            border-left-color: #ff6b6b;
+        }
+
+        .tab-content.up .result-card {
+            border-left-color: #ffd93d;
+        }
+
+        .result-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .result-card-header h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .result-card-header .app-tag {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .result-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .result-card-body .scenario,
+        .result-card-body .action {
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.45;
+        }
+
+        .result-card-body .scenario {
+            background: rgba(230, 126, 34, 0.15);
+        }
+
+        .result-card-body .action {
+            background: rgba(52, 152, 219, 0.15);
+        }
+
+        .result-card-body .label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.5;
+        }
+
+        .empty-message .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Written Work Panel */
+        .written-work-toggle {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            padding-top: 15px;
+        }
+
+        .toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(255, 217, 61, 0.2) 0%, rgba(255, 107, 107, 0.2) 100%);
+            border: 2px solid rgba(255, 217, 61, 0.5);
+            border-radius: 30px;
+            color: #ffd93d;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 217, 61, 0.3) 0%, rgba(255, 107, 107, 0.3) 100%);
+            transform: translateY(-2px);
+        }
+
+        .toggle-btn .chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Written Work Modal/Overlay */
+        .written-work-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .written-work-overlay.active {
+            display: flex;
+        }
+
+        .written-work-panel {
+            background: linear-gradient(145deg, #1e2a4a 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 650px;
+            width: 100%;
+            border: 2px solid rgba(255, 217, 61, 0.3);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .written-work-panel .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .written-work-panel .close-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .written-work-panel h2 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: #ffd93d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .task {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 18px;
+            border-left: 4px solid;
+        }
+
+        .task.not-ok {
+            border-left-color: #ff6b6b;
+        }
+
+        .task.real-you {
+            border-left-color: #6bcb77;
+        }
+
+        .task.hidden {
+            border-left-color: #4d96ff;
+        }
+
+        .task.not-sure {
+            border-left-color: #ffd93d;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .task-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .task.not-ok .task-number {
+            background: rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+
+        .task.real-you .task-number {
+            background: rgba(107, 203, 119, 0.3);
+            color: #6bcb77;
+        }
+
+        .task.hidden .task-number {
+            background: rgba(77, 150, 255, 0.3);
+            color: #4d96ff;
+        }
+
+        .task.not-sure .task-number {
+            background: rgba(255, 217, 61, 0.3);
+            color: #ffd93d;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .task.not-ok .task-title {
+            color: #ff6b6b;
+        }
+
+        .task.real-you .task-title {
+            color: #6bcb77;
+        }
+
+        .task.hidden .task-title {
+            color: #4d96ff;
+        }
+
+        .task.not-sure .task-title {
+            color: #ffd93d;
+        }
+
+        .task-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .task-prompts {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .task-prompts p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .task-prompts ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .task-prompts li {
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .task-prompts li:last-child {
+            margin-bottom: 0;
+        }
+
+        .restart-section {
+            flex-shrink: 0;
+            text-align: center;
+            padding-top: 15px;
+        }
+
+        .restart-btn {
+            padding: 12px 30px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .instructions-box {
+                padding: 25px;
+            }
+
+            .instructions-box h1 {
+                font-size: 1.8rem;
+            }
+
+            .step-content .direction-preview {
+                grid-template-columns: 1fr;
+            }
+
+            .card-with-controls {
+                grid-template-columns: 70px 1fr 70px;
+                grid-template-rows: 60px 1fr 60px;
+                gap: 10px;
+            }
+
+            .dir-btn {
+                min-width: 65px;
+                padding: 8px 10px;
+                font-size: 0.65rem;
+            }
+
+            .dir-btn .arrow {
+                font-size: 1.1rem;
+            }
+
+            .card-with-controls {
+                grid-template-columns: 80px 1fr 80px;
+                grid-template-rows: 80px 1fr 80px;
+                gap: 5px;
+            }
+
+            .control-group {
+                gap: 4px;
+            }
+
+            .control-label .title {
+                font-size: 0.7rem;
+            }
+
+            .control-label .subtitle {
+                display: none;
+                /* Hide subtitle on very small screens if needed, or make smaller */
+            }
+
+            .dir-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .card-container {
+                max-width: 220px;
+            }
+
+            .card-face {
+                padding: 15px;
+            }
+
+            .card-content p {
+                font-size: 0.85rem;
+            }
+
+            .pile-bar {
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .pile-btn {
+                padding: 10px 6px;
+            }
+
+            .pile-btn .count {
+                font-size: 1.4rem;
+            }
+
+            .pile-btn .label {
+                font-size: 0.55rem;
+            }
+
+            .tabs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tab .tab-count {
+                font-size: 1.3rem;
+            }
+
+            .written-work-panel {
+                padding: 20px;
+            }
+
+            .task {
+                padding: 14px;
+            }
+        }
+        /* Back Button */
+        .back-to-activity {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-to-activity:hover {
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .back-to-activity i {
+            color: #007AFF;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Back Button -->
+    <a href="activity3.html" class="back-to-activity">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Activity
+    </a>
+
+    <!-- Key Side Panel (during game) -->
+    <div id="key-panel">
+        <div class="key-panel-inner">
+            <div class="key-panel-header">
+                <span class="icon">🎯</span>
+                <h3>Swipe Guide</h3>
+            </div>
+            <div class="key-panel-items">
+                <div class="key-panel-item left">
+                    <div class="arrow">←</div>
+                    <div class="text">
+                        <div class="title">Good & Use Your Name</div>
+                        <div class="desc">No need to hide who you are</div>
+                    </div>
+                </div>
+                <div class="key-panel-item right">
+                    <div class="arrow">→</div>
+                    <div class="text">
+                        <div class="title">Good but Stay Anonymous</div>
+                        <div class="desc">Better to use a nickname</div>
+                    </div>
+                </div>
+                <div class="key-panel-item up">
+                    <div class="arrow">↑</div>
+                    <div class="text">
+                        <div class="title">It Depends…</div>
+                        <div class="desc">This one is complicated</div>
+                    </div>
+                </div>
+                <div class="key-panel-item down">
+                    <div class="arrow">↓</div>
+                    <div class="text">
+                        <div class="title">Not OK Online</div>
+                        <div class="desc">This shouldn't happen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Modal (shown when game starts) -->
+    <div class="key-modal-overlay" id="key-modal-overlay">
+        <div class="key-modal">
+            <h2>🎯 How to Sort</h2>
+            <p class="modal-subtitle">Swipe or tap the buttons to categorise each action</p>
+
+            <div class="key-modal-items">
+                <div class="key-modal-item left">
+                    <div class="arrow-icon">←</div>
+                    <div class="item-text">
+                        <div class="item-title">Good & Use Your Name</div>
+                        <div class="item-desc">This is good — no need to hide who you are.</div>
+                    </div>
+                </div>
+                <div class="key-modal-item right">
+                    <div class="arrow-icon">→</div>
+                    <div class="item-text">
+                        <div class="item-title">Good but Stay Anonymous</div>
+                        <div class="item-desc">This is fine — but better to use a nickname.</div>
+                    </div>
+                </div>
+                <div class="key-modal-item up">
+                    <div class="arrow-icon">↑</div>
+                    <div class="item-text">
+                        <div class="item-title">It Depends…</div>
+                        <div class="item-desc">This one is complicated — you decide.</div>
+                    </div>
+                </div>
+                <div class="key-modal-item down">
+                    <div class="arrow-icon">↓</div>
+                    <div class="item-text">
+                        <div class="item-title">Not OK Online</div>
+                        <div class="item-desc">This behaviour shouldn't happen.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="start-btn" id="start-playing-btn">Start Playing →</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Instructions Screen -->
+        <div id="instructions-screen" class="screen active">
+            <div class="instructions-box">
+                <h1>🎴 Swipe Scenarios</h1>
+                <p class="subtitle">An Online Behaviour Activity</p>
+
+                <div class="step-indicator">
+                    <div class="step-dot active" data-step="0"></div>
+                    <div class="step-dot" data-step="1"></div>
+                    <div class="step-dot" data-step="2"></div>
+                    <div class="step-dot" data-step="3"></div>
+                    <div class="step-dot" data-step="4"></div>
+                </div>
+
+                <div class="step-content" id="step-content"></div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="prev-btn" style="display: none;">← Back</button>
+                    <button class="btn btn-primary" id="next-btn">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text">Card <span id="current-card-num">1</span> of <span id="total-cards">16</span>
+                </p>
+            </div>
+
+            <div class="game-area">
+                <div class="card-with-controls">
+                    <div class="control-group up">
+                        <button class="dir-btn up" id="btn-up" disabled>
+                            <span class="arrow">↑</span>
+                        </button>
+                    </div>
+
+                    <div class="control-group left">
+                        <button class="dir-btn left" id="btn-left" disabled>
+                            <span class="arrow">←</span>
+                        </button>
+                    </div>
+
+                    <div class="card-container" id="card-container">
+                        <div class="card" id="current-card-element">
+                            <div class="card-face card-front">
+                                <div class="card-header">
+                                    <span class="card-app" id="card-app">App</span>
+                                    <span class="card-type">Scenario</span>
+                                </div>
+                                <div class="card-content">
+                                    <h3>📍 The Situation</h3>
+                                    <p id="card-front-text">Loading...</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="flip-hint">👆 Tap to flip</span>
+                                </div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-header">
+                                    <span class="card-app" id="card-app-back">App</span>
+                                    <span class="card-type">Action</span>
+                                </div>
+                                <div class="card-content">
+                                    <h3>⚡ What They Did</h3>
+                                    <p id="card-back-text">Loading...</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="swipe-hint">✓ Now choose a direction!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group right">
+                        <button class="dir-btn right" id="btn-right" disabled>
+                            <span class="arrow">→</span>
+                        </button>
+                    </div>
+
+                    <div class="control-group down">
+                        <button class="dir-btn down" id="btn-down" disabled>
+                            <span class="arrow">↓</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pile-bar">
+                <div class="pile-btn left">
+                    <span class="count" id="pile-left">0</span>
+                    <span class="label">Good & Use Your Name</span>
+                </div>
+                <div class="pile-btn up">
+                    <span class="count" id="pile-up">0</span>
+                    <span class="label">It Depends…</span>
+                </div>
+                <div class="pile-btn down">
+                    <span class="count" id="pile-down">0</span>
+                    <span class="label">Not OK Online</span>
+                </div>
+                <div class="pile-btn right">
+                    <span class="count" id="pile-right">0</span>
+                    <span class="label">Good but Stay Anonymous</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-layout">
+                <div class="results-header">
+                    <h1>🎉 You've Finished!</h1>
+                    <p>Click a category below to view your sorted cards</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <div class="tab down active" data-tab="down">
+                            <span class="tab-arrow">↓</span>
+                            <span class="tab-count" id="tab-count-down">0</span>
+                            <span class="tab-label">Not OK Online</span>
+                        </div>
+                        <div class="tab left" data-tab="left">
+                            <span class="tab-arrow">←</span>
+                            <span class="tab-count" id="tab-count-left">0</span>
+                            <span class="tab-label">Good & Use Your Name</span>
+                        </div>
+                        <div class="tab right" data-tab="right">
+                            <span class="tab-arrow">→</span>
+                            <span class="tab-count" id="tab-count-right">0</span>
+                            <span class="tab-label">Good but Stay Anonymous</span>
+                        </div>
+                        <div class="tab up" data-tab="up">
+                            <span class="tab-arrow">↑</span>
+                            <span class="tab-count" id="tab-count-up">0</span>
+                            <span class="tab-label">It Depends…</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="tab-content-container">
+                    <div class="tab-content down active" id="content-down">
+                        <div class="tab-content-header">
+                            <h2>↓ Not OK Online</h2>
+                            <span class="description">This behaviour shouldn’t happen.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-down"></div>
+                    </div>
+                    <div class="tab-content left" id="content-left">
+                        <div class="tab-content-header">
+                            <h2>← Good & Use Your Name</h2>
+                            <span class="description">This is good — no need to hide who you are.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-left"></div>
+                    </div>
+                    <div class="tab-content right" id="content-right">
+                        <div class="tab-content-header">
+                            <h2>→ Good but Stay Anonymous</h2>
+                            <span class="description">This is fine — but better to use a nickname.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-right"></div>
+                    </div>
+                    <div class="tab-content up" id="content-up">
+                        <div class="tab-content-header">
+                            <h2>↑ It Depends…</h2>
+                            <span class="description">This one is complicated — you decide.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-up"></div>
+                    </div>
+                </div>
+
+                <!-- Written Work Toggle -->
+                <div class="written-work-toggle">
+                    <button class="toggle-btn" id="toggle-written-work">
+                        📝 View Written Work Instructions
+                        <span class="chevron">▼</span>
+                    </button>
+                </div>
+
+                <div class="restart-section">
+                    <button class="btn btn-secondary restart-btn" id="restart-btn">🔄 Start Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Written Work Overlay -->
+        <div class="written-work-overlay" id="written-work-overlay">
+            <div class="written-work-panel">
+                <button class="close-btn" id="close-written-work">✕</button>
+                <h2>📝 Exercise Book Tasks</h2>
+
+                <div class="task-list">
+                    <div class="task not-ok">
+                        <div class="task-header">
+                            <span class="task-number">1</span>
+                            <span class="task-title">From "Not OK Online" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>one card</strong> from your "Not OK Online" pile and
+                            explain
+                            why this behaviour is never acceptable.</p>
+                        <div class="task-prompts">
+                            <p>Write about:</p>
+                            <ul>
+                                <li>What makes this behaviour harmful or wrong?</li>
+                                <li>Who could be hurt by this action?</li>
+                                <li>Does it matter if it was done anonymously or not? Why?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="task real-you">
+                        <div class="task-header">
+                            <span class="task-number">2</span>
+                            <span class="task-title">From "Good & Use Your Name" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>one card</strong> from your "Good & Use Your Name"
+                            pile.</p>
+                        <div class="task-prompts">
+                            <p>Write about:</p>
+                            <ul>
+                                <li>Why is this behaviour OK or even positive?</li>
+                                <li>Why is it good to use your real identity here?</li>
+                                <li>What does being yourself add to this situation?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="task hidden">
+                        <div class="task-header">
+                            <span class="task-number">3</span>
+                            <span class="task-title">From "Good but Stay Anonymous" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>one card</strong> from your "Good but Stay Anonymous"
+                            pile.
+                        </p>
+                        <div class="task-prompts">
+                            <p>Write about:</p>
+                            <ul>
+                                <li>Why is this behaviour OK?</li>
+                                <li>Why does staying anonymous make sense here?</li>
+                                <li>What are you protecting by not using your real name?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="task not-sure">
+                        <div class="task-header">
+                            <span class="task-number">4</span>
+                            <span class="task-title">From "It Depends…" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>3-4 cards</strong> from your "It Depends…" pile.
+                            These
+                            are the tricky ones!</p>
+                        <div class="task-prompts">
+                            <p>For each card, write about:</p>
+                            <ul>
+                                <li>What makes this situation complicated or hard to judge?</li>
+                                <li>What arguments are there for it being OK? What about not OK?</li>
+                                <li>Should it be done publicly, anonymously, or not at all?</li>
+                                <li>What extra information would help you decide?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CARD DATA
+        // ============================================
+        const cards = [
+            {
+                id: 1,
+                frontText: "You're in a group chat on Discord with classmates. Someone shares an embarrassing photo of another student who isn't in the chat.",
+                backText: "You screenshot the photo and send it to your best friend in a private message.",
+                app: "Discord",
+                tags: ["sharing", "embarrassing_content", "private_message"]
+            },
+            {
+                id: 2,
+                frontText: "Your teacher asks a question on MS Teams during an online lesson. You know the answer but you're worried about getting it wrong in front of everyone.",
+                backText: "You unmute yourself and answer the question using your real name, giving it your best shot.",
+                app: "MS Teams",
+                tags: ["classroom", "participation", "real_identity"]
+            },
+            {
+                id: 3,
+                frontText: "You see a TikTok video where someone is being bullied in the comments. The person being bullied goes to your school.",
+                backText: "You write a supportive comment using your real account with your name visible.",
+                app: "TikTok",
+                tags: ["support", "bullying", "public_comment"]
+            },
+            {
+                id: 4,
+                frontText: "A friend tells you they're being pressured to send photos to someone online. They ask you not to tell anyone.",
+                backText: "You send an anonymous email to a trusted teacher explaining the situation without naming yourself.",
+                app: "School Email",
+                tags: ["safeguarding", "anonymous_report", "sensitive"]
+            },
+            {
+                id: 5,
+                frontText: "Someone posts mean comments about your friend on Instagram. Your friend is really upset about it.",
+                backText: "You create a fake account and post mean comments back at the person who started it.",
+                app: "Instagram",
+                tags: ["revenge", "fake_account", "harassment"]
+            },
+            {
+                id: 6,
+                frontText: "You want to share your opinion about a TV show on a fan forum. Some of your opinions are a bit controversial.",
+                backText: "You create a username that doesn't identify you and share your honest thoughts respectfully.",
+                app: "Reddit",
+                tags: ["opinion", "pseudonym", "respectful"]
+            },
+            {
+                id: 7,
+                frontText: "Your friend is sick and missed an important lesson. They ask if you can help them catch up.",
+                backText: "You send them your notes via WhatsApp and offer to video call to explain anything confusing.",
+                app: "WhatsApp",
+                tags: ["helping", "friendship", "academic"]
+            },
+            {
+                id: 8,
+                frontText: "You're watching a YouTube stream and the streamer asks viewers to share if they've ever struggled with anxiety.",
+                backText: "You share your experience in the chat using a username that doesn't reveal who you are.",
+                app: "YouTube",
+                tags: ["mental_health", "anonymous_sharing", "community"]
+            },
+            {
+                id: 9,
+                frontText: "A classmate shares their artwork on Instagram and asks for honest feedback.",
+                backText: "You comment 'this is rubbish lol' with laughing emojis from your real account.",
+                app: "Instagram",
+                tags: ["feedback", "cruel", "public"]
+            },
+            {
+                id: 10,
+                frontText: "You notice someone in your year posting worrying things on Snapchat that suggest they might be really struggling.",
+                backText: "You take a screenshot and show it to a teacher the next day without telling the person.",
+                app: "Snapchat",
+                tags: ["safeguarding", "screenshot", "ambiguous"]
+            },
+            {
+                id: 11,
+                frontText: "Your friend gives you their password to help them post something while they're away. While logged in, you see private messages.",
+                backText: "You read through some of their private conversations because you're curious.",
+                app: "Instagram",
+                tags: ["privacy", "trust", "snooping"]
+            },
+            {
+                id: 12,
+                frontText: "You're in a heated argument with someone on a gaming server. They start insulting you personally.",
+                backText: "You respond by finding their social media and posting their personal info in the chat.",
+                app: "Discord",
+                tags: ["doxxing", "revenge", "dangerous"]
+            },
+            {
+                id: 13,
+                frontText: "You want to raise an issue about a school rule you think is unfair. The school has a suggestion box system.",
+                backText: "You submit your feedback through the anonymous school suggestion system, clearly explaining your concerns.",
+                app: "School System",
+                tags: ["feedback", "constructive", "anonymous"]
+            },
+            {
+                id: 14,
+                frontText: "Someone you don't know well sends you a follow request. Their profile looks normal and you have mutual friends.",
+                backText: "You accept the request and immediately DM them personal information about where you live.",
+                app: "Instagram",
+                tags: ["stranger_danger", "oversharing", "safety"]
+            },
+            {
+                id: 15,
+                frontText: "You wrote something mean about a teacher in a group chat last year. Someone screenshots it and threatens to show the teacher.",
+                backText: "You go to the teacher yourself, apologise for what you wrote, and explain you've changed.",
+                app: "WhatsApp",
+                tags: ["accountability", "apology", "growth"]
+            },
+            {
+                id: 16,
+                frontText: "Your friend made a TikTok of you both being silly. It's a bit embarrassing but also really funny.",
+                backText: "You ask them not to post it publicly, but say you're okay if they share it just with close friends.",
+                app: "TikTok",
+                tags: ["consent", "boundaries", "friendship"]
+            }
+        ];
+
+        // ============================================
+        // INSTRUCTION STEPS
+        // ============================================
+        const instructionSteps = [
+            {
+                title: "Welcome! 👋",
+                content: `
+                    <p>In this activity, you'll look at <strong>16 real-life online scenarios</strong> and decide how you'd judge each person's behaviour.</p>
+                    <p style="margin-top: 15px;">It's about thinking carefully about what's okay online — and whether it matters if people know who you are.</p>
+                `
+            },
+            {
+                title: "How It Works 🎴",
+                content: `
+                    <p>Each card has <strong>two sides:</strong></p>
+                    <p style="margin-top: 10px;"><strong>Front:</strong> The situation — what's happening and where</p>
+                    <p style="margin-top: 5px;"><strong>Back:</strong> The action — what the person actually did</p>
+                    <p style="margin-top: 15px;">First, read the situation. Then <strong>tap the card to flip it</strong> and see what they did.</p>
+                `
+            },
+            {
+                title: "The Four Choices ⬆️⬇️⬅️➡️",
+                content: `
+                    <div class="direction-preview">
+                        <div class="direction-item left">
+                            <div class="arrow">←</div>
+                            <div class="label">Good & Use Your Name<br><small>This is good — no need to hide who you are.</small></div>
+                        </div>
+                        <div class="direction-item right">
+                            <div class="arrow">→</div>
+                            <div class="label">Good but Stay Anonymous<br><small>This is fine — but better to use a nickname.</small></div>
+                        </div>
+                        <div class="direction-item down">
+                            <div class="arrow">↓</div>
+                            <div class="label">Not OK Online<br><small>This behaviour shouldn’t happen.</small></div>
+                        </div>
+                        <div class="direction-item up">
+                            <div class="arrow">↑</div>
+                            <div class="label">It Depends…<br><small>This one is complicated — you decide.</small></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Controls 🎮",
+                content: `
+                    <p><strong>Tap the card</strong> to flip it over and see what they did.</p>
+                    <p style="margin-top: 15px;">Then <strong>click the button</strong> in the direction of your choice, or <strong>swipe/drag</strong> the card that way.</p>
+                    <p style="margin-top: 15px;">The pile counts at the bottom show how many cards you've put in each category.</p>
+                `
+            },
+            {
+                title: "Ready? 🚀",
+                content: `
+                    <p>At the end, you'll see all your choices sorted into groups.</p>
+                    <p style="margin-top: 15px;">You'll then use these to complete some <strong>written work</strong> in your exercise book.</p>
+                    <p style="margin-top: 20px; font-size: 1.2rem;"><strong>Let's go!</strong></p>
+                `
+            }
+        ];
+
+        // ============================================
+        // STATE
+        // ============================================
+        let currentStep = 0;
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        let results = { left: [], right: [], up: [], down: [] };
+        let isDragging = false;
+        let startX = 0, startY = 0, currentX = 0, currentY = 0;
+
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        const instructionsScreen = document.getElementById('instructions-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const stepContent = document.getElementById('step-content');
+        const stepDots = document.querySelectorAll('.step-dot');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const cardElement = document.getElementById('current-card-element');
+        const cardContainer = document.getElementById('card-container');
+        const progressFill = document.getElementById('progress-fill');
+        const currentCardSpan = document.getElementById('current-card-num');
+        const totalCardsSpan = document.getElementById('total-cards');
+
+        const controlBtns = {
+            left: document.getElementById('btn-left'),
+            right: document.getElementById('btn-right'),
+            up: document.getElementById('btn-up'),
+            down: document.getElementById('btn-down')
+        };
+
+        const pileCounts = {
+            left: document.getElementById('pile-left'),
+            right: document.getElementById('pile-right'),
+            up: document.getElementById('pile-up'),
+            down: document.getElementById('pile-down')
+        };
+
+        // ============================================
+        // INSTRUCTIONS NAVIGATION
+        // ============================================
+        function renderStep() {
+            const step = instructionSteps[currentStep];
+            stepContent.innerHTML = `<h2>${step.title}</h2>${step.content}`;
+
+            stepDots.forEach((dot, i) => {
+                dot.classList.remove('active', 'completed');
+                if (i < currentStep) dot.classList.add('completed');
+                if (i === currentStep) dot.classList.add('active');
+            });
+
+            prevBtn.style.display = currentStep === 0 ? 'none' : 'block';
+            nextBtn.textContent = currentStep === instructionSteps.length - 1 ? 'Start! 🎴' : 'Next →';
+        }
+
+        prevBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; renderStep(); } });
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < instructionSteps.length - 1) { currentStep++; renderStep(); }
+            else { startGame(); }
+        });
+
+        // ============================================
+        // GAME LOGIC
+        // ============================================
+        function startGame() {
+            instructionsScreen.classList.remove('active');
+            // Show the key modal instead of the game screen
+            document.getElementById('key-modal-overlay').classList.add('active');
+        }
+
+        // Key modal start button
+        document.getElementById('start-playing-btn').addEventListener('click', () => {
+            // Hide the modal
+            document.getElementById('key-modal-overlay').classList.remove('active');
+            // Show the game screen
+            gameScreen.classList.add('active');
+            // Show the side panel
+            document.getElementById('key-panel').classList.add('active');
+            // Initialize the game
+            totalCardsSpan.textContent = cards.length;
+            updatePileCounts();
+            loadCard();
+        });
+
+        function loadCard() {
+            if (currentCardIndex >= cards.length) { showResults(); return; }
+
+            const card = cards[currentCardIndex];
+            cardElement.classList.remove('flipped', 'swiping', 'swipe-left', 'swipe-right', 'swipe-up', 'swipe-down');
+            cardElement.style.transform = '';
+            cardElement.style.opacity = '';
+            isFlipped = false;
+
+            document.getElementById('card-app').textContent = card.app;
+            document.getElementById('card-app-back').textContent = card.app;
+            document.getElementById('card-front-text').textContent = card.frontText;
+            document.getElementById('card-back-text').textContent = card.backText;
+
+            currentCardSpan.textContent = currentCardIndex + 1;
+            progressFill.style.width = `${(currentCardIndex / cards.length) * 100}%`;
+            updateButtonStates();
+        }
+
+        function updateButtonStates() {
+            Object.values(controlBtns).forEach(btn => { btn.disabled = !isFlipped; });
+        }
+
+        function updatePileCounts() {
+            pileCounts.left.textContent = results.left.length;
+            pileCounts.right.textContent = results.right.length;
+            pileCounts.up.textContent = results.up.length;
+            pileCounts.down.textContent = results.down.length;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            cardElement.classList.toggle('flipped');
+            updateButtonStates();
+        }
+
+        function swipeCard(direction) {
+            if (!isFlipped) return;
+            results[direction].push(cards[currentCardIndex]);
+            updatePileCounts();
+            cardElement.classList.add('swiping', `swipe-${direction}`);
+            setTimeout(() => { currentCardIndex++; loadCard(); }, 400);
+        }
+
+        // Card interactions
+        cardContainer.addEventListener('click', (e) => { if (!isDragging) flipCard(); });
+        Object.entries(controlBtns).forEach(([dir, btn]) => { btn.addEventListener('click', () => swipeCard(dir)); });
+
+        function getEventPosition(e) {
+            return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
+        }
+
+        function handleDragStart(e) {
+            if (!isFlipped) return;
+            isDragging = true;
+            const pos = getEventPosition(e);
+            startX = pos.x; startY = pos.y;
+            currentX = 0; currentY = 0;
+            cardElement.classList.add('dragging');
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            const pos = getEventPosition(e);
+            currentX = pos.x - startX; currentY = pos.y - startY;
+            // Invert X because of rotateY(180deg)
+            cardElement.style.transform = `rotateY(180deg) translate(${-currentX}px, ${currentY}px) rotate(${currentX * 0.1}deg)`;
+        }
+
+        function handleDragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            cardElement.classList.remove('dragging');
+            const threshold = 80;
+            let direction = null;
+
+            if (Math.abs(currentX) > Math.abs(currentY)) {
+                if (currentX > threshold) direction = 'right';
+                else if (currentX < -threshold) direction = 'left';
+            } else {
+                if (currentY > threshold) direction = 'down';
+                else if (currentY < -threshold) direction = 'up';
+            }
+
+            if (direction) swipeCard(direction);
+            else cardElement.style.transform = '';
+        }
+
+        cardContainer.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+        cardContainer.addEventListener('touchstart', handleDragStart, { passive: true });
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
+
+        // ============================================
+        // RESULTS
+        // ============================================
+        function showResults() {
+            gameScreen.classList.remove('active');
+            resultsScreen.classList.add('active');
+
+            // Update tab counts
+            document.getElementById('tab-count-left').textContent = results.left.length;
+            document.getElementById('tab-count-right').textContent = results.right.length;
+            document.getElementById('tab-count-up').textContent = results.up.length;
+            document.getElementById('tab-count-down').textContent = results.down.length;
+
+            // Render cards for each tab
+            ['left', 'right', 'up', 'down'].forEach(dir => {
+                const container = document.getElementById(`cards-${dir}`);
+                if (results[dir].length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-message">
+                            <div class="icon">📭</div>
+                            <p>No cards in this pile</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = results[dir].map(card => `
+                        <div class="result-card">
+                            <div class="result-card-header">
+                                <h4>Card ${card.id}</h4>
+                                <span class="app-tag">${card.app}</span>
+                            </div>
+                            <div class="result-card-body">
+                                <div class="scenario">
+                                    <div class="label">📍 Scenario</div>
+                                    ${card.frontText}
+                                </div>
+                                <div class="action">
+                                    <div class="label">⚡ Action</div>
+                                    ${card.backText}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            });
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(`content-${tabId}`).classList.add('active');
+            });
+        });
+
+        // Written work overlay
+        const toggleBtn = document.getElementById('toggle-written-work');
+        const overlay = document.getElementById('written-work-overlay');
+        const closeBtn = document.getElementById('close-written-work');
+
+        toggleBtn.addEventListener('click', () => {
+            overlay.classList.add('active');
+            toggleBtn.classList.add('open');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            overlay.classList.remove('active');
+            toggleBtn.classList.remove('open');
+        });
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.remove('active');
+                toggleBtn.classList.remove('open');
+            }
+        });
+
+        // Restart
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            currentCardIndex = 0;
+            isFlipped = false;
+            results = { left: [], right: [], up: [], down: [] };
+            currentStep = 0;
+            resultsScreen.classList.remove('active');
+            instructionsScreen.classList.add('active');
+
+            // Hide the key panel when restarting
+            document.getElementById('key-panel').classList.remove('active');
+
+            // Reset tabs to default
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('.tab.down').classList.add('active');
+            document.getElementById('content-down').classList.add('active');
+
+            renderStep();
+        });
+
+        // Init
+        renderStep();
+    </script>
+</body>
+
+</html>
