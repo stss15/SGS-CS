@@ -45,6 +45,39 @@ The keyword script:
 
 ---
 
+## 🧭 Navigation & Breadcrumbs
+
+The site now uses a structured breadcrumb system in the header, replacing manual `backLink` definitions.
+
+### Adding New Pages
+
+When creating a new `.njk` page, you **must** define the `breadcrumbs` frontmatter.
+
+**Example Frontmatter:**
+```yaml
+---
+layout: layouts/base.njk
+title: "Topic 1.1 Specification"
+activeSection: "igcse"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IGCSE", href: "igcse/index.html" }
+  - { label: "Topic 1", href: "igcse/topic1/index.html" }
+  - { label: "Specification", href: "igcse/topic1/specification.html" }
+---
+```
+
+### Rules
+1. **`activeSection`**: Matches the main nav link to highlight ('ks3', 'igcse', 'ib').
+2. **`breadcrumbs`**: A list of objects with `label` and `href`.
+   - The **last item** is the current page (it will be unlinked and grayed out automatically).
+   - Use relative paths from the site root (e.g., `igcse/index.html` not `../index.html`). The build script computes relative paths automatically.
+
+### Updating Existing Pages
+If you move a page or change hierarchy, update the `breadcrumbs` list to reflect the new structure.
+
+---
+
 ## Quick Start for Creating Slide Decks
 
 **Read this first:** [`igcse-slide-deck-guide.md`](./igcse-slide-deck-guide.md)
@@ -125,7 +158,3 @@ docs/
 ---
 
 **Remember:** The goal is not to display information. The goal is to create a learning experience that engages students, checks understanding, and builds knowledge progressively.
-
-
-
-
