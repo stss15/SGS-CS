@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B2.5 File Processing | IB Computer Science</title>
+    
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../../ib/B2/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B2.5 File Processing</h1>
+            <h3 class="sub-title">Topic B2: Programming | Reading, Writing & Persistence</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. THE HOOK -->
+<section>
+    <h2>The Problem with variables</h2>
+    <div class="cols">
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-memory"></i> RAM is Volatile</h4>
+            <p>Variables live in Random Access Memory (RAM). When you close the program or turn off the computer, all data is lost.</p>
+        </div>
+        <div class="fragment box">
+            <h4><i class="fa-solid fa-floppy-disk"></i> The Solution: Files</h4>
+            <p><span class="keyword" data-def="The characteristic of state that outlives the process that created it; data stored in a file remains available after the program terminates.">Persistence</span> allows us to store data permanently on a secondary storage device (Hard Drive / SSD).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 3. FILE MODES -->
+<section>
+    <h3><span class="keyword" data-def="The specific access permission ('r' for read, 'w' for write, 'a' for append) used when opening a file.">File Modes</span></h3>
+    <div class="box">
+        <p>When opening a file, you must specify what you want to do with it.</p>
+    </div>
+    <div class="fragment">
+        <table style="width: 100%;">
+            <tr>
+                <th>Mode</th>
+                <th>Description</th>
+                <th>Concept</th>
+            </tr>
+            <tr>
+                <td><code>'r'</code></td>
+                <td><strong>Read</strong> mode. Default. Opens for reading. Error if file doesn't exist.</td>
+                <td><i class="fa-solid fa-eye"></i> Look only</td>
+            </tr>
+            <tr>
+                <td><code>'w'</code></td>
+                <td><strong>Write</strong> mode. Creates new file or <strong>overwrites</strong> existing one.</td>
+                <td><i class="fa-solid fa-pencil"></i> New / Rewrite</td>
+            </tr>
+            <tr>
+                <td><code>'a'</code></td>
+                <td><strong>Append</strong> mode. Adds data to the <strong>end</strong> of the file.</td>
+                <td><i class="fa-solid fa-plus"></i> Add on</td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+<!-- 4. READING A FILE -->
+<section>
+    <h3><span class="keyword" data-def="The process of retrieving data from a file storage input stream into a program's memory.">Reading data</span></h3>
+    <div class="cols">
+        <div class="box">
+            <p>The safest way to open files in Python is using the <code>with</code> statement, which automatically closes the file even if errors occur.</p>
+        </div>
+        <div class="box-blue">
+            <pre><code class="python"># Reading a text file
+with open("names.txt", "r") as file:
+    # Read all lines into a list
+    lines = file.readlines()
+
+for line in lines:
+    print(line.strip())  # strip() removes newline \n</code></pre>
+        </div>
+    </div>
+    <p class="fragment small-text"><code>.strip()</code> is crucial because lines often end with invisible <code>\n</code> characters.</p>
+</section>
+
+<!-- 5. WRITING A FILE -->
+<section>
+    <h3><span class="keyword" data-def="The process of saving data from a program's memory to a file storage output stream.">Writing data</span></h3>
+    <div class="cols">
+        <div class="box-blue">
+            <pre><code class="python">names = ["Alice", "Bob", "Charlie"]
+
+# 'w' mode overwrites the file
+with open("names.txt", "w") as file:
+    for name in names:
+        file.write(name + "\n")  # Add newline manually!</code></pre>
+        </div>
+        <div class="box">
+            <h4>Important Notes</h4>
+            <ul class="small-text">
+                <li><code>write()</code> only accepts strings. You must cast numbers: <code>str(score)</code>.</li>
+                <li><code>write()</code> does <strong>not</strong> add a new line automatically. You must add <code>+ "\n"</code>.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- 6. PARALLEL ARRAYS -->
+<section>
+    <h3><span class="keyword" data-def="A data structure where two or more arrays of the same size are used to store related information at the same index.">Parallel Arrays</span></h3>
+    <div class="box">
+        <p>Using multiple lists to store related data, linked by their <strong>index</strong>.</p>
+    </div>
+    <div class="cols">
+        <div>
+            <table class="small-table">
+                <tr><th>Index</th><th>NAMES</th><th>SCORES</th></tr>
+                <tr><td>0</td><td>Annabelle</td><td>50</td></tr>
+                <tr><td>1</td><td>Benjamin</td><td>35</td></tr>
+                <tr><td>2</td><td>Claire</td><td>70</td></tr>
+            </table>
+        </div>
+        <div class="box-blue fragment">
+            <pre><code class="python">names = ["Annabelle", "Benjamin", "Claire"]
+scores = [50, 35, 70]
+
+# Accessing related data
+i = 2
+print(f"{names[i]} scored {scores[i]}")
+# Claire scored 70</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 7. SCENARIO: LOADING DATA -->
+<section>
+    <h3>Scenario: Loading Sales Data</h3>
+    <div class="box">
+        <p>Convert <code>sales.txt</code> into parallel arrays.</p>
+    </div>
+    <div class="cols">
+        <div class="box small-text">
+            <p><strong>File: sales.txt</strong></p>
+            <pre>Amina,23424
+Carlos,42549
+Emily,52488</pre>
+        </div>
+        <div class="box-blue fragment">
+            <pre><code class="python">names = []
+sales = []
+
+with open("sales.txt", "r") as file:
+    for line in file:
+        # Split line by comma
+        parts = line.strip().split(",")
+        names.append(parts[0])
+        sales.append(int(parts[1]))
+
+print(names) # ['Amina', 'Carlos', 'Emily']
+print(sales) # [23424, 42549, 52488]</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 8. SCENARIO: SAVING LEADERBOARD -->
+<section>
+    <h3>Scenario: Saving Leaderboard</h3>
+    <div class="box">
+        <p>Save user scores to a formatted text file.</p>
+    </div>
+    <div class="fragment box-blue">
+        <pre><code class="python">leader_name = ["Annabelle", "Benjamin"]
+leader_points = [19, 21]
+
+with open("leaderboard.txt", "w") as file:
+    for i in range(len(leader_name)):
+        # Construct the line string
+        entry = f"{leader_name[i]}: {leader_points[i]}\n"
+        file.write(entry)
+
+# leaderboard.txt content:
+# Annabelle: 19
+# Benjamin: 21</code></pre>
+    </div>
+</section>
+
+<!-- 9. DO: CODE CHALLENGE -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-code"></i> Code Challenge</h2>
+        <div class="box-blue">
+            <p><strong>Task:</strong> Create a persistent high score system.</p>
+        </div>
+        <ol class="small-text">
+            <li>Ask the user for their name and score.</li>
+            <li>Append this data to a file <code>scores.txt</code>.</li>
+            <li>Then, read the file and print all previous high scores.</li>
+        </ol>
+        <p class="small-text"><i class="fa-solid fa-arrow-down"></i> Press Down for Solution</p>
+    </section>
+    <section>
+        <h3>Solution</h3>
+        <pre><code class="python"># 1. Get Input
+name = input("Enter name: ")
+score = input("Enter score: ")
+
+# 2. Append to file
+with open("scores.txt", "a") as f:
+    f.write(f"{name},{score}\n")
+
+# 3. Read and Display
+print("\n--- HIGH SCORES ---")
+with open("scores.txt", "r") as f:
+    for line in f:
+        data = line.strip().split(",")
+        print(f"{data[0]}: {data[1]}")</code></pre>
+    </section>
+</section>
+
+<!-- 10. REVISION CHECK -->
+<section>
+    <h2><i class="fa-solid fa-check-double"></i> Quick Fire Questions</h2>
+    <div class="fragment box">
+        <p>1. Which mode overwrites the entire file?</p>
+        <p class="fragment answer"><strong>'w' (Write)</strong></p>
+    </div>
+    <div class="fragment box">
+        <p>2. What happens if you try to open a non-existent file in 'r' mode?</p>
+        <p class="fragment answer"><strong>Error (FileNotFoundError)</strong></p>
+    </div>
+    <div class="fragment box">
+        <p>3. Why do we need to cast numbers to strings when writing?</p>
+        <p class="fragment answer"><strong>.write() only accepts string arguments.</strong></p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>
