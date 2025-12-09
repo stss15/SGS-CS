@@ -1,0 +1,371 @@
+---
+layout: layouts/slide-deck.njk
+title: "B2.4 Programming Algorithms | IB Computer Science"
+backHref: ib/B2/index.html
+courseFooter: IB Computer Science
+---
+
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B2.4 Programming Algorithms</h1>
+            <h3 class="sub-title">Topic B2: Programming | Big O, Search & Sort Algorithms</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. THE HOOK -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="cols">
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-gauge-high"></i> Efficiency Matters</h4>
+            <p>Why do some programs run instantly while others take forever with large data?</p>
+        </div>
+        <div class="box">
+            <h4><i class="fa-solid fa-chart-line"></i> Algorithm Analysis</h4>
+            <p>We measure efficiency using <span class="keyword"
+                    data-def="Used to find the upper bound (worst-case scenario) of the growth of a function; the longest time or space required to turn input into output.">Big O notation</span>.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 3. TIME COMPLEXITY -->
+<section>
+    <h3><span class="keyword"
+            data-def="A measure of how long an algorithm will take to run or how many steps an algorithm will take to run.">Time Complexity</span></h3>
+    <div class="box">
+        <p>Measures how the running time of an algorithm increases as the input size grows.</p>
+    </div>
+    <div class="fragment cols">
+        <div class="box-blue">
+            <pre><code class="python"># O(n) - Linear time
+for i in range(n):
+    print(i)</code></pre>
+            <p class="small-text">Runs n times.</p>
+        </div>
+        <div class="box">
+            <pre><code class="python"># O(n²) - Quadratic time
+for i in range(n):
+    for j in range(n):
+        print(i, j)</code></pre>
+            <p class="small-text">Runs n × n times.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 4. COMMON BIG O -->
+<section>
+    <h3>Common Big O Notations</h3>
+    <div class="box">
+        <table style="font-size: 0.85em; width: 100%;">
+            <tr>
+                <th>Notation</th>
+                <th>Name</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td><span class="keyword" data-def="The algorithm performs a fixed number of operations; the time taken to run does not depend on the size of the input.">O(1)</span></td>
+                <td>Constant</td>
+                <td>Accessing array element</td>
+            </tr>
+            <tr>
+                <td><span class="keyword" data-def="The algorithm's running time scales logarithmically with the increase in input size.">O(log n)</span></td>
+                <td>Logarithmic</td>
+                <td>Binary search</td>
+            </tr>
+            <tr>
+                <td><span class="keyword" data-def="The algorithm scales linearly with the size of the input.">O(n)</span></td>
+                <td>Linear</td>
+                <td>Linear search</td>
+            </tr>
+            <tr>
+                <td><span class="keyword" data-def="The time taken to run the algorithm is directly proportional to the square of the input size.">O(n²)</span></td>
+                <td>Quadratic</td>
+                <td>Bubble sort</td>
+            </tr>
+            <tr>
+                <td><span class="keyword" data-def="The algorithm's running time doubles with every increase in the input size.">O(2ⁿ)</span></td>
+                <td>Exponential</td>
+                <td>Recursive Fibonacci</td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+<!-- 5. SPACE COMPLEXITY -->
+<section>
+    <h3><span class="keyword"
+            data-def="A measure of how much memory space it takes to run an algorithm.">Space Complexity</span></h3>
+    <div class="cols">
+        <div class="box">
+            <h4>O(1) - Constant Space</h4>
+            <p>Memory used doesn't depend on input size.</p>
+            <pre><code class="python">total = 0
+for i in range(n):
+    total += i  # Same vars</code></pre>
+        </div>
+        <div class="box-blue fragment">
+            <h4>O(n) - Linear Space</h4>
+            <p>Memory scales with input size.</p>
+            <pre><code class="python">results = []
+for i in range(n):
+    results.append(i)  # Grows</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 6. LINEAR SEARCH -->
+<section>
+    <h3><span class="keyword"
+            data-def="A method of searching in which each element is checked in sequential order.">Linear Search</span></h3>
+    <div class="box">
+        <p>Check each element one by one until the target is found or the end is reached.</p>
+    </div>
+    <div class="fragment box-blue">
+        <pre><code class="python">def linear_search(arr, key):
+    for i in range(len(arr)):
+        if arr[i] == key:
+            return i  # Found at index i
+    return -1  # Not found
+
+# Example
+numbers = [3, 9, 7, 4]
+pos = linear_search(numbers, 7)  # Returns 2</code></pre>
+    </div>
+    <p class="fragment small-text"><strong>Time:</strong> O(n) | <strong>Space:</strong> O(1)</p>
+</section>
+
+<!-- 7. BINARY SEARCH -->
+<section>
+    <h3><span class="keyword"
+            data-def="A method of searching an ordered array by repeatedly checking the value of the middle element and disregarding the half that does not contain the searched element.">Binary Search</span></h3>
+    <div class="box">
+        <p>Requires a <strong>sorted</strong> array. Repeatedly halves the search space.</p>
+    </div>
+    <div class="fragment box-blue">
+        <pre><code class="python">def binary_search(arr, key):
+    lower, upper = 0, len(arr) - 1
+    while lower <= upper:
+        mid = (lower + upper) // 2
+        if arr[mid] == key:
+            return mid
+        elif arr[mid] < key:
+            lower = mid + 1
+        else:
+            upper = mid - 1
+    return -1</code></pre>
+    </div>
+    <p class="fragment small-text"><strong>Time:</strong> O(log n) | <strong>Space:</strong> O(1)</p>
+</section>
+
+<!-- 8. SEARCH COMPARISON -->
+<section>
+    <h3>Linear vs Binary Search</h3>
+    <div class="cols">
+        <div class="box">
+            <h4>Linear Search</h4>
+            <ul class="small-text">
+                <li>Works on <strong>unsorted</strong> data</li>
+                <li>Time: O(n)</li>
+                <li>Simple to implement</li>
+                <li>Better for small datasets</li>
+            </ul>
+        </div>
+        <div class="box-blue">
+            <h4>Binary Search</h4>
+            <ul class="small-text">
+                <li>Requires <strong>sorted</strong> data</li>
+                <li>Time: O(log n)</li>
+                <li>Much faster for large datasets</li>
+                <li>Worth sorting first if many searches</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- 9. BUBBLE SORT -->
+<section>
+    <h3><span class="keyword"
+            data-def="A sorting algorithm that compares adjacent values and swaps them if they are in the wrong order.">Bubble Sort</span></h3>
+    <div class="box">
+        <p>Repeatedly swap adjacent elements if they're in the wrong order.</p>
+    </div>
+    <div class="fragment box-blue">
+        <pre><code class="python">def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(n - 1 - i):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+
+# Example
+nums = [7, 3, 2, 9]
+bubble_sort(nums)  # [2, 3, 7, 9]</code></pre>
+    </div>
+    <p class="fragment small-text"><strong>Time:</strong> O(n²) | <strong>Space:</strong> O(1)</p>
+</section>
+
+<!-- 10. SELECTION SORT -->
+<section>
+    <h3><span class="keyword"
+            data-def="A sorting algorithm that repeatedly selects the smallest (or largest) element from the unsorted part and moves it to the sorted part.">Selection Sort</span></h3>
+    <div class="box">
+        <p>Find the minimum element and swap it to its correct position.</p>
+    </div>
+    <div class="fragment box-blue">
+        <pre><code class="python">def selection_sort(arr):
+    n = len(arr)
+    for i in range(n - 1):
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    return arr
+
+# Example
+nums = [9, 7, 2, 3]
+selection_sort(nums)  # [2, 3, 7, 9]</code></pre>
+    </div>
+    <p class="fragment small-text"><strong>Time:</strong> O(n²) | <strong>Space:</strong> O(1)</p>
+</section>
+
+<!-- 11. SORT COMPARISON -->
+<section>
+    <h3>Bubble vs Selection Sort</h3>
+    <div class="cols">
+        <div class="box">
+            <h4>Bubble Sort</h4>
+            <ul class="small-text">
+                <li>Many swaps</li>
+                <li>Can exit early if sorted</li>
+                <li>Stable sort</li>
+            </ul>
+        </div>
+        <div class="box-blue">
+            <h4>Selection Sort</h4>
+            <ul class="small-text">
+                <li>Fewer swaps (max n-1)</li>
+                <li>Cannot exit early</li>
+                <li>Unstable sort</li>
+            </ul>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p class="small-text"><strong>Both are O(n²)</strong> — inefficient for large datasets. Use for learning or small data only.</p>
+    </div>
+</section>
+
+<!-- 12. RECURSION (HL) -->
+<section>
+    <h3><span class="keyword"
+            data-def="A technique where a function or procedure calls itself until a specific condition is met.">Recursion</span> (HL)</h3>
+    <div class="cols">
+        <div class="box">
+            <h4>Key Components</h4>
+            <ul class="small-text">
+                <li><span class="keyword" data-def="A terminating solution (that is not recursive) to a process.">Base case</span>: Stops recursion</li>
+                <li><span class="keyword" data-def="A process where the recursive call takes place.">General case</span>: Calls itself</li>
+                <li><span class="keyword" data-def="A process occurring when recursive calls are made until the base case is reached.">Winding</span>: Building up calls</li>
+                <li><span class="keyword" data-def="A process occurring when the base case is reached and the values are returned to build a solution.">Unwinding</span>: Returning results</li>
+            </ul>
+        </div>
+        <div class="box-blue fragment">
+            <h4>Factorial Example</h4>
+            <pre><code class="python">def factorial(n):
+    if n == 1:       # Base case
+        return 1
+    else:            # General case
+        return n * factorial(n - 1)
+
+print(factorial(5))  # 120</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 13. RECURSION TRACE (HL) -->
+<section>
+    <section>
+        <h3>Tracing Recursion (HL)</h3>
+        <div class="box-blue">
+            <p>Follow the call stack for <code>factorial(4)</code>:</p>
+        </div>
+        <p class="small-text"><i class="fa-solid fa-arrow-down"></i> Press Down to trace</p>
+    </section>
+    <section>
+        <div class="question-box">
+            <p><strong>Winding (calls going down):</strong></p>
+            <p><code>factorial(4)</code> → waits for <code>factorial(3)</code></p>
+            <p><code>factorial(3)</code> → waits for <code>factorial(2)</code></p>
+            <p><code>factorial(2)</code> → waits for <code>factorial(1)</code></p>
+            <p><code>factorial(1)</code> → returns <strong>1</strong> (base case)</p>
+        </div>
+    </section>
+    <section>
+        <div class="box-blue">
+            <p><strong>Unwinding (results coming back):</strong></p>
+            <p><code>factorial(1)</code> = 1</p>
+            <p><code>factorial(2)</code> = 2 × 1 = <strong>2</strong></p>
+            <p><code>factorial(3)</code> = 3 × 2 = <strong>6</strong></p>
+            <p><code>factorial(4)</code> = 4 × 6 = <strong>24</strong></p>
+        </div>
+    </section>
+</section>
+
+<!-- 14. TRUE/FALSE CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+        <div class="box-blue">
+            <p>Answer these misconception checks:</p>
+        </div>
+        <ol>
+            <li>"Binary search works on unsorted arrays."</li>
+            <li>"O(log n) is slower than O(n) for large inputs."</li>
+            <li>"Bubble sort has O(n) time complexity."</li>
+            <li>"A recursive function needs a base case to stop."</li>
+        </ol>
+        <p class="small-text"><i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers</p>
+    </section>
+    <section>
+        <h3>Question 1</h3>
+        <div class="question-box">"Binary search works on unsorted arrays."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Binary search requires a <strong>sorted</strong> array to work correctly.</p>
+        </div>
+    </section>
+    <section>
+        <h3>Question 2</h3>
+        <div class="question-box">"O(log n) is slower than O(n) for large inputs."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>O(log n) is <strong>faster</strong> than O(n). Logarithmic growth is much slower than linear.</p>
+        </div>
+    </section>
+    <section>
+        <h3>Question 3</h3>
+        <div class="question-box">"Bubble sort has O(n) time complexity."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Bubble sort is <strong>O(n²)</strong> — quadratic time complexity.</p>
+        </div>
+    </section>
+    <section>
+        <h3>Question 4</h3>
+        <div class="question-box">"A recursive function needs a base case to stop."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: True</strong></p>
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Without a base case, recursion runs infinitely (stack overflow).</p>
+        </div>
+    </section>
+</section>
