@@ -1955,11 +1955,12 @@ body {
     transform: scale(1.05);
 }
 
-/* Creepy camera screen */
+/* Creepy camera screen - Enhanced Easter Egg */
 .creepy-camera-screen {
     height: 100%;
     display: flex;
     flex-direction: column;
+    background: #000;
 }
 
 .camera-feed {
@@ -1973,6 +1974,63 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: scaleX(-1); /* Mirror effect */
+}
+
+.camera-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a0000 0%, #000 50%, #1a0000 100%);
+    color: #ff3333;
+    font-size: 0.9rem;
+}
+
+.camera-fallback i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    animation: glitch-shake 0.3s infinite;
+}
+
+/* Red filter overlay */
+.red-filter-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 0, 0, 0.4);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    animation: red-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes red-pulse {
+    0%, 100% { background: rgba(255, 0, 0, 0.3); }
+    50% { background: rgba(255, 0, 0, 0.6); }
+}
+
+/* Scan line effect */
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 0, 0, 0.5), transparent);
+    animation: scan-down 2s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scan-down {
+    0% { top: -4px; }
+    100% { top: 100%; }
 }
 
 .camera-overlay {
@@ -1981,71 +2039,146 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 0, 0, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: pulse-red 1s infinite;
-}
-
-@keyframes pulse-red {
-    0%, 100% { background: rgba(255, 0, 0, 0.3); }
-    50% { background: rgba(255, 0, 0, 0.5); }
+    pointer-events: none;
 }
 
 .creepy-text {
     text-align: center;
     color: white;
-    padding: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    padding: 16px;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
 .creepy-text .blink {
     animation: blink 0.5s infinite;
-    font-size: 1rem;
-    margin-bottom: 12px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    color: #ff3333;
+    letter-spacing: 2px;
 }
 
 @keyframes blink {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    50% { opacity: 0.2; }
 }
 
-.creepy-text h2 {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
-    color: #ff0;
-}
-
-.creepy-text ul {
-    list-style: none;
-    padding: 0;
-    margin: 12px 0;
-    font-size: 0.85rem;
-    text-align: left;
-}
-
-.creepy-text li {
-    margin-bottom: 6px;
-}
-
-.money-text {
-    font-size: 1.1rem;
-    color: #0f0;
+/* Glitch text effect */
+.glitch-text {
+    font-size: 1.3rem;
     font-weight: bold;
-    margin: 16px 0;
-    animation: blink 0.7s infinite;
+    margin-bottom: 8px;
+    color: #ff0;
+    text-shadow: 
+        0 0 10px #ff0,
+        -2px 0 #ff0000,
+        2px 0 #00ff00;
+    animation: glitch-shake 0.1s infinite;
 }
 
-.small-text {
+@keyframes glitch-shake {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(2px, -1px); }
+    60% { transform: translate(-1px, 2px); }
+    80% { transform: translate(1px, -2px); }
+}
+
+/* Money rain effect */
+.money-rain {
+    font-size: 1.5rem;
+    color: #00ff00;
+    font-weight: bold;
+    margin: 12px 0;
+    animation: money-pulse 0.5s infinite;
+    text-shadow: 0 0 20px #00ff00;
+}
+
+@keyframes money-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* Data collection list */
+.data-collect-list {
+    text-align: left;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    margin: 10px 0;
+    border: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+.data-item {
     font-size: 0.75rem;
-    color: #ccc;
+    padding: 4px 0;
+    color: #ff6666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.data-item i {
+    width: 16px;
+    text-align: center;
+}
+
+.data-item.collecting {
+    animation: type-in 0.5s ease-out forwards;
+}
+
+.data-item:nth-child(1) { animation-delay: 0.5s; opacity: 0; }
+.data-item:nth-child(2) { animation-delay: 1s; opacity: 0; }
+.data-item:nth-child(3) { animation-delay: 1.5s; opacity: 0; }
+.data-item:nth-child(4) { animation-delay: 2s; opacity: 0; }
+
+@keyframes type-in {
+    0% { opacity: 0; transform: translateX(-10px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Sold banner */
+.sold-banner {
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.2), transparent);
+    padding: 8px;
+    margin: 12px 0 8px;
+    border-top: 1px solid #00ff00;
+    border-bottom: 1px solid #00ff00;
+}
+
+.sold-text {
+    color: #00ff00;
+    font-weight: bold;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    animation: sold-flash 0.3s infinite;
+}
+
+@keyframes sold-flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.reassurance-text {
+    font-size: 0.7rem;
+    color: #aaa;
     font-style: italic;
+    margin-top: 8px;
 }
 
 .reset-cookies-btn.danger {
-    background: var(--ios-red);
+    background: linear-gradient(135deg, #ff3333, #cc0000);
     color: white;
+    border: none;
+    font-weight: 600;
+    animation: danger-pulse 1s infinite;
+}
+
+@keyframes danger-pulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
 }
 
 /* ===== Settings App ===== */

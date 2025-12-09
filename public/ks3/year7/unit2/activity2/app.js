@@ -1023,19 +1023,28 @@ function showCreepyCamera() {
         <div class="creepy-camera-screen">
             <div class="camera-feed">
                 <video id="camera-video" autoplay muted playsinline></video>
+                <canvas id="camera-canvas" style="display: none;"></canvas>
+                <div id="camera-fallback" class="camera-fallback" style="display: none;">
+                    <i class="fa-solid fa-video-slash"></i>
+                    <p>Camera feed blocked</p>
+                </div>
+                <div class="red-filter-overlay"></div>
+                <div class="scan-line"></div>
                 <div class="camera-overlay">
                     <div class="creepy-text">
                         <div class="blink">📸 CAMERA ACTIVE 📸</div>
-                        <h2>THANK YOU FOR ALL YOUR DATA!</h2>
-                        <p>Your personal information is now being collected:</p>
-                        <ul>
-                            <li>✓ Face Recognition Data</li>
-                            <li>✓ Contact List (${Math.floor(Math.random() * 50) + 100} contacts)</li>
-                            <li>✓ Browsing History</li>
-                            <li>✓ Location Data</li>
-                        </ul>
-                        <div class="money-text">💰 SOLD TO ${Math.floor(Math.random() * 50) + 200} COMPANIES 💰</div>
-                        <p class="small-text">(Don't worry - this is just a demonstration!)</p>
+                        <h2 class="glitch-text">I HAVE ALL YOUR DATA NOW</h2>
+                        <div class="money-rain">💰💰💰 $$$$ 💰💰💰</div>
+                        <div class="data-collect-list">
+                            <div class="data-item collecting"><i class="fa-solid fa-face-viewfinder"></i> Face Recognition Data... CAPTURED</div>
+                            <div class="data-item collecting"><i class="fa-solid fa-address-book"></i> Contact List (${Math.floor(Math.random() * 50) + 100} contacts)... HARVESTED</div>
+                            <div class="data-item collecting"><i class="fa-solid fa-clock-rotate-left"></i> Browsing History... DOWNLOADED</div>
+                            <div class="data-item collecting"><i class="fa-solid fa-location-dot"></i> Location Data... TRACKED</div>
+                        </div>
+                        <div class="sold-banner">
+                            <span class="sold-text">SOLD TO ${Math.floor(Math.random() * 50) + 200} COMPANIES</span>
+                        </div>
+                        <p class="reassurance-text">(Don't worry - this is just a demonstration to show what COULD happen!)</p>
                     </div>
                 </div>
             </div>
@@ -1045,14 +1054,14 @@ function showCreepyCamera() {
         </div>
     `;
     
-    // Try to start camera
-    startCamera();
+    // Try to start camera with red filter effect
+    startCameraWithEffect();
     
     addToFootprint('Face Scan Data', 'fa-face-viewfinder', 'FreeGame');
     addToFootprint('All Contacts', 'fa-address-book', 'FreeGame');
     addToFootprint('Full Tracking', 'fa-eye', 'FreeGame');
     
-    showAlert('danger', '😱 This is what happens when you accept EVERYTHING without reading! Your camera, contacts, and data are all being accessed.');
+    showAlert('danger', '😱 <strong>GOTCHA!</strong><br><br>This is what happens when you accept EVERYTHING without reading! Your camera, contacts, and data could all be accessed by dodgy apps!');
     
     updateMissionPanel();
 }
@@ -1066,9 +1075,35 @@ function startCamera() {
             })
             .catch(err => {
                 console.log('Camera not available:', err);
-                // Show static image instead
+                // Show fallback instead
                 video.style.display = 'none';
+                const fallback = document.getElementById('camera-fallback');
+                if (fallback) fallback.style.display = 'flex';
             });
+    }
+}
+
+function startCameraWithEffect() {
+    const video = document.getElementById('camera-video');
+    const fallback = document.getElementById('camera-fallback');
+    
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+            .then(stream => {
+                video.srcObject = stream;
+                video.style.display = 'block';
+                if (fallback) fallback.style.display = 'none';
+            })
+            .catch(err => {
+                console.log('Camera not available:', err);
+                // Show spooky fallback
+                video.style.display = 'none';
+                if (fallback) fallback.style.display = 'flex';
+            });
+    } else {
+        // No camera API available
+        video.style.display = 'none';
+        if (fallback) fallback.style.display = 'flex';
     }
 }
 
@@ -1109,7 +1144,7 @@ function acceptFreeGameTerms(accepted) {
     if (accepted) {
         appState.permissions.freegameTerms = true;
         addToFootprint('Terms Accepted', 'fa-file-signature', 'FreeGame');
-        showSequentialAlert('Terms Accepted', 'warning', 'You agreed to let them share your data with "advertising partners"!');
+        showAlert('warning', '⚠️ <strong>Terms Accepted!</strong><br><br>You agreed to let them share your data with "advertising partners"!');
     } else {
         showAlert('info', '❌ Without accepting terms, you cannot play the game. This is how companies force you to agree!');
     }
@@ -1122,7 +1157,7 @@ function setFreeGameCookies(choice) {
     if (choice === 'all') {
         addToFootprint('Game Analytics', 'fa-chart-line', 'FreeGame');
         addToFootprint('Ad Tracking', 'fa-bullseye', 'FreeGame');
-        showSequentialAlert('All Cookies Accepted', 'warning', 'Your gaming habits are now being tracked!');
+        showAlert('warning', '🍪 <strong>All Cookies Accepted!</strong><br><br>Your gaming habits are now being tracked!');
     } else {
         showToast('success', 'Smart Choice!', 'Only essential cookies enabled');
     }
@@ -1136,7 +1171,7 @@ function setFreeGameCamera(allowed) {
     
     if (allowed) {
         addToFootprint('Camera Access', 'fa-camera', 'FreeGame');
-        showSequentialAlert('Camera Access Granted', 'danger', 'The game can now take photos and videos anytime!');
+        showAlert('danger', '📷 <strong>Camera Access Granted!</strong><br><br>The game can now take photos and videos anytime!');
     }
     
     initFreeGame();
@@ -1148,7 +1183,7 @@ function setFreeGameContacts(allowed) {
     
     if (allowed) {
         addToFootprint('Contact List', 'fa-address-book', 'FreeGame');
-        showSequentialAlert('Contacts Shared', 'danger', 'All your friends\' phone numbers are now collected!');
+        showAlert('danger', '📒 <strong>Contacts Shared!</strong><br><br>All your friends\' phone numbers are now collected!');
     }
     
     initFreeGame();

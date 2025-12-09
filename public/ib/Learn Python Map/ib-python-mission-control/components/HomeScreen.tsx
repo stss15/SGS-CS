@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Rocket, Box, BrainCircuit, Radio, Gauge, Cpu } from 'lucide-react';
+import { Rocket, Box, BrainCircuit, Radio, Gauge, Cpu, ArrowLeft } from 'lucide-react';
 
 interface HomeScreenProps {
   onSelectPathway: (pathway: 'SL' | 'HL') => void;
+  onBackToIB?: () => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectPathway }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectPathway, onBackToIB }) => {
   const [bootSequence, setBootSequence] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -274,6 +275,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectPathway }) => {
                 {'>'} SGS COMPUTER SCIENCE DEPARTMENT
               </div>
               <div className="flex items-center gap-4">
+                {onBackToIB && (
+                  <button 
+                    onClick={onBackToIB}
+                    className="flex items-center gap-2 px-4 py-2 border border-[#333] hover:border-nasa-orange text-[#666] hover:text-nasa-orange font-mono text-xs transition-all duration-200 group"
+                  >
+                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                    <span>END MISSION</span>
+                  </button>
+                )}
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                   <span className="font-mono text-xs text-[#666]">ALL SYSTEMS GO</span>

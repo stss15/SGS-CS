@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big O Complexity Visualiser & Revision Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        code,
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .code-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .code-scroll::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+
+        .code-scroll::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        .canvas-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .tab-inactive {
+            color: #6b7280;
+        }
+
+        .tab-inactive:hover {
+            color: #374151;
+        }
+
+        .speed-btn-active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+
+        /* Modal Transitions */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+
+        body.modal-active {
+            overflow-x: hidden;
+            overflow-y: hidden !important;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white p-4 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-indigo-200 hover:text-white transition group flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                    Back
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold">Big O Revision Guide</h1>
+                    <p class="text-indigo-200 text-sm">IGCSE & IB Computer Science | Section B2.4</p>
+                </div>
+            </div>
+            <div class="text-sm hidden md:block text-right">
+                <p>Time & Space Complexity</p>
+                <p class="opacity-75">Visualiser + Theory</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+
+        <!-- Controls & Visuals (Left Column) -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- Controls -->
+            <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Algorithm</label>
+                        <select id="algoSelect"
+                            class="w-full p-2 border border-gray-300 rounded bg-gray-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="linearSearch">Linear Search (Sequential)</option>
+                            <option value="binarySearch">Binary Search</option>
+                            <option value="bubbleSort">Bubble Sort</option>
+                            <option value="selectionSort">Selection Sort</option>
+                            <option value="quickSort">Quicksort</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Case Scenario</label>
+                        <select id="caseSelect"
+                            class="w-full p-2 border border-gray-300 rounded bg-gray-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="average">Average (Random)</option>
+                            <option value="worst">Worst Case</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Dataset Size (N): <span
+                                id="nValue">50</span></label>
+                        <input type="range" id="sizeSlider" min="10" max="100" value="50"
+                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    </div>
+                </div>
+
+                <!-- Playback Controls -->
+                <div class="flex flex-col gap-3 border-t pt-4">
+                    <div class="flex gap-2">
+                        <!-- Tutorial Button -->
+                        <button id="btnTutorial"
+                            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded font-semibold transition shadow flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path
+                                    d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                            </svg>
+                            Explain
+                        </button>
+
+                        <!-- Run Button -->
+                        <button id="btnStart"
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-semibold transition shadow flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Run
+                        </button>
+
+                        <button id="btnPause"
+                            class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded font-semibold transition shadow flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Pause
+                        </button>
+                        <button id="btnReset"
+                            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded font-semibold transition shadow flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Reset
+                        </button>
+                    </div>
+
+                    <!-- Speed Controls -->
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border">
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wide mr-2">Speed:</span>
+                        <div class="flex gap-1 flex-grow justify-end">
+                            <button class="speed-btn px-2 py-1 text-xs border rounded hover:bg-gray-200 transition"
+                                data-speed="300">Slow &times;10</button>
+                            <button class="speed-btn px-2 py-1 text-xs border rounded hover:bg-gray-200 transition"
+                                data-speed="60">Slow &times;2</button>
+                            <button
+                                class="speed-btn px-2 py-1 text-xs border rounded hover:bg-gray-200 transition speed-btn-active"
+                                data-speed="30">Normal</button>
+                            <button class="speed-btn px-2 py-1 text-xs border rounded hover:bg-gray-200 transition"
+                                data-speed="15">Fast &times;2</button>
+                            <button class="speed-btn px-2 py-1 text-xs border rounded hover:bg-gray-200 transition"
+                                data-speed="3">Fast &times;10</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Array Visualization -->
+            <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200 flex-grow flex flex-col">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-bold text-lg text-gray-700">Visualisation</h2>
+                    <div class="text-sm font-mono bg-gray-100 px-2 py-1 rounded border border-gray-300">
+                        Ops: <span id="opCounter" class="text-red-600 font-bold">0</span>
+                    </div>
+                </div>
+                <div class="canvas-container bg-gray-50 rounded border border-gray-200 flex justify-center items-end overflow-hidden p-2"
+                    id="barContainer">
+                    <!-- Bars injected via JS -->
+                </div>
+
+                <!-- Dynamic Key Container -->
+                <div class="flex justify-center flex-wrap gap-4 mt-4 text-sm text-gray-500" id="keyContainer">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Theory & Code (Right Column) -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 bg-white rounded-t-xl px-4 pt-4 shadow-sm">
+                <button id="tabGraph" class="px-4 py-2 text-sm tab-active focus:outline-none">Complexity Graph</button>
+                <button id="tabCode" class="px-4 py-2 text-sm tab-inactive focus:outline-none">Python Code</button>
+                <button id="tabTheory" class="px-4 py-2 text-sm tab-inactive focus:outline-none">Revision Notes</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="bg-white p-4 rounded-b-xl shadow-md border border-t-0 border-gray-200 flex-grow flex flex-col">
+
+                <!-- Graph View -->
+                <div id="viewGraph" class="h-full flex flex-col">
+                    <div class="flex gap-2 mb-4">
+                        <span id="timeBadge"
+                            class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded font-bold border border-indigo-200">Time:
+                            O(N)</span>
+                        <span id="spaceBadge"
+                            class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded font-bold border border-purple-200">Space:
+                            O(1)</span>
+                    </div>
+                    <div class="relative flex-grow min-h-[250px]">
+                        <canvas id="complexityChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 italic text-center">The Red Cross indicates your actual run
+                        performance vs theoretical curves.</p>
+                </div>
+
+                <!-- Code View -->
+                <div id="viewCode" class="hidden h-full flex flex-col">
+                    <div
+                        class="bg-gray-900 text-gray-100 p-4 rounded-lg shadow-inner flex-grow overflow-hidden flex flex-col">
+                        <div class="flex justify-between items-center mb-2 border-b border-gray-700 pb-2">
+                            <span class="text-sm font-mono text-indigo-400">implementation.py</span>
+                        </div>
+                        <pre
+                            class="code-scroll overflow-y-auto text-sm flex-grow"><code id="codeDisplay" class="language-python"></code></pre>
+                    </div>
+                </div>
+
+                <!-- Theory View -->
+                <div id="viewTheory" class="hidden h-full overflow-y-auto code-scroll pr-2">
+                    <div class="prose prose-sm max-w-none text-gray-700">
+                        <h3 class="text-lg font-bold text-indigo-900 mb-2" id="theoryTitle">Algorithm Name</h3>
+                        <p id="theoryDesc" class="mb-4 text-sm"></p>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                            <h4 class="font-bold text-blue-900 mb-1">Complexity Justification</h4>
+                            <div id="complexityJustification" class="text-sm text-blue-800 space-y-2">
+                                <!-- Dynamic Content -->
+                            </div>
+                        </div>
+
+                        <h4 class="font-bold text-gray-800 mb-1 mt-4">Definitions (Section B2.4.1)</h4>
+                        <ul class="list-disc list-inside text-xs space-y-2 mb-4 bg-gray-50 p-3 rounded border">
+                            <li><strong>Time Complexity:</strong> How many steps an algorithm takes to run. We analyze
+                                the worst-case scenario.</li>
+                            <li><strong>Space Complexity:</strong> The amount of memory used by an algorithm with
+                                respect to input size.</li>
+                            <li><strong>Big O Notation:</strong> Used to find the upper bound (worst-case) of the growth
+                                of a function.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal for Tutorial -->
+    <div id="tutorialModal"
+        class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+            <div class="modal-content py-4 text-left px-6">
+                <!-- Title -->
+                <div class="flex justify-between items-center pb-3">
+                    <p class="text-2xl font-bold text-indigo-900" id="modalTitle">Algorithm Step</p>
+                    <div class="modal-close cursor-pointer z-50" id="modalClose">
+                        <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 18 18">
+                            <path
+                                d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div id="modalBody" class="my-5 text-gray-700 text-lg leading-relaxed min-h-[100px]">
+                    <!-- Step content goes here -->
+                </div>
+
+                <!-- Footer / Controls -->
+                <div class="flex justify-between pt-2">
+                    <button id="btnPrevStep"
+                        class="px-4 py-2 bg-gray-200 rounded-lg text-gray-600 hover:bg-gray-300 transition hidden">Previous</button>
+                    <div class="flex gap-2">
+                        <button id="btnNextStep"
+                            class="px-4 py-2 bg-indigo-600 rounded-lg text-white hover:bg-indigo-700 transition">Next</button>
+                        <button id="btnRunAlgo"
+                            class="px-4 py-2 bg-green-600 rounded-lg text-white hover:bg-green-700 transition hidden">Run
+                            Algorithm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration & State ---
+        const colors = {
+            default: 'rgb(99, 102, 241)', // Indigo 500
+            compare: 'rgb(239, 68, 68)',   // Red 500
+            sorted: 'rgb(34, 197, 94)',    // Green 500
+            pivot: 'rgb(234, 179, 8)',     // Yellow 500
+            inactive: 'rgb(229, 231, 235)' // Gray 200
+        };
+
+        let arrayData = [];
+        let arraySize = 50;
+        let baseDelay = 30; // Default Normal Speed
+        let currentDelay = 30;
+        let isRunning = false;
+        let isPaused = false;
+        let abortController = new AbortController();
+        let chartInstance = null;
+        let operations = 0;
+
+        // Modal State
+        let currentStepIndex = 0;
+        let currentAlgoSteps = [];
+
+        // --- DOM Elements ---
+        const barContainer = document.getElementById('barContainer');
+        const keyContainer = document.getElementById('keyContainer');
+        const algoSelect = document.getElementById('algoSelect');
+        const caseSelect = document.getElementById('caseSelect');
+        const sizeSlider = document.getElementById('sizeSlider');
+        const nValue = document.getElementById('nValue');
+
+        const btnStart = document.getElementById('btnStart');
+        const btnTutorial = document.getElementById('btnTutorial');
+        const btnPause = document.getElementById('btnPause');
+        const btnReset = document.getElementById('btnReset');
+        const opCounter = document.getElementById('opCounter');
+        const speedBtns = document.querySelectorAll('.speed-btn');
+
+        // Modal DOM
+        const modal = document.getElementById('tutorialModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const btnPrevStep = document.getElementById('btnPrevStep');
+        const btnNextStep = document.getElementById('btnNextStep');
+        const btnRunAlgo = document.getElementById('btnRunAlgo');
+        const modalClose = document.getElementById('modalClose');
+
+        // Tabs
+        const tabGraph = document.getElementById('tabGraph');
+        const tabCode = document.getElementById('tabCode');
+        const tabTheory = document.getElementById('tabTheory');
+        const viewGraph = document.getElementById('viewGraph');
+        const viewCode = document.getElementById('viewCode');
+        const viewTheory = document.getElementById('viewTheory');
+
+        // Badges & Text
+        const timeBadge = document.getElementById('timeBadge');
+        const spaceBadge = document.getElementById('spaceBadge');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const theoryTitle = document.getElementById('theoryTitle');
+        const theoryDesc = document.getElementById('theoryDesc');
+        const complexityJustification = document.getElementById('complexityJustification');
+
+        // --- Algorithm Data ---
+        const algoData = {
+            linearSearch: {
+                time: "O(N)",
+                space: "O(1)",
+                desc: "Sequential Search. Checks each element one by one from start to end.",
+                code: `def linear_search(arr, target):
+    # Time: O(N) | Space: O(1)
+    for i in range(len(arr)):
+        if arr[i] == target:
+            return i
+    return -1`,
+                keys: ['value', 'compare', 'sorted'],
+                steps: [
+                    "Start at the first element (Index 0).",
+                    "Compare the current element with the target value.",
+                    "If they match, stop. We found it!",
+                    "If not, move to the next element and repeat.",
+                    "If we reach the end without finding it, the item isn't there."
+                ],
+                complexityNotes: `
+                    <p><strong>Time: O(N)</strong><br>
+                    Justification: In the worst-case scenario (target is at the very end or not present), the algorithm must check every single element exactly once. Therefore, if there are N elements, there are N comparisons.</p>
+                    <p class="mt-2"><strong>Space: O(1)</strong><br>
+                    Justification: The algorithm only needs a single variable (the iterator 'i') to track its position. It does not create any new data structures or use recursion stack memory, regardless of input size.</p>
+                `
+            },
+            binarySearch: {
+                time: "O(log N)",
+                space: "O(1)",
+                desc: "Repeatedly checks the middle element and discards half the list. Requires sorted data.",
+                code: `def binary_search(arr, target):
+    # Time: O(log N) | Space: O(1)
+    low = 0
+    high = len(arr) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return -1`,
+                keys: ['value', 'pivot', 'inactive', 'sorted'],
+                steps: [
+                    "Calculate the middle index of the active range (Yellow bar).",
+                    "Compare the middle value with your target.",
+                    "If the target is smaller, discard the right half (Grey bars).",
+                    "If the target is larger, discard the left half (Grey bars).",
+                    "Repeat with the new, smaller range until found."
+                ],
+                complexityNotes: `
+                    <p><strong>Time: O(log N)</strong><br>
+                    Justification: With every comparison, the search range is divided by 2. The number of times you can divide N by 2 until you reach 1 is log2(N). This is exponentially faster than checking every item.</p>
+                    <p class="mt-2"><strong>Space: O(1)</strong><br>
+                    Justification: An iterative binary search only requires three pointers: 'low', 'high', and 'mid'. It does not copy the array or use recursive stack space.</p>
+                `
+            },
+            bubbleSort: {
+                time: "O(N²)",
+                space: "O(1)",
+                desc: "Repeatedly swaps adjacent elements if they are in the wrong order.",
+                code: `def bubble_sort(arr):
+    # Time: O(N^2) | Space: O(1)
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]`,
+                keys: ['value', 'compare', 'sorted'],
+                steps: [
+                    "Compare the first two adjacent items (Red bars).",
+                    "If they are in the wrong order, swap them.",
+                    "Move to the next pair and repeat.",
+                    "After one full pass, the largest item 'bubbles' to the end (Green).",
+                    "Repeat until all items are sorted."
+                ],
+                complexityNotes: `
+                    <p><strong>Time: O(N²)</strong><br>
+                    Justification: The algorithm uses two nested loops. The outer loop runs N times. The inner loop runs approximately N times (N-i). This results in roughly N * N comparisons.</p>
+                    <p class="mt-2"><strong>Space: O(1)</strong><br>
+                    Justification: This is an 'in-place' sort. It only requires a single temporary variable to perform the swap. It does not create a copy of the list.</p>
+                `
+            },
+            selectionSort: {
+                time: "O(N²)",
+                space: "O(1)",
+                desc: "Repeatedly finds the smallest element in the unsorted part and moves it to the sorted part.",
+                code: `def selection_sort(arr):
+    # Time: O(N^2) | Space: O(1)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]`,
+                keys: ['value', 'compare', 'pivot', 'sorted'], // pivot used for min here
+                steps: [
+                    "Mark the current item as the scan start.",
+                    "Scan the rest of the list (Red) to find the smallest number (Yellow).",
+                    "Swap that smallest number with the start item.",
+                    "Mark the start item as sorted (Green).",
+                    "Repeat for the next position."
+                ],
+                complexityNotes: `
+                    <p><strong>Time: O(N²)</strong><br>
+                    Justification: Like Bubble Sort, it requires nested loops. We must scan the remaining unsorted portion of the list (N-i elements) for every single position (i) we want to fill.</p>
+                    <p class="mt-2"><strong>Space: O(1)</strong><br>
+                    Justification: It is an in-place sort. We only need variables to store the current 'minimum index' and the iterator.</p>
+                `
+            },
+            quickSort: {
+                time: "O(N log N)",
+                space: "O(log N)",
+                desc: "Selects a pivot and partitions array into smaller/larger elements. Recursively sorts.",
+                code: `def quick_sort(arr, low, high):
+    if low < high:
+        pi = partition(arr, low, high)
+        quick_sort(arr, low, pi - 1)
+        quick_sort(arr, pi + 1, high)`,
+                keys: ['value', 'compare', 'pivot', 'sorted'],
+                steps: [
+                    "Pick a 'pivot' element (Yellow bar).",
+                    "Partition: Move smaller items to the left, larger items to the right.",
+                    "Place the pivot in its correct final position.",
+                    "Recursively apply the same steps to the left and right sides."
+                ],
+                complexityNotes: `
+                    <p><strong>Time: O(N log N)</strong><br>
+                    Justification: Average case. The partition step takes linear time O(N). Because we divide the problem roughly in half each time, the recursion depth is log N. Total time is N * log N. (Worst case is O(N²) if sorted).</p>
+                    <p class="mt-2"><strong>Space: O(log N)</strong><br>
+                    Justification: Although it sorts in-place (no new array), it uses recursion. The computer must store the state of each recursive call on the 'Stack'. The stack depth is proportional to log N.</p>
+                `
+            }
+        };
+
+        const keyDefinitions = {
+            'value': { color: 'bg-indigo-500', label: 'Value' },
+            'compare': { color: 'bg-red-500', label: 'Compare/Scan' },
+            'sorted': { color: 'bg-green-500', label: 'Sorted/Found' },
+            'pivot': { color: 'bg-yellow-500', label: 'Pivot/Target/Min' },
+            'inactive': { color: 'bg-gray-200', label: 'Inactive Range' }
+        };
+
+        // --- UI Update Functions ---
+
+        function updateKey() {
+            const algo = algoSelect.value;
+            const keysToShow = algoData[algo].keys;
+            keyContainer.innerHTML = '';
+
+            keysToShow.forEach(key => {
+                const def = keyDefinitions[key];
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-2';
+                item.innerHTML = `<div class="w-3 h-3 ${def.color}"></div> ${def.label}`;
+                keyContainer.appendChild(item);
+            });
+        }
+
+        function updateInfo() {
+            const algo = algoSelect.value;
+            const data = algoData[algo];
+
+            timeBadge.textContent = `Time: ${data.time}`;
+            spaceBadge.textContent = `Space: ${data.space}`;
+            codeDisplay.textContent = data.code;
+            theoryTitle.textContent = algoSelect.options[algoSelect.selectedIndex].text;
+            theoryDesc.textContent = data.desc;
+            complexityJustification.innerHTML = data.complexityNotes;
+
+            updateKey();
+            updateChart();
+        }
+
+        function resetArray() {
+            stopExecution();
+            arraySize = parseInt(sizeSlider.value);
+            nValue.innerText = arraySize;
+            arrayData = [];
+
+            const algo = algoSelect.value;
+            const scenario = caseSelect.value;
+            const isSort = algo.includes('Sort');
+
+            if (isSort) {
+                if (scenario === 'worst' && (algo === 'bubbleSort' || algo === 'selectionSort' || algo === 'quickSort')) {
+                    for (let i = arraySize; i >= 1; i--) arrayData.push(i);
+                } else {
+                    for (let i = 0; i < arraySize; i++) arrayData.push(Math.floor(Math.random() * 100) + 1);
+                }
+            } else {
+                if (algo === 'binarySearch') {
+                    for (let i = 1; i <= arraySize; i++) arrayData.push(i);
+                } else {
+                    for (let i = 0; i < arraySize; i++) arrayData.push(Math.floor(Math.random() * 100) + 1);
+                }
+            }
+
+            operations = 0;
+            updateOpCounter();
+            drawArray();
+            if (chartInstance) {
+                chartInstance.data.datasets[5].data = [];
+                chartInstance.update();
+            }
+        }
+
+        function drawArray(state = {}) {
+            barContainer.innerHTML = '';
+            const maxVal = Math.max(...arrayData, Math.max(arraySize, 100));
+
+            arrayData.forEach((val, idx) => {
+                const bar = document.createElement('div');
+                bar.style.height = `${(val / maxVal) * 100}%`;
+                bar.style.width = `${100 / arraySize}%`;
+                bar.style.margin = '0 1px';
+                bar.className = 'transition-colors duration-75 rounded-t-sm';
+
+                let bgColor = colors.default;
+
+                if (state.range && (idx < state.range[0] || idx > state.range[1])) {
+                    bgColor = colors.inactive;
+                }
+
+                if (state.sorted && state.sorted.includes(idx)) {
+                    bgColor = colors.sorted;
+                } else if (state.compare && state.compare.includes(idx)) {
+                    bgColor = colors.compare;
+                } else if (state.pivot === idx || state.min === idx) {
+                    bgColor = colors.pivot;
+                } else if (state.range && (idx < state.range[0] || idx > state.range[1])) {
+                    bgColor = colors.inactive;
+                }
+
+                bar.style.backgroundColor = bgColor;
+                barContainer.appendChild(bar);
+            });
+        }
+
+        function updateOpCounter() {
+            opCounter.innerText = operations.toLocaleString();
+        }
+
+        // --- Modal Logic ---
+        function toggleModal() {
+            const body = document.querySelector('body');
+            modal.classList.toggle('opacity-0');
+            modal.classList.toggle('pointer-events-none');
+            body.classList.toggle('modal-active');
+        }
+
+        function startTutorial() {
+            const algo = algoSelect.value;
+            currentAlgoSteps = [...algoData[algo].steps];
+            // Add code review step
+            currentAlgoSteps.push("Review the Python code below to understand the implementation.");
+            currentStepIndex = 0;
+            updateModalContent();
+            toggleModal();
+        }
+
+        function updateModalContent() {
+            const totalSteps = currentAlgoSteps.length;
+            modalTitle.innerText = `Step ${currentStepIndex + 1} of ${totalSteps}`;
+
+            if (currentStepIndex === totalSteps - 1) {
+                // Last step: Show Code
+                modalBody.innerHTML = `
+                    <p class="mb-4 text-gray-700 font-semibold">Review the Implementation:</p>
+                    <div class="bg-gray-800 text-gray-100 p-3 rounded text-sm font-mono overflow-auto max-h-48">
+                        <pre>${algoData[algoSelect.value].code}</pre>
+                    </div>`;
+                btnNextStep.classList.add('hidden');
+                btnRunAlgo.classList.remove('hidden');
+            } else {
+                // Text step
+                modalBody.innerHTML = `<p>${currentAlgoSteps[currentStepIndex]}</p>`;
+                btnNextStep.classList.remove('hidden');
+                btnRunAlgo.classList.add('hidden');
+            }
+
+            if (currentStepIndex === 0) btnPrevStep.classList.add('hidden');
+            else btnPrevStep.classList.remove('hidden');
+        }
+
+        btnNextStep.addEventListener('click', () => {
+            if (currentStepIndex < currentAlgoSteps.length - 1) {
+                currentStepIndex++;
+                updateModalContent();
+            }
+        });
+
+        btnPrevStep.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                updateModalContent();
+            }
+        });
+
+        btnRunAlgo.addEventListener('click', () => {
+            toggleModal();
+            runVisualisation();
+        });
+
+        modalClose.addEventListener('click', toggleModal);
+
+
+        // --- Simulation Execution (Same logic as before) ---
+        async function checkPaused(signal) {
+            while (isPaused) {
+                if (signal.aborted) throw new Error('Aborted');
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+        }
+
+        async function sleep(ms, signal) {
+            await checkPaused(signal);
+            if (signal && signal.aborted) throw new Error('Aborted');
+            return new Promise(resolve => setTimeout(resolve, currentDelay));
+        }
+
+        function stopExecution() {
+            abortController.abort();
+            abortController = new AbortController();
+            isRunning = false;
+            isPaused = false;
+            btnStart.disabled = false;
+            // Removed Start button text changes as we have dedicated buttons
+            algoSelect.disabled = false;
+            caseSelect.disabled = false;
+            sizeSlider.disabled = false;
+        }
+
+        async function runVisualisation() {
+            if (isRunning) return;
+            resetArray();
+            isRunning = true;
+            btnStart.disabled = true;
+            btnPause.disabled = false;
+            btnReset.disabled = false;
+            algoSelect.disabled = true;
+            caseSelect.disabled = true;
+            sizeSlider.disabled = true;
+
+            const algo = algoSelect.value;
+            const scenario = caseSelect.value;
+            const signal = abortController.signal;
+
+            let target = -1;
+            if (algo.includes('Search')) {
+                if (scenario === 'average') {
+                    const exists = Math.random() > 0.1;
+                    if (exists) target = arrayData[Math.floor(Math.random() * arraySize)];
+                    else target = 999;
+                } else if (scenario === 'worst') {
+                    target = 999;
+                }
+            }
+
+            try {
+                if (algo === 'linearSearch') await runLinearSearch(signal, target);
+                else if (algo === 'binarySearch') await runBinarySearch(signal, target);
+                else if (algo === 'bubbleSort') await runBubbleSort(signal);
+                else if (algo === 'selectionSort') await runSelectionSort(signal);
+                else if (algo === 'quickSort') await runQuickSort(signal);
+                plotResultOnChart();
+            } catch (e) {
+                if (e.message !== 'Aborted') console.error(e);
+            }
+            stopExecution();
+        }
+
+        // --- Algos (Same as previous, using dynamic delays) ---
+        async function runLinearSearch(signal, target) {
+            for (let i = 0; i < arraySize; i++) {
+                if (signal.aborted) throw new Error('Aborted');
+                await checkPaused(signal);
+                operations++; updateOpCounter();
+                drawArray({ compare: [i], pivot: -1 });
+                await sleep(1, signal);
+                if (arrayData[i] === target) { drawArray({ sorted: [i] }); return; }
+            }
+        }
+        async function runBinarySearch(signal, target) {
+            let low = 0;
+            let high = arraySize - 1;
+            while (low <= high) {
+                if (signal.aborted) throw new Error('Aborted');
+                await checkPaused(signal);
+                let mid = Math.floor((low + high) / 2);
+                operations++; updateOpCounter();
+                drawArray({ range: [low, high], pivot: mid });
+                await sleep(1, signal);
+                if (arrayData[mid] === target) { drawArray({ range: [low, high], sorted: [mid] }); return; }
+                else if (arrayData[mid] < target) low = mid + 1;
+                else high = mid - 1;
+            }
+        }
+        async function runBubbleSort(signal) {
+            let n = arraySize;
+            let sortedIndices = [];
+            for (let i = 0; i < n; i++) {
+                let swapped = false;
+                for (let j = 0; j < n - i - 1; j++) {
+                    if (signal.aborted) throw new Error('Aborted');
+                    await checkPaused(signal);
+                    operations++; updateOpCounter();
+                    drawArray({ compare: [j, j + 1], sorted: sortedIndices });
+                    await sleep(1, signal);
+                    if (arrayData[j] > arrayData[j + 1]) {
+                        [arrayData[j], arrayData[j + 1]] = [arrayData[j + 1], arrayData[j]];
+                        swapped = true;
+                        drawArray({ compare: [j, j + 1], sorted: sortedIndices });
+                        await sleep(1, signal);
+                    }
+                }
+                sortedIndices.push(n - i - 1);
+                if (!swapped) {
+                    for (let k = 0; k < n - i - 1; k++) sortedIndices.push(k);
+                    break;
+                }
+            }
+            drawArray({ sorted: Array.from({ length: n }, (_, k) => k) });
+        }
+        async function runSelectionSort(signal) {
+            let n = arraySize;
+            let sortedIndices = [];
+            for (let i = 0; i < n; i++) {
+                let min_idx = i;
+                for (let j = i + 1; j < n; j++) {
+                    if (signal.aborted) throw new Error('Aborted');
+                    await checkPaused(signal);
+                    operations++; updateOpCounter();
+                    drawArray({ compare: [j], min: min_idx, sorted: sortedIndices });
+                    await sleep(1, signal);
+                    if (arrayData[j] < arrayData[min_idx]) min_idx = j;
+                }
+                if (min_idx !== i) [arrayData[i], arrayData[min_idx]] = [arrayData[min_idx], arrayData[i]];
+                sortedIndices.push(i);
+                drawArray({ sorted: sortedIndices });
+                await sleep(1, signal);
+            }
+            drawArray({ sorted: Array.from({ length: n }, (_, k) => k) });
+        }
+        async function runQuickSort(signal) {
+            await quickSortHelper(0, arraySize - 1, signal);
+            drawArray({ sorted: Array.from({ length: arraySize }, (_, k) => k) });
+        }
+        async function quickSortHelper(low, high, signal) {
+            if (low < high) {
+                if (signal.aborted) throw new Error('Aborted');
+                let pi = await partition(low, high, signal);
+                await quickSortHelper(low, pi - 1, signal);
+                await quickSortHelper(pi + 1, high, signal);
+            }
+        }
+        async function partition(low, high, signal) {
+            let pivot = arrayData[high];
+            let i = (low - 1);
+            for (let j = low; j <= high - 1; j++) {
+                if (signal.aborted) throw new Error('Aborted');
+                await checkPaused(signal);
+                operations++; updateOpCounter();
+                drawArray({ compare: [j], pivot: high });
+                await sleep(1, signal);
+                if (arrayData[j] < pivot) {
+                    i++;
+                    [arrayData[i], arrayData[j]] = [arrayData[j], arrayData[i]];
+                    drawArray({ compare: [i, j], pivot: high });
+                    await sleep(1, signal);
+                }
+            }
+            [arrayData[i + 1], arrayData[high]] = [arrayData[high], arrayData[i + 1]];
+            drawArray({ compare: [i + 1, high] });
+            await sleep(1, signal);
+            return (i + 1);
+        }
+
+        // --- Chart & Events ---
+        function initChart() {
+            const ctx = document.getElementById('complexityChart').getContext('2d');
+            const labels = Array.from({ length: 20 }, (_, i) => (i + 1) * 5);
+            const dataO1 = labels.map(() => 1);
+            const dataLogN = labels.map(n => Math.log2(n));
+            const dataN = labels.map(n => n);
+            const dataNLogN = labels.map(n => n * Math.log2(n));
+            const dataN2 = labels.map(n => n * n);
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'O(1)', data: dataO1, borderColor: '#10b981', hidden: true, tension: 0.4 },
+                        { label: 'O(log N)', data: dataLogN, borderColor: '#06b6d4', hidden: true, tension: 0.4 },
+                        { label: 'O(N)', data: dataN, borderColor: '#f59e0b', hidden: true, tension: 0.4 },
+                        { label: 'O(N log N)', data: dataNLogN, borderColor: '#8b5cf6', hidden: true, tension: 0.4 },
+                        { label: 'O(N²)', data: dataN2, borderColor: '#ef4444', hidden: true, tension: 0.4 },
+                        { label: 'Your Run', data: [], backgroundColor: 'red', borderColor: 'red', borderWidth: 2, pointStyle: 'crossRot', pointRadius: 10, pointHoverRadius: 12, type: 'scatter', showLine: false }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, title: { display: true, text: 'Operations' }, type: 'logarithmic' }, x: { title: { display: true, text: 'Input Size (N)' } } },
+                    plugins: { legend: { display: true } }
+                }
+            });
+        }
+        function updateChart() {
+            if (!chartInstance) return;
+            for (let i = 0; i < 5; i++) { chartInstance.data.datasets[i].hidden = true; chartInstance.data.datasets[i].borderWidth = 2; }
+            const algo = algoSelect.value;
+            let targetLabel = '';
+            if (algo === 'linearSearch') targetLabel = 'O(N)';
+            else if (algo === 'binarySearch') targetLabel = 'O(log N)';
+            else if (algo === 'bubbleSort') targetLabel = 'O(N²)';
+            else if (algo === 'selectionSort') targetLabel = 'O(N²)';
+            else if (algo === 'quickSort') targetLabel = 'O(N log N)';
+            const activeDataset = chartInstance.data.datasets.find(ds => ds.label === targetLabel);
+            if (activeDataset) { activeDataset.hidden = false; activeDataset.borderWidth = 4; }
+            chartInstance.update();
+        }
+        function plotResultOnChart() {
+            if (!chartInstance) return;
+            const safeOps = Math.max(1, operations);
+            chartInstance.data.datasets[5].data = [{ x: arraySize, y: safeOps }];
+            chartInstance.update();
+        }
+
+        sizeSlider.addEventListener('input', (e) => { nValue.innerText = e.target.value; if (!isRunning) resetArray(); });
+        algoSelect.addEventListener('change', () => { updateInfo(); resetArray(); });
+        caseSelect.addEventListener('change', () => { resetArray(); });
+        btnReset.addEventListener('click', () => { stopExecution(); resetArray(); });
+
+        btnStart.addEventListener('click', runVisualisation);
+        btnTutorial.addEventListener('click', startTutorial);
+
+        btnPause.addEventListener('click', () => {
+            if (!isRunning) return;
+            isPaused = !isPaused;
+            if (isPaused) {
+                btnPause.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg> Resume`;
+                btnPause.classList.replace('bg-yellow-500', 'bg-green-500');
+                btnPause.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
+            } else {
+                btnPause.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg> Pause`;
+                btnPause.classList.replace('bg-green-500', 'bg-yellow-500');
+                btnPause.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
+            }
+        });
+        speedBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                speedBtns.forEach(b => b.classList.remove('speed-btn-active'));
+                btn.classList.add('speed-btn-active');
+                currentDelay = parseInt(btn.dataset.speed);
+            });
+        });
+
+        // Tab logic
+        function switchTab(tabId) {
+            [tabGraph, tabCode, tabTheory].forEach(t => { t.className = "px-4 py-2 text-sm tab-inactive focus:outline-none"; });
+            [viewGraph, viewCode, viewTheory].forEach(v => v.classList.add('hidden'));
+            if (tabId === 'graph') { tabGraph.className = "px-4 py-2 text-sm tab-active focus:outline-none"; viewGraph.classList.remove('hidden'); }
+            else if (tabId === 'code') { tabCode.className = "px-4 py-2 text-sm tab-active focus:outline-none"; viewCode.classList.remove('hidden'); }
+            else { tabTheory.className = "px-4 py-2 text-sm tab-active focus:outline-none"; viewTheory.classList.remove('hidden'); }
+        }
+        tabGraph.onclick = () => switchTab('graph');
+        tabCode.onclick = () => switchTab('code');
+        tabTheory.onclick = () => switchTab('theory');
+
+        // Added Init Function Here
+        function init() {
+            updateInfo();
+            resetArray();
+            initChart();
+            updateChart();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>

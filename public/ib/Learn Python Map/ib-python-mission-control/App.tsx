@@ -102,8 +102,7 @@ export default function App() {
 
   // Finish exploration - return to IB index page
   const handleFinishExploration = () => {
-    // Navigate to the IB index page (from dist/ folder, need to go up 4 levels)
-    // dist/ -> ib-python-mission-control/ -> Learn Python Map/ -> ib/ -> index.html
+    // Navigate to the IB index page (from dist folder, go up 4 levels)
     window.location.href = '../../../../index.html';
   };
 
@@ -123,7 +122,7 @@ export default function App() {
         {/* SCREEN: HOME */}
         {currentScreen === 'HOME' && (
           <div className="h-screen">
-             <HomeScreen onSelectPathway={handleSelectPathway} />
+             <HomeScreen onSelectPathway={handleSelectPathway} onBackToIB={handleFinishExploration} />
           </div>
         )}
 

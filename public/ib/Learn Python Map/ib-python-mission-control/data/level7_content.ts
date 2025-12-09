@@ -228,32 +228,25 @@ export const level7Challenges: Challenge[] = [
     title: "Status Report",
     description: `Create a simple function that prints a status report.
 
-Your tasks:
-1. Define a function called status_report() using the def keyword
-2. Inside the function, print "=== MISSION STATUS ==="
-3. Print "All systems operational"
-4. Print "===================="
-5. Call the function twice to demonstrate reusability
+Define a function called status_report() that:
+1. Prints "=== MISSION STATUS ==="
+2. Prints "All systems operational"
+3. Prints "===================="
 
-Remember: A function definition starts with def name(): and the body is indented!`,
+Call the function twice to demonstrate reusability.`,
     starterCode: `# MISSION: Status Report Function
 # Create a reusable status report
 
-# =============================================
-# WRITE YOUR FUNCTION HERE
-# Define: status_report()
-# It should print 3 lines (header, message, footer)
-# =============================================
+def status_report():
+    # Print the three lines
+    pass
 
-
-
-# =============================================
-# CALL YOUR FUNCTION HERE
-# Call it twice with a blank print() between
-# =============================================
-
-`,
-    hint: `Start with def status_report(): then indent the print statements below. After the function, call it with status_report()`,
+# === Mission Control Test ===
+# Call the function twice
+status_report()
+print()  # Empty line between calls
+status_report()`,
+    hint: `Just use three print() statements inside the function. Remember to call it to see output!`,
     conceptTags: ["def", "function definition", "calling"]
   },
   {
@@ -261,31 +254,27 @@ Remember: A function definition starts with def name(): and the body is indented
     title: "Greeting Protocol",
     description: `Create a function that greets crew members by name.
 
-Your tasks:
-1. Define a function called greet_crew that takes one parameter: name
-2. Inside the function, print "Welcome aboard, [name]!"
-3. Also print "Report to your station."
-4. Call your function three times with: "Armstrong", "Collins", "Aldrin"
+Define a function called greet_crew(name) that:
+1. Takes one parameter: name
+2. Prints "Welcome aboard, [name]!"
+3. Prints "Report to your station."
 
-Remember: Parameters go in parentheses after the function name!`,
+Call it three times with different names:
+- "Armstrong"
+- "Collins"  
+- "Aldrin"`,
     starterCode: `# MISSION: Crew Greeting
 # Personalized welcome using parameters
 
-# =============================================
-# WRITE YOUR FUNCTION HERE
-# Define: greet_crew(name)
-# Use the name parameter in your print statements
-# =============================================
+def greet_crew(name):
+    # Use the name parameter in your print statements
+    pass
 
-
-
-# =============================================
-# CALL YOUR FUNCTION HERE
-# Call it 3 times with different crew names
-# =============================================
-
-`,
-    hint: `Define with def greet_crew(name): then use print(f"Welcome aboard, {name}!") inside. Call with greet_crew("Armstrong")`,
+# === Mission Control Test ===
+greet_crew("Armstrong")
+greet_crew("Collins")
+greet_crew("Aldrin")`,
+    hint: `Use f-strings or concatenation: print(f"Welcome aboard, {name}!")`,
     conceptTags: ["parameters", "arguments", "f-strings"]
   },
   {
@@ -293,33 +282,25 @@ Remember: Parameters go in parentheses after the function name!`,
     title: "Distance Calculator",
     description: `Create a function that calculates travel time.
 
-Your tasks:
-1. Define calculate_time(distance, speed) with two parameters
-2. Calculate time = distance / speed
-3. Return the time value using the return keyword
-4. Call your function with: 384400 km, 1000 km/h (Earth to Moon)
-5. Store the result in a variable and print it
+Define calculate_time(distance, speed) that:
+1. Takes two parameters: distance (km) and speed (km/h)
+2. Calculates time = distance / speed
+3. Returns the time value
 
-Remember: return sends a value back to where the function was called!`,
+Test it:
+- Earth to Moon: 384,400 km at 1,000 km/h
+- Print "Time to Moon: X hours"`,
     starterCode: `# MISSION: Travel Time Calculator
 # Calculate journey duration
 
-# =============================================
-# WRITE YOUR FUNCTION HERE
-# Define: calculate_time(distance, speed)
-# Calculate time and return it
-# =============================================
+def calculate_time(distance, speed):
+    # Calculate and return time
+    pass
 
-
-
-# =============================================
-# CALL YOUR FUNCTION HERE
-# Store result in moon_time, then print it
-# Example: moon_time = your_function(384400, 1000)
-# =============================================
-
-`,
-    hint: `Inside the function: time = distance / speed, then return time. Outside: moon_time = calculate_time(384400, 1000)`,
+# === Mission Control Test ===
+moon_time = calculate_time(384400, 1000)
+print(f"Time to Moon: {moon_time} hours")`,
+    hint: `Use return distance / speed. The returned value is stored in moon_time.`,
     conceptTags: ["parameters", "return", "calculation"]
   },
   {
@@ -327,33 +308,28 @@ Remember: return sends a value back to where the function was called!`,
     title: "Fuel Check",
     description: `Create a function that returns GO or NO-GO status.
 
-Your tasks:
-1. Define check_fuel(current, minimum) with two parameters
-2. If current >= minimum, return "GO"
-3. Otherwise, return "NO-GO"
-4. Test your function:
-   - check_fuel(95, 90) should return "GO"
-   - check_fuel(85, 90) should return "NO-GO"
-5. Print both results`,
+Define check_fuel(current, minimum) that:
+1. Takes current fuel level and minimum required
+2. Returns "GO" if current >= minimum
+3. Returns "NO-GO" otherwise
+
+Test with:
+- 95% current, 90% minimum (should be GO)
+- 85% current, 90% minimum (should be NO-GO)`,
     starterCode: `# MISSION: Fuel Status Check
 # Return GO/NO-GO based on fuel
 
-# =============================================
-# WRITE YOUR FUNCTION HERE
-# Define: check_fuel(current, minimum)
-# Use if/else to return "GO" or "NO-GO"
-# =============================================
+def check_fuel(current, minimum):
+    # Compare and return status
+    pass
 
+# === Mission Control Test ===
+status1 = check_fuel(95, 90)
+print(f"Test 1: {status1}")  # Should be GO
 
-
-# =============================================
-# CALL YOUR FUNCTION HERE
-# Test with (95, 90) and (85, 90)
-# Store results and print them
-# =============================================
-
-`,
-    hint: `Use if current >= minimum: return "GO" else: return "NO-GO". Call with status = check_fuel(95, 90)`,
+status2 = check_fuel(85, 90)
+print(f"Test 2: {status2}")  # Should be NO-GO`,
+    hint: `Use if current >= minimum: return "GO" else: return "NO-GO"`,
     conceptTags: ["return", "conditionals", "comparison"]
   },
   {
@@ -361,37 +337,28 @@ Your tasks:
     title: "Telemetry Analysis",
     description: `Create a function that returns multiple statistics.
 
-Your tasks:
-1. Define analyze_telemetry(readings) that takes a list
-2. Calculate the minimum using min()
-3. Calculate the maximum using max()
-4. Calculate the average using sum()/len()
-5. Return all three values separated by commas
-6. Test with [85, 92, 78, 95, 88] and unpack the results
+Define analyze_telemetry(readings) that:
+1. Takes a list of sensor readings
+2. Calculates the minimum, maximum, and average
+3. Returns all three values
 
-Remember: return a, b, c returns multiple values!`,
+Test with readings = [85, 92, 78, 95, 88]
+Unpack the returned values and print each.`,
     starterCode: `# MISSION: Telemetry Analysis
 # Return multiple statistics
 
-# =============================================
-# WRITE YOUR FUNCTION HERE
-# Define: analyze_telemetry(readings)
-# Calculate min, max, average
-# Return all three: return min_val, max_val, avg
-# =============================================
+def analyze_telemetry(readings):
+    # Calculate min, max, average
+    # Return all three
+    pass
 
-
-
-# =============================================
-# CALL YOUR FUNCTION HERE
-# Test data:
+# === Mission Control Test ===
 readings = [85, 92, 78, 95, 88]
-# Unpack: minimum, maximum, average = your_function(readings)
-# Print each value
-# =============================================
-
-`,
-    hint: `Inside: min_val = min(readings), etc. Return: return min_val, max_val, avg. Outside: a, b, c = analyze_telemetry(readings)`,
+minimum, maximum, average = analyze_telemetry(readings)
+print(f"Min: {minimum}")
+print(f"Max: {maximum}")
+print(f"Average: {average}")`,
+    hint: `Use min(readings), max(readings), sum(readings)/len(readings). Return like: return min_val, max_val, avg_val`,
     conceptTags: ["multiple return", "unpacking", "list processing"]
   },
   {
@@ -399,44 +366,33 @@ readings = [85, 92, 78, 95, 88]
     title: "Scope Investigation",
     description: `Demonstrate understanding of local vs global scope.
 
-Your tasks:
 1. Create a global variable: mission_name = "Artemis"
-2. Define a function scope_test() that:
+2. Create a function scope_test() that:
    - Creates a LOCAL variable: crew_count = 4
-   - Prints both mission_name (global) and crew_count (local)
+   - Prints both mission_name and crew_count
 3. Call the function
-4. After the function, print mission_name (this works!)
-5. Try printing crew_count outside (this will error - comment it out)
+4. After the function, print mission_name
+5. Try printing crew_count outside the function (it will error!)
 
-Why does it fail? Local variables only exist inside their function!`,
+Comment out the error line and explain why it fails.`,
     starterCode: `# MISSION: Scope Investigation
 # Understand local vs global variables
 
-# =============================================
-# CREATE GLOBAL VARIABLE HERE
-# mission_name = "Artemis"
-# =============================================
+# Global variable
+mission_name = "Artemis"
 
+def scope_test():
+    # Local variable
+    crew_count = 4
+    # Print both inside function
+    pass
 
-
-# =============================================
-# WRITE YOUR FUNCTION HERE
-# Define: scope_test()
-# Create local variable crew_count = 4
-# Print both variables from inside the function
-# =============================================
-
-
-
-# =============================================
-# TEST SCOPE HERE
-# 1. Call scope_test()
-# 2. Print mission_name (works - it's global)
-# 3. Try printing crew_count (fails - it's local!)
-# =============================================
-
-`,
-    hint: `Global variables can be read anywhere. Local variables (created inside a function) only exist inside that function.`,
+# === Mission Control Test ===
+scope_test()
+print(f"Global mission: {mission_name}")
+# print(f"Crew count: {crew_count}")  # This will ERROR!
+# Explain: Why does this fail?`,
+    hint: `Variables created inside a function (local) don't exist outside. Global variables CAN be read inside functions.`,
     conceptTags: ["scope", "local", "global"]
   },
   {
@@ -444,44 +400,33 @@ Why does it fail? Local variables only exist inside their function!`,
     title: "Utility Module",
     description: `Create a set of utility functions that work together.
 
-Your tasks:
-1. Define celsius_to_kelvin(celsius) - returns celsius + 273.15
-2. Define is_safe_temp(kelvin) - returns True if 260 <= kelvin <= 320, else False
-3. Define temp_status(celsius) that:
-   - Calls celsius_to_kelvin to convert
-   - Calls is_safe_temp to check
-   - Returns "SAFE" if True, "DANGER" if False
+Create these three functions:
+1. celsius_to_kelvin(celsius) - Returns celsius + 273.15
+2. is_safe_temp(kelvin) - Returns True if between 260-320K, else False
+3. temp_status(celsius) - Uses both functions above, returns "SAFE" or "DANGER"
 
-Test temp_status(25) should be SAFE (~298K)
-Test temp_status(-50) should be DANGER (~223K)`,
+Test temp_status with:
+- 25°C (should be SAFE - about 298K)
+- -50°C (should be DANGER - about 223K)`,
     starterCode: `# MISSION: Temperature Utilities
 # Create interconnected utility functions
 
-# =============================================
-# WRITE YOUR THREE FUNCTIONS HERE
-# 
-# 1. celsius_to_kelvin(celsius)
-#    - Return: celsius + 273.15
-#
-# 2. is_safe_temp(kelvin)
-#    - Return True if 260 <= kelvin <= 320
-#    - Return False otherwise
-#
-# 3. temp_status(celsius)
-#    - Convert using celsius_to_kelvin
-#    - Check using is_safe_temp
-#    - Return "SAFE" or "DANGER"
-# =============================================
+def celsius_to_kelvin(celsius):
+    # Convert and return
+    pass
 
+def is_safe_temp(kelvin):
+    # Check if between 260-320K
+    pass
 
+def temp_status(celsius):
+    # Use other functions to determine status
+    pass
 
-# =============================================
-# CALL YOUR FUNCTIONS HERE
-# Test temp_status with 25 and -50
-# =============================================
-
-`,
-    hint: `In temp_status: kelvin = celsius_to_kelvin(celsius), then if is_safe_temp(kelvin): return "SAFE" else: return "DANGER"`,
+# === Mission Control Test ===
+print(f"25°C status: {temp_status(25)}")   # SAFE
+print(f"-50°C status: {temp_status(-50)}") # DANGER`,
+    hint: `In temp_status: first call celsius_to_kelvin, then call is_safe_temp with that result, then return based on True/False.`,
     conceptTags: ["modular", "function calls", "composition"]
   },
   {
@@ -489,48 +434,48 @@ Test temp_status(-50) should be DANGER (~223K)`,
     title: "Mission Planner",
     description: `Create a comprehensive mission planning system using modular functions.
 
-Your tasks - create these functions:
-1. calculate_fuel_needed(distance) - Returns distance * 0.01
-2. check_feasibility(available, needed) - Returns "FEASIBLE" if available >= needed
-3. generate_report(name, distance, available, needed, status) - Prints a formatted report
-4. main() - Orchestrates everything:
-   - Set mission name, distance, and available fuel
-   - Calculate fuel needed
-   - Check feasibility
-   - Generate report
+Create these functions:
+1. get_mission_input() - Gets mission name, distance(int), fuel(int) from user, returns all three
+2. calculate_fuel_needed(distance) - Returns distance * 0.01 (fuel per km)
+3. check_feasibility(available, needed) - Returns "FEASIBLE" if available >= needed, else "NOT FEASIBLE"
+4. generate_report(name, distance, available, needed, status) - Prints formatted report
 
-This combines everything you've learned!`,
+Create main() that:
+1. Calls get_mission_input() 
+2. Calculates fuel needed
+3. Checks feasibility
+4. Generates report`,
     starterCode: `# MISSION: Complete Mission Planner
 # Full modular system
 
-# =============================================
-# WRITE YOUR FUNCTIONS HERE
-#
-# 1. calculate_fuel_needed(distance)
-#    - Return: distance * 0.01
-#
-# 2. check_feasibility(available, needed)
-#    - Return "FEASIBLE" or "NOT FEASIBLE"
-#
-# 3. generate_report(name, distance, available, needed, status)
-#    - Print formatted mission report
-#    - Include: mission name, distance, fuel info, status
-#
-# 4. main()
-#    - Set: name = "Mars", distance = 78000000, available = 1000000
-#    - Calculate needed fuel
-#    - Check feasibility
-#    - Generate report
-# =============================================
+def get_mission_input():
+    # Get name, distance, fuel from user
+    # Return all three
+    pass
 
+def calculate_fuel_needed(distance):
+    # Return fuel calculation
+    pass
 
+def check_feasibility(available, needed):
+    # Return status string
+    pass
 
-# =============================================
-# CALL main() HERE TO RUN YOUR MISSION PLANNER
-# =============================================
+def generate_report(name, distance, available, needed, status):
+    # Print formatted report
+    print("=" * 40)
+    print(f"MISSION: {name}")
+    print("=" * 40)
+    # ... more report details
+    pass
 
-`,
-    hint: `Build each function one at a time. In main(): needed = calculate_fuel_needed(distance), status = check_feasibility(available, needed), etc.`,
+def main():
+    # Orchestrate all functions
+    pass
+
+# === Mission Control Test ===
+main()`,
+    hint: `This synthesizes everything! get_mission_input returns 3 values. main() calls each function in order, passing results between them.`,
     conceptTags: ["synthesis", "modular design", "input", "return", "full system"]
   }
 ];

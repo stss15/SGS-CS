@@ -68,38 +68,6 @@ export const PythonIDE: React.FC<PythonIDEProps> = ({ initialCode, onRun }) => {
         }
       }, 0);
     }
-    // Backspace: Delete full tab (4 spaces) when at indentation boundary
-    else if (e.key === 'Backspace') {
-      const start = e.currentTarget.selectionStart;
-      const end = e.currentTarget.selectionEnd;
-      
-      // Only handle when no selection and cursor position allows for tab deletion
-      if (start === end && start >= 4) {
-        // Get the current line start
-        const lastNewLine = code.lastIndexOf('\n', start - 1);
-        const currentLineStart = lastNewLine === -1 ? 0 : lastNewLine + 1;
-        const positionInLine = start - currentLineStart;
-        
-        // Check if we're at a tab boundary (position divisible by 4) and previous 4 chars are spaces
-        const prevFourChars = code.substring(start - 4, start);
-        
-        if (positionInLine > 0 && positionInLine % 4 === 0 && prevFourChars === '    ') {
-          e.preventDefault();
-          
-          // Delete 4 spaces
-          const newValue = code.substring(0, start - 4) + code.substring(end);
-          setCode(newValue);
-          
-          // Move cursor back 4 positions
-          setTimeout(() => {
-            if (textareaRef.current) {
-              textareaRef.current.selectionStart = start - 4;
-              textareaRef.current.selectionEnd = start - 4;
-            }
-          }, 0);
-        }
-      }
-    }
   };
 
   // --- 2. IMPROVED MOCK TRANSPILER ---
