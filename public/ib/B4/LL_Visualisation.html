@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linked List Visualiser - SGS Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .breadcrumb-nav {
+            padding: 0.75rem 2rem;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .main-container {
+            height: calc(100vh - 50px);
+        }
+
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-bounce-in {
+            animation: bounce-in 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 font-sans">
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <ol class="breadcrumb-list flex items-center space-x-2 text-sm text-slate-600">
+            <li class="breadcrumb-item flex items-center">
+                <a href="../../index.html" class="hover:text-blue-600 transition-colors">Home</a>
+                <i class="fa-solid fa-chevron-right text-slate-400 text-xs mx-2"></i>
+            </li>
+            <li class="breadcrumb-item flex items-center">
+                <a href="../index.html" class="hover:text-blue-600 transition-colors">IB</a>
+                <i class="fa-solid fa-chevron-right text-slate-400 text-xs mx-2"></i>
+            </li>
+            <li class="breadcrumb-item flex items-center">
+                <a href="index.html" class="hover:text-blue-600 transition-colors">B4</a>
+                <i class="fa-solid fa-chevron-right text-slate-400 text-xs mx-2"></i>
+            </li>
+            <li class="breadcrumb-item current font-semibold text-slate-900" aria-current="page">Visualiser</li>
+        </ol>
+    </nav>
+    <a href="index.html"
+        class="fixed bottom-6 right-6 z-50 bg-slate-800 text-white p-3 rounded-full shadow-lg hover:bg-slate-700 transition-all hover:scale-105"
+        title="Back to B4 Index">
+        <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div id="root" class="main-container"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- ICON COMPONENTS (FontAwesome replacements for lucide-react) ---
+        const Play = ({ size = 16, className = '' }) => <i className={`fa-solid fa-play ${className}`} style={{ fontSize: size }}></i>;
+        const Pause = ({ size = 16, className = '' }) => <i className={`fa-solid fa-pause ${className}`} style={{ fontSize: size }}></i>;
+        const StepForward = ({ size = 16, className = '' }) => <i className={`fa-solid fa-forward-step ${className}`} style={{ fontSize: size }}></i>;
+        const StepBack = ({ size = 16, className = '' }) => <i className={`fa-solid fa-backward-step ${className}`} style={{ fontSize: size }}></i>;
+        const RefreshCw = ({ size = 16, className = '' }) => <i className={`fa-solid fa-rotate ${className}`} style={{ fontSize: size }}></i>;
+        const ArrowRight = ({ size = 16, strokeWidth, className = '' }) => <i className={`fa-solid fa-arrow-right ${className}`} style={{ fontSize: size }}></i>;
+        const Trash2 = ({ size = 16, className = '' }) => <i className={`fa-solid fa-trash-can ${className}`} style={{ fontSize: size }}></i>;
+        const Plus = ({ size = 16, className = '' }) => <i className={`fa-solid fa-plus ${className}`} style={{ fontSize: size }}></i>;
+        const CornerDownLeft = ({ size = 16, className = '' }) => <i className={`fa-solid fa-turn-down ${className}`} style={{ fontSize: size, transform: 'scaleX(-1)' }}></i>;
+        const Circle = ({ size = 16, className = '' }) => <i className={`fa-solid fa-circle ${className}`} style={{ fontSize: size }}></i>;
+        const Hash = ({ size = 16, className = '' }) => <i className={`fa-solid fa-hashtag ${className}`} style={{ fontSize: size }}></i>;
+        const ArrowDown = ({ size = 16, className = '' }) => <i className={`fa-solid fa-arrow-down ${className}`} style={{ fontSize: size }}></i>;
+        const ChevronsRight = ({ size = 16, className = '' }) => <i className={`fa-solid fa-angles-right ${className}`} style={{ fontSize: size }}></i>;
+        const CornerLeftUp = ({ size = 16, className = '' }) => <i className={`fa-solid fa-turn-up ${className}`} style={{ fontSize: size }}></i>;
+
+        // --- PYTHON CODE SNIPPETS ---
+        const CODE_SNIPPETS = {
+            SLL: {
+                base: `class ListNode:
+    def __init__(self, data=0):
+        self.data = data
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None`,
+                insert_head: `    # Insertion at Beginning (O(1))
+    def insert_at_beginning(self, data):
+        new_node = ListNode(data)
+        new_node.next = self.head
+        self.head = new_node`,
+                insert_end: `    # Insertion at End (O(n)) - No Tail Pointer
+    def insert_at_end(self, data):
+        new_node = ListNode(data)
+        if self.head is None:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next is not None:
+                current = current.next
+            current.next = new_node`,
+                insert_value: `    # Insertion After Value (O(n))
+    def insert_after_value(self, target, data):
+        current = self.head
+        while current is not None:
+            if current.data == target:
+                new_node = ListNode(data)
+                new_node.next = current.next
+                current.next = new_node
+                return
+            current = current.next`,
+                delete: `    # Deletion (O(n))
+    def delete_node(self, data):
+        current = self.head
+        prev = None
+        if current and current.data == data:
+            self.head = current.next
+            return
+        while current and current.data != data:
+            prev = current
+            current = current.next
+        if current is None: return
+        prev.next = current.next`
+            },
+            DLL: {
+                base: `class DListNode:
+    def __init__(self, data=0):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = None`,
+                insert_head: `    # Insertion at Beginning (O(1))
+    def insert_at_beginning(self, data):
+        new_node = DListNode(data)
+        new_node.next = self.head
+        if self.head:
+            self.head.prev = new_node
+        self.head = new_node`,
+                insert_end: `    # Insertion at End (O(n))
+    def insert_at_end(self, data):
+        new_node = DListNode(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        current = self.head
+        while current.next is not None:
+            current = current.next
+        current.next = new_node
+        new_node.prev = current`,
+                insert_value: `    # Insertion After Value (O(n))
+    def insert_after_value(self, target, data):
+        current = self.head
+        while current:
+            if current.data == target:
+                new_node = DListNode(data)
+                new_node.next = current.next
+                new_node.prev = current
+                if current.next:
+                    current.next.prev = new_node
+                current.next = new_node
+                return
+            current = current.next`,
+                delete: `    # Deletion (O(n))
+    def delete_node(self, data):
+        current = self.head
+        if current and current.data == data:
+            self.head = current.next
+            if self.head: self.head.prev = None
+            return
+        while current and current.data != data:
+            current = current.next
+        if current:
+            if current.next:
+                current.next.prev = current.prev
+            if current.prev:
+                current.prev.next = current.next`
+            },
+            CLL: {
+                base: `class DListNode:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+class CircularDoublyLinkedList:
+    def __init__(self):
+        self.head = None`,
+                insert_head: `    # Insertion at Beginning (O(n)) - Manual Traversal
+    def insert_at_beginning(self, data):
+        new_node = DListNode(data)
+        if not self.head:
+            self.head = new_node
+            new_node.next = new_node
+            new_node.prev = new_node
+        else:
+            current = self.head
+            while current.next != self.head: # Find Tail
+                current = current.next
+            # Current is now tail
+            new_node.next = self.head
+            new_node.prev = current
+            self.head.prev = new_node
+            current.next = new_node
+            self.head = new_node`,
+                insert_end: `    # Insertion at End (O(n))
+    def insert_at_end(self, data):
+        new_node = DListNode(data)
+        if not self.head:
+            self.head = new_node
+            new_node.next = new_node
+            new_node.prev = new_node
+        else:
+            current = self.head
+            while current.next != self.head:
+                current = current.next
+            current.next = new_node
+            new_node.prev = current
+            new_node.next = self.head
+            self.head.prev = new_node`,
+                insert_value: `    # Insertion After Value (O(n))
+    def insert_after_value(self, target, data):
+        if not self.head: return
+        current = self.head
+        while True:
+            if current.data == target:
+                new_node = DListNode(data)
+                new_node.next = current.next
+                new_node.prev = current
+                current.next.prev = new_node
+                current.next = new_node
+                return
+            current = current.next
+            if current == self.head: break`,
+                delete: `    # Deletion (O(n))
+    def delete_node(self, data):
+        if not self.head: return
+        current = self.head
+        while True:
+            if current.data == data:
+                if current.next == current: # Single node
+                    self.head = None
+                else:
+                    current.prev.next = current.next
+                    current.next.prev = current.prev
+                    if current == self.head:
+                        self.head = current.next
+                return
+            current = current.next
+            if current == self.head: break`
+            }
+        };
+
+        const getRandomInt = () => Math.floor(Math.random() * 90) + 10;
+
+        // --- COLOUR PALETTE ---
+        const NODE_COLORS = [
+            { border: 'border-blue-500', bg: 'bg-blue-500', light: 'bg-blue-50', arrow: 'text-blue-500' },
+            { border: 'border-red-500', bg: 'bg-red-500', light: 'bg-red-50', arrow: 'text-red-500' },
+            { border: 'border-green-500', bg: 'bg-green-500', light: 'bg-green-50', arrow: 'text-green-500' },
+            { border: 'border-purple-500', bg: 'bg-purple-500', light: 'bg-purple-50', arrow: 'text-purple-500' },
+            { border: 'border-orange-500', bg: 'bg-orange-500', light: 'bg-orange-50', arrow: 'text-orange-500' },
+            { border: 'border-teal-500', bg: 'bg-teal-500', light: 'bg-teal-50', arrow: 'text-teal-500' },
+            { border: 'border-pink-500', bg: 'bg-pink-500', light: 'bg-pink-50', arrow: 'text-pink-500' },
+            { border: 'border-indigo-500', bg: 'bg-indigo-500', light: 'bg-indigo-50', arrow: 'text-indigo-500' },
+        ];
+
+        // --- VISUALIZATION COMPONENTS ---
+        const PointerBox = ({ label, targetColorObj }) => {
+            const isNull = !targetColorObj;
+            return (
+                <div className={`flex-1 h-6 flex items-center justify-center text-[10px] uppercase font-bold text-white relative overflow-hidden transition-colors duration-300 ${isNull ? 'bg-slate-600' : targetColorObj.bg}`}>
+                    {isNull && (
+                        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, #fff 2px, #fff 4px)' }}></div>
+                    )}
+                    <span className="z-10 drop-shadow-md">{label}</span>
+                </div>
+            );
+        };
+
+        const NodeBox = ({ data, colorObj, nextColorObj, prevColorObj, type, isDetached, isPopped }) => {
+            const isDoubly = type === 'DLL' || type === 'CLL';
+            return (
+                <div className={`w-24 h-20 border-[3px] flex flex-col items-center justify-between rounded-xl shadow-lg z-10 transition-all duration-500 bg-white ${colorObj.border} ${isPopped ? 'opacity-40 scale-90 grayscale' : ''} ${isDetached ? 'scale-110 shadow-2xl ring-4 ring-offset-2 ring-blue-100' : ''}`}>
+                    <div className={`flex-1 flex items-center justify-center w-full font-mono font-bold text-xl ${colorObj.light} rounded-t-lg`}>
+                        {data}
+                    </div>
+                    <div className="flex w-full border-t-2 border-gray-100 h-8 rounded-b-lg overflow-hidden">
+                        {isDoubly && (
+                            <div className="w-1/2 border-r border-white">
+                                <PointerBox label="Prev" targetColorObj={prevColorObj} />
+                            </div>
+                        )}
+                        <div className={isDoubly ? 'w-1/2' : 'w-full'}>
+                            <PointerBox label="Next" targetColorObj={nextColorObj} />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const NodeVisual = ({ id, data, colorIdx, nextColorIdx, prevColorIdx, isHead, isCurrent, isPrev, type, currentIndex, hasNext, isCircularEnd, specialArrow }) => {
+            const colorObj = NODE_COLORS[colorIdx % NODE_COLORS.length];
+            const nextColorObj = nextColorIdx !== null ? NODE_COLORS[nextColorIdx % NODE_COLORS.length] : null;
+            const prevColorObj = prevColorIdx !== null ? NODE_COLORS[prevColorIdx % NODE_COLORS.length] : null;
+            const forwardArrowColor = nextColorObj ? nextColorObj.arrow : 'text-slate-300';
+            const backwardArrowColor = prevColorObj ? prevColorObj.arrow : 'text-slate-300';
+            const isDoubly = type === 'DLL' || type === 'CLL';
+
+            return (
+                <div className="flex items-center relative transition-all duration-500 ease-in-out mx-3">
+                    <div className="absolute -top-12 left-0 right-0 flex justify-center space-x-1 text-xs font-bold transition-all duration-300">
+                        {isHead && <span className="text-white bg-red-600 px-2 py-1 rounded shadow-md">HEAD</span>}
+                        {isCurrent && <span className="text-white bg-blue-600 px-2 py-1 rounded shadow-md">curr</span>}
+                        {isPrev && <span className="text-white bg-purple-600 px-2 py-1 rounded shadow-md">prev</span>}
+                    </div>
+                    <NodeBox data={data} colorObj={colorObj} nextColorObj={nextColorObj} prevColorObj={prevColorObj} type={type} />
+                    {hasNext && specialArrow !== 'long' && specialArrow !== 'none' && (
+                        <div className="flex items-center -ml-1 -mr-1 z-0 px-1">
+                            {isDoubly ? (
+                                <div className="flex flex-col space-y-1 mx-1 opacity-80">
+                                    <ArrowRight size={24} className={forwardArrowColor} />
+                                    <ArrowRight size={24} className={`rotate-180 ${backwardArrowColor}`} />
+                                </div>
+                            ) : (
+                                <ArrowRight size={32} className={`mx-1 ${forwardArrowColor}`} />
+                            )}
+                        </div>
+                    )}
+                    {specialArrow === 'long' && (
+                        <div className="absolute left-full top-1/2 h-16 w-36 border-t-[4px] border-r-[4px] border-dashed border-red-400 rounded-tr-3xl z-20 pointer-events-none transform -translate-y-8 ml-2 opacity-80">
+                            <div className="absolute -bottom-2 -right-2 text-red-400"><ArrowDown size={24} /></div>
+                        </div>
+                    )}
+                    {isCircularEnd && type === 'CLL' && (
+                        <div className="ml-2 text-gray-400 flex flex-col items-center justify-center opacity-40">
+                            <CornerDownLeft size={32} />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Loop</span>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // --- SYNTAX HIGHLIGHTER ---
+        const HighlightedCode = ({ line }) => {
+            if (line.trim().startsWith('#')) return <span className="text-gray-400 italic font-medium">{line}</span>;
+            const keywords = ['class', 'def', 'if', 'else:', 'else', 'elif', 'while', 'return', 'and', 'or', 'not', 'is', 'in', 'None', 'True', 'False', 'self'];
+            const parts = line.split(/(\s+|[():,.=])/);
+            return (
+                <span>
+                    {parts.map((part, i) => {
+                        if (keywords.includes(part.trim())) return <span key={i} className="text-purple-700 font-bold">{part}</span>;
+                        if (part.trim() === 'self') return <span key={i} className="text-orange-600 italic font-serif">{part}</span>;
+                        if (!isNaN(part.trim()) && part.trim() !== '') return <span key={i} className="text-blue-600 font-semibold">{part}</span>;
+                        return <span key={i} className="text-slate-700">{part}</span>;
+                    })}
+                </span>
+            );
+        };
+
+        // --- MAIN APP ---
+        const App = () => {
+            const [listType, setListType] = useState('SLL');
+            const [nodes, setNodes] = useState([{ val: 10, colorIdx: 0 }, { val: 20, colorIdx: 1 }, { val: 30, colorIdx: 2 }]);
+            const [history, setHistory] = useState([]);
+            const [currentStep, setCurrentStep] = useState(-1);
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [inputValue, setInputValue] = useState(getRandomInt());
+            const [targetValue, setTargetValue] = useState(20);
+            const [activeCode, setActiveCode] = useState(CODE_SNIPPETS.SLL.insert_end);
+            const [fullCode, setFullCode] = useState('');
+            const [delay, setDelay] = useState(1000);
+            const [showTargetInput, setShowTargetInput] = useState(false);
+            const [nextColorId, setNextColorId] = useState(3);
+
+            useEffect(() => {
+                const snippet = CODE_SNIPPETS[listType];
+                setFullCode(`${snippet.base}\n\n${activeCode}`);
+            }, [listType, activeCode]);
+
+            useEffect(() => {
+                let timer;
+                if (isPlaying && currentStep < history.length - 1) {
+                    timer = setTimeout(() => setCurrentStep(prev => prev + 1), delay);
+                } else if (currentStep >= history.length - 1) {
+                    setIsPlaying(false);
+                }
+                return () => clearTimeout(timer);
+            }, [isPlaying, currentStep, history, delay]);
+
+            const getPointerColor = (nodeList, targetIndex, circular) => {
+                if (targetIndex >= nodeList.length) {
+                    if (circular && nodeList.length > 0) return nodeList[0].colorIdx;
+                    return null;
+                }
+                if (targetIndex < 0) {
+                    if (circular && nodeList.length > 0) return nodeList[nodeList.length - 1].colorIdx;
+                    return null;
+                }
+                return nodeList[targetIndex].colorIdx;
+            };
+
+            const createStep = (msg, lineIndices, pointers, nodeList, extra = {}) => {
+                const pointerStates = nodeList.map((node, idx) => {
+                    let nextCol = getPointerColor(nodeList, idx + 1, listType === 'CLL');
+                    let isDoubly = listType === 'DLL' || listType === 'CLL';
+                    let prevCol = isDoubly ? getPointerColor(nodeList, idx - 1, listType === 'CLL') : null;
+                    return { next: nextCol, prev: prevCol };
+                });
+                if (extra.pointerOverrides) {
+                    Object.keys(extra.pointerOverrides).forEach(key => {
+                        const idx = parseInt(key);
+                        const override = extra.pointerOverrides[key];
+                        if (idx < pointerStates.length) {
+                            if (override.next !== undefined) pointerStates[idx].next = override.next;
+                            if (override.prev !== undefined) pointerStates[idx].prev = override.prev;
+                        }
+                    });
+                }
+                return {
+                    msg,
+                    lines: lineIndices,
+                    pointers: { ...pointers },
+                    nodes: JSON.parse(JSON.stringify(nodeList)),
+                    pointerStates,
+                    tempNode: extra.tempNode || null,
+                    poppedIndex: extra.poppedIndex !== undefined ? extra.poppedIndex : -1,
+                    bypassIndex: extra.bypassIndex !== undefined ? extra.bypassIndex : -1
+                };
+            };
+
+            const getLineOffset = () => CODE_SNIPPETS[listType].base.split('\n').length + 1;
+
+            const generateInsertHead = () => {
+                setActiveCode(CODE_SNIPPETS[listType].insert_head);
+                const steps = [];
+                const val = parseInt(inputValue);
+                const newColorIdx = nextColorId;
+                const headColor = nodes.length > 0 ? nodes[0].colorIdx : null;
+
+                steps.push(createStep("Start Function", [1], { head: 0 }, nodes));
+                steps.push(createStep(`Create Node(${val})`, [2], { head: 0 }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: null, prevColorIdx: null } }));
+
+                if (listType === 'CLL' && nodes.length === 0) {
+                    steps.push(createStep("List Empty: point to self", [3, 4, 5], { head: 'temp' }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: newColorIdx, prevColorIdx: newColorIdx } }));
+                    setNodes([{ val, colorIdx: newColorIdx }]);
+                } else if (listType === 'CLL') {
+                    steps.push(createStep("current = self.head", [8], { head: 0, current: 0 }, nodes, { tempNode: { val, colorIdx: newColorIdx } }));
+                    let curr = 0;
+                    while (curr < nodes.length - 1) {
+                        steps.push(createStep("Traversing to tail...", [9, 10], { head: 0, current: curr + 1 }, nodes, { tempNode: { val, colorIdx: newColorIdx } }));
+                        curr++;
+                    }
+                    steps.push(createStep("new_node.next = head; new_node.prev = tail", [12, 13], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: headColor, prevColorIdx: nodes[curr].colorIdx } }));
+                    steps.push(createStep("head.prev = new; tail.next = new", [14, 15], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: headColor, prevColorIdx: nodes[curr].colorIdx }, pointerOverrides: { 0: { prev: newColorIdx }, [curr]: { next: newColorIdx } } }));
+                    const newNodes = [{ val, colorIdx: newColorIdx }, ...nodes];
+                    steps.push(createStep("self.head = new_node", [16], { head: 0 }, newNodes));
+                    setNodes(newNodes);
+                } else {
+                    steps.push(createStep("new_node.next = self.head", [3], { head: 0 }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: headColor, prevColorIdx: null } }));
+                    if (listType === 'DLL' && nodes.length > 0) {
+                        steps.push(createStep("self.head.prev = new_node", [4, 5], { head: 0 }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: headColor, prevColorIdx: null }, pointerOverrides: { 0: { prev: newColorIdx } } }));
+                    }
+                    const newNodes = [{ val, colorIdx: newColorIdx }, ...nodes];
+                    steps.push(createStep("self.head = new_node", [listType === 'DLL' ? 6 : 4], { head: 'temp' }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: headColor, prevColorIdx: null }, pointerOverrides: listType === 'DLL' && nodes.length > 0 ? { 0: { prev: newColorIdx } } : {} }));
+                    steps.push(createStep("Complete", [], { head: 0 }, newNodes));
+                    setNodes(newNodes);
+                }
+                setNextColorId(prev => prev + 1);
+                setInputValue(getRandomInt());
+                return steps;
+            };
+
+            const generateInsertEnd = () => {
+                setActiveCode(CODE_SNIPPETS[listType].insert_end);
+                const steps = [];
+                const val = parseInt(inputValue);
+                const newColorIdx = nextColorId;
+                const headColor = nodes.length > 0 ? nodes[0].colorIdx : newColorIdx;
+
+                steps.push(createStep("Start Function", [1], { head: 0 }, nodes));
+                steps.push(createStep(`Create Node(${val})`, [2], { head: 0 }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: null, prevColorIdx: null } }));
+
+                if (nodes.length === 0) {
+                    if (listType === 'CLL') {
+                        steps.push(createStep("List empty: circular links", [3, 4, 5, 6], { head: 'temp' }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: newColorIdx, prevColorIdx: newColorIdx } }));
+                    } else {
+                        steps.push(createStep("List empty: head = new_node", [3, 4], { head: 'temp' }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: null } }));
+                    }
+                    setNodes([{ val, colorIdx: newColorIdx }]);
+                } else {
+                    steps.push(createStep("current = self.head", [7], { head: 0, current: 0 }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: null } }));
+                    let curr = 0;
+                    while (curr < nodes.length - 1) {
+                        steps.push(createStep("Traversing...", [8], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx } }));
+                        steps.push(createStep("current = current.next", [9], { head: 0, current: curr + 1 }, nodes, { tempNode: { val, colorIdx: newColorIdx } }));
+                        curr++;
+                    }
+                    if (listType === 'CLL') {
+                        steps.push(createStep("current.next = new; new.prev = current", [10, 11], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: headColor, prevColorIdx: nodes[curr].colorIdx }, pointerOverrides: { [curr]: { next: newColorIdx } } }));
+                        steps.push(createStep("new.next = head; head.prev = new", [12, 13], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: headColor, prevColorIdx: nodes[curr].colorIdx }, pointerOverrides: { [curr]: { next: newColorIdx }, 0: { prev: newColorIdx } } }));
+                    } else {
+                        steps.push(createStep("current.next = new_node", [10], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: null }, pointerOverrides: { [curr]: { next: newColorIdx } } }));
+                        if (listType === 'DLL') {
+                            steps.push(createStep("new_node.prev = current", [11], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: null, prevColorIdx: nodes[curr].colorIdx }, pointerOverrides: { [curr]: { next: newColorIdx } } }));
+                        }
+                    }
+                    setNodes([...nodes, { val, colorIdx: newColorIdx }]);
+                    steps.push(createStep("Complete", [], { head: 0 }, [...nodes, { val, colorIdx: newColorIdx }]));
+                }
+                setNextColorId(prev => prev + 1);
+                setInputValue(getRandomInt());
+                return steps;
+            };
+
+            const generateInsertValue = () => {
+                setActiveCode(CODE_SNIPPETS[listType].insert_value);
+                const steps = [];
+                const val = parseInt(inputValue);
+                const target = parseInt(targetValue);
+                const newColorIdx = nextColorId;
+
+                steps.push(createStep("Start Function", [1], { head: 0 }, nodes));
+                steps.push(createStep("current = self.head", [2], { head: 0, current: 0 }, nodes));
+
+                let curr = 0;
+                let found = false;
+
+                while (curr < nodes.length) {
+                    const ifLine = listType === 'CLL' ? 4 : 3;
+                    steps.push(createStep(`Checking if ${nodes[curr].val} == ${target}`, [ifLine], { head: 0, current: curr }, nodes));
+                    if (nodes[curr].val === target) {
+                        found = true;
+                        const nextNodeIdx = (curr + 1 < nodes.length) ? curr + 1 : (listType === 'CLL' ? 0 : -1);
+                        const nextNodeColor = nextNodeIdx >= 0 ? nodes[nextNodeIdx].colorIdx : null;
+                        steps.push(createStep(`Create Node(${val})`, [ifLine + 1], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: null } }));
+                        steps.push(createStep("new_node.next = current.next", [ifLine + 2], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: nextNodeColor } }));
+                        if (listType !== 'SLL') {
+                            steps.push(createStep("new_node.prev = current", [ifLine + 3], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: nextNodeColor, prevColorIdx: nodes[curr].colorIdx } }));
+                            if (nextNodeIdx >= 0) {
+                                steps.push(createStep("current.next.prev = new_node", [ifLine + 4], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: nextNodeColor, prevColorIdx: nodes[curr].colorIdx }, pointerOverrides: { [nextNodeIdx]: { prev: newColorIdx } } }));
+                            }
+                        }
+                        const linkCurrLine = listType === 'SLL' ? ifLine + 3 : ifLine + 5;
+                        steps.push(createStep("current.next = new_node", [linkCurrLine], { head: 0, current: curr }, nodes, { tempNode: { val, colorIdx: newColorIdx, nextColorIdx: nextNodeColor, prevColorIdx: nodes[curr].colorIdx }, pointerOverrides: { [curr]: { next: newColorIdx }, ...(nextNodeIdx >= 0 && listType !== 'SLL' ? { [nextNodeIdx]: { prev: newColorIdx } } : {}) } }));
+                        const newNodes = [...nodes];
+                        newNodes.splice(curr + 1, 0, { val, colorIdx: newColorIdx });
+                        setNodes(newNodes);
+                        steps.push(createStep("Merged", [], { head: 0 }, newNodes));
+                        break;
+                    }
+                    steps.push(createStep("current = current.next", [8], { head: 0, current: curr + 1 }, nodes));
+                    curr++;
+                }
+                setNextColorId(prev => prev + 1);
+                setInputValue(getRandomInt());
+                return steps;
+            };
+
+            const generateDelete = () => {
+                setActiveCode(CODE_SNIPPETS[listType].delete);
+                const steps = [];
+                const target = parseInt(inputValue);
+                if (nodes.length === 0) return steps;
+
+                steps.push(createStep("Start Function", [1], { head: 0 }, nodes));
+                steps.push(createStep("current = self.head", [2], { head: 0, current: 0 }, nodes));
+
+                if (nodes[0].val === target) {
+                    if (listType === 'CLL' && nodes.length === 1) {
+                        steps.push(createStep("Single Node Delete", [5], { head: 0 }, nodes));
+                        setNodes([]);
+                        return steps;
+                    }
+                    steps.push(createStep("Match found at head", [4, 5], { head: 0, current: 0 }, nodes));
+                    steps.push(createStep("self.head = current.next", [5], { head: 1, current: 0 }, nodes, { poppedIndex: 0 }));
+                    if (listType === 'CLL') {
+                        const tailIdx = nodes.length - 1;
+                        const newHeadColor = nodes[1].colorIdx;
+                        steps.push(createStep("Update tail links", [10, 11], { head: 1, current: 0 }, nodes, { poppedIndex: 0, pointerOverrides: { [tailIdx]: { next: newHeadColor }, 1: { prev: nodes[tailIdx].colorIdx } } }));
+                    }
+                    const newNodes = nodes.slice(1);
+                    setNodes(newNodes);
+                    steps.push(createStep("Node Removed", [], { head: 0 }, newNodes));
+                    return steps;
+                }
+
+                let curr = 0;
+                let prev = null;
+                let found = false;
+
+                while (curr < nodes.length) {
+                    const whileLine = listType === 'CLL' ? 14 : 8;
+                    steps.push(createStep(`Checking ${nodes[curr].val} != ${target}`, [whileLine], { head: 0, current: curr, prev: prev }, nodes));
+                    if (nodes[curr].val === target) {
+                        found = true;
+                        break;
+                    }
+                    prev = curr;
+                    steps.push(createStep("Advance prev and current", [9, 10], { head: 0, current: curr + 1, prev: prev }, nodes));
+                    curr++;
+                }
+
+                if (found) {
+                    const linkLine = listType === 'CLL' ? 15 : 13;
+                    const nextNodeIdx = (curr + 1 < nodes.length) ? curr + 1 : (listType === 'CLL' ? 0 : -1);
+                    const nextNodeColor = nextNodeIdx >= 0 ? nodes[nextNodeIdx].colorIdx : null;
+                    const prevNodeIdx = prev !== null ? prev : (listType === 'CLL' ? nodes.length - 1 : -1);
+                    const prevNodeColor = nodes[prevNodeIdx].colorIdx;
+                    steps.push(createStep("prev.next = current.next", [linkLine], { head: 0, current: curr, prev: prev }, nodes, { poppedIndex: curr, bypassIndex: prev, pointerOverrides: { [prev]: { next: nextNodeColor }, ...(nextNodeIdx >= 0 && listType !== 'SLL' ? { [nextNodeIdx]: { prev: prevNodeColor } } : {}) } }));
+                    const newNodes = nodes.filter((_, i) => i !== curr);
+                    setNodes(newNodes);
+                    steps.push(createStep("Node Removed", [], { head: 0 }, newNodes));
+                }
+                setInputValue(getRandomInt());
+                return steps;
+            };
+
+            const handleOp = (op) => {
+                let steps = [];
+                if (op === 'head') steps = generateInsertHead();
+                if (op === 'end') steps = generateInsertEnd();
+                if (op === 'value') steps = generateInsertValue();
+                if (op === 'delete') steps = generateDelete();
+                setHistory(steps);
+                setCurrentStep(0);
+                setIsPlaying(true);
+            };
+
+            const handleReset = () => {
+                setNodes([{ val: 10, colorIdx: 0 }, { val: 20, colorIdx: 1 }, { val: 30, colorIdx: 2 }]);
+                setNextColorId(3);
+                setHistory([]);
+                setCurrentStep(-1);
+                setIsPlaying(false);
+            };
+
+            const currentFrame = currentStep >= 0 && history[currentStep] ? history[currentStep] : { lines: [], pointers: {}, nodes: nodes, msg: "Ready", tempNode: null, poppedIndex: -1, bypassIndex: -1, pointerStates: [] };
+
+            const renderCode = () => {
+                const lines = fullCode.split('\n');
+                const offset = getLineOffset();
+                return lines.map((line, idx) => {
+                    const relativeLine = idx - offset + 1;
+                    const isHighlighted = currentFrame.lines.includes(relativeLine);
+                    return (
+                        <div key={idx} className={`px-4 py-0.5 font-mono text-xs md:text-sm whitespace-pre flex ${isHighlighted ? 'bg-yellow-100 border-l-4 border-yellow-500' : 'bg-white'}`}>
+                            <span className="text-gray-300 select-none mr-3 w-6 text-right text-[10px] pt-0.5">{idx + 1}</span>
+                            <div className={isHighlighted ? 'font-bold text-black' : ''}><HighlightedCode line={line} /></div>
+                        </div>
+                    );
+                });
+            };
+
+            return (
+                <div className="flex flex-col h-full bg-slate-50 overflow-hidden font-sans text-gray-800">
+                    {/* HEADER */}
+                    <div className="bg-slate-900 text-white p-4 shadow-lg flex justify-between items-center z-20">
+                        <div>
+                            <h1 className="text-xl font-bold flex items-center gap-2">
+                                <Circle className="text-blue-400" size={20} />
+                                IB CS Linked List Visualiser
+                            </h1>
+                            <p className="text-xs text-slate-400 mt-1">Head Tracking Only | Pointer Swap Visualization</p>
+                        </div>
+                        <div className="flex space-x-2 bg-slate-800 p-1 rounded-lg">
+                            {['SLL', 'DLL', 'CLL'].map(t => (
+                                <button key={t} onClick={() => { setListType(t); handleReset(); }} className={`px-4 py-1 rounded text-sm font-semibold transition-colors ${listType === t ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}>{t}</button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* LEFT PANEL: CODE */}
+                        <div className="w-1/3 bg-white border-r border-gray-200 flex flex-col shadow-inner">
+                            <div className="p-2 bg-gray-100 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider flex justify-between">
+                                <span>Python Implementation</span>
+                            </div>
+                            <div className="flex-1 overflow-y-auto py-4 bg-white">{renderCode()}</div>
+                        </div>
+
+                        {/* RIGHT PANEL: VISUALIZATION */}
+                        <div className="w-2/3 flex flex-col relative bg-slate-50">
+                            <div className="bg-white border-b border-gray-200 p-3 flex justify-between items-center shadow-sm z-10">
+                                <div className="flex items-center space-x-2">
+                                    <span className="text-sm font-bold text-slate-500 uppercase">Status:</span>
+                                    <span className="text-sm font-mono bg-yellow-100 text-yellow-800 px-2 py-1 rounded">{currentFrame.msg}</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <button onClick={() => setDelay(d => Math.min(d + 200, 2000))} className="text-xs text-gray-400 hover:text-gray-800">Slower</button>
+                                    <div className="w-20 h-1 bg-gray-200 rounded overflow-hidden">
+                                        <div className="h-full bg-blue-500" style={{ width: `${100 - (delay / 2000) * 100}%` }}></div>
+                                    </div>
+                                    <button onClick={() => setDelay(d => Math.max(d - 200, 200))} className="text-xs text-gray-400 hover:text-gray-800">Faster</button>
+                                </div>
+                            </div>
+
+                            {/* Canvas */}
+                            <div className="flex-1 flex flex-col items-center overflow-auto p-10 relative bg-slate-50">
+                                {/* TEMP NODE WORKSPACE */}
+                                <div className="h-32 w-full flex justify-center items-end mb-4 relative border-b-2 border-dashed border-gray-200 pb-2">
+                                    <span className="absolute top-2 left-2 text-xs text-gray-400 font-bold uppercase tracking-widest">Workspace (New Nodes)</span>
+                                    {currentFrame.tempNode && (
+                                        <div className="flex flex-col items-center animate-bounce-in">
+                                            {currentFrame.pointers.head === 'temp' && <div className="text-white bg-red-600 px-2 py-0.5 rounded text-xs font-bold mb-1 shadow-md">HEAD</div>}
+                                            <NodeBox data={currentFrame.tempNode.val} colorObj={NODE_COLORS[currentFrame.tempNode.colorIdx % NODE_COLORS.length]} nextColorObj={currentFrame.tempNode.nextColorIdx !== null ? NODE_COLORS[currentFrame.tempNode.nextColorIdx % NODE_COLORS.length] : null} prevColorObj={currentFrame.tempNode.prevColorIdx !== null ? NODE_COLORS[currentFrame.tempNode.prevColorIdx % NODE_COLORS.length] : null} type={listType} isDetached={true} />
+                                            <div className="mt-2 text-gray-300">
+                                                <ArrowDown size={32} className="animate-pulse" />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* MAIN LIST */}
+                                <div className="flex items-center mt-4 relative">
+                                    <div className="mr-4 text-gray-300 text-xs font-bold uppercase tracking-widest rotate-90 md:rotate-0 flex flex-col items-center">
+                                        <span className="mb-2">HEAD</span>
+                                        <ChevronsRight size={24} />
+                                    </div>
+                                    {currentFrame.nodes.map((node, idx) => {
+                                        const p = currentFrame.pointers;
+                                        const isPopped = currentFrame.poppedIndex === idx;
+                                        const isBypassSource = currentFrame.bypassIndex === idx;
+                                        let nextColIdx = null, prevColIdx = null;
+                                        if (currentFrame.pointerStates && currentFrame.pointerStates[idx]) {
+                                            nextColIdx = currentFrame.pointerStates[idx].next;
+                                            prevColIdx = currentFrame.pointerStates[idx].prev;
+                                        } else {
+                                            nextColIdx = (idx + 1 < currentFrame.nodes.length) ? currentFrame.nodes[idx + 1].colorIdx : (listType === 'CLL' && currentFrame.nodes.length > 0 ? currentFrame.nodes[0].colorIdx : null);
+                                            prevColIdx = (listType !== 'SLL' && idx > 0) ? currentFrame.nodes[idx - 1].colorIdx : (listType === 'CLL' && currentFrame.nodes.length > 0 && idx === 0 ? currentFrame.nodes[currentFrame.nodes.length - 1].colorIdx : null);
+                                        }
+                                        const styleClass = isPopped ? "transform translate-y-24 opacity-30 transition-transform duration-700" : "";
+                                        return (
+                                            <div key={idx} className={styleClass}>
+                                                <NodeVisual id={idx} data={node.val} colorIdx={node.colorIdx} nextColorIdx={nextColIdx} prevColorIdx={prevColIdx} isHead={idx === 0 && p.head !== 'temp' && !isPopped} isCurrent={p.current === idx} isPrev={p.prev === idx} currentIndex={idx} hasNext={idx < currentFrame.nodes.length - 1 && !isPopped} isCircularEnd={idx === currentFrame.nodes.length - 1 && listType === 'CLL' && !isPopped} type={listType} specialArrow={isBypassSource ? 'long' : 'normal'} />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Controls */}
+                            <div className="bg-white border-t border-gray-200 p-4">
+                                <div className="flex flex-wrap gap-4 mb-4 justify-center items-end">
+                                    <div className="flex flex-col space-y-1">
+                                        <span className="text-xs font-bold text-gray-500">Data Value:</span>
+                                        <div className="relative">
+                                            <input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="w-24 border rounded px-2 py-1 text-sm pl-8" />
+                                            <button onClick={() => setInputValue(getRandomInt())} className="absolute left-1 top-1.5 text-gray-400 hover:text-blue-500"><Hash size={14} /></button>
+                                        </div>
+                                    </div>
+                                    {showTargetInput && (
+                                        <div className="flex flex-col space-y-1 animate-fade-in">
+                                            <span className="text-xs font-bold text-gray-500">Target Value:</span>
+                                            <input type="number" value={targetValue} onChange={(e) => setTargetValue(e.target.value)} className="w-24 border rounded px-2 py-1 text-sm" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex flex-wrap justify-center gap-2 mb-4">
+                                    <button onClick={() => { setShowTargetInput(false); handleOp('head'); }} className="flex items-center space-x-1 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded text-sm font-semibold border border-blue-200">
+                                        <CornerDownLeft size={16} /> <span>Insert Head</span>
+                                    </button>
+                                    <button onClick={() => { setShowTargetInput(false); handleOp('end'); }} className="flex items-center space-x-1 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded text-sm font-semibold border border-blue-200">
+                                        <ArrowRight size={16} /> <span>Insert End</span>
+                                    </button>
+                                    <button onClick={() => { if (!showTargetInput) { setShowTargetInput(true); } else { handleOp('value'); } }} className={`flex items-center space-x-1 px-3 py-2 rounded text-sm font-semibold border transition-colors ${showTargetInput ? 'bg-blue-600 text-white border-blue-700' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                                        <Plus size={16} /> <span>Insert After...</span>
+                                    </button>
+                                    <button onClick={() => { setShowTargetInput(true); handleOp('delete'); }} className="flex items-center space-x-1 px-3 py-2 bg-red-50 text-red-700 hover:bg-red-100 rounded text-sm font-semibold border border-red-200">
+                                        <Trash2 size={16} /> <span>Delete</span>
+                                    </button>
+                                </div>
+                                <div className="flex justify-center items-center space-x-4 border-t border-gray-100 pt-4">
+                                    <button onClick={handleReset} className="p-2 text-gray-500 hover:text-red-500" title="Reset"><RefreshCw size={20} /></button>
+                                    <button onClick={() => { setIsPlaying(false); setCurrentStep(s => Math.max(0, s - 1)); }} className="p-2 text-gray-700 hover:bg-gray-100 rounded"><StepBack size={20} /></button>
+                                    <button onClick={() => setIsPlaying(!isPlaying)} className="p-3 bg-slate-800 text-white rounded-full hover:bg-slate-700 shadow-lg transform active:scale-95 transition-transform">
+                                        {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                                    </button>
+                                    <button onClick={() => { setIsPlaying(false); setCurrentStep(s => Math.min(history.length - 1, s + 1)); }} className="p-2 text-gray-700 hover:bg-gray-100 rounded"><StepForward size={20} /></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>

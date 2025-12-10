@@ -1,0 +1,1013 @@
+B4.1.4 Structures and properties
+of binary search trees
+B How binary search trees are used for data organization
+A tree structure in Computer Science is used to hold data in order and is usually drawn upside
+down, with the root at the top and the leaves at the bottom.
+4 Root: the topmost
+node from which all
+other nodes descend,
+serving as the starting
+point for any traversal
+or operation within a
+binary search tree.
+4 Parent: a node that
+has one or more nodes
+directly beneath it,
+connected by edges,
+and it directly controls
+these subsequent
+child nodes.
+4 Child: any node that
+has a direct link from a
+parent node positioned
+above it, potentially
+having further child
+nodes of its own.
+
+left subtree
+
+right subtree
+
+children
+
+leaf nodes
+M Tree structure and its parts
+
+In this section, we will be focusing on a tree that follows some strict rules, which allow us to
+optimize search, insertion and deletion operations.
+However, before we discuss the rules of binary search trees (BST), it is important to
+
+understand the terminology. The node at the top of the tree is known as the root node. If a
+node has a node attached below it, it is known as a parent node, with the one below being the
+child node. Each parent node can have one or two child nodes. The child node that is less than
+
+the parent goes on the left; the child node that is greater than the parent, on the right.
+
+B4 Abstract data types (ADTs) (HL)
+
+# Subtree: any
+
+The sub-section to the right of a node is known as the right subtree and to the left, the left
+
+node, along with
+
+subtree. All nodes at the bottom of the tree, without children, are known as leaves.
+
+its descendants,
+functioning as a
+standalone binary search
+tree, with its node
+acting as the root.
+
+‘We can assume that all items within the BST are unique (there are no duplicates).
+
+# Leaf: a node that
+does not have any
+children, representing
+the endpoints of
+a binary search
+tree’s branches.
+
+o
+Z
+
+==
+
+-
+
+GCommon mistake
+Make sure you move in the correct direction when navigating through the tree:
+m Move left if the item is smaller than the node.
+m Move right if the item is larger than the node.
+
+B Tree structure and node insertion
+
+®®
+
+@
+
+ere, you can see these two rules in place. In this example, 10 was the first node entered into
+
+the BST and set as the root. Each new node works its way through the tree until it finds a space
+where it can join. We cannot be completely sure what was entered next, but let us assume that
+it was node 5:
+B Node 5: This would be compared to node 10; as it is smaller than node 10, it would join to
+
+the left of that node. This is now a child of node 10, which is the parent node of node 5. At
+this point, node 5 is also a leaf, but this will change as more nodes are added later.
+® Node 12: This would be compared with 10 and, as it is greater, it would join to the right.
+This is now a child of node 10, which is the parent node of nodes 5 and 12.
+B Node 3: This would be compared to node 10; as it is smaller, it would move to the left. It
+would then be compared with node 5 and, as it is smaller, it would be moved to the left
+again, where it would join the tree. This is now a child of node 5, and node 5 is the parent
+of node 3.
+B Node 8: This is smaller than node 10, so it moves to the left; it is greater than node 5, so it
+moves to the right. This is now a child of node 5, and node 5 is the parent of nodes 3 and 8.
+
+B4.1 Fundamentals of abstract data types
+
+AINO TH
+
+1
+
+Write the statements for how nodes 6, 9, 16 and 15 join the tree.
+
+2
+
+Sketch the resulting binary tree when the following items are entered:
+10,15, 3,12,7,1,22,18,5
+
+Which nodes are:
+oW
+
+children?
+
+N
+
+leaves?
+
+Qo
+
+Leaves are not always
+at the bottom of
+the tree. A leaf is
+any node in the tree
+that does not have
+any children.
+
+parents?
+
+right subtree?
+
+o
+
+3
+
+left subtree?
+
+=
+
+(‘Common
+mistake
+
+root?
+
+B Node search
+To find a node in a BST, we follow these steps, looking for the key we are searching for:
+1
+
+Start at the root node: Begin your search from the root of the BST.
+
+2
+
+Check for null / none: If the current node is null (or none in Python), the search concludes
+without finding the key. The key is not present in the BST.
+
+3
+
+Compare the node value with the key:
+a
+
+If the current node’s value matches the key, the search is successtul. The key is found in
+
+the BST.
+b If the key is smaller than the current node’s value, proceed to the left child of the
+
+current node.
+¢
+
+If the key is larger than the current node’s value, move to the right child of the
+
+current node.
+4 Repeat the process: Continue the process from step 2 with the new current node.
+
+M Node traversal
+Depending on the requirements, there are different ways to traverse the BST and return the
+data within. These are:
+B in-order traversal
+B pre-order traversal
+B post-order traversal.
+To perform these operations, it is important to remember the order of actions as you move
+through the BST. The easiest way to do this is to remember that you always move left before
+right. After that, you just need to remember when you output the node data.
+
+(;Top tip!
+The traversal name gives you a clue to where the node check is:
+B Pre-order: check before left and right (NLR)
+B
+
+Post-order: check after left and right (LRN)
+
+B In-order: goes in the middle (LNR).
+
+Let us look again at the BST illustrated above.
+
+468
+
+B4 Abstract data types (ADTs) (HL)
+
+In-order traversal (left, node, right)
+We start at the root (10) and need to perform all three operations on this node. We start with
+
+the first, left. This takes us to node 5 with the same situation, left and we move to node 3.
+Here, we move left (no further node), node so we output 3, and then move right (no further
+
+node). We have now completed all three actions on this node. So, we move back to node 5.
+
+Here we have already gone left, so now we output node, which would be 5, and then we move
+right. We continue with these operations until all three have been completed on every node.
+
+The final output would be:
+3,5,6,8,9,10,12,15, 16
+You will notice the numbers are output in order. This is the main purpose of an in-order
+
+traversal — to output the nodes, sorted, in ascending order.
+Pre-order traversal (node, left, right)
+We carry out the same operations here, but in a different order. We start again at the root (10),
+but this time we output node value first. We then move left to node 5, where we output the
+
+node value there. We move left again and output node 3. We move left and right on node 3,
+completing the operations, and then move back to node 5, where we move right to node 8. We
+then continue in this manner until all three operations have been completed on every node.
+The final output would be:
+10,5,3,8,6,9,12, 16, 15
+
+This method is useful for creating a copy of the tree or for exploring paths, as it visits the
+parent prior to the children.
+
+Post-order traversal (left, right, node)
+Once you have understood the first two methods, this third should not cause any problems. It
+follows the same idea again, but this time we visit the node last. We start at the root (10), and
+
+we go left to node 5. We then go left again to node 3, where we complete all three operations,
+left, right and then finally node, where 3 is output. We then go back to node 5 and move right
+to node 8, where we go left to node 6 and complete all three actions, with 6 being output. We
+then move back to node 8 and move right to node 9. We then continue in this manner until all
+three operations have been completed on every node.
+The final output would be:
+
+3,6,9,8,5,15,16,12, 10
+This method is often used for deleting nodes within the tree as it visits children before their
+
+respective parent nodes.
+
+1
+
+2
+
+On the BST you drew for the previous review questions, carry out the following and show
+the output:
+a
+
+In-order traversal
+
+b
+
+Pre-order traversal
+
+¢
+
+Post-order traversal
+
+What would happen if non-numerical data were input into a BST? Sketch the following
+BST when the data is input in this order:
+Ava, Alex, Bella, Catherine, Carlos, Brian, Aaron, Chloe
+
+B4.1 Fundamentals of abstract data types
+
+@
+
+=
+o
+=
+ze
+
+-
+
+ATNO TH
+
+B Node deletion
+To delete a node in a BST, we take the following steps, looking for the key to delete and then
+carrying out the action based on the situation we find ourselves in:
+
+1
+
+Start at the root node: Begin the deletion process from the root of the BST.
+
+2
+
+Search for the key: Follow the algorithm from the node search.
+
+3 Once the node is found, determine its type:
+a
+
+Leaf node (no children): if the node has no left or right child
+
+b One child: if the node has exactly one child (either left or right)
+¢
+
+Two children: if the node has both a left and a right child.
+
+4 Delete the node based on its type:
+a
+
+Leaf node: Simply remove the node from the tree by setting its parent’s appropriate (left
+or right) child pointer to null.
+
+b One child: Bypass the node by linking its parent directly to its child. If the node is a left
+child, update the parent’s left pointer; if a right child, update the parent’s right pointer.
+
+set pointer
+
+M Deletion of node with one child
+
+¢
+
+Two children:
+i
+
+Find the in-order successor (smallest value in the right subtree) or the in-order
+predecessor (largest value in the left subtree).
+
+il
+
+Replace the value of the node to be deleted with the in-order successor’s (or
+predecessor’s) value.
+
+iii Delete the in-order successor (or predecessor) by repeating step 4, which now
+
+becomes a case of deleting a node with at most one child.
+
+Thinking skills:
+Problem-solving
+and analysis
+Coding competitions
+are an effective
+way to improve
+your programming
+and problemsolving skills. Here
+is a question from
+CodingQuest where
+a BST can be used
+to solve it:
+https://codingquest.io/
+problem/26
+
+M Deletion of node with two children
+
+5
+
+Repeat the process as needed:
+
+If you had to delete the in-order successor or predecessor (step 4¢), repeat the deletion
+process for that node.
+
+B4 Abstract data types (ADTs) (HL)
+
+B4.1.5 Sets as an abstract data type
+# Unordered set: a
+collection of unique
+elements where the
+elements do not have
+a specific order or
+sequence and their
+arrangement can vary
+each time they are
+accessed.
+# Mutable: a set whose
+state or content can
+be changed after it has
+been created, allowing
+for modifications, e.g.
+adding, removing or
+altering elements within
+the object.
+
+z
+o
+=
+
+I
+
+Like lists and arrays, sets can be used to store multiple values in a single variable. Sets are
+unordered, meaning that they cannot be accessed via index or key, but they are mutable,
+
+=<
+
+allowing the addition and removal of items. However, the individual items cannot be updated
+or change values. Sets contain only unique elements.
+They are a powerful data structure when unique elements and etficient operations are crucial.
+They are extremely useful when you want to ensure a collection consists of only unique
+elements, such as when working with usernames where duplicates are not allowed. They are
+also extremely fast when needing to check whether an item is already part of a collection.
+‘When needing to perform mathematical set operations, such as union, intersection and
+difference, which are commonly used with database queries, search algorithms and data
+analysis, sets perform very well.
+Key characteristics of sets are that:
+B they are unordered
+H they are mutable
+B they contain unchangeable values
+|
+
+they contain only unique elements.
+
+M Creating sets
+There are two ways of creating a set in Python:
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+
+Python
+# Using curly brackets
+my set = {1,
+
+2,
+
+3,
+
+4,
+
+5}
+
+# Using the set ()
+
+constructor
+
+my set2 = set([1,
+
+2,
+
+2,
+
+3,
+
+4,
+
+5]}
+
+# Duplicate entries will
+
+# automatically be removed
+
+:
+-
+
+In Java, there are a number of classes that implement the Set interface. For our example
+purposes, we will use the HashSet. The other possibilities are LinkedHashSet and
+
+emresssasatsasstarsnnrrrnnny
+
+TreeSet, which will not be covered here. Using HashSet requires the import of two libraries:
+
+Java
+import java.util._HashSet;
+import java.util.Set;
+// Creating a HashSet of type Integer
+Set<Integer> mySet = new HashSet<>();
+
+B4.1 Fundamentals of abstract data types
+
+@
+
+ATNO TH
+
+B Set methods
+To add and remove elements:
+r
+
+t
+1
+T
+: my set = {1, 2, 3, 4, 5}
+1 my_set.add(e6) # Add 6 to the set
+r
+:I my_ set.remove(l) # Remove 1 from the set
+T
+
+Java
+Set<Integer> mySet = new HashSet<>();
+! myset.add(6); // Add 6 to the set
+myset.remove(l) // Remove 1 from the set
+BT R
+
+T
+
+T
+T TT
+
+LT L L L LT E T T TP P TP P PPH
+
+L LT T T T
+
+To check whether elements are present in the set:
+
+Python
+if 2 in my set:
+print ("2 is in the set")
+else:
+print ("2 is not in the set")
+
+e ee e b ee e e ee be ee Ee e e e
+
+# Set union: the
+union of twao sets is
+a new set containing
+all the elements that
+are in either of the
+original sets, effectively
+combining them without
+any duplicate elements.
+# Set intersection: the
+
+intersection of two sets
+Is a new set containing
+
+only the elements
+that are present in
+both of the original
+sets, identifying their
+common elements.
+# Set difference: the
+
+difference between
+two sets is a new set
+
+containing elements
+that are in the first
+set but not in the
+second set, effectively
+subtracting the elements
+of the second set from
+the first.
+
+HH
+HH
+HH
+HH
+H
+HH
+HH
+H
+HH
+HH
+H
+HH
+HH
+
+A
+
+eA E e A e
+
+e
+
+eA e e
+
+e e
+
+e ee e eeeeeeaaeaasasaRaa e s s ansaaanns
+
+Java
+if (myset.contains(2))
+
+{
+
+System.cut.println("2 is in the set.");
+} else {
+System.out.println("2 is not in the set.");
+
+}
+
+:T
+T T T LT T T T T T T P TP
+PP
+
+B Set operations
+There are three main operations that are used to manipulate and compare sets. These are
+
+union, intersection and difference. We will show their differences using the set created below.
+1
+
+[
+
+: # Define two sets
+: A= {1, 2, 3, 4}
+
+:
+:
+
+1 B = {3, 4, 5, 6}
+
+11 oA.add(1);
+
+' Python
+
+¢
+
+Java
+
+i
+
+i // Define two sets
+Set<Integer> A = new HashSete<x();
+
+]
+
+SNPEp———— G WPY-".Up
+1W
+i A.add(3);
+
+i A.add(4);
+
+! Set<Integer> B = new HashSete<>({);
+
+!
+
+i B.add(3);
+i B.add(4);
+
+i B.add(5);
+
+i B.add(s);
+
+B4 Abstract data types (ADTs) (HL)
+
+Union
+
+=
+o
+=
+ze
+
+A union joins two sets to create one that contains all the elements from both, without
+any duplicates.
+
+-
+
+L3
+
+I
+1 Python
+i
+1 # Union
+'
+' union set = A | B # or A.union(B)
+I
+1 print ("Union:", union set)
+'
+1 # Output
+'
++ # Union: {1, 2, 3, 4, 5, 6}
+1
+L3
+
+.H B
+HH
+HH
+
+T T T
+
+LR T T L E T
+
+T T
+
+P
+
+T T .H
+HH
+HH
+
+Java
+// Union
+
+H
+HH
+HH
+HH
+H
+HH
+
+Set<Integers> unionSet = new HashSet<>(A);
+
+H
+HH
+HH
+HH
+
+// Creates a new
+
+// set containing all elements from A
+unionSet.addall
+(B); // Performs a union join with B
+System.out .println("Union:
+
+" + unionSet); // Output set contents
+
+// Output
+// Union:
+
+[1,
+
+2,
+
+3, 4,
+
+5,
+
+H
+HH
+
+6]
+
+Intersection
+An intersection of two sets creates a new set that contains only the elements that are present
+in both.
+P
+
+el
+
+e
+
+e
+
+e
+
+e
+
+e
+
+e
+
+e
+
+e
+
+e
+
+k. |
+
+Python
+# Intersection
+
+intersection
+set = A & B
+print ("Intersection:",
+
+# or A.intersection(B)
+
+intersection_set)
+
+# Output
+# Intersection:
+
+[3,
+
+4]
+
+Java
+// Intersection
+Set«<Integer> intersectionSet = new HashSet«s>(A);
+intersectionSet.retainAll (B);
+System.out .println("Intersection:
+
+"
+
++ intersectionSet);
+
+// Output
+// Intersection:
+
+B4.1 Fundamentals of abstract data types
+
+[3,
+
+4]
+
+@
+
+ATNO TH
+
+Difference
+The difference between two sets is a set containing elements that are in the first set but not in
+the second.
+L
+i Python
+1
+i # Difference
+1
+i difference
+set = A - B
+# or A.difference(B)
+1
+: print ("Difference:", difference_ set)
+i # Output
+1
+I
+
+1
+
+# Difference:
+
+[1,
+
+2]
+
+L
+
+Java
+// Difference
+Set<Integers> differenceSet = new HashSet<s>(A);
+differenceSet.removeAll
+(B) ;
+System.out.println("Difference:
+
+" + differenceSet);
+
+// Output
+// Difference:
+T T T
+
+[1, 2]
+T T T T T
+
+T
+
+T LT T T T
+
+T
+
+Set A: {4, 8, 15, 16, 23}
+Set B: {42, 8, 16, 60, 7}
+
+1
+
+Show the output if a union operation is performed.
+
+2
+
+Show the output if an intersection operation is performed.
+
+3
+
+Show the output if a difference operation is performed.
+
+Social Skills: Collaborative group work
+Social-media friend recommendation
+With a partner, working in your chosen language, create two sets consisting of the
+following names:
+A: Carlos Gomez, Yuna Kim, Dmitri Ivanov
+
+B: Yuna Kim, Dmitri Ivanov, Leila Al-Farsi, Sean O’'Brien
+A and B represent two users on a social-media network. A and B are friends with
+each other.
+1 Using set operations, identify the users’ common friends.
+2 Using set operations, identify friends of B that are not friends with A, so the platform
+can recommend new connections.
+
+B4 Abstract data types (ADTs) (HL)
+
+Bl Check whether subset or superset
+
+z
+o
+=
+
+I
+
+A subset or superset describes the relationship between two sets.
+Set A is considered a subset of B if all of A's elements are present in B — which would be
+
+=<
+
+considered the superset. All elements of the subset can be found in the superset.
+To check whether set A is a subset of set B, or whether B is a superset of A:
+e
+e
+|
+
+# Set subset: a set
+where all elements
+of this set are also
+elements of another set,
+indicating that the first
+set is entirely contained
+within the second set.
+
+Python
+
+1
+1
+1
+
+# Define two new sets
+
+:
+
+A= {1, 4,
+
+7}
+
+1
+
+B=1{1, 2, 3, 4, 5, 5, 7}
+
+-
+
+# Check if A is a subset of B
+
+:
+
+# Both of these methods are acceptable
+
+:
+
+print (A.issubset
+(B))
+
+:
+
+print (A <= B)
+
+# True
+
+# True
+
+1
+
+# Check if B is a superset of A
+
+:
+
+# Both of these methods are acceptable
+
+:
+
+print (B.issuperset
+(A)) # True
+
+:
+
+print
+(B »= A)
+
+# True
+
+:
+-
+
+: Java
+// Define two new sets
+
+i
+
+Set<Integer> A = new HashSet<>();
+
+A.add (1) ;
+A.add(4);
+A.add(7);
+
+bW W
+
+w ww
+
+Set<Integer> B
+
+new HashSet<> () ;
+
+.add (1) ;
+.add (2) ;
+.add (3) ;
+.add (4) ;
+.add (5) ;
+.add (6) ;
+.add (7) ;
+
+// Check if A is a subset of B
+System.out.println(B.containsAll
+(a)); // True
+
+// Check if B is a superset of A by checking if A is contained within B,
+: // is not contained within A
+E System.out.println(B.containsAll
+(A) && !A.containsAll(B)); // False
+H
+T
+
+L
+
+L
+
+LT T
+
+LT T
+
+but B
+
+H
+T LT TP T PR PP PP PP P

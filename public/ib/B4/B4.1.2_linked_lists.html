@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B4.1 Linked Lists | Study Guide</title>
+    <meta name="description"
+        content="IB Computer Science Topic B4.1 Revision Guide: Linked Lists - Structure, Types, Operations, and Python Implementation.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</head>
+
+<body class="">
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="../../index.html">
+                    <img src="../../images/Logo.png" alt="St George's Logo" class="logo-img">
+                </a>
+                <a href="../../index.html" class="site-title-link">
+                    <span class="site-title">SGS Computer Science</span>
+                </a>
+            </div>
+
+            <nav class="main-nav" aria-label="Main navigation">
+                <a href="../../ks3/index.html" class="nav-link ">KS3</a>
+                <a href="../../igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="../../ib/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <div class="header-tools">
+                <button class="tools-toggle" aria-expanded="false" aria-controls="tools-menu">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                    <span class="sr-only">Tools menu</span>
+                </button>
+                <div class="tools-dropdown" id="tools-menu">
+                    <button class="tool-item" data-open-feedback="bug">
+                        <i class="fa-solid fa-bug"></i> Report a bug
+                    </button>
+                    <button class="tool-item" data-open-feedback="feature">
+                        <i class="fa-solid fa-lightbulb"></i> Request a feature
+                    </button>
+                    <a class="tool-item" href="../../admin.html">
+                        <i class="fa-solid fa-user-shield"></i> Admin
+                    </a>
+                </div>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
+                <i class="fa-solid fa-bars"></i>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="../../index.html">Home</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../../ib/index.html">IB</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../../ib/B4/index.html">B4</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../../ib/B4/student_resources.html">Student Resources</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item current" aria-current="page">B4.1 Linked Lists</li>
+            </ol>
+        </nav>
+    </header>
+
+    <main class="">
+        <script>hljs.highlightAll();</script>
+
+        <style>
+            :root {
+                /* Navy/Gold/White Theme */
+                --primary-navy: #0E214B;
+                --accent-gold: #BE9A5E;
+                --bg-body: #f8f9fa;
+                --bg-card: #ffffff;
+                --text-main: #1f2937;
+                --text-muted: #6b7280;
+                --tip-bg: #fffbeb;
+                --tip-border: #BE9A5E;
+                --table-header: #f8f9fa;
+                --container-width: 1000px;
+                --radius: 12px;
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+
+            /* Hero - Navy Theme */
+            .hero {
+                background: transparent;
+                color: var(--primary-navy);
+                padding: 2rem 1.5rem;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+                color: var(--text-muted);
+            }
+
+            /* Main Container */
+            .container {
+                max-width: var(--container-width);
+                margin: 0 auto;
+                padding: 0 1.5rem 2rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            /* Cards */
+            .card {
+                background: var(--bg-card);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                overflow: hidden;
+                border: 1px solid #e5e7eb;
+            }
+
+            /* Collapsible Card Headers */
+            .card-header {
+                padding: 1rem 1.5rem;
+                font-weight: 600;
+                font-size: 1.1rem;
+                color: var(--primary-navy);
+                background: #f8f9fa;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                cursor: pointer;
+                position: relative;
+                transition: all 0.3s ease;
+                border: none;
+            }
+
+            .card-header::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 4px;
+                background-color: var(--accent-gold);
+                transform: scaleY(0);
+                transition: transform 0.3s ease;
+            }
+
+            .card-header:hover {
+                background: white;
+                transform: translateX(5px);
+            }
+
+            .card-header:hover::before {
+                transform: scaleY(1);
+            }
+
+            .card-header i {
+                color: var(--accent-gold);
+            }
+
+            .card-header::after {
+                content: '▼';
+                margin-left: auto;
+                font-size: 0.8rem;
+                color: #ccc;
+                transition: transform 0.3s ease;
+            }
+
+            .card-header.collapsed::after {
+                transform: rotate(-90deg);
+            }
+
+            .card-body {
+                padding: 1.5rem;
+                max-height: 5000px;
+                overflow: hidden;
+                transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
+            }
+
+            .card-body.collapsed {
+                max-height: 0;
+                padding: 0 1.5rem;
+                opacity: 0;
+            }
+
+            /* Typography */
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+                color: var(--primary-navy);
+            }
+
+            h3 {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+                color: var(--primary-navy);
+                font-weight: 600;
+            }
+
+            /* Lists */
+            ul {
+                list-style-position: inside;
+                margin-bottom: 1rem;
+            }
+
+            li {
+                margin-bottom: 0.5rem;
+            }
+
+            /* Tips Box */
+            .tip-box {
+                background-color: var(--tip-bg);
+                border-left: 5px solid var(--accent-gold);
+                padding: 1rem;
+                border-radius: 0 8px 8px 0;
+                margin-top: 1.5rem;
+            }
+
+            .tip-title {
+                font-weight: 700;
+                color: var(--primary-navy);
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .tip-title i {
+                color: var(--accent-gold);
+            }
+
+            /* Tables */
+            .table-responsive {
+                overflow-x: auto;
+                border-radius: 8px;
+                border: 1px solid #e5e7eb;
+                margin-bottom: 1rem;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.95rem;
+            }
+
+            th {
+                background-color: var(--table-header);
+                text-align: left;
+                padding: 0.75rem 1rem;
+                font-weight: 600;
+                color: var(--primary-navy);
+                border: 1px solid #e5e7eb;
+            }
+
+            td {
+                padding: 0.75rem 1rem;
+                border: 1px solid #e5e7eb;
+            }
+
+            code {
+                font-family: 'JetBrains Mono', monospace;
+                background-color: #f3f4f6;
+                padding: 0.15rem 0.4rem;
+                border-radius: 4px;
+                font-size: 0.88em;
+                color: var(--primary-navy);
+            }
+
+            /* Code Blocks - Left Aligned */
+            pre {
+                border-radius: 8px;
+                overflow: hidden;
+                margin: 1rem 0;
+                text-align: left;
+            }
+
+            pre code {
+                background-color: transparent;
+                padding: 1rem;
+                color: inherit;
+                display: block;
+                text-align: left;
+            }
+
+            /* Grid specific */
+            .grid-2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+
+            @media (max-width: 768px) {
+                .grid-2 {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .mb-4 {
+                margin-bottom: 1rem;
+            }
+
+            .badge {
+                display: inline-block;
+                padding: 0.25em 0.6em;
+                font-size: 0.75em;
+                font-weight: 700;
+                line-height: 1;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: baseline;
+                border-radius: 0.25rem;
+                background-color: #e5e7eb;
+                color: #374151;
+                margin-right: 0.5rem;
+            }
+
+            /* Diagram box */
+            .diagram-box {
+                background: #f8f9fa;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                padding: 1.5rem;
+                margin: 1rem 0;
+                text-align: center;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.9rem;
+            }
+
+            .diagram-box .node {
+                display: inline-block;
+                border: 2px solid var(--primary-navy);
+                padding: 0.5rem 1rem;
+                margin: 0 0.25rem;
+                border-radius: 4px;
+                background: white;
+            }
+
+            .diagram-box .arrow {
+                color: var(--accent-gold);
+                font-weight: bold;
+            }
+
+            .diagram-box .null {
+                color: var(--text-muted);
+                font-style: italic;
+            }
+        </style>
+
+        <!-- Header -->
+        <header class="hero">
+            <div class="nav-container">
+                <h1>Linked Lists</h1>
+                <p>Quick Reference Study Guide & Revision Notes</p>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- 1. LINKED LIST STRUCTURE -->
+            <section id="structure" class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-link"></i> Linked List Structure
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">A <strong>linked list</strong> is a linear data structure where elements are stored
+                        in <strong>nodes</strong>. Unlike arrays, linked lists do not store data contiguously in memory.
+                    </p>
+
+                    <h3>Key Components</h3>
+                    <div class="table-responsive mb-4">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Node</strong></td>
+                                    <td>A basic unit containing data and a reference (pointer) to the next node.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Head</strong></td>
+                                    <td>The first node in the linked list. Used as the starting point for traversal.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tail</strong></td>
+                                    <td>The last node in the list. Its pointer points to <code>None</code> (null).</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Pointer</strong></td>
+                                    <td>A variable that stores the memory address of the next node.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Visual Representation</h3>
+                    <div class="diagram-box">
+                        <strong>head</strong> <span class="arrow">→</span>
+                        <span class="node">A</span> <span class="arrow">→</span>
+                        <span class="node">B</span> <span class="arrow">→</span>
+                        <span class="node">C</span> <span class="arrow">→</span>
+                        <span class="null">None</span>
+                    </div>
+
+                    <div class="tip-box">
+                        <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Analogy</span>
+                        <p>Think of a linked list like a <strong>chain of elephants</strong>. Each elephant (node) holds
+                            the tail of the next elephant (pointer). The first elephant is the head, and the last
+                            elephant's trunk points to nothing (null).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. ADVANTAGES & DISADVANTAGES -->
+            <section id="pros-cons" class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-scale-balanced"></i> Advantages & Disadvantages
+                </div>
+                <div class="card-body">
+                    <div class="grid-2">
+                        <div>
+                            <h3>✅ Advantages</h3>
+                            <ul>
+                                <li><strong>Dynamic Size:</strong> Can grow and shrink at runtime (unlike static
+                                    arrays).</li>
+                                <li><strong>Efficient Insertion/Deletion:</strong> No need to shift elements like in an
+                                    array.</li>
+                                <li><strong>Memory Efficiency:</strong> No pre-allocated memory; nodes are created as
+                                    needed.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>❌ Disadvantages</h3>
+                            <ul>
+                                <li><strong>Sequential Access:</strong> Must traverse from head; no direct index access
+                                    like arrays.</li>
+                                <li><strong>Extra Memory:</strong> Each node requires additional memory for the pointer.
+                                </li>
+                                <li><strong>No Binary Search:</strong> Linear search only (O(n) complexity).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Exam Tip</span>
+                        <p><strong>Heap Exhaustion:</strong> If a linked list grows too large, it can exhaust available
+                            heap memory, causing the program to crash.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. TYPES OF LINKED LISTS -->
+            <section id="types" class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-diagram-project"></i> Types of Linked Lists
+                </div>
+                <div class="card-body">
+                    <h3>Singly Linked List</h3>
+                    <p>Each node has <strong>one pointer</strong> to the next node. The tail points to
+                        <code>None</code>.</p>
+                    <div class="diagram-box">
+                        <strong>head</strong> <span class="arrow">→</span>
+                        <span class="node">A</span> <span class="arrow">→</span>
+                        <span class="node">B</span> <span class="arrow">→</span>
+                        <span class="node">C</span> <span class="arrow">→</span>
+                        <span class="null">None</span>
+                    </div>
+
+                    <h3>Doubly Linked List</h3>
+                    <p>Each node has <strong>two pointers</strong>: one to the next node and one to the previous node.
+                    </p>
+                    <div class="diagram-box">
+                        <span class="null">None</span> <span class="arrow">←</span>
+                        <span class="node">A</span> <span class="arrow">⇄</span>
+                        <span class="node">B</span> <span class="arrow">⇄</span>
+                        <span class="node">C</span> <span class="arrow">→</span>
+                        <span class="null">None</span>
+                    </div>
+
+                    <h3>Circular Linked List</h3>
+                    <p>The tail node points back to the <strong>head</strong> instead of <code>None</code>.</p>
+                    <div class="diagram-box">
+                        <strong>head</strong> <span class="arrow">→</span>
+                        <span class="node">A</span> <span class="arrow">→</span>
+                        <span class="node">B</span> <span class="arrow">→</span>
+                        <span class="node">C</span> <span class="arrow">→</span>
+                        <em>(back to head)</em>
+                    </div>
+
+                    <div class="tip-box">
+                        <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Common Mistake</span>
+                        <p>Don't forget to label the <strong>head</strong> and ensure the tail node points to
+                            <code>None</code> (or back to head in circular lists) in your diagrams.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. OPERATIONS -->
+            <section id="operations" class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-gears"></i> Linked List Operations
+                </div>
+                <div class="card-body">
+                    <h3>Traversal / Search</h3>
+                    <p>Start at the head and follow pointers until you find the target or reach <code>None</code>.</p>
+                    <ol>
+                        <li>Start with the head pointer to access the first node.</li>
+                        <li>Follow the pointer within the node to move to the next node.</li>
+                        <li>Repeat until you find the target or reach <code>None</code>.</li>
+                    </ol>
+
+                    <h3>Insertion</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Steps</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>At Beginning</strong></td>
+                                    <td>1. Create new node. 2. Point new node to current head. 3. Update head to new
+                                        node.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>At End</strong></td>
+                                    <td>1. Create new node. 2. Traverse to tail. 3. Point tail to new node.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>In Middle</strong></td>
+                                    <td>1. Create new node. 2. Find target node. 3. Point new node to target's next. 4.
+                                        Point target to new node.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Deletion</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Steps</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>First Node</strong></td>
+                                    <td>1. Check if list is empty. 2. Update head to point to the second node.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Middle Node</strong></td>
+                                    <td>1. Traverse to find node (keep track of previous). 2. Point previous node to the
+                                        found node's next.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Last Node</strong></td>
+                                    <td>1. Traverse to find tail (keep track of previous). 2. Point previous node to
+                                        <code>None</code>.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tip-box">
+                        <span class="tip-title"><i class="fa-solid fa-triangle-exclamation"></i> Common Mistake</span>
+                        <p>When inserting in the middle, always update the <strong>new node's pointer first</strong>
+                            before changing the previous node's pointer. Otherwise, you'll lose the reference to the
+                            rest of the list!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. PYTHON IMPLEMENTATION -->
+            <section id="python" class="card">
+                <div class="card-header">
+                    <i class="fa-brands fa-python"></i> Python Implementation
+                </div>
+                <div class="card-body">
+                    <h3>Node Class</h3>
+                    <pre><code class="python">class ListNode:
+    """A node in a singly linked list."""
+    def __init__(self, data=0):
+        self.data = data      # Store the data
+        self.next = None      # Pointer to next node</code></pre>
+
+                    <h3>LinkedList Class - Setup & Traversal</h3>
+                    <pre><code class="python">class LinkedList:
+    """A singly linked list."""
+    def __init__(self):
+        self.head = None      # Initialize head pointer
+
+    def print_list(self):
+        """Traverse and print all nodes."""
+        current = self.head
+        while current is not None:
+            print(current.data, end=" -> ")
+            current = current.next
+        print("None")</code></pre>
+
+                    <h3>Insert at Beginning</h3>
+                    <pre><code class="python">def insert_at_beginning(self, data):
+    """Insert a new node at the start of the list."""
+    new_node = ListNode(data)      # Create new node
+    new_node.next = self.head      # Point to current head
+    self.head = new_node           # Update head pointer</code></pre>
+
+                    <h3>Insert at End</h3>
+                    <pre><code class="python">def insert_at_end(self, data):
+    """Insert a new node at the end of the list."""
+    new_node = ListNode(data)
+    
+    if self.head is None:          # If list is empty
+        self.head = new_node
+    else:
+        current = self.head
+        while current.next is not None:  # Traverse to last node
+            current = current.next
+        current.next = new_node    # Point last node to new node</code></pre>
+
+                    <h3>Insert After a Value</h3>
+                    <pre><code class="python">def insert_after_value(self, target_value, data):
+    """Insert a new node after the first node with target_value."""
+    current = self.head
+    
+    while current is not None:
+        if current.data == target_value:
+            new_node = ListNode(data)
+            new_node.next = current.next  # Point to next node
+            current.next = new_node       # Insert new node
+            return
+        current = current.next
+    
+    print(f"Node with data {target_value} not found.")</code></pre>
+
+                    <h3>Delete a Node by Value</h3>
+                    <pre><code class="python">def delete_node(self, target_value):
+    """Delete the first node with the given value."""
+    current = self.head
+    previous = None
+    
+    while current is not None:
+        if current.data == target_value:
+            if previous is None:      # Deleting head
+                self.head = current.next
+            else:
+                previous.next = current.next
+            return
+        previous = current
+        current = current.next
+    
+    print(f"Node with data {target_value} not found.")</code></pre>
+
+                    <h3>Complete Example</h3>
+                    <pre><code class="python"># Create a linked list
+my_list = LinkedList()
+
+# Insert nodes
+my_list.insert_at_beginning(10)
+my_list.insert_at_end(20)
+my_list.insert_at_end(30)
+my_list.insert_after_value(20, 25)
+
+my_list.print_list()
+# Output: 10 -> 20 -> 25 -> 30 -> None
+
+# Delete a node
+my_list.delete_node(25)
+my_list.print_list()
+# Output: 10 -> 20 -> 30 -> None</code></pre>
+                </div>
+            </section>
+
+            <!-- 6. KEYWORD GLOSSARY -->
+            <section id="keywords" class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-book"></i> Keyword Glossary
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table style="font-size: 0.9em;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%;">Keyword</th>
+                                    <th style="width: 70%;">Definition</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Node</strong></td>
+                                    <td>A basic unit of a data structure (e.g., a linked list) which contains data and
+                                        typically links to other nodes.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Pointer</strong></td>
+                                    <td>A variable that stores the memory address of another variable, used to reference
+                                        or access data stored in memory.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Head</strong></td>
+                                    <td>The first node in a linked list; the entry point for traversal.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tail</strong></td>
+                                    <td>The last node in a linked list; its pointer is <code>None</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Traversal</strong></td>
+                                    <td>The process of visiting each node in a data structure, typically from head to
+                                        tail.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Dynamic Data Structure</strong></td>
+                                    <td>A data structure that can grow or shrink in size during program execution.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Heap Space</strong></td>
+                                    <td>A region of dynamically allocated memory managed by the OS where programs store
+                                        data structures that grow at runtime.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Garbage Collection</strong></td>
+                                    <td>An automatic memory management process that reclaims memory no longer in use by
+                                        the program.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SGSD Computer Science. All rights reserved.</p>
+    </footer>
+
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text"
+                    placeholder="Topic 1.1 slide deck — slide 9 video freezes" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4"
+                    placeholder="Describe the issue and where it shows up" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true"
+            aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5"
+                    placeholder="e.g. Add a revision game for Topic 2.1" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/nav.js"></script>
+    <script src="../../js/feedback.js"></script>
+
+    <!-- Collapsible Cards Script -->
+    <script>
+        document.querySelectorAll('.card-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.classList.toggle('collapsed');
+                const body = header.nextElementSibling;
+                body.classList.toggle('collapsed');
+            });
+        });
+    </script>
+</body>
+
+</html>
