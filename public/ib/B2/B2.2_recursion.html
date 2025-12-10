@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2.2 Recursion | Study Guide</title>
+    <meta name="description" content="IB Computer Science Topic B2.2 Recursion: Call Stack, Base Case, Recursive Algorithms (Python).">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css">
+            
+        
+    
+
+    
+</head>
+
+<body class="">
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="../../index.html">
+                    <img src="../../images/Logo.png" alt="St George's Logo" class="logo-img">
+                </a>
+                <a href="../../index.html" class="site-title-link">
+                    <span class="site-title">SGS Computer Science</span>
+                </a>
+            </div>
+
+            <nav class="main-nav" aria-label="Main navigation">
+                <a href="../../ks3/index.html" class="nav-link ">KS3</a>
+                <a href="../../igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="../../ib/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <div class="header-tools">
+                <button class="tools-toggle" aria-expanded="false" aria-controls="tools-menu">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                    <span class="sr-only">Tools menu</span>
+                </button>
+                <div class="tools-dropdown" id="tools-menu">
+                    <button class="tool-item" data-open-feedback="bug">
+                        <i class="fa-solid fa-bug"></i> Report a bug
+                    </button>
+                    <button class="tool-item" data-open-feedback="feature">
+                        <i class="fa-solid fa-lightbulb"></i> Request a feature
+                    </button>
+                    <a class="tool-item" href="../../admin.html">
+                        <i class="fa-solid fa-user-shield"></i> Admin
+                    </a>
+                </div>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
+                <i class="fa-solid fa-bars"></i>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+
+        
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../index.html">Home</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../ib/index.html">IB</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../ib/B2/index.html">B2</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../ib/B2/student_resources.html">Student Resources</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item current" aria-current="page">B2.2 Recursion</li>
+                    
+                
+            </ol>
+        </nav>
+        
+    </header>
+
+    <main class="">
+        
+
+        <script>hljs.highlightAll();</script>
+
+<style>
+    :root {
+        /* Palette specific to Recursion - Magic/Violet Theme */
+        --header-violet: #7c3aed;
+        --header-fuchsia: #c026d3;
+        --header-rose: #e11d48;
+        --header-amber: #d97706;
+
+        --bg-body: #f4f6f9;
+        --bg-card: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+
+        --tip-bg: #fffae6;
+        --tip-border: #ffb300;
+        --table-header: #ede9fe;
+
+        /* Spacing */
+        --container-width: 1000px;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .hero {
+        background: linear-gradient(135deg, var(--header-violet), #4c1d95);
+        color: white;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .hero p { font-size: 1.1rem; opacity: 0.9; }
+
+    /* Main Container */
+    .container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Cards */
+    .card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .card-body { padding: 1.5rem; }
+
+    /* Themes */
+    .theme-violet .card-header { background-color: var(--header-violet); }
+    .theme-fuchsia .card-header { background-color: var(--header-fuchsia); }
+    .theme-rose .card-header { background-color: var(--header-rose); }
+    .theme-amber .card-header { background-color: var(--header-amber); }
+    .theme-dark .card-header { background-color: #374151; }
+
+    h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-main); }
+    h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #374151; font-weight: 600; margin-top: 1rem; }
+
+    ul { list-style-position: inside; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+
+    /* Tips */
+    .tip-box {
+        background-color: var(--tip-bg);
+        border-left: 5px solid var(--tip-border);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1.5rem;
+    }
+    .tip-title { font-weight: 700; color: #b45309; }
+
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: #f3f4f6;
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #d10056;
+    }
+    pre { border-radius: 8px; overflow: hidden; margin: 1rem 0; }
+    pre code { background-color: transparent; padding: 1rem; color: inherit; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    .mb-4 { margin-bottom: 1rem; }
+</style>
+
+<!-- Header -->
+<header class="hero">
+    <div class="nav-container">
+        <h1>Recursion</h1>
+        <p>Theory, Stack Operations & Python Implementations</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- 1. THEORY (Violet) -->
+    <section id="theory" class="card theme-violet">
+        <div class="card-header">
+            <i class="fa-solid fa-brain"></i> Understanding Recursion & The Stack
+        </div>
+        <div class="card-body">
+            <p class="mb-4"><strong>Recursion</strong> is a process where a function calls itself to solve a smaller instance of the same problem. It continues until a stopping condition is met. Think of it like a set of Matryoshka dolls.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Key Components</h3>
+                    <ul>
+                        <li><strong>Base Case</strong>: The terminating scenario (e.g., <code>if n == 0</code>). Stops the recursion.</li>
+                        <li><strong>General (Recursive) Case</strong>: The logic that calls the function again with modified data (e.g., <code>n - 1</code>).</li>
+                        <li><strong>Winding</strong>: Building up the stack of calls.</li>
+                        <li><strong>Unwinding</strong>: Returning results back down the stack.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>The Role of the Stack</h3>
+                    <p>When a function calls itself, the computer pauses the current function and saves its state (variables, return address) onto the <strong>Call Stack</strong>.</p>
+                    <ul>
+                        <li><strong>Push</strong>: Each new call is pushed onto the stack.</li>
+                        <li><strong>Pop</strong>: When a Base Case is reached, functions return and are popped off one by one.</li>
+                        <li><strong>Stack Overflow</strong>: Occurs if there is no Base Case (infinite recursion fills the memory).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Why Use Recursion?</span>
+                <p>It simplifies code for problems that have repetitive sub-structures (like trees, sorting, graph traversal). While sometimes less memory-efficient than loops (iteration), it is often more readable and elegant for complex algorithms.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. BASIC CALCULATIONS (Fuchsia) -->
+    <section id="basic" class="card theme-fuchsia">
+        <div class="card-header">
+            <i class="fa-solid fa-calculator"></i> Basic Calculations
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Sum of Natural Numbers</h3>
+                    <p>Calculates <code>1 + 2 + ... + n</code>.</p>
+                    <pre><code class="python">def sum_natural(n):
+    if n <= 0:  # Base Case
+        return 0
+    else:       # Recursive Case
+        return n + sum_natural(n - 1)
+
+print(sum_natural(5)) # Output: 15</code></pre>
+                </div>
+                <div>
+                    <h3>Factorial (n!)</h3>
+                    <p>Calculates <code>n * (n-1) * ... * 1</code>.</p>
+                    <pre><code class="python">def factorial(n):
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+print(factorial(5)) # Output: 120</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. BINARY SEARCH (Rose) -->
+    <section id="search" class="card theme-rose">
+        <div class="card-header">
+            <i class="fa-solid fa-magnifying-glass"></i> Recursive Binary Search
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Binary Search finds an element in a <strong>sorted</strong> list by repeatedly halving the search interval.</p>
+
+            <pre><code class="python">def binary_search_recursive(arr, target, low, high):
+    # Base Case: Target not found
+    if low > high:
+        return -1
+    
+    mid = (low + high) // 2
+    
+    # Base Case: Target found
+    if arr[mid] == target:
+        return mid
+    
+    # Recursive Cases
+    elif arr[mid] > target:
+        return binary_search_recursive(arr, target, low, mid - 1)
+    else:
+        return binary_search_recursive(arr, target, mid + 1, high)
+
+# Usage
+nums = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+result = binary_search_recursive(nums, 23, 0, len(nums)-1)
+print(f"Index: {result}") # Output: Index: 5</code></pre>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-stopwatch"></i> Efficiency</span>
+                <p>Time Complexity: <strong>O(log n)</strong>. This is extremely fast compared to Linear Search O(n).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SORTING (Amber) -->
+    <section id="sort" class="card theme-amber">
+        <div class="card-header">
+            <i class="fa-solid fa-arrow-down-zm"></i> Recursive Sorting
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Recursive Bubble Sort</h3>
+                    <p>Not commonly used, but demonstrates the concept. It pushes the largest element to the end recursively.</p>
+                    <pre><code class="python">def bubble_sort_rec(arr, n):
+    # Base Case: 1 element is already sorted
+    if n == 1:
+        return
+    
+    # One pass to move largest to end
+    for i in range(n - 1):
+        if arr[i] > arr[i + 1]:
+            arr[i], arr[i + 1] = arr[i + 1], arr[i]
+            
+    # Recur for remaining n-1 elements
+    bubble_sort_rec(arr, n - 1)
+
+data = [64, 34, 25, 12, 22, 11, 90]
+bubble_sort_rec(data, len(data))</code></pre>
+                </div>
+                <div>
+                    <h3>Quick Sort</h3>
+                    <p>A "Divide and Conquer" algorithm. It picks a pivot and partitions the array around it.</p>
+                    <pre><code class="python">def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    else:
+        pivot = arr[0]
+        # Elements less than pivot
+        less = [x for x in arr[1:] if x <= pivot]
+        # Elements greater than pivot
+        greater = [x for x in arr[1:] if x > pivot]
+        
+        return quick_sort(less) + [pivot] + quick_sort(greater)
+
+data = [10, 7, 8, 9, 1, 5]
+sorted_data = quick_sort(data)
+print(sorted_data)</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. TOWER OF HANOI (Violet) -->
+    <section id="hanoi" class="card theme-violet">
+        <div class="card-header">
+            <i class="fa-solid fa-cubes-stacked"></i> Tower of Hanoi
+        </div>
+        <div class="card-body">
+            <p class="mb-4">The classic problem: Move <code>n</code> disks from Source to Destination node, using an Auxliary node, without ever placing a larger disk on a smaller one.</p>
+
+            <pre><code class="python">def tower_of_hanoi(n, source, auxiliary, destination):
+    if n == 1:
+        print(f"Move disk 1 from {source} to {destination}")
+        return
+        
+    # Move n-1 disks from Source to Auxiliary
+    tower_of_hanoi(n - 1, source, destination, auxiliary)
+    
+    # Move nth disk from Source to Destination
+    print(f"Move disk {n} from {source} to {destination}")
+    
+    # Move n-1 disks from Auxiliary to Destination
+    tower_of_hanoi(n - 1, auxiliary, source, destination)
+
+# Solve for 3 disks
+tower_of_hanoi(3, 'A', 'B', 'C')</code></pre>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-wand-magic-sparkles"></i> The Magic</span>
+                <p>This solution is elegantly simple (3 lines of logic) yet solves a complex problem that requires <code>2^n - 1</code> moves. It assumes we can trust the recursive calls to handle the smaller towers.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SGSD Computer Science. All rights reserved.</p>
+    </footer>
+
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+            
+        
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/nav.js"></script>
+    <script src="../../js/feedback.js"></script>
+</body>
+
+</html>

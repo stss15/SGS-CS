@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2.1 Programming Fundamentals | Study Guide</title>
+    <meta name="description" content="IB Computer Science Topic B2.1 Revision Guide: Data Types, Operators, Strings, Error Handling.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css">
+            
+        
+    
+
+    
+</head>
+
+<body class="">
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="../../index.html">
+                    <img src="../../images/Logo.png" alt="St George's Logo" class="logo-img">
+                </a>
+                <a href="../../index.html" class="site-title-link">
+                    <span class="site-title">SGS Computer Science</span>
+                </a>
+            </div>
+
+            <nav class="main-nav" aria-label="Main navigation">
+                <a href="../../ks3/index.html" class="nav-link ">KS3</a>
+                <a href="../../igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="../../ib/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <div class="header-tools">
+                <button class="tools-toggle" aria-expanded="false" aria-controls="tools-menu">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                    <span class="sr-only">Tools menu</span>
+                </button>
+                <div class="tools-dropdown" id="tools-menu">
+                    <button class="tool-item" data-open-feedback="bug">
+                        <i class="fa-solid fa-bug"></i> Report a bug
+                    </button>
+                    <button class="tool-item" data-open-feedback="feature">
+                        <i class="fa-solid fa-lightbulb"></i> Request a feature
+                    </button>
+                    <a class="tool-item" href="../../admin.html">
+                        <i class="fa-solid fa-user-shield"></i> Admin
+                    </a>
+                </div>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
+                <i class="fa-solid fa-bars"></i>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+
+        
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../index.html">Home</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../ib/index.html">IB</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../ib/B2/index.html">B2</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item">
+                            <a href="../../ib/B2/student_resources.html">Student Resources</a>
+                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        </li>
+                    
+                
+                    
+                        <li class="breadcrumb-item current" aria-current="page">B2.1 Fundamentals</li>
+                    
+                
+            </ol>
+        </nav>
+        
+    </header>
+
+    <main class="">
+        
+
+        <script>hljs.highlightAll();</script>
+
+<style>
+    :root {
+        /* Palette from Reference */
+        --header-blue: #0066cc;
+        --header-green: #00994c;
+        --header-purple: #660099;
+        --header-teal: #008080;
+        --header-red: #cc0000;
+
+        --bg-body: #f4f6f9;
+        --bg-card: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+
+        --tip-bg: #fffae6;
+        --tip-border: #ffb300;
+        --table-header: #e6f0ff;
+
+        /* Spacing */
+        --container-width: 1000px;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .hero {
+        background: linear-gradient(135deg, var(--header-blue), #004c99);
+        color: white;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Main Container */
+    .container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Cards */
+    .card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Section Colors */
+    .theme-blue .card-header { background-color: var(--header-blue); }
+    .theme-green .card-header { background-color: var(--header-green); }
+    .theme-purple .card-header { background-color: var(--header-purple); }
+    .theme-teal .card-header { background-color: var(--header-teal); }
+    .theme-red .card-header { background-color: var(--header-red); }
+    .theme-dark .card-header { background-color: #374151; }
+
+    /* Typography */
+    h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-main); }
+    h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #374151; font-weight: 600; }
+
+    /* Lists */
+    ul { list-style-position: inside; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+
+    /* Tips Box */
+    .tip-box {
+        background-color: var(--tip-bg);
+        border-left: 5px solid var(--tip-border);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1.5rem;
+    }
+
+    .tip-title { font-weight: 700; color: #b45309; margin-bottom: 0.5rem; display: block; }
+
+    /* Tables */
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e5e7eb; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th { background-color: var(--table-header); text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: #1e3a8a; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; }
+    tr:last-child td { border-bottom: none; }
+
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: #f3f4f6;
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #e11d48;
+    }
+
+    /* Code Blocks */
+    pre { border-radius: 8px; overflow: hidden; margin: 1rem 0; }
+    pre code { background-color: transparent; padding: 1rem; color: inherit; }
+
+    /* Grid specific */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .mb-4 { margin-bottom: 1rem; }
+    .badge {
+        display: inline-block; padding: 0.25em 0.6em; font-size: 0.75em;
+        font-weight: 700; line-height: 1; text-align: center;
+        white-space: nowrap; vertical-align: baseline;
+        border-radius: 0.25rem; background-color: #e5e7eb;
+        color: #374151; margin-right: 0.5rem;
+    }
+</style>
+
+<!-- Header -->
+<header class="hero">
+    <div class="nav-container">
+        <h1>Programming Fundamentals</h1>
+        <p>Quick Reference Study Guide & Revision Notes</p>
+    </div>
+</header>
+
+<main class="container">
+    <!-- 1. DATA TYPES (Blue) -->
+    <section id="data-types" class="card theme-blue">
+        <div class="card-header">
+            <i class="fa-solid fa-layer-group"></i> Data Types & Variables
+        </div>
+        <div class="card-body">
+            <p class="mb-4"><strong>Variables</strong> are containers for storing data values. In Python, variables are dynamically typed (you don't declare the type explicitly).</p>
+
+            <h3>Core Data Types</h3>
+            <div class="table-responsive mb-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Examples</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge">int</span></td>
+                            <td>Whole numbers</td>
+                            <td><code>10</code>, <code>-5</code></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge">float</span></td>
+                            <td>Decimal numbers</td>
+                            <td><code>3.14</code>, <code>2.0</code></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge">str</span></td>
+                            <td>Text strings. (Python has no separate 'char' type)</td>
+                            <td><code>"Hello"</code>, <code>'A'</code></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge">bool</span></td>
+                            <td>Logic values</td>
+                            <td><code>True</code>, <code>False</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Variable Swapping (The "Cup" Analogy)</h3>
+            <p>To swap two variables <code>a</code> and <code>b</code>, you need a temporary variable (like a third cup).</p>
+
+            <pre><code class="python">a = 5      # Cup A (Water)
+b = 10     # Cup B (Tea)
+
+temp = a   # 1. Pour 'a' into empty temp cup
+a = b      # 2. Pour 'b' into 'a'
+b = temp   # 3. Pour 'temp' into 'b'</code></pre>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Revision Tips</span>
+                <ul>
+                    <li><strong>Misconception:</strong> Don't confuse assignment (<code>=</code>) with equality comparison (<code>==</code>).</li>
+                    <li><strong>Exam Tip:</strong> If asked to "declare" a variable in pseudocode, Python just assigns a value (e.g., <code>score = 0</code>).</li>
+                    <li><strong>Watch Out:</strong> <code>"5"</code> is a String, <code>5</code> is an Integer. You cannot add them directly!</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. OPERATORS (Green) -->
+    <section id="operators" class="card theme-green">
+        <div class="card-header">
+            <i class="fa-solid fa-calculator"></i> Operators
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Operators perform operations on variables and values. Python has specific symbols for arithmetic, comparison, and logic.</p>
+
+            <h3>Arithmetic Operators</h3>
+            <div class="table-responsive mb-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Operator</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>+</code></td>
+                            <td>Add</td>
+                            <td><code>5 + 2</code> &rarr; <code>7</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>-</code></td>
+                            <td>Subtract</td>
+                            <td><code>5 - 2</code> &rarr; <code>3</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>*</code></td>
+                            <td>Multiply</td>
+                            <td><code>5 * 2</code> &rarr; <code>10</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/</code></td>
+                            <td>Float Division (Decimal result)</td>
+                            <td><code>7 / 2</code> &rarr; <code>3.5</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>//</code></td>
+                            <td>Floor Division (Integer result)</td>
+                            <td><code>7 // 2</code> &rarr; <code>3</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>%</code></td>
+                            <td>Modulus (Remainder)</td>
+                            <td><code>7 % 2</code> &rarr; <code>1</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>**</code></td>
+                            <td>Exponentiation (Power)</td>
+                            <td><code>2 ** 3</code> &rarr; <code>8</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Relational Operators</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><code>==</code></td>
+                                    <td>Equal to</td>
+                                </tr>
+                                <tr>
+                                    <td><code>!=</code></td>
+                                    <td>Not equal to</td>
+                                </tr>
+                                <tr>
+                                    <td><code>&lt;</code></td>
+                                    <td>Less than</td>
+                                </tr>
+                                <tr>
+                                    <td><code>&gt;</code></td>
+                                    <td>Greater than</td>
+                                </tr>
+                                <tr>
+                                    <td><code>&lt;=</code></td>
+                                    <td>Less or Equal</td>
+                                </tr>
+                                <tr>
+                                    <td><code>&gt;=</code></td>
+                                    <td>Greater or Equal</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <h3>Logical Operators</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><code>and</code></td>
+                                    <td>Both must be true</td>
+                                </tr>
+                                <tr>
+                                    <td><code>or</code></td>
+                                    <td>At least one is true</td>
+                                </tr>
+                                <tr>
+                                    <td><code>not</code></td>
+                                    <td>Invert value (True &rarr; False)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Critical Differences</span>
+                <ul>
+                    <li><code>/</code> <em>always</em> creates a float. <code>//</code> <em>always</em> rounds down to an int.</li>
+                    <li><strong>Short-circuiting:</strong> <code>or</code> stops early if the first condition is True.</li>
+                    <li><strong>BODMAS/BIDMAS</strong> applies to programming too!</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. STRING MANIPULATION (Purple) -->
+    <section id="strings" class="card theme-purple">
+        <div class="card-header">
+            <i class="fa-solid fa-font"></i> String Manipulation
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Strings are sequences of characters. They are <strong>immutable</strong> (cannot be changed in place).</p>
+
+            <h3>Slicing Syntax: <code>string[start : stop : step]</code></h3>
+            <pre><code class="python">txt = "Computer"
+# Indices: 01234567
+
+print(txt[0:3])   # "Com" (Indices 0, 1, 2 - STOP excluded)
+print(txt[3:])    # "puter" (From 3 to end)
+print(txt[-1])    # "r" (Last character)</code></pre>
+
+            <h3>Common Methods</h3>
+            <div class="table-responsive">
+                <table>
+                    <tr>
+                        <td><code>len(s)</code></td>
+                        <td>Returns number of characters (including spaces).</td>
+                    </tr>
+                    <tr>
+                        <td><code>s.strip()</code></td>
+                        <td>Removes whitespace from start and end.</td>
+                    </tr>
+                    <tr>
+                        <td><code>s.replace(old, new)</code></td>
+                        <td>Replaces all occurrences of a substring.</td>
+                    </tr>
+                    <tr>
+                        <td><code>s + s</code></td>
+                        <td>Concatenation (joining strings).</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Note</span>
+                <p>Slicing <code>[a:b]</code> includes <code>a</code> but <strong>excludes</strong> <code>b</code>. Also, string methods return a <em>new</em> string; they don't modify the original.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ERROR HANDLING (Teal) -->
+    <section id="errors" class="card theme-teal">
+        <div class="card-header">
+            <i class="fa-solid fa-triangle-exclamation"></i> Error Handling
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Exception handling prevents programs from crashing when runtime errors occur (like dividing by zero).</p>
+
+            <pre><code class="python">try:
+    num = int(input("Enter number: "))
+    result = 100 / num
+except ValueError:
+    # Runs if user types text instead of a number
+    print("That is not a valid number!")
+except ZeroDivisionError:
+    # Runs if user types 0
+    print("Cannot divide by zero!")
+except Exception as e:
+    # Generic catch-all
+    print(f"Unknown error: {e}")
+finally:
+    # ALWAYS runs (for cleanup)
+    print("Execution finished.")</code></pre>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Tips</span>
+                <ul>
+                    <li><strong>Syntax Errors</strong> happen before code runs. <strong>Exceptions</strong> happen <em>during</em> execution.</li>
+                    <li>Always catch specific errors (e.g. <code>ValueError</code>) before generic ones.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. DEBUGGING (Red) -->
+    <section id="debugging" class="card theme-red">
+        <div class="card-header">
+            <i class="fa-solid fa-bug"></i> Debugging & Trace Tables
+        </div>
+        <div class="card-body">
+            <p class="mb-4"><strong>Trace tables</strong> are manual checks of logic. <strong>Breakpoints</strong> allow you to pause execution in an IDE.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Algorithm: Linear Search</h3>
+                    <pre><code class="python">nums = [10, 50, 30]
+target = 50
+found = False
+for i in range(len(nums)):
+    if nums[i] == target:
+        found = True
+        break</code></pre>
+                </div>
+                <div>
+                    <h3>Trace Table</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>step</th>
+                                    <th>i</th>
+                                    <th>nums[i]</th>
+                                    <th>nums[i]==target</th>
+                                    <th>found</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Init</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>False</td>
+                                </tr>
+                                <tr>
+                                    <td>Loop 1</td>
+                                    <td>0</td>
+                                    <td>10</td>
+                                    <td>False</td>
+                                    <td>False</td>
+                                </tr>
+                                <tr>
+                                    <td>Loop 2</td>
+                                    <td>1</td>
+                                    <td>50</td>
+                                    <td><strong>True</strong></td>
+                                    <td><strong>True</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Break</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>True</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- GLOSSARY (Dark) -->
+    <section id="keywords" class="card theme-dark">
+        <div class="card-header">
+            <i class="fa-solid fa-book"></i> Keyword Glossary
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Keyword</th>
+                            <th style="width: 70%;">Definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Part 1 -->
+                        <tr>
+                            <td><strong>Variable</strong></td>
+                            <td>A named memory location used to store a value that can be changed during execution.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Type</strong></td>
+                            <td>Specifies what kind of data a variable can hold (e.g., Integer, Boolean).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Boolean</strong></td>
+                            <td>A data type used to store one of two possible values: true or false.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Char</strong></td>
+                            <td>A data type used to store a single character, digit, or symbol.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Increment</strong></td>
+                            <td>To increase a value by another value (usually by one).</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Decrement</strong></td>
+                            <td>To decrease a value by another value (usually by one).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Arithmetic Operator</strong></td>
+                            <td>A character that is used to perform a calculation.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Boolean Operator</strong></td>
+                            <td>A character that represents a specific logical operation that is used to produce a true or false outcome.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Relational Operator</strong></td>
+                            <td>An operator used to compare values or expressions.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Binary Operator</strong></td>
+                            <td>An operator that requires two operands (values).</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Unary Operator</strong></td>
+                            <td>An operator that requires one single operand.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Operand</strong></td>
+                            <td>A value used in a mathematical expression.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Integer Division</strong></td>
+                            <td>Division in which the fractional part is discarded.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Floating-point Division</strong></td>
+                            <td>Division in which the fractional part is kept.</td>
+                        </tr>
+                        <!-- Part 2 -->
+                         <tr>
+                            <td><strong>Concatenation</strong></td>
+                            <td>Joining strings together.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SGSD Computer Science. All rights reserved.</p>
+    </footer>
+
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+            
+        
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/nav.js"></script>
+    <script src="../../js/feedback.js"></script>
+</body>
+
+</html>

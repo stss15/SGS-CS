@@ -1,0 +1,339 @@
+---
+layout: layouts/base.njk
+title: B2.5 File Processing | Study Guide
+description: "IB Computer Science Topic B2.5 File Processing: Reading, Writing, Parallel Arrays."
+is_revision_guide: true
+activeSection: ib
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB", href: "ib/index.html" }
+  - { label: "B2", href: "ib/B2/index.html" }
+  - { label: "Student Resources", href: "ib/B2/student_resources.html" }
+  - { label: "B2.5 File Processing", href: "ib/B2/B2.5_revision.html" }
+extraStyles:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css
+scripts:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js
+---
+<script>hljs.highlightAll();</script>
+
+<style>
+    :root {
+        /* Palette specific to B2.5 Data - Slate/Blue/Gray */
+        --header-slate: #334155;
+        --header-sky: #0284c7;
+        --header-emerald: #059669;
+        --header-rose: #e11d48;
+
+        --bg-body: #f4f6f9;
+        --bg-card: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+
+        --tip-bg: #fffae6;
+        --tip-border: #ffb300;
+        --table-header: #f1f5f9;
+
+        /* Spacing */
+        --container-width: 1000px;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .hero {
+        background: linear-gradient(135deg, var(--header-slate), #1e293b);
+        color: white;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .hero p { font-size: 1.1rem; opacity: 0.9; }
+
+    /* Main Container */
+    .container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Cards */
+    .card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-body { padding: 1.5rem; }
+
+    /* Themes */
+    .theme-slate .card-header { background-color: var(--header-slate); }
+    .theme-sky .card-header { background-color: var(--header-sky); }
+    .theme-emerald .card-header { background-color: var(--header-emerald); }
+    .theme-rose .card-header { background-color: var(--header-rose); }
+    .theme-dark .card-header { background-color: #374151; }
+
+    /* Typography */
+    h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-main); }
+    h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #374151; font-weight: 600; margin-top: 1rem; }
+
+    ul { list-style-position: inside; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+
+    /* Tips */
+    .tip-box {
+        background-color: var(--tip-bg);
+        border-left: 5px solid var(--tip-border);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1.5rem;
+    }
+    .tip-title { font-weight: 700; color: #b45309; }
+
+    /* Tables */
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th { background-color: var(--table-header); text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: #334155; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; }
+    tr:last-child td { border-bottom: none; }
+
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: #f3f4f6;
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #d10056;
+    }
+    pre { border-radius: 8px; overflow: hidden; margin: 1rem 0; }
+    pre code { background-color: transparent; padding: 1rem; color: inherit; }
+
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    .mb-4 { margin-bottom: 1rem; }
+</style>
+
+<!-- Header -->
+<header class="hero">
+    <div class="nav-container">
+        <h1>File Processing</h1>
+        <p>Persistence, I/O Operations, and Data Handling</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- 1. CONCEPTS (Slate) -->
+    <section id="concepts" class="card theme-slate">
+        <div class="card-header">
+            <i class="fa-solid fa-database"></i> Core Concepts
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Persistence</h3>
+                    <p>When a program closes, variables in RAM are lost. <strong>Files</strong> provide persistence, allowing data to be saved (written) and reloaded (read) later.</p>
+                </div>
+                <div>
+                    <h3>File & Buffers</h3>
+                    <p>A <strong>Text File</strong> is a sequence of characters structured in lines. A <strong>Buffer</strong> is a temporary memory area used to move data between the program and the file system.</p>
+                </div>
+            </div>
+
+            <h3>File Modes</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mode</th>
+                            <th>Description</th>
+                            <th>Behavior if file exists</th>
+                            <th>Behavior if file doesn't exist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>'r'</code></td>
+                            <td><strong>Read</strong></td>
+                            <td>Reads from start.</td>
+                            <td style="color: red;">Error (File Not Found)</td>
+                        </tr>
+                        <tr>
+                            <td><code>'w'</code></td>
+                            <td><strong>Write</strong></td>
+                            <td style="color: red;">OVERWRITES (deletes content).</td>
+                            <td>Creates new file.</td>
+                        </tr>
+                        <tr>
+                            <td><code>'a'</code></td>
+                            <td><strong>Append</strong></td>
+                            <td>Adds to end.</td>
+                            <td>Creates new file.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. READING (Sky) -->
+    <section id="reading" class="card theme-sky">
+        <div class="card-header">
+            <i class="fa-solid fa-glasses"></i> Reading Files
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Using the <code>with open()</code> statement is best practice. It automatically closes the file, preventing resource leaks.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Line by Line (Preferred)</h3>
+                    <pre><code class="python"># Efficient for big files
+with open("data.txt", "r") as f:
+    for line in f:
+        print(line.strip())</code></pre>
+                </div>
+                <div>
+                    <h3>Read All Lines</h3>
+                    <pre><code class="python"># Loads entire file into a list
+with open("data.txt", "r") as f:
+    lines = f.readlines()
+    
+# Process list
+print(lines[0]) </code></pre>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> The newline character</span>
+                <p>Lines in a file end with <code>\n</code>. Use <code>.strip()</code> to remove it when reading strings.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. WRITING (Emerald) -->
+    <section id="writing" class="card theme-emerald">
+        <div class="card-header">
+            <i class="fa-solid fa-pen-nib"></i> Writing & Appending
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Writing (Overwriting)</h3>
+                    <pre><code class="python"># CAUTION: Deletes old content!
+with open("output.txt", "w") as f:
+    f.write("First Line\n")
+    f.write("Second Line\n")</code></pre>
+                </div>
+                <div>
+                    <h3>Appending</h3>
+                    <pre><code class="python"># Safe: Add to end
+with open("log.txt", "a") as f:
+    f.write("New Log Entry\n")</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. PARALLEL ARRAYS (Rose) -->
+    <section id="parallel" class="card theme-rose">
+        <div class="card-header">
+            <i class="fa-solid fa-table"></i> Processing Parallel Arrays
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Often data is stored in separate files (e.g., <code>names.txt</code> and <code>scores.txt</code>) or columns that relate to each other by index.</p>
+
+            <h3>Scenario: Loading Sales Data</h3>
+            <pre><code class="python">names = []
+sales = []
+
+# Assuming a CSV format: "Name,Sales"
+with open("sales_data.txt", "r") as file:
+    for line in file:
+        parts = line.strip().split(",")
+        names.append(parts[0])
+        sales.append(int(parts[1]))
+
+# Now we can process them together
+for i in range(len(names)):
+    print(f"{names[i]} sold {sales[i]} units")</code></pre>
+
+            <h3>Scenario: Finding the Top Seller</h3>
+            <pre><code class="python">max_sales = -1
+winner_index = -1
+
+for i in range(len(sales)):
+    if sales[i] > max_sales:
+        max_sales = sales[i]
+        winner_index = i
+
+print(f"Winner: {names[winner_index]}")</code></pre>
+        </div>
+    </section>
+
+    <!-- GLOSSARY (Dark) -->
+    <section id="keywords" class="card theme-dark">
+        <div class="card-header">
+            <i class="fa-solid fa-book"></i> Keyword Glossary
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Keyword</th>
+                            <th style="width: 70%;">Definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>File Processing</strong></td>
+                            <td>The manipulation of data stored in a file (Reading, Writing, Appending).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Persistence</strong></td>
+                            <td>Data remaining available in storage after the program terminates.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Buffer</strong></td>
+                            <td>Temporary memory used to move data between program and file system.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Text File</strong></td>
+                            <td>A structured sequence of lines of electronic text.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Open Mode</strong></td>
+                            <td>Permission setting ('r', 'w', 'a') used when opening a file.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Parallel Arrays</strong></td>
+                            <td>Two or more arrays of the same size where data at the same index is related.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CSV</strong></td>
+                            <td>Comma Separated Values - a common plain text format.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>

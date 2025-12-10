@@ -1,0 +1,388 @@
+---
+layout: layouts/base.njk
+title: B2.4 programming algorithms | Study Guide
+description: "IB Computer Science Topic B2.4 Algorithms: Big O, Searching, Sorting, Recursion."
+is_revision_guide: true
+activeSection: ib
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB", href: "ib/index.html" }
+  - { label: "B2", href: "ib/B2/index.html" }
+  - { label: "Student Resources", href: "ib/B2/student_resources.html" }
+  - { label: "B2.4 Algorithms", href: "ib/B2/B2.4_revision.html" }
+extraStyles:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css
+scripts:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js
+---
+<script>hljs.highlightAll();</script>
+
+<style>
+    :root {
+        /* Palette specific to B2.4 Algorithms - Teal/Green/Red/Amber */
+        --header-teal: #0d9488;
+        --header-green: #16a34a;
+        --header-red: #dc2626;
+        --header-amber: #d97706;
+        --header-blue: #2563eb;
+
+        --bg-body: #f4f6f9;
+        --bg-card: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+
+        --tip-bg: #fffae6;
+        --tip-border: #ffb300;
+        --table-header: #f0fdf4;
+
+        /* Spacing */
+        --container-width: 1000px;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .hero {
+        background: linear-gradient(135deg, var(--header-teal), #0f766e);
+        color: white;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .hero p { font-size: 1.1rem; opacity: 0.9; }
+
+    /* Main Container */
+    .container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Cards */
+    .card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-body { padding: 1.5rem; }
+
+    /* Themes */
+    .theme-teal .card-header { background-color: var(--header-teal); }
+    .theme-green .card-header { background-color: var(--header-green); }
+    .theme-red .card-header { background-color: var(--header-red); }
+    .theme-amber .card-header { background-color: var(--header-amber); }
+    .theme-blue .card-header { background-color: var(--header-blue); }
+    .theme-dark .card-header { background-color: #374151; }
+
+    /* Typography */
+    h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-main); }
+    h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #374151; font-weight: 600; margin-top: 1rem; }
+
+    ul { list-style-position: inside; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+
+    /* Tips */
+    .tip-box {
+        background-color: var(--tip-bg);
+        border-left: 5px solid var(--tip-border);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1.5rem;
+    }
+    .tip-title { font-weight: 700; color: #b45309; }
+
+    /* Tables */
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th { background-color: var(--table-header); text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: #0f766e; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; }
+    tr:last-child td { border-bottom: none; }
+
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: #f3f4f6;
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #d10056;
+    }
+    pre { border-radius: 8px; overflow: hidden; margin: 1rem 0; }
+    pre code { background-color: transparent; padding: 1rem; color: inherit; }
+
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    .mb-4 { margin-bottom: 1rem; }
+</style>
+
+<!-- Header -->
+<header class="hero">
+    <div class="nav-container">
+        <h1>Programming Algorithms</h1>
+        <p>Complexity, Search, Sort & Recursion</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- 1. BIG O NOTATION (Teal) -->
+    <section id="big-o" class="card theme-teal">
+        <div class="card-header">
+            <i class="fa-solid fa-chart-line"></i> Big O Notation
+        </div>
+        <div class="card-body">
+            <p class="mb-4"><strong>Big O</strong> notation describes the <em>worst-case</em> performance of an algorithm as the input size (n) grows. It measures scalability.</p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Notation</th>
+                            <th>Name</th>
+                            <th>Speed</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>O(1)</code></td>
+                            <td>Constant</td>
+                            <td style="color: green;">Excellent</td>
+                            <td>Accessing an array index.</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(log n)</code></td>
+                            <td>Logarithmic</td>
+                            <td style="color: olive;">Good</td>
+                            <td>Binary Search.</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(n)</code></td>
+                            <td>Linear</td>
+                            <td style="color: orange;">Fair</td>
+                            <td>Linear Search (looping once).</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(n²)</code></td>
+                            <td>Quadratic</td>
+                            <td style="color: red;">Poor</td>
+                            <td>Bubble Sort (nested loops).</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(2ⁿ)</code></td>
+                            <td>Exponential</td>
+                            <td style="color: darkred;">Terrible</td>
+                            <td>Recursive Fibonacci (naive).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Time Complexity</h3>
+                    <p>How <strong>fast</strong> the algorithm is. We care about the number of steps.</p>
+                </div>
+                <div>
+                    <h3>Space Complexity</h3>
+                    <p>How much <strong>memory</strong> the algorithm needs. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. SEARCHING (Green) -->
+    <section id="searching" class="card theme-green">
+        <div class="card-header">
+            <i class="fa-solid fa-magnifying-glass"></i> Searching Algorithms
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Linear Search O(n)</h3>
+                    <p>Checks every element one by one. Works on unsorted data.</p>
+                    <pre><code class="python">def linear_search(arr, key):
+    for i in range(len(arr)):
+        if arr[i] == key:
+            return i
+    return -1</code></pre>
+                </div>
+                <div>
+                    <h3>Binary Search O(log n)</h3>
+                    <p>Divide and conquer. <strong>Data must be sorted!</strong></p>
+                    <pre><code class="python">def binary_search(arr, key):
+    lower = 0
+    upper = len(arr) - 1
+    
+    while lower <= upper:
+        mid = (lower + upper) // 2
+        if arr[mid] == key:
+            return mid
+        elif arr[mid] < key:
+            lower = mid + 1
+        else:
+            upper = mid - 1
+    return -1</code></pre>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Exam Tip</span>
+                <p>Always check if the array is <strong>sorted</strong>. If it is, Binary Search is preferred for large datasets. If not, you must use Linear Search (or sort it first).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SORTING (Red) -->
+    <section id="sorting" class="card theme-red">
+        <div class="card-header">
+            <i class="fa-solid fa-arrow-down-az"></i> Sorting Algorithms
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Bubble Sort O(n²)</h3>
+                    <p>Repeatedly swaps adjacent elements if they are wrong. "Bubbles" largest to the end.</p>
+                    <pre><code class="python">def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        swapped = False
+        # Last i elements are already sorted
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                swapped = True
+        if not swapped:
+            break</code></pre>
+                </div>
+                <div>
+                    <h3>Selection Sort O(n²)</h3>
+                    <p>Finds the minimum element and moves it to the sorted part.</p>
+                    <pre><code class="python">def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        # Swap found min with first
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]</code></pre>
+                </div>
+            </div>
+
+            <h3>Quick Sort O(n log n)</h3>
+            <p>Divide and conquer using a pivot. Much faster for large datasets.</p>
+            <pre><code class="python">def quick_sort(arr):
+    if len(arr) <= 1: return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)</code></pre>
+        </div>
+    </section>
+
+    <!-- 4. RECURSION (Blue) -->
+    <section id="recursion" class="card theme-blue">
+        <div class="card-header">
+            <i class="fa-solid fa-infinity"></i> Recursion (HL)
+        </div>
+        <div class="card-body">
+            <p class="mb-4"><strong>Recursion</strong> is when a function calls itself. It must have:</p>
+            <ul>
+                <li><strong>Base Case</strong>: Stops the recursion.</li>
+                <li><strong>General Case</strong>: Calls itself continuously moving towards the base case.</li>
+            </ul>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Factorial (n!)</h3>
+                    <pre><code class="python">def factorial(n):
+    if n == 1:
+        return 1
+    else:
+        return n * factorial(n-1)</code></pre>
+                </div>
+                <div>
+                    <h3>Fibonacci Sequence</h3>
+                    <pre><code class="python">def fib(n):
+    if n <= 0: return 0
+    elif n == 1: return 1
+    else:
+        return fib(n-1) + fib(n-2)</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GLOSSARY (Dark) -->
+    <section id="keywords" class="card theme-dark">
+        <div class="card-header">
+            <i class="fa-solid fa-book"></i> Keyword Glossary
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Keyword</th>
+                            <th style="width: 70%;">Definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Time Complexity</strong></td>
+                            <td>A measure of how many steps an algorithm takes to run based on input size.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Space Complexity</strong></td>
+                            <td>A measure of how much standard memory an algorithm needs to run.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Linear Search</strong></td>
+                            <td>Sequential search, checking every element (O(n)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Binary Search</strong></td>
+                            <td>Efficient search on stored data, halving the search space each time (O(log n)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bubble Sort</strong></td>
+                            <td>Sorts by comparing adjacent items and swapping them (O(n²)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Selection Sort</strong></td>
+                            <td>Sorts by repeatedly finding the minimum element (O(n²)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recursion</strong></td>
+                            <td>A function calling itself until a base case is met.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Base Case</strong></td>
+                            <td>The condition that stops the recursion.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>

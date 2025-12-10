@@ -188,6 +188,66 @@ BREADCRUMB_MAPPINGS = {
             {'label': 'L4', 'href': 'ks3/year7/unit2/L4_public_vs_private_data.html'},
         ]
     },
+    # IB B2 Student Resources
+    'ib/B2/student_resources.njk': {
+        'section': 'ib',
+        'breadcrumbs': [
+            {'label': 'Home', 'href': 'index.html'},
+            {'label': 'IB', 'href': 'ib/index.html'},
+            {'label': 'B2', 'href': 'ib/B2/index.html'},
+            {'label': 'Student Resources', 'href': 'ib/B2/student_resources.html'},
+        ]
+    },
+    'ib/B2/B2.1_revision.njk': {
+        'section': 'ib',
+        'breadcrumbs': [
+            {'label': 'Home', 'href': 'index.html'},
+            {'label': 'IB', 'href': 'ib/index.html'},
+            {'label': 'B2', 'href': 'ib/B2/index.html'},
+            {'label': 'Student Resources', 'href': 'ib/B2/student_resources.html'},
+            {'label': 'B2.1 Fundamentals', 'href': 'ib/B2/B2.1_revision.html'},
+        ]
+    },
+    'ib/B2/B2.2_revision.njk': {
+        'section': 'ib',
+        'breadcrumbs': [
+            {'label': 'Home', 'href': 'index.html'},
+            {'label': 'IB', 'href': 'ib/index.html'},
+            {'label': 'B2', 'href': 'ib/B2/index.html'},
+            {'label': 'Student Resources', 'href': 'ib/B2/student_resources.html'},
+            {'label': 'B2.2 Data Structures', 'href': 'ib/B2/B2.2_revision.html'},
+        ]
+    },
+    'ib/B2/B2.2_recursion.njk': {
+        'section': 'ib',
+        'breadcrumbs': [
+            {'label': 'Home', 'href': 'index.html'},
+            {'label': 'IB', 'href': 'ib/index.html'},
+            {'label': 'B2', 'href': 'ib/B2/index.html'},
+            {'label': 'Student Resources', 'href': 'ib/B2/student_resources.html'},
+            {'label': 'B2.2 Recursion', 'href': 'ib/B2/B2.2_recursion.html'},
+        ]
+    },
+    'ib/B2/B2.4_revision.njk': {
+        'section': 'ib',
+        'breadcrumbs': [
+            {'label': 'Home', 'href': 'index.html'},
+            {'label': 'IB', 'href': 'ib/index.html'},
+            {'label': 'B2', 'href': 'ib/B2/index.html'},
+            {'label': 'Student Resources', 'href': 'ib/B2/student_resources.html'},
+            {'label': 'B2.4 Algorithms', 'href': 'ib/B2/B2.4_revision.html'},
+        ]
+    },
+    'ib/B2/B2.5_revision.njk': {
+        'section': 'ib',
+        'breadcrumbs': [
+            {'label': 'Home', 'href': 'index.html'},
+            {'label': 'IB', 'href': 'ib/index.html'},
+            {'label': 'B2', 'href': 'ib/B2/index.html'},
+            {'label': 'Student Resources', 'href': 'ib/B2/student_resources.html'},
+            {'label': 'B2.5 File Processing', 'href': 'ib/B2/B2.5_revision.html'},
+        ]
+    },
 }
 
 

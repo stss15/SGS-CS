@@ -1,0 +1,411 @@
+---
+layout: layouts/base.njk
+title: B2.2 Data Structures | Study Guide
+description: "IB Computer Science Topic B2.2 Data Structures: Static/Dynamic, Arrays, Stacks, Queues."
+is_revision_guide: true
+activeSection: ib
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB", href: "ib/index.html" }
+  - { label: "B2", href: "ib/B2/index.html" }
+  - { label: "Student Resources", href: "ib/B2/student_resources.html" }
+  - { label: "B2.2 Data Structures", href: "ib/B2/B2.2_revision.html" }
+extraStyles:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css
+scripts:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js
+---
+<script>hljs.highlightAll();</script>
+
+<style>
+    :root {
+        /* Palette specific to B2.2 */
+        --header-indigo: #4338ca;
+        --header-cyan: #06b6d4;
+        --header-orange: #ea580c;
+        --header-pink: #db2777;
+
+        --bg-body: #f4f6f9;
+        --bg-card: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+
+        --tip-bg: #fffae6;
+        --tip-border: #ffb300;
+        --table-header: #e0e7ff;
+
+        /* Spacing */
+        --container-width: 1000px;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .hero {
+        background: linear-gradient(135deg, var(--header-indigo), #312e81);
+        color: white;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Main Container */
+    .container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Cards */
+    .card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Themes */
+    .theme-indigo .card-header { background-color: var(--header-indigo); }
+    .theme-cyan .card-header { background-color: var(--header-cyan); }
+    .theme-orange .card-header { background-color: var(--header-orange); }
+    .theme-pink .card-header { background-color: var(--header-pink); }
+    .theme-dark .card-header { background-color: #374151; }
+
+    /* Typography */
+    h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-main); }
+    h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #374151; font-weight: 600; margin-top: 1rem; }
+
+    ul { list-style-position: inside; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+
+    /* Tips */
+    .tip-box {
+        background-color: var(--tip-bg);
+        border-left: 5px solid var(--tip-border);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1.5rem;
+    }
+    .tip-title { font-weight: 700; color: #b45309; }
+
+    /* Tables */
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th { background-color: var(--table-header); text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: #312e81; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; }
+    tr:last-child td { border-bottom: none; }
+
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: #f3f4f6;
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #d10056;
+    }
+    pre { border-radius: 8px; overflow: hidden; margin: 1rem 0; }
+    pre code { background-color: transparent; padding: 1rem; color: inherit; }
+
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    
+    .mb-4 { margin-bottom: 1rem; }
+</style>
+
+<!-- Header -->
+<header class="hero">
+    <div class="nav-container">
+        <h1>Data Structures</h1>
+        <p>Arrays, Lists, Stacks, and Queues</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- 1. STATIC VS DYNAMIC (Indigo) -->
+    <section id="static-dynamic" class="card theme-indigo">
+        <div class="card-header">
+            <i class="fa-solid fa-table-columns"></i> Static vs Dynamic Data Structures
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Data structures organize data for efficient access and manipulation. The main distinction is how memory is allocated.</p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Static (e.g., Array)</th>
+                            <th>Dynamic (e.g., List/ArrayList)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Size</strong></td>
+                            <td>Fixed. Must be defined at creation.</td>
+                            <td>Flexible. Grows/shrinks at runtime.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory</strong></td>
+                            <td>Contiguous (blocks next to each other).</td>
+                            <td>Chained (can be scattered).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Access</strong></td>
+                            <td>Direct Access (via index).</td>
+                            <td>Sometimes Sequential (depending on implementation).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pros</strong></td>
+                            <td>Fast extraction, no overflow checks needed.</td>
+                            <td>Memory efficient (no wasted space).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Exam Tip</span>
+                <p>Static structures risk <strong>Overflow</strong> (not enough space) or waste memory. Dynamic structures manage memory automatically but can be harder to implement from scratch.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. ARRAYS & LISTS (Cyan) -->
+    <section id="lists-python" class="card theme-cyan">
+        <div class="card-header">
+            <i class="fa-brands fa-python"></i> Arrays & Lists (Python)
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Python uses <strong>Lists</strong> which are dynamic arrays. They can hold mixed data types and resize automatically.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>1D Lists</h3>
+                    <pre><code class="python"># Creation
+grades = [70, 85, 90]
+empty = []
+
+# Methods
+grades.append(60)     # Add to end
+grades.insert(0, 50)  # Add at index 0
+grades.remove(85)     # Remove by value
+val = grades.pop()    # Remove & return last
+
+# Access
+print(grades[0])      # Direct access</code></pre>
+                </div>
+                <div>
+                    <h3>2D Lists (Matrices)</h3>
+                    <pre><code class="python"># 3x3 Grid of Zeros
+matrix = [[0 for i in range(3)] 
+             for j in range(3)]
+
+# Access: list[row][col]
+matrix[0][1] = 5  # Row 0, Col 1
+val = matrix[2][2]
+
+# Traversal
+for row in range(3):
+    for col in range(3):
+        print(matrix[row][col])</code></pre>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-triangle-exclamation"></i> Common Mistake</span>
+                <p>When creating 2D lists, avoid <code>[[0]*3]*3</code>. This creates references to the <em>same</em> internal list. Changing one row will change them all! Use list comprehension (as shown above) to create independent rows.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. STACKS (Orange) -->
+    <section id="stacks" class="card theme-orange">
+        <div class="card-header">
+            <i class="fa-solid fa-layer-group"></i> Stacks (LIFO Theory)
+        </div>
+        <div class="card-body">
+            <p class="mb-4">A <strong>Stack</strong> is an ephemeral data structure that works on the <strong>LIFO</strong> (Last In First Out) principle. Think of a stack of plates.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Core Operations</h3>
+                    <ul>
+                        <li><code>push(item)</code>: Add item to the top.</li>
+                        <li><code>pop()</code>: Remove and return the top item.</li>
+                        <li><code>peek()</code>: View the top item without removing.</li>
+                        <li><code>isEmpty()</code>: Check if stack has no items.</li>
+                        <li><code>isFull()</code>: Check if stack reached limit (static only).</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Real-World Uses</h3>
+                    <ul>
+                        <li><strong>Undo button</strong>: Reverses most recent action.</li>
+                        <li><strong>Browser Back button</strong>: LIFO history.</li>
+                        <li><strong>Interrupt Handling</strong>: CPU saves current state to stack before handling interrupt.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Pseudocode Implementation</h3>
+            <pre><code class="plaintext"># Push Operation
+if isFull():
+    print("Stack Overflow")
+else:
+    topPointer = topPointer + 1
+    stack[topPointer] = newItem
+
+# Pop Operation
+if isEmpty():
+    print("Stack Underflow")
+else:
+    item = stack[topPointer]
+    topPointer = topPointer - 1
+    return item</code></pre>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Stack Pointer</span>
+                <p>The <strong>Stack Pointer</strong> always points to the top element (or the next free space, depending on implementation). If <code>topPointer == -1</code>, the stack is empty.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. QUEUES (Pink) -->
+    <section id="queues" class="card theme-pink">
+        <div class="card-header">
+            <i class="fa-solid fa-people-line"></i> Queues (FIFO Theory)
+        </div>
+        <div class="card-body">
+            <p class="mb-4">A <strong>Queue</strong> works on the <strong>FIFO</strong> (First In First Out) principle. Think of a line at a supermarket.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Core Operations</h3>
+                    <ul>
+                        <li><code>enqueue(item)</code>: Add item to the <strong>Rear</strong>.</li>
+                        <li><code>dequeue()</code>: Remove item from the <strong>Front</strong>.</li>
+                        <li><code>isEmpty()</code>: Check if number of items is 0.</li>
+                        <li><code>isFull()</code>: Check if queue is at capacity.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Real-World Uses</h3>
+                    <ul>
+                        <li><strong>Printer Queue</strong>: Documents printed in order sent.</li>
+                        <li><strong>Keyboard Buffer</strong>: Characters appear in order typed.</li>
+                        <li><strong>Process Scheduling</strong>: CPU handles tasks in order.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Pseudocode Implementation</h3>
+            <pre><code class="plaintext"># Enqueue (Linear)
+if isFull():
+    error("Queue Full")
+else:
+    rearPointer = rearPointer + 1
+    queue[rearPointer] = newItem
+
+# Dequeue (Linear)
+if isEmpty():
+    error("Queue Empty")
+else:
+    item = queue[frontPointer]
+    frontPointer = frontPointer + 1
+    return item</code></pre>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-arrows-spin"></i> The Circular Queue</span>
+                <p>In a linear queue, dequeueing leaves wasted space at the front. A <strong>Circular Queue</strong> wraps the pointers around: when the rear reaches the end, it goes back to the start (index 0) if there is space.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- GLOSSARY (Dark) -->
+    <section id="keywords" class="card theme-dark">
+        <div class="card-header">
+            <i class="fa-solid fa-book"></i> Keyword Glossary
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Keyword</th>
+                            <th style="width: 70%;">Definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Static Data Structure</strong></td>
+                            <td>A data structure with predefined fixed size and elements stored in contiguous memory locations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dynamic Data Structure</strong></td>
+                            <td>A data structure that can grow or decrease at runtime; elements may not be contiguous.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Direct Access</strong></td>
+                            <td>Retrieving elements directly using their index (position).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sequential Access</strong></td>
+                            <td>Checking elements one after another from the beginning.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stack</strong></td>
+                            <td>LIFO (Last In First Out) data structure.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Queue</strong></td>
+                            <td>FIFO (First In First Out) data structure.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stack Pointer</strong></td>
+                            <td>Variable pointing to the top of the stack (or next free space).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Push / Pop</strong></td>
+                            <td>Adding / Removing items from a Stack.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Enqueue / Dequeue</strong></td>
+                            <td>Adding / Removing items from a Queue.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>

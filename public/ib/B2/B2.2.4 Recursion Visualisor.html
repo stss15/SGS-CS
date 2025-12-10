@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursion Visualiser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Code Highlighting */
+        .code-line {
+            padding-left: 1rem;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+            line-height: 1.5;
+        }
+
+        .code-active {
+            background-color: #374151;
+            /* gray-700 */
+            border-left-color: #60A5FA;
+            /* blue-400 */
+            font-weight: bold;
+        }
+
+        /* Syntax Colors */
+        .syntax-keyword {
+            color: #F472B6;
+        }
+
+        /* Pink-400 */
+        .syntax-def {
+            color: #60A5FA;
+        }
+
+        /* Blue-400 */
+        .syntax-number {
+            color: #A78BFA;
+        }
+
+        /* Purple-400 */
+        .syntax-comment {
+            color: #6B7280;
+            font-style: italic;
+        }
+
+        /* Gray-500 */
+
+        /* Tree Visualization Styles */
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .tree-node {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        /* Connector Lines */
+        .branch-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            position: relative;
+            padding-top: 1rem;
+        }
+
+        /* SVG connector lines */
+        .branch-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 1rem;
+            background: linear-gradient(to bottom, #4F46E5, #818CF8);
+        }
+
+        .branch-container>.tree-container::before {
+            content: '';
+            position: absolute;
+            top: -1rem;
+            left: 50%;
+            width: 2px;
+            height: 1rem;
+            background: linear-gradient(to bottom, #818CF8, #4F46E5);
+        }
+
+        /* Animation Classes */
+        .node-enter {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .node-active {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.7), 0 0 40px rgba(99, 102, 241, 0.3);
+            transform: scale(1.15);
+            z-index: 20;
+            border-color: #818CF8 !important;
+            background: linear-gradient(135deg, #312E81 0%, #3730A3 100%) !important;
+        }
+
+        .node-returned {
+            background: linear-gradient(135deg, #064E3B 0%, #065F46 100%) !important;
+            border-color: #10B981 !important;
+            color: #D1FAE5 !important;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), 0 0 30px rgba(16, 185, 129, 0.2);
+        }
+
+        .node-pending {
+            opacity: 0.4;
+            filter: grayscale(0.5);
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5) translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(99, 102, 241, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 35px rgba(99, 102, 241, 0.9);
+            }
+        }
+
+        /* Stack Frame Styles */
+        .stack-frame {
+            transition: all 0.3s ease;
+            border-left-width: 4px;
+        }
+
+        .stack-frame.active {
+            border-left-color: #818CF8;
+            background: linear-gradient(135deg, #1E1B4B 0%, #1F2937 100%);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+        }
+
+        .stack-frame.paused {
+            border-left-color: #6B7280;
+            background-color: #111827;
+            opacity: 0.5;
+        }
+
+        .stack-frame.returning {
+            border-left-color: #10B981;
+            background: linear-gradient(135deg, #064E3B 0%, #065F46 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Enhanced tree node circles */
+        .node-circle {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gray-950 text-gray-100 h-screen flex flex-col overflow-hidden selection:bg-blue-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-gray-900 border-b border-gray-800 p-3 flex justify-between items-center shrink-0 shadow-lg z-20">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition group">
+                <div
+                    class="w-8 h-8 bg-gray-800 group-hover:bg-blue-500/10 rounded flex items-center justify-center transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </div>
+                <span class="text-sm font-medium hidden sm:inline">Back to B2</span>
+            </a>
+            <div class="h-6 w-px bg-gray-700"></div>
+            <h1 class="text-lg font-bold text-blue-400 flex items-center gap-2 tracking-tight">
+                <div class="w-8 h-8 bg-blue-500/10 rounded flex items-center justify-center text-blue-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                </div>
+                <span class="hidden sm:inline">HL Recursion Visualiser</span>
+                <span class="sm:hidden">Recursion</span>
+            </h1>
+        </div>
+        <div class="flex gap-3 items-center">
+            <div class="relative">
+                <select id="algoSelect"
+                    class="bg-gray-800 border border-gray-700 text-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 appearance-none pr-8 cursor-pointer font-medium hover:bg-gray-700 transition">
+                    <option value="sum">Sum (Basic Stack)</option>
+                    <option value="factorial">Factorial (Linear Recursion)</option>
+                    <option value="fibonacci">Fibonacci (Tree Recursion)</option>
+                    <option value="bubbleSort">Bubble Sort (Recursive)</option>
+                    <option value="binarySearch">Binary Search (Divide & Conquer)</option>
+                    <option value="quickSort">Quick Sort (Tree Partitioning)</option>
+                    <option value="hanoi">Tower of Hanoi</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                </div>
+            </div>
+            <button onclick="resetSim()"
+                class="bg-gray-800 hover:bg-gray-700 border border-gray-700 px-4 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1 text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span class="hidden sm:inline">Reset</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+
+        <!-- Left Panel: Code -->
+        <div class="w-1/3 min-w-[380px] border-r border-gray-800 flex flex-col bg-[#0d1117] z-10 shadow-xl">
+            <div
+                class="p-3 bg-gray-900 border-b border-gray-800 text-xs font-bold text-gray-400 uppercase tracking-wider flex justify-between items-center">
+                <span>Python Implementation</span>
+                <span
+                    class="text-[10px] bg-gray-800 px-2 py-0.5 rounded text-gray-400 border border-gray-700">Read-Only</span>
+            </div>
+            <div class="flex-1 overflow-auto p-4">
+                <pre><code id="codeDisplay" class="text-sm block leading-7"></code></pre>
+            </div>
+
+            <!-- Explanation Panel -->
+            <div class="h-56 border-t border-gray-800 bg-gray-900 p-5 flex flex-col">
+                <div class="text-xs font-bold text-blue-400 uppercase mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    Current Step
+                </div>
+                <p id="explanationText" class="text-sm text-gray-100 leading-relaxed font-medium">Select an algorithm to
+                    begin.</p>
+
+                <div
+                    class="mt-auto pt-3 flex items-center justify-between text-xs text-gray-500 border-t border-gray-800">
+                    <span id="stepCounter" class="font-mono">Step 0/0</span>
+                    <div class="flex gap-3">
+                        <span class="flex items-center gap-1.5"><span
+                                class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
+                            Active</span>
+                        <span class="flex items-center gap-1.5"><span
+                                class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+                            Returned</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Visualisation -->
+        <div class="flex-1 flex flex-col bg-gray-950 relative">
+
+            <!-- Visual Canvas -->
+            <div class="flex-1 relative overflow-hidden flex flex-col">
+                <div
+                    class="absolute top-4 left-4 z-10 bg-gray-900/90 backdrop-blur px-3 py-1 rounded border border-gray-800 text-xs font-mono text-gray-400 shadow-sm">
+                    Visual Memory Map
+                </div>
+
+                <div id="visualCanvas"
+                    class="flex-1 p-8 overflow-auto flex justify-center items-start min-h-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-gray-950 to-black">
+                    <!-- Dynamic Visuals -->
+                </div>
+            </div>
+
+            <!-- Bottom: Call Stack -->
+            <div
+                class="h-64 bg-gray-900 border-t border-gray-800 flex flex-col shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.5)] z-20">
+                <div
+                    class="p-2 bg-gray-900 border-b border-gray-800 text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2 px-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Call Stack (LIFO Memory)
+                </div>
+                <div id="stackContainer" class="flex-1 p-4 overflow-x-auto flex flex-row gap-3 items-end">
+                    <!-- Stack frames injected here -->
+                </div>
+            </div>
+
+            <!-- Floating Controls -->
+            <div class="absolute bottom-64 right-6 mb-6 flex gap-3">
+                <button onclick="prevStep()" id="btnPrev" disabled
+                    class="bg-gray-800 hover:bg-gray-700 border border-gray-600 disabled:opacity-50 text-white w-12 h-12 rounded-full shadow-lg transition flex items-center justify-center backdrop-blur-sm group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300 group-hover:text-white"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button onclick="nextStep()" id="btnNext"
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-6 h-12 rounded-full shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] font-bold transition flex items-center gap-2">
+                    Next Step
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        /**
+         * --------------------------------------------------------------------------
+         * CORE SIMULATION ENGINE & DATA
+         * --------------------------------------------------------------------------
+         */
+
+        let currentAlgo = 'sum';
+        let trace = [];
+        let currentStepIndex = -1;
+
+        const ALGORITHMS = {
+            sum: {
+                code: `def sum_rec(n):
+    if n <= 0:
+        return 0
+    return n + sum_rec(n - 1)`,
+                init: () => generateSumTrace(4)
+            },
+            factorial: {
+                code: `def factorial(n):
+    if n == 1:
+        return 1
+    return n * factorial(n - 1)`,
+                init: () => generateFactorialTrace(4)
+            },
+            fibonacci: {
+                code: `def fib(n):
+    if n <= 1:
+        return n
+    return fib(n-1) + fib(n-2)`,
+                init: () => generateFibTrace(4)
+            },
+            bubbleSort: {
+                code: `def bubble_sort(arr, n):
+    # 1. Base Case
+    if n == 1:
+        return
+    
+    # 2. One Pass (Bubble Up)
+    for i in range(n - 1):
+        if arr[i] > arr[i+1]:
+            arr[i], arr[i+1] = arr[i+1], arr[i]
+            
+    # 3. Recursive Call
+    bubble_sort(arr, n - 1)`,
+                init: () => generateBubbleTrace()
+            },
+            binarySearch: {
+                code: `def binary_search(arr, low, high, x):
+    if high >= low:
+        mid = (high + low) // 2
+        if arr[mid] == x:
+            return mid
+        elif arr[mid] > x:
+            return binary_search(arr, low, mid - 1, x)
+        else:
+            return binary_search(arr, mid + 1, high, x)
+    else:
+        return -1`,
+                init: () => generateBSTrace()
+            },
+            quickSort: {
+                code: `def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+        
+    pivot = arr[-1]
+    left = [x for x in arr[:-1] if x <= pivot]
+    right = [x for x in arr[:-1] if x > pivot]
+
+    return quick_sort(left) + [pivot] + quick_sort(right)`,
+                init: () => generateQSTrace()
+            },
+            hanoi: {
+                code: `def hanoi(n, src, dst, aux):
+    if n > 0:
+        hanoi(n - 1, src, aux, dst)
+        move(src, dst)
+        hanoi(n - 1, aux, dst, src)`,
+                init: () => generateHanoiTrace(3)
+            }
+        };
+
+        /**
+         * --------------------------------------------------------------------------
+         * TRACE GENERATORS
+         * --------------------------------------------------------------------------
+         */
+
+        function generateSumTrace(n) {
+            let steps = [];
+            let stack = [];
+            function recurse(val) {
+                let frameId = Math.random().toString(36).substr(2, 5);
+                stack.push({ id: frameId, name: `sum(${val})`, args: { n: val }, status: 'active', returnVal: null });
+                steps.push({ line: 1, stack: copy(stack), context: { val }, msg: `Call sum(${val})` });
+
+                steps.push({ line: 2, stack: copy(stack), context: { val }, msg: `Check if ${val} <= 0` });
+                if (val <= 0) {
+                    stack[stack.length - 1].status = 'returning';
+                    stack[stack.length - 1].returnVal = 0;
+                    steps.push({ line: 3, stack: copy(stack), context: { val }, msg: `Base case. Return 0.` });
+                    stack.pop();
+                    return 0;
+                }
+
+                stack[stack.length - 1].status = 'paused';
+                steps.push({ line: 4, stack: copy(stack), context: { val }, msg: `Recurse: sum(${val - 1})` });
+                let rest = recurse(val - 1);
+
+                stack[stack.length - 1].status = 'active';
+                let res = val + rest;
+                stack[stack.length - 1].status = 'returning';
+                stack[stack.length - 1].returnVal = res;
+                steps.push({ line: 4, stack: copy(stack), context: { val, rest, result: res }, msg: `Return ${val} + ${rest} = ${res}` });
+
+                stack.pop();
+                return res;
+            }
+            recurse(n);
+            return steps;
+        }
+
+        function generateFactorialTrace(n) {
+            let steps = [];
+            let stack = [];
+            function recurse(val) {
+                stack.push({ name: `fact(${val})`, args: { n: val }, status: 'active', returnVal: null });
+                steps.push({ line: 1, stack: copy(stack), context: { val }, msg: `Call fact(${val})` });
+
+                if (val === 1) {
+                    stack[stack.length - 1].status = 'returning';
+                    stack[stack.length - 1].returnVal = 1;
+                    steps.push({ line: 3, stack: copy(stack), context: { val }, msg: `Base case. Return 1` });
+                    stack.pop();
+                    return 1;
+                }
+
+                stack[stack.length - 1].status = 'paused';
+                steps.push({ line: 4, stack: copy(stack), context: { val }, msg: `Recurse: fact(${val - 1})` });
+                let sub = recurse(val - 1);
+
+                stack[stack.length - 1].status = 'active';
+                let res = val * sub;
+                stack[stack.length - 1].status = 'returning';
+                stack[stack.length - 1].returnVal = res;
+                steps.push({ line: 4, stack: copy(stack), context: { val, sub, res }, msg: `Return ${val} * ${sub} = ${res}` });
+
+                stack.pop();
+                return res;
+            }
+            recurse(n);
+            return steps;
+        }
+
+        function generateFibTrace(n) {
+            let steps = [];
+            let stack = [];
+            let tree = { id: 'root', val: n, result: null, status: 'pending', children: [] };
+
+            function updateTree(path, updates) {
+                let node = tree;
+                for (let p of path) {
+                    if (!node.children[p]) node.children[p] = { id: Math.random(), val: '?', result: null, status: 'pending', children: [] };
+                    node = node.children[p];
+                }
+                Object.assign(node, updates);
+                return JSON.parse(JSON.stringify(tree));
+            }
+
+            function recurse(val, path) {
+                // 1. Enter
+                stack.push({ name: `fib(${val})`, args: { n: val }, status: 'active', returnVal: null });
+                let currentTree = updateTree(path, { val: val, status: 'active' });
+                steps.push({ line: 1, stack: copy(stack), tree: currentTree, msg: `fib(${val}) called` });
+
+                // 2. Base Case
+                steps.push({ line: 2, stack: copy(stack), tree: currentTree, msg: `Check if ${val} <= 1` });
+                if (val <= 1) {
+                    stack[stack.length - 1].status = 'returning';
+                    stack[stack.length - 1].returnVal = val;
+                    currentTree = updateTree(path, { status: 'returned', result: val });
+                    steps.push({ line: 3, stack: copy(stack), tree: currentTree, msg: `Base Case! Return ${val}` });
+                    stack.pop();
+                    return val;
+                }
+
+                // 3. Left Call (fib(n-1))
+                stack[stack.length - 1].status = 'paused';
+                steps.push({ line: 4, stack: copy(stack), tree: currentTree, msg: `1st Recursive Call: fib(${val}-1)` });
+                let left = recurse(val - 1, [...path, 0]);
+
+                // 4. Right Call (fib(n-2))
+                stack[stack.length - 1].status = 'active'; // Briefly active to show we are back
+                steps.push({ line: 4, stack: copy(stack), tree: currentTree, msg: `Got ${left}. Now 2nd Call: fib(${val}-2)` });
+                stack[stack.length - 1].status = 'paused';
+                let right = recurse(val - 2, [...path, 1]);
+
+                // 5. Combine
+                stack[stack.length - 1].status = 'active';
+                let res = left + right;
+                currentTree = updateTree(path, { status: 'returned', result: res });
+                stack[stack.length - 1].status = 'returning';
+                stack[stack.length - 1].returnVal = res;
+                steps.push({ line: 4, stack: copy(stack), tree: currentTree, msg: `Add Results: ${left} + ${right} = ${res}` });
+
+                stack.pop();
+                return res;
+            }
+
+            recurse(n, []);
+            return steps;
+        }
+
+        function generateBubbleTrace() {
+            let steps = [];
+            let stack = [];
+            let arr = [5, 3, 8, 4, 2]; // Initial array
+
+            function recurse(n) {
+                stack.push({ name: `bubble(${n})`, args: { n }, status: 'active', returnVal: null });
+                steps.push({ line: 1, stack: copy(stack), context: { arr: [...arr], n, i: -1, comparing: [] }, msg: `Sorting first ${n} elements` });
+
+                // Base case
+                if (n == 1) {
+                    stack[stack.length - 1].status = 'returning';
+                    steps.push({ line: 4, stack: copy(stack), context: { arr: [...arr], n, i: -1, sorted: true }, msg: `Base Case (n=1). Array Sorted.` });
+                    stack.pop();
+                    return;
+                }
+
+                // Inner loop
+                for (let i = 0; i < n - 1; i++) {
+                    steps.push({ line: 7, stack: copy(stack), context: { arr: [...arr], n, i, comparing: [i, i + 1] }, msg: `Compare indices ${i} & ${i + 1}: ${arr[i]} vs ${arr[i + 1]}` });
+
+                    if (arr[i] > arr[i + 1]) {
+                        let temp = arr[i];
+                        arr[i] = arr[i + 1];
+                        arr[i + 1] = temp;
+                        steps.push({ line: 8, stack: copy(stack), context: { arr: [...arr], n, i, comparing: [i, i + 1], swapped: true }, msg: `${temp} > ${arr[i]} -> SWAP` });
+                    }
+                }
+
+                stack[stack.length - 1].status = 'paused';
+                steps.push({ line: 12, stack: copy(stack), context: { arr: [...arr], n }, msg: `${arr[n - 1]} bubbled to end. Recurse on n-1.` });
+
+                recurse(n - 1);
+
+                stack[stack.length - 1].status = 'active';
+                stack[stack.length - 1].status = 'returning';
+                stack.pop();
+            }
+            recurse(arr.length);
+            // Final
+            steps.push({ line: 1, stack: [], context: { arr: [...arr], n: 0, done: true }, msg: "Sorting Complete." });
+            return steps;
+        }
+
+        function generateQSTrace() {
+            let steps = [];
+            let stack = [];
+            let initialArr = [10, 7, 8, 9, 1, 5];
+            let qsTree = { id: 'root', type: 'array', arr: [...initialArr], pivot: null, status: 'active', left: null, right: null, sorted: false };
+
+            function findNode(node, id) {
+                if (node.id === id) return node;
+                let res = null;
+                if (node.left) res = findNode(node.left, id);
+                if (res) return res;
+                if (node.right) res = findNode(node.right, id);
+                return res;
+            }
+
+            function updateQSTree(id, updates) {
+                let node = findNode(qsTree, id);
+                if (node) Object.assign(node, updates);
+                return JSON.parse(JSON.stringify(qsTree));
+            }
+
+            function recurse(arr, nodeId) {
+                stack.push({ name: 'quick_sort', args: { arr: `[${arr}]` }, status: 'active' });
+                steps.push({ line: 1, stack: copy(stack), tree: copy(qsTree), msg: `Sorting [${arr.join(', ')}]` });
+
+                if (arr.length <= 1) {
+                    updateQSTree(nodeId, { status: 'sorted', sorted: true });
+                    stack[stack.length - 1].status = 'returning';
+                    stack[stack.length - 1].returnVal = `[${arr}]`;
+                    steps.push({ line: 3, stack: copy(stack), tree: copy(qsTree), msg: `Base case (Size ${arr.length}). Return Sorted.` });
+                    stack.pop();
+                    return arr;
+                }
+
+                let pivot = arr[arr.length - 1];
+                let leftArr = arr.filter((x, i) => i < arr.length - 1 && x <= pivot);
+                let rightArr = arr.filter((x, i) => i < arr.length - 1 && x > pivot);
+                let leftId = nodeId + '_L';
+                let rightId = nodeId + '_R';
+
+                updateQSTree(nodeId, {
+                    pivot: pivot,
+                    status: 'partitioned',
+                    left: { id: leftId, type: 'array', arr: leftArr, pivot: null, status: 'pending', sorted: false },
+                    right: { id: rightId, type: 'array', arr: rightArr, pivot: null, status: 'pending', sorted: false }
+                });
+
+                steps.push({ line: 5, stack: copy(stack), tree: copy(qsTree), msg: `Pivot is ${pivot}. Split into <= ${pivot} and > ${pivot}` });
+
+                stack[stack.length - 1].status = 'paused';
+                updateQSTree(leftId, { status: 'active' });
+                steps.push({ line: 9, stack: copy(stack), tree: copy(qsTree), msg: `Recurse Left: [${leftArr}]` });
+                let sortedLeft = recurse(leftArr, leftId);
+
+                updateQSTree(rightId, { status: 'active' });
+                steps.push({ line: 9, stack: copy(stack), tree: copy(qsTree), msg: `Recurse Right: [${rightArr}]` });
+                let sortedRight = recurse(rightArr, rightId);
+
+                stack[stack.length - 1].status = 'active';
+                let result = [...sortedLeft, pivot, ...sortedRight];
+
+                updateQSTree(nodeId, { arr: result, status: 'sorted', sorted: true, pivot: null, left: null, right: null });
+
+                stack[stack.length - 1].status = 'returning';
+                stack[stack.length - 1].returnVal = `[${result}]`;
+
+                steps.push({ line: 9, stack: copy(stack), tree: copy(qsTree), msg: `Combine: [${sortedLeft}] + [${pivot}] + [${sortedRight}]` });
+
+                stack.pop();
+                return result;
+            }
+
+            recurse(initialArr, 'root');
+            return steps;
+        }
+
+        function generateBSTrace() {
+            let steps = [];
+            let stack = [];
+            let arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+            let target = 23;
+
+            function recurse(low, high) {
+                stack.push({ name: 'search', args: { low, high }, status: 'active' });
+                let ctx = { arr, low, high, target, mid: null, found: null };
+                steps.push({ line: 1, stack: copy(stack), context: ctx, msg: `Search index ${low} to ${high}` });
+
+                if (high >= low) {
+                    let mid = Math.floor((low + high) / 2);
+                    ctx.mid = mid;
+                    steps.push({ line: 3, stack: copy(stack), context: ctx, msg: `Mid is index ${mid} (${arr[mid]})` });
+
+                    if (arr[mid] === target) {
+                        ctx.found = mid;
+                        stack[stack.length - 1].status = 'returning';
+                        stack[stack.length - 1].returnVal = mid;
+                        steps.push({ line: 5, stack: copy(stack), context: ctx, msg: `Found ${target}! Return index ${mid}.` });
+                        stack.pop();
+                        return mid;
+                    } else if (arr[mid] > target) {
+                        stack[stack.length - 1].status = 'paused';
+                        steps.push({ line: 7, stack: copy(stack), context: ctx, msg: `${arr[mid]} > ${target}. Go Left.` });
+                        let res = recurse(low, mid - 1);
+                        stack.pop();
+                        return res;
+                    } else {
+                        stack[stack.length - 1].status = 'paused';
+                        steps.push({ line: 9, stack: copy(stack), context: ctx, msg: `${arr[mid]} < ${target}. Go Right.` });
+                        let res = recurse(mid + 1, high);
+                        stack.pop();
+                        return res;
+                    }
+                }
+                stack.pop();
+                return -1;
+            }
+            recurse(0, arr.length - 1);
+            return steps;
+        }
+
+        function generateHanoiTrace(n) {
+            let steps = [];
+            let stack = [];
+            let pegs = [[3, 2, 1], [], []];
+
+            function recurse(n, s, d, a, sLabel, dLabel, aLabel) {
+                stack.push({ name: `hanoi(${n})`, args: { src: sLabel, dst: dLabel }, status: 'active' });
+                steps.push({ line: 1, stack: copy(stack), context: { pegs: copy(pegs) }, msg: `Move ${n} from ${sLabel} to ${dLabel}` });
+
+                if (n > 0) {
+                    stack[stack.length - 1].status = 'paused';
+                    steps.push({ line: 3, stack: copy(stack), context: { pegs: copy(pegs) }, msg: `Move ${n - 1} to Aux (${aLabel})` });
+                    recurse(n - 1, s, a, d, sLabel, aLabel, dLabel);
+
+                    stack[stack.length - 1].status = 'active';
+                    let disk = pegs[s].pop();
+                    pegs[d].push(disk);
+                    steps.push({ line: 4, stack: copy(stack), context: { pegs: copy(pegs) }, msg: `Move Disk ${n} to Dest (${dLabel})` });
+
+                    stack[stack.length - 1].status = 'paused';
+                    steps.push({ line: 5, stack: copy(stack), context: { pegs: copy(pegs) }, msg: `Move ${n - 1} from Aux to Dest` });
+                    recurse(n - 1, a, d, s, aLabel, dLabel, sLabel);
+                }
+                stack.pop();
+            }
+            recurse(n, 0, 2, 1, 'A', 'C', 'B');
+            return steps;
+        }
+
+        function copy(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+        /**
+         * --------------------------------------------------------------------------
+         * RENDERERS
+         * --------------------------------------------------------------------------
+         */
+
+        const codeDisplay = document.getElementById('codeDisplay');
+        const visualCanvas = document.getElementById('visualCanvas');
+        const stackContainer = document.getElementById('stackContainer');
+        const explanationText = document.getElementById('explanationText');
+        const stepCounter = document.getElementById('stepCounter');
+        const btnNext = document.getElementById('btnNext');
+        const btnPrev = document.getElementById('btnPrev');
+
+        function formatCode(code) {
+            // Simple Syntax Highlighter
+            let formatted = escapeHtml(code);
+
+            const keywords = ['def', 'return', 'if', 'else', 'elif', 'for', 'in'];
+            keywords.forEach(k => {
+                const regex = new RegExp(`\\b${k}\\b`, 'g');
+                formatted = formatted.replace(regex, `<span class="syntax-keyword">${k}</span>`);
+            });
+
+            formatted = formatted.replace(/\b(\w+)(?=\()/g, '<span class="syntax-def">$1</span>'); // Function calls
+            formatted = formatted.replace(/\b(\d+)\b/g, '<span class="syntax-number">$1</span>'); // Numbers
+
+            return formatted;
+        }
+
+        function loadAlgo(name) {
+            currentAlgo = name;
+            trace = ALGORITHMS[name].init();
+
+            const rawLines = ALGORITHMS[name].code.split('\n');
+            codeDisplay.innerHTML = rawLines.map((line, i) =>
+                `<div class="code-line" id="line-${i + 1}"><span class="text-gray-600 w-6 inline-block select-none text-right mr-3 text-xs font-mono">${i + 1}</span>${formatCode(line)}</div>`
+            ).join('');
+
+            currentStepIndex = -1;
+            renderStep();
+        }
+
+        function renderStep() {
+            btnPrev.disabled = currentStepIndex === -1;
+            btnNext.disabled = currentStepIndex === trace.length - 1;
+
+            if (currentStepIndex === -1) {
+                visualCanvas.innerHTML = `<div class="text-gray-500 font-mono flex flex-col items-center justify-center h-full"><span>Waiting to start...</span></div>`;
+                explanationText.innerText = "Click Next Step to begin the simulation.";
+                stepCounter.innerText = "Step 0/0";
+                stackContainer.innerHTML = `<div class="text-gray-600 text-xs italic w-full text-center mt-8">Stack Empty</div>`;
+                document.querySelectorAll('.code-active').forEach(el => el.classList.remove('code-active'));
+                return;
+            }
+
+            const step = trace[currentStepIndex];
+            stepCounter.innerText = `Step ${currentStepIndex + 1}/${trace.length}`;
+            explanationText.innerText = step.msg;
+
+            document.querySelectorAll('.code-active').forEach(el => el.classList.remove('code-active'));
+            const lineEl = document.getElementById(`line-${step.line}`);
+            if (lineEl) lineEl.classList.add('code-active');
+
+            renderStack(step.stack);
+
+            if (step.tree && (currentAlgo === 'fibonacci' || currentAlgo === 'quickSort')) {
+                visualCanvas.innerHTML = '';
+                if (currentAlgo === 'fibonacci') renderFibTree(step.tree, visualCanvas);
+                if (currentAlgo === 'quickSort') renderQSTree(step.tree, visualCanvas);
+            } else {
+                renderStandardContext(step.context);
+            }
+        }
+
+        function renderStack(stack) {
+            if (stack.length === 0) {
+                stackContainer.innerHTML = `<div class="text-gray-600 text-xs italic w-full text-center mb-4">Stack Empty</div>`;
+                return;
+            }
+
+            stackContainer.innerHTML = stack.map((frame, i) => {
+                let statusClass = 'active';
+                let statusText = 'RUNNING';
+                let returnDisplay = '';
+
+                if (frame.status === 'paused') {
+                    statusClass = 'paused';
+                    statusText = 'WAITING';
+                } else if (frame.status === 'returning') {
+                    statusClass = 'returning';
+                    statusText = 'RETURN';
+                    returnDisplay = `<div class="mt-1 bg-green-500/20 border border-green-500 text-green-200 text-[10px] px-1 rounded inline-block font-mono font-bold">Ret: ${frame.returnVal}</div>`;
+                }
+
+                return `
+            <div class="stack-frame ${statusClass} flex-shrink-0 w-36 bg-gray-800 rounded p-2 text-xs border border-gray-700 shadow-xl relative group">
+                <div class="absolute -top-2 left-2 bg-gray-900 px-1 text-[9px] text-gray-500 border border-gray-700 rounded uppercase font-bold tracking-wider">${statusText}</div>
+                <div class="mt-1 font-mono font-bold text-gray-200 truncate" title="${frame.name}">${frame.name}</div>
+                <div class="text-gray-400 text-[10px] truncate">${Object.entries(frame.args).map(([k, v]) => `${k}=${v}`).join(',')}</div>
+                ${returnDisplay}
+                <div class="absolute bottom-1 right-2 text-[8px] text-gray-600 font-mono">#${i}</div>
+            </div>
+        `;
+            }).join('');
+            stackContainer.scrollLeft = stackContainer.scrollWidth;
+        }
+
+        function renderStandardContext(ctx) {
+            if (currentAlgo === 'hanoi') {
+                const pegsHtml = ctx.pegs.map((disks, i) => {
+                    const diskHtml = disks.map(d => {
+                        const w = 20 + (d * 30);
+                        const color = ['bg-yellow-400', 'bg-blue-400', 'bg-rose-400', 'bg-purple-400'][d - 1];
+                        return `<div class="h-6 ${color} rounded shadow-lg border-2 border-white/10 mb-1 z-10 w-[${w}px]" style="width:${w}px"></div>`;
+                    }).reverse().join('');
+
+                    return `
+                <div class="flex flex-col items-center justify-end h-64 w-40 relative group">
+                    <div class="absolute bottom-0 w-32 h-3 bg-gray-700 rounded z-0"></div>
+                    <div class="absolute bottom-0 w-3 h-48 bg-gray-700 rounded-t z-0"></div>
+                    <div class="flex flex-col items-center z-10 w-full mb-3">${diskHtml}</div>
+                    <div class="mt-4 font-bold text-gray-400 text-sm">PEG ${['A', 'B', 'C'][i]}</div>
+                </div>
+            `;
+                }).join('');
+                visualCanvas.innerHTML = `<div class="flex items-end gap-6">${pegsHtml}</div>`;
+            }
+            else if (currentAlgo === 'sum' || currentAlgo === 'factorial') {
+                const label = currentAlgo === 'sum' ? 'n' : 'n!';
+                visualCanvas.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full gap-6">
+                <div class="relative">
+                    <div class="w-40 h-40 rounded-full bg-gradient-to-br from-indigo-900/50 to-purple-900/30 border-4 border-indigo-500/50 flex items-center justify-center shadow-2xl shadow-indigo-500/20">
+                        <span class="text-7xl font-bold text-white">${ctx.val}</span>
+                    </div>
+                    ${ctx.result ? `<div class="absolute -top-4 -right-4 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-xl px-4 py-2 rounded-full shadow-lg shadow-emerald-500/30 font-bold animate-bounce ring-4 ring-emerald-400/30">= ${ctx.result}</div>` : ''}
+                </div>
+                <div class="text-sm text-gray-400 font-mono uppercase tracking-widest bg-gray-800/50 px-4 py-2 rounded-full">Current ${label}</div>
+            </div>`;
+            }
+            else if (currentAlgo === 'binarySearch') {
+                const cells = ctx.arr.map((val, idx) => {
+                    let style = "bg-gray-800/60 border-gray-700 text-gray-600 opacity-40 scale-90";
+                    if (idx >= ctx.low && idx <= ctx.high) style = "bg-gray-800 border-indigo-500/50 text-gray-200 opacity-100 scale-100";
+                    if (idx === ctx.mid) style = "bg-gradient-to-br from-indigo-700 to-indigo-900 border-indigo-400 text-white ring-2 ring-indigo-400 shadow-[0_0_25px_rgba(99,102,241,0.5)] scale-115 z-10 font-bold";
+                    if (idx === ctx.found) style = "bg-gradient-to-br from-emerald-600 to-emerald-800 border-emerald-400 text-white ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(52,211,153,0.5)] scale-115 z-10 font-bold";
+
+                    return `
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-2 rounded-lg ${style} transition-all duration-300 text-sm font-mono shadow-lg">${val}</div>
+                            <span class="text-[10px] font-mono text-gray-600">[${idx}]</span>
+                        </div>`;
+                }).join('');
+                visualCanvas.innerHTML = `
+                    <div class="flex flex-col items-center gap-8">
+                        <div class="flex gap-2 items-end flex-wrap justify-center">${cells}</div>
+                        <div class="flex gap-8 text-xs font-mono uppercase tracking-widest text-gray-500 bg-gray-800/50 px-6 py-3 rounded-full">
+                            <span class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-gradient-to-br from-indigo-700 to-indigo-900 border border-indigo-400"></div> Mid</span>
+                            <span class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-gradient-to-br from-emerald-600 to-emerald-800 border border-emerald-400"></div> Found</span>
+                        </div>
+                    </div>`;
+            }
+            else if (currentAlgo === 'bubbleSort') {
+                const maxVal = Math.max(...ctx.arr);
+                const cells = ctx.arr.map((val, idx) => {
+                    let barClass = "bg-gradient-to-t from-gray-700 to-gray-600 border-gray-500";
+                    let height = (val / maxVal) * 180;
+
+                    // Highlight comparing
+                    if (ctx.comparing && ctx.comparing.includes(idx)) {
+                        barClass = "bg-gradient-to-t from-indigo-700 to-indigo-500 border-indigo-400 ring-2 ring-indigo-400/50";
+                    }
+                    if (ctx.swapped && ctx.comparing.includes(idx)) {
+                        barClass = "bg-gradient-to-t from-purple-700 to-purple-500 border-purple-400 ring-2 ring-purple-400/50 scale-x-110";
+                    }
+
+                    // Highlight sorted area
+                    if (idx >= ctx.n) {
+                        barClass = "bg-gradient-to-t from-emerald-800 to-emerald-600 border-emerald-500 opacity-80";
+                    }
+
+                    return `
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-10 md:w-14 rounded-t-lg transition-all duration-300 border-2 ${barClass} shadow-lg" style="height:${height}px"></div>
+                    <span class="text-xs font-mono font-bold ${idx >= ctx.n ? 'text-emerald-400' : 'text-gray-400'}">${val}</span>
+                </div>
+            `;
+                }).join('');
+
+                visualCanvas.innerHTML = `
+                    <div class="flex flex-col items-center gap-6">
+                        <div class="flex items-end gap-3 h-64 pb-4 px-8">${cells}</div>
+                        <div class="flex gap-8 text-xs font-mono uppercase tracking-widest text-gray-500 bg-gray-800/50 px-6 py-3 rounded-full">
+                            <span class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-gradient-to-t from-indigo-700 to-indigo-500 border border-indigo-400"></div> Comparing</span>
+                            <span class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-gradient-to-t from-emerald-800 to-emerald-600 border border-emerald-500"></div> Sorted</span>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        // Tree Rendering (Enhanced Visual Design)
+        function renderFibTree(node, container) {
+            if (!node) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "tree-container mx-3 node-enter";
+
+            // Status Colors with gradient backgrounds
+            let statusClass = "bg-gray-800/80 border-gray-600 text-gray-500 node-pending"; // Pending
+            let innerText = `fib(${node.val})`;
+
+            if (node.status === 'active') {
+                statusClass = "node-active font-bold";
+            }
+            if (node.status === 'returned') {
+                statusClass = "node-returned font-bold";
+                innerText = node.result;
+            }
+
+            const nodeCircle = document.createElement('div');
+            nodeCircle.className = `node-circle w-16 h-16 rounded-full border-3 flex flex-col items-center justify-center text-sm shadow-2xl relative z-10 ${statusClass}`;
+
+            // Two-line display for better clarity
+            if (node.status !== 'returned') {
+                nodeCircle.innerHTML = `<span class="text-[10px] opacity-70 uppercase tracking-wide">fib</span><span class="text-lg font-bold">${node.val}</span>`;
+            } else {
+                nodeCircle.innerHTML = `<span class="text-[10px] opacity-70 uppercase tracking-wide">= </span><span class="text-xl font-bold">${node.result}</span>`;
+            }
+
+            wrapper.appendChild(nodeCircle);
+
+            if (node.children && node.children.length > 0) {
+                const branchContainer = document.createElement('div');
+                branchContainer.className = "branch-container";
+                node.children.forEach(child => { if (child) renderFibTree(child, branchContainer); });
+                wrapper.appendChild(branchContainer);
+            }
+            container.appendChild(wrapper);
+        }
+
+        function renderQSTree(node, container) {
+            if (!node) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "tree-container mx-3 node-enter align-top";
+
+            const box = document.createElement('div');
+            // High contrast styling for QS with gradients
+            let boxClass = 'bg-gray-800/80 border-gray-600 text-gray-400';
+            if (node.status === 'active') boxClass = 'bg-gradient-to-br from-indigo-900/80 to-indigo-800/60 border-indigo-400 ring-2 ring-indigo-500/50 text-white shadow-xl';
+            if (node.status === 'partitioned') boxClass = 'bg-gradient-to-br from-purple-900/60 to-purple-800/40 border-purple-400 ring-1 ring-purple-500/30 text-purple-100';
+            if (node.status === 'sorted') boxClass = 'bg-gradient-to-br from-emerald-900/60 to-emerald-800/40 border-emerald-400 ring-2 ring-emerald-500/50 text-emerald-100 shadow-[0_0_25px_rgba(52,211,153,0.3)] scale-105';
+
+            box.className = `px-4 py-3 border-2 rounded-lg shadow-lg flex gap-2 transition-all duration-500 relative z-10 ${boxClass}`;
+
+            box.innerHTML = node.arr.map(num => {
+                let elColor = 'text-gray-200';
+                let bgClass = 'bg-gray-700/50 px-2 py-0.5 rounded';
+                if (num === node.pivot) {
+                    elColor = 'text-purple-200 font-bold';
+                    bgClass = 'bg-purple-600/60 px-2 py-0.5 rounded ring-1 ring-purple-400';
+                }
+                return `<span class="${elColor} ${bgClass} text-sm font-mono">${num}</span>`;
+            }).join('');
+
+            wrapper.appendChild(box);
+
+            // Show children OR if sorted, show nothing (collapsed back)
+            if (!node.sorted && (node.left || node.right)) {
+                const branchContainer = document.createElement('div');
+                branchContainer.className = "branch-container pt-8";
+
+                if (node.pivot !== null && node.left && node.right) {
+                    renderQSTree(node.left, branchContainer);
+
+                    const pivotWrapper = document.createElement('div');
+                    pivotWrapper.className = "tree-container mx-4 mt-12";
+                    pivotWrapper.innerHTML = `
+                        <div class="relative">
+                            <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-purple-400 uppercase tracking-wider">pivot</div>
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-700 to-purple-900 border-2 border-purple-400 flex items-center justify-center font-bold text-purple-100 shadow-lg shadow-purple-500/20 text-lg">${node.pivot}</div>
+                        </div>`;
+                    branchContainer.appendChild(pivotWrapper);
+
+                    renderQSTree(node.right, branchContainer);
+                }
+
+                wrapper.appendChild(branchContainer);
+            }
+
+            container.appendChild(wrapper);
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function nextStep() {
+            if (currentStepIndex < trace.length - 1) {
+                currentStepIndex++;
+                renderStep();
+            }
+        }
+
+        function prevStep() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                renderStep();
+            } else if (currentStepIndex === 0) {
+                currentStepIndex = -1;
+                renderStep();
+            }
+        }
+
+        function resetSim() {
+            currentStepIndex = -1;
+            renderStep();
+        }
+
+        document.getElementById('algoSelect').addEventListener('change', (e) => loadAlgo(e.target.value));
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextStep();
+            if (e.key === 'ArrowLeft') prevStep();
+        });
+
+        loadAlgo('sum');
+
+    </script>
+</body>
+
+</html>

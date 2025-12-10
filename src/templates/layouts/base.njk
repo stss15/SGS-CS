@@ -21,7 +21,11 @@
     <link rel="stylesheet" href="{{ basePath }}css/style.css">
     {% if extraStyles %}
         {% for style in extraStyles %}
-            <link rel="stylesheet" href="{{ basePath }}{{ style }}">
+            {% if style.indexOf('http') == 0 or style.indexOf('//') == 0 %}
+                <link rel="stylesheet" href="{{ style }}">
+            {% else %}
+                <link rel="stylesheet" href="{{ basePath }}{{ style }}">
+            {% endif %}
         {% endfor %}
     {% endif %}
 
@@ -107,7 +111,11 @@
 
     {% if scripts %}
         {% for script in scripts %}
-            <script src="{{ basePath }}{{ script }}"></script>
+            {% if script.indexOf('http') == 0 or script.indexOf('//') == 0 %}
+                <script src="{{ script }}"></script>
+            {% else %}
+                <script src="{{ basePath }}{{ script }}"></script>
+            {% endif %}
         {% endfor %}
     {% endif %}
     {% if inlineScripts %}{{ inlineScripts | safe }}{% endif %}
