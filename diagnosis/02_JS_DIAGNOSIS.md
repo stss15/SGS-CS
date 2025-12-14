@@ -4,6 +4,11 @@
 
 ---
 
+## Status (updated 2025-12-14)
+
+- JS extraction for the standalone files listed in this report has been completed (see `public/js/activity-online-behaviour.js`, `public/js/visualizer-recursion.js`, `public/js/visualizer-linked-list.js`, `public/js/visualizer-bst.js`, `public/js/game-binary-addition.js`).
+- The KS3 template inline JS item is tracked and completed in [03_TEMPLATING_DIAGNOSIS.md](./03_TEMPLATING_DIAGNOSIS.md).
+
 ## ⚠️ AI Agent Safety Rules
 
 > [!CAUTION]

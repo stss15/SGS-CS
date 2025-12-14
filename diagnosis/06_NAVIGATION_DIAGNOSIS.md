@@ -49,12 +49,12 @@ breadcrumbs:
 
 **Problem**: Each standalone file implements its own back button differently.
 
-**Audit Results**:
+**Audit Results** (updated 2025-12-14):
 
 | File | Current Navigation | Back Link Works? |
 |------|-------------------|------------------|
-| `/public/ib/B2/B2.2.4 Recursion Visualisor.html` | Simple `<a href="index.html">` | ✓ Yes |
-| `/public/ks3/year7/unit2/Online-behaviour.html` | None visible | ❌ Missing |
+| `/public/ib/B2/B2.2.4 Recursion Visualisor.html` | Legacy URL preserved via redirect to `recursion-visualizer.html` | ✓ Yes |
+| `/public/ks3/year7/unit2/Online-behaviour.html` | Fixed-position Back/Home (via `standalone-nav.css`) | ✓ Yes |
 | `/public/ib/B4/LL_Visualisation.html` | Back to index | ✓ Yes |
 | `/public/igcse/topic1/binary-addition-game.html` | Back button | ✓ Yes |
 
@@ -62,6 +62,8 @@ breadcrumbs:
 
 **Pages missing `activeSection`** (causes no nav highlighting):
 - Check each NJK page for `activeSection: "ks3"`, `"igcse"`, or `"ib"`
+
+> Note (updated 2025-12-14): `activeSection` is set on all section pages; the homepage (`src/pages/index.njk`) intentionally has no active section highlighted.
 
 ---
 

@@ -50,14 +50,14 @@
    cat /Users/StevenStewart/SGS-CSC\ REMIX/meta/site-manifest.json | grep "filename"
    ```
 
-**Standalone Files List** (confirmed - edit directly, no NJK source):
-- `/Users/StevenStewart/SGS-CSC REMIX/public/ib/B2/B2.2.4 Recursion Visualisor.html`
+**Standalone Files List** (updated 2025-12-14 — confirmed *no* `.njk` source; edit directly):
+- `/Users/StevenStewart/SGS-CSC REMIX/public/ib/B2/recursion-visualizer.html`
+- `/Users/StevenStewart/SGS-CSC REMIX/public/ib/B2/B2.2.4 Recursion Visualisor.html` (legacy filename retained as redirect stub)
 - `/Users/StevenStewart/SGS-CSC REMIX/public/ib/B2/Big_0_notation.html`
 - `/Users/StevenStewart/SGS-CSC REMIX/public/ib/B4/LL_Visualisation.html`
 - `/Users/StevenStewart/SGS-CSC REMIX/public/ib/B4/BST_Visualisation.html`
 - `/Users/StevenStewart/SGS-CSC REMIX/public/ib/B4/B4.1.2_linked_lists.html`
 - `/Users/StevenStewart/SGS-CSC REMIX/public/ks3/year7/unit2/Online-behaviour.html`
-- `/Users/StevenStewart/SGS-CSC REMIX/public/ks3/year7/unit2/digital-footprint-app.html`
 - `/Users/StevenStewart/SGS-CSC REMIX/public/ks3/year7/unit2/student_activities.html`
 - `/Users/StevenStewart/SGS-CSC REMIX/public/igcse/topic1/binary-addition-game.html`
 - `/Users/StevenStewart/SGS-CSC REMIX/public/igcse/topic1/binary_game.html`
@@ -74,6 +74,8 @@
 |--------------|------------------|
 | `B2.2.4 Recursion Visualisor.html` | `recursion-visualizer.html` |
 
+> Updated 2025-12-14: a small number of space-removal renames have been executed with redirect stubs retained (to avoid breaking bookmarks). Broader renames (e.g., underscores → hyphens across many pages) remain intentionally unexecuted.
+
 **Files with Underscores** (lower priority):
 | Current Name | Recommended Name |
 |--------------|------------------|
@@ -81,8 +83,7 @@
 
 ### 🟠 Issue 2: Empty Directories
 
-- `/Users/StevenStewart/SGS-CSC REMIX/public/ks3/year8/` - Empty
-- `/Users/StevenStewart/SGS-CSC REMIX/public/ks3/year9/` - Empty
+> Updated 2025-12-14: these directories are not present in `public/ks3/` (no action required).
 
 ---
 

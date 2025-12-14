@@ -23,6 +23,7 @@ Generated files include a leading marker comment:
 These files have no template source. Edit them directly:
 
 - `ib/B2/recursion-visualizer.html`
+- `ib/B2/B2.2.4 Recursion Visualisor.html` (legacy filename with spaces; redirects to `recursion-visualizer.html`)
 - `ib/B2/Big_0_notation.html`
 - `ib/B4/LL_Visualisation.html`
 - `ib/B4/BST_Visualisation.html`

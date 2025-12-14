@@ -4,6 +4,11 @@
 
 ---
 
+## Status (updated 2025-12-14)
+
+- Generated vs standalone clarity tasks are completed (`scripts/build.js` marker + `public/README.md`).
+- Inline JS previously in `src/templates/layouts/ks3-standalone.njk` has been extracted to `public/js/ks3-widgets.js` and is loaded via `<script src="{{ basePath }}js/ks3-widgets.js"></script>`.
+
 ## ⚠️ AI Agent Safety Rules
 
 > [!CAUTION]

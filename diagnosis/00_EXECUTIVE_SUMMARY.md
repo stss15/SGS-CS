@@ -5,6 +5,11 @@
 
 ---
 
+## Status (updated 2025-12-14)
+
+- The key implementation items across the diagnosis reports have been applied (CSS/JS extraction, templating markers, documentation consolidation, navigation/breadcrumb consistency).
+- URL-changing file renames remain intentionally unexecuted unless explicitly approved.
+
 ## ⚠️ For AI Agents: Read This First
 
 > [!CAUTION]

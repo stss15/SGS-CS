@@ -4,6 +4,18 @@
 
 ---
 
+## Current Implementation Status (updated 2025-12-14)
+
+> This section tracks what has been implemented in the repo so far. It is informational only.
+
+- **Tier 1.1 (extract inline CSS/JS from top standalone files)**: Completed (CSS/JS extracted into `public/css/*` and `public/js/*`)
+- **Tier 1.2 (doc consolidation)**: Completed (`docs/agent/AGENT_GUIDE.md`, `docs/README.md`, and updated `docs/ai-navigation.md`)
+- **Tier 1.3 (source/output markers + public README)**: Completed (`scripts/build.js` marker + `public/README.md`)
+- **Tier 2.2 (breadcrumb migration)**: Completed (all templated pages use `breadcrumbs`; `activeSection` set on section pages)
+- **Tier 2.3 (file renames / URL changes)**: Partially executed (approved space-removals for a small set of standalone HTML tools, with redirect stubs retained); broader URL standardization remains intentionally unexecuted because it can break external links.
+
+---
+
 ## ⚠️ CRITICAL Safety Rules for AI Agents
 
 > [!CAUTION]

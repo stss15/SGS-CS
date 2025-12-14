@@ -4,6 +4,10 @@
 
 ---
 
+## Status (updated 2025-12-14)
+
+- CSS extraction for the standalone files listed in this report has been completed (see `public/css/activity-online-behaviour.css`, `public/css/visualizer-recursion.css`, `public/css/visualizer-linked-list.css`, `public/css/visualizer-bst.css`, `public/css/game-binary-addition.css`).
+
 ## ⚠️ AI Agent Safety Rules
 
 > [!CAUTION]

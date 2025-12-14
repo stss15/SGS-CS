@@ -4,6 +4,13 @@
 
 ---
 
+## Status (updated 2025-12-14)
+
+- Consolidated entry points are in place:
+  - `docs/agent/AGENT_GUIDE.md` (single “read first” entry point)
+  - `docs/README.md` (documentation index)
+  - `docs/ai-navigation.md` updated to point to the agent guide and reference `breadcrumbs` instead of `backLink`
+
 ## ⚠️ AI Agent Safety Rules
 
 > [!CAUTION]
