@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Gate Simulator</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --panel-bg: #ffffff;
+            --grid-color: #e1e4e8;
+            --wire-grey: #a0a0a0;
+            --wire-blue: #2196F3;
+            --wire-red: #F44336;
+            --text-color: #333;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: var(--panel-bg);
+            border-right: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            z-index: 100;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        #sidebar.collapsed {
+            transform: translateX(-100%);
+            position: absolute; /* Remove from flow so playground expands */
+            height: 100%;
+        }
+
+        /* Toggle Button */
+        #sidebar-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 200;
+            font-size: 1.2rem;
+            transition: left 0.3s ease;
+            border: 1px solid #ccc;
+        }
+
+        #sidebar-toggle:hover { background: #f9f9f9; }
+
+        /* Adjust toggle position when sidebar is open */
+        body:not(.sidebar-closed) #sidebar-toggle {
+            left: 205px; /* Inside the sidebar */
+            top: 10px;
+            width: 30px;
+            height: 30px;
+            font-size: 0.9rem;
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+
+        h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-color); margin-top: 20px; }
+        h3 { font-size: 0.9rem; margin: 20px 0 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+
+        .draggable-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .draggable-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-color: #bbb;
+        }
+
+        .icon { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+        /* Playground Area */
+        #playground {
+            flex-grow: 1;
+            position: relative;
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow: hidden;
+            transition: margin-left 0.3s ease;
+        }
+
+        body.sidebar-closed #playground {
+            margin-left: 0;
+        }
+
+        /* SVG Layer for Wires */
+        #wire-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through to nodes */
+            z-index: 1;
+        }
+        
+        /* Make paths clickable */
+        #wire-layer path {
+            pointer-events: stroke;
+            cursor: pointer;
+        }
+
+        /* Static Inputs Panel */
+        #input-panel {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            z-index: 5;
+        }
+
+        .input-slot {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border: 2px dashed #bbb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+        
+        .input-slot.occupied {
+            border: 2px solid #666;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .input-slot.occupied:active {
+            transform: scale(0.95);
+        }
+
+        .input-slot .port {
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .slot-label {
+            position: absolute;
+            top: -20px;
+            font-size: 10px;
+            color: #888;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Context menu helper for slots */
+        .input-slot:hover::after {
+            content: 'Right-click to clear';
+            position: absolute;
+            bottom: -20px;
+            font-size: 9px;
+            color: #aaa;
+            width: 150%;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .input-slot.occupied:hover::after {
+            opacity: 1;
+        }
+
+
+        /* Output Panel */
+        #output-panel {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+        }
+
+        .output-bulb {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 2px solid #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 2.5rem;
+            color: #ddd;
+            transition: all 0.3s;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .output-bulb.on {
+            background: #fff9c4;
+            color: #fbc02d;
+            box-shadow: 0 0 30px #fbc02d, inset 0 0 10px #fbc02d;
+            border-color: #fbc02d;
+        }
+
+        .output-bulb .port {
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Logic Gate Nodes in Playground */
+        .gate-node {
+            position: absolute;
+            width: 80px;
+            height: 50px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            z-index: 10;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .gate-node:active { cursor: grabbing; }
+
+        /* Ports (Connection Dots) */
+        .port {
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 50%;
+            cursor: crosshair;
+            z-index: 20;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .port:hover { background: #ddd; transform: scale(1.2); }
+        .port.wiring-target { background: #4CAF50; border-color: #2E7D32; transform: scale(1.4); }
+        
+        .port.input { position: absolute; left: -8px; }
+        .port.input-1 { top: 10px; }
+        .port.input-2 { bottom: 10px; }
+        .port.input-single { top: 50%; transform: translateY(-50%); } /* For NOT gate */
+        
+        .port.output { position: absolute; right: -8px; top: 50%; transform: translateY(-50%); }
+
+        /* Drag Ghost */
+        .ghost { opacity: 0.5; position: absolute; pointer-events: none; z-index: 100; }
+
+        /* Context Menu hint */
+        #hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-size: 0.9rem;
+            pointer-events: none;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        /* Status indicators on sensors */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        .status-dot.on { background: var(--wire-blue); box-shadow: 0 0 5px var(--wire-blue); }
+
+    </style>
+</head>
+<body>
+
+    <!-- TOGGLE BUTTON -->
+    <div id="sidebar-toggle" onclick="toggleSidebar()">☰</div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <h2>Logic Lab</h2>
+        
+        <h3>Logic Gates</h3>
+        <div class="draggable-item" draggable="true" data-type="gate" data-subtype="AND">
+            <div class="icon">
+                <svg width="24" height="24" viewBox="0 0 40 40"><path d="M5,5 L20,5 C30,5 35,15 35,20 C35,25 30,35 20,35 L5,35 Z" fill="none" stroke="black" stroke-width="2"/></svg>
+            </div> 
+            <span>AND Gate</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="gate" data-subtype="OR">
+            <div class="icon">
+                <svg width="24" height="24" viewBox="0 0 40 40"><path d="M5,5 Q20,20 5,35 Q15,35 25,20 Q15,5 5,5" fill="none" stroke="black" stroke-width="2"/></svg>
+            </div> 
+            <span>OR Gate</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="gate" data-subtype="NOT">
+            <div class="icon">
+                <svg width="24" height="24" viewBox="0 0 40 40"><path d="M5,5 L30,20 L5,35 Z" fill="none" stroke="black" stroke-width="2"/><circle cx="34" cy="20" r="3" stroke="black" fill="white"/></svg>
+            </div> 
+            <span>NOT Gate</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="gate" data-subtype="XOR">
+             <div class="icon">
+                <svg width="24" height="24" viewBox="0 0 40 40">
+                    <path d="M8,5 Q23,20 8,35 Q18,35 28,20 Q18,5 8,5" fill="none" stroke="black" stroke-width="2"/>
+                    <path d="M2,5 Q17,20 2,35" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+            </div> 
+            <span>XOR Gate</span>
+        </div>
+
+        <h3>Sensors</h3>
+        <!-- Basic Switch -->
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="switch">
+            <div class="icon">🔘</div> <span>Switch</span>
+        </div>
+        <!-- List from Text -->
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="temperature">
+            <div class="icon">🌡️</div> <span>Temperature</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="moisture">
+            <div class="icon">💧</div> <span>Moisture</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="humidity">
+            <div class="icon">🌫️</div> <span>Humidity</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="light">
+            <div class="icon">☀️</div> <span>Light</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="ir_active">
+            <div class="icon">🚨</div> <span>Infrared (Active)</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="ir_passive">
+            <div class="icon">📹</div> <span>Infrared (Passive)</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="pressure">
+            <div class="icon">⏲️</div> <span>Pressure</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="sound">
+            <div class="icon">🎤</div> <span>Acoustic/Sound</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="gas">
+            <div class="icon">💨</div> <span>Gas</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="ph">
+            <div class="icon">🧪</div> <span>pH</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="magnetic">
+            <div class="icon">🧲</div> <span>Magnetic Field</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="accelerometer">
+            <div class="icon">🏎️</div> <span><span class="keyword" data-def="a sensor that measures acceleration and deceleration and that can detect, for example, the orientation of a device">Accelerometer</span></span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="proximity">
+            <div class="icon">🛑</div> <span>Proximity</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="flow">
+            <div class="icon">🚰</div> <span>Flow (rate)</span>
+        </div>
+        <div class="draggable-item" draggable="true" data-type="sensor" data-subtype="level">
+            <div class="icon">📶</div> <span>Level</span>
+        </div>
+        
+        <div style="margin-top:20px; font-size:0.8rem; color:#888;">
+            <p><strong>Controls:</strong></p>
+            <p>• Drag sensors to Input Slots.</p>
+            <p>• Click Inputs to toggle ON/OFF.</p>
+            <p>• Right-click Inputs to clear.</p>
+            <p>• Drag gates to middle area.</p>
+            <p>• Drag from dots to wire.</p>
+            <p>• Right-click to delete items.</p>
+        </div>
+    </div>
+
+    <!-- PLAYGROUND -->
+    <div id="playground">
+        <svg id="wire-layer"></svg>
+        
+        <!-- Inputs -->
+        <div id="input-panel">
+            <div class="input-slot" id="input-0" data-index="0">
+                <span class="slot-label">Input A</span>
+                <span class="placeholder">Drop Sensor</span>
+                <div class="port output" data-id="in-0"></div>
+                <div class="status-dot"></div>
+            </div>
+            <div class="input-slot" id="input-1" data-index="1">
+                <span class="slot-label">Input B</span>
+                <span class="placeholder">Drop Sensor</span>
+                <div class="port output" data-id="in-1"></div>
+                <div class="status-dot"></div>
+            </div>
+            <div class="input-slot" id="input-2" data-index="2">
+                <span class="slot-label">Input C</span>
+                <span class="placeholder">Drop Sensor</span>
+                <div class="port output" data-id="in-2"></div>
+                <div class="status-dot"></div>
+            </div>
+        </div>
+
+        <!-- Output -->
+        <div id="output-panel">
+            <div class="output-bulb" id="main-output">
+                💡
+                <div class="port input" data-id="out-main"></div>
+            </div>
+        </div>
+
+        <div id="hint">Right-click a component (Slot or Gate) or wire to delete/clear it</div>
+    </div>
+
+<script>
+    // --- CONFIGURATION ---
+    const sensorIcons = {
+        'switch': '🔘',
+        'temperature': '🌡️',
+        'moisture': '💧',
+        'humidity': '🌫️',
+        'light': '☀️',
+        'ir_active': '🚨',
+        'ir_passive': '📹',
+        'pressure': '⏲️',
+        'sound': '🎤',
+        'gas': '💨',
+        'ph': '🧪',
+        'magnetic': '🧲',
+        'accelerometer': '🏎️',
+        'proximity': '🛑',
+        'flow': '🚰',
+        'level': '📶'
+    };
+
+    // --- STATE ---
+    const state = {
+        gates: [], // { id, type, x, y }
+        connections: [], // { fromId, toId }  (Ids refer to port IDs)
+        inputs: [null, null, null], // { type, value: bool }
+        dragging: null,
+        wiring: null, // { startPortId, startX, startY }
+        nextId: 0
+    };
+
+    // --- DOM REFERENCES ---
+    const playground = document.getElementById('playground');
+    const wireLayer = document.getElementById('wire-layer');
+    const inputSlots = document.querySelectorAll('.input-slot');
+    const mainOutput = document.getElementById('main-output');
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+
+    // --- SIDEBAR TOGGLE ---
+    function toggleSidebar() {
+        sidebar.classList.toggle('collapsed');
+        document.body.classList.toggle('sidebar-closed');
+        // Update toggle button icon/position
+        if(sidebar.classList.contains('collapsed')) {
+            toggleBtn.innerHTML = '☰';
+        } else {
+            toggleBtn.innerHTML = '✕';
+        }
+    }
+
+    // --- DRAG AND DROP (Sidebar to Playground) ---
+    const draggables = document.querySelectorAll('.draggable-item');
+    
+    draggables.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('type', item.dataset.type);
+            e.dataTransfer.setData('subtype', item.dataset.subtype);
+        });
+    });
+
+    playground.addEventListener('dragover', (e) => e.preventDefault());
+
+    playground.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const type = e.dataTransfer.getData('type');
+        const subtype = e.dataTransfer.getData('subtype');
+        const rect = playground.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (type === 'gate') {
+            createGate(subtype, x, y);
+        } else if (type === 'sensor') {
+            // Check if dropped near an input slot
+            inputSlots.forEach((slot, index) => {
+                const slotRect = slot.getBoundingClientRect();
+                // Simple collision check with mouse coords
+                if (e.clientX >= slotRect.left && e.clientX <= slotRect.right &&
+                    e.clientY >= slotRect.top && e.clientY <= slotRect.bottom) {
+                    assignSensor(index, subtype);
+                }
+            });
+        }
+    });
+
+    // --- GATE CREATION ---
+    function createGate(type, x, y) {
+        const id = `gate-${state.nextId++}`;
+        const el = document.createElement('div');
+        el.className = 'gate-node';
+        el.id = id;
+        el.style.left = (x - 40) + 'px';
+        el.style.top = (y - 25) + 'px';
+        
+        // SVG Icon based on type
+        let svgContent = '';
+        if(type === 'AND') svgContent = '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M5,5 L20,5 C30,5 35,15 35,20 C35,25 30,35 20,35 L5,35 Z" fill="white" stroke="black" stroke-width="2"/></svg>';
+        if(type === 'OR') svgContent = '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M5,5 Q20,20 5,35 Q15,35 25,20 Q15,5 5,5" fill="white" stroke="black" stroke-width="2"/></svg>';
+        if(type === 'NOT') svgContent = '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M5,5 L30,20 L5,35 Z" fill="white" stroke="black" stroke-width="2"/><circle cx="34" cy="20" r="3" stroke="black" fill="white"/></svg>';
+        if(type === 'XOR') svgContent = '<svg viewBox="0 0 40 40" width="40" height="40"><path d="M8,5 Q23,20 8,35 Q18,35 28,20 Q18,5 8,5" fill="white" stroke="black" stroke-width="2"/><path d="M2,5 Q17,20 2,35" fill="none" stroke="black" stroke-width="2"/></svg>';
+
+        el.innerHTML = `
+            ${svgContent}
+            <div class="port output" id="${id}-out" data-id="${id}-out"></div>
+        `;
+
+        // Add Inputs
+        if (type === 'NOT') {
+            el.innerHTML += `<div class="port input input-single" id="${id}-in1" data-id="${id}-in1"></div>`;
+        } else {
+            el.innerHTML += `<div class="port input input-1" id="${id}-in1" data-id="${id}-in1"></div>`;
+            el.innerHTML += `<div class="port input input-2" id="${id}-in2" data-id="${id}-in2"></div>`;
+        }
+
+        // Gate Dragging Logic
+        el.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('port')) return; // Don't drag gate if clicking port
+            e.stopPropagation(); // Stop wire creation
+            state.dragging = { el, offsetX: e.offsetX, offsetY: e.offsetY };
+        });
+
+        // Context Menu (Delete)
+        el.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            deleteGate(id);
+        });
+
+        playground.appendChild(el);
+        state.gates.push({ id, type, el });
+    }
+
+    // --- SENSOR ASSIGNMENT & CLEARING ---
+    function assignSensor(index, subtype) {
+        const slot = inputSlots[index];
+        const icon = sensorIcons[subtype] || '❓';
+
+        slot.querySelector('.placeholder').style.display = 'none';
+        
+        // Remove existing icon if any
+        const existingIcon = slot.querySelector('.sensor-icon');
+        if (existingIcon) existingIcon.remove();
+
+        const div = document.createElement('div');
+        div.className = 'sensor-icon';
+        div.style.fontSize = '2rem';
+        div.innerText = icon;
+        div.title = subtype; // Tooltip for clarity
+        slot.insertBefore(div, slot.firstChild);
+
+        slot.classList.add('occupied');
+        state.inputs[index] = { type: subtype, value: false };
+        updateSimulation();
+    }
+
+    function clearSensor(index) {
+        const slot = inputSlots[index];
+        const existingIcon = slot.querySelector('.sensor-icon');
+        if (existingIcon) existingIcon.remove();
+        
+        slot.querySelector('.placeholder').style.display = 'block';
+        slot.classList.remove('occupied');
+        
+        state.inputs[index] = null;
+        updateSimulation();
+    }
+
+    // Toggle Sensors & Context Menu for Clearing
+    inputSlots.forEach((slot, index) => {
+        // Toggle
+        slot.addEventListener('click', () => {
+            if (state.inputs[index]) {
+                state.inputs[index].value = !state.inputs[index].value;
+                updateSimulation();
+            }
+        });
+
+        // Clear (Right Click)
+        slot.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if (state.inputs[index]) {
+                clearSensor(index);
+            }
+        });
+    });
+
+    // --- WIRING SYSTEM ---
+    
+    // Mouse Down on Port
+    playground.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('port')) {
+            const rect = e.target.getBoundingClientRect();
+            const playgroundRect = playground.getBoundingClientRect();
+            const x = rect.left + rect.width/2 - playgroundRect.left;
+            const y = rect.top + rect.height/2 - playgroundRect.top;
+            
+            state.wiring = {
+                startId: e.target.dataset.id,
+                startX: x,
+                startY: y,
+                isOutput: e.target.classList.contains('output')
+            };
+
+            // Create temporary line
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("stroke", "black");
+            path.setAttribute("stroke-width", "3");
+            path.setAttribute("fill", "none");
+            path.setAttribute("id", "temp-wire");
+            path.style.pointerEvents = "none"; // CRITICAL FIX: Allows mouse events to pass through to ports underneath
+            path.setAttribute("d", `M${x},${y} L${x},${y}`);
+            wireLayer.appendChild(path);
+            
+            // Highlight valid targets visually
+            document.querySelectorAll('.port').forEach(p => {
+                const isTargetOutput = p.classList.contains('output');
+                if (state.wiring.isOutput !== isTargetOutput) {
+                    p.classList.add('wiring-target');
+                }
+            });
+        }
+    });
+
+    // Mouse Move (Dragging Gates or Wires)
+    window.addEventListener('mousemove', (e) => {
+        const rect = playground.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Gate Dragging
+        if (state.dragging) {
+            let newX = x - state.dragging.offsetX;
+            let newY = y - state.dragging.offsetY;
+            // Bounds check
+            if(newX < 0) newX = 0;
+            if(newY < 0) newY = 0;
+            
+            state.dragging.el.style.left = newX + 'px';
+            state.dragging.el.style.top = newY + 'px';
+            drawWires(); // Redraw wires attached to this gate
+        }
+
+        // Wire Drawing
+        if (state.wiring) {
+            const tempWire = document.getElementById('temp-wire');
+            if (tempWire) {
+                // Bezier curve for smooth wire
+                const sx = state.wiring.startX;
+                const sy = state.wiring.startY;
+                const cp1x = sx + (x - sx) / 2;
+                const cp2x = x - (x - sx) / 2;
+                tempWire.setAttribute("d", `M${sx},${sy} C${cp1x},${sy} ${cp2x},${y} ${x},${y}`);
+            }
+        }
+    });
+
+    // Mouse Up (Complete Wire or Drop Gate)
+    window.addEventListener('mouseup', (e) => {
+        state.dragging = null;
+
+        if (state.wiring) {
+            const tempWire = document.getElementById('temp-wire');
+            if (tempWire) tempWire.remove();
+
+            // Clear highlights
+            document.querySelectorAll('.port').forEach(p => p.classList.remove('wiring-target'));
+
+            if (e.target.classList.contains('port')) {
+                const endId = e.target.dataset.id;
+                const isOutput = e.target.classList.contains('output');
+                
+                // Validation: Cannot connect Output to Output or Input to Input
+                if (state.wiring.isOutput !== isOutput) {
+                    
+                    const source = state.wiring.isOutput ? state.wiring.startId : endId;
+                    const target = state.wiring.isOutput ? endId : state.wiring.startId;
+
+                    // Remove existing connection to this specific Input (Inputs can only have 1 wire)
+                    // NOTE: We do NOT filter 'from' here, allowing multiple wires from source (Fan-out)
+                    state.connections = state.connections.filter(c => c.to !== target);
+
+                    state.connections.push({ from: source, to: target });
+                    drawWires();
+                    updateSimulation();
+                }
+            }
+            state.wiring = null;
+        }
+    });
+
+    // --- DRAWING & SIMULATION ---
+
+    function getPortPosition(portId) {
+        // Handle input slots
+        if (portId.startsWith('in-')) {
+            const index = parseInt(portId.split('-')[1]);
+            const slot = inputSlots[index];
+            const port = slot.querySelector('.port');
+            const r = port.getBoundingClientRect();
+            const pr = playground.getBoundingClientRect();
+            return { x: r.left + r.width/2 - pr.left, y: r.top + r.height/2 - pr.top };
+        }
+        // Handle Main Output
+        if (portId === 'out-main') {
+            const port = mainOutput.querySelector('.port');
+            const r = port.getBoundingClientRect();
+            const pr = playground.getBoundingClientRect();
+            return { x: r.left + r.width/2 - pr.left, y: r.top + r.height/2 - pr.top };
+        }
+        // Handle Gates
+        const el = document.getElementById(portId);
+        if (!el) return {x:0, y:0}; // Gate might be deleted
+        const r = el.getBoundingClientRect();
+        const pr = playground.getBoundingClientRect();
+        return { x: r.left + r.width/2 - pr.left, y: r.top + r.height/2 - pr.top };
+    }
+
+    function drawWires() {
+        wireLayer.innerHTML = ''; // Clear lines
+        
+        state.connections.forEach(conn => {
+            const start = getPortPosition(conn.from);
+            const end = getPortPosition(conn.to);
+            
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            
+            // Bezier logic
+            const cp1x = start.x + Math.abs(end.x - start.x) * 0.5;
+            const cp2x = end.x - Math.abs(end.x - start.x) * 0.5;
+            
+            path.setAttribute("d", `M${start.x},${start.y} C${cp1x},${start.y} ${cp2x},${end.y} ${end.x},${end.y}`);
+            path.setAttribute("stroke-width", "4");
+            path.setAttribute("fill", "none");
+            path.setAttribute("stroke", "var(--wire-grey)"); // Default grey
+            path.id = `wire-${conn.from}-${conn.to}`;
+            
+            // Delete wire on right click
+            path.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                state.connections = state.connections.filter(c => c !== conn);
+                drawWires();
+                updateSimulation();
+            });
+
+            wireLayer.appendChild(path);
+        });
+        updateWireColors();
+    }
+
+    function deleteGate(id) {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+        
+        state.gates = state.gates.filter(g => g.id !== id);
+        // Remove connections attached to this gate
+        state.connections = state.connections.filter(c => !c.from.includes(id) && !c.to.includes(id));
+        drawWires();
+        updateSimulation();
+    }
+
+    function updateSimulation() {
+        // Map of portID -> value (null, true, false)
+        const values = {};
+
+        // 1. Set Input Sensor Values
+        state.inputs.forEach((inp, idx) => {
+            const dot = inputSlots[idx].querySelector('.status-dot');
+            if (inp) {
+                values[`in-${idx}`] = inp.value;
+                dot.classList.toggle('on', inp.value);
+            } else {
+                values[`in-${idx}`] = null;
+                dot.classList.remove('on');
+            }
+        });
+
+        // 2. Propagate values
+        // We need a loop to handle depth. A simple repeated pass works for acyclic graphs.
+        // For 3 levels of gates, 10 passes is overkill but safe.
+        for (let i = 0; i < 10; i++) {
+            let changed = false;
+            
+            // Propagate through wires
+            state.connections.forEach(conn => {
+                if (values[conn.from] !== undefined) {
+                    values[conn.to] = values[conn.from];
+                }
+            });
+
+            // Calculate Gates
+            state.gates.forEach(gate => {
+                const in1 = values[`${gate.id}-in1`];
+                const in2 = values[`${gate.id}-in2`]; // Undefined for NOT gate
+                let outVal = null;
+
+                if (gate.type === 'AND') {
+                    if (in1 !== null && in2 !== null && in1 !== undefined && in2 !== undefined) {
+                        outVal = in1 && in2;
+                    }
+                } else if (gate.type === 'OR') {
+                    if (in1 !== null && in2 !== null && in1 !== undefined && in2 !== undefined) {
+                        outVal = in1 || in2;
+                    }
+                } else if (gate.type === 'NOT') {
+                    if (in1 !== null && in1 !== undefined) {
+                        outVal = !in1;
+                    }
+                } else if (gate.type === 'XOR') {
+                    if (in1 !== null && in2 !== null && in1 !== undefined && in2 !== undefined) {
+                        outVal = (in1 && !in2) || (!in1 && in2);
+                    }
+                }
+
+                if (values[`${gate.id}-out`] !== outVal) {
+                    values[`${gate.id}-out`] = outVal;
+                    changed = true;
+                }
+            });
+
+            if (!changed) break;
+        }
+
+        // 3. Update UI (Wire Colors)
+        state.values = values; // Store for wire drawing
+        updateWireColors();
+
+        // 4. Update Main Output
+        const mainOutVal = values['out-main'];
+        if (mainOutVal === true) {
+            mainOutput.classList.add('on');
+        } else {
+            mainOutput.classList.remove('on');
+        }
+    }
+
+    function updateWireColors() {
+        if (!state.values) return;
+        
+        state.connections.forEach(conn => {
+            const val = state.values[conn.from];
+            const wire = document.getElementById(`wire-${conn.from}-${conn.to}`);
+            if (wire) {
+                if (val === true) {
+                    wire.setAttribute('stroke', 'var(--wire-blue)');
+                } else if (val === false) {
+                    wire.setAttribute('stroke', 'var(--wire-red)');
+                } else {
+                    wire.setAttribute('stroke', 'var(--wire-grey)');
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
