@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGSD SQL Playground</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- PrismJS Theme -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+
+    <!-- React & ReactDOM (UMD) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Lucide Icons (UMD - Known stable version) -->
+    <script crossorigin src="https://unpkg.com/lucide-react@0.294.0/dist/umd/lucide-react.min.js"></script>
+
+    <!-- SQL.js & Formatter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/12.2.3/sql-formatter.min.js"></script>
+
+    <!-- PrismJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <!-- Babel for in-browser JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* PrismJS Overrides for Editor Overlay */
+        pre[class*="language-"] {
+            background: transparent !important;
+            text-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+
+        code[class*="language-"],
+        pre[class*="language-"] {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+            font-size: 0.875rem !important;
+            /* text-sm */
+            line-height: 1.5 !important;
+            color: #334155 !important;
+            /* slate-700 base color */
+        }
+
+        /* Syntax highlighting colors to match theme */
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: #94a3b8;
+        }
+
+        .token.punctuation {
+            color: #64748b;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol,
+        .token.deleted {
+            color: #d97706;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.inserted {
+            color: #16a34a;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string {
+            color: #0f172a;
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .token.function,
+        .token.class-name {
+            color: #dc2626;
+        }
+
+        .token.regex,
+        .token.important,
+        .token.variable {
+            color: #eab308;
+        }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="env,react,typescript">
+        // Destructure Globals
+        const { useState, useEffect, useCallback, useRef, useMemo } = React;
+
+        // Access global lucideReact object. 
+        const LucideIcons = window.lucideReact || {};
+        const {
+            Upload, Play, Trash2, Download, Database, Sparkles, RefreshCw,
+            Bug, Lightbulb, Settings, Table: TableIcon, Columns, ChevronRight, AlertCircle,
+            BookOpen, Copy, Check, ArrowLeft
+        } = LucideIcons;
+
+        // --- SQL Service ---
+        let SQL = null;
+
+        const initSqlEngine = async () => {
+            if (SQL) return;
+            if (!window.initSqlJs) {
+                throw new Error("SQL.js library not loaded. Please check your internet connection.");
+            }
+            SQL = await window.initSqlJs({
+                locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+            });
+        };
+
+        const createDatabase = (data) => {
+            if (!SQL) throw new Error("SQL Engine not initialized");
+            return new SQL.Database(data);
+        };
+
+        const executeQuery = (db, query) => {
+            try {
+                const results = db.exec(query);
+                if (results.length > 0) {
+                    return {
+                        columns: results[0].columns,
+                        values: results[0].values
+                    };
+                }
+                // Handle empty result sets (like CREATE TABLE)
+                return { columns: [], values: [] };
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        };
+
+        const getDatabaseSchema = (db) => {
+            const schema = [];
+            try {
+                const tablesResult = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';");
+                if (tablesResult.length > 0 && tablesResult[0].values) {
+                    const tables = tablesResult[0].values.flat();
+                    for (const tableName of tables) {
+                        const columnsResult = db.exec(`PRAGMA table_info("${tableName}")`);
+                        if (columnsResult.length > 0) {
+                            const cols = columnsResult[0].values.map((row) => ({
+                                name: row[1],
+                                type: row[2]
+                            }));
+                            schema.push({ tableName: tableName, columns: cols });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch schema", e);
+            }
+            return schema;
+        };
+
+        // --- Cheat Sheet Data ---
+        const CHEAT_SHEET_DATA = [
+            { label: 'Select All', code: 'SELECT * FROM table;' },
+            { label: 'Select Specific', code: 'SELECT col1, col2 FROM table;' },
+            { label: 'Filter Rows', code: 'SELECT * FROM table WHERE id = 1;' },
+            { label: 'Count Rows', code: 'SELECT COUNT(*) FROM table;' },
+            { label: 'Sum Values', code: 'SELECT SUM(column) FROM table;' },
+            { label: 'Sort Results', code: 'SELECT * FROM table ORDER BY col DESC;' },
+            { label: 'Limit Results', code: 'SELECT * FROM table LIMIT 10;' },
+            { label: 'Insert Data', code: "INSERT INTO table (col1) VALUES ('val');" },
+            { label: 'Update Data', code: "UPDATE table SET col1 = 'val' WHERE id = 1;" },
+            { label: 'Delete Data', code: 'DELETE FROM table WHERE id = 1;' }
+        ];
+
+        // --- Component: CheatSheet ---
+        const CheatSheet = ({ onInsertCode }) => {
+            const [copiedIndex, setCopiedIndex] = useState(null);
+
+            const handleCopy = (e, code, index) => {
+                e.stopPropagation();
+                navigator.clipboard.writeText(code);
+                setCopiedIndex(index);
+                setTimeout(() => setCopiedIndex(null), 2000);
+            };
+
+            return (
+                <div className="flex flex-col h-full bg-white">
+                    <div className="p-4 border-b border-slate-200 bg-slate-50 sticky top-0">
+                        <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                            {BookOpen && <BookOpen className="w-4 h-4 text-[#d97706]" />}
+                            Cheat Sheet
+                        </h3>
+                    </div>
+                    <div className="overflow-y-auto flex-1 p-2 space-y-2">
+                        {CHEAT_SHEET_DATA.map((item, idx) => (
+                            <div
+                                key={idx}
+                                className="group p-2 rounded hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all cursor-pointer"
+                                onClick={() => onInsertCode(item.code)}
+                                title="Click to insert into editor"
+                            >
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs font-medium text-slate-600">{item.label}</span>
+                                    <button
+                                        onClick={(e) => handleCopy(e, item.code, idx)}
+                                        className="text-slate-400 hover:text-[#d97706] transition-colors p-1 hover:bg-slate-200 rounded"
+                                        title="Copy to clipboard"
+                                    >
+                                        {copiedIndex === idx ? (Check && <Check className="w-3 h-3 text-green-500" />) : (Copy && <Copy className="w-3 h-3" />)}
+                                    </button>
+                                </div>
+                                <code className="block text-[10px] font-mono text-slate-500 bg-slate-100 p-1.5 rounded break-words pointer-events-none">
+                                    {item.code}
+                                </code>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Component: SchemaViewer ---
+        const SchemaViewer = ({ schema, onTableClick }) => {
+            if (schema.length === 0) {
+                return (
+                    <div className="p-4 text-center text-slate-500">
+                        {Database && <Database className="w-12 h-12 mx-auto mb-2 opacity-20" />}
+                        <p className="text-sm">No tables found or no database loaded.</p>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="h-full overflow-y-auto">
+                    <div className="p-4 border-b border-slate-200 bg-slate-50 sticky top-0">
+                        <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                            {Database && <Database className="w-4 h-4 text-[#d97706]" />}
+                            Database Schema
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-1">{schema.length} tables found</p>
+                    </div>
+
+                    <div className="p-2 space-y-2">
+                        {schema.map((table) => (
+                            <div key={table.tableName} className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-sm group">
+                                <button
+                                    onClick={() => onTableClick(table.tableName)}
+                                    className="w-full text-left px-3 py-2 bg-slate-50 hover:bg-slate-100 flex items-center justify-between border-b border-slate-100 transition-colors"
+                                >
+                                    <span className="font-medium text-slate-700 flex items-center gap-2">
+                                        {TableIcon && <TableIcon className="w-4 h-4 text-slate-500" />}
+                                        {table.tableName}
+                                    </span>
+                                    {ChevronRight && <ChevronRight className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                                </button>
+                                <ul className="text-sm py-1">
+                                    {table.columns.map((col) => (
+                                        <li key={col.name} className="px-3 py-1 flex items-center justify-between text-slate-600 hover:bg-slate-50">
+                                            <div className="flex items-center gap-2 overflow-hidden">
+                                                {Columns && <Columns className="w-3 h-3 text-slate-400 flex-shrink-0" />}
+                                                <span className="truncate" title={col.name}>{col.name}</span>
+                                            </div>
+                                            <span className="text-xs text-slate-400 font-mono flex-shrink-0 ml-2 bg-slate-100 px-1 rounded">
+                                                {col.type}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Component: ResultsTable ---
+        const ResultsTable = ({ data, error, queryTime }) => {
+            if (error) {
+                return (
+                    <div className="p-6 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-start gap-3">
+                        {AlertCircle && <AlertCircle className="w-6 h-6 flex-shrink-0 mt-0.5" />}
+                        <div>
+                            <h4 className="font-semibold">Execution Error</h4>
+                            <p className="mt-1 font-mono text-sm whitespace-pre-wrap">{error}</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (!data) {
+                return (
+                    <div className="h-full flex flex-col items-center justify-center text-slate-400 p-8 border-2 border-dashed border-slate-200 rounded-lg">
+                        <p>Run a query to see results here</p>
+                    </div>
+                );
+            }
+
+            if (data.values.length === 0) {
+                return (
+                    <div className="p-4 bg-blue-50 text-blue-800 rounded-lg border border-blue-100">
+                        Query executed successfully. No rows returned. {queryTime !== undefined && <span className="text-xs opacity-75">({queryTime.toFixed(1)}ms)</span>}
+                    </div>
+                );
+            }
+
+            return (
+                <div className="flex flex-col h-full bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                    {queryTime !== undefined && (
+                        <div className="bg-slate-50 px-4 py-2 border-b border-slate-200 text-xs text-slate-500 text-right">
+                            {data.values.length} rows returned in {queryTime.toFixed(1)}ms
+                        </div>
+                    )}
+                    <div className="overflow-auto flex-1">
+                        <table className="min-w-full divide-y divide-slate-200">
+                            <thead className="bg-slate-50 sticky top-0 z-10">
+                                <tr>
+                                    {data.columns.map((col, idx) => (
+                                        <th
+                                            key={idx}
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap border-b border-slate-200 bg-slate-50"
+                                        >
+                                            {col}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-slate-200">
+                                {data.values.map((row, rowIdx) => (
+                                    <tr key={rowIdx} className="hover:bg-slate-50 transition-colors">
+                                        {row.map((cell, cellIdx) => (
+                                            <td
+                                                key={cellIdx}
+                                                className="px-6 py-3 text-sm text-slate-700 whitespace-nowrap font-mono"
+                                            >
+                                                {cell === null ? <span className="text-slate-400 italic">NULL</span> : String(cell)}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Component: SqlPlayground ---
+        const SQL_KEYWORDS = [
+            'SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER',
+            'JOIN', 'INNER', 'LEFT', 'RIGHT', 'OUTER', 'ON', 'AS', 'DISTINCT', 'COUNT', 'SUM',
+            'AVG', 'MAX', 'MIN', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT', 'OFFSET', 'AND', 'OR',
+            'NOT', 'IN', 'IS', 'NULL', 'LIKE', 'BETWEEN', 'EXISTS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END',
+            'VALUES', 'SET', 'INTO', 'TABLE', 'INDEX', 'VIEW', 'UNION', 'ALL', 'ANY', 'SOME'
+        ];
+
+        const getCaretCoordinates = (element, position) => {
+            const div = document.createElement('div');
+            const style = window.getComputedStyle(element);
+            const properties = [
+                'direction', 'boxSizing', 'width', 'height', 'overflowX', 'overflowY',
+                'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
+                'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+                'fontStyle', 'fontVariant', 'fontWeight', 'fontStretch', 'fontSize',
+                'lineHeight', 'fontFamily', 'textAlign', 'textTransform', 'textIndent',
+                'textDecoration', 'letterSpacing', 'wordSpacing', 'tabSize', 'mozTabSize'
+            ];
+            properties.forEach(prop => {
+                div.style[prop] = style[prop];
+            });
+            div.style.position = 'absolute';
+            div.style.top = '0';
+            div.style.left = '-9999px';
+            div.style.visibility = 'hidden';
+            div.style.whiteSpace = 'pre';
+            div.style.overflow = 'hidden';
+            div.textContent = element.value.substring(0, position);
+            const span = document.createElement('span');
+            span.textContent = element.value.substring(position) || '.';
+            div.appendChild(span);
+            document.body.appendChild(div);
+            const coordinates = {
+                top: span.offsetTop + parseInt(style.borderTopWidth),
+                left: span.offsetLeft + parseInt(style.borderLeftWidth),
+                height: parseInt(style.lineHeight)
+            };
+            document.body.removeChild(div);
+            return coordinates;
+        };
+
+        const SqlPlayground = () => {
+            const [db, setDb] = useState(null);
+            const [isReady, setIsReady] = useState(false);
+            const [schema, setSchema] = useState([]);
+            const [query, setQuery] = useState('');
+            const [result, setResult] = useState(null);
+            const [error, setError] = useState(null);
+            const [isLoading, setIsLoading] = useState(false);
+            const [fileName, setFileName] = useState(null);
+            const [executionTime, setExecutionTime] = useState(undefined);
+            const [suggestions, setSuggestions] = useState([]);
+            const [showSuggestions, setShowSuggestions] = useState(false);
+            const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
+            const [suggestionCoords, setSuggestionCoords] = useState({ top: 0, left: 0 });
+            const currentWordStartRef = useRef(0);
+            const fileInputRef = useRef(null);
+            const textareaRef = useRef(null);
+            const preRef = useRef(null);
+            const editorContainerRef = useRef(null);
+
+            useEffect(() => {
+                initSqlEngine().then(() => setIsReady(true)).catch((err) => {
+                    console.error("Failed to init SQL engine", err);
+                    setError("Failed to load SQL engine. Please reload the page.");
+                });
+            }, []);
+
+            const availableKeywords = useMemo(() => {
+                const tableNames = schema.map(t => t.tableName);
+                const columnNames = schema.flatMap(t => t.columns.map(c => c.name));
+                return Array.from(new Set([...SQL_KEYWORDS, ...tableNames, ...columnNames]));
+            }, [schema]);
+
+            const handleFileUpload = useCallback(async (event) => {
+                const file = event.target.files?.[0];
+                if (!file) return;
+
+                setIsLoading(true);
+                setError(null);
+                setFileName(file.name);
+
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const uInt8Array = new Uint8Array(arrayBuffer);
+                    const newDb = createDatabase(uInt8Array);
+                    setDb(newDb);
+
+                    const newSchema = getDatabaseSchema(newDb);
+                    setSchema(newSchema);
+                    setResult(null);
+                    setQuery('');
+
+                    if (newSchema.length > 0) {
+                        setQuery(`SELECT * FROM ${newSchema[0].tableName} LIMIT 10;`);
+                    }
+                } catch (e) {
+                    setError(`Failed to load database: ${e.message}`);
+                    setDb(null);
+                } finally {
+                    setIsLoading(false);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                }
+            }, []);
+
+            const handleRunQuery = useCallback(() => {
+                if (!db || !query.trim()) return;
+                setShowSuggestions(false);
+                const startTime = performance.now();
+                try {
+                    setError(null);
+                    const res = executeQuery(db, query);
+                    setResult(res);
+                    setExecutionTime(performance.now() - startTime);
+                    const newSchema = getDatabaseSchema(db);
+                    setSchema(newSchema);
+                } catch (e) {
+                    setError(e.message);
+                    setResult(null);
+                }
+            }, [db, query]);
+
+            const handleFormat = useCallback(() => {
+                if (!query.trim()) return;
+                try {
+                    if (window.sqlFormatter) {
+                        const formatted = window.sqlFormatter.format(query, {
+                            language: 'sqlite',
+                            keywordCase: 'upper',
+                        });
+                        setQuery(formatted);
+                    }
+                } catch (e) {
+                    console.error("Format error", e);
+                }
+            }, [query]);
+
+            const handleTableClick = useCallback((tableName) => {
+                setQuery(`SELECT * FROM ${tableName} LIMIT 20;`);
+            }, []);
+
+            const handleReset = () => {
+                setDb(null);
+                setFileName(null);
+                setSchema([]);
+                setResult(null);
+                setQuery('');
+                setError(null);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            };
+
+            const handleDownloadDb = () => {
+                if (!db || !fileName) return;
+                const data = db.export();
+                const blob = new Blob([data]);
+                const a = document.createElement('a');
+                a.href = window.URL.createObjectURL(blob);
+                a.download = fileName;
+                a.click();
+            }
+
+            const handleScroll = () => {
+                if (textareaRef.current && preRef.current) {
+                    preRef.current.scrollTop = textareaRef.current.scrollTop;
+                    preRef.current.scrollLeft = textareaRef.current.scrollLeft;
+                    if (showSuggestions) setShowSuggestions(false);
+                }
+            };
+
+            const handleQueryChange = (e) => {
+                const val = e.target.value;
+                setQuery(val);
+                const cursorPos = e.target.selectionStart;
+                let start = cursorPos - 1;
+                while (start >= 0 && /[\w\d_]/.test(val[start])) {
+                    start--;
+                }
+                start++;
+                const word = val.substring(start, cursorPos);
+                currentWordStartRef.current = start;
+
+                if (word.length >= 1) {
+                    const matches = availableKeywords.filter(k =>
+                        k.toLowerCase().startsWith(word.toLowerCase())
+                    );
+
+                    if (matches.length > 0) {
+                        setSuggestions(matches.slice(0, 8));
+                        setShowSuggestions(true);
+                        setActiveSuggestionIndex(0);
+                        if (textareaRef.current && editorContainerRef.current) {
+                            const coords = getCaretCoordinates(textareaRef.current, cursorPos);
+                            const scrollTop = textareaRef.current.scrollTop;
+                            setSuggestionCoords({
+                                top: editorContainerRef.current.offsetTop + coords.top - scrollTop + 20,
+                                left: editorContainerRef.current.offsetLeft + coords.left
+                            });
+                        }
+                    } else {
+                        setShowSuggestions(false);
+                    }
+                } else {
+                    setShowSuggestions(false);
+                }
+            };
+
+            const selectSuggestion = (suggestion) => {
+                const start = currentWordStartRef.current;
+                const end = textareaRef.current?.selectionStart || start;
+                const before = query.substring(0, start);
+                const after = query.substring(end);
+                const newQuery = before + suggestion + after;
+                setQuery(newQuery);
+                setShowSuggestions(false);
+                setTimeout(() => {
+                    if (textareaRef.current) {
+                        textareaRef.current.focus();
+                        const newCursorPos = start + suggestion.length;
+                        textareaRef.current.setSelectionRange(newCursorPos, newCursorPos);
+                    }
+                }, 0);
+            };
+
+            const handleKeyDown = (e) => {
+                if (showSuggestions && suggestions.length > 0) {
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        setActiveSuggestionIndex(prev => (prev + 1) % suggestions.length);
+                        return;
+                    }
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        setActiveSuggestionIndex(prev => (prev - 1 + suggestions.length) % suggestions.length);
+                        return;
+                    }
+                    if (e.key === 'Enter' || e.key === 'Tab') {
+                        e.preventDefault();
+                        selectSuggestion(suggestions[activeSuggestionIndex]);
+                        return;
+                    }
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        setShowSuggestions(false);
+                        return;
+                    }
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    handleRunQuery();
+                }
+            };
+
+            const highlightedCode = useMemo(() => {
+                if (window.Prism) {
+                    try {
+                        const html = window.Prism.highlight(query, window.Prism.languages.sql, 'sql');
+                        return query.endsWith('\n') ? html + '<br />' : html;
+                    } catch (e) {
+                        return query.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    }
+                }
+                return query.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }, [query]);
+
+            if (!isReady) {
+                return (
+                    <div className="flex items-center justify-center h-full">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d97706]"></div>
+                        <span className="ml-4 text-slate-600">Initializing SQL Engine...</span>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="flex flex-col h-full gap-4">
+                    {/* Header Bar */}
+                    <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex-shrink-0">
+                        <div className="flex items-center gap-3">
+                            <a href="index.html" className="p-2 -ml-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors" title="Back to Index">
+                                {ArrowLeft && <ArrowLeft className="w-5 h-5" />}
+                            </a>
+                            <div className={`p-2 rounded-lg ${db ? 'bg-[#e0f2fe]' : 'bg-slate-100'}`}>
+                                {Database && <Database className={`w-5 h-5 ${db ? 'text-[#0369a1]' : 'text-slate-400'}`} />}
+                            </div>
+                            <div>
+                                <h2 className="font-bold text-slate-800">{fileName || "No Database Loaded"}</h2>
+                                <p className="text-xs text-slate-500">
+                                    {db ? "SQLite Session Active" : "Upload a .db file to start"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="file"
+                                accept=".db,.sqlite,.sqlite3"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                            />
+
+                            {isLoading ? (
+                                <div className="px-4 py-2 flex items-center gap-2 text-slate-500 text-sm">
+                                    {RefreshCw && <RefreshCw className="w-4 h-4 animate-spin" />}
+                                    Loading...
+                                </div>
+                            ) : !db ? (
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="flex items-center gap-2 bg-[#0f172a] hover:bg-[#1e293b] text-white px-4 py-2 rounded-md font-medium text-sm transition-all shadow-sm"
+                                >
+                                    {Upload && <Upload className="w-4 h-4" />}
+                                    Upload Database
+                                </button>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={handleDownloadDb}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md transition-colors border border-slate-200"
+                                        title="Download modified DB"
+                                    >
+                                        {Download && <Download className="w-4 h-4" />}
+                                        <span className="hidden sm:inline">Save</span>
+                                    </button>
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md transition-colors border border-slate-200"
+                                        title="Replace Database"
+                                    >
+                                        {Upload && <Upload className="w-4 h-4" />}
+                                        <span className="hidden sm:inline">Replace</span>
+                                    </button>
+                                    <div className="h-6 w-px bg-slate-200 mx-1"></div>
+                                    <button
+                                        onClick={handleReset}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                        title="Close Session"
+                                    >
+                                        {Trash2 && <Trash2 className="w-4 h-4" />}
+                                        <span className="hidden sm:inline">Close</span>
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-1 gap-6 overflow-hidden">
+                        {/* Sidebar: Split into Schema and Cheat Sheet */}
+                        <div className="w-64 flex-shrink-0 bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden hidden md:flex flex-col">
+                            <div className="h-3/5 border-b border-slate-200 overflow-hidden">
+                                <SchemaViewer schema={schema} onTableClick={handleTableClick} />
+                            </div>
+                            <div className="h-2/5 overflow-hidden">
+                                <CheatSheet onInsertCode={(code) => setQuery(code)} />
+                            </div>
+                        </div>
+
+                        {/* Main Content */}
+                        <div className="flex-1 flex flex-col gap-4 min-w-0">
+                            {/* Query Editor */}
+                            <div className="bg-white rounded-lg shadow-sm border border-slate-200 flex flex-col h-1/3 min-h-[200px] relative">
+                                <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-slate-50">
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">SQL Query Editor</span>
+                                        <button
+                                            onClick={handleFormat}
+                                            className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                            title="Pretty print SQL"
+                                            disabled={!query.trim()}
+                                        >
+                                            {Sparkles && <Sparkles className="w-3.5 h-3.5" />}
+                                            Format
+                                        </button>
+                                    </div>
+                                    <span className="text-xs text-slate-400">Ctrl + Enter to run</span>
+                                </div>
+
+                                <div
+                                    ref={editorContainerRef}
+                                    className="relative flex-1 flex flex-col overflow-hidden bg-slate-50"
+                                >
+                                    {/* Backdrop for syntax highlighting */}
+                                    <pre
+                                        ref={preRef}
+                                        aria-hidden="true"
+                                        className="absolute inset-0 m-0 p-4 font-mono text-sm pointer-events-none whitespace-pre overflow-hidden text-slate-900 !leading-normal"
+                                        style={{
+                                            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                                            tabSize: 2
+                                        }}
+                                    >
+                                        <code
+                                            className="language-sql"
+                                            dangerouslySetInnerHTML={{ __html: highlightedCode }}
+                                        />
+                                    </pre>
+
+                                    {/* Actual Input */}
+                                    <textarea
+                                        ref={textareaRef}
+                                        value={query}
+                                        onChange={handleQueryChange}
+                                        onKeyDown={handleKeyDown}
+                                        onScroll={handleScroll}
+                                        className="absolute inset-0 w-full h-full p-4 font-mono text-sm bg-transparent text-transparent caret-slate-900 resize-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#d97706]/20 placeholder:text-slate-400 whitespace-pre !leading-normal"
+                                        placeholder={db ? "SELECT * FROM table_name..." : "Upload a database to start writing queries..."}
+                                        style={{
+                                            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                                            tabSize: 2
+                                        }}
+                                        spellCheck={false}
+                                        disabled={!db}
+                                    />
+                                </div>
+
+                                <div className="px-4 py-3 border-t border-slate-100 flex justify-end bg-white rounded-b-lg">
+                                    <button
+                                        onClick={handleRunQuery}
+                                        disabled={!query.trim() || !db}
+                                        className="flex items-center gap-2 bg-[#0f172a] hover:bg-[#1e293b] disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-md font-medium text-sm transition-all shadow-sm active:scale-95"
+                                    >
+                                        {Play && <Play className="w-4 h-4 fill-current" />}
+                                        Run Query
+                                    </button>
+                                </div>
+
+                                {/* Suggestion Dropdown */}
+                                {showSuggestions && suggestions.length > 0 && (
+                                    <div
+                                        className="absolute z-50 bg-white border border-slate-200 rounded-md shadow-lg overflow-hidden min-w-[150px] max-w-xs"
+                                        style={{ top: suggestionCoords.top, left: suggestionCoords.left }}
+                                    >
+                                        <ul className="py-1">
+                                            {suggestions.map((suggestion, idx) => (
+                                                <li
+                                                    key={suggestion}
+                                                    className={`px-3 py-1.5 text-sm cursor-pointer font-mono ${idx === activeSuggestionIndex ? 'bg-blue-50 text-blue-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                                                    onClick={() => selectSuggestion(suggestion)}
+                                                    onMouseEnter={() => setActiveSuggestionIndex(idx)}
+                                                >
+                                                    {suggestion}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Results */}
+                            <div className="flex-1 min-h-0">
+                                <ResultsTable data={result} error={error} queryTime={executionTime} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div className="h-screen bg-[#f8fafc] text-slate-900 font-sans flex flex-col overflow-hidden">
+                    <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 flex flex-col overflow-hidden">
+                        <SqlPlayground />
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
