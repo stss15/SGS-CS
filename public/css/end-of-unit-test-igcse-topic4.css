@@ -1,0 +1,314 @@
+/* Extracted from Topic4_End_of_unit_Test.html on 2025-12-14 */
+/* DO NOT EDIT - Changes should match original inline styles */
+
+        :root {
+            --sg-blue: #003366;
+            --sg-gold: #D4AF37;
+            --sg-text: #333333;
+            --sg-light-blue: #e6f0fa;
+            --sg-grey: #f4f6f8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--sg-text);
+            background-color: #f9f9f9;
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 51, 102, 0.95);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-top: 10px solid var(--sg-gold);
+        }
+
+        .modal-title {
+            color: var(--sg-blue);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .modal-form input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .start-btn {
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .start-btn:hover {
+            background: var(--sg-gold);
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 2rem;
+            border-bottom: 5px solid var(--sg-gold);
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--sg-blue);
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-weight: 700;
+            color: var(--sg-blue);
+            border: 2px solid var(--sg-blue);
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: white;
+        }
+
+        .student-info {
+            display: none;
+            margin-top: 10px;
+            font-weight: 600;
+            color: var(--sg-blue);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 2rem;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            display: none;
+            /* Hidden until start */
+        }
+
+        /* Questions */
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .q-num {
+            font-weight: 800;
+            color: var(--sg-gold);
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .q-text {
+            font-weight: 600;
+            color: var(--sg-blue);
+            font-size: 1.05rem;
+            display: inline;
+        }
+
+        .marks {
+            float: right;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .sub-q {
+            margin-left: 20px;
+            margin-top: 15px;
+        }
+
+        .sub-label {
+            font-weight: 600;
+            color: #555;
+            margin-right: 10px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Input Areas */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: var(--sg-blue);
+            outline: none;
+            background: white;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Matching Question Styles */
+        .match-row {
+            display: grid;
+            grid-template-columns: 1fr 20px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .match-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        .match-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--sg-blue);
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Multiple Choice Styles */
+        .mcq-options {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mcq-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .mcq-label:hover {
+            background: var(--sg-light-blue);
+        }
+
+        .mcq-input {
+            margin-top: 5px;
+        }
+
+        /* Footer Controls */
+        .controls {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 3px solid var(--sg-grey);
+            display: none;
+            /* Hidden until start */
+        }
+
+        .btn {
+            background: var(--sg-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            background: var(--sg-gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-download {
+            background: var(--sg-gold);
+            color: var(--sg-blue);
+            display: none;
+        }
+
+        /* Print/PDF Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            header {
+                border-bottom: 2px solid black;
+            }
+
+            .btn,
+            .timer-display {
+                display: none !important;
+            }
+
+            input,
+            textarea,
+            select {
+                border: 1px solid #999 !important;
+                background: none !important;
+                color: black !important;
+            }
+
+            .match-item {
+                border: 1px solid #999;
+            }
+        }
+    
