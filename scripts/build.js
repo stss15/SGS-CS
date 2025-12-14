@@ -96,7 +96,8 @@ const buildFile = async (relativePath) => {
     const html = env.render(layout, { ...context, content: renderedContent });
 
     await fs.ensureDir(path.dirname(outPath));
-    await fs.writeFile(outPath, html);
+    const marker = '<!-- GENERATED FILE - Edit source in src/pages/ instead -->\n';
+    await fs.writeFile(outPath, marker + html);
     recordManifest({ permalink, outPath, layout, data, basePath, sourcePath });
     console.log(`Built ${permalink}`);
 };
