@@ -15,9 +15,8 @@ Source lives under `src/` and the compiled site lives in `public/`. Run `npm run
 - `meta/site-manifest.json`: generated index of templated pages (paths, titles, layouts).
 
 ## AI agent references
-- `docs/agent/igcse-slide-deck-agent.md`: deck workflow and structure/pedagogy pattern.
-- `docs/agent/pedagogy.md`: voice, sequencing, and modelling guidance for slide content.
-- `docs/agent/templating-guide.md`: how Nunjucks templates/macros/layouts fit together.
+- `docs/agent/AGENT_GUIDE.md`: entry point for agents working in this repo.
+- `docs/agent/igcse-slide-deck-guide.md`: deck workflow and structure/pedagogy pattern.
 - `docs/agent/build-deploy-log.md`: log every build/push to main; follow the build/deploy steps inside.
 - Edit source templates under `src/pages/...` (not the compiled `public/`) so CI/Pages stays in sync.
 
@@ -35,9 +34,9 @@ Serve `public/` locally (e.g. `npx serve public`) to preview the site.
 - Create/edit a `.njk` under `src/pages/...` mirroring the desired output path under `public/`.
 - Front matter drives rendering:
   - `layout`: `layouts/base.njk` (default), `layouts/listing.njk`, `layouts/arcade.njk`, or `layouts/slide-deck.njk`.
-  - `hero`, `backLink`, `extraStyles`, `scripts` for base/arcade/listing pages.
+  - `hero`, `breadcrumbs`, `extraStyles`, `scripts` for base/arcade/listing pages.
   - `cards`/`resources` arrays for arcade pages (images are prefixed with the computed `basePath` automatically).
-  - Slide decks: set `backHref`, `courseFooter`, optional `headContent` (inline deck-specific CSS), and `deckScripts` for deck-specific JS. Only include `<section>` slides in the template; Reveal init/date are handled centrally.
+  - Slide decks: set `backHref`, `courseFooter`, optional `extraStyles`, and `deckScripts` for deck-specific JS. Only include `<section>` slides in the template; Reveal init/date are handled centrally.
 - Run `npm run build` to regenerate pages.
 
 ## Notes
