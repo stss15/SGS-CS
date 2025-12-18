@@ -1,0 +1,368 @@
+---
+layout: layouts/slide-deck.njk
+title: "A1.2 Data Representation & Logic | IB Computer Science"
+description: "How computers represent numbers, text, images, and sound in binary — plus logic gates, truth tables, and HL Karnaugh maps."
+backHref: ib/A1/index.html
+courseFooter: IB Computer Science
+activeSection: ib
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB", href: "ib/index.html" }
+  - { label: "A1", href: "ib/A1/index.html" }
+  - { label: "A1.2 Data Representation & Logic" }
+---
+
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A1.2 Data Representation &amp; Logic</h1>
+            <h3 class="sub-title">Topic A1: Computer Fundamentals | From Meaning → Bits</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A1.1) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall A1.1 (Computer Hardware) before we move on.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>Which register stores the address of the <em>next</em> instruction?</li>
+            <li>Which bus carries memory addresses from CPU to RAM?</li>
+            <li>What is the difference between a cache <em>hit</em> and a cache <em>miss</em>?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">Which register stores the address of the <em>next</em> instruction?</div>
+        <div class="fragment box-blue">
+            <p><strong>Program Counter (PC)</strong> — it points to the next instruction to fetch.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">Which bus carries memory addresses from CPU to RAM?</div>
+        <div class="fragment box-blue">
+            <p><strong>Address bus</strong> — it carries the location (not the data itself).</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What is the difference between a cache hit and a cache miss?</div>
+        <div class="fragment box-blue">
+            <p><strong>Hit:</strong> data is found in cache (fast). <strong>Miss:</strong> data must be fetched from slower memory (stall).</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 A photo, a song, and your password look totally different.</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">So how can a computer store them all using the <strong>same memory</strong>?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> “Computers store images as tiny pictures and sound as tiny waves.”</p>
+                <p class="small-text">In memory, everything must be reduced to patterns of 0s and 1s.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Key idea:</strong> <span class="keyword" data-def="Binary digit: a single 0 or 1.">bits</span> only have meaning because we agree on an <strong>encoding</strong> rule.</p>
+                <p class="small-text">Different data types use different representations: numbers, characters, samples, pixels…</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. WHY BINARY + BITS/BYTES -->
+<section>
+    <h3>Why <span class="keyword" data-def="Base-2 number system using digits 0 and 1.">binary</span>?</h3>
+    <div class="question-box">Why did modern computing “choose” base‑2 instead of base‑10?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Hardware is built from switches (transistors) with two stable states: <strong>on</strong>/<strong>off</strong>.</p>
+            <p class="fragment">Two-state systems are robust against electrical <span class="keyword" data-def="Unwanted electrical disturbance that can corrupt signals (not sound noise).">noise</span>.</p>
+            <p class="fragment"><strong>1 <span class="keyword" data-def="Byte: 8 bits.">byte</span></strong> = 8 <span class="keyword" data-def="Binary digit: a single 0 or 1.">bits</span> → 256 possible patterns (0–255 for unsigned integers).</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-lightbulb"></i> Human-friendly bases</h4>
+            <p class="small-text fragment"><span class="keyword" data-def="Base-10 number system.">Denary</span> is convenient for humans.</p>
+            <p class="small-text fragment"><span class="keyword" data-def="Base-16 number system using digits 0–9 and A–F.">Hexadecimal</span> is convenient for humans reading binary (4 bits per hex digit).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. CONVERSIONS (VERTICAL) -->
+<section>
+    <section>
+        <h2>Base Conversions</h2>
+        <div class="question-box">How do we move between binary, denary, and hex without guessing?</div>
+        <div class="box">
+            <p class="fragment">Binary → denary uses <strong>place values</strong> (powers of 2).</p>
+            <p class="fragment">Denary → binary uses <strong>repeated division by 2</strong> (remainders).</p>
+            <p class="fragment">Binary ↔ hex groups bits into <strong>4‑bit nibbles</strong>.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for worked methods
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Binary → Denary (Place Values)</h3>
+        <div class="box">
+            <p class="fragment">Example: <code>0110</code><sub>2</sub></p>
+            <p class="fragment">Place values: 8, 4, 2, 1</p>
+            <p class="fragment"><code>0×8 + 1×4 + 1×2 + 0×1 = 6</code><sub>10</sub></p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Denary → Binary (Divide by 2)</h3>
+        <div class="box">
+            <p class="fragment">Example: <code>13</code><sub>10</sub></p>
+            <p class="fragment">Divide by 2 and record remainders: <code>13→6 r1</code>, <code>6→3 r0</code>, <code>3→1 r1</code>, <code>1→0 r1</code></p>
+            <p class="fragment">Read remainders <strong>bottom‑to‑top</strong>: <code>1101</code><sub>2</sub></p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Binary ↔ Hex (4-bit Groups)</h3>
+        <div class="box">
+            <p class="fragment">Example: <code>1010 1111</code><sub>2</sub></p>
+            <p class="fragment"><code>1010</code> = A, <code>1111</code> = F</p>
+            <p class="fragment">So <code>1010 1111</code><sub>2</sub> = <code>AF</code><sub>16</sub></p>
+        </div>
+        <div class="box-blue fragment">
+            <p class="small-text"><strong>Why hex is useful:</strong> one hex digit exactly represents 4 bits, so long binary patterns become readable.</p>
+        </div>
+    </section>
+
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">What denary value is <code>10010000</code><sub>2</sub>?</div>
+        <div class="fragment box-blue">
+            <p><strong>144</strong> — because 128 + 16 = 144.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 6. TEXT REPRESENTATION -->
+<section>
+    <h3>Representing Text</h3>
+    <div class="question-box">When you press <kbd>A</kbd>, how does the computer know which letter you meant?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Character encoding where each character maps to a numeric code (historically 7-bit, extended variants exist).">ASCII</span> maps characters to numbers (codes).</p>
+            <p class="fragment"><span class="keyword" data-def="Universal character set mapping characters to code points so many languages/symbols can be represented.">Unicode</span> extends this idea to support global writing systems and symbols.</p>
+            <p class="fragment"><strong>Key idea:</strong> text is stored as <strong>numeric codes</strong> in binary.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-language"></i> Why Unicode matters</h4>
+            <p class="small-text fragment">ASCII struggles with non‑English alphabets and emoji.</p>
+            <p class="small-text fragment">Unicode provides code points for many scripts (Latin, Arabic, Chinese…).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 7. IMAGES -->
+<section>
+    <h3>Representing Images</h3>
+    <div class="question-box">Why does a “higher quality” image usually mean a larger file?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A bitmap image is a grid of <span class="keyword" data-def="Smallest unit of an image (picture element).">pixels</span>.</p>
+            <p class="fragment"><span class="keyword" data-def="Width × height of an image in pixels.">Resolution</span> increases the number of pixels.</p>
+            <p class="fragment"><span class="keyword" data-def="Number of bits used to represent the colour of one pixel.">Colour depth</span> increases the number of bits per pixel.</p>
+            <p class="fragment"><strong>Uncompressed size:</strong> width × height × colour depth (bits).</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-compress"></i> Compression</h4>
+            <p class="small-text fragment"><span class="keyword" data-def="Compression that preserves all original information when decompressed.">Lossless</span>: exact original restored (e.g., PNG).</p>
+            <p class="small-text fragment"><span class="keyword" data-def="Compression that permanently discards some information to reduce size.">Lossy</span>: trades quality for size (e.g., JPEG).</p>
+        </div>
+    </div>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">If you double both width and height, what happens to the number of pixels?</div>
+        <div class="fragment box-blue">
+            <p>It becomes <strong>4×</strong> larger (area scales with width × height).</p>
+        </div>
+    </section>
+</section>
+
+<!-- 8. SOUND -->
+<section>
+    <h3>Representing Sound (Sampling)</h3>
+    <div class="question-box">How can a continuous sound wave become discrete binary data?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Number of samples taken per second when digitising sound (Hz).">Sampling rate</span> measures how often we take a sample.</p>
+            <p class="fragment"><span class="keyword" data-def="Number of bits used to store each sample value (amplitude).">Bit depth</span> controls precision (quantisation levels).</p>
+            <p class="fragment"><strong>Uncompressed size:</strong> sampling rate × bit depth × duration × channels.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-music"></i> Intuition</h4>
+            <p class="small-text fragment">Higher sampling rate captures higher frequencies.</p>
+            <p class="small-text fragment">Higher bit depth reduces quantisation error (less “stepping”).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 9. VIDEO -->
+<section>
+    <h3>Representing Video</h3>
+    <div class="question-box">Why is raw video enormous — and why is compression essential?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Video is a sequence of images (frames) + audio.</p>
+            <p class="fragment">High resolution × high frame rate × high colour depth → massive data rates.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-film"></i> Two compression ideas</h4>
+            <p class="small-text fragment"><strong>Spatial</strong>: compress within one frame (similar pixels).</p>
+            <p class="small-text fragment"><strong>Temporal</strong>: compress across frames (only changes are stored).</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A2:</strong> streaming video works because data is split into packets and delivered over networks with buffering and error control.</p>
+    </div>
+</section>
+
+<!-- 10. LOGIC GATES -->
+<section>
+    <h3>Logic Gates</h3>
+    <div class="question-box">How can hardware “decide” between two actions using only 0 and 1?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="A basic building block of digital circuits that performs a Boolean operation on one or more binary inputs.">Logic gates</span> implement Boolean operations in hardware.</p>
+            <p class="fragment">Inputs/outputs are binary: 1 (true) or 0 (false).</p>
+            <p class="fragment">Common gates: AND, OR, NOT, NAND, NOR, XOR.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-circle-nodes"></i> Why gates matter</h4>
+            <p class="small-text fragment">They are the basis of adders, comparators, memory, and CPU control logic.</p>
+            <p class="small-text fragment">At scale, “software” becomes electrical decisions through gate networks.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 11. TRUTH TABLES + LOGIC DIAGRAMS (VERTICAL) -->
+<section>
+    <section>
+        <h2>Truth Tables &amp; Logic Diagrams</h2>
+        <div class="question-box">How do we prove a logic circuit is correct?</div>
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="A table listing all possible input combinations and the corresponding output(s) of a Boolean expression/circuit.">truth table</span> lists all input combinations and outputs.</p>
+            <p class="fragment">A <span class="keyword" data-def="A diagram showing logic gates connected to implement a Boolean function.">logic diagram</span> visualises gates wired together.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for an example
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Example: <code>Y = A AND (NOT B)</code></h3>
+        <div class="box">
+            <table style="width:100%; font-size:0.95em;">
+                <thead>
+                    <tr><th>A</th><th>B</th><th>NOT B</th><th>Y</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+                    <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+                    <tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+                    <tr><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box-blue fragment">
+            <p class="small-text"><strong>Interpretation:</strong> the output is 1 only when A is 1 and B is 0.</p>
+        </div>
+    </section>
+
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">If <code>A=1</code> and <code>B=1</code>, what is <code>Y = A AND (NOT B)</code>?</div>
+        <div class="fragment box-blue">
+            <p><strong>0</strong> — because NOT B = 0, and 1 AND 0 = 0.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 12. HL: KARNAUGH MAPS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Karnaugh Maps (K‑Maps)</h3>
+    <div class="question-box">How can we simplify Boolean expressions without “guessing”?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="A visual method for simplifying Boolean expressions by grouping 1s in a grid ordered using Gray code.">Karnaugh map</span> groups 1s to remove redundant variables.</p>
+            <p class="fragment">Headings use <span class="keyword" data-def="A binary ordering where adjacent values differ by exactly one bit (e.g., 00, 01, 11, 10).">Gray code</span> so adjacent cells differ by one bit.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-map"></i> What you gain</h4>
+            <p class="small-text fragment">Simpler circuits: fewer gates → lower cost, lower delay, fewer failure points.</p>
+            <p class="small-text fragment">Cleaner expressions: easier to analyse and implement.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 13. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Hexadecimal is “how the computer stores data internally”.</p>
+            <p class="fragment"><strong>B.</strong> Increasing sampling rate increases uncompressed audio file size.</p>
+            <p class="fragment"><strong>C.</strong> Lossless compression always makes a file smaller.</p>
+            <p class="fragment"><strong>D.</strong> A truth table can be used to verify a logic circuit.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Computers store in binary; hex is a human-friendly shorthand.</p>
+            <p class="fragment"><strong>B: True.</strong> More samples per second = more data (before compression).</p>
+            <p class="fragment"><strong>C: False.</strong> Some data is already close to random/uncompressible.</p>
+            <p class="fragment"><strong>D: True.</strong> It exhaustively checks all input combinations.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 14. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li>All data is stored as <strong>binary</strong>, but meaning comes from <strong>representation rules</strong>.</li>
+            <li>We convert between <strong>binary</strong>, <strong>denary</strong>, and <strong>hex</strong> using systematic methods.</li>
+            <li>Text, images, audio, and video rely on <strong>encoding</strong> + (often) <strong>compression</strong>.</li>
+            <li>Digital circuits use <strong>logic gates</strong>, verified by <strong>truth tables</strong>.</li>
+            <li><span class="hl-badge">HL</span> <strong>K‑maps</strong> simplify Boolean expressions using Gray-code adjacency.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> A1.3 Operating Systems &amp; Control Systems — managing resources and feedback loops.</p>
+    </div>
+</section>
+

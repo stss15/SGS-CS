@@ -1,0 +1,50 @@
+1.2 Text, sound and images
+
+Big idea: all media becomes binary. We need shared code sets and numeric models to store text, sound, and pictures without losing meaning.
+
+Character sets (text)
+- Question: How do we agree on which bits mean which characters? We map characters to numeric code points.
+- ASCII: 7-bit (128 codes). Covers English letters, digits, punctuation, control codes. Example: A = 65 (0x41), a = 97 (0x61).
+- Extended ASCII: 8-bit (256 codes) adds symbols/accents but is still limited and inconsistent across vendors.
+- Unicode: universal code points (e.g., U+0041 for A, U+1F600 for emoji). Needs an encoding to turn code points into bytes.
+- Encodings:
+  - ASCII: fixed 7-bit (often stored as 1 byte with leading 0).
+  - UTF-8: variable length (1-4 bytes). ASCII stays 1 byte; emojis and non-Latin scripts use more.
+  - UTF-16: mostly 2 bytes; some symbols need 4.
+  - UTF-32: always 4 bytes.
+- Why Unicode replaced ASCII: global language coverage, emojis, consistent cross-platform text.
+- Clarify: A character set lists code points; an encoding decides how to store them in bytes.
+
+How text becomes bits (model)
+- Look up each character's code point (e.g., "Hi" -> U+0048 U+0069).
+- Pick an encoding (UTF-8). Store the byte patterns (e.g., 48 69 in hex).
+- Decode by reversing: read bytes -> map to code points -> render characters.
+
+Sound (digital audio)
+- Key terms: sample rate (samples per second, Hz), sample resolution/bit depth (bits per sample), channels (mono/stereo), duration (seconds).
+- Nyquist reminder: sample rate must be at least 2x the highest frequency to capture it cleanly.
+- File size (bits) = sample rate x resolution x channels x duration.
+- Effects:
+  - Higher sample rate: captures higher frequencies; larger size.
+  - Higher resolution: finer amplitude detail; larger size; lower quantisation error.
+  - More channels: multiply size by channel count.
+- Example: 44.1 kHz, 16-bit, stereo, 10 s -> 44100 x 16 x 2 x 10 = 14,112,000 bits ~ 1.76 MB.
+
+Images (bitmaps)
+- Bitmap: grid of pixels; each pixel has a binary colour value based on colour depth (bits per pixel).
+- Resolution: width x height (pixels). More pixels = sharper detail and larger size.
+- Colour depth: bits per pixel (e.g., 1-bit monochrome, 8-bit 256 colours, 24-bit ~16.7M colours).
+- File size (bits) = width x height x colour depth. Bytes = bits / 8.
+- Example: 800 x 600 at 24-bit -> 800 x 600 x 24 = 11,520,000 bits ~ 1.44 MB.
+- Clarify: Increasing colour depth or resolution increases file size; compression can reduce stored size but not the raw bitmap formula.
+
+Vectors (contrast)
+- Vector images store shapes and formulas (lines, curves) rather than per-pixel data; scale without pixelation.
+- Bitmaps are better for photos; vectors for logos/icons.
+
+Common misconceptions to challenge
+- """ASCII can store every language and emoji""" (it cannot; use Unicode/UTF-8).
+- """After 9 in hex comes 10""" (it goes A-F first).
+- """Doubling sample rate keeps file size the same""" (size scales with rate).
+- """Higher colour depth shrinks file size""" (it grows).
+- """Bitmap size ignores colour depth""" (depth is multiplied).

@@ -1,7 +1,7 @@
 import os
 import re
 
-BASE_DIR = "/Users/StevenStewart/SGSD-CSC/public/igcse"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def check_topic(topic_num):
     topic_dir = os.path.join(BASE_DIR, f"topic{topic_num}")

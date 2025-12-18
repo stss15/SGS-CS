@@ -1,0 +1,231 @@
+---
+layout: layouts/slide-deck.njk
+title: "A3.4 Alternative Databases & Data Warehouses (HL) | IB Computer Science"
+description: "HL: NoSQL database types, data warehouses, OLAP and data mining, and features of distributed databases."
+backHref: ib/A3/index.html
+courseFooter: IB Computer Science
+activeSection: ib
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB", href: "ib/index.html" }
+  - { label: "A3", href: "ib/A3/index.html" }
+  - { label: "A3.4 Alternative Databases & Data Warehouses (HL)" }
+---
+
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A3.4 Alternative Databases &amp; Data Warehouses <span class="hl-badge">HL</span></h1>
+            <h3 class="sub-title">Topic A3: Databases | NoSQL, Analytics &amp; Distributed Data</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A3.3) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall A3.3 (SQL) before moving beyond relational databases.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What does a <em>JOIN</em> do?</li>
+            <li>What is the difference between <em>DDL</em> and <em>DML</em>?</li>
+            <li>Why do transactions use <em>COMMIT</em> and <em>ROLLBACK</em>?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What does a JOIN do?</div>
+        <div class="fragment box-blue">
+            <p>It combines rows from two tables using a matching key (primary ↔ foreign key).</p>
+        </div>
+    </section>
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What is the difference between DDL and DML?</div>
+        <div class="fragment box-blue">
+            <p><strong>DDL</strong> defines structure (tables). <strong>DML</strong> queries/changes data (rows).</p>
+        </div>
+    </section>
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">Why do transactions use COMMIT and ROLLBACK?</div>
+        <div class="fragment box-blue">
+            <p>To make a set of changes permanent (commit) or undo partial changes if something fails (rollback).</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question <span class="hl-badge">HL</span></h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 If relational databases are so reliable…</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">why do companies still build <strong>NoSQL</strong> systems?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Common misconception:</strong> “NoSQL is always better than SQL.”</p>
+                <p class="small-text">Different problems need different data models.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> alternatives trade strict consistency for <strong>scale</strong>, <strong>flexibility</strong>, or <strong>specialized queries</strong>.</p>
+                <p class="small-text">Your job is to justify the best choice for the scenario.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. TYPES OF DATABASES -->
+<section>
+    <h3><span class="hl-badge">HL</span> Database approaches</h3>
+    <div class="question-box">What changes when your data is huge, fast-changing, or relationship-heavy?</div>
+    <div class="box">
+        <table style="font-size:0.9em; width:100%;">
+            <tr><th>Approach</th><th>Strength</th><th>Typical use</th></tr>
+            <tr><td><strong>Relational</strong></td><td>integrity + complex joins</td><td>banking, school systems</td></tr>
+            <tr><td><strong>NoSQL</strong></td><td>flexible schemas + scale</td><td>web apps, big data</td></tr>
+            <tr><td><strong>Graph</strong></td><td>relationship queries</td><td>social networks, fraud detection</td></tr>
+            <tr><td><strong>Data warehouse</strong></td><td>analytics/reporting</td><td>business intelligence</td></tr>
+        </table>
+    </div>
+</section>
+
+<!-- 5. NOSQL TYPES -->
+<section>
+    <h3><span class="hl-badge">HL</span> NoSQL database types</h3>
+    <div class="question-box">How can data be stored without fixed tables?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="NoSQL database storing data as documents (e.g., JSON-like objects).">Document</span> — store JSON-like documents (e.g., user profiles)</p>
+            <p class="fragment"><span class="keyword" data-def="NoSQL database storing data as key → value pairs for fast lookup.">Key–value</span> — fast lookups by key (e.g., caches)</p>
+            <p class="fragment"><span class="keyword" data-def="NoSQL database storing data in flexible column families optimized for large-scale storage.">Wide-column</span> — column families for huge, sparse data</p>
+            <p class="fragment"><span class="keyword" data-def="NoSQL database storing data as nodes and edges, optimized for relationship queries.">Graph</span> — nodes/edges for relationship traversal</p>
+        </div>
+        <div class="box-blue">
+            <h4>Choosing a type</h4>
+            <p class="small-text fragment">Document: content that varies per record.</p>
+            <p class="small-text fragment">Key–value: fastest simple lookups.</p>
+            <p class="small-text fragment">Graph: “friends of friends” type queries.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 6. DATA WAREHOUSES -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Centralized store optimized for analysis/reporting, often integrating data from multiple sources.">Data warehouses</span></h3>
+    <div class="question-box">Why store data twice: once for running the business, once for analysing it?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Objective:</strong> fast analytics and reporting (trends, dashboards).</p>
+            <p class="fragment">Often integrates data from multiple systems (sales, web, support).</p>
+            <p class="fragment">Uses <span class="keyword" data-def="Process of moving and cleaning data from sources into a data warehouse.">ETL</span> to clean/transform data before loading.</p>
+        </div>
+        <div class="box-blue">
+            <h4>OLTP vs OLAP</h4>
+            <p class="small-text fragment"><strong>OLTP:</strong> many small updates (transactions).</p>
+            <p class="small-text fragment"><strong>OLAP:</strong> fewer, heavy read queries (analytics).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 7. QUICK CHECK (WAREHOUSE) -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment">A retailer wants weekly dashboards showing trends by store, product, and region.</p>
+        <p class="fragment"><strong>Explain</strong> why a data warehouse is usually better than running these queries on the live transactional database.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p>Warehouses are optimized for <strong>OLAP analytics</strong> and heavy reads; OLTP systems are optimized for fast transactions.</p>
+        <p>Separating them protects performance of the live system and supports historical trend analysis.</p>
+    </div>
+</section>
+
+<!-- 7. OLAP + DATA MINING -->
+<section>
+    <h3><span class="hl-badge">HL</span> OLAP &amp; data mining</h3>
+    <div class="question-box">How do businesses turn huge historical data into decisions?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Techniques for analyzing multidimensional data (trend analysis, roll-up, drill-down).">OLAP</span> explores data across dimensions (time, region, product).</p>
+            <p class="fragment"><span class="keyword" data-def="Process of discovering patterns/relationships in large data sets.">Data mining</span> finds patterns (e.g., associations, clusters).</p>
+        </div>
+        <div class="box-blue">
+            <h4>Example questions</h4>
+            <p class="small-text fragment">“Which products sell together on weekends?”</p>
+            <p class="small-text fragment">“Which regions show a rising trend in cancellations?”</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A4:</strong> machine learning often builds on patterns discovered from warehouses and mining pipelines.</p>
+    </div>
+</section>
+
+<!-- 8. DISTRIBUTED DATABASES -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Database with data stored across multiple machines/locations, presented as one system.">Distributed databases</span></h3>
+    <div class="question-box">How can one “database” live in multiple places at once?</div>
+    <div class="box">
+        <p class="fragment"><span class="keyword" data-def="Keeping copies of data on multiple nodes for availability and performance.">Replication</span> improves availability and read performance.</p>
+        <p class="fragment"><span class="keyword" data-def="Splitting data across nodes so each stores a subset (improves scale).">Sharding</span> (fragmentation) scales by splitting data across servers.</p>
+        <p class="fragment">Systems must manage <strong>consistency</strong> when multiple copies exist.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p class="small-text">Some systems accept <span class="keyword" data-def="Model where replicas may temporarily differ but converge over time.">eventual consistency</span> to stay available during network problems.</p>
+    </div>
+</section>
+
+<!-- 9. QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment">A company stores user profiles where each user can have different fields (subscriptions, preferences, devices).</p>
+        <p class="fragment"><strong>Recommend</strong> a database type (relational vs document vs graph) and justify your choice.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>Good answer:</strong> a <strong>document database</strong> handles flexible fields well, and scales horizontally for web workloads.</p>
+        <p>If relationship traversal is central (e.g., “friends of friends”), a <strong>graph database</strong> may be justified.</p>
+    </div>
+</section>
+
+<!-- 10. MISCONCEPTION CHECK -->
+<section>
+    <h3>Misconception Check <span class="hl-badge">HL</span></h3>
+    <div class="question-box">True or False: “NoSQL means no structure and no rules.”</div>
+    <div class="fragment box-red">
+        <p><strong>False.</strong> Many NoSQL systems still use schemas (often flexible) and enforce rules at the application or database level.</p>
+    </div>
+    <div class="fragment box">
+        <p>NoSQL usually means “not only SQL”: different models designed for different trade-offs.</p>
+    </div>
+</section>
+
+<!-- 11. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color:white;">Key Takeaways <span class="hl-badge">HL</span></h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color:white;">
+        <ul style="line-height:1.5;">
+            <li>Alternative databases exist to improve <strong>scale</strong>, <strong>flexibility</strong>, or <strong>specialized querying</strong>.</li>
+            <li>NoSQL includes <strong>document</strong>, <strong>key–value</strong>, <strong>wide-column</strong>, and <strong>graph</strong> models.</li>
+            <li>Data warehouses support <strong>analytics</strong>; ETL prepares data for reporting.</li>
+            <li>OLAP explores trends; data mining discovers patterns in large data sets.</li>
+            <li>Distributed databases use replication/sharding and must manage consistency.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color:white;">
+        <p><strong>Connection:</strong> A4 Machine Learning uses data pipelines that often start here (warehousing + mining).</p>
+    </div>
+</section>

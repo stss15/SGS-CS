@@ -1,0 +1,54 @@
+1.3 Data storage and file compression
+
+Big idea: everything in storage is counted in bits. We need clear units, simple size formulas, and compression choices to keep files practical.
+
+Measuring data
+- Question: How do we describe capacity in binary terms? Use bits, nibbles, bytes, then binary prefixes.
+- Key terms: bit (0 or 1), nibble (4 bits), byte (8 bits).
+- Binary prefixes (IEC, used in syllabus):
+  - 1 KiB = 2^10 = 1,024 bytes
+  - 1 MiB = 2^20 = 1,048,576 bytes
+  - 1 GiB = 2^30 = 1,073,741,824 bytes
+  - 1 TiB = 2^40 = 1,099,511,627,776 bytes
+- Decimal prefixes (manufacturer labels): KB, MB, GB use powers of 10 (1 KB = 1,000 bytes). RAM/ROM should use KiB, MiB, GiB.
+- Clarify: A 64 GiB RAM stores 64 x 2^30 bytes. Do not mix KB with KiB.
+
+File size models
+- Bitmap image size (bits) = width x height x colour depth. Bytes = bits / 8.
+- Worked example: 1024 x 1080 at 32-bit
+  - Pixels: 1024 x 1080 = 1,105,920
+  - Bits: 1,105,920 x 32 = 35,389,440 bits
+  - Bytes: 35,389,440 / 8 = 4,423,680 bytes (~4.22 MiB)
+- Worked example: 2048 x 2048 at 16-bit
+  - Pixels: 4,194,304
+  - Bits: 4,194,304 x 16 = 67,108,864 bits
+  - Bytes: 67,108,864 / 8 = 8,388,608 bytes = 8 MiB
+- Try: 400 x 300 at 8-bit -> 400 x 300 x 8 = 960,000 bits = 120,000 bytes (~117.2 KiB).
+
+Sound file size (uncompressed)
+- Mono size (bits) = sample rate x sample resolution x duration.
+- Stereo/multichannel: multiply by number of channels.
+- Worked example: 44.1 kHz, 16-bit, 60 minutes, stereo
+  - Bits: 44,100 x 16 x (60 x 60) = 2,540,160,000 bits
+  - Stereo: 2,540,160,000 x 2 = 5,080,320,000 bits
+  - Bytes: 5,080,320,000 / 8 = 635,040,000 bytes
+  - MiB: 635,040,000 / 1,048,576 ~ 605 MiB
+- Clarify: Doubling sample rate or bit depth doubles size if duration and channels stay the same.
+
+File compression
+- Purpose: reduce file size to save storage and speed up transfers.
+- Two approaches:
+  - Lossless: no data lost; file can be reconstructed exactly. Examples: RLE, Huffman, ZIP/PNG.
+  - Lossy: discards less noticeable data for higher compression. Examples: JPEG, MP3, AAC, MP4. Not suitable for text/archival.
+- Typical steps:
+  - Lossless (RLE idea): find runs of repeated values and store value + count instead of every value.
+  - Lossy (e.g., JPEG/MP3 idea): transform data, remove high-frequency or less perceptible parts, then encode.
+- Metrics: compression ratio = original size / compressed size.
+- Clarify: Compression changes storage size, not the RAM requirement to edit/play; lossless keeps quality identical, lossy does not.
+
+Common misconceptions to challenge
+- "KB and KiB are the same" (binary vs decimal, use KiB/MiB/GiB for RAM).
+- "Only sample rate controls audio size" (bit depth, channels, and duration matter equally in the formula).
+- "Higher colour depth shrinks image size" (it increases size).
+- "Lossless and lossy give the same quality" (lossy removes data; lossless does not).
+- "Compression is only for images" (audio, video, text, and archives use it).

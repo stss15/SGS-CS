@@ -1,0 +1,5279 @@
+3
+
+Hardware
+In this chapter you will learn about:
+★ computer architecture
+– the Central Processing Unit (CPU)/microprocessor
+– von Neumann architecture
+– arithmetic and logic unit (ALU), control unit (CU) and registers
+– control bus, address bus, data bus
+– cores, cache and the internal clock
+– Fetch–Decode–Execute cycle
+– instruction set for a CPU
+– embedded systems
+★ input and output devices
+– the following input devices: barcode and QR code scanners, digital cameras,
+keyboards, microphones, mouse, 2D/3D scanners and touch screens
+– the following output devices: actuators, light projectors, inkjet and laser
+printers, LED and LCD screens, speakers and 3D printers
+– sensors and their use in control and monitoring
+★ data storage
+– primary storage (RAM and ROM)
+– secondary storage (magnetic, optical and solid state)
+– virtual memories
+– cloud storage
+★ network hardware
+– network systems (NIC, MAC address, IP address and routers).
+
+This chapter considers the hardware found in many computer systems.
+The hardware that makes up the computer itself and the various input and
+output devices will all be covered.
+
+3.1 Computer architecture
+3.1.1 The central processing unit (CPU)
+The central processing unit (CPU) (also known as a microprocessor or processor)
+is central to all modern computer systems (including tablets and smartphones). The
+CPU is very often installed as an integrated circuit on a single microchip. The CPU
+has the responsibility for the execution or processing of all the instructions and
+data in a computer application. As Figure 3.1 shows, the CPU consists of:
+» control unit (CU)
+» arithmetic and logic unit (ALU)
+» registers and buses.
+
+3.1.2 Von Neumann architecture
+Early computers were fed data while the machines were actually running; it wasn’t
+possible to store programs or data, which meant they couldn’t operate without
+75
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 75
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+considerable human intervention. In the mid-1940s, John von Neumann developed
+the concept of the ‘stored program computer’, which has been the basis of computer
+architecture ever since. The von Neumann architecture had the following main novel
+features (none of which were available in computers prior to the mid-1940s):
+» the concept of a central processing unit (CPU or processor)
+» the CPU was able to access the memory directly
+» computer memories could store programs as well as data
+» stored programs were made up of instructions which could be executed in
+sequential order.
+There are many diagrams of von Neumann CPU architecture in other textbooks
+and on the internet. The following diagram is one example of a simple
+representation of von Neumann architecture:
+Data bus
+
+Address bus
+Memory address
+register (MAR)
+Program counter
+(PC)
+
+Memory data register
+(MDR)
+
+System
+clock
+Control
+bus
+
+CONTROL UNIT (CU)
+
+Current instruction
+register (CIR)
+
+ARITHMETIC & LOGIC
+UNIT (ALU)
+
+Accumulator (ACC)
+
+CPU
+
+▲ Figure 3.1 Von Neumann architecture
+
+Components of the central processing unit (CPU)
+The main components of the CPU are the Control Unit (CU), Arithmetic & Logic
+Unit (ALU) and system clock.
+Arithmetic & Logic Unit (ALU)
+The Arithmetic & Logic Unit (ALU) allows the required arithmetic (e.g. +, - and
+shifting) or logic (e.g. AND, OR) operations to be carried out while a program is
+being run; it is possible for a computer to have more than one ALU to carry out
+specific functions. Multiplication and division are carried out by a sequence of
+addition, subtraction and left or right logical shift operations.
+
+Link
+For more arithmetic
+operations, please
+refer to Chapter 1.
+
+Control Unit (CU)
+The control unit reads an instruction from memory. The address of the location
+where the instruction can be found is stored in the Program Counter (PC). This
+instruction is then interpreted using the Fetch–Decode–Execute cycle (see later
+in this section). During that process, signals are generated along the control bus
+to tell the other components in the computer what to do. The control unit ensures
+synchronisation of data flow and program instructions throughout the computer. A
+
+76
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 76
+
+18/02/21 3:50 PM
+
+3.1 Computer architecture
+
+Link
+For more details of
+the system clock, see
+Section 3.1.3.
+
+Link
+For more details on
+RAM, see Section 3.3.
+
+system clock is used to produce timing signals on the control bus to ensure this vital
+synchronisation takes place – without the clock the computer would simply crash!
+The RAM holds all the data and programs needed to be accessed by the CPU. The RAM
+is often referred to as the Immediate Access Store (IAS). The CPU takes data and
+programs held in backing store (e.g. a hard disk drive) and puts them into RAM
+temporarily. This is done because read/write operations carried out using the RAM
+are considerably faster than read/write operations to backing store; consequently,
+any key data needed by an application will be stored temporarily in RAM to
+considerably speed up operations.
+Registers
+One of the most fundamental components of the von Neumann system are the
+registers. Registers can be general or special purpose. We will only consider the
+special purpose registers. A full list of the registers used in this textbook are
+summarised in Table 3.1. The use of these registers is explained more fully in the
+Fetch–Decode–Execute cycle (see later in this section).
+▼ Table 3.1 Specific purpose registers
+Register
+
+Abbreviation used
+
+Function/purpose of register
+
+current instruction
+CIR
+register
+
+this register stores the current instruction being
+decoded and executed
+
+accumulator
+
+ACC
+
+this register is used when carrying out ALU
+calculations; it stores data temporarily during the
+calculations
+
+memory address
+register
+
+MAR
+
+this register stores the address of the memory
+location currently being read from or written to
+
+memory data/
+buffer register
+
+MDR
+
+this register stores data which has just been read
+from memory or data which is about to be written
+to memory
+
+program counter
+
+PC
+
+this register stores the address where the next
+instruction to be read can be found
+
+System buses and memory
+Earlier on, Figure 3.1 referred to some components labelled as buses. Figure 3.2
+shows how these buses are used to connect the CPU to the memory and to input/
+output devices.
+CPU
+
+Memory
+
+Input/Output
+Ports
+
+Control bus
+
+Address bus
+
+Data bus
+
+System bus
+▲ Figure 3.2 System buses and memory
+77
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 77
+
+18/02/21 3:50 PM
+
+3 Hardware
+▼ Table 3.2 Section of
+computer memory
+Address
+
+Contents
+
+1111 0000 0111 0010
+1111 0001 0101 1011
+1111 0010 1101 1101
+
+Memory
+The computer memory is made up of a number of partitions. Each partition
+consists of an address and its contents. Table 3.2 uses 8 bits for each address
+and 8 bits for the content. In a real computer memory, the address and its
+contents are actually much larger than this.
+The address will uniquely identify every location in the memory and the contents
+will be the binary value stored in each location.
+
+1111 0011 0111 1011
+
+Let us now consider two examples of how the MAR and MDR registers can be used
+when carrying out a read and write operation to and from memory:
+
+1111 1100 1110 1010
+
+First, consider the READ operation. We will use the memory section shown in
+Table 3.2. Suppose we want to read the contents of memory location 1111 0001;
+the two registers are used as follows:
+
+1111 1101 1001 0101
+1111 1110
+
+1000 0010
+
+1111 1111
+
+0101 0101
+
+» the address of location 1111 0001 to be read from is first written into the
+MAR (memory address register):
+MAR:
+
+1
+
+1
+
+1
+
+1
+
+0
+
+0
+
+0
+
+1
+
+» a ‘read signal’ is sent to the computer memory
+» the contents of memory location 1111 0001 are then put into the MDR
+(memory data register):
+MDR:
+
+0
+
+1
+
+0
+
+1
+
+1
+
+0
+
+1
+
+1
+
+Now let us now consider the WRITE operation. Again, we will use the memory
+section shown in Table 3.2. Suppose this time we want to show how the value
+1001 0101 was written into memory location 1111 1101:
+» the data to be stored is first written into the MDR (memory data register):
+MDR:
+
+1
+
+0
+
+0
+
+1
+
+0
+
+1
+
+0
+
+1
+
+» this data has to be written into location with address: 1111 1101; so this
+address is now written into the MAR:
+MAR:
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+0
+
+1
+
+» finally, a ‘write signal’ is sent to the computer memory and the value
+10010101 will then be written into the correct memory location.
+Input and output devices
+The input and output devices will be covered in more detail in Section 3.2.
+They are the main method of entering data into and getting data out of
+computer systems. Input devices convert external data into a form the computer
+can understand and can then process (e.g. keyboards, touch screens and
+microphones). Output devices show the results of computer processing in a
+human understandable form (e.g. printers, monitors and loudspeakers).
+
+78
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 78
+
+18/02/21 3:50 PM
+
+3.1 Computer architecture
+
+(System) buses
+(System) buses are used in computers as parallel transmission components; each
+wire in the bus transmits one bit of data. There are three common buses used in
+the von Neumann architecture known as: address bus, data bus and control bus.
+Address bus
+As the name suggests, the address bus carries addresses throughout
+the computer system. Between the CPU and memory, the address bus is
+unidirectional (i.e. bits can travel in one direction only); this prevents addresses
+being carried back to the CPU, which would be an undesirable feature.
+
+The width of a bus is very important. The wider the bus, the more memory
+locations that can be directly addressed at any given time, e.g. a bus of width
+16 bits can address 216 (65 536) memory locations whereas a bus width of 32 bits
+allows 4 294 967 296 memory locations to be simultaneously addressed. However,
+even this isn’t large enough for modern computers but the technology behind
+even wider buses is outside the scope of this book.
+Data bus
+The data bus is bidirectional (allowing data to be sent in both directions along
+the bus). This means data can be carried from CPU to memory (and vice versa)
+and to and from input/output devices. It is important to point out that data can
+be an address, an instruction or a numerical value. As with the address bus, the
+width of the data bus is important; the wider the bus the larger the word length
+that can be transported. (A word is a group of bits which can be regarded as
+a single unit e.g. 16-bit, 32-bit or 64-bit word lengths are the most common.)
+Larger word lengths can improve the computer’s overall performance.
+Control bus
+The control bus is also bidirectional. It carries signals from the control unit (CU)
+to all the other computer components. It is usually 8-bits wide. There is no real
+need for it to be any wider since it only carries control signals.
+
+Fetch–Decode–Execute cycle
+To carry out a set of instructions, the CPU first of all fetches some data and
+instructions from memory and stores them in suitable registers. Both the address
+bus and data bus are used in this process. Once this is done, each instruction
+needs to be decoded before finally being executed. This is all known as the
+Fetch–Decode–Execute cycle.
+Fetch
+Both data and instruction can be stored in MDR. In the Fetch–Decode–Execute
+cycle, the next instruction is fetched from the memory address currently stored
+in the MAR and the instruction is stored in the MDR. The contents of the MDR are
+then copied to the Current Instruction Register (CIR). The PC is then incremented
+(increased by 1) so that the next instruction can be then be processed.
+
+Link
+See Section 4.2.2 for
+more details about
+these instructions.
+
+Decode
+The instruction is then decoded so that it can be interpreted in the next part of
+the cycle.
+Execute
+The CPU passes the decoded instruction as a set of control signals to the
+appropriate components within the computer system. This allows each instruction
+to be carried out in its logical sequence.
+79
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 79
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+Figure 3.3 shows how the Fetch–Decode–Execute cycle is carried out in the von
+Neumann computer model.
+START
+
+Any instructions?
+
+No
+
+Yes
+The Program Counter (PC) contains the address of the memory location of
+the next instruction which has to be fetched
+
+This address is then copied from the PC to the memory address register
+(MAR); this is done using the address bus
+
+The contents (instruction) at the memory location (address) contained in
+MAR are then copied temporarily into the memory data register (MDR)
+Continue
+process
+
+The contents (instruction) of the MDR are then copied and placed into the
+Current Instruction Register (CIR)
+
+The value in the PC is then incremented by 1 so that it now points to the
+next instruction which has to be fetched
+
+The instruction is finally decoded and then executed by sending out signals
+(via the control bus) to the various components of the computer system
+
+Yes
+
+Any more instructions
+to service?
+
+No
+
+END
+
+▲ Figure 3.3 Fetch–Decode–Execute cycle flowchart
+
+3.1.3 Cores, cache and internal clock
+We will now consider the factors that determine the performance of a CPU. The
+first thing to consider is the role of the system clock. The clock defines the
+clock cycle that synchronises all computer operations. As mentioned earlier, the
+control bus transmits timing signals ensuring everything is fully synchronised. By
+increasing clock speed, the processing speed of the computer is also increased (a
+typical current value is 3.5 GHz – which means 3.5 billion clock cycles a second).
+Although the speed of the computer may have been increased, it isn’t possible
+to say that a computer’s overall performance is necessarily increased by using a
+higher clock speed. Other factors need to be considered, for example:
+1 The width of the address bus and data bus (as mentioned earlier) can also
+affect computer performance and needs to be taken into account.
+80
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 80
+
+18/02/21 3:50 PM
+
+3.1 Computer architecture
+
+2 Overclocking is a factor to consider. The clock speed can be changed by
+accessing the BIOS (Basic Input/Output System) and altering the settings.
+However, using a clock speed higher than the computer was designed for can
+lead to problems, for example:
+i execution of instructions outside design limits can lead to seriously
+unsynchronised operations (i.e. an instruction is unable to complete in
+time before the next one is due to be executed) – the computer would
+frequently crash and become unstable
+ii overclocking can lead to serious overheating of the CPU again leading to
+unreliable performance.
+3 The use of cache memories can also improve CPU performance. Unlike RAM,
+cache memory is located within the CPU itself, which means it has much
+faster data access times than RAM. Cache memory stores frequently used
+instructions and data that need to be accessed faster, which improves CPU
+performance. When a CPU wishes to read memory, it will first check out the
+cache and then move on to main memory/RAM if the required data isn’t there.
+The larger the cache memory size the better the CPU performance.
+4 The use of a different number of cores can improve computer performance.
+One core is made up of an ALU, a control unit and the registers. Many
+computers are dual core (the CPU is made up of two cores) or quad core (the
+CPU is made up of four cores). The idea of using more cores alleviates the need
+to continually increase clock speeds. However, doubling the number of cores
+doesn’t necessarily double the computer’s performance since we have to take
+into account the need for the CPU to communicate with each core; this will
+reduce overall performance.
+For example, with a dual core the CPU communicates with both cores using
+one channel reducing some of the potential increase in its performance:
+(1 channel)
+Core 1
+
+Core 2
+
+▲ Figure 3.4
+
+while, with a quad core the CPU communicates with all four cores using six
+channels, considerably reducing potential performance:
+Core 1
+
+Core 2
+
+(6 channels)
+
+Core 3
+
+Core 4
+
+▲ Figure 3.5
+
+So all these factors need to be taken into account when considering computer
+performance. Summarising these points:
+» increasing bus width (data and address buses) increases the performance and
+speed of a computer system
+» increasing clock speed will potentially increase the speed of a computer
+
+81
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 81
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+» a computer’s performance can be changed by altering bus width, clock speed
+and use of multi-core CPUs
+» use of cache memories can also speed up a CPU’s performance.
+
+Activity 3.1
+1 a Name three buses used in the von Neumann architecture.
+b Describe the function of each named bus.
+c Describe how bus width and clock speed can affect computer performance.
+2 Complete the following paragraph by using terms from this chapter:
+The CPU ………………… data and instructions required for an application
+and temporarily stores them in the ……………………. until they can be
+processed. The ………………………… is used to hold the address of the next
+instruction to be executed. This address is copied to the …………………………
+using the …………………………… The contents at this address are stored
+in the ………………………….. Each instruction is then ………………………….
+and finally …………………….. by sending out …………………………. using the
+……………………………………… Any calculations carried out are done using the
+……………………………………. During any calculations, data is temporarily held in a
+special purpose register known as the ………………………………….
+
+3.1.4 Instruction set
+In a computer system, instructions are a set of operations which are decoded in
+sequence. Each operation will instruct the ALU and CU (which are part of the
+CPU). An operation is made up of an opcode and an operand.
+
+The opcode informs the CPU what
+operation needs to be done
+
+Link
+See Section 4.2.2 for
+examples of opcodes
+and operands in
+assembly language.
+
+Link
+For more on
+interpreters and
+compilers see
+Section 4.2.3.
+
+The operand is the data which needs
+to be acted on or it can refer to a
+register in the memory
+
+Since the computer needs to understand the operation to be carried out, there
+is actually a limited number of opcodes that can be used; this is known as the
+instruction set. All software running on a computer will contain a set of instructions
+(which need to be converted into binary). The Fetch–Decode–Execute cycle is the
+sequence of steps used by the CPU to process each instruction in sequence.
+One example of an instruction set is the X86, a common CPU standard used in
+many modern computers. Although different computer manufacturers will adopt
+their own internal electronic design, if the computer is based on the X86 CPU
+then all designs will share almost identical instruction sets. For example, Intel
+Pentium and AMD Athlon CPUs use almost identical X86 instruction sets even
+though they are based on very different electronic designs.
+(Note of caution: do not confuse instruction sets with programming code;
+instruction sets are the low-level language instructions that instruct the CPU
+how to carry out an operation. Program code needs interpreters or compilers
+to convert the code into the instruction set understood by the computer. Some
+examples of instruction set operations include: ADD, JMP, LDA, and so on.)
+
+82
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 82
+
+18/02/21 3:50 PM
+
+3.1 Computer architecture
+
+3.1.5 Embedded systems
+An embedded system is a combination of hardware and software which is
+designed to carry out a specific set of functions. The hardware is electronic,
+electrical or electro-mechanical. Embedded systems can be based on:
+microcontrollers:
+
+this has a CPU in addition to some RAM and ROM and
+other peripherals all embedded onto one single chip
+(together they carry out a specific task)
+
+microprocessor:
+
+integrated circuit which only has a CPU on the chip
+(there is no RAM, ROM or peripherals – these need to
+be added)
+
+system on chips (SoC):
+
+this may contain a microcontroller as one of its
+components (they almost always will include CPU,
+memory, input/output (I/O) ports and secondary
+storage on a single microchip)
+
+An embedded system will have a specific set of tasks; Figure 3.6 summarises how
+embedded systems work in general:
+They are feedback
+orientated systems
+
+Analogue or
+digital input
+
+User interface
+
+Software and
+hardware on an
+embedded system
+
+Embedded systems can contain
+sensor input, mechanical components,
+actuators and software
+
+Some form
+of output
+
+Some of the latest embedded systems
+use very powerful dual and quad CPUs
+and a variety of I/O connections leading
+to a number of applications
+
+▲ Figure 3.6 Embedded systems
+
+When installed in a device, either an operator can input data manually (for
+example, select a temperature from a keypad or turn a dial on an oven control
+panel) or the data will come from an automatic source, such as a sensor. This
+sensor input will be analogue or digital in nature, for example, inputs such as
+oxygen levels or fuel pressure in a car’s engine management system. The output
+will then carry out the function of the embedded system by sending signals to
+the components that are being controlled (for example, increase the power to the
+heating elements in an oven or reduce fuel levels in the engine).
+Depending on the device, embedded systems are either programmable or nonprogrammable. Non-programmable devices need, in general, to be replaced if they
+require a software upgrade. Programmable devices permit upgrading by two methods:
+» connecting the device to a computer and allowing the download of updates to
+the software (for example, this is used to update the maps on a GPS system
+used in a vehicle)
+83
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 83
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+» automatic updates via a Wi-Fi, satellite or cellular (mobile phone network) link
+(for example, many modern cars allow updates to engine management systems
+and other components via satellite link).
+There are definite benefits and drawbacks of devices being controlled using
+embedded systems:
+▼ Table 3.3 Benefits and drawbacks of using embedded systems
+Benefits
+
+Drawbacks
+
+they are small in size and therefore easy to
+fit into devices
+
+it can be difficult to upgrade some devices to
+take advantage of new technology
+
+compared to other systems, they are
+relatively low cost to make
+
+troubleshooting faults in the device becomes
+a specialist task
+
+they are usually dedicated to one task
+allowing simple interfaces and often no
+requirement for an operating system
+
+although the interface can appear to be more
+simple (e.g. a single knob) in reality it can be
+more confusing (e.g. changing the time on a
+cooker clock can require several steps!)
+
+they consume very little power
+
+any device that can be accessed over the
+internet is also open to hackers, viruses, etc.
+
+they can be controlled remotely using a
+mobile phone, for example
+
+due to the difficulty in upgrading and fault
+finding, devices are often just thrown away
+rather than being repaired (very wasteful)
+
+very fast reaction to changing input (operate
+in real time and are feedback orientated)
+with mass production comes reliability
+
+can lead to an increase in the ‘throw away’
+society if devices are discarded just because
+they have become out-of-date
+
+Because embedded systems can be connected to the internet, it is possible to
+control them remotely using a smartphone or computer. For example, setting the
+central heating system to switch on or off while away from home or remotely
+instructing a set top box to record a television programme. Since embedded
+systems are dedicated to a specific set of tasks, engineers can optimise their
+designs to reduce the physical size and cost of the devices. The range of
+applications are vast, ranging from a single microcontroller (for example, in
+an MP3 player) to a complex array of multiple units (for example, in a medical
+imaging system).
+It is worth mentioning here that a computer is not an example of an embedded
+system. Computers are multi-functional (that is, they can carry out many
+different tasks which can be varied by using different software) which means
+they can’t be classed as embedded systems.
+
+Examples of the use of embedded systems
+Motor vehicles
+Modern cars have many parts that rely on embedded systems to function
+correctly. Figure 3.7 shows some of the many components that are controlled in
+this way.
+
+84
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 84
+
+18/02/21 3:50 PM
+
+3.1 Computer architecture
+
+In-car entertainment systems
+GPS system
+Airbags
+Fuel
+injection
+system
+
+Exhaust
+emissions
+Traction
+control
+Vehicle security
+ABS braking
+
+▲ Figure 3.7 Embedded systems found in a car
+
+Set-top box
+In this example, a set-top box uses an embedded system to allow, for example,
+recording and playback of television programmes. This can be operated remotely
+by the user when not at home using an internet-enabled device or by using the
+interface panel when at home. The embedded system will look after many of the
+functions involving inputs from a number of sources such as a Solid State Device
+(SSD) (where television programmes can be stored or retrieved) or a satellite
+signal (where it will be necessary to decode the incoming signal).
+RAM
+Aerial input
+Cable input
+
+HDMI output
+Set-top box
+controller
+
+Front end
+
+Interface
+Analogue
+audio output
+
+Satellite input
+SSD
+
+Front
+panel
+
+Remote signal
+Manual input
+
+▲ Figure 3.8 Embedded system found in a set-top box
+
+Security systems
+Embedded systems are used in many security devices:
+RAM
+
+SSD
+Temperature
+Pressure
+
+Sensor
+inputs
+
+Security system
+controller
+
+Output
+
+Acoustic
+Keypad
+interface
+
+▲ Figure 3.9 Embedded system found in a security system
+
+The security code is set in RAM and the alarm activated or deactivated using
+the keypad. Data from sensors is sent to the controller which checks against
+values stored on the SSD (these settings are on SSD rather than RAM in case
+85
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 85
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+the sensitivity needs to be adjusted). An output can be a signal to flash lights,
+sound an alarm or send a message to the home owner via their mobile phone.
+Again, the home owner can interface with the system remotely if necessary.
+
+Link
+See Section 3.2.3
+for sensors used in
+security systems.
+
+Lighting systems
+Embedded systems are used in modern sophisticated lighting systems from simple
+home use to major architectural lighting systems. We will concentrate here on a
+lighting system used in a large office. The system needs to control the lighting
+taking into account:
+
+» the time of day or day of the week
+» whether the room is occupied
+» the brightness of the natural light.
+An embedded system can automatically control the lighting using a number of
+inputs (such as light sensors) and key data stored in memory. Again, this fits very
+well into the system described in Figure 3.6.
+The time of day or day of the week is important data in an office environment since
+energy is saved if the system switches to low lighting levels when unoccupied.
+This can be over-ridden by the second bullet point (above); if there is movement
+in the office then correct lighting levels will be automatically restored. On a very
+bright sunny day, the system could automatically dim the lights, only increasing the
+light output if natural light levels fall below a set value. There are many internal
+and external lighting systems that could be controlled by embedded systems (e.g.
+a fountain light display or a light show on a building to commemorate a special
+occasion). They are also used to trigger emergency lighting in, for example,
+aeroplanes in case of an emergency.
+Some lighting systems use Bluetooth light bulbs. This allows the embedded
+system to control each bulb independently. Many of the bulbs available today use
+LEDs and many come in a number of colours to change the mood.
+Vending systems
+Vending machines make considerable use of embedded systems. They usually
+use microcontrollers to control a number of functions that we all associate with
+▲ Figure 3.10 LED light bulb vending machines:
+‘Tilting’ sensors to make sure
+machine isn’t being tampered with
+Actuators to control motors
+that dispense items, operate
+chill system pump, etc.
+
+Input pad to make selection
+
+Sensors to show position of
+gates (which hold the items
+in place, and also if any
+dispensing rows are empty)
+
+Microcontroller
+
+Display showing prices,
+change, etc.
+
+Wireless modem to send
+data back to vending
+machine operators
+
+Coin counter to ensure
+correct money entered
+Temperature sensors to
+help maintain correct
+environment for items
+
+▲ Figure 3.11 Embedded system found in a vending machine
+86
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 86
+
+18/02/21 3:50 PM
+
+3.1 Computer architecture
+
+At the heart of the vending machine is an embedded system in the form of a
+microcontroller. Inputs to this system come from the keypad (item selection) and
+from sensors (used to count the coins inserted by the customer, the temperature
+inside the machine and a ‘tilt sensor’ for security purposes). The outputs are:
+» actuators to operate the motors, which drive the helixes (see figure below) to
+give the customers their selected item(s)
+» signals to operate the cooling system if the temperature is too high
+» item description and any change due shown on an LCD display panel
+» data sent back to the vending machine company so that they can remotely
+check sales activity (which could include instructions to refill the machine)
+without the need to visit each machine.
+
+▲ Figure 3.12 Helix used in a typical vending machine
+
+All of this is controlled by an embedded system which makes the whole operation
+automatic but also gives immediate sales analysis which would otherwise be very
+time consuming.
+Washing machines
+Many ‘white goods’ (such as refrigerators, washing machines, microwave ovens,
+and so on) are controlled by embedded systems. They all come with a keypad or
+dials that are used to select the temperature, wash cycle or cooking duration.
+This data forms the input to the embedded system, which then carries out the
+required task without any further human intervention. As with other devices,
+these ‘white goods’ can also be operated remotely using an internet-enabled
+smartphone or computer.
+
+Activity 3.2
+1 a Explain how it is possible to increase the performance of a CPU/
+microprocessor. In your explanation, include some of the risks associated
+with your suggestions to improve performance.
+b What is meant by the term instruction set?
+2 A car is fitted with the latest GPS navigation system. This device is controlled
+by an embedded system in the form of a microcontroller.
+a Describe the inputs needed by the embedded system and describe which
+outputs you would expect it to produce.
+b Since updates to the GPS device are required every six months, explain how
+the device is updated without the need to take the car to the garage every six
+months.
+87
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 87
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+3.2 Input and output devices
+3.2.1 Input devices
+Barcode scanners (readers)
+A barcode is a series of dark and light parallel lines of varying thickness. The
+numbers 0 to 9 are each represented by a unique series of lines. Various barcode
+methods for representing these digits exist. The example we shall use adopts
+different codes for digits appearing on the left and for digits appearing on the
+right of the barcode:
+
+left
+Left-hand
+side of
+barcode
+
+Right-hand
+left
+side of
+barcode
+
+right
+
+right
+
+12345 67890
+12345 67890
+
+This shows the use of the guard bars separating the left from the right.
+Guard bars This shows
+Guardthe
+bars
+Guardbars
+barsseparating the left from the right.
+use of the guard
+
+▲ Figure 3.14 Sample barcode
+
+▲ Figure 3.13 Diagram of guard bars
+
+Each digit in the barcode is represented by bars of 1 to 4 blocks thick as shown
+in Figure 3.15. Note there are different patterns for digits on the left-hand side
+and for digits on the right-hand side.
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+Left-hand side
+
+Right-hand side
+
+▲ Figure 3.15 Barcode digit patterns
+
+The section of barcode to represent the number 5 4 3 0 5 2 would therefore be:
+
+5
+
+4
+
+3
+
+0
+
+5
+
+2
+
+▲ Figure 3.16 Sample barcode section using patterns from Figure 3.15
+88
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 88
+
+25/02/21 11:34 AM
+
+3.2 Input and output devices
+
+Each digit is made up of 2 dark lines and two light lines. The width representing
+each digit is the same. The digits on the left have an odd number of dark
+elements and always begin with a light bar; the digits on the right have an even
+number of dark elements and always begin with a dark bar. This arrangement
+allows a barcode to be scanned in any direction.
+So what happens when a barcode is scanned?
+» the barcode is first of all read by a red laser or red LED (light emitting
+diode)
+» light is reflected back off the barcode; the dark areas reflect little or no light,
+which allows the bars to be read
+» the reflected light is read by sensors (photoelectric cells)
+» as the laser or LED light is scanned across the barcode, a pattern is generated,
+which is converted into digital data – this allows the computer to understand
+the barcode
+» for example: the digit ‘3’ on the left generates the pattern: L D D D D L D
+(where L = light and D = dark),
+this has the binary equivalent of: 0 1 1 1 1 0 1
+(where L = 0 and D = 1).
+Barcodes are most commonly found at the checkout in supermarkets. There are
+several other input and output devices at the checkout:
+▼ Table 3.4 Input and output devices at a checkout
+Input/output device
+
+How it is used
+
+keypad
+
+to key in the number of same items bought; to key in a weight,
+to key in the number under the barcode if it cannot be read by
+the barcode reader/scanner
+
+screen/monitor
+
+to show the cost of an item and other information
+
+speaker
+
+to make a beeping sound every time a barcode is read
+correctly; but also to make another sound if there is an error
+when reading the barcode
+
+printer
+
+to print out a receipt/itemised list
+
+card reader/chip and PIN
+
+to read the customer’s credit/debit card (either using PIN or
+contactless)
+
+touchscreen
+
+to select items by touching an icon (such as fresh fruit which
+may be sold loose without packaging)
+
+So the barcode has been read, then what happens?
+» the barcode number is looked up in the stock database (the barcode is known
+as the key field in the stock item record); this key field uniquely identifies
+each stock item
+» when the barcode number is found, the stock item record is looked up
+» the price and other stock item details are sent back to the checkout (or point
+of sale terminal (POS))
+» the number of stock items in the record is reduced by 1 each time the barcode
+is read
+» this new value for number of stock is written back to the stock item record
+» the number of stock items is compared to the re-order level; if it is less than
+or equal to this value, more stock items are automatically ordered
+89
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 89
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+» once an order for more stock items is generated, a flag is added to the record
+to stop re-ordering every time the stock item barcode is read
+» when new stock items arrive, the stock levels are updated in the database.
+Advantages to the management of using barcodes
+
+» much easier and faster to change prices on stock items
+» much better, more up-to-date sales information/sales trends
+» no need to price every stock item on the shelves (this reduces time and cost
+to the management)
+» allows for automatic stock control
+» possible to check customer buying habits more easily by linking barcodes to,
+for example, customer loyalty cards.
+Advantages to the customers of using barcodes
+
+» faster checkout queues (staff don’t need to remember/look up prices of items)
+» errors in charging customers is reduced
+» the customer is given an itemised bill
+» cost savings can be passed on to the customer
+» better track of ‘sell by dates’ so food should be fresher.
+The barcode system is used in many other areas. For example, barcodes can be
+utilised in libraries where they are used in books and on the borrower’s library card.
+Every time a book is taken out, the borrower is linked to the book automatically.
+This allows automatic checking of when the book is due to be returned.
+
+Quick response (QR) codes
+Another type of barcode is the quick response (QR) code. This is made up of a
+matrix of filled-in dark squares on a light background. For example, the QR code
+in Figure 3.17 is a website advertising rock music merchandise. It includes a web
+address in the code.
+▲ Figure 3.17 Sample
+QR code
+
+QR codes can hold considerably more information than the more conventional
+barcodes described earlier.
+Description of QR codes
+
+» A QR code consists of a block of small squares (light and dark) known as pixels.
+It can presently hold up to 4296 characters (or up to 7089 digits) and also
+allows internet addresses to be encoded within the QR code. This compares to
+the 30 digits that is the maximum for a barcode. However, as more and more
+data is added, the structure of the QR code becomes more complex.
+» The three large squares at the corners of the code function as a form of
+alignment; the remaining small corner square is used to ensure the correct size
+and correct angle of the camera shot when the QR code is read.
+Because of modern smartphones and tablets, which allow internet access on the
+move, QR codes can be scanned anywhere. This gives rise to a number of uses:
+» advertising products (for example, the QR code in Figure 3.17)
+» giving automatic access to a website or contact telephone number
+» storing boarding passes electronically at airports and train stations (Figure 3.18).
+
+90
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 90
+
+18/02/21 3:50 PM
+
+3.2 Input and output devices
+
+Boarding Pass
+BX 885
+Watson D
+
+LHR to BUH
+March 15 2021
+Please be at the
+boarding gate by
+14:25
+
+▲ Figure 3.18 Sample
+boarding pass
+
+By using the built-in camera on a mobile smartphone or tablet and by
+downloading a QR app (application), it is possible to read QR codes on the move
+using the following method:
+» point the phone or tablet camera at the QR code
+» the app will now process the image taken by the camera, converting the
+squares into readable data
+» the browser software on the mobile phone or tablet automatically reads the
+data generated by the app; it will also decode any web addresses contained
+within the QR code
+» the user will then be sent to a website automatically (or if a telephone
+number was embedded in the code, the user will be sent to the phone
+app )
+» if the QR code contained a boarding pass, this will be automatically sent to
+the phone/tablet.
+Advantages of QR codes compared to traditional barcodes
+
+» They can hold much more information
+» There will be fewer errors; the higher capacity of the QR code allows the use
+of built-in error-checking systems – normal barcodes contain almost no data
+redundancy (data which is duplicated) therefore it isn’t possible to guard
+against badly printed or damaged barcodes
+» QR codes are easier to read; they don’t need expensive laser or LED (light
+emitting diode) scanners like barcodes – they can be read by the cameras on
+smartphones or tablets
+» It is easy to transmit QR codes either as text messages or images
+» It is also possible to encrypt QR codes which gives them greater protection
+than traditional barcodes.
+Disadvantages of QR codes compared to traditional barcodes
+
+» More than one QR format is available
+» QR codes can be used to transmit malicious codes – known as attagging. Since
+there are a large number of free apps available to a user for generating QR
+codes, that means anyone can do this. It is relatively easy to write malicious
+code and embed this within the QR code. When the code is scanned, it is
+possible the creator of the malicious code could gain access to everything on
+the user’s phone (for example, photographs, address book, stored passwords,
+and so on). The user could also be sent to a fake website or it is even possible
+for a virus to be downloaded.
+
+▲ Figure 3.19 Frame QR
+code
+
+New developments
+Newer QR codes (called frame QR codes) are now being used because of the
+increased ability to add advertising logos (see Figure 3.19). Frame QR codes come
+with a ‘canvas area’ where it is possible to include graphics or images inside the
+code itself. Unlike normal QR codes, software to do this isn’t usually free.
+
+91
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 91
+
+2/18/21 6:28 PM
+
+3 Hardware
+
+Activity 3.3
+1 Using the data in Figure 3.14, design the barcodes for:
+a 900 340
+(3 digits on the left; 3 digits on the right)
+(4 digits on the left; 4 digits on the right)
+b 1257 6648
+(5 digits on the left; 5 digits on the right)
+c 05889 02918
+2 a Describe one advantage of using QR codes rather than traditional bar codes.
+Explain how barcodes bring the advantage you have described.
+b A square QR code contains 40 × 40 tiny squares (pixels) where each tiny
+square represents a 0 or a 1. Calculate how many bytes of data can be
+stored on the QR code.
+c Describe the purpose of the three large squares at the corners of the QR code.
+d Describe one disadvantage of using QR codes.
+
+Digital cameras
+Digital cameras have essentially replaced the more traditional camera
+that used film to capture the images. The film required developing
+and then printing before the photographer could see the result of
+their work.
+This made these cameras expensive to operate since it wasn’t possible
+to delete unwanted photographs.
+
+▲ Figure 3.20 Digital camera
+
+Modern digital cameras simply link to a computer system via a
+USB port or by using Bluetooth (which enables wireless transfer of
+photographic files).
+These cameras are controlled by an embedded system which can automatically
+carry out the following tasks:
+» adjust the shutter speed
+» focus the image automatically
+» operate the flash gun automatically
+» adjust the aperture size
+» adjust the size of the image
+» remove ‘red eye’ when the flash gun has been used
+» and so on.
+What happens when a photograph is taken
+» the image is captured when light passes through the lens onto a light-sensitive
+cell; this cell is made up of millions of tiny sensors which are acting as photodiodes
+(i.e. charge couple devices (CCD) which convert light into electricity)
+» each of the sensors are often referred to as pixels (picture elements) since
+they are tiny components that make up the image
+» the image is converted into tiny electric charges which are then passed
+through an analogue to digital converter (ADC) to form a digital
+image array
+» the ADC converts the electric charges from each pixel into levels of brightness
+(now in a digital format); for example, an 8-bit ADC gives 28 (256) possible
+brightness levels per pixel (for example, brightness level 01110011)
+
+92
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 92
+
+18/02/21 3:50 PM
+
+3.2 Input and output devices
+
+» apart from brightness, the sensors also measure colour which produces
+another binary pattern; most cameras use a 24-bit RGB system (each pixel has
+8 bits representing each of the 3 primary colours), which means each pixel has
+a red value (0 to 255 in denary), a green value (0 to 255) and a blue value (0
+to 255); for example, a shade of orange could be 215 (red), 165 (green) and 40
+(blue) giving a binary pattern of 1101 0111 1010 0101 0010 1000 (or D7A528
+written in hex)
+The orange pixel has brightness value of 115
+(73 in hex or 0111 0011 in binary)
+Charge coupling device
+(matrix array of sensors)
+
+The pixel has three (RGB) components:
+red = 215 (D7 in hex) green = 165 (A5 in hex)
+and blue = 40 (28 in hex)
+
+▲ Figure 3.21 Typical pixel brightness and colour values
+
+» the number of pixels determines the size of the file used to store the
+photograph
+» the quality of the image depends on the recording device (how good the
+camera lens is and how good the sensor array is), the number of pixels used
+(the more pixels used, the better the image), the levels of light and how the
+image is stored (JPEG, raw file, and so on).
+
+Link
+For an explanation of
+how pixels affect file
+size see Chapter 1.
+
+Mobile phones have caught up with digital cameras as regards number of pixels.
+But the drawback is often inferior lens quality and limited memory for the storage
+of photos. But this is fast changing and, at the time of writing, many smartphones
+now have very sophisticated optics and photography software as standard.
+CCD
+ADC
+
+image
+
+0111001111010111
+digitial representation
+of image
+
+lens
+
+timing
+device
+
+the timing device allows
+different shutter speeds,
+delayed action, and so on
+
+▲ Figure 3.22 Diagram of how a digital camera works
+
+Keyboards
+Keyboards are by far the most common method used for data entry. They are
+used as the input devices on computers, tablets, mobile phones and many other
+electronic items.
+The keyboard is connected to the computer either by using a USB connection or
+by wireless connection. In the case of tablets and mobile phones, the keyboard is
+often virtual or a type of touch screen technology.
+
+93
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 93
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+As shown in Chapter 1, each character on a keyboard has an ASCII value.
+Each character pressed is converted into a digital signal, which the computer
+interprets.
+▲ Figure 3.23 Keyboard
+
+They are a relatively slow method of data entry and are also prone to errors,
+however keyboards are probably still the easiest way to enter text into a
+computer. Unfortunately, frequent use of these devices can lead to injuries, such
+as repetitive strain injury (RSI) in the hands and wrists.
+Ergonomic keyboards can help to overcome this problem – these have the keys
+arranged differently as shown in Figure 3.24. They are also designed to give more
+support to the wrists and hands when doing a lot of typing.
+
+▲ Figure 3.24 Ergonomic
+keyboard
+
+The following diagram (Figure 3.25) and description summarises how the computer
+recognises a letter pressed on the keyboard:
+» There is a membrane or circuit board at the base of the keys
+» In Figure 3.25, the ‘H’ key is pressed and this completes a circuit as shown
+» The CPU in the computer can then determine which key has been pressed
+» The CPU refers to an index file to identify which character the key press represents
+» Each character on a keyboard has a corresponding ASCII value (see Chapter 1).
+GG
+
+Letter ‘H’ has been
+pressed and now makes
+contact with bottom
+conductive laver
+
+J
+H
+
+Letter ‘H’
+interpreted
+by computer
+
+Conductive
+layers
+Insulating layer
+
+▲ Figure 3.25 Diagram of a keyboard
+
+Microphones
+Microphones are either built into the computer or are external devices connected
+through the USB port or using Bluetooth connectivity. Figure 3.26 shows how
+a microphone can convert sound waves into an electric current. The current
+produced is converted to a digital format so that a computer can process it or
+store it (on, for example, a CD).
+cone
+
+coil of wire wrapped
+around the cone
+
+sound waves
+permanent
+magnet
+
+output from
+the microphone
+
+diaphragm
+
+▲ Figure 3.26 Diagram of how a microphone works
+
+94
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 94
+
+18/02/21 3:50 PM
+
+3.2 Input and output devices
+
+» When sound is created, it causes the air to vibrate.
+» When a diaphragm in the microphone picks up the air vibrations, the
+diaphragm also begins to vibrate.
+» A copper coil is wrapped around the cone which is connected to the
+diaphragm. As the diaphragm vibrates, the cone moves in and out causing the
+copper coil to move backwards and forwards.
+» This forwards and backwards motion causes the coil to cut through the
+magnetic field around the permanent magnet, inducing an electric current.
+» The electric current is then either amplified or sent to a recording device. The
+electric current is analogue in nature.
+The electric current output from the microphone can also be sent to a computer
+where a sound card converts the current into a digital signal which can then be
+stored in the computer. The following diagram shows what happens when the
+word ‘hut’ is picked up by a microphone and is converted into digital values:
+1000
+0001
+1000
+0001
+1100
+1101
+Sound wave for ‘HUT’
+
+0001
+1110
+1110
+1100
+1100
+1110
+
+Digital value after conversion
+
+▲ Figure 3.27 Analogue to digital conversion
+
+Look at Figure 3.27. The word ‘hut’ (in the form of a sound wave) has been
+picked up by the microphone; this is then converted using an analogue to digital
+converter (ADC) into digital values which can then be stored in a computer or
+manipulated as required using appropriate software.
+
+Optical mouse
+An optical mouse is an example of a pointing device. It uses tiny cameras to
+take 1500 images per second. Unlike an older mechanical mouse, the optical
+mouse can work on virtually any surface.
+A red LED is used in the base of the mouse and the red light is bounced off
+the surface and the reflection is picked up by a complementary metal oxide
+semiconductor (CMOS). The CMOS generates electric pulses to represent the
+reflected red light and these pulses are sent to a digital signal processor (DSP).
+The processor can now work out the coordinates of the mouse based on the
+changing image patterns as it is moved about on the surface. The computer can
+then move the on-screen cursor to the coordinates sent by the mouse.
+red light
+source
+(LED)
+lens
+
+mouse
+body
+CMOS
+lens
+
+surface
+
+▲ Figure 3.28 Diagram of an optical mouse
+
+95
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 95
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+Benefits of an optical mouse over a mechanical mouse
+
+» There are no moving parts, therefore it is more reliable.
+» Dirt can’t get trapped in any of the mechanical components.
+» There is no need to have any special surfaces.
+Most optical mice use Bluetooth connectivity rather than using a USB wired
+connection. While this makes the mouse more versatile, a wired mouse has the
+following advantages:
+» no signal loss since there is a constant signal pathway (wire)
+» cheaper to operate (no need to buy new batteries or charge batteries)
+» fewer environmental issues (no need to dispose of old batteries).
+
+2D and 3D scanners
+Scanners are either two dimensional (2D) or three dimensional (3D).
+2D scanners
+These types of scanner are the most common form and are generally used to
+input hard copy (paper) documents. The image is converted into an electronic
+form that can be stored in a computer.
+
+A number of stages occur when scanning a document:
+
+The cover is first raised
+… then the document is placed on a glass panel …
+… and then the cover is closed.
+
+A bright light then illuminates the document – modern scanners
+use a type of xenon lamp or LED that produces a very bright white light.
+
+A scan head moves across the document until the whole page
+has been scanned. An image of the document is produced, which
+is then sent to a lens using a series of mirrors.
+The lens focuses the document image.
+
+The focused image now falls onto a charge couple device (CCD), which
+converts light into an electric current.
+Essentially the CCD is made up of thousands of light-sensitive elements
+(or pixels). Each element creates an electric charge when light falls on it.
+This means that the scanned image is now turned into an electronic
+form.
+Software produces a digital image from the electronic form.
+
+▲ Figure 3.29 How a 2D scanner works
+
+96
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 96
+
+25/02/21 11:37 AM
+
+3.2 Input and output devices
+
+Computers equipped with optical character recognition (OCR) software allow
+the scanned text from the document to be converted into a text file format.
+This means the scanned image can now be edited and manipulated by importing
+it into a word processor.
+If the original document was a photograph or image, then the scanned image
+forms an image file such as JPEG.
+3D scanners
+3D scanners scan solid objects and produce a three-dimensional image. Since solid
+objects have x, y and z coordinates, these scanners take images at several points along
+these three coordinates. A digital image which represents the solid object is formed.
+
+The scanned images can be used in computer aided design (CAD) or, more
+recently, sent to a 3D printer (see Section 3.2.2) to produce a working model of
+the scanned image.
+There are numerous technologies used in 3D scanners – lasers, magnetic
+resonance, white light, and so on. It is beyond the scope of this book to look at
+these in any great depth; however, the second application that follows describes
+the technology behind one form of 3D scanning.
+Application of 2D scanners at an airport
+2D scanners are used at airports to read passports. They make use of OCR technology
+to produce digital images which represent the passport pages. Because of the
+OCR technology, these digital images can be manipulated in a number of ways.
+
+Link
+For more on ASCII,
+please see Chapter 1.
+
+For example, the OCR software is able to review these images, select the text
+part, and then automatically put the text into the correct fields of an existing
+database. It is possible for the text to be stored in an ASCII format – it all
+depends on how the data is to be used.
+At many airports the two-dimensional photograph in the passport is scanned and
+stored as a JPEG image. The passenger’s face is also photographed using a digital
+camera (a 2D image is taken so it can be matched to the image taken from the
+passport). The two digital images are compared using face recognition/detection
+software. Key parts of the face are compared.
+The face in Figure 3.30 shows several of the positions used by the face
+recognition software. Each position is checked when the software tries to
+compare two facial images. Data, such as:
+» distance between the eyes
+» width of the nose
+» shape of the cheek bones
+» length of the jaw line
+» shape of the eyebrows,
+are all used to uniquely identify a given face.
+
+▲ Figure 3.30 Face
+recognition
+
+When the image from the passport and the image taken by the camera are
+compared, these key positions on the face determine whether or not the two
+images represent the same face.
+
+97
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 97
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+Application of 3D scanning – computed tomographic (CT) scanners
+Computed tomographic (CT) scanners are used to create a 3D image of a solid
+object. This is based on tomography technology, which basically builds up an
+image of the solid object through a series of very thin ‘slices’. Each of these 2D
+‘slices’ make up a representation of the 3D solid object.
+
+Each slice is built up by use of X-rays, radio frequencies or gamma imaging;
+although a number of other methods exist. Each ‘slice’ is then stored as a digital
+image in the computer memory. The whole of the solid object is represented
+digitally in the computer memory.
+Depending on how the image is formed, this type of tomographic scanner can
+have different names. For example:
+Name
+
+CT Scanner
+
+MRI
+
+SPECT
+
+Stands for
+
+computerised
+tomography
+
+magnetic resonance
+images
+
+single photon emission
+computer tomography
+
+Uses
+
+X-rays
+
+radio frequencies
+
+gamma rays
+
+Here is a simple example of how tomography works:
+X-ray source
+
+solid
+object
+
+solid object now
+shown as a series of
+‘slices’ – each
+‘slice’ is stored as a
+digital image in the
+computer
+
+▲ Figure 3.31 Tomography
+
+Touch screens
+Touch screens are now a very common form of input device. They allow simple
+touch selection from a menu to launch an application (app). Touch screens allow
+the user to carry out the same functions as they would with a pointing device,
+such as a mouse. There are three common types of touch screen technologies
+currently being used by mobile phone and tablet manufacturers. Similar
+technologies are used in other touch screen applications (for example, food
+selection at a fast food restaurant):
+» capacitive
+» infrared
+» resistive (most common method at the moment).
+Capacitive touch screens
+Capacitive touch screens are composed of a layer of glass (protective layer),
+a transparent electrode (conductive) layer and a glass substrate (see Figure
+3.32). Since human skin is a conductor of electricity, when bare fingers (or a
+special stylus) touch the screen, the electrostatic field of the conductive layer is
+98
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 98
+
+18/02/21 3:50 PM
+
+3.2 Input and output devices
+
+changed. The installed microcontroller is able to calculate where this change took
+place and hence determine the coordinates of the point of touching.
+protective layer
+conductive layer
+glass substrate
+
+▲ Figure 3.32 Capacitive touch screen
+
+There are presently two main types of capacitive touch screens:
+» surface
+» projective.
+The two methods work in a slightly different way but they both have the same
+general structure as shown in Figure 3.32.
+With surface capacitive screens, sensors are placed at the corners of a screen.
+Small voltages are also applied at the corners of the screen creating an electric
+field. A finger touching the screen surface will draw current from each corner
+reducing the capacitance. A microcontroller measures the decrease in capacitance
+and hence determines the point where the finger touched the screen. This system
+only works with a bare finger or stylus.
+Projective capacitive screens work slightly differently to surface capacitive
+screens. The transparent conductive layer is now in the form of an X-Y matrix
+pattern. This creates a three dimensional (3D) electrostatic field. When a
+finger touches the screen, it disturbs the 3D electrostatic field allowing a
+microcontroller to determine the coordinates of the point of contact. This system
+works with bare fingers, stylus and thin surgical or cotton gloves. It also allows
+multi-touch facility (for example, pinching or sliding).
+Advantages compared to the other two technologies
+
+» Better image clarity than resistive screens, especially in strong sunlight
+» Very durable screens that have high scratch resistance
+» Projective capacitive screens allow multi-touch.
+Disadvantages compared to the other two technologies
+
+» Surface capacitive screens only work with bare fingers or a special stylus
+» They are sensitive to electromagnetic radiation (such as magnetic fields or
+microwaves).
+Infrared touch screens
+Infrared touch screens use a glass screen with an array of sensors and infrared
+transmitters.
+
+99
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 99
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+infrared
+transmitters
+cover the
+screen in a
+matrix pattern
+
+nfrared sensors
+are placed around
+the edge of the
+screen to detect
+the infrared rays
+
+infrared sensors
+are placed around
+the edge of the
+screen to detect
+the infrared rays
+
+▲ Figure 3.33 Array of infrared transmitters and sensors surrounding the screen
+
+▲
+
+The sensors detect the infrared radiation. If any of the infrared beams are broken
+(for example, with a finger touching the screen), the infrared radiation reaching
+the sensors is reduced. The sensor readings are sent to a microcontroller that
+calculates where the screen was touched:
+
+  
+
+Figure 3.34 Infrared screen
+touched causing sensors (shown
+in red) to show a reduction in
+infrared radiation – thus the
+exact position where the screen
+was touched can be calculated
+
+Advantages compared to the other two technologies
+
+» Allows multi-touch facilities
+» Has good screen durability
+» The operability isn’t affected by a scratched or cracked screen.
+Disadvantages compared to the other two technologies
+
+» The screen can be sensitive to water or moisture
+» It is possible for accidental activation to take place if the infrared beams are
+disturbed in some way
+» Sometimes sensitive to light interference.
+Resistive touch screens
+Resistive touch screens are made up of two layers of electrically resistive
+material with a voltage applied across them. The upper layer is made of flexible
+polyethylene (a type of polymer) with a resistive coating on one side (see
+Figure 3.35). The bottom layer is made of glass also with a resistive coating
+(usually indium tin oxide) on one side. These two layers are separated by air or an
+inert gas (such as argon). When the top polyethylene surface is touched, the two
+layers make contact. Since both layers are coated in a resistive material a circuit
+is now completed which results in a flow of electricity. The point of contact is
+detected where there was a change in voltage.
+100
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 100
+
+18/02/21 3:50 PM
+
+3.2 Input and output devices
+
+screen touched – two
+layers come into contact
+
+polyethylene
+layer (flexible)
+resistive coating
+on top layer
+
+spacers
+
+'bumps' to stop
+the plastic from sagging
+
+glass layer (bottom layer) resistive coating
+on bottom layer
+insulation layer
+(air filled or inert gas)
+
+▲ Figure 3.35 Resistive touch screen
+
+A microcontroller converts the voltage (created when the two resistive layers
+touch) to digital data, which it then sends to the microprocessor.
+Advantages compared to the other two technologies
+
+» Good resistance to dust and water
+» Can be used with bare fingers, stylus and gloved hand.
+Disadvantages compared to the other two technologies
+
+» Low touch sensitivity (sometimes have to press down harder)
+» Doesn’t support multi-touch facility
+» Poor visibility in strong sunlight
+» Vulnerable to scratches on the screen (made of polymer).
+
+3.2.2 Output devices
+Actuators
+When a computer is used to control devices, such as a conveyer belt or a valve, it
+is usually necessary to use an actuator to, for example, start/stop the conveyer
+belt or open/close the valve. An actuator is a mechanical or electromechanical
+device such as a relay, solenoid or motor. We will consider a solenoid as the
+example; this converts an electrical signal into a magnetic field producing linear
+motion:
+electromagnetic field
+solenoid coil
+
+current out
+
+current in
+
+▲ Figure 3.36 A solenoid
+
+If a plunger (for example, a magnetised metal bar) is placed inside the coil, it
+will move when a current is applied to the coil (see Figure 3.36). This would allow
+the solenoid to operate a valve or a switch, for example. There are also examples
+of rotary solenoids where a cylindrical coil is used. In this case, when a current is
+supplied to the coil, it would cause a rotational movement of the plunger.
+
+101
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 101
+
+18/02/21 3:50 PM
+
+3 Hardware
+
+Light projectors
+There are two common types of light projector:
+» digital light projector (DLP)
+» liquid crystal display (LCD) projector.
+Projectors are used to project computer output onto larger screens or even onto
+interactive whiteboards. They are often used in presentations and in multimedia
+applications. The next section compares the basic operation of the two projector
+technologies.
+Digital light projectors (DLP)
+The use of millions of micro mirrors on a small digital micromirror device (DMD
+chip) is the key to how these devices work.
+
+The number of micro mirrors and the way they are arranged on the DMD chip
+determines the resolution of the digital image. When the micro mirrors tilt
+towards the light source, they are ON. When the micro mirrors tilt away from the
+light source, they are OFF. This creates a light or dark pixel on the projection
+screen. The micro mirrors can switch on or off several thousand times a second
+creating various grey shades – typically 1024 grey shades can be produced (for
+example, if the mirror switches on more often than it switches off, it will produce
+a lighter shade of grey). This is known as a greyscale image.
+A bright white light source (for example, from a xenon bulb) passes through a
+colour filter on its way to the DMD chip. The white light is split into the primary
+colours: red, green and blue – the DLP projector can create over 16 million
+different colours. The ON and OFF states of each micro mirror are linked with
+colours from the filter to produce the coloured image.
+image
+projected
+on to
+screen
+white light
+
+condensing
+lens
+
+colour
+filter
+
+shaping
+lens
+
+DMD
+chip
+
+lens
+
+▲ Figure 3.37 A digital light projector (DLP)
+
+Note: The DMD chip is a microoptoelectromechanical system (MOEMS) that
+contains several thousand microscopic mirrors (made out of polished aluminium
+metal) arranged on the chip surface. They are each about 16 µm (16 × 10-6 metres)
+in size and each corresponds to a pixel in the displayed screen image.
+Liquid crystal display (LCD) projector
+These are older technology than DLP. Essentially a high-intensity beam of
+light passes through an LCD display and then onto a screen. How this works in
+principle is described below:
+
+» a powerful beam of white light is generated from a bulb or LED inside the
+projector body
+» this beam of light is then sent to a group of chromatic-coated mirrors (known
+as dichromic mirrors); these reflect the light back at different wavelengths
+
+102
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 102
+
+18/02/21 3:50 PM
+
+3.2 Input and output devices
+
+» when the white light hits these mirrors, the reflected light has wavelengths
+corresponding to red, green and blue light components
+» these three different coloured light components pass through three LCD
+screens (each screen is composed of thousands of tiny pixels which can either
+block light or let it through; this produces a monochromatic image)...
+» ... consequently, three different versions of the same image are now produced
+– one is the whole image in different shades of red, one is the whole image
+in different shades of green and one is the whole image in different shades of
+blue
+» these images are then re-combined using a special prism to produce a full
+colour image
+» finally, the image passes through the projector lens onto a screen.
+light
+source
+
+mirror
+
+red
+component
+
+lens
+LCD screens
+image
+projected
+on to screen
+
+prism
+
+dichromic
+mirrors
+green
+component
+blue
+component
+
+mirror
+
+▲ Figure 3.38 LCD projector
+
+Advantages and disadvantages of the two types of projector
+▼ Table 3.5 Advantages and disadvantages of DLP and LCD projectors
+
+Digital light
+projector (DLP)
+
+Advantages
+
+Disadvantages
+
+higher contrast ratios
+higher reliability/longevity
+
+image tends to suffer from ‘shadows’ when
+showing a moving image
+
+quieter running than LCD projector
+
+DLP do not have grey components in the image
+
+uses a single DMD chip, which mean no issues
+lining up the images
+smaller and lighter than LCD projector
+they are better suited to dusty or smoky
+atmospheres than LCD projectors
+
+LCD projector
+
+the colour definition is frequently not as good as
+LCD projectors because the colour saturation is
+not as good (colour saturation is the intensity of a
+colour)
+
+give a sharper image than DLP projectors
+
+although improving, the contrast ratios are not as
+good as DLPs
+
+have better colour saturation than DLP projectors
+
+LCD projectors have a limited life (that is, the
+longevity is not as good as DLPs)
+
+more efficient in their use of energy than DLP
+technology – consequently they generate less
+heat
+
+since LCD panels are organic in nature, they tend
+to degrade with time (screens turn yellow and the
+colours are subsequently degraded over time)
+
+103
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 103
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+Inkjet and laser printers
+Inkjet printers
+Inkjet printers are essentially made up of:
+
+▲ Figure 3.39 Inkjet printer
+
+» a print head, which consists of nozzles that spray droplets of ink onto the
+paper to form characters
+» an ink cartridge or cartridges; either one cartridge for each colour (blue,
+yellow and magenta) and a black cartridge or one single cartridge containing
+all three colours + black (Note: some systems use six colours)
+» a stepper motor and belt, which moves the print head assembly across the
+page from side to side
+» a paper feed, which automatically feeds the printer with pages as they are
+required.
+The ink droplets are produced currently using two different technologies:
+Thermal bubble – tiny resistors create localised heat which makes the ink
+vaporise. This causes the ink to form a tiny bubble; as the bubble expands,
+some of the ink is ejected from the print head onto the paper. When the bubble
+collapses, a small vacuum is created which allows fresh ink to be drawn into the
+print head. This continues until the printing cycle is completed.
+Piezoelectric – a crystal is located at the back of the ink reservoir for each
+nozzle. The crystal is given a tiny electric charge which makes it vibrate. This
+vibration forces ink to be ejected onto the paper; at the same time more ink is
+drawn in for further printing.
+When a user wishes to print a document using an inkjet printer, the following
+sequence of events takes place. Whatever technology is used, the basic steps in
+the printing process are the same.
+
+▼ Table 3.6 Steps in inkjet printing process
+Stage in
+process
+
+Description of what happens
+
+1
+
+the data from the document is sent to a printer driver
+
+2
+
+the printer driver ensures that the data is in a format that the chosen printer can understand
+
+3
+
+a check is made by the printer driver to ensure that the chosen printer is available to print (e.g. is it busy, is it offline, is it out of ink, and so on)
+
+4
+
+the data is then sent to the printer and it is stored in a temporary memory known as a printer buffer
+
+5
+
+a sheet of paper is then fed into the main body of the printer; a sensor detects whether paper is available in the
+paper feed tray – if it is out of paper (or the paper is jammed) then an error message is sent back to the computer
+
+6
+
+as the sheet of paper is fed through the printer, the print head moves from side to side across the paper printing
+the text or image; the four ink colours are sprayed in their exact amounts to produce the desired final colour
+
+7
+
+at the end of each full pass of the print head, the paper is advanced very slightly to allow the next line to be
+printed; this continues until the whole page has been printed
+
+8
+
+if there is more data in the printer buffer, then the whole process from stage 5 is repeated until the buffer is
+finally empty
+
+9
+
+once the printer buffer is empty, the printer sends an interrupt to the CPU in the computer; this is a request
+for more data to be sent to the printer; the whole process continues until the whole of the document has been
+printed
+
+104
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 104
+
+18/02/21 3:51 PM
+
+3.2 Input and output devices
+
+Laser printers
+Laser printers use dry powder ink rather than liquid ink and make use of the
+properties of static electricity to produce the text and images. Unlike inkjet
+printers, laser printers print the whole page in one go. Colour laser printers
+use 4 toner cartridges – blue, cyan, magenta and black. Although the actual
+technology is different to monochrome printers, the printing method is similar
+but coloured dots are used to build up the text and images.
+
+▲ Figure 3.40 Laser printer
+
+The following table describes briefly the stages that occur when a document is
+printed using a laser printer:
+
+▼ Table 3.7 Steps in laser printing process
+Stage in
+process
+
+Description of what happens
+
+1
+
+the data from the document is sent to a printer driver
+
+2
+
+the printer driver ensures that the data is in a format that the chosen printer can understand
+
+3
+
+a check is made by the printer driver to ensure that the chosen printer is available to print (e.g. is it busy, is it
+off-line, is it out of ink, and so on)
+
+4
+
+the data is then sent to the printer and it is stored in a temporary memory known as a printer buffer
+
+5
+
+the start of the printing process involves a printing drum being given a positive charge; as this drum rotates, a
+laser beam is scanned across it removing the positive charge in certain areas; this leaves negatively charged
+areas that exactly match the text/images of the page to be printed
+
+6
+
+the drum is then coated with positively charged toner (powdered ink); since the toner is positively charged, it
+only sticks to the negatively charged parts of the drum
+
+7
+
+a negatively charged sheet of paper is then rolled over the drum
+
+8
+
+the toner on the drum now sticks to the paper to produce an exact copy of the page sent to the printer
+
+9
+
+to prevent the paper sticking to the drum, the electric charge on the paper is removed after one rotation of the
+drum
+
+10
+
+the paper finally goes through a fuser which is a set of heated rollers; the heat melts the ink so that it fixes
+permanently to the paper
+
+11
+
+at the very end, a discharge lamp removes all the electric charge from the drum making it ready to print the
+next page
+
+Applications of inkjet and laser printers
+The choice of whether to use an inkjet printer or a laser printer depends
+on which features make it the most appropriate output device for the given
+application.
+
+Inkjet printer – inkjet printers are often used for printing one-off photos
+or where only a few pages of good quality, colour printing is needed; the
+small ink cartridges or small paper trays would not be an issue with such
+applications.
+Laser printer – these devices produce high quality printouts and are very fast
+when making multiple copies of a document; any application that needs high
+volume printing (in colour or monochrome) would choose the laser printer
+(for example, producing a large number of high-quality flyers or posters
+for advertising). Laser printers have two advantages: they have large toner
+cartridges and large paper trays (often holding more than a ream of paper).
+105
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 105
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+3D printers
+3D printers are used to produce solid objects that actually work. They are primarily
+based on inkjet and laser printer technology. The solid object is built up layer by
+layer using materials such as: powdered resin, powdered metal, paper or ceramic.
+
+The alloy wheel in Figure 3.42 was made using an industrial 3D printer.
+▲ Figure 3.41 Typical 3D
+printer
+
+It was made from many layers (0.1 mm thick) of powdered metal using a
+technology known as binder 3D printing.
+Other examples are discussed below.
+The following information describes some of the features of 3D printing:
+
+▲ Figure 3.42 An alloy
+wheel
+
+» Various types of 3D printers exist; they range from the size of a microwave
+oven up to the size of a small car.
+» 3D printers use additive manufacturing (i.e. the object is built up layer by
+layer); this is in sharp contrast to the more traditional method of subtractive
+manufacturing (i.e. removal of material to make the object). For example,
+making a statue using a 3D printer would involve building it up layer by layer
+using powdered stone until the final object was formed. The subtractive method
+would involve carving the statue out of solid stone (i.e. removing the stone not
+required) until the final item was produced. Similarly, CNC machining removes
+metal to form an object; 3D printing would produce the same item by building
+up the object from layers of powdered metal.
+» Direct 3D printing uses inkjet technology; a print head can move left to right
+as in a normal printer. However, the print head can also move up and down to
+build up the layers of an object.
+» Binder 3D printing is similar to direct 3D printing. However, this method uses
+two passes for each of the layers; the first pass sprays dry powder and then on
+the second pass a binder (a type of glue) is sprayed to form a solid layer.
+» Newer technologies are using lasers and UV light to harden liquid polymers;
+this further increases the diversity of products which can be made.
+How to create a solid object using 3D printers
+There are a number of steps in the process of producing an object using 3D
+printers. The steps are summarised below:
+A design is made using computer aided design (CAD) software
+The finalised drawing is imported into some special software that
+prepares it in a format that is understood by the 3D printer
+The 3D printer is first set up to allow the solid object to be made
+
+The object is removed from the printer and is then prepared; for
+example, some use a jelly-like support that needs to be washed
+away by immersion in water, some require the removal of excess
+plastic powder and others require the cutting away of unused
+material; in many cases, the object has to be left to ‘cure’ for a
+few hours.
+
+▲
+
+The solid object is built up layer by layer (often only 0.1 mm thick);
+this can take several hours depending on the thickness of the
+layers, the material used and the size of the final object
+
+Figure 3.43 How to
+create an object using a
+3D printer
+
+106
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 106
+
+18/02/21 3:51 PM
+
+3.2 Input and output devices
+
+Uses of 3D printing
+3D printing is regarded as being possibly the next ‘industrial revolution’ since it
+will change the manufacturing methods in many industries. The following list is
+just a glimpse into what we know can be made using these printers; in the years
+that follow, this list will probably fill an entire book:
+
+» the covering of prosthetic limbs can be made to exactly fit the limb
+» making items to allow precision reconstructive surgery (e.g. facial reconstruction
+following an accident); the parts made by this technique are more precise in their
+design since they can be made from exact scanning of the skull
+» in aerospace, manufacturers are looking at making wings and other parts
+using 3D technology; the bonus will be lightweight precision parts
+» fashion and art – 3D printing allows new creative ideas to be developed
+» making parts for items no longer in production e.g. suspension parts for a
+vintage car.
+These are just a few of the exciting applications which make use of this new
+technology.
+Find out more
+The reader is invited to do a search on the internet to find out new and innovative
+research into 3D printing applications.
+
+LED and LCD screens
+LED screens
+An LED screen is made up of tiny light emitting diodes (LEDs). Each LED is either
+red, green or blue in colour. By varying the electric current sent to each LED, its
+brightness can be controlled, producing a vast range of colours.
+
+This type of screen tends to be used for large outdoor displays due to the
+brilliance of the colours produced. Recent advancements in LED technology have
+led to the introduction of OLED (organic LED) screens (see later).
+The reader needs to be very careful here. Many television screens are advertised
+as LED when in fact they are LCD screens which are backlit using LEDs.
+LCD screens
+LCD screens are made up of tiny liquid crystals. These tiny crystals make up an
+array of pixels that are affected by changes in applied electric fields. How this
+works is outside the scope of this book. But the important thing to realise is that
+for LCD screens to work, they require some form of backlighting.
+
+Because LCD’s don’t produce any light, LCD screens are back-lit using light
+emitting diode (LED) technology and must not be confused with pure LED
+screens. Use of LED backlighting gives a very good contrast and brightness range.
+Before the use of LEDs, LCD screens used cold cathode fluorescent lamp (CCFL) as
+the back-lit method.
+Essentially, CCFL uses two fluorescent tubes behind the LCD screen which supply
+the light source. When LEDs are used, a matrix of tiny blue-white LEDs is used
+behind the LCD screen.
+107
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 107
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+LEDs have become increasingly more popular, as the method of back lighting, due
+to a number of advantages over older CCFL technology:
+» LEDs reach their maximum brightness almost immediately (there is no need to
+‘warm up’ before reaching full efficiency)
+» LEDs give a whiter light that sharpens the image and makes the colours appear
+more vivid; CCFL had a slightly yellowish tint
+» LEDs produce a brighter light that improves the colour definition
+» monitors using LED technology are much thinner than monitors using CCFL
+technology
+» LEDs last indefinitely; this makes the technology more reliable and makes for a
+more consistent product
+» LEDs consume very little power which means they produce less heat as well as
+using less energy.
+Organic light emitting diodes (OLED)
+Newer LED technology is making use of organic light emitting diodes (OLEDs).
+These use organic materials (made up of carbon compounds) to create semiconductors that are very flexible. Organic films are sandwiched between two
+charged electrodes (one is a metallic cathode and the other a glass anode).
+When an electric field is applied to the electrodes, they give off light. This
+means that no form of backlighting is required. This allows for very thin screens.
+It also means that there is no longer a need to use LCD technology, since OLED is
+a self-contained system.
+Glass or plastic top layer
+Metallic cathode (negative charge)
+
+Negative charges
+
+Emissive layer
+Conductive layer
+Positive charges
+
+Glass anode (positive charge)
+Glass or plastic bottom layer
+
+▲ Figure 3.44 How an OLED screen works
+
+But the important aspect of OLED technology is how thin
+this makes the screen. It is possible, using OLED technology,
+to bend screens to any shape (see Figure 3.45). When this is
+adopted by mobile phone manufacturers, it makes it possible
+to develop phones that can wrap around your wrist – much
+like a watch strap. Imagine screens so thin that they can be
+folded up and placed in your pocket until they are needed.
+Or how about using folding OLED displays attached to fabrics
+creating ‘smart’ clothing (this could be used on outdoor
+survival clothing where an integrated circuit, mobile phone,
+GPS receiver and OLED display could all be sewn into the
+clothing)?
+▲ Figure 3.45 OLED television (curved screen)
+108
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 108
+
+18/02/21 3:51 PM
+
+3.2 Input and output devices
+
+Advantages of using OLED compared to existing LEDs and LCDs:
+
+» The plastic, organic layers of an OLED are thinner, lighter and more flexible
+than the crystal structures used in LEDs or LCDs.
+» The light-emitting layers of an OLED are lighter; OLED layers can be made from
+plastic rather than the glass as used in LED and LCD screens.
+» OLEDs give a brighter light than LEDs.
+» OLEDs do not require backlighting like LCD screens – OLEDs generate their own light.
+» Since OLEDs require no backlighting, they use much less power than LCD
+screens (most of the LCD power is used to do the backlighting); this is very
+important in battery-operated devices such as mobile phones.
+» Since OLEDs are essentially plastics, they can be made into large, thin sheets
+(this means they could be used on large advertising boards in airports,
+subways, and so on).
+» OLEDs have a very large field of view, about 170 degrees, which makes them
+ideal for use in television sets and for advertising screens.
+
+(Loud) speakers
+Loudspeakers are output devices that produce sound. When connected to a
+computer system, digitised sound stored on a file needs to be converted into
+sound as follows:
+» The digital data is first passed through a digital to analogue converter (DAC)
+where it is changed into an electric current.
+» This is then passed through an amplifier (since the current generated by the DAC
+will be very small); this creates a current large enough to drive a loudspeaker.
+» This electric current is then fed to a loudspeaker where it is converted into sound.
+The following schematic shows how this is done:
+
+1 0 0 1 0 1 0 1 0 1 1 ...
+
+DAC
+
+amplifier
+
+▲ Figure 3.46 Digital to analogue conversion
+
+As Figure 3.46 shows, if the sound is stored in a computer file, it must pass
+through a digital to analogue converter (DAC) to convert binary (digital) data
+into an analogue form (electric current) that can then drive the loudspeaker.
+Figure 3.47 shows how the loudspeaker converts the electric current into sound:
+plastic or
+paper cone
+sound waves
+
+permanent
+magnet
+coil of wire
+wrapped
+around an
+iron core
+
+sound waves
+produced
+
+electric current fed to wire
+
+▲ Figure 3.47 Diagram showing how a loudspeaker works
+109
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 109
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+» When an electric current flows through the coil of wire that is wrapped around
+an iron core, the core becomes a temporary electromagnet; a permanent
+magnet is also positioned very close to this electromagnet.
+» As the electric current through the coil of wire varies, the induced magnetic
+field in the iron core also varies. This causes the iron core to be attracted
+towards the permanent magnet and as the current varies this will cause the
+iron core to vibrate.
+» Since the iron core is attached to a cone (made of paper or thin synthetic
+material), this causes the cone to vibrate, producing sound waves.
+
+Activity 3.4
+1 a Explain the main differences in operation of a laser printer compared to an
+inkjet printer.
+b i Name one application of a laser printer and one application of an inkjet printer.
+ii For each of your named applications in b i, give a reason why the chosen
+printer is the most suitable.
+2 The nine stages in printing a page using an inkjet printer are shown below. The
+nine stages are NOT in the correct order.
+By writing the letters A to I, put each of the stages into the correct order.
+A – the data is then sent to the printer and it is stored in a temporary memory
+known as a printer buffer
+B – as the sheet of paper is fed through the printer, the print head moves from
+side to side across the paper printing the text or image; the four ink colours are
+sprayed in their exact amounts to produce the desired final colour
+C – the data from the document is sent to a printer driver
+D – once the printer buffer is empty, the printer sends an interrupt to the CPU
+in the computer; this is a request for more data to be sent to the printer; the
+whole process continues until the whole of the document has been printed
+E – the printer driver ensures that the data is in a format that the chosen
+printer can understand
+F – at the end of each full pass of the print head, the paper is advanced very
+slightly to allow the next line to be printed; this continues until the whole page
+has been printed
+G – a check is made by the printer driver to ensure that the chosen printer is
+available to print (e.g. is it busy, is it off-line, is it out of ink, and so on)
+H – if there is more data in the printer buffer, then the whole process from
+stage 5 is repeated until the buffer is finally empty
+I – a sheet of paper is then fed into the main body of the printer; a sensor
+detects whether paper is available in the paper feed tray – if it is out of paper
+(or the paper is jammed) then an error message is sent back to the computer
+3 a Explain the difference between LED screens and LCD-LED backlit screens.
+b Modern LCD screens use blue-white LEDs as backlighting. Cold cathode ray
+(fluorescent) tubes were used. Give three advantages of using LEDs.
+4 Filipe has music stored on his computer’s backing store. He wishes to listen
+to his music through a pair of loudspeakers. Describe how the music, which is
+digitally stored can be played through his two analogue loudspeakers.
+
+110
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 110
+
+18/02/21 3:51 PM
+
+3.2 Input and output devices
+
+3.2.3 Sensors
+Sensors are input devices which read or measure physical properties from
+their surroundings. Examples include temperature, pressure, acidity level and
+length (there are many others). Real data is analogue in nature; this means it is
+constantly changing and doesn’t have a single discrete value. Therefore, analogue
+data needs some form of interpretation by the user, for example, the temperature
+measurement on a mercury thermometer requires the user to look at the height
+of the mercury column and use their best judgement (by looking at the scale) to
+find the temperature. There are an infinite number of values depending on how
+precisely the height of the mercury column is measured.
+▲ Figure 3.48 Mercury
+thermometer
+
+However, computers cannot make any sense of these physical quantities so the
+data needs to be converted into a digital format. This is usually achieved by an
+analogue to digital converter (ADC). This device converts physical values into
+discrete digital values.
+ADC
+
+Analogue data
+
+Link
+For more on
+actuators see
+Section 3.2.2.
+
+10011100 ...
+
+Digital data
+
+▲ Figure 3.49 ADC
+
+When the computer is used to control devices, such as a motor or a valve, it is
+necessary to use a digital to analogue converter (DAC) since these devices need
+analogue data to operate in many cases. Actuators are used in such control
+applications.
+Sensor readings may cause the microprocessor to, for example, alter a valve or a
+motor that will then change the next reading taken by the sensor. So the output
+from the microprocessor will impact on the next input received as it attempts to
+bring the system within the desired parameters. This is known as feedback.
+It is important to realise that sensors send out constant values; they don’t
+suddenly send a reading when the parameter they are measuring changes. It is
+the microprocessor they are giving the input to that will analyse the incoming
+data and take the necessary action.
+Table 3.8 shows a number of common sensors and examples of applications where
+the sensors might be used.
+
+111
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 111
+
+18/02/21 3:51 PM
+
+3 Hardware
+▼ Table 3.8 Sensors
+Sensor
+
+Description of sensor
+
+Example applications
+• control of a central heating system
+Temperature
+• control/monitor a chemical process
+• control/monitor temperature in a greenhouse
+• control/monitor moisture levels in soil in a
+measures water levels in, for example, soil (it is
+greenhouse
+Moisture
+based on the electrical resistance of the sample
+• monitor the moisture levels in a food processing
+being monitored)
+factory
+• monitor humidity levels in a building
+this is slightly different to moisture; this measures
+• monitor humidity levels in a factory
+the amount of water vapour in, for example, a
+Humidity
+manufacturing microchips
+sample of air (based on the fact that the conductivity
+of air will change depending on the amount of water • monitor/control humidity levels in the air in a
+greenhouse
+present)
+• switching street lights on or off depending on
+these use photoelectric cells that produce an output
+light levels
+Light
+(in the form of an electric current) depending on the
+• switch on car headlights automatically when it
+brightness of the light
+gets dark
+• turn on car windscreen wipers automatically
+these use an invisible beam of infrared radiation
+Infrared
+when it detects rain on the windscreen
+picked up by a detector; if the beam is broken, then
+(active)
+• security alarm system (intruder breaks the infrathere will be a change in the amount of infrared
+red beam)
+radiation reaching the detector (sensor)
+these sensors measure the heat radiation given off • security alarm system (detects body heat)
+Infrared
+by an object, for example, the temperature of an
+• monitor the temperature inside an industrial
+(passive)
+intruder or the temperature in a fridge
+freezer or chiller unit
+a pressure sensor is a transducer and generates
+• weighing of lorries at a weighing station
+Pressure
+different electric currents depending on the
+• measure the gas pressure in a nuclear reactor
+pressure applied
+• pick up the noise of footsteps in a security system
+these are basically microphones that convert
+Acoustic/sound
+• detect the sound of liquids dripping at a faulty
+detected sound into electric signals/pulses
+pipe joint
+•
+monitor pollution levels in the air at an airport
+most common ones are oxygen or carbon dioxide
+sensors; they use various methods to detect the gas • monitor oxygen and carbon dioxide levels in a
+Gas
+being monitored and produce outputs that vary with
+greenhouse
+the oxygen or carbon dioxide levels present
+• monitor oxygen levels in a car exhaust
+• monitor/control acidity levels in the soil in a
+these measure acidity through changes in voltages
+greenhouse
+pH
+in, for example, soil
+• control acidity levels in a chemical process
+these sensors measure changes in magnetic fields • detect magnetic field changes (for example, in
+mobile phones and CD players)
+Magnetic field
+– the signal output will depend on how the magnetic
+field changes
+• used in anti-lock braking systems in cars
+• used in cars to measure rapid deceleration and
+these are sensors that measure acceleration and
+apply air bags in a crash
+motion of an application, i.e. the change in velocity
+Accelerometer
+(a piezoelectric cell is used whose output varies
+• used by mobile phones to change between
+according to the change in velocity)
+portrait and landscape mode
+these sensors detect the presence of a nearby
+• detect when a face is close to a mobile phone
+Proximity
+object
+screen and switches off screen when held to the ear
+•
+used in respiratory devices and inhalers in
+these sensors measure the flow rate of a moving
+hospitals
+Flow (rate)
+liquid or gas and produce an output based on the
+amount of liquid or gas passing over the sensor
+• measure gas flows in pipes (for example, natural gas)
+these sensors use ultrasonics (to detect changing
+• monitor levels in a petrol tank in a car
+liquid levels in, for example, a tank) or capacitance/
+• in a pharmaceutical process where powder levels
+Level
+conductivity (to measure static levels (for example,
+in tablet production need to be monitored
+height of water in a river) – note, level sensors can
+• leak detection in refrigerant (air conditioning)
+also be optical or mechanical in nature
+measures temperature of the surroundings by
+sending signals; these signals will change as the
+temperature changes
+
+112
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 112
+
+18/02/21 3:51 PM
+
+3.2 Input and output devices
+
+Sensors are used in both monitoring and control applications. There is a
+subtle difference between how these two methods work (the flowchart is a
+simplification of the process):
+Sensors send signals to the
+microprocessor/computer
+The signals are converted to
+digital (if necessary) using an
+analogue to digital converter
+(ADC)
+The computer/microprocessor
+analyses the data received
+by checking it against stored
+values
+
+If new data is outside the
+acceptable range, a warning
+message is sent to a screen
+or an alarm is activated
+
+The microprocessor/computer
+has no effect on what is
+being monitored – it is simply
+‘watching’ the process
+
+If the new data is outside the
+acceptable range, the
+computer/microprocessor
+sends signals to control
+valves, motors, etc.
+
+The output from the system
+affects the next set of inputs
+from the sensors
+Feedback loop
+
+Monitoring system
+
+Control system
+
+▲ Figure 3.50 Monitoring and control systems using sensors
+
+Examples of monitoring
+
+» Monitoring of a patient in a hospital for vital signs such as heart rate, temperature,
+etc.
+» Monitoring of intruders in a burglar alarm system
+» Checking the temperature levels in a car engine
+» Monitoring pollution levels in a river.
+Examples of control
+
+» Turning street lights on at night and turning them off again during daylight
+» Controlling the temperature in a central heating/air conditioning system
+» Chemical process control (for example, maintaining temperature and pH of
+process)
+
+113
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 113
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+» Operating anti-lock brakes on a car when necessary
+» Controlling the environment in a green house.
+
+Monitoring applications
+Security systems
+Acoustic sensor
+Infrared sensor
+
+Siren
+Interface
+
+Pressure sensor
+
+Computer/
+microprocessor
+Lights
+
+▲ Figure 3.51 Security system
+
+Note: compare this to Figure 3.9 (embedded systems) which shows the security
+system in more detail. Figure 3.51 concentrates on the sensor input.
+The security monitoring system will carry out the following actions:
+» the system is activated by keying in a password on a keypad
+» the infrared sensor will pick up the movement of an intruder in the building
+» the acoustic sensor will pick up sounds such as footsteps or breaking glass
+» the pressure sensor will pick up the weight of an intruder coming through a
+door or through a window
+» the sensor data is passed through an ADC if it is in an analogue form ...
+» ... to produce digital data
+» the computer/microprocessor will sample the digital data coming from these
+sensors at a given frequency (e.g. every 5 seconds) ...
+» ... the data is compared with the stored values by the computer/microprocessor
+» if any of the incoming data values are outside the acceptable range, then the
+computer sends a signal ...
+» ... to a siren to sound the alarm, or
+» ... to a light to start flashing
+» a DAC is used if the devices need analogue values to operate them
+» the alarm continues to sound/lights continue to flash until the system is reset with a password.
+Monitoring of patients in a hospital
+
+» A number of sensors are attached to the patient ...
+» ... these measure vital signs such as: temperature, heart rate, breathing rate, etc.
+» these sensors are all attached to a computer system
+» the sensors constantly send data back to the computer system
+» the computer samples the data at frequent intervals
+» the range of acceptable values for each parameter is keyed into the computer
+» the computer compares the values from the sensors with those values keyed in
+» if anything is out of the acceptable range, a signal is sent by the computer ...
+» ... to sound an alarm
+» if data from the sensors is within range, the values are shown in either
+graphical form on a screen and/or a digital read out
+» monitoring continues until the sensors are disconnected from the patient.
+
+114
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 114
+
+18/02/21 3:51 PM
+
+3.2 Input and output devices
+
+Control applications
+Control of street lighting
+This next sequence shows how a microprocessor is used to control the operation
+of a street lamp. The lamp is fitted with a light sensor which constantly sends
+data to the microprocessor. The data value from the sensor changes according to
+whether it is sunny, cloudy, raining or it is night time (etc.):
+
+» the light sensor sends data to the ADC interface
+» this changes the data into digital form and sends it to the microprocessor
+» the microprocessor samples the data every minute (or at some other frequency
+rate)
+» if the data from the sensor < value stored in memory …
+» ... a signal is sent from the microprocessor to the street
+lamp ...
+Street
+ADC
+Microprocessor
+light
+» ... and the lamp is switched on
+» the lamp stays switched on for 30 minutes before the
+sensor readings are sampled again (this prevents the lamp
+flickering off and on during brief heavy cloud cover, for
+example)
+▲ Figure 3.52 Street lighting
+» if the data from the sensor >= value stored in memory …
+» … a signal is sent from the microprocessor to the street
+lamp ...
+» … and the lamp is switched off
+» the lamp stays switched off for 30 minutes before sensor
+readings are sampled again (this prevents the lamp
+flickering off and on during heavy cloud cover for example).
+Anti-lock braking systems (on cars)
+Anti-lock braking systems (ABS) on cars use magnetic field sensors to stop the
+wheels locking up on the car if the brakes have been applied too sharply:
+
+» when one of the car wheels rotates too slowly (i.e. it is locking up), a
+magnetic field sensor sends data to a microprocessor
+» the microprocessor checks the rotation speed of the other three wheels
+» if they are different (i.e. rotating faster), the microprocessor sends a signal to
+the braking system …
+» … and the braking pressure to the affected wheel is reduced …
+» … the wheel’s rotational speed is then increased to match the other wheels
+» the checking of the rotational speed using these magnetic field sensors is
+done several times a second …
+» … and the braking pressure to all the wheels can be constantly changing to
+prevent any of the wheels locking up under heavy braking ...
+» … this is felt as a ‘judder’ on the brake pedal as the braking system is constantly
+switched off and on to equalise the rotational speed of all four wheels
+» if one of the wheels is rotating too quickly, braking pressure is increased to
+that wheel until it matches the other three.
+
+115
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 115
+
+25/02/21 11:39 AM
+
+3 Hardware
+
+Central heating systems
+In this example, a gas supply is used to heat water using a heater. A valve on the
+gas supply is controlled by a microprocessor and is opened if the heating levels
+need to be increased. A water pump is used to pump hot water around the central
+heating system whenever the temperature drops below a pre-set value:
+Sensor
+
+Gas supply
+Heater
+
+Keypad
+
+ADC
+Microprocessor
+
+DAC
+
+DAC
+
+Water pump
+
+▲ Figure 3.53 Controlling a central heating system
+
+So how does this work?
+» the required temperature is keyed in and this is stored in the microprocessor
+memory (this is called the pre-set value)
+» the temperature sensor is constantly sending data readings to the
+microprocessor
+» the sensor data is first sent to an ADC to convert the analogue data into
+digital data
+» the digital data is sent to the microprocessor
+» the microprocessor compares this data with the pre-set value
+» if the temperature reading >= pre-set value then no action is taken
+» if the temperature reading < pre-set value, then a signal is sent …
+» … to an actuator (via a DAC) to open the gas valve to the heater
+» … to an actuator (via a DAC) to turn on the water pump
+» the process continues until the central heating is switched off.
+Chemical process control
+A certain chemical process only works if the temperature is above 70°C and
+the pH (acidity) level is less than 3.5. Sensors are used as part of the control
+system. A heater is used to heat the reactor and valves are used to add acid
+when necessary to maintain the acidity. The following description shows how the
+sensors and computer are used to control this process:
+
+» temperature and pH sensors read data from the chemical process
+» this data is converted to digital using an ADC and is then sent to the computer
+» the computer compares the incoming data with pre-set values stored in
+memory
+» … if the temperature < 70°C, a signal is sent to switch on the heater
+» … if the temperature >= 70°C, a signal is sent to switch off the heaters
+» … if the pH > 3.5, then a signal is sent to open a valve and acid is added
+» … if the pH <= 3.5, then a signal is sent to close this valve
+» the computer signals will be changed into analogue signals using a DAC so
+that it can control the heaters and valves
+» this continues as long as the computer system is activated.
+116
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 116
+
+18/02/21 3:51 PM
+
+3.2 Input and output devices
+
+Greenhouse environment control
+Five different sensors could be used here to control the greenhouse environment,
+namely: humidity, moisture, temperature, pH and light. To simplify this
+problem the control mechanisms are shown in Figure 3.54.
+> pre-set value
+humidity
+
+< pre-set value
+> pre-set value
+moisture
+
+< pre-set value
+> pre-set value
+Sensors taking
+readings from
+surroundings
+
+ADC
+
+Computer
+
+temperature
+
+< pre-set value
+Devices under
+computer
+control
+
+> pre-set value
+
+DAC
+pH
+
+< pre-set value
+> pre-set value
+light
+
+< pre-set value
+
+Send signal to motors
+to open windows
+Send signal to valves
+to spray water
+Send signal to switch
+on heater to dry
+Send signal to open
+valve to add water
+Send signal to motors
+to open windows
+Send signal to motors to close
+windows and switch on heater
+Send signal to open
+valve to add acid
+Send signal to open
+valve to add alkali
+Send signal to motor
+to close blinds
+Send signal to switch
+on artificial light
+
+Computer processing
+
+▲ Figure 3.54 Control of greenhouse environment
+
+Because of the number of sensors, this is clearly quite a complex problem. Let
+us consider the humidity sensor only. This sends a signal to an ADC, which then
+sends a digital signal to the computer. This compares the input with stored
+(pre-set) values and decides what action needs to be taken (follow the orange
+lines in Figure 3.54). If humidity is > pre-set value, the computer sends a signal
+to a DAC (follow the green lines in the figure) to operate the motors to open
+windows thus reducing the humidity. If it is < pre-set value, the computer
+sends a signal to open valves to spray water into the air (follow the green
+lines). If the reading = pre-set value, then no action is taken (this isn’t shown
+in the diagram since it could follow either direction). The control process
+continues as long as the system is switched on. Similar arguments can be used
+for all five sensors.
+
+117
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 117
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+Activity 3.5
+1 An air conditioning unit in a car is being controlled by a microprocessor and a
+number of sensors.
+a Describe the main differences between control and monitoring of a process.
+b Describe how the sensors and microprocessor would be used to control
+the air conditioning unit in the car. Name at least two different sensors that
+might be used and explain the role of positive feedback in your description.
+You might find drawing a diagram of your intended process to be helpful.
+2 Look at Figure 3.54 and describe how the pH sensor would be used to control
+the acidity levels in the soil to optimise growing conditions in the greenhouse.
+3 The diagram (Figure 3.55) below shows a nuclear reactor. Two of the sensors
+used in the control and monitoring of the reactor are:
+» a temperature sensor to monitor the reactor temperature (if this exceeds
+300°C then the water flow into the reactor is increased)
+» a pressure sensor to monitor the gas pressure of carbon dioxide circulating
+in the reactor (if this is less 10 bar then the gas pump is opened)
+» note that:
+represents a gas or liquid pump
+
+(Gas) pressure
+sensor
+
+Gas out
+
+Water out
+
+Microprocessor
+
+(Reactor)
+temperature
+sensor
+REACTOR
+
+Water in
+
+Gas in
+
+▲ Figure 3.55
+
+Describe how the sensors and
+microprocessor are used to maintain
+the correct water (reactor) temperature
+and gas pressure in the reactor. Name
+any other hardware devices you think
+may be needed in your description.
+4 The junction (Figure 3.56) is controlled
+by traffic lights.
+Describe how sensors in the road
+and a microprocessor are used to
+control the traffic at the junction. The
+microprocessor is able to change the
+colour sequence of the lights.
+
+▲ Figure 3.56
+
+118
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 118
+
+18/02/21 3:51 PM
+
+3.3 Data storage
+
+3.3 Data storage
+All computers require some form of memory and storage. Memory is usually
+referred to as the internal devices used to store data that the computer can
+access directly. This is also known as primary memory. This memory can be the
+user’s workspace, temporary data or data that is key to running the computer.
+Storage devices allow users to store applications, data and files. The user’s data
+is stored permanently and they can change it or read it as they wish. Storage
+needs to be larger than internal memory since the user may wish to store large
+files (such as music files or videos). Storage devices can also be removable to
+allow data, for example, to be transferred between computers. Removable devices
+allow a user to store important data in a different location in case of data loss.
+However, all of this removeable storage has become less important with the
+advent of technology such as ‘data drop’ (which uses Bluetooth) and cloud
+storage. Figure 3.57 summarises the types of memory and storage devices covered
+in this section.
+Memory and storage devices can be split up into two distinct groups:
+» primary memory
+» secondary storage.
+Primary memory
+RAM
+
+ROM
+
+Internal secondary
+storage
+
+External secondary
+storage
+
+Hard disk drive (HDD)
+
+DVD/CD and DVD-RAM
+
+Solid state drive (SSD)
+
+Blu-ray disc
+USB memory stick/
+flash memory
+Removable hard drive
+
+▲ Figure 3.57 Typical memory and storage devices
+
+119
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 119
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+Here is a summary of the differences between primary memory and storage
+devices:
+Directly addressable by the CPU
+Primary
+memory
+Contains RAM, ROM and cache memory
+
+Not directly addressable by the CPU
+
+All are non-volatile devices
+Secondary
+storage
+Can be external or internal to the computer
+
+Examples include HDD, SSD, DVD, memory
+stick, Blu-ray disc
+
+▲ Figure 3.58 Summary of primary, secondary and off-line devices
+
+3.3.1 Primary memory
+Primary memory is the part of the computer memory which can be accessed
+directly from the CPU; this includes random access memory (RAM) and readonly memory (ROM) memory chips. Primary memory allows the CPU to access
+applications and services temporarily stored in memory locations. The structure
+of primary memory is shown in Figure 3.59.
+Primary memory
+
+RAM
+
+SRAM
+
+ROM
+
+DRAM
+
+▲ Figure 3.59 Primary memory
+
+Random access memory (RAM)
+All computer systems come with some form of RAM. These memory devices are
+not really random; this refers to the fact that any memory location in RAM can
+be accessed independent of which memory location was last used. When you run
+an application or program, data is retrieved from secondary storage and placed
+temporarily into RAM. Access time to locate data is much faster in RAM than in
+secondary or off-line devices. Features of RAM include:
+» can be written to or read from, and the data can be changed by the user or
+the computer (i.e. it is a temporary memory)
+120
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 120
+
+25/02/21 11:41 AM
+
+3.3 Data storage
+
+» used to store data, files, part of an application or part of the operating
+system currently in use
+» it is volatile, which means memory contents are lost when powering off the
+computer.
+In general, the larger the size of RAM the faster the computer will operate. In
+reality, RAM never runs out of memory; it continues to operate but just becomes
+slower and slower as more data is stored. As RAM becomes ‘full’, the CPU has to
+continually access the secondary data storage devices to overwrite old data on
+RAM with new data. By increasing the RAM size, the number of times this has to
+be done is considerably reduced; thus making the computer operate more quickly.
+There are currently two types of RAM technology:
+» dynamic RAM (DRAM)
+» static RAM (SRAM).
+Dynamic RAM (DRAM)
+
+▲ Figure 3.60 DRAM
+
+Each DRAM chip consists of transistors and capacitors. Each of these parts is tiny
+since a single RAM chip will contain millions of transistors and capacitors. The
+function of each part is:
+» capacitor – this holds the bits of information (0 or 1)
+» transistor – this acts like a switch; it allows the chip control circuitry to read
+the capacitor or change the capacitor’s value.
+This type of RAM needs to be constantly refreshed (that is, the capacitor needs
+to be re-charged every 15 microseconds otherwise it would lose its value). If it
+wasn’t refreshed, the capacitor’s charge would leak away very quickly leaving
+every capacitor with the value 0.
+▲ Figure 3.61 SRAM
+
+DRAMs have a number of advantages over SRAMs:
+» they are much less expensive to manufacture than SRAM
+» they consume less power than SRAM
+» they have a higher memory capacity than SRAM.
+Static RAM (SRAM)
+
+A major difference between SRAM and DRAM is that SRAM doesn’t need to be
+constantly refreshed.
+It makes use of flip flops, which hold each bit of memory.
+SRAM is much faster than DRAM when it comes to data access (typically, access
+time for SRAM is 25 nanoseconds and for DRAM is 60 nanoseconds).
+
+121
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 121
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+DRAM is the most common type of RAM used in computers, but where absolute
+speed is essential, for example, in the CPU’s memory cache, SRAM is the preferred
+technology. Memory cache is a high-speed portion of the memory; it is effective
+because most programs access the same data or instructions many times. By
+keeping as much of this information as possible in SRAM, the computer avoids
+having to access the slower DRAM.
+Table 3.9 summarises the differences between DRAM and SRAM.
+▼ Table 3.9 Differences between DRAM and SRAM
+DRAM
+
+SRAM
+
+consists of a number of transistors and
+capacitors
+
+uses flip flops to hold each bit of memory
+
+needs to be constantly refreshed
+
+doesn’t need to be constantly refreshed
+
+less expensive to manufacture than SRAM
+
+has a faster data access time than DRAM
+
+has a higher memory capacity than SRAM
+main memory is constructed from DRAM
+
+CPU memory cache makes use of SRAM
+
+consumes less power than SRAM
+
+Read-only memory (ROM)
+Another form of primary memory is read-only memory (ROM). This is similar to
+RAM in that it shares some of its properties, but the main difference is that it
+cannot be changed or written to. ROM chips have the following features:
+» they are non-volatile (the contents are not lost after powering off the computer)
+» they are permanent memories (the contents cannot be changed or written to
+by the user, the computer or any application/program)
+» the contents can only be read
+» they are often used to store data that the computer needs to access when
+powering up for the first time (the basic input/output system (BIOS)); these
+are known as the start-up instructions (or bootstrap)
+Here is a summary of the main differences between RAM and ROM:
+▼ Table 3.10 RAM and ROM features
+RAM
+
+ROM
+
+temporary memory device
+
+permanent memory device
+
+volatile memory
+
+non-volatile memory device
+
+can be written to and read from
+
+data stored cannot be altered
+
+used to store data, files, programs, part of OS
+currently in use
+always used to store BIOS and other data
+needed at start up
+can be increased in size to improve
+operational speed of a computer
+
+122
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 122
+
+18/02/21 3:51 PM
+
+3.3 Data storage
+
+Example of an application
+We will now consider an application, other than a computer, where both RAM and
+ROM chips are used:
+A remote-controlled toy car has circuitry which contains both RAM and ROM chips.
+The remote control is a hand-held device. Explain the function of the RAM and ROM
+chip in this application.
+We will consider the function of each type of memory independently:
+ROM
+» storing the factory settings such as remote control frequencies
+» storing the ‘start-up’ routines when the toy car is first switched on
+» storing of the set routines; for example, how the buttons on the hand-held
+device control turning left, acceleration, stopping, and so on.
+RAM
+» the user may wish to program in their own routines; these new instructions
+would be stored in the RAM chip
+» the RAM chip will store the data/instructions received from the remote control
+unit.
+
+Activity 3.6
+1 Describe how ROM and RAM chips could be used in the following devices:
+a a microwave oven
+b a refrigerator
+c a remote-controlled model aeroplane; the movement of the aeroplane is
+controlled by a hand-held device.
+
+3.3.2 Secondary and off-line storage
+Secondary (and off-line) storage includes storage devices that are not directly
+addressable by the CPU. They are non-volatile devices that allow data to be
+stored as long as required by the user. This type of storage can store more data
+than primary memory, but data access time is considerably longer than with RAM
+or ROM. All applications, the operating system, device drivers and general files
+(for example, documents, photos and music) are stored on secondary storage. The
+following section discusses the various types of secondary storage that can be
+found on the majority of computers.
+
+3.3.3 Magnetic, optical and solid-state storage
+Secondary (and off-line) storage falls into three categories according to the
+technology used:
+» magnetic
+» solid state
+» optical.
+
+Magnetic storage
+▲ Figure 3.62 HDD
+
+Hard Disk Drives (HDD)
+Hard disk drives (HDD) are still one of the most common methods used to store
+data on a computer.
+123
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 123
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+Data is stored in a digital format on the magnetic surfaces of the disks
+(or platters, as they are frequently called). The hard disk drive will have a number
+of platters that can spin at about 7000 times a second. Read-write heads consist
+of electromagnets that are used to read data from or write data to the platters.
+Platters can be made from aluminium, glass or a ceramic material. A number of
+read-write heads can access all of the surfaces of the platters in the disk drive.
+Normally each platter will have two surfaces which can be used to store data.
+These read-write heads can move very quickly – typically they can move from the
+centre of the disk to the edge of the disk (and back again) 50 times a second.
+Data is stored on the surface in sectors and tracks. A sector
+on a given track will contain a fixed number of bytes.
+Unfortunately, hard disk drives have very slow data access
+when compared to, for example, RAM. Many applications
+require the read-write heads to constantly look for the
+correct blocks of data; this means a large number of head
+movements. The effects of latency then become very
+significant. Latency is defined as the time it takes for a
+specific block of data on a data track to rotate around to
+the read-write head.
+
+track
+sector
+
+Users will sometimes notice the effect of latency when
+they see messages such as ‘Please wait’ or, at its worst, ‘not
+responding’.
+When a file or data is stored on a HDD, the required number
+of sectors needed to store the data will be allocated.
+However, the sectors allocated may not be adjacent to each
+other. Through time, the HDD will undergo numerous deletions and editing which
+leads to sectors becoming increasingly fragmented resulting in a gradual
+deterioration of the HDD performance (in other words, it takes longer and longer
+to access data). Defragmentation software can improve on this situation by
+‘tidying up’ the disk sectors.
+
+▲ Figure 3.63 Tracks and sectors
+
+Link
+See Section 4.1.1
+for more on
+defragmentation.
+
+All data in a given sector on a HDD will be read in order (that is, sequentially);
+however, access to the sector itself will be by a direct read/write head movement.
+Removable hard disk drives are essentially HDDs external to the computer that can
+be connected to the computer using one of the USB ports. In this way, they can be
+used as a back-up device or another way of transferring files between computers.
+
+Link
+For more on NAND
+and NOR gates see
+Chapter 10.
+
+Solid state drives (SSD)
+Latency is an issue in HDDs as described earlier. Solid state drives (SSD) remove
+this issue considerably since they have no moving parts and all data is retrieved
+at the same rate. They don’t rely on magnetic properties; the most common type
+of solid state storage devices store data by controlling the movement of
+electrons within NAND or NOR chips. The data is stored as 0s and 1s in millions of
+tiny transistors (at each junction one transistor is called a floating gate and the
+other is called a control gate) within the chip. This effectively produces a nonvolatile rewritable memory.
+Floating gate and control gate transistors
+Floating gate and control gate transistors use CMOS (complementary metal oxide
+semi-conductor) NAND technology. Flash memories make use of a matrix; at each
+
+124
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 124
+
+18/02/21 3:51 PM
+
+3.3 Data storage
+
+intersection on the matrix there is a floating gate and a control gate arranged as
+follows:
+Floating gate
+Tunnel oxide coating
+(allows electrons through)
+
+Control gate
+Dielectric coating (insulation)
+Electron source
+Substrate
+
+▲ Figure 3.64 Flash memory
+
+A dielectric coating separates the two transistors, which allows the floating gate
+transistor to retain its charge (which is why the memory is non-volatile). The
+floating gate transistor has a value of 1 when it is charged and a value of 0 when
+it isn’t. To program one of these ‘intersection cells’ a voltage is applied to the
+control gate and electrons from the electron source are attracted to it. But due to
+the dielectric coating, the electrons become trapped in the floating gate. Hence,
+we have control over the bit value stored at each intersection. (Note: After about
+12 months, this charge can leak away, which is why a solid state device should be
+used at least once a year to be certain it will retain its memory.)
+The main benefits of this newer solid state technology over hard disk drives are:
+» they are more reliable (no moving parts to go wrong)
+» they are considerably lighter (which makes them suitable for laptops)
+» they don’t have to ‘get up to speed’ before they work properly
+» they have a lower power consumption
+» they run much cooler than HDDs (both these points again make them very
+suitable for laptop computers)
+» because of no moving parts, they are very thin
+» data access is considerably faster than HDD.
+The main drawback of SSD is still the longevity of the technology (although this
+is becoming less of an issue). Most solid state storage devices are conservatively
+rated at only 20 GB of write operations per day over a three year period – this
+is known as SSD endurance. For this reason, SSD technology is still not used
+in all servers, for example, where a huge number of write operations take place
+every day. However, the durability of these solid state systems is being improved
+by a number of manufacturers and they are rapidly becoming more common in
+applications such as servers and cloud storage devices.
+Note: It is also not possible to over-write existing data on a flash memory
+device; it is necessary to first erase the old data and then write the new data at
+the same location.
+Memory sticks/flash memories
+Memory sticks/flash memories (also known as pen drives) use solid state
+technology.
+
+They usually connect to the computer through the USB port. Their main
+advantage is that they are very small, lightweight devices, which make them very
+suitable as a method for transferring files between computers. They can also be
+used as small back-up devices for music or photo files, for example.
+
+125
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 125
+
+18/02/21 3:51 PM
+
+3 Hardware
+
+Complex or expensive software, such as financial planning software, often uses
+memory sticks as a dongle. The dongle contains additional files that are needed
+to run the software. Without this dongle, the software won’t work properly. It
+therefore prevents illegal or unauthorised use of the software, and also prevents
+copying of the software since, without the dongle, it is useless.
+
+Optical media
+CD/DVD disks
+CDs and DVDs are described as optical storage devices. Laser light is used to
+read and write data to and from the surface of the disk.
+pits
+
+lands
+
+single spiral track runs from
+the centre to outer part of disk
+
+Both CDs and DVDs use a thin layer of metal alloy or
+light-sensitive organic dye to store the data. As can be
+seen from the diagram in Figure 3.65, both systems use a
+single, spiral track which runs from the centre of the disk
+to the edge. When a disk spins, the optical head moves to
+the point where the laser beam ‘contacts’ the disk surface
+and follows the spiral track from the centre outwards.
+As with a HDD, a CD/DVD is divided into sectors allowing
+direct access to data. Also, as in the case of HDD, the
+outer part of the disk runs faster than the inner part of
+the disk.
+The data is stored in ‘pits’ and ‘lands’ on the spiral track.
+A red laser is used to read and write the data. CDs and
+DVDs can be designated ‘R’ (write once only) or ‘RW’ (can
+be written to or read from many times).
+
+▲ Figure 3.65 Optical media
+
+DVD technology is slightly different to that used in CDs. One of the main
+differences is the potential for dual-layering, which considerably increases the
+storage capacity. Basically, this means that there are two individual recording
+layers. Two layers of a standard DVD are joined together with a transparent
+(polycarbonate) spacer, and a very thin reflector is also sandwiched between
+the two layers. Reading and writing of the second layer is done by a red laser
+focusing at a fraction of a millimetre difference compared to the first layer.
+laser reads layer 1
+
+polycarbonate layer
+first layer
+second layer
+
+polycarbonate layer
+
+laser reads layer 2
+
+▲ Figure 3.66 Dual-layering on a DVD
+
+Standard, single layer DVDs still have a larger storage capacity than CDs because
+the ‘pit’ size and track width are both smaller. This means that more data can be
+stored on the DVD surface. DVDs use lasers with a wavelength of 650 nanometres;
+CDs use lasers with a wavelength of 780 nanometres. The shorter the wavelength
+of the laser light, the greater the storage capacity of the medium.
+
+126
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 126
+
+18/02/21 3:52 PM
+
+3.3 Data storage
+
+Blu-ray discs
+Blu-ray discs are another example of optical storage media. However, they are
+fundamentally different to DVDs in their construction and in the way they carry
+out read-write operations.
+
+Note: it is probably worth mentioning why they are called Blu-ray rather than
+Blue-ray; the simple reason is it was impossible to copyright the word ‘Blue’ and
+hence the use of the word ‘Blu’.
+The main differences between DVD and Blu-ray are:
+
+▲ Figure 3.67 Blu-ray disc
+
+» a blue laser, rather than a red laser, is used to carry out read and write
+operations; the wavelength of blue light is only 405 nanometres (compared to
+650 nm for red light)
+» using blue laser light means that the ‘pits’ and ‘lands’ can be much smaller;
+consequently, Blu-ray can store up to five times more data than normal DVD
+» single-layer Blu-ray discs use a 1.2 mm thick polycarbonate disk; however, duallayer Blu-ray and normal DVDs both use a sandwich of two 0.6 mm thick disks
+(i.e. 1.2 mm thick)
+» Blu-ray disks automatically come with a secure encryption system that helps
+to prevent piracy and copyright infringement
+» the data transfer rate for a DVD is 10 Mbps and for a Blu-ray disc it is 36 Mbps
+(this equates to 1.5 hours to transfer 25 GiB of data).
+Since Blu-ray discs can come in single layer or dual-layer format (unlike DVD,
+which is always dual-layer), it is probably worth also comparing the differences in
+capacity and interactivity of the two technologies.
+Comparison of the capacity and interactivity of DVDs and Blu-ray discs
+
+» A standard dual-layer DVD has a storage capacity of 4.7 GB (enough to store a
+2-hour standard definition movie)
+» A single-layer Blu-ray disc has a storage capacity of 27 GB (enough to store a
+2-hour high definition movie or 13 hours of standard definition movies)
+» A dual-layer Blu-ray disc has a storage capacity of 50 GB (enough to store
+4.5 hours of high definition movies or 20 hours of standard definition movies).
+Blu-ray allows greater interactivity than DVDs. For example, with Blu-ray, it is
+possible to:
+» record high definition television programs
+» skip quickly to any part of the disc
+» create playlists of recorded movies and television programmes
+» edit or re-order programmes recorded on the disc
+» automatically search for empty space on the disc to avoid over-recording
+» access websites and download subtitles and other interesting features.
+Finally, Table 3.11 summarises the main differences between CDs, DVDs and Blu-ray.
+All these optical storage media are used as back-up systems (for photos, music
+and multimedia files). This also means that CDs and DVDs can be used to transfer
+files between computers. Manufacturers sometimes supply their software (e.g.
+printer drivers) using CDs and DVDs. When the software is supplied in this way,
+the disk is usually in a read-only format.
+127
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 127
+
+18/02/21 3:52 PM
+
+3 Hardware
+▼ Table 3.11 Comparison of CD, DVD and Blu-ray (Note: nm = 10-9 metres and µm = 10-6 metres)
+Disk type
+
+Laser colour
+
+Wavelength of laser
+light
+
+Disk construction
+
+Track pitch (distance
+between tracks)
+
+CD
+
+Red
+
+780 nm
+
+single 1.2 mm
+polycarbonate layer
+
+1.60 µm
+
+Red
+
+650 nm
+
+two 0.6 mm
+polycarbonate layers
+
+0.74 µm
+
+Blue
+
+405 mm
+
+single 1.2 mm
+polycarbonate layer
+
+0.30 µm
+
+Blue
+
+405 nm
+
+two 0.6 mm
+polycarbonate layers
+
+0.30 µm
+
+DVD (dual-layer)
+Blu-ray (single layer)
+Blu-ray (dual-layer)
+
+The most common use of DVD and Blu-ray is the supply of movies or games.
+The memory capacity of CDs isn’t big enough to store most movies (see earlier
+comparison notes).
+
+3.3.4 Virtual memory
+One of the problems associated with memory management is the case when
+processes run out of RAM. If the amount of available RAM is exceeded due to
+multiple programs running, it is likely to cause a system crash. This can be solved
+by utilising the hard disk drive (or SSD) if we need more memory. This is the basis
+behind virtual memory. Essentially RAM is the physical memory, while virtual
+memory is RAM + swap space on the hard disk or SSD.
+To execute a program, data is loaded into memory from HDD (or SSD) whenever
+required. It is possible to show the differences between using normal memory
+management and virtual memory management in two simple diagrams.
+
+Without virtual memory
+Suppose we have five programs (numbered 0 to 4) that are in memory, all
+requiring access to RAM. The first diagram shows what would happen without
+virtual memory being used (i.e. the computer would run out of RAM memory
+space):
+32-bit program address space
+0
+1
+2
+3
+4
+
+32-bit RAM address space
+0
+1
+2
+3
+When program 4 tries to access
+RAM there is no available
+memory, causing a system crash
+
+▲ Figure 3.68 Normal memory management
+
+128
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 128
+
+18/02/21 3:52 PM
+
+3.3 Data storage
+
+With virtual memory
+We will now consider what happens if the CPU uses virtual memory to allow all five
+programs to access RAM as required. This will require moving data out of RAM into
+HDD/SSD and then allowing other data to be moved out of HDD/SSD into RAM:
+32-bit program address space
+
+32-bit map
+
+32-bit RAM address space
+
+0
+1
+2
+3
+4
+
+0
+1
+2
+3
+
+program 0 maps to address space 3 in RAM
+program 1 maps to address space 0 in RAM
+program 2 maps to address space 1 in RAM
+program 3 maps to address space 2 in RAM
+program 4 cannot use RAM and its data has
+been mapped to the HDD (SSD) instead
+(program 0 is the oldest data)
+
+Notice the use of the 32-bit
+'map'. When a program in
+memory tries to access RAM,
+it is sent to the 'map', which
+then allocates the program
+address space in RAM.
+HDD/
+SSD
+
+▲ Figure 3.69 Status just before program 4 is given RAM space
+
+Virtual memory now moves the oldest data out of RAM into the HDD/SSD to allow
+program 4 to gain access to RAM. The 32-bit ‘map’ is now updated to reflect this
+new situation:
+» data from program 0 (which was using RAM address space 3 – the oldest data)
+is now mapped to the HDD/SSD instead, leaving address space 3 free for use
+by program 4
+» program 4 now maps to address space 3 in RAM, which means program 4 now
+has access to RAM.
+Our diagram now changes to:
+32-bit program address space
+
+32-bit map
+
+32-bit RAM address space
+
+0
+1
+2
+3
+4
+
+0
+1
+2
+3
+
+HDD/
+SSD
+
+▲ Figure 3.70 Status with program 0 now mapped to HDD and program 4 has access to RAM
+
+All of this will continue to occur until RAM is no longer being over-utilised by
+the competing programs running in memory. Virtual memory gives the illusion of
+unlimited memory being available. Even though RAM is full, data can be moved in
+and out of the HDD/SSD to give the illusion that there is still memory available.
+In computer operating systems, paging is used by memory management to store
+and retrieve data from HDD/SSD and copy it into RAM. A page is a fixed-length
+consecutive (or contiguous) block of data utilised in virtual memory systems.
+
+129
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 129
+
+18/02/21 3:52 PM
+
+3 Hardware
+
+This is a key part of how virtual memory works allowing data blocks (pages) to
+be moved in and out of a HDD/SSD. However, accessing data in virtual memory is
+slower so, as mentioned earlier on in this chapter, the larger the RAM the faster
+the CPU can operate. This is one of the benefits of increasing RAM size as far as
+possible.
+The main benefits of virtual memory are:
+» programs can be larger than physical memory and still be executed
+» there is no need to waste memory with data that isn’t being used (e.g. during
+error handling)
+» it reduces the need to buy and install more expensive RAM memory (although
+as mentioned earlier there are limits to the value of doing this).
+When using HDD for virtual memory the main drawback is disk thrashing. As
+main memory fills, more and more data needs to be swapped in and out of virtual
+memory leading to a very high rate of hard disk read/write head movements; this
+is known as disk thrashing. If more and more time is spent on moving data in and
+out of memory than actually doing any processing, then the processing speed
+of the computer will be considerably reduced. A point can be reached when the
+execution of a process comes to a halt since the system is so busy moving data
+in and out of memory rather than doing any actual execution – this is known as
+the thrash point. Due to large numbers of head movements, this can also lead
+to premature failure of a hard disk drive. Thrashing can be reduced by installing
+more RAM, reducing the number of programs running at a time or reducing the
+size of the swap file. Another way of reducing this problem is to make use of a
+solid state drive (SSD) rather than using HDD.
+
+3.3.5 Cloud storage
+Public and private cloud computing
+Cloud storage is a method of data storage where data is stored on remote
+servers. The same data is stored on more than one server in case of maintenance
+or repair, allowing clients to access data at any time. This is known as data
+redundancy. The physical environment is owned and managed by a hosting
+company and may include hundreds of servers in many locations.
+There are three common systems:
+» Public cloud – this is a storage environment where the customer/client and
+cloud storage provider are different companies
+» Private cloud – this is storage provided by a dedicated environment behind a
+company firewall; customer/client and cloud storage provider are integrated
+and operate as a single entity
+» Hybrid cloud – this is a combination of the two above environments; some
+data resides in the private cloud and less sensitive/less commercial data can
+be accessed from a public cloud storage provider.
+Instead of saving data on a local hard disk or other storage device, a user can
+save their data ‘in the cloud’. The benefits and drawbacks of using cloud storage
+are shown in Table 3.12.
+
+130
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 130
+
+18/02/21 3:52 PM
+
+3.3 Data storage
+▼ Table 3.12 Benefits and drawbacks of cloud storage
+Benefits of using cloud storage
+
+Drawbacks of using cloud storage
+
+customer/client files stored on the cloud can be accessed
+at any time from any device anywhere in the world provided
+internet access is available
+
+if the customer/client has a slow or unstable internet
+connection, they would have many problems accessing or
+downloading their data/files
+
+there is no need for a customer/client to carry an external
+storage device with them, or even use the same computer to
+store and retrieve information
+
+costs can be high if large storage capacity is required; it
+can also be expensive to pay for high download/upload data
+transfer limits with the customer/client internet service
+provider (ISP)
+
+the cloud provides the user with remote back-up of data with
+obvious benefits to alleviate data loss/disaster recovery
+
+the potential failure of the cloud storage company is always
+possible – this poses a risk of loss of all back-up data
+
+if a customer/client has a failure of their hard disk or backup device, cloud storage will allow recovery of their data
+the cloud system offers almost unlimited storage capacity
+
+Data security when using cloud storage
+Companies that transfer vast amounts of confidential data from their own
+systems to a cloud service provider are effectively relinquishing control of their
+own data security. This raises a number of questions:
+» what physical security exists regarding the building where the data is housed?
+» how good is the cloud service provider’s resistance to natural disasters or
+power cuts?
+» what safeguards exist regarding personnel who work for the cloud service
+company; can they use their authorisation codes to access confidential data
+for monetary purposes?
+
+Potential data loss when using cloud storage
+There is a risk that important and irreplaceable data could be lost from the cloud
+storage facilities. Actions from hackers (gaining access to accounts or pharming
+attacks, for example) could lead to loss or corruption of data. Users need to be
+certain that sufficient safeguards exist to overcome these risks.
+The following breaches of security involving some of the largest cloud service
+providers suggest why some people are nervous of using cloud storage for
+important files:
+» The XEN security threat, which forced several cloud operators to reboot
+all their cloud servers, was caused by a problem in the XEN hypervisor (a
+hypervisor is a piece of computer software, firmware or hardware that creates
+and runs virtual machines).
+» A large cloud service provider permanently lost data during a routine back-up
+procedure.
+» The celebrity photos cloud hacking scandal, in which more than 100 private
+photos of celebrities were leaked. Hackers had gained access to a number of
+cloud accounts, which enabled them to publish the photos on social networks
+and sell them to publishing companies.
+» In 2016, the National Electoral Institute of Mexico suffered a cloud security
+breach in which 93 million voter registrations, stored on a central database,
+were compromised and became publicly available to everyone. To make matters
+worse, much of the information on this database also linked to a cloud server
+outside Mexico.
+131
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 131
+
+18/02/21 3:52 PM
+
+3 Hardware
+
+Activity 3.7
+1 Name two types of memory used in a mobile phone. For each named memory,
+describe its purpose in the mobile phone.
+2 a Explain what is meant by virtual memory.
+b Five programs are currently being run in a computer. Program 1 is using
+10 GiB of RAM, program 2 is using 5 GiB of RAM, program 3 is using 12 GiB
+of RAM and program 4 is using 4 GiB of RAM. The programs are at the stage
+where program 5 now needs to access RAM, but RAM is presently full (RAM
+has a 32 GiB maximum capacity). Explain how virtual memory could be used
+to allow program 5 to access RAM without any of the data from the other
+four programs being lost.
+3 Five descriptions of computer terms are shown on the left and five terms
+are shown on the right. Draw lines to connect each description to the correct
+computer term.
+storage environment where the client and remote
+storage provider are different companies
+
+thrashing
+
+high rate of HDD read/write operations causing
+large amount of head movement
+
+swap space
+
+space on HDD or SSD reserved for data used in
+virtual memory management
+
+cloud storage
+
+situation where a HDD is so busy doing read/write
+operations that execution of a process is halted
+
+thrash point
+
+method of data storage where the data is stored on
+hundreds of off-site servers
+
+public cloud
+
+4 a Give four differences between RAM and ROM chips.
+b Give an example of the use of each type of memory.
+5 a Use the following words to complete the paragraph below which describes
+how solid state memories work (each word may be used once, more than
+once or not at all).
+Word list:
+
+control gate
+
+NAND
+
+electrons
+
+negative
+
+floating gate
+
+positive
+
+intersection
+
+transistor
+
+matrix
+
+volatile
+
+Solid state devices control the movement of …………………… within a
+………………….  chip. The device is made up of a …………………. and at each
+……………………… there is a ………………………….. and a ……………………….
+transistor. …………………. are attracted towards ………………………. when a
+voltage is applied.
+b Give three advantages of using SSD, rather than HDD, which make SSD
+technology particularly suitable for use in laptop computers.
+c Describe one disadvantage of solid state technology.
+
+132
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 132
+
+18/02/21 3:52 PM
+
+3.4 Network hardware
+
+3.4 Network hardware
+3.4.1 Network interface card (NIC)
+A network interface card (NIC) is needed to allow a device to connect to
+a network (such as the internet). It is usually part of the device hardware
+and contains the Media Access Control (MAC) address generated at the
+manufacturing stage.
+Wireless network interface cards/controllers (WNICs) are the same as NICs in that
+they are used to connect devices to the internet or other networks. However,
+they use wireless connectivity utilising an antenna to communicate with
+networks via microwaves. They would normally plug into the USB port or be part
+of an internal integrated circuit.
+
+3.4.2 Media Access Control (MAC)
+A MAC address is made up of 48 bits which are shown as six groups of
+hexadecimal digits with the general format:
+NN – NN – NN – DD – DD – DD
+manufacturer’s         device serial
+           code
+            number
+
+For example, 00 – 1C – B3 – 4F – 25 – FF where the first six hex digits identify
+the device as made by, for example, Apple and the second set of six hex digits
+are the serial number of the device itself (this is unique). If the NIC card is
+replaced, the MAC address will also change.
+
+Types of MAC address
+It should finally be pointed out that there are two types of MAC address: the
+Universally Administered MAC Address (UAA) and the Locally Administered
+MAC Address (LAA).
+The UAA is by far the most common type of MAC address and this is the one set
+by the manufacturer at the factory. It is rare for a user to want to change this
+MAC address.
+However, there are some occasions when a user or organisation wishes to change
+their MAC address. This is a relatively easy task to carry out, but it will cause big
+problems if the changed address isn’t unique.
+There are a few reasons why the MAC address needs to be changed using LAA:
+» certain software used on mainframe systems need all the MAC addresses of
+devices to fall into a strict format; because of this, it may be necessary to
+change the MAC address of some devices to ensure they follow the correct
+format
+» it may be necessary to bypass a MAC address filter on a router or a firewall;
+only MAC addresses with a certain format are allowed through, otherwise the
+devices will be blocked if their MAC address doesn’t adhere to the correct
+format
+» to get past certain types of network restrictions it may be necessary to
+emulate unrestricted MAC addresses; hence it may require the MAC address to
+be changed on certain devices connected to the network.
+133
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 133
+
+18/02/21 3:52 PM
+
+3 Hardware
+
+3.4.3 Internet protocol (IP) address
+When a device connects to a private network, a router assigns a private IP
+address to it. That IP address is unique on that network, but might be the same
+as an IP address on a separate network. However, when a router connects to
+the internet it is given a unique public IP address. This is usually supplied by
+the internet service provider (ISP). No other device on the internet has the
+same public IP address. All the devices connected to that router have the same
+public IP address as the router but each have their own different private IP
+addresses on that network. Because the operation of the internet is based on a
+set of protocols (rules), it is necessary to supply an IP address. Protocols define
+the rules that must be agreed by senders and receivers of data communicating
+through the internet.
+There are two versions of IP: IPv4 and IPv6. IPv4 is based on 32 bits and the
+address is written as four groups of eight bits (shown in denary format); for
+example,
+254.25.28.77
+
+Because the use of only 32 bits considerably reduces the potential number of
+devices and routers used on the internet at any one time, a newer version called
+IPv6 is now used. This uses 128-bit addresses that take the form of eight groups
+of hex digits; for example,
+A8FB:7A88:FFF0:0FFF:3D21:2085:66FB:F0FA
+
+Link
+For more on packet
+routes see
+Section 2.1.1.
+
+Note the use of colons (:) and hexadecimal numbering. IPv6 has been designed to
+allow the internet to grow in terms of the number of hosts and potential increase
+in the amount of data traffic. The main advantages of IPv6 compared to IPv4 are:
+» removes the risk of IP address collisions
+» has built-in authentication checks
+» allows for more efficient packet routes.
+Table 3.13 compares the features of MAC addresses and IP addresses:
+▼ Table 3.13 MAC addresses and IP addresses
+MAC addresses
+
+IP addresses
+
+identifies the physical address of a device on
+the network
+
+identifies the global address on the internet
+
+unique for device on the network
+
+may not necessarily be unique
+
+assigned by the manufacturer of the device
+and is part of the NIC
+
+dynamic IP addresses are assigned by ISP
+using DHCP each time the device connects to
+the internet (see later)
+
+they can be universal or local
+
+dynamic IP addresses change every time
+a device connects to the internet; static IP
+addresses don’t change
+
+when a packet of data is sent and received,
+the MAC address is used to identify the
+sender’s and recipient’s devices
+
+used in routing operations as they
+specifically identify where the device is
+connected to the internet
+
+use 48 bits
+
+use either 32 bits (IPv4) or 128 bits (IPv6)
+
+can be UAA or LAA
+
+can be static or dynamic
+
+134
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 134
+
+18/02/21 3:52 PM
+
+3.4 Network hardware
+
+Dynamic IP address
+DHCP
+server
+
+ss
+
+est
+
+u
+
+ce
+
+the
+
+vi
+de
+
+s
+ke
+
+ma
+
+eq
+ar
+ss
+
+a
+
+ce
+
+evi
+
+fo
+
+d
+t to
+
+en
+
+6s
+
+.1
+00
+
+.2
+
+.31
+
+re
+dd
+
+IP
+
+n
+ra
+
+re
+dd
+
+8
+19
+
+a
+IP
+https://www.hoddereducation.com
+
+Device
+https://107.162.140.19
+
+de
+
+vic
+
+req
+
+uir
+ed
+
+eu
+
+we
+
+bp
+
+ses
+
+ag
+
+htt
+
+ps:
+
+es
+
+The device is using dynamic IP
+addressing; a request for an IP
+address is made (via the ISP) to allow
+Internet access. The DHCP assigns a
+temporary IP address and sends it
+back to the device
+
+//1
+
+07
+
+.16
+
+en
+
+t to
+
+19
+
+2.1
+
+8.3
+
+Domain
+Name
+Server
+(DNS)
+
+40
+
+1.2
+
+.19
+
+00
+
+.16
+
+Website
+server
+
+When the device wants to
+download a webpage from
+https://www.hoddereducation.com,
+the DNS translates the required
+website URL into an IP address and
+sends it back to the device
+
+A message is sent by the device to
+the IP address of the website server
+(given by the DNS) requesting a
+webpage. The website server sends
+the required webpage back to the
+device
+
+Static IP address
+
+red
+
+odde
+
+w.h
+://ww
+
+https
+Device
+
+0.19
+
+Domain
+Name
+Server
+(DNS)
+
+2.14
+
+7.16
+
+/10
+ttps:/
+
+h
+devic
+e use
+
+com
+
+n.
+ucatio
+
+s http
+
+The device is
+using a static
+IP address
+198.31.200.16
+
+s://10
+7.162
+.140.
+requir
+19
+ed w
+eb pa
+ge se
+198.3
+nt to
+1.200
+.16
+
+Website
+server
+
+Device on network is using a static IP
+address; this means it can access the
+website resources directly. This gives
+the device a consistent location and
+also means less bandwidth is used
+reducing network traffic (and takes
+less time to retrieve data)
+
+▲ Figure 3.71 Comparison of dynamic and static IP addressing
+
+135
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 135
+
+18/02/21 3:52 PM
+
+3 Hardware
+
+Static and dynamic IP addresses
+IP addresses can be either static (don’t change) or dynamic (change every time a
+device connects to the internet).
+Static
+Static IP addresses are permanently assigned to a device by the internet service
+provider (ISP); they don’t change each time a device logs onto the internet.
+Static IP addresses are usually assigned to:
+
+» remote servers which are hosting a website
+» an online database
+» a File Transfer Protocol (FTP) server. FTP servers are used when files need to
+be transferred to various computers throughout the network.
+Dynamic
+Dynamic IP addresses are assigned by the ISP each time a device logs onto the
+internet. This is done using Dynamic Host Configuration Protocol (DHCP). A
+computer on the internet, configured as a DHCP server, is used by the ISP to
+automatically assign an IP address to a device. As the name suggests, a dynamic
+IP address could be different every time a device connects to the internet.
+
+Table 3.14 compares static and dynamic IP addresses:
+▼ Table 3.14 Dynamic and static IP addresses
+Dynamic IP addresses
+
+Static IP addresses
+
+greater privacy since they change each time
+a user logs on
+
+since static IP addresses don’t change, they
+allow each device to be fully traceable
+
+dynamic IP addresses can be an issue
+when using, for example, VoIP since this
+type of addressing is less reliable as it
+can disconnect and change the IP address
+causing the VoIP connection to fail
+
+allow for faster upload and download speeds
+(see Figure 3.71)
+more expensive to maintain since the
+device must be constantly running so that
+information is always available
+
+Figure 3.71 shows the sequence of events when either a dynamic IP address or
+static IP address is assigned to a device using the internet. The diagram shows
+how a device contacts web servers that are also connected to the internet. A
+DHCP server supplies a dynamic IP address to the device, a DNS server looks up
+the domain name of the desired website into an IP address and a website server
+contains the web pages of the desired website.
+
+3.4.4 Routers
+Routers enable data packets to be routed between different networks, for
+example, to join a LAN to a WAN. The router takes data transmitted in one format
+from a network (which is using a particular protocol) and converts the data to a
+protocol and format understood by another network, thereby allowing them to
+communicate. A router would typically have an internet cable plugged into it and
+several cables connecting to computers and other devices on the LAN.
+
+136
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 136
+
+18/02/21 3:52 PM
+
+3.4 Network hardware
+
+Computer
+
+Server
+
+Computer
+
+SWITCH
+
+internet
+
+ROUTER
+
+LAN or WAN
+
+Computer
+LAN
+
+▲ Figure 3.72 Router flow diagram
+
+Broadband routers sit behind a firewall. The firewall protects the computers on
+a network. The router’s main function is to transmit internet and transmission
+protocols between two networks and also allow private networks to be connected
+together.
+Routers inspect the data package sent to it from any computer on any of the
+networks connected to it. Since every computer on the same network has the
+same part of an internet protocol (IP) address, the router is able to send the
+data packet to the appropriate switch, and the data will then be delivered to
+the correct device using the MAC destination address. If the MAC address doesn’t
+match any device connected to the switch, it passes on to another switch on
+the same network until the appropriate device is found. Routers can be wired or
+wireless devices.
+
+Activity 3.8
+1 Explain each of the following terms:
+a Network interface card (NIC)
+b MAC address
+c IP address
+d Router
+e DHCP server.
+2 a Give two features of dynamic IP addresses.
+b Give two features of static IP addresses.
+c Explain why we need both types of IP address.
+3 Describe three differences between MAC addresses and IP addresses.
+
+137
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 137
+
+18/02/21 3:52 PM
+
+3 Hardware
+
+Extension
+For those students considering the study of this
+subject at A Level, the following section gives some
+insight into further study of computer hardware and
+wireless networks.
+
+Topic 1: Computer ports
+Input and output devices are connected to a computer
+via ports. The interaction of the ports with connected
+input and output is controlled by the control unit.
+Here we will summarise some of the more common
+types of ports found on modern computers:
+USB ports
+The Universal Serial
+Bus (USB) is an
+asynchronous serial
+data transmission
+method. It has quickly
+become the standard
+method for transferring
+data between a computer
+and a number of devices.
+Essentially, the USB
+cable consists of:
+
+» a 4-wired shielded cable
+» 2 of the wires are used for power and the earth
+» 2 of the wires are used in the data transmission.
+When a device is plugged into a computer, using one
+of the USB ports, the computer:
+» automatically detects that a device is present (this
+is due to a small change in the voltage level on the
+data signal wires in the cable)
+» the device is automatically recognised, and the
+appropriate device driver is loaded up so that
+computer and device can communicate effectively
+» if a new device is detected, the computer will look
+for the device driver which matches the device;
+if this is not available, the user is prompted to
+download the appropriate software.
+Even though the USB system has become the
+industrial standard, there are still a number of
+benefits ( ) and drawbacks (X) to using this system:
+
+X
+devices plugged into the computer are automatically
+detected; device drivers are automatically loaded up
+
+the present transmission rate is limited to less than 500
+megabits per second
+
+the connectors can only fit one way; this prevents incorrect the maximum cable length is presently about 5 metres
+connections being made
+USB has become the industry standard; this means that
+considerable support is available to users
+
+the older USB standard (1.1) may not still be supported in
+the near future
+
+several different data transmission rates are supported
+newer USB standards are backward compatible with older
+USB standards
+
+High-definition Multimedia Interface (HDMI)
+High-definition Multimedia Interface (HDMI) ports
+allow output (both audio and visual) from a computer
+to an HDMI-enabled monitor or other device. It
+will support high definition signals (enhanced
+or standard). HDMI was introduced as a digital
+replacement for the older VGA analogue system.
+Modern HD (high definition) televisions have the
+following features which are making VGA a redundant
+technology:
+» they use a widescreen format (16:9 aspect ratio)
+» the screens use a greater number of pixels
+(typically 1920 ×1080)
+» the screens have a faster refresh rate (e.g. 120 Hz
+or 120 frames a second)
+
+» the range of colours is extremely large (some
+companies claim up to 4 million different colour
+variations!).
+
+This all means that modern HD televisions require
+more data and this data has to be received at a much
+faster rate than with older televisions (e.g. 10 gigabits
+per second). HDMI increases the bandwidth making it
+possible to supply the necessary data to produce high
+quality sound and visual effects.
+
+138
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 138
+
+18/02/21 3:52 PM
+
+3.4 Network hardware
+
+Topic 2: Wired and wireless networks
+Wireless
+Wi-Fi and Bluetooth
+Both Wi-Fi and Bluetooth offer wireless
+communication between devices. They both use
+electromagnetic radiation as the carrier of data
+transmission.
+Bluetooth sends and receives radio waves in a band of
+79 different frequencies (known as channels). These
+are all centred on a 2.45 GHz frequency. Devices using
+Bluetooth automatically detect and connect to each
+other; but they don’t interfere with other devices since
+each communicating pair uses a different channel
+(from the 79 options).
+When a device wants to communicate, it picks one of
+the 79 channels at random. If the channel is already
+being used, it randomly picks another channel. This
+is known as spread-spectrum frequency hopping. To
+further minimise the risks of interference with other
+devices, the communication pairs constantly
+change the frequencies (channels) they are using
+
+(several times a second). Bluetooth creates a secure
+wireless personal area network (WPAN) based on key
+encryption.
+Essentially, Bluetooth is useful:
+» when transferring data between two or more
+devices which are very close together (< 30 metres
+distance)
+» when the speed of data transmission is not critical
+» for low bandwidth applications (e.g. when sending
+music files from a mobile phone to a headset).
+Wi-Fi is best suited to operating full-scale networks
+since it offers much faster data transfer rates, better
+range and better security than Bluetooth. A Wi-Fienabled device (such as a computer or smartphone)
+can access the internet wirelessly at any wireless
+access point (WAP) or ‘hot spot’ up to 100 metres
+away.
+As mentioned above, wireless connectivity uses
+electromagnetic radiation: radio waves, microwaves
+or infrared. The scale of frequency and wavelength of
+magnetic radiation can be seen in the table below:
+
+Radio waves Microwaves
+
+Infrared
+
+Visible light
+
+Ultra violet
+
+X-rays
+
+Gamma rays
+
+Wave length
+(m)
+
+102
+
+10 –1
+
+10 –5
+
+10 –5
+
+10 –7
+
+10 –9
+
+10 –11
+
+Frequency
+(Hz)
+
+3 MHz
+
+3 GHz
+
+300 GHz
+
+30 THz
+
+3 PHz
+
+300 PHz
+
+30 EHz
+
+copper wire
+
+insulation
+
+Wired
+There are three main types of cable used in wired
+networks:
+» twisted pair
+» coaxial
+» fibre optic.
+
+copper mesh
+
+outside insulation
+
+Coaxial cable
+conductor
+
+insulator
+
+cable jacket
+
+1
+2
+PAIRS
+3
+4
+
+Twisted pair cable
+
+Fibre optic cable
+
+139
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 139
+
+18/02/21 3:52 PM
+
+3 Hardware
+
+Wired versus wireless
+When deciding whether a network should use wired or
+wireless connectivity, the following factors should be
+considered:
+Wireless networking
+
+Wired networking
+
+it is easier to expand the networks and it isn’t necessary to
+connect the devices using cables
+
+using cables produces a more reliable and stable network;
+wireless connectivity is often subject to interference
+
+this gives devices increased mobility provided they are
+within range of the WAPs
+
+data transfer rates tend to be faster and there won’t be any
+‘dead spots’
+
+there is an increased chance of interference from external
+sources
+
+setting up cabled networks tends to be cheaper overall in
+spite of the need to buy and install cable
+
+data is less secure than with wired systems; it is easier to
+intercept radio waves and microwaves than cables; it is
+essential to protect data transmissions using encryption
+(e.g. WEP, WPA2)
+
+however, cabled networks lose the ability for devices to
+be mobile; they must be close enough to allow for cable
+connections
+
+the data transmission rate is still slower than for cabled
+networks although it continues to improve
+it is possible for signals to be stopped by thick walls (e.g.
+in old houses) and there may be areas of variable signal
+strength leading to ‘drop out’
+
+having lots of wires can lead to a number of hazards such
+as tripping hazards, overheating of connections (leading
+to potential fire risk) and disconnection of cables during
+routine office cleaning
+
+In this chapter, you have learnt about:
+✔ the role of a CPU/microprocessor
+✔ von Neumann architecture
+✔ the Fetch–Decode–Execute cycle
+✔ the function of a cache, (system) clock and multi-core core CPUs
+✔ instruction sets
+✔ embedded systems
+✔ the operation of a number of input devices
+✔ the operation of a number of output devices
+✔ the use of sensors in a number of control and monitoring applications
+✔ primary storage
+✔ secondary storage (magnetic, optical and solid state)
+✔ virtual memories
+✔ cloud storage
+✔ network interface card (NIC)
+✔ MAC and IP addressing
+✔ routers in networks.
+
+140
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 140
+
+18/02/21 3:52 PM
+
+3.4 Network hardware
+
+Key terms used throughout this chapter
+central processing unit (CPU) – responsible for the
+execution or processing of all the instructions and data in a
+computer
+integrated circuit – usually a chip made from a semiconductor material which carries out the same tasks as a
+larger circuit made from individual components
+von Neumann architecture – a type of computer
+architecture which introduced the concept of the stored
+program in the 1940s
+Arithmetic & Logic Unit (ALU) – the component of the CPU
+that carries out all arithmetic and logical operations
+accumulator (ACC) – temporary general-purpose register
+that stores numerical values at any part of a given
+operation
+memory address register (MAR) – a register that stores
+the address of the memory location currently being read
+from or written to
+current instruction register (CIR) – a register that stores
+the current instruction being decoded and executed
+memory data register (MDR) – a register that stores data
+that has just been read from memory or data that is about
+to be written to memory
+program counter (PC) – a register that stores the address
+where the next instruction to be read can be found
+control unit – the component of a computer’s CPU that
+ensures synchronisation of data flow and programs
+throughout the computer by sending out control signals
+along the control bus
+system clock – produces timing signals on the control bus
+to ensure synchronisation takes place
+clock cycle – clock speeds are measured in terms of GHz;
+this is the vibrational frequency of the system clock which
+sends out pulses along the control bus; for example, a
+3.5 GHZ clock cycle means 3.5 billion clock cycles a second
+
+address – a label for a memory location used by the CPU to
+track data
+memory location – a numbered place in memory where
+values can be stored
+system buses – a connection between major components
+in a computer that can carry data, addresses or control
+signals
+address bus – the system bus that carries the addresses
+throughout the computer system
+data bus – the system bus that allows data to be carried
+from CPU to memory (and vice versa) or to and from input/
+output devices
+control bus – the system bus that carries signals from
+control unit to all other computer components
+unidirectional – can travel in one direction only; used to
+describe data
+bidirectional – can travel in both directions; used to
+describe data
+word – a group of bits used by a computer to represent a
+single unit; for example, modern computers often use
+64-bit word lengths
+overclocking – changing the clock speed of a system clock
+to a value higher than the factory/recommended setting
+core – a unit on a CPU made up of an ALU, control unit and
+registers; a CPU may contain a number of cores
+dual core – a CPU containing two cores
+quad core – a CPU containing four cores
+Fetch–Execute–Decode – a cycle in which instructions
+and data are fetched from memory, decoded and finally
+executed
+Basic Input/Output System (BIOS) – a suite of programs
+on firmware that are used to perform the initialisation of a
+computer system during the boot-up process
+
+immediate access store (IAS) – memory that holds all data
+and programs needed to be accessed by the control unit
+
+opcode – part of a machine code instruction that identifies
+what action the CPU has to perform
+
+backing store – a secondary storage device (such as HDD
+or SSD) used to store data permanently even when the
+computer is powered down
+
+operand – part of a machine code instruction that identifies
+what data is to be used
+
+cache – is temporary memory using static RAM to hold
+frequently used data/instructions by the CPU thereby
+increasing CPU performance. More generally, cache means
+any area of storage used to quickly access frequently-used
+data - other examples include web cache, database cache,
+DNS cache
+register – a temporary component in the CPU which can be
+general or specific in its use; it holds data or instructions as
+part of the Fetch–Decode–Execute cycle
+
+instruction set – the complete set of machine code
+instructions used a particular microprocessor
+embedded system – a combination of hardware and
+software designed to carry out a specific set of functions
+barcode – a series of dark and light lines of varying
+thickness used to represent data; the code has to be
+scanned using laser or LED light source
+key field – the field that uniquely identifies a record in
+a file
+
+141
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 141
+
+3/26/21 1:16 PM
+
+3 Hardware
+
+quick response (QR) code – a matrix of dark and light
+squares which represent data; the pattern can be read and
+interpreted using a smartphone camera and QR app
+
+resistive touch screen – a type of touch screen that uses
+two conductive layers which make contact where the
+screen has been touched
+
+frame QR code – a type of QR code that includes a space for
+advertising
+
+actuator – an output device that converts electrical energy
+into mechanical movement
+
+DAC (digital to analogue converter) – device that converts
+digital data into electric currents that can drive motors,
+actuators and relays, for example
+
+digital micromirror device (DMD) – a chip that uses millions
+of tiny mirrors on its surface to create a video display
+
+ADC (analogue to digital converter) – a device that converts
+analogue data (for example, data read from sensors) into a
+form understood by a computer
+
+thermal bubble – inkjet printer technology whereby tiny
+resistors create heat and form an ink bubble which is
+ejected onto paper in an inkjet printer
+
+charge couple device (CCD) – a light sensitive cell made up
+of millions of tiny sensors acting as photodiodes
+
+piezoelectric crystal – a crystal located in an ink reservoir
+within an inkjet printer; the crystal vibrates and forces ink
+out onto paper
+
+virtual keyboard – an onscreen keyboard which uses the
+features of the touch screen to emulate a physical keyboard
+
+direct 3D printing – a 3D printing technique in which the
+print head moves in the x, y and z directions
+
+touch screen – a screen that allows the user to select or
+manipulate a screen image using the touch of a finger or
+stylus; touch screens most frequently use capacitive, infrared or resistive technology
+
+binder 3D printing – a 3D printing method that uses a twostage pass; the first stage uses dry powder and second
+stage uses a binding agent
+
+repetitive strain injury (RSI) – pain felt in the muscles,
+nerves and tendons caused by a repetitive action (for
+example, excessive clicking of a mouse button over a period
+of time)
+optical mouse – a pointing device that uses a red LED
+to track the movement of the device and then relays its
+coordinates to a computer
+pointing device – an input device that allows the user to
+control the movement of an onscreen cursor or to allow
+onscreen selection by clicking a button on the device
+complementary metal oxide semi-conductor (CMOS) – a
+chip that generates an electric current (or pulses) when
+light falls on its surface
+digital signal processor (DSP) – a processor that
+calculates, for example, the coordinates of a pointing device
+based on the pulses of electricity received
+optical character recognition – technology that can convert
+hard copy text or images into a digital format to be stored in
+a computer memory
+computer sided design (CAD) – software used to create
+drawings (for example, to send to a 3D printer or to produce
+blue-prints of a microprocessor design)
+computed tomographic (CT) scanner – technology that can
+create a 3D image of a solid object by slicing up the object
+into thin layers (tomography)
+capacitive touch screen – a type of touch screen that uses
+the change in the screen’s capacitance (the ability to store
+an electrical charge) when it is touched by a finger or stylus
+infra-red touch screen – a type of touch screen that uses
+infra-red beams and sensors to detect where the screen
+has been touched
+
+cathode – a negative electrode
+snode – a positive electrode
+organic LED (OLED) – a light-emitting diode that uses the
+movement of electrons between a cathode and an anode to
+produce an on-screen image; it generates its own light so
+no backlighting is required
+loudspeaker – an output device that converts electric
+current into sound
+memory – the devices within the computer that are directly
+accessible by the CPU; there are two types of memory –
+RAM and ROM; memory is different to hard disk drives, for
+example, which are known as storage devices
+random access memory (RAM) – primary memory that can
+be written to or read from
+read only memory (ROM) – primary memory that cannot be
+written to (changed) and can only be read
+dynamic RAM (DRAM) – a type of RAM chip that needs to be
+constantly refreshed
+static RAM (SRAM) – a type of RAM chip that uses flip flops
+and doesn’t need to be constantly refreshed
+volatile – describes memory that loses its contents when
+the power is turned off
+refresh – recharge every few seconds in order to maintain
+charge; for example with a device such as a capacitor
+flip flop – electronic circuit with only two stable conditions
+latency – the lag in a system; for example, the time it
+takes to find a track on a hard disk, which depends on the
+time it takes for the disk to rotate around to its readwrite head
+
+142
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 142
+
+30/03/21 9:57 PM
+
+3.4 Network hardware
+
+SSD endurance – the total guaranteed number of times
+data can be written to or read from a solid state drive (SSD)
+in its usable life cycle
+optical storage – a type of storage that uses laser light to
+read and write data, and includes CDs, DVDs and Blu-ray
+discs
+dual layering – using two recording layers in storage media
+such as DVDs and some Blu-rays
+virtual memory – a memory management system that
+makes use of secondary storage and software to enable a
+computer to compensate for the shortage of actual physical
+RAM memory
+disk thrashing (HDD) – a problem in a hard disk drive
+(HDD) caused by excessive swapping in and out of data
+causing a high rate of head movements during virtual
+memory operations
+thrash point – the point at which the execution of a program
+comes to a halt because the system is so busy moving data
+in and out of memory rather than actually executing the
+program
+
+data redundancy – the unnecessary storing of the same
+data on several storage devices at the same time
+cloud storage – a method of data storage where data is
+stored on offsite servers; the physical storage may be on
+hundreds of servers in many locations
+network interface card (NIC) – a hardware component
+(circuit board or chip) that is required to allow a device to
+connect to a network, such as the internet
+router – a device that enables data packets to be moved
+between different networks, for example, to join a LAN to
+a WAN
+static IP address – an IP address that doesn’t change
+MAC address – a unique identifier which acts as a network
+address for a device; it takes the form NN-NN-NN-DDDD-DD, where NN is the manufacturer code and DD is the
+device code
+dynamic IP address – a temporary IP address assigned to a
+device each time it logs onto a network
+dynamic host configuration protocol (DHCP) – a server that
+automatically provides and assigns an IP address
+
+143
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 143
+
+3/26/21 1:17 PM
+
+3 Hardware
+
+Exam-style questions
+1 a Many mobile phone and tablet manufacturers are moving to OLED
+screen technology. Give three reasons why this is happening.
+b A television manufacturer makes the following advertising claim:
+“Our OLED screens allow the user to enjoy over 1 million vivid
+colours in true-to-life vision”
+Comment on the validity of this claim by the manufacturer.
+
+[3]
+
+[4]
+
+2 a A company is developing a new games console. The console games will
+be stored on a ROM chip once the program to run the new game has been
+fully tested and developed.
+i Give two advantages of putting the game’s program on a ROM chip.
+ii The manufacturers are also using RAM chips on the internal circuit
+board. Why have they done this?
+iii The games console will have four USB ports. Apart from the need to
+attach games controllers, give reasons why USB ports
+are incorporated.	
+[8]
+b During development of the games console the plastic parts are
+being made by a 3D printer. Give two reasons why the manufacturer
+would use 3D printers.
+[2]
+3 An air conditioning unit in a car is being controlled by a microprocessor
+and a number of sensors.
+a Describe the main differences between control and monitoring
+of a process.
+[2]
+b Describe how the sensors and microprocessor would be used to control
+the air conditioning unit in the car. Name at least two different sensors
+that might be used and explain the role of positive feedback in your
+description.
+You might find drawing a diagram of your intended process to be
+[6]
+helpful.	
+4 a Describe the differences between a static IP address and a dynamic
+IP address. Include in your explanation, why both types of IP
+addressing are used.
+b What is meant by a MAC address? Describe the two different
+types of MAC address.
+
+[4]
+[4]
+
+144
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 144
+
+18/02/21 3:52 PM
+
+Exam-style questions
+
+5 a Five statements about two types of RAM memory (DRAM and SRAM) are
+shown below.
+By drawing lines, link each statement to the correct type of RAM.
+the data has to be refreshed constantly in order
+to retain data
+DRAM
+this type has the more complex circuitry
+
+it does not need to be refreshed as long as the
+power supply is still on
+
+SRAM
+
+it requires higher power consumption which is
+significant when installed in battery-powered
+devices, such as a laptop
+
+it is mostly used in the cache memory of the CPU
+where operational speed is important
+
+[5]
+b Describe three of the differences between RAM and ROM.
+[3]
+c Compare the two optical storage devices: DVD and Blu-ray. Your answer
+should include:
+» technology differences
+» capacity differences
+» other features of the two types of storage.
+[6]
+6 a Name two types of touchscreen technology used on mobile phones.
+For each named technology, describe how the position of
+where a finger touched the screen can be identified.
+b Organic LED (OLED) screens are now becoming increasingly common.
+i Briefly describe the technology behind OLED screens.
+ii Give three advantages of OLED screens when compared to
+LED/LCD screens.
+
+[6]
+
+[3]
+
+7 A zoo has an information point.
+» Visitors use a menu to select information about animals.
+» The menu includes 500 different animals.
+» The information is provided only using high definition video with an
+audio track.
+a State one input device that could be used for the information point.
+[1]
+b The output is shown on a monitor.
+State one other output device that could be used for the information
+point.[1]
+c The video files are stored at the information point.
+State one secondary storage device that could be used.
+[1]
+
+145
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 145
+
+18/02/21 3:52 PM
+
+3 Hardware
+
+d The zoo decides to introduce Quick Response codes in different places in
+the zoo. These provide further information about the animals.
+Describe how customers obtain the information from the Quick Response
+codes.[4]
+Cambridge IGCSE Computer Science 0478, Paper 11 Q4, Oct/Nov 2019
+
+8 Anna has a farm that grows fruit.
+She has a system that monitors the conditions for growing the fruit. Sensors
+are used in this system.
+a Explain what is meant by the term sensor.[2]
+b State two sensors that could be used in this system and describe
+how they could be used.
+[6]
+Cambridge O Level Computer Science 2210, Paper 12 Q9, Oct/Nov 2017
+
+9 The diagram shows five output devices and five descriptions.
+Draw a line between each output device and its description.
+Output device
+
+[4]
+
+Description
+
+Inkjet printer
+
+Flat panel display that uses the light modulating
+properties of liquid crystals.
+
+LCD screen
+
+Flat panel display that uses an array of light
+emitting diodes as pixels.
+
+2D cutter
+Droplets of ink are propelled onto paper.
+LED screen
+
+Laser printer
+
+Electrically charged powdered ink is transferred
+onto paper.
+
+2D High-powered laser that uses the X-Y plane.
+cutter
+
+Cambridge O Level Computer Science 0478, Paper 12 Q3, May/June 2017
+
+146
+
+318281_C03_CAM_IGCSE CO_SCI_075_146.indd 146
+
+18/02/21 3:52 PM
+
+

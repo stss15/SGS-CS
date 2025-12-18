@@ -1,0 +1,265 @@
+---
+layout: layouts/slide-deck.njk
+title: "A3.3 Database Programming | IB Computer Science"
+description: "SQL language types, joins, updating data, and HL extensions: aggregate functions, views, and transactions."
+backHref: ib/A3/index.html
+courseFooter: IB Computer Science
+activeSection: ib
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB", href: "ib/index.html" }
+  - { label: "A3", href: "ib/A3/index.html" }
+  - { label: "A3.3 Database Programming" }
+---
+
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A3.3 Database Programming</h1>
+            <h3 class="sub-title">Topic A3: Databases | Asking Questions with SQL</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A3.2) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall A3.2 (Database design) before writing queries.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What is the purpose of a <em>database schema</em>?</li>
+            <li>What does <em>3NF</em> aim to reduce?</li>
+            <li>How do you implement a many-to-many relationship in tables?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What is the purpose of a database schema?</div>
+        <div class="fragment box-blue">
+            <p>It’s the <strong>blueprint</strong> describing tables, fields, relationships and constraints.</p>
+        </div>
+    </section>
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What does 3NF aim to reduce?</div>
+        <div class="fragment box-blue">
+            <p><strong>Redundancy</strong> (and anomalies) by removing transitive dependencies.</p>
+        </div>
+    </section>
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">How do you implement a many-to-many relationship in tables?</div>
+        <div class="fragment box-blue">
+            <p>Use a <strong>junction table</strong> that stores pairs of foreign keys.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 How does a database answer:</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">“Which students were absent <strong>twice</strong> this week?”</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Common misconception:</strong> “SQL is just filtering one table.”</p>
+                <p class="small-text">Real questions often combine tables and compute totals.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> SQL can <strong>join</strong> tables and use <strong>aggregates</strong> to summarize data.</p>
+                <p class="small-text">That’s what makes databases powerful tools for decision-making.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. SQL LANGUAGE TYPES -->
+<section>
+    <h3><span class="keyword" data-def="Language used to define, query and modify relational data.">SQL</span>: different language types</h3>
+    <div class="question-box">Why does SQL include commands that don’t “retrieve” data?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="SQL commands that create/modify database structures (CREATE, ALTER, DROP).">DDL</span> — define structure</p>
+            <p class="fragment"><span class="keyword" data-def="SQL commands that query/modify data (SELECT, INSERT, UPDATE, DELETE).">DML</span> — query/change data</p>
+            <p class="fragment"><span class="keyword" data-def="SQL commands that control permissions (GRANT, REVOKE).">DCL</span> — control access</p>
+            <p class="fragment"><span class="keyword" data-def="SQL commands that manage transactions (COMMIT, ROLLBACK).">TCL</span> — manage transactions</p>
+        </div>
+        <div class="box-blue">
+            <h4>Examples</h4>
+            <p class="small-text fragment"><strong>DDL:</strong> <code>CREATE TABLE</code></p>
+            <p class="small-text fragment"><strong>DML:</strong> <code>SELECT ... WHERE ...</code></p>
+            <p class="small-text fragment"><strong>DCL:</strong> <code>GRANT SELECT</code></p>
+            <p class="small-text fragment"><strong>TCL:</strong> <code>COMMIT</code>, <code>ROLLBACK</code></p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. JOIN QUERIES -->
+<section>
+    <h3>Queries across two tables (<span class="keyword" data-def="SQL operation combining rows from two tables based on a related field.">JOIN</span>)</h3>
+    <div class="question-box">How do we combine “names” from one table with “events” from another?</div>
+    <div class="box">
+        <p class="fragment">A join matches rows using a key (usually primary ↔ foreign key).</p>
+        <p class="fragment">This avoids duplicating names/details inside every event record.</p>
+    </div>
+    <div class="cols">
+        <div class="box-blue fragment">
+            <h4>Example</h4>
+            <pre><code class="sql">SELECT s.Name, a.Date, a.Present
+FROM STUDENT s
+JOIN ATTENDANCE a ON a.StudentID = s.StudentID
+WHERE a.Date >= '2025-09-01';</code></pre>
+        </div>
+        <div class="box fragment">
+            <h4>What it returns</h4>
+            <p class="small-text"><strong>Name</strong> paired with each attendance record.</p>
+            <p class="small-text">The database creates the combined view for the query result.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 6. UPDATING DATA -->
+<section>
+    <h3>Updating data with SQL</h3>
+    <div class="question-box">How do we add, change, or remove records safely?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>INSERT</strong> adds new rows.</p>
+            <p class="fragment"><strong>UPDATE</strong> changes existing rows.</p>
+            <p class="fragment"><strong>DELETE</strong> removes rows.</p>
+            <p class="fragment">Constraints (like referential integrity) can block invalid updates.</p>
+        </div>
+        <div class="box-blue">
+            <pre class="fragment"><code class="sql">INSERT INTO STUDENT(StudentID, Name)
+VALUES (1026, 'Samira Ali');</code></pre>
+            <pre class="fragment"><code class="sql">UPDATE STUDENT
+SET Name = 'Leah Chen-Wong'
+WHERE StudentID = 1025;</code></pre>
+            <pre class="fragment"><code class="sql">DELETE FROM ATTENDANCE
+WHERE Date &lt; '2025-01-01';</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 7. QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check</h3>
+    <div class="box">
+        <p class="fragment"><strong>Explain</strong> why this query is risky:</p>
+        <p class="fragment"><code>DELETE FROM STUDENT;</code></p>
+        <p class="fragment">What safeguard could you use in real work?</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>Risk:</strong> it deletes <em>every</em> student record (and may break foreign-key links).</p>
+        <p><strong>Safeguard:</strong> use a <code>WHERE</code> clause and wrap changes in a <span class="hl-badge">HL</span> transaction so you can rollback if needed.</p>
+    </div>
+</section>
+
+<!-- 8. HL: AGGREGATE FUNCTIONS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Calculations with <span class="keyword" data-def="SQL function that returns a single value from many rows (COUNT, SUM, AVG, MIN, MAX).">aggregate functions</span></h3>
+    <div class="question-box">How can SQL answer “How many?” or “What’s the average?”</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Aggregates summarize many rows into a single value.</p>
+            <p class="fragment">Use <span class="keyword" data-def="SQL clause that groups rows so aggregates can be calculated per group.">GROUP BY</span> to calculate per category (e.g., per class).</p>
+        </div>
+        <div class="box-blue">
+            <pre class="fragment"><code class="sql">SELECT TutorGroup, COUNT(*) AS Absences
+FROM STUDENT s
+JOIN ATTENDANCE a ON a.StudentID = s.StudentID
+WHERE a.Present = false
+GROUP BY TutorGroup;</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 9. HL QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment">You have a table <code>SALE(Product, Region, Amount)</code>.</p>
+        <p class="fragment"><strong>Outline</strong> what this query returns:</p>
+        <p class="fragment"><code>SELECT Region, SUM(Amount) FROM SALE GROUP BY Region;</code></p>
+    </div>
+    <div class="fragment box-blue">
+        <p>One row per <strong>region</strong>, showing the <strong>total sales amount</strong> in that region.</p>
+    </div>
+</section>
+
+<!-- 9. HL: VIEWS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Database <span class="keyword" data-def="Virtual table defined by a query; presents data without storing a separate copy (unless materialized).">views</span></h3>
+    <div class="question-box">How can we simplify complex queries or restrict what users see?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A view is a <strong>named query</strong> that behaves like a table.</p>
+            <p class="fragment">Useful for <strong>security</strong> (hide columns) and <strong>simplicity</strong> (reuse joins).</p>
+        </div>
+        <div class="box-blue">
+            <pre class="fragment"><code class="sql">CREATE VIEW AttendanceSummary AS
+SELECT s.StudentID, s.Name, a.Date, a.Present
+FROM STUDENT s
+JOIN ATTENDANCE a ON a.StudentID = s.StudentID;</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 10. HL: TRANSACTIONS -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="A sequence of database operations treated as one unit of work.">Transactions</span> &amp; data integrity</h3>
+    <div class="question-box">What if a bank transfer subtracts money but fails before adding it?</div>
+    <div class="box">
+        <p class="fragment">A transaction groups multiple operations into one unit of work.</p>
+        <p class="fragment">If something fails, you can <span class="keyword" data-def="TCL command that undoes changes made in a transaction since the last commit.">ROLLBACK</span> to undo partial changes.</p>
+        <p class="fragment">If everything succeeds, <span class="keyword" data-def="TCL command that permanently saves the changes made in a transaction.">COMMIT</span> makes the changes permanent.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>ACID</strong> helps describe transaction behavior:</p>
+        <p class="small-text"><strong>A</strong>tomicity, <strong>C</strong>onsistency, <strong>I</strong>solation, <strong>D</strong>urability</p>
+    </div>
+</section>
+
+<!-- 11. MISCONCEPTION CHECK -->
+<section>
+    <h3>Misconception Check</h3>
+    <div class="question-box">True or False: “A view stores its own copy of the data.”</div>
+    <div class="fragment box-red">
+        <p><strong>False.</strong> A view stores the <strong>query definition</strong>; the data is retrieved from underlying tables when used.</p>
+    </div>
+    <div class="fragment box">
+        <p>Some systems support <em>materialized views</em>, but that’s a special case and not the default meaning of “view”.</p>
+    </div>
+</section>
+
+<!-- 12. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color:white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color:white;">
+        <ul style="line-height:1.5;">
+            <li>SQL includes multiple language types: <strong>DDL</strong>, <strong>DML</strong>, <strong>DCL</strong>, <strong>TCL</strong>.</li>
+            <li><strong>JOIN</strong> combines tables using key relationships.</li>
+            <li>SQL can update data using <strong>INSERT</strong>, <strong>UPDATE</strong>, and <strong>DELETE</strong>.</li>
+            <li><span class="hl-badge">HL</span> Aggregates + <strong>GROUP BY</strong> summarize data for reporting.</li>
+            <li><span class="hl-badge">HL</span> Views simplify queries and control access; transactions protect integrity.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color:white;">
+        <p><strong>Coming up:</strong> A3.4 <span class="hl-badge">HL</span> Alternative databases &amp; data warehouses.</p>
+    </div>
+</section>

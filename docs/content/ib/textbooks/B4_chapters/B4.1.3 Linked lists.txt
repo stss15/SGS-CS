@@ -1,0 +1,1144 @@
+B4.1.3 Linked lists
+B Linked list operations
+These steps all refer to the operations based on a singly linked list.
+
+Traversal / search
+This is essentially a linear traversal / search, where you start at the beginning of the linked list
+and move along the list, following the pointers to the nodes.
+1
+
+Start with the head pointer to find the first node in the linked list.
+
+2 From this node, follow the pointer within the node to the next node.
+3
+
+Repeat step 2 until you find the node you are searching for or until the pointer points to
+
+null / none, which means you have reached the end of the list.
+
+Insertion
+There are three methods for inserting into a linked list. Which one you use depends on where
+you need to insert the node.
+Inserting at the beginning:
+
+Z
+
+head —»
+1
+
+———NULL
+
+A
+
+>
+
+B
+
+— 1 »nNULL
+
+Create a new node.
+
+B4.1 Fundamentals of abstract data types
+
+@
+
+2
+
+——> NULL
+
+Point the new node to the current head node.
+
+Z
+
+i
+
+N
+
+A
+
+—>NULL
+
+3 Update the head pointer of the linked list to the new node.
+
+Inserting at the end:
+— NULL
+
+head —>|
+
+1
+
+A
+
+—1—> NULL
+
+Create a new node.
+—n
+
+head —|
+
+2
+3
+
+I
+
+7
+
+nuLL
+
+Find the last node by traversing the list until you find the tail node that points to null.
+Point the current tail node to the new node (the new node pointer has not been set, so it
+will point to null).
+
+Inserting in the middle:
+
+1=
+
+head —»|
+
+A
+
+—>NULL
+
+N —|
+
+ATNO TH
+
+A
+
+head
+
+C
+
+1
+
+Create a new node.
+
+2
+
+Traverse the list to find the node after which you want to insert the new node.
+
+NULL
+
+B4 Abstract data types (ADTs) (HL)
+
+=
+o
+Z
+25
+
+\
+head ——> f\
+3
+
+B
+
+C
+
+NULL
+
+Set the new node’s pointer to point to the newly found node’s pointer (at this point, both
+nodes will be pointing to the next node in the list).
+
+vl
+head ——> A\
+4
+
+B
+
+Z [ 5]
+
+7
+
+C
+
+——>NULL
+
+Set the newly found node’s pointer to the new node.
+
+(;Common mistake
+Be careful not to complete action 4 before action 3 when inserting into the middle of the linked
+list. If you do this, you will lose any pointers to the second part of the list, and every node beyond
+
+the point of the insertion will be lost.
+
+Deletion
+There are also three methods for deleting trom a linked list. Which one you use depends on
+where you need to delete the node.
+Deleting the first node:
+
+head—
+1
+
+5 A
+
+B
+
+Check whether the list is empty. (If the head pointer is already null, the list is emprty.)
+
+head
+
+A
+
+>
+
+Tee,2ZMemeR
+0 .o
+
+2
+
+———————>NULL
+
+B
+
+—————NuULL
+
+Set the head pointer to the new first node’s pointer. (Now nothing is pointing to the
+original first node, which eliminates it from the list. Most high-level languages have
+garbage collection to realize this and clear it up without you having to delete it.)
+
+P—
+
+Deleting a middle node:
+
+head —| A
+
+1
+
+a
+
+B
+
+C
+
+NULL
+
+Traverse the list, starting from the head, to find the node you want to delete.
+
+B4.1 Fundamentals of abstract data types
+
+@
+
+=<
+
+visited node.
+
+head ——> A
+
+B
+
+C
+
+NULL
+
+2 If you find the node you want to delete, use the previously visited node’s pointer and adjust
+it to point to the found node’s pointer. (Now nothing is pointing to the found node, which
+climinates it from the list.)
+
+Deleting the end node:
+le—a
+
+ATNO TH
+
+b While doing this, you will need to manually keep a pointer / reference to the previously
+
+head——»| A
+
+B
+
+NULL
+
+!
+1
+
+a
+
+This process is similar to the deletion from a middle node. Traverse the list, starting
+from the head, until you find the tail node pointing to null.
+
+b While doing this, you will need to manually keep a pointer / reference to the previously
+visited node.
+
+head——» A
+
+=
+
+B
+
+NULL
+
+\Nuu
+2 Adjust the previously visited node’s pointer to point to null (or none).
+
+Draw a singly linked list with the following names: Aarav, Yuki, Sofia, Jamal and Elena.
+With the aid of diagrams:
+1
+
+Show the steps to insert Nia after Sofia.
+
+2
+
+Show the steps to delete Elena.
+
+3
+
+Show the steps to add Liam at the head.
+
+B Construct linked lists
+Initial set-up and traversal
+Each linked list has a class that is the starting point when creating a linked list. This often just
+includes a single instance variable: the pointer to the first node (the head).
+We will also create a method that traverses the list to ourpur the contents. Take note of how
+the loop works. We initially get access to the first node through the head pointer, and then we
+traverse through the nodes until we come to the tail node that points to null or none.
+
+B4 Abstract data types (ADTs) (HL)
+
+Python
+
+T
+o
+=
+ks
+
+class LinkedList:
+"mn Constructor """
+
+def
+
+init
+
+-~
+
+(self):
+
+self.head = None
+
+# Initialize the head pointer
+
+"niFunction te print the linked lisg"""
+def print list(self):
+current = self
+. head # Set to first node
+while current
+
+!= None:
+
+# Loop until no further nodes
+
+print (current .data,
+
+end="
+
+-> ")
+
+# Output node data
+
+current = current.next # Move pointer to next node
+
+T
+T T T TP T P TP PP PP
+
+print ("None")
+
+Java
+public class LinkedList {
+ListNode head;
+
+// Head of the list
+
+// Method to print the LinkedList
+
+public void printList()
+
+({
+
+ListNode n = head;
+
+//
+
+while
+
+{ // Loop until no further nodes
+
+(n != null)
+
+Set to first node
+
+System.out.print(n.data + " -> ");
+// data
+
+// Output node
+
+n = n.next; // Move pointer to next node
+
+}
+——
+
+System.out .println ("NULL") ;
+
+}
+We then create a node class that contains data and at least one pointer. If we were creating
+a doubly linked list, we would have a second variable (self .previous for Python, or
+ListNode previous
+in Java).
+
+Python
+class ListNode:
+" Constructor
+def
+
+init
+
+(1 parameter data with a default value of 0)
+
+(self,
+
+self.data
+
+"""
+
+data=0):
+
+data
+
+self .next = None
+
+B4.1 Fundamentals of abstract data types
+
+@
+
+Java
+class ListNode {
+int data;
+
+// This example will create a node with data of type int,
+
+but you
+
+// may use any type here depending on your needs
+ListNode next;
+
+// Constructor to create a new node
+ListNode (int d)
+data
+
+{
+
+d;
+
+next = null;
+
+// Set to null
+
+——
+
+AINO TH
+
+HH
+H
+HH
+H
+
+Insertion
+The insertion method should be created inside the LinkedList class. This should have a
+parameter to receive the data passed to it. From there, it should create a new node with that
+
+data and insert it into the correct position in the list. Remember that there are three different
+insertion methods: at the beginning, in the middle or at the end.
+The insert_after wvalue method assumes we want to insert after a found value. This
+could be implemented in different ways. It could be inserted in a certain position or after a
+
+node that has already been identified and passed as a parameter.
+e
+
+i
+
+1
+
+e
+
+e
+
+e
+
+i
+
+et
+
+e
+
+sl
+
+| Python
+:
+
+iy |
+
+1
+
+|
+
+def insert_at beginning(self,
+
+data):
+
+:
+
+1
+
+new node = ListNode(data) # Create the new ncde with the data given
+
+1
+
+:
+
+new_node.next = self.head # Set new node pointer tc current head node
+
+:
+
+:
+
+self.head = new _node # Set head peointer tc new node
+
+:
+
+|
+
+1
+:
+1
+
+W
+
+1
+
+Inserts a new node with 'data' after the first node found with 'target
+value'.
+
+1
+
+:
+
+If
+
+:
+
+1
+
+'target value'
+
+is not found,
+
+does not insert the new node.
+
+:
+
+def insert after value(self,
+
+:
+
+current = self.head
+
+target value,
+
+data):
+
+:
+:
+
+:
+
+while current is nct None:
+
+:
+
+:
+
+if current.data == target value: # If we find the node to insert after
+
+:
+
+1
+:
+
+new_node = ListNode(data) # Create a new node with provided data
+newnode.next = current.next # Set new node pointer to the same
+
+:
+
+:
+
+# pointer as the found node
+
+:
+
+:
+
+current .next = new node # Set the found node pointer to the new
+
+:
+
+1
+
+# node
+
+1
+
+:
+
+return # We can now end the method early
+
+:
+
+:
+
+current = current.next # Otherwise move to the next node
+
+:
+
+print (E"Node with data {target value} not found.")
+
+:
+
+# not find our target
+
+B o
+
+o
+
+o
+
+R
+
+O
+
+RN R
+
+R RN RN MR N RN R
+
+:
+
+# If loop ends we did
+
+:
+:
+
+N
+
+N M
+
+M
+
+RN
+
+N RN
+
+N M RN M
+
+RN M
+
+N
+
+N M
+
+N RN M
+
+NN NN M
+
+NN NN NN MM M
+
+NN M
+
+RN W
+
+M M
+
+M
+
+e
+
+mm wm em mm wm mw oww owm o
+
+B4 Abstract data types (ADTs) (HL)
+
+def insert
+at end(self,
+
+data):
+
+new_node = ListNode (data)
+
+L
+
+==
+
+# Create new node
+
+o
+
+E
+
+if self.head is None: # Check if list is empty
+
+-
+
+self.head = new node # Insert new node as head of list
+else:
+current = self._head # CGet a link to the first node in the list
+
+while current.next
+
+!= None:
+
+# Keep moving down the list
+
+current = current.next
+
+# When the above loop ends,
+
+the next pointer must be None,
+
+indicating we
+
+# have reached the last node
+
+current.next = new node # Set peointer on current last node to the new node
+
+B
+
+T T T
+
+T T T T
+
+T
+
+T
+
+Java
+public void insertAtBeginning(int data)
+
+{
+
+ListNode newNode = new ListNode (data);
+newNode.next = head;
+
+// Create a new node with the data given
+
+// Set new node pointer to current head node
+
+head = newNode; // Set head pointer to new node
+
+}
+public void insertAfter(int targetValue,
+
+int data)
+
+{
+
+ListNode current = head;
+
+// Traverse the list to find the target value
+while
+
+(current
+
+current
+
+=
+
+!= null && current.data
+
+!= targetValue)
+
+{
+
+current.next;
+
+}
+// At this point current will either be null
+// 1f the target node is found,
+
+if (current != null)
+
+(not found)
+
+or our target node
+
+insert the new node after it
+
+{
+
+ListNode newNode = new ListNode (data);
+
+// Create new node with data
+
+// provided
+newNode .next = current.next;
+
+// Set new node pointer to the same pointer
+
+// as the found node
+current .next = newNode;
+
+// Set the found node pointer to the new node
+
+} else {
+// If the target value is not found in the list
+System.out.println("Node with value " + targetValue + " not found.");
+
+}
+public void insertAtEnd(int data)
+
+{
+
+ListNode newNode = new ListNode(data);
+if
+
+(head == null)
+
+{
+
+// Create a new node
+
+// Check if list is empty
+
+head = newNode; // Insert new node as head of list
+
+} else {
+ListNode last = head; // Cet link to the first node in the list
+while
+
+(last.next
+
+!= null)
+
+{ // Keep moving down the list
+
+last = last.next;
+
+B4.1 Fundamentals of abstract data types
+
+@
+
+AINO TH
+
+// When the above loop ends,
+
+the next pointer must be null,
+
+indicating
+
+// we have reached the last node
+last.next = newNode;
+
+// Set pointer on current last node to the new node
+
+)
+:
+T
+
+L T LT T
+
+L LT T
+
+T T T T
+
+T
+
+T
+
+H
+T L LT T TP PP PP PP
+
+Deletion
+Like the insertion methods, the deletion method will also reside in the LinkedList class. We
+assume here that all items in our list are unique. If this were not the case, these methods
+would delete the first occurrence. Our method has one parameter: the data we are looking for.
+
+Our delete method must be prepared for three possible outcomes:
+1
+
+We are deleting the head node
+
+2 We are deleting a middle node or the tail node
+3
+|
+1
+]
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+:
+1
+1
+1
+]
+1
+1
+1
+1
+1
+1
+]
+]
+1
+1
+1
+|
+1
+1
+1
+
+The node may not be found.
+
+def delete node(self, data):
+current = self _head # Get the head node
+prev = None
+# Case 1:
+
+If the node to be deleted is the head of the list
+
+if current
+
+!= None and current.data == data:
+
+self _head = current.next
+current = None
+
+# Change head to the current head's pointer
+
+# Free the old head
+
+return
+# Search for the node to be deleted,
+
+remembering to keep track of the
+
+# previous node
+while current
+
+!= None and current.data
+
+!= data:
+
+prev = current
+current
+
+# Case 3:
+
+=
+
+current.next
+
+If the node is not found
+
+if current == None:
+
+print (f'"Node with data {data} not found.")
+return
+# Case 2: Unlink the node from the list
+prev.next = current.next
+current
+
+= None
+
+B4 Abstract data types (ADTs) (HL)
+
+o
+=
+
+Java
+
+==
+
+public void deleteNode
+(int data)
+
+{
+
+ListNode current = head
+
+-
+
+prev = null;
+// Case 1:
+
+if
+
+If the head node is to be deleted
+
+(current
+
+!= null && current.data == data)
+
+{
+
+head = current.next; // Changed head
+return;
+
+}
+// Case 2:
+while
+
+If the node to be deleted is somewhere other than at the head
+
+(current
+
+!= null && current.data
+
+!= key)
+
+{
+
+prev = current;
+
+current = current.next;
+
+}
+// Case 3: If the key is not present in the list
+
+if (current == null)
+
+{
+
+System.out.println("Node with value " + key + " not found.");
+return;
+
+}
+// Unlink the node from the linked list
+prev.next = current.next;
+
+}
+T
+
+T
+
+T
+
+T T LT
+
+T T T T TT T T T
+
+T
+
+T TS
+
+Search
+The search method also resides in the LinkedList class. This is a relatively straightforward
+method that combines some of the techniques we have already used. The method needs a
+
+single parameter to look for and, in these examples, will return true or false, depending on
+whether the item was found. This could be modified to return the position in the list of the
+node itself, if needed.
+
+Python
+def search(self, key):
+current = self.head # Cet the head node
+
+while current != None:
+
+# Keep looping until we have run out of nodes
+
+if current.data == key: # If we find the node we are looking for
+return True
+
+current = current.next # Move to the next node
+return False
+
+# Value not found in the list
+
+1
+1
+[
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+-
+
+B4.1 Fundamentals of abstract data types
+
+@
+
+AINO TH
+
+Java
+public boolean search(int key)
+ListNode current = head;
+
+// Get the head node
+
+while
+
+{ // Keep looping until we have run out of nodes
+
+if
+
+HH
+HH
+H
+
+(current
+
+!= null)
+
+(current.data == key)
+return
+
+HH
+:
+HH
+HH
+H
+HH
+HH
+H
+
+{
+
+{
+
+//
+
+1f we find the node we are looking for
+
+true;
+
+}
+current
+
+current.next; // Move to the next node
+
+}
+return false;
+
+// Value not found in the list
+
+HH
+HH
+
+Create the LinkedList class and ListNode class. Using a test table, plan out the actions you will
+take to ensure that these list methods are working correctly. When you have done that, carry out
+the tests.

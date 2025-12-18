@@ -100,25 +100,28 @@
                 </section>
             </section>
 
-            <!-- 3. THE HOOK -->
+            <!-- 3. THE HOOK (R-STACK MYTH BUSTING) -->
             <section>
                 <h2>The Big Question</h2>
-                <div class="cols">
-                    <div class="box-blue">
-                        <h4><i class="fa-solid fa-bug"></i> The Glitch</h4>
-                        <p>What happens if a 0 flips to a 1?</p>
-                        <p class="small-text">Interference can corrupt data during transmission.</p>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">
+                            <p style="font-size:1.25em;">📶 A single bit flip can change a message completely.</p>
+                            <p style="font-size:1.25em;">How do we know data arrived <strong>correctly</strong>?</p>
+                        </div>
                     </div>
-                    <div class="box">
-                        <h4><i class="fa-solid fa-magnifying-glass"></i> The Check</h4>
-                        <p>How do we know if data is corrupt?</p>
-                        <p class="small-text">We need a way to verify it arrived correctly.</p>
+                    <div class="fragment fade-in-then-out">
+                        <div class="box" style="background:#ffebee; padding: 30px;">
+                            <p style="font-size:1.2em;">❌ Common misconception...</p>
+                            <p class="small-text">"If it arrives, it must be correct."</p>
+                        </div>
                     </div>
-                </div>
-                <div class="fragment box"
-                    style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
-                    <strong>Key Idea:</strong> Interference (noise) can corrupt data. We need to check it - trust but
-                    verify!
+                    <div class="fragment fade-in">
+                        <div class="box-blue" style="padding: 30px;">
+                            <p style="font-size:1.2em;">✅ We add extra bits to check integrity.</p>
+                            <p class="small-text">Parity, <span class="keyword" data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">checksums</span>, and ARQ detect (and sometimes correct) errors.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -210,6 +213,14 @@
                     style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             </section>
 
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Why can’t a simple <span class="keyword" data-def="a method used to check if data has been transferred correctly; it makes use of even parity (an even number of 1-bits) or odd parity (an odd number of 1-bits)">parity check</span> detect <em>every</em> error?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>Because</strong> if an <strong>even</strong> number of bits flip, the parity still looks correct.</p>
+                </div>
+            </section>
+
             <!-- 5. CHECKSUM -->
             <section>
                 <h2>The <span class="keyword"
@@ -267,6 +278,22 @@
                 </div>
                 <img src="2.2 images/check digit.png" class="r-stretch" alt="Check Digit Example"
                     style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 20px;">
+            </section>
+
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-qrcode"></i> QR Codes</h4>
+                        <p class="small-text fragment">QR codes include built-in error correction, so they can still scan when partially damaged.</p>
+                        <p class="small-text fragment">Same idea: add extra information so errors can be detected (or corrected).</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-wifi"></i> Wireless Is Noisy</h4>
+                        <p class="small-text fragment">Wireless links are more error-prone than cables because of interference and signal loss.</p>
+                        <p class="small-text fragment">That’s why protocols often combine checks + retransmission.</p>
+                    </div>
+                </div>
             </section>
 
             <!-- 6. ECHO CHECK & ARQ -->
@@ -343,6 +370,51 @@
                     style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             </section>
 
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">In ARQ, what happens if the sender doesn’t receive an <strong>ACK</strong>?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>The sender retransmits</strong> the data after a <span class="keyword" data-def="the time interval allowed to elapse before an acknowledgement is received (in the ARQ error detection method)">timeout</span> (or when it receives a NAK).</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Detect or Correct?</h3>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">Does error checking always fix the data automatically?</div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="cols">
+                            <div class="box">
+                                <h4>Detect</h4>
+                                <p class="small-text"><span class="keyword" data-def="a bit (either 0 or 1) added to a byte of data in the most significant bit position; this ensures that the byte follows the correct even parity or odd parity protocol">Parity bit</span>, <span class="keyword" data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">checksum</span></p>
+                                <p class="small-text fragment">They tell you something went wrong.</p>
+                            </div>
+                            <div class="box-blue">
+                                <h4>Correct</h4>
+                                <p class="small-text"><span class="keyword" data-def="a horizontal and vertical parity check on a block of data being transmitted">Parity block</span> (single-bit) and ARQ (retransmission)</p>
+                                <p class="small-text fragment">They let you recover the correct data.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Connection to 2.1:</strong></p>
+                        <p class="small-text">Different transmission media have different error rates, so protocols need checking.</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming up in 2.3:</strong></p>
+                        <p class="small-text">Error checking is about integrity. <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span> is about confidentiality.</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- 6. PLENARY -->
             <section>
                 <section>
@@ -402,6 +474,26 @@
                             (ACK).</p>
                     </div>
                 </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🧩 <strong><span class="keyword" data-def="a bit (either 0 or 1) added to a byte of data in the most significant bit position; this ensures that the byte follows the correct even parity or odd parity protocol">Parity bit</span></strong> detects some errors (not all).</p>
+                        <p class="small-text">🧮 <strong><span class="keyword" data-def="a verification method used to check if data transferred has been altered or corrupted; calculated from the block of data of data being sent; the checksum value is sent after each data block 69 318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69 18/02/21 3:48 PM 2 Data transmission">Checksum</span></strong> verifies data with a calculated value.</p>
+                        <p class="small-text">🏷️ <strong><span class="keyword" data-def="an additional digit appended to a number to check if the entered number is error-free; check digit is a data entry check and not a data transmission check">Check digits</span></strong> detect data-entry mistakes (ISBN/barcodes).</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🔁 <strong><span class="keyword" data-def="a method used to check if data has been transferred correctly; data is sent to a receiver and then immediately sent back to the sender; the sender then checks if the received data matches the sent data">Echo check</span></strong> sends data back for comparison (inefficient).</p>
+                        <p class="small-text">✅ <strong>ARQ</strong> uses ACK/<span class="keyword" data-def="the time interval allowed to elapse before an acknowledgement is received (in the ARQ error detection method)">timeout</span> to retransmit when needed.</p>
+                        <p class="small-text">🧠 Some methods detect; others correct (directly or by retransmission).</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Coming up next:</strong> 2.3 <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span></p>
+                </div>
             </section>
 
         </div>

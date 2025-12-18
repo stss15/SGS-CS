@@ -1,0 +1,2740 @@
+Programming algorithms
+SYLLABUS CONTENT
+By the end of this chapter, you should be able to:
+» B2.4.1 Describe the efficiency of specific algorithms by calculating their Big O notation to
+analyse their scalability
+» B2.4.2 Construct and trace algorithms to implement a linear search and a binary search
+for data retrieval
+P> B2.4.3 Construct and trace algorithms to implement bubble sort and selection sort,
+evaluating their time and space complexities
+
+P> B2.4.4 Explain the fundamental concept of recursion and its applications in
+programming (HL)
+» B2.4.5 Construct and trace recursive algorithms in a programming language (HL)
+
+B2.4.1 Big O notation
+Complexity analysis of algorithms includes time and space analysis. Time complexity analysis
+refers to how long an algorithm will take to run or how many steps an algorithm will take to
+run, while space analysis refers to how much memory space it takes to run the algorithm.
+
+Bl Time complexity
+Consider the following algorithm:
+
+......................................................................
+
+e
+
+'
+
+]
+
+! for(int i = 0; i<5;i++) {
+
+! for i in range (0,5):
+
+: Java
+
+————————
+
+e
+
+' Python
+
+System.cut.println("hellc");
+
+:
+
+}
+
+print ("hello")
+
+B
+
+-
+
+How many times will this loop repeat? The variable i will take values from 0 to 4 included;
+
+therefore, it is simple to say that the algorithm will repeat five times. If we are to replace
+the 5 with n, the algorithm will repeat nn times and the time complexity will be of the order
+4 Big O notation: used
+to find the upper bound
+(worst-case scenario
+or the highest possible
+amount) of the growth
+of a function; the
+longest time or space
+
+required to turn the
+input into output.
+
+of
+n. This is written as O(n), which is known as Big O notation. The time it takes to run
+the algorithm is approximately proportional to n. The larger the n, the more accurate the
+
+approximation; therefore, when calculating the Big O notation, the worst-case analysis is
+considered (the larger the n, the better).
+
+.......................................................................
+:
+
+i Java
+
+for(int i = 0; i<n; i++)
+
+{
+
+System.out.println("hello");
+}
+
+:
+
+T e
+1
+
+e
+
+e T
+
+' Python
+A for i in range (0,n):
+1
+
+print ("hello")
+
+1
+o
+
+oo
+
+o
+
+o
+
+o
+
+e
+
+e
+
+B2 Programming
+
+Consider the following example:
+
+i Java
+
+E Python
+
+for(int i = 0; i<n; i++) {
+for(int j = 0; j<n; j++)
+
+F)
+
+i
+
+: for i in range
+{
+
+:
+
+System.out.println("hello");
+
+:
+
+|
+
+:
+
+for j
+
+R
+
+:
+
+(0,n):
+
+in range
+
+(0,n):
+
+print ("hello")
+
+e
+
+:
+:
+
+i B LR
+
+In the example above, the algorithm will repeat n times for the outer loop and n times for the
+inner loop, so a total of n*n times, which means time complexity becomes O(n?).
+Let's look at another example:
+
+i Java
+
+E Python
+
+for(int 1 = 0;
+
+i<n;
+
+for(int j = 0;
+
+i++)
+
+{
+
+j<n+3; j++)
+
+{
+
+System.out.println("hello");
+
+}
+
+for i in range
+
+:
+
+for j
+
+:
+
+H
+
+i
+
+:
+
+R
+
+(0,n):
+
+in range
+
+:
+
+(0,n+3):
+
+:
+
+print ("hello")
+
+e T
+
+i i o e i
+
+it i
+
+:
+
+s
+
+bbb vl
+
+In the example above, the number of repetitions isn* + 3n. As time complexity becomes
+more accurate for larger numbers, when n rakes a very high value, the addition of 3n is not
+even taken into consideration. As such, constants are ignored (the rate of growth is what
+matters) and the lower-order terms are ignored (as n grows larger, the larger term dominates
+all other terms). Therefore, the Big O notation is still O(n?). In the same way, il the number of
+repetitions is 25n°, n* + 25n® + ¥n, the coefficients will be ignored and only the term with
+the highest exponent will be used, and so the Big O notation will be O(n?).
+The final example is a simple statement, without any loops:
+..................................................................................
+
+Java
+
+Py
+
+i Python
+
+System.out.println("enter a number:
+
+");
+
+: value = int (input ("enter a number:
+
+int value = reader.nextInt();
+
+1
+
+sum = 50 + value;
+
+:
+
+i
+"))
+
+:
+
+sum = 50 + value
+
+&
+
+1
+
+A
+
+In this case, Big O notation is constant; no matter how large the input value, the algorithm will
+take the exact same time to run, so we can say the time complexity is O(1).
+The common time complexities expressed using Big O notation are:
+B O(1) - constant time: The algorithm performs a fixed number of operations; the time taken
+to run the algorithm does not depend on the size of the input. Such algorithms are ideal for
+operations where you need consistent performance regardless of input size, such as basic
+operations in data structures like hash tables.
+B O(n) — linear time: The algorithm scales linearly with the size of the input. Such algorithms
+are appropriate for simple searches where each element must be considered.
+
+B2.4 Programming algorithms
+
+B O(n?) — quadratic time: The time taken to run the algorithm is directly proportional to the
+square of the input size. Such algorithms are often used when dealing with small data sets;
+they are inefficient for large data sets.
+
+m O(2") — exponential time: The algorithm’s running time doubles with every increase in the
+input size. Such algorithms are generally impractical for large inputs due to rapid growth in
+execution time.
+B O(log n) — logarithmic time: The algorithm’s running time scales logarithmically with
+the increase in the input size. Such algorithms are suitable for searching and some divideand-conquer algorithms. They are ideal for cases where you can efficiently reduce the
+
+problem size.
+
+B Space complexity
+Space complexity analyses the amount of memory used by an algorithm with respect to its
+input size.
+Common space complexities expressed using Big O notation are:
+B O(1) - constant space: The space used by the algorithm is not dependent on the size of the
+input. The algorithm uses a fixed amount of memory, no matter the input size.
+B O(n) — linear space: The memory usage scales linearly with the input size.
+B O(n? - quadratic space: The space taken to run the algorithm is directly proportional 1o
+the square of the input size.
+Consider the following example:
+
+int sum = 0;
+for(int i = 0;
+
+r
+
+.
+
+1 Python
+
+P
+
+: Java
+!
+
+B
+
+i<n;
+
+i++)
+
+sum
+= sum
++ i;
+
+}
+System.out.println(sum) ;
+
+{
+
+:
+
+sum = 0
+
+:
+
+for i in range
+
+:
+
+1
+
+!
+:
+(0,n):
+
+sum
+= sum
++ i
+
+:
+:
+
+1 print (sum)
+1
+
+1
+1
+
+=
+
+o
+
+In the example above, no matter how many repetitions there are, the space taken to store the
+sumand i variables in memory is always the same. The sum and i will be overwritten with
+every repetition, so the space complexity stays constant: O(1).
+As memory is not a real issue these days, it is often the case when writing an algorithm to aim
+for reducing the time complexity, even if that means trading off more space.
+To calculate the space complexity of an algorithm, you need to look at:
+
+B Variables and constants: As variables are overwritten and constants don't change their
+value during the execution of the program, they will always take up the same amount of
+
+space, so they don't need to be recalculated after the execution of the program.
+B Inputs: Inputs are important for space complexity. If the inputs are variables, arrays or
+other data structures, their space complexity differs.
+
+B Execution: Based on how the algorithm is written, the space complexity can be constant
+(when a fixed number of simple operations are performed) or differ (when, for example, a
+
+function calls itself several times, and so extra space is needed to store the return values
+and values of the parameters that will be used in unwinding to provide a solution).
+
+B2 Programming
+
+Il
+
+int sum
+
+[as]
+
+"
+
+for(int 1 = 0;
+sum
+
+i<n;
+
+i++)
+
+{
+
+:
+
+sum + numbers[i];
+
+}
+System.out.println(sum) ;
+HT
+
+1
+1
+1
+1
+1
+:
+1
+1
+1
+1
+
+-
+
+for i in range
+
+(0,n):
+
+sum = sum + numbers[i]
+
+.
+print (sum)
+
+L
+
+1
+1
+1
+1
+1
+:
+1
+1
+1
+1
+
+o
+
+T T T LT LT r T T Ty v ARH
+
+In the example above, the sum will include each value stored in the array, so the space
+
+required to run the algorithm is linear to the number of elements in the array: O(n).
+
+B Choosing algorithms based on scalability and efficiency
+B Small data sets: Simpler algorithms with higher time complexity (for example O(n? or
+O(n*) can be acceptable.
+
+m Large data sets: Algorithms with lower time complexity (for example O(n log n) or O(log
+n)) are preferred, for better scalability.
+B Real-time requirements: Algorithms with constant time complexity (O(1)) or logarithmic
+complexity (O(log n)) are considered, where possible.
+®
+
+Complex problems: Dynamic programming or divide-and-conquer approaches with
+manageable time complexity are used.
+
+Selecting the right algorithm depends on the problem constraints, input size and performance
+requirements. Analysing time complexity helps ensure that the chosen algorithm will perform
+efficiently as the input size grows.
+
+1
+
+Explain what Big O notation is and why it is used in Computer Science.
+
+Define the terms “time complexity” and “space complexity”.
+3
+
+OQutline the difference between O(n) and O(n?). Identify two algorithms that present
+
+these complexities.
+4
+5
+
+Explain why you think it is important to consider the worst-case space complexity of
+an algorithm.
+Sketch a graph to compare the time complexity of O(n) and O(log n). What differences do
+you notice?
+
+6
+
+Consider the following statement: “An algorithm with a Big O value of O(n) will always
+be slower than one with a value of O(log n)”. Evaluate this statement to true or false and
+
+explain your reasons.
+7
+
+Outline the two types of complexity analysis.
+Identify which is generally faster for a very large n: O(log n) or O(2").
+
+B2.4.2 Linear search and binary search
+Search algorithms are used to find a specific item in a data structure. Such algorithms can
+be used to find an item in a list or in a database; to search for an item (word or phrase) in a
+
+document; to find a relevant webpage based on a keyword typed in a search engine; or to find a
+
+location on a map.
+B2.4 Programming algorithms
+
+B Linear search
+A linear search is also called a “sequential search” as it
+
+Step 1
+
+3
+
+9
+
+?
+
+4
+
+traverses a data structure from the beginning to the end
+
+I
+
+when looking for a specific item. In the best-case scenario,
+
+‘ not equals
+
+the item is found in the first position, but in the worst-
+
+key =7
+
+case scenario the item is the last item in the list and so the
+entire list is traversed.
+Consider an array (list) of integers with ten elements and a
+
+3
+
+Step 2
+
+9
+
+?
+
+4
+
+key, being the element you are searching for.
+
+/
+
+To find the key, you will use a loop to traverse the
+
+‘ not equals
+
+array (list).
+
+key =7
+
+Starting at the first index, the element stored at position
+0 will be compared with the key. If they are the same,
+the element is found; otherwise, the process repeats until
+
+3
+
+Step 3
+
+9
+
+?
+
+4
+
+the element is found or until the end of the array (list)
+
+is reached.
+|
+
+If a conditional loop is used, the algorithm can be stopped
+
+‘ equals
+
+key =7
+
+if the searched element has been found.
+
+W 1D array (list) - linear search
+
+4 Linear search: a
+method of searching,
+in which each
+
+Java
+
+element is checked in
+
+int key = 7;
+
+sequential order.
+
+once the element is found. But if a count-controlled loop is
+used, the algorithm will traverse the entire list (array), even
+
+H
+
+int numbers= {3,9,7,4};
+int position =
+
+-1;
+
+for(int i = 0;
+
+i<numbers.length;
+
+i++)
+
+{
+
+if (key==numbers[i]) {
+position = i;¥
+
+}
+if (position != -1){
+System.out.println("element found on position "+
+position);
+
+}
+else{
+System.out.println("element was not found!");
+
+B2 Programming
+
+Python
+numbers =
+
+[3,9,7,4]
+
+key = 7
+position = -1
+for i in range
+
+(0, len(numbers)):
+
+if key == numbers|[i]:
+position = i
+if position != -1:
+print ("element found on position ", position)
+else:
+print ("element was not found")
+
+This algorithm can be improved, so it stops when the element is found by using a
+conditional loop.
+‘When you think of Big O notation, linear search has a time complexity of O(n), as in the worstcase scenario every single element in the array (list) will be traversed in the attempt to find the
+searched key. At the same time, the space complexity is O(1), as the space required to run the
+algorithm is constant.
+
+M Binary search
+Linear search is not a very efficient algorithm, especially when the size of the array (list) is
+
+considerably high.
+Binary search is a more efficient searching algorithm as it reduces the number of searches
+
+# Binary search: a
+method of searching
+
+to half with every comparison performed, so the time complexity is logarithmic O(log n).
+
+an ordered array (list)
+
+However, to be able to perform a binary search on an array (list), the data structure must be
+
+by repeatedly checking
+the value of the
+
+sorted (it must be in order). This is because the algorithm works as follows:
+Set a variable (Lower) to store the lower bound index.
+
+middle element and
+
+disregarding the half of
+the data structure that
+does not contain the
+
+Set a variable (upper) to store the upper bound index.
+
+searched element.
+
+Compare the value in the middle index with the search key (if numbers [mid] ==key).
+
+Calculate the middle index (mid) by using the formulamid = (lower+upper) /2
+1f they are the same, the value is found and the algorithm can stop.
+
+key =7
+
+new lower
+
+»
+
+mi
+
+[0] @
+
+/
+
+m If the value in the middle position is smaller than the
+key, you can disregard the left side of the array (if the
+
+.
+
+)
+
+‘
+
+)
+
+array is sorted in ascending order) by setting the lower
+[2]
+
+[3]
+
+variable to the middle index
++ 1: lower = mid + 1
+m If the value in the middle position is greater than the
+
+Z
+=)
+
+.{',
+
+?
+
+9
+
+key, you can disregard the right side of the array (if the
+array is sorted in ascending order) by setting the upper
+
+lower =0
+upper = 3
+mid = (lower + upper)/2 = 1
+7>4,s0
+
+lower=mid +1=2
+mid = (lower + upper)/2 = 2
+7 =17, 5o the element is found
+M 1D array (list) — binary search
+
+B2.4 Programming algorithms
+
+variable to the middle index — 1: upper = mid - 1
+B Repeat the entire process, starting from the third point
+until the value is found or the end of the array (list)
+
+is reached.
+
+Java
+int numbers([]
+
+= {3,4,5,7,9,11,13};
+
+int key = 11;
+beolean found = false;
+
+5
+
+int
+
+i
+
+lower = 0;
+
+int mid = 0;
+
+int upper = numbers.length;
+while ((lower<=upper)
+mid =
+
+&&
+
+!found )
+
+{
+
+:
+
+(lower+upper)/2;
+
+if (numbers[mid]=zkey)
+
+{
+
+found = true;
+
+} else if (numbers[mid]<key)
+
+{
+
+lower = mid+1;
+
+} else {
+upper = mid-1;
+
+}
+if (found)
+
+{
+
+System.out.println("the value was found on position
+
+" + mid);
+
+} else {
+System.out.println("the value was not found" );
+
+}
+ea e
+
+R e
+
+Re
+
+numbers=
+
+e R SR E R R
+
+RA
+
+R A R R AR R R
+
+A
+
+e e A A
+
+AR AR
+
+e RN ee R R e AR ta
+
+sy
+
+[3,4,5,7,9,11,13]
+
+found = False
+lower = 0
+upper = len(numbers)
+
+while lower<=upper and not found:
+
+mid = int((lower + upper)/2)
+if numbers
+[mid] ==key:
+found = True
+
+elif numbers [mid] <key:
+lower = mid + 1
+else:
+
+upper = mid - 1
+if found:
+print ("the value was found on position ",
+
+mid)
+
+else:
+print ("the value was not found")
+
+B2 Programming
+
+Each algorithm is more appropriate in different scenarios. For example, if the list (array) needs
+to be searched once for a given element, such as the ID of a worker, and the organization has
+fewer than 50 employees, it would be faster to simply use a linear search, rather than having
+to sort the data structure and then apply a binary search on it. However, if there is a need to
+
+search for the home address of a student based on their school 1D, in a data structure already
+ordered based on the students’ IDs, and the school has 1500 students, it would be much more
+
+appropriate to use a binary search to retrieve the student’s details.
+
+B2.4.3 Bubble sort and selection sort
+Sorting refers to arranging the elements in an array (list) into ascending or descending order.
+You already practised a swapping technique at the beginning of the unit. This technique is
+4 Bubble sort: a
+sorting algorithm that
+
+used in sorting routines.
+
+compares adjacent
+
+H Bubble sort
+
+values and swaps
+
+Bubble sort is a sorting algorithm that uses an incremental approach, and it works by
+
+Fhem if they are in an
+
+repeatedly swapping the adjacent elements if they are not in the right order. If the array (list)
+
+hissluagri
+28
+
+was traversed only once, there might still be elements in the array (list) that are not yet sorted.
+Bubble sort algorithms work as follows:
+
+Unsorted array (list)
+
+B Start at the beginning of the array (list).
+
+1
+
+2|9
+
+Compare the current element with the next one.
+It the two values are not in order, swap their contents.
+
+swap
+
+Move to the next element in the array (list).
+
+2|
+
+3
+
+9
+
+Repeat the process until all the elements have
+been sorted.
+
+swap
+
+As shown in the diagram, once the array (list) has been
+
+3
+
+3
+
+2
+
+traversed once, the last element is surely in the right
+
+position. Therefore, to optimize the algorithm, the number
+
+- Mg
+
+no swap
+
+of repetitions can be reduced by 1.
+
+7
+
+9
+
+7
+
+9
+
+0 swap
+
+Sorted array (list)
+M Bubble sort
+
+B2.4 Programming algorithms
+
+79
+
+¢ Java
+int numbers[]
+for
+
+= {7,3,2,9};
+
+(int i = 0;
+
+i
+
+<numbers.length;
+
+i++)
+
+{
+
+for (int j = 0; j<numbers.length-1-i;
+if (numbers [j] >numbers [j+1])
+
+j++)
+
+{
+
+{
+
+int temp = numbers([j];
+numbers [j]
+
+= numbers[j+1];
+
+numbers [j+1] =temp;
+
+for
+
+(int i=0;i<numbers.length;
+
+i++)
+
+System.out .print (numbers [i]l+"
+
+numbers =
+
+{
+
+");
+
+[7,3,2,9]
+
+for i in range (len(numbers)):
+for j
+
+in range (0,
+
+len(numbers)-1-i):
+
+if numbers|[j]>numbers[j+1]:
+temp = numbers[j]
+
+numbers
+[j] =numbers [j+1]
+numbers [j+1] =temp
+
+for i in range (len(numbers)):
+print (numbers[i],
+
+"
+
+",
+
+end="")
+
+The inner loop repeats from 0 to the size of the array (list) -1, because you compare one
+element with an adjacent one and, when the current element is the second last to be compared
+with the last element, that should be the last comparison that takes place.
+The same repetition is reduced by i every time. This ensures that, when the array (list) is
+traversed the first time, it will repeat to its size -1, as i isinitially 0, but with the next
+
+traversal it will repeat to size -2, and the next passitwill be size -3, and so on. Thisis
+happens because, with the first pass of the array (list), the last element moves to the correct
+position; with the second pass, the last and the second last are in the correct position, and
+S0 on.
+
+B2 Programming
+
+Another way to implement a bubble sort is by using a conditional loop:
+
+‘ Python
+int numbers[]
+
+= {7,3,2,9};
+
+:
+
+numbers =
+
+[7,3,2,9]
+
+boolean swapped = true;
+
+: swapped = True
+
+int n = numbers.length;
+
+:
+
+while (n>0 && swapped)
+
+{
+
+: while (n>0 and swapped):
+
+swapped = false;
+n
+
+=
+
+n-1;
+
+for
+
+(int i = 0; i<n-1;
+
+i++)
+
+{
+
+if (numbers [i] >numbers [i+1])
+
+{
+
+:
+
+swapped = False
+
+:
+
+n=n-1
+
+:
+
+for i in range(0,
+
+1
+:
+
+int temp = numbers[i];
+numbers[i]
+
+n = len(numbers)
+
+= numbers[i+1];
+
+numbers [i+1]=temp;
+
+swapped = true;
+
+n-1):
+
+if numbers[i] snumbers[i+1]:
+temp = numbers[i]
+
+:
+
+numbers [i] =numbers [i+1]
+
+:
+
+numbers [i+1] =temp
+
+:
+:
+
+swapped = True
+for i in range (len(numbers))
+:
+print (numbers([i],
+
+"
+
+",
+
+end="")
+
+}
+for
+
+(int i=0;i<numbers.length;
+
+i++)
+
+System.out.print (numbers[i]+"
+
+{
+
+");
+
+Although it is quite simple to understand the algorithm and to implement it, the bubble sort
+has a time complexity of O(n?), which means it is a very inefficient algorithm, especially when
+it comes to large sets of data. In terms of space complexity, the bubble sort algorithm is very
+
+efficient O(1), requiring a constant memory space to store the variables read from the array, the
+indices and the temporary variable. This required space would not depend on the size of the
+
+input; it would not require additional space proportional to the size of the input array.
+
+Unsorted array (list)
+
+M Selection sort
+To easily understand the algorithm, imagine you split the
+
+1
+
+original array (list) into two parts. The first part is the
+sorted part, which is initially empty, and the second part
+
+is the unsorted part, which initially contains the entire
+array (list). With the first part, the smallest element in
+
+the unsorted part is selected and swapped with the first
+element in the array. This smallest element now becomes
+the sorted part of the array. In the second pass, you now
+search for the smallest element in the unsorted part and
+swap it with the second element. The sorted part now
+includes the first and second element. The process repeats
+until all the elements are sorted, the sorted part includes
+the entire array and the unsorted part is empty.
+
+Sorted array (list)
+M Selection sort
+
+B2.4 Programming algorithms
+
+Java
+int numbers[]
+int min,
+
+= {9,7,2,3};
+
+minIndex;
+
+for(int i = 0;
+
+i<numbers.length;
+
+i++)
+
+{
+
+min = numbers[i];
+minIndex = i;
+
+for(int j = i+1;
+
+j<numbers.length;
+
+if (numbers[j]<min)
+
+j++)
+
+{
+
+{
+
+min = numbers[j];
+
+minIndex=7j;
+
+}
+numbers [minIndex]
+
+= numbers[i];
+
+numbers
+[i] = min;
+
+}
+for(int i = 0;
+
+i<numbers.length;
+
+System.out.print (numbers[i]
+
+i++)
+
++ "
+
+{
+
+");
+
+}
+
+Python
+numbers = [9,7,2,3]
+for i in range (len (numbers)):
+min = numbers[i]
+minIndex = 1
+for j
+
+in range(i+1,
+
+if numbers[j]
+
+len(numbers)):
+
+< min:
+
+min = numbers[j]
+minIndex = j
+numbers [minIndex]
+numbers[i]
+
+= numbers[i]
+
+= min
+
+for i in range(len(numbers)):
+print (numbers[i],
+
+"
+
+",
+
+end="")
+
+B2 Programming
+
+The same algorithm can be implemented by using just the index of the smallest element,
+instead of retrieving the smallest element and its index to swap:
+
+Java
+int numbers[]
+
+= {9,7,2,3};
+
+int min;
+for(int i = 0;
+
+i<numbers.length-1;
+
+i++)
+
+{
+
+min =i;
+
+for(int j = i+l; j<numbers.length;
+if (numbers [§] <numbers [min] ) {
+
+j++)
+
+{
+
+min=j;
+
+}
+int temp = numbers[i];
+numbers [i] =numbers [min] ;
+numbers [min] =temp;
+for({int i = 0;
+
+i<numbers.length;
+
+System.out.print (numbers[i]
+
+numbers =
+
+i++)
++
+
+"
+
+{
+
+"};
+
+[9,7,2,3]
+
+for i in range(len (numbers)-1):
+min = i
+
+for j
+
+in range(i+l,
+
+if numbers[j]
+
+len(numbers)):
+
+< numbers[min]:
+
+min = j
+temp = numbers[i]
+numbers
+[i] = numbers[min]
+numbers [min]
+
+= temp
+
+for i in range
+(len (numbers)) :
+print (numbers[i],
+
+# Selection sort: a
+sorting algorithm that
+repeatedly selects the
+smallest or largest
+element (ascending
+or descending order)
+from the unsorted part
+of the data structure
+and moves it to the
+sorted part.
+
+"
+
+",
+
+end="")
+
+The limitation of the selection sort is that it doesn’t allow for an early exir it the array (list)
+is ordered at an earlier point. The time complexity of the selection sort is O(n?) and the space
+complexity is O(1). Selection sort performs a smaller number of swaps; therefore, it is said to
+be a more efficient algorithmm than the bubble sort algorithm. However, it is possible to stop the
+algorithm if all elements are sorted during an early pass in a bubble sort by using the flagin a
+conditional statement, which is not possible in a selection sort.
+
+Research skills: Present information in a variety of formats and platforms - find an
+ingenious way to explain one of the programming algorithms you have studied. For
+example, use labelled cups to explain a sorting algorithm, create an animation, a video,
+and so on.
+
+B2.4 Programming algorithms
+
+ATNO TH
+
+B2.4.4 Recursion (HL)
+Recursion represents a technique that involves the use of functions, procedures or algorithms
+calling themselves one or more times until one or more specific conditions are met, at which
+point the process unwinds itself to produce a solution, by processing the last call to the first.
+
+Characteristics of a recursive algorithm include:
+B amethod or function that calls itself
+4 Base case: a
+
+terminating solution
+(that is not recursive) to
+a process.
+# General case: a
+process where the
+recursive call takes
+place.
+4 Winding: a process
+occurring when
+recursive calls are made
+until the base case is
+
+reached.
+
+B atermination condition or a base case — a termination solution that is not recursive;
+
+without a base case, the algorithm will run to infinite
+B ageneral case that calls itself recursively or is defined in terms of itself, and moves towards
+
+the base case by changing its state (winding)
+m unwinding, which occurs when the algorithm reaches the base case (cascades up until the
+original problem is solved or, in other words, is processing the results, starting at the last
+
+call and building up towards the base case).
+Recursive algorithms provide elegant solutions to complex problems, by often using less code
+
+and fewer variables than iterative approaches. They allow the programmer to divide complex
+problems into smaller sub-problems that are more readable and easier to solve. However, if
+
+many recursive calls are made, there is a heavy use of the stack, a process that is memory
+intensive and could potentially lead to stack overflow, and the computer running out of
+
+¢ Unwinding: a
+process occurring
+
+memory. If the termination condition is not set correctly, the algorithm might run to infinite,
+
+when the base case is
+
+or the system might crash or freeze due to the high number of recursive calls.
+
+reached, and the values
+are returned to build a
+
+Recursion might take longer to execute than other techniques or iterative approaches, as
+
+solution.
+
+each call takes a specific amount of time, in addition to the time required to build up the
+
+final solution.
+Recursion can also be challenging to follow sometimes, which can make it difficult for other
+programmers to maintain, document or modify it.
+
+Recursion can be used:
+B to implement sorting algorithms, such as quick sort
+B for fractal image creation
+m for traversing binary trees or graphs
+
+m for solving mathematical problems, such as factorial functions and towers of Hanoi.
+When choosing whether to solve a problem by using a recursive algorithm, ask yourself the
+following questions:
+
+m Is it possible to identify a base case?
+B Isit possible to solve the problem by calling itself or splitting it into smaller instances of the
+same problem?
+
+m Does it require data structures like graphs, trees or linked lists — data structures that can be
+seen as repetitive instances of itself?
+Does it require backtracking?
+Is there a mathematical expression that can be translated into a recursive algorithm?
+B Are you solving the problem in a more elegant, simpler and logical way by using recursion,
+without sacrificing too much memory or performance?
+
+B2 Programming
+
+=
+
+Define the term “recursion”.
+
+N
+
+Compare recursive and iterative algorithms.
+
+W
+
+Explain the need for a base case in a recursive program.
+
+R
+
+Identify one consequence of not using a base case in a recursive function.
+
+D
+
+Identify some advantages and disadvantages of using recursion.
+
+Explain what steps you would take to debug a recursive function that does not work
+as expected.
+
+B2.4.5 Recursive algorithms (HL)
+
+==
+T
+o
+=
+=<
+
+B Factorial of a number
+One of the exercises in Section B2.3.4 required you to find the factorial of a number. You
+were able to solve this problem by using a loop. However, now you understand the concept
+
+of recursion, you can easily establish that this problem can be solved by using a recursive
+algorithm. Starting from the mathematical formula that defines the factorial of n: nl =n *
+(n-1)!, you can identify that 5! can be defined as 5 *4! and 4! can be defined as 4*3!, and so
+
+on, until n = 1, which will return 1. The base case is whenn = 1, as 1 will be returned, and
+
+the recursive call is when the method calls itself with n - 1 as a parameter. Therefore, the
+solution to this problem is:
+R0
+
+¢ Java
+i public static int factorial(int n)
+
+if (n==1)
+
+i
+
+{
+
+return 1;
+
+g
+
+}
+
+i}
+
+g5
+
+: def factorial(n):
+
+:
+
+1
+
+1
+
+:
+
+return n * factorial (n-1);
+
+S
+
+E
+
+:
+
+else {
+
+g
+
+E Python
+
+:
+
+}
+
+g
+
+if (n==1):
+return 1
+
+else:
+return n * factorial(n-1)
+
+:
+
+fact = factorial
+(5)
+
+:
+
+print (fact)
+
+:
+
+!
+:
+:
+:
+
+| temeeesscscessssees
+s ss s a
+
+public static void main(Stringl[]
+
+args)
+
+{
+
+int fact = factorial(s);
+System.out.println(fact);
+
+M Fibonacci sequence
+Another application of a recursive method is in solving the Fibonacci sequence.
+The Fibonacci sequence looks like this:
+0,1,1,2,3,5,8,13, 21, 34...
+
+B2.4 Programming algorithms
+
+@
+
+AINO TH
+
+THE FIBONACCI SEQUENCE
+Each number is the sum of the two that precede it.
+
+011235818
+21
+0+1=1
+
+1+1=2
+1+
+2
+
+M Fibonacci sequence
+
+m F=0
+m F=1
+m F,=F +F
+u
+
+m F=[F
+
++F,
+
+To find the sequence for the first n terms, the base cases are identified as being ¥ and T,
+
+e e e e e ey
+
+where the returned values would be 0 and 1 and the recursive call: F_ +F_,
+
+Java
+public static int fib(int n)
+return
+
+0;
+
+} else if (n==1)
+return
+
+{
+
+{
+
+{
+
+if n==0:
+elif
+
+1;
+
+} else {
+return fib(n-1)
+
++ fib(n-2);
+
+:
+
+}
+public static void main(Stringl[]
+
+args)
+
+else:
+return fib(n-1)
+
++
+
+n = int (input ("enter a number: "))
+for i in range(n):
+
+{
+
+Scanner read = new Scanner (System.in) ;
+
+System.out.println("Enter a number:
+
+e e e e
+
+(n==0)
+
+");
+
+o e e
+
+if
+
+Python
+def fib(n):
+
+print (£ib
+
+(i),
+
+end="")
+
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+4
+
+int n = read.nextInt();
+
+for(int 1 = 0;
+
+i<n;
+
+i++)
+
+{
+
+System.out .print (fib(i)
+
++ "
+
+");
+
+}
+e s e asas et a st s e r et E s ta e Eaae e e
+
+e NN a S Ea s
+
+SR
+
+RN
+
+RRAe s aa s Rsa s aana
+
+B2 Programming
+
+B Quicksort
+# Quicksort: a
+
+1f the bubble sort and selection sort discussed earlier use an incremental approach, the
+
+I:E
+
+sorting algorithm that
+
+quicksort is an efficient sorting routine that uses the divide-and-conquer algorithm. The
+
+2
+=
+
+repeatedly selects an
+
+divide-and-conquer principle refers to dividing the problem into two or more identical, smaller
+
+element as a pivot and
+
+sub-problems that can be solved individually, and their solutions combined to produce the
+
+.
+elements into two sub-
+
+solution to the larger problem.
+
+arrays (lists): one that
+
+The quicksort algorithm makes use of a pivot element from the data set, against which the
+
+includes elements that
+
+other elements are compared, to identify their correct position. The pivot element can be
+
+are smaller than the
+pivot and the other one
+that includes elements
+that are larger than
+
+Imagine that the data structure is broken into two partitions (sections): one that contains
+
+partitions the other
+
+the pivot.
+
+the first element, the last element, a random element or the middle element in the darta set.
+elements smaller than the pivot and one that contains elements larger than the pivor.
+A way to construct the quicksort algorithm is by implementing the following logie:
+
+m
+
+Set the pivot as the middle element.
+Start at each end of the list by using a left pointer and a right pointer.
+Move the values smaller than the pivot to the left partition.
+Move the values larger than the pivot to the right parrition.
+
+Recursively apply the same principle for the left partition until all elements are sorted.
+B Recursively apply the same principle for the right partition until all elements are sorted.
+
+Java
+public static void gquickSort (int start,
+
+int finish,
+
+int[Jnumbers)
+
+{
+
+if (start>=finish) {
+return;
+
+H
+
+}
+int left = start;
+
+int right = finish;
+int pivot = numbers[(start+finish)/2];
+
+System.out.print ("start:" + start + " finish:
++ " right: " + right + " pivot: " + pivot );
+while (left<right)
+
+" + finish + " left:
+
+" + left
+
+{
+
+while (numbers
+[left] <pivot)
+
+{
+
+left = left+1;
+
+System.out.println("left:
+
+" + left);
+
+}
+while (numbers [right] >pivot)
+
+{
+
+right = right-1;
+:
+
+System.out.println("right:
+
+" + right);
+
+}
+if (lefte=right)
+
+{
+
+int temp = numbers|[left];
+
+numbers [left]
+
+= numbers[right];
+
+numbers [right]
+
+= temp;
+
+left = left+1;
+
+HH
+H
+
+right = right-1;
+System.out.println() ;
+B
+
+T TT T
+
+B2.4 Programming algorithms
+
+T T T T T T
+
+T
+
+LT T
+
+HH
+HH
+HH
+T T T T T TN HH
+
+@
+
+AINO TH
+
+for({int i = 0;
+
+i<numbers.length;
+
+System.out.print (numbers[i]
+
+i++)
++ "
+
+{
+
+");
+
+}
+System.out.println();
+System.out.println("left:
+
+"
+
+System.out.println("right:
+
++ left);
+
+" + right);
+
+}
+System.out.println("quickSort from start:
+quickSort (start,
+
+right,
+
+System.cut.println("quickSort from left:
+quicksSort (left,
+
+finish,
+
+" + start + " right:
+
+" + right);
+
+" + left + " finish:
+
+" + finish);
+
+numbers);
+
+numbers);
+
+}
+§
+
+public static void main(Stringl[]
+
+{
+
+:
+
+int numbers[] = {16,13,4,6,22,1,9,5};
+
+|HH
+
+quickSort
+(0, numbers.length-1,
+
+H
+HH
+
+for(int i = 0;
+
+args)
+
+numbers);
+
+i<numbers.length;
+
+i++)
+
+System.out.print (numbers[i]l+ "
+
+{
+
+HH
+HH
+HH
+HH
+H
+
+");
+
+HH
+HH
+H
+
+)
+BT
+
+T LT LT T T T
+
+T
+
+T
+
+LT T
+
+L T T
+
+T LTI T TR TTT T H
+
+T
+
+'
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+
+i
+def quickSort (start,
+
+finish,
+
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+
+numbers):
+
+if (start==finish)
+:
+return
+left = start
+
+right
+
+finish
+
+:
+
+pivot = numbers[int ((start+finish)/2)]
+
+:
+1
+1
+1
+
+print ("start: ", start, "finish:
+right, "pivot: ", pivot)
+
+:
+
+.
+:
+
+while left<right:
+while numbers[left]<pivot:
+
+"left:
+
+",
+
+left,
+
+"right:
+
+",
+
+:
+1
+1
+1
+:
+
+:
+
+print ("left: ", left)
+
+]
+
+while numbers [right] >pivot:
+
+:
+
+right = right -
+
+print ("right:
+
+:
+
+finish,
+
+left = left + 1
+
+1
+1
+
+1
+
+",
+
+:
+
+1
+
+", right)
+
+if left<=right:
+
+:
+:
+
+1
+1
+
+1
+
+temp = numbers[left]
+
+:
+
+numbers [left]
+
+:
+
+numbers [right] = temp
+
+:
+
+:
+
+left = left + 1
+
+:
+
+:
+
+right = right - 1
+print ()
+
+:
+
+:
+L]
+
+= numbers[right]
+
+:
+:
+
+:
+Ll
+
+B2 Programming
+
+1
+for i in range (len(numbers)):
+1
+1
+print (numbers([i], " ", end="")
+1
+I
+print
+()
+1
+1
+print("left: ", left)
+1
+1
+print("right: ", right)
+I
+1
+print ("quickSort from start: ", start, " to right: ", right)
+1
+1
+quickSort (start, right, numbers)
+1
+print ("quickSort from left: ", left, " to finish: ", finish)
+1
+1
+quickSort (left, finish, numbers)
+1
+1 numbers = [16,13,4,6,22,1,9,5]
+1
+1 quickSort
+(0, len(numbers)-1, numbers)
+1
+1 for i in range(len(numbers)):
+1
+
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+
+1
+
+1
+
+print (numbers[i],
+
+1
+
+"
+
+",
+
+end="")
+
+1
+
+[0] [1] [2] (3] [4] [5] [6] (7]
+
+116)13[4[6]22[ 1] 95 |smeptsanas
+
+eft: D right:
+7 phvot &
+left: 1 right: 6
+
+[0] [1] [2] [3] [4)([5])[6] (7]
+
+G
+
+right.5
+
+2[5]13[ 4 [6[22[1 ]9 [16]swep13ana
+
+et 2o
+
+@®Common
+.
+
+left: 4 right:
+[0] [1] [2]
+
+mistake
+
+3[511(4
+
+Always pay attention
+
+toN
+the logic
+benind
+——
+9
+
+[4] [5] [6] [7]
+
+i
+
+write. Many students
+
+implement sorting
+
+algorithms incorrectly
+
+22[13[ 9 [16|swap6ands
+
+[0] [1] [2] (3] [4] [5] [6] [7]
+45/1|4|6|22(13[9 |16|swap5and1
+
+[0] [1] [2] [3] [4] [5] [6] [7]
+
+5 . 54161221139 [16|swapsanda
+
+or they cqnfuse
+?hebalgcnthrzs
+in
+
+[0] [1] [2] [3] [4] [5] [6] (7]
+
+between. For
+Lé . Gl
+
+cliD) 9
+
+J0) e 22 ena®
+
+the sorting of an
+
+1741569 .22 16| swap 22.and 16
+
+[0] [1] [2] [3] [4] [5] [6] [7]
+
+array in ascending
+
+order by using the
+
+selection sort,a
+
+common mistake
+is to implement an
+incorrect bubble sort,
+or an algorithm that
+
+left: 0 rl_gm: % pivot 1
+
+.
+
+.
+
+.
+
+L
+
+right:
+
+eft
+1rishtt
+0
+
+auicksortstar:
+0 ight:
+0. S35 ey5
+quickSort left:
+1finish: 2 jeft: 1 right: 2 pivot5
+——
+ri o
+e -
+
+heor
+b o Tefca right:
+7 pivot 13
+r_|ght:6
+
+auicksort left: 4 finish: 7
+
+quickSort start: 4 right: 3 l;gtftsfin '2it5:h317_
+quickSort left:
+5 finish: 5 ::Efg"ght:?p“‘m 22
+quickSort left:
+5 finish: 7 ———vou-—
+
+exampie, when the
+
+question is requiring
+
+quickSort start: 0 right: 2 s(:art4f;lfg|nltsh22
+
+i
+
+uickSort start: 5
+
+right: 6 ls(:?rt?;:‘gllrltshﬁs
+
+e
+
+W
+quickSort start: 5 right: 4
+
+[0] 1] 121 [3] [4] [5] 16] [7]
+8111415
+
+|eﬂ:'5r§gmfg'pivm13
+
+ickSort
+
+left: 6
+
+$onant
+
+finish: 6
+
+quickSort lft: 7 fiish:7
+
+|6|9(13[16(22
+
+M Quicksort
+
+in descending order
+instead of ascending,
+
+1
+
+Complete a trace table for a bubble sort algorithm to sort the numbers: 16, 13, 4, 6, 22, 1,9, 5.
+
+as required.
+
+2
+
+Complete a trace table for a selection sort algorithm to sort the numbers: 16, 13,4, 6,22, 1,9, 5.
+
+Pay attention to the
+
+3
+
+Complete a trace table for a quicksort algorithm to sort the numbers: 16, 13, 4, 6, 22, 1, 9, 5.
+
+features of each of
+the sorting algorithms
+
+4
+
+Create a table outlining the Big O value for both time and space complexities for all the
+searching and sorting algorithms you have studied.
+
+5
+
+Outline the principles of working of a selection sort and a quicksort algorithm.
+
+and understand the
+
+logic behind them.
+
+B2.4 Programming algorithms
+
+@
+
+=
+o
+Z
+
+=
+
+=<
+
+ATNO TH
+
+B Traversal of binary trees
+At this point, you will need to review the binary trees concepts in Section B4.1.4. If you have
+
+not covered this topic yet, take the time to do it now.
+Binary trees can be traversed by using a recursive algorithm as well. The logic behind this is
+the following:
+B Visit a node or display its content.
+B Traverse the left subtree.
+
+m
+
+Traverse the right subtree.
+
+The order of those three operations depends on the type of traversal used. For example, in an
+in-order traversal you need to follow the left, root, right pattern, as shown in the algorithm
+below; as such you will go to the leftmost node and visit it, then the data in the node above,
+
+and then the right node. Once this is done, you move one level up and repeat the process, so
+the left subtree will be first traversed, then the root and then the right subtree. In a post-order
+traversal you need to follow the left, right, root pattern, and in a pre-order traversal you need
+to follow the root, left, right traversal.
+
+Java
+
+1 Python
+
+|
+
+class Node
+
+:
+
+:
+
+class Node:
+
+]
+
+{
+
+def _ init_ (self, value):
+
+1
+
+int data;
+
+:
+
+self.data = value
+
+Node left;
+
+:
+
+self.left = None
+
+:
+
+Node right;
+
+:
+
+self.right = None
+
+!
+
+Node (int value){
+
+: def inorder (root) :
+
+:
+
+1
+
+if root is None:
+
+1
+
+return
+
+:
+
+data = value;
+left= right=null;
+
+:
+
+)
+class testTraversal |
+void inorder (Node root)
+
+{
+if
+
+(root == null)
+
+{
+
+:
+
+inorder (root.left)
+
+:
+
+print (root.data,
+
+:
+
+inorder (root.right)
+
+:
+
+:
+
+"
+
+",
+
+end="")
+
+:
+
+:
+
+:
+
+root = Node(5)
+
+:
+
+I
+
+root.left = Node(3)
+
+1
+
+:
+
+root.right = Node (8)
+
+:
+
+:
+
+root.left.left = Node(2)
+
+:
+
+inorder (root.left) ;
+
+:
+
+root.left.right = Node (4)
+
+:
+
+System.out.println({rcot.data);
+inorder (root.right) ;
+
+:
+
+root.right.left = Node(5)
+
+:
+
+:
+
+root.right.right = Node (9)
+
+:
+
+}
+
+:
+
+inorder (root)
+
+:
+
+public static void main(Stringl[] args)
+
+e o
+
+o
+e
+o
+
+return;
+
+)
+
+Node root = new Node(5);
+root .left = new Node(3);
+root .right = new Node(8);
+root .left.left = new Node(2);
+root .left.right = new Node(4);
+root .right.left = new Node(§);
+root .right .right = new Node (9) ;
+
+inorder (root) ;
+
+}
+
+Implement the post-order and pre-order traversals
+of a binary tree using recursion.
+
+B
+LT P
+PP
+T T
+
+B2 Programming
+
+=
+Thinking skills:
+Create novel
+solutions to
+problems — choose
+an iterative
+program you have
+created before, and
+
+attempttorewrite.
+it using a recursive
+approach
+
+Use your answer to the programming exercise above to answer the following questions.
+1 Did you use two different functions to solve the exercise? Did the functions work
+as expected?
+2 Did you use any local or global variables? Why did you need any local variables, if
+you used any?
+
+(@ Common mistake
+B
+.
+i
+Practical questions requiring algorithms to be described often lack clarity. Ensure steps are clearly
+outlined. You can support explanations by adding code or pseudocode statements, but those
+should be clearly explained to gain marks.
+
+B2.4 Programming algorithms
+
+[}
+"‘4_:
+=
+
+File processing
+Programming algorithms . ...
+et
+e e e e e eee e aaa i aaannnaas 3/ O
+B2.5
+Flle PrOCESSING ...ttt
+et

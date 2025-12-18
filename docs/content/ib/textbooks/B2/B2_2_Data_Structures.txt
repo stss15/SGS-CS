@@ -1,0 +1,1666 @@
+Data structures
+
+SYLLABUS CONTENT
+By the end of this chapter, you should be able to:
+» B2.2.1 Compare static and dynamic data structures
+P> B2.2.2 Construct programs that apply arrays and lists
+» B2.2.3 Explain the concept of a stack as a Last In First Out (LIFO) data structure
+» B2.2.4 Explain the concept of a queue as a First In First Qut (FIFO) data structure
+
+B2.2.1 Static vs dynamic data structures
+A data structure is a way of storing and organizing data, so it allows for its manipulation in
+an efficient way and attempts to reduce the time and space complexity. Arrays, lists, stacks,
+
+queues, binary trees and hash tables are all examples of data structures. Data structures can be
+# Static data
+structure: a data
+structure with
+predefined fixed size
+and elements stored
+in contiguous memory
+
+static or dynamic, the two differing in terms of storage and access to their elements.
+A static data structure has a predefined fixed size, a specific memory space being allocated to
+it, that will not change when running the program, and elements that are stored in contiguous
+
+memory locations. Elements in a static data structure can be either directly accessed or
+sequentially accessed.
+
+locations.
+
+A dynamic data structure has no predefined fixed size, it can grow or decrease at runtime and
+
+4 Dynamic data
+structure: a data
+
+its elements are stored in memory locations that are chained together but are not necessarily
+
+structure that can grow
+or decrease at runtime,
+
+with elements stored in
+memory locations that
+
+contiguous. Elements in a dynamic data structure cannot be directly accessed.
+Static data structure
+
+Advantages
+
+Disadvantages
+
+®
+
+Fast access time, as elements can be directly
+accessed via the index (position of the element in
+the data structure)
+
+.
+
+Inefficient use of memory, as there is a need to
+know in advance the likely size of the structure to
+allocate sufficient memory
+
+*
+
+No need to deal with possible overflow or
+underflow errors when adding or deleting
+
+*
+
+Memory is allocated, regardless or whether or
+not it is needed
+
+are chained together,
+
+but not necessarily
+contiguous.
+# Direct access: a
+method of access where
+
+elements are directly
+retrieved by using their
+
+®
+
+elements as the size is fixed
+
+®
+
+Does not allow for flexibility, as its size is fixed
+
+Easier to program; there is no need to check on
+
+®
+
+Deletion of an element might create a vacant slot
+
+its size at any time
+
+code to reuse this space might take time
+
+index (position).
+
+4 Sequential access: a
+method of access where
+elements are checked
+one after another,
+from the beginning to
+the end of the data
+
+between two other elements, and changing the
+*
+
+|nsertion of elements between two other elements
+if there isn't a vacant space is time-consuming
+
+Dynamic data structure
+Advantages
+
+Disadvantages
+
+*
+
+Allows for flexibility — it can shrink or grow as
+needed at runtime (suitable when the size of data
+is not known in advance or may change in time)
+
+.
+
+*
+
+Efficient use of memory; as it can resize itself,
+there is no memory waste
+
+structure.
+
+*
+
+Insertion and deletion operations are optimal
+concerning time and space complexity
+
+The programmer needs to deal with overflow
+(the structure might exceed the memory limit)
+and underflow (it might attempt to delete an
+item from an already empty structure) situations
+when inserting or deleting elements
+
+®
+
+Harder to program, as the
+nepprogrammer is required
+!
+always to keep track of its size and data allocations
+
+B2 Programming
+
+B2.2.2 Arrays and lists
+Hl One-dimensional arrays (Java) and one-dimensional lists
+(Python)
+Suppose your teacher wants to store the grades of 100 students. One way to complete this task
+is to use 100 variables, but this means lots of memory waste, many lines of code and a lot of
+effort. And what if this teacher needs to store 1000 grades?
+A better solution is to store all those 100 or 1000 elements under a single name or a single
+identifier. The array data structure allows you to do this.
+A 1D array (Java) or a 1D list (Python) is a data structure that stores elements of the same data
+type, under one single identifier (name). Those elements can be directly accessed by using
+an index (plural indices), where the index indicates the position in the array. Some languages
+indicate the first index as being the 0 element, and others allow the programmer to indicate
+
+how the items will be addressed.
+Tor example, an array of five integers storing students’ grades out of 100 is called grades.
+Graphically, arrays can be represented horizontally or vertically.
+index (position in array): lower limit: 0, upper limit: 4
+
+ol (1] [21 3] [4)
+
+grades |75|64|95|50|34
+
+array size: 5
+
+64|[1]
+
+grades |95 |[2]
+50|[3]
+grades[2] = 95
+
+34|[4]
+
+W 1D array (list)
+
+The array element at index 2 (the 3rd element, when counting from 0) can be directly accessed
+
+by using the name of the array followed by the index: grades [2] . Keep in mind that, if the
+first element has index 0, the last element is at index 4 (in this case, the grades array has only
+five items).
+
+To process arrays, loops are used. Loops can be used to traverse the array; therefore, any time
+you perform calculations on all elements of an array, find an element, sort them, and so on,
+you will use loops.
+
+One-dimensional arrays (Java)
+Array declaration and initialization:
+To use arrays in Java, they must be declared, and the language allows for different ways to do
+this. First, square brackets [] are used to differentiate between a variable and an array. They
+
+B2.2 Data structures
+
+can appear before or after the array name:
+int grades
+int
+
+[]; //an array called grades of integers
+
+[] grades; //grades array of integers
+
+i
+
+After deciding where you want to place the square brackets (most often, the first example is
+used), you need to specify the size of the array, as it is a static data structure.
+
+Declaration:
+int grades([]l=new int[5];
+
+i
+
+//grades array can store maximum 5
+
+//elements
+
+:
+
+If the array is of integer or double or float type, and there is no further initialization of the
+array elements, Java automatically initializes all its elements to 0.
+Initialization:
+
+{ grades[0]=75;
+grades[1]=64;
+i
+
+grades[2]=95;
+
+! grades[3]1=50;
+¢ grades[4]=34;
+
+At this point, the elements of the array are given specific values, the value 0 being overwritten.
+Another way to declare and initialize the array is like this:
+int grades[]= new int[]{75,64,95,50,34};
+
+But this can also be rewritten in a simpler way, like this:
+Ye
+T
+TPP
+
+T prr. wes
+
+int grades[]={75,64,95,50,34};
+
+Sometimes, the developer will have to allow the user to initialize the array. In such cases, you
+can simply declare the array and use a loop to allow the user to populate the array.
+read = new Scanner (System.in) ;
+int grades[]=new int[5];
+
+for(int i=0;i<5;i++)
+:
+
+!
+
+{
+
+System.out.println("Enter a number:
+
+");
+
+:
+
+int value = read.nextInt();
+grades [i] =value;
+
+The loop repeats five times, and it requires the user to enter an integer value that will be stored
+into the array indicated by index i (from 0 to 4).
+
+B2 Programming
+
+1f the array is of type string, it would look like this:
+String pilots[]=
+
+{"Bob",
+
+Boolean passedExam[ ]
+
+"John",
+
+= {true,
+
+T T T Ty B
+
+"Elvis"};
+
+false,
+
+true};
+
+T T
+
+T
+
+T T LT TT T T PP T
+
+One-dimensional lists (Python)
+Python replaces arrays with lists, but you can manipulate those lists to behave like arrays.
+In Python, data structures don't need to be declared. Square brackets are still used to specify
+that the data structure used is a 1D list.
+For example, the grades array will look like this:
+:
+
+grades =
+
+FPm
+
+[75,64,95,50,34]
+
+e eeee
+
+: grades =
+
+ee e e
+
+1
+
+e e e e e e
+
+ee
+
+mmm e
+
+:
+
+for i in range(5):
+
+:
+
+#stores value entered at given index
+
+:
+
+grades[i]
+
+o
+
+mm s
+
+————— == 1
+
+[0]*5 #creates an array of 5 zeros
+#repeats 5 times
+
+= int(input ("enter a value:
+
+e
+
+:
+
+e e e e
+
+e e M e e e R M R e
+
+:
+
+:
+"))
+
+:
+
+R M M M e e e e e e
+
+o
+
+e ww ww owm owwoww o
+
+The first line in the code above specifies the initial value each element in the list will take (in this
+
+case, 0). After the *, it is the size of the list (meaning there are five Os in this list at first).
+1f you were to write this line of code as grades =
+
+[ ], when trying the FOR loop an
+
+error would be thrown (index out of range), as the size of the list would be none or zero, so
+
+there would not be a way to add any new elements to it. However, the following statement is
+completely valid:
+
+T1 grades =
+
+[]
+
+: grades =
+
+[0 for i in range(5)]
+
+1
+
+TTTTTTTT T i1
+:
+
+1
+
+And this is possible because the grades list is overwritten. But this could have been just
+like this:
+
+1
+1
+1
+
+grades =
+
+[0 for i in range(5)]
+
+B
+
+o o
+
+e
+
+o
+
+o o
+
+e e e e
+
+e e
+
+e e e e e e e e
+
+:
+
+1
+e e e e
+
+e e e e e
+
+e e
+
+- - -
+
+The purpose of the line above is to initialize the grades list to 0 for all its five elements.
+The following two lists are examples of a 1D list of type string and a 1D list of type Boolean:
+|5
+
+T
+
+pilots =
+
+i
+
+T
+
+e
+
+["Bob",
+
+"John",
+
+passedExam =
+
+B2.2 Data structures
+
+[True,
+
+e
+"Elvis"]
+
+False,
+
+True]
+
+e
+
+e
+
+e s i e Al
+
+i
+
+Parallel arrays: a
+
+T or more arrays
+7 of the same size,
+i
+Parallel arrays represent two
+such that
+the n™ th element of the
+
+group of arrays of the
+
+first array is related to the n™ element of the second array, and so on. The values stored on
+
+same size, where the
+
+those arrays at a given index will be related in some form, for example defining a record data
+
+element at a given index
+in one of the arrays
+corresponds to another
+element at the same
+index in another array,
+like descriptions of a
+
+structure to store details about students. So, the first array will store the students’ names,
+
+the second array their ages, the third array their addresses. When retrieving the element of
+position 3 from each of those arrays, you'll be able to identify the name, age and address of the
+
+third student.
+
+1
+
+Construct a program that creates a 1D array or list that stores six integer values. Output true
+if the first element in the array is the same as the last element in the array.
+
+2
+
+Construct code that requires the user to enter a number. Use that number as the size of
+an array or list of integers to be inputted from the keyboard. Calculate the sum of all even
+numbers in the array or list; calculate the average of all its elements; and count how many of
+those elements are odd numbers. Display those values.
+
+3
+
+Construct a program that creates an array or list that stores five names. Copy those elements
+in a second array or list in reverse order. Display the second array or list.
+
+Use your answers to the programming exercises above to answer the following questions.
+1 What data type was your output for question 1? Was it a Boolean or a string variable?
+Which one do you think is more appropriate?
+2 What was the initial value of the count variable you used for question 2 to count
+how many array elements were odd? Why was it important to set an initial value for
+this variable?
+3 Did the results for question 3 display accurately? What loops did you use to traverse
+the arrays? Could those loops have been replaced by other types of loops? Which
+are those?
+
+GCommon mistake
+Algorithms written to solve a problem should function correctly. When asked to construct an
+algorithm that finds the smallest value in a 1D array or 1D list, many candidates initialize a variable
+called min to 0 and then compare each element in the array with that one to find a smaller value.
+The data structure could store only pasitive numbers; therefore, you will not find a value smaller
+than 0.
+Remember to initialize that variable to the first element in the array. In this case, if no other
+element is smaller, you have already stored the smallest one.
+
+B2 Programming
+
+Bl Two-dimensional arrays / lists
+
+column
+
+[6]
+
+[1 ]
+
+[ 2]
+
+A two-dimensional array can be seen as a table, with rows
+
+and columns. To manipulate and traverse a 2D array,
+
+[0]] 1
+
+e—11]] 4
+[2]| 7
+
+2
+
+3
+
+two indices are used: one for the rows and one for the
+columns. When writing code, rows are always first and
+
+5
+
+columns second.
+
+6 ————————— numbers
+
+Look at the figure for storing numbers from 1 to 9 in a table
+with three rows and three columns. You will create a 2D
+
+8
+
+9
+
+array or a 2D list for this purpose.
+Each element in a 2D array (Java) or 2D list (Python) can
+
+n uy] be rS[/] [1]\: 8 ——value
+
+pe directly accessed by specifying its indices (row index
+and column index).
+
+identifier
+
+row index
+
+column index
+
+M 2D array (list)
+
+Declaration
+
+int numbers[
+
+]
+
+[ ]
+
+= new int
+
+[3]
+
+[3];
+
+iy
+S S S
+S
+—
+1
+1
+
+1 Python
+
+1
+I numbers =
+[
+
+I
+
+[[0 for i1 in range(3)]
+
+for j
+
+in range(3)]
+
+1
+1
+1
+
+The first value of 3 indicates the number of rows, and the second one the number of columns.
+The value of 0 in the Python example refers to the initial value this list will be set to.
+In Python, the 2D list will appear as a table
+
+In Java, the 2D array will only include the
+
+with three rows and three columns, all filled
+
+structure of the table, as there are no initial
+
+with zeros, as shown in the diagram below:
+
+values provided:
+
+[0] [1] [2]
+
+[0] [1] [2]
+
+0lfojo
+
+|0
+
+[0]
+
+[1ljo|0
+
+|0
+
+[1]
+
+[2llo|o0|o0
+
+[2]
+
+M 2D array (list) filled with zeros
+
+M Empty 2D array
+
+Manipulating 2D arrays or lists requires the use of two loops: the first one for the rows and the
+second one for the columns. When addressing one specific item in the array or list, this is done
+by using the name of the array or list followed by square brackets that include the row and
+column indices.
+numbers [0] [2] refers to the element in the array numbers, located at the intersecrion of
+
+the first row with the third column.
+
+B2.2 Data structures
+
+Java
+Scanner reader = new Scanner (System.in);
+int numbers[] []= new int[3] [3];
+
+for(int i = 0; i<3;i++)
+
+{
+
+for(int j=0; j<3;j++)
+
+|
+
+System.out.println("enter a number:
+
+");
+
+int value = reader.nextInt
+() ;
+numbers[i] [j]=value;
+
+}
+for(int i = 0; i<3;i++)
+
+{
+
+for(int j=0; j<3;j++)
+
+{
+
+System.out.print (numbers[i] [j]1+ "
+
+");
+
+}
+System.out .print ("\n") ;
+
+1
+1
+numbers =
+
+[[0 for i in range(3)]for j
+
+for i in range
+for j
+
+in range(3)]
+
+i
+
+(0,3):
+
+1
+
+in range(3):
+
+:
+
+value = int (input ("enter a number:
+
+"))
+
+:
+
+numbers [i] [j]=value
+
+:
+
+for i in range(3):
+for j
+
+H
+
+in range (3):
+
+print (numbers([i] [§],
+
+:
+"
+
+",
+
+end ="")
+
+:
+
+print {("\n")
+
+:
+a
+
+The first two count-controlled loops are used to traverse the array (i for the rows and j for the
+columns). Then the user is asked to enter a number that is stored in the variable value, which
+
+is then assigned to the array or list numbers.
+The last two loops are used to traverse the array or list, so the values stored in the array are
+displayed on the screen.
+A 2D array can also have a different number of rows and columns.
+
+In the example above, the array numbers will be constructed with two rows and three columns.
+
+B2 Programming
+
+1
+
+™
+
+[ ]
+
+I
+5
+0
+=
+o
+5
+3]
+
+int numbers[ ]
+
+IS
+
+To fill the array with values, the following code can be used:
+
+Construct code that creates a two-dimensional array or list with three rows and three
+columns. Fill it with values read from the keyboard. Calculate the sum of all values and their
+average, and display the results.
+
+2
+
+Construct a program that creates a two-dimensional array or list with three rows and three
+
+columns. Display the sum of all elements per column. Display the average of all elements
+per row.
+3
+
+Construct code that creates a two-dimensional array or list with three rows and three
+
+columns that stores random numbers. Display the array and output the sum of all the
+elements on the principal diagonal. Calculate the sum of the elements on the secondary
+diagonal and display this value as well.
+
+4
+
+Matrix calculations are used extensively in machine learning within Computer Science. The
+following constraints exist to calculate a dot product: width of matrix A must match height of
+matrix B. Given two 2D arrays (lists) of integers that represent matrices, construct a program
+to calculate and solve the dot product of those two matrices.
+
+TR
+"Dot product”
+
+(;Common
+mistake
+
+1
+
+2
+
+3
+
+Algorithms written
+
+4
+
+5
+
+6
+
+to solve a problem
+
+should function
+correctly. Many
+students lose marks
+for incorrect use of
+indices in 2D arrays
+or incorrectly looping
+through 2D arrays,
+such as overlooking
+boundaries or not
+using two indices to
+traverse the array.
+Remember that you
+always use rows first
+and columns second.
+
+B2.2 Data structures
+
+X
+
+7
+
+8
+
+9
+
+10
+
+L1112
+
+7
+
+8
+
+9
+
+10
+
+11
+
+12
+
+Reflect on the most challenging parts of the programming exercises. How did you approach
+them? Did you seek support, did you research or did you apply any other strategies? What did
+
+you learn from this experience that you can apply to solve future problems?
+
+B ArraylLists in Java
+An ArrayList in Java is a class that allows the use of a dynamic array to store elements, this
+time without a pre-defined size. ArrayLists can hold duplicate elements, they allow for random
+
+access and they maintain the insertion order.
+To be able to use an ArrayList, you need to import the java.util package:
+
+This will import the entire package, or you can specifically choose to import just the required class:
+import java.util.ArrayList;
+
+Keep in mind that, when working with ArrayLists, the data type integer appears as Integer
+instead of int.
+If the ArrayList will store text, then it would look like this:
+
+To be able to manipulate elements in an ArrayList, there are specific methods that can be used:
+Method
+
+Explanation
+
+Code example
+
+add()
+
+Add a new element passed as an argument
+
+grades.add(75);
+
+get()
+
+Access an element at a given position (specified in the brackets)
+
+grades.get(2);
+
+set()
+
+Update an element at a given index (first argument is the index; the | grades.set(2, 64);
+second one is the value)
+
+remove()
+
+Delete an item at a specific index
+
+grades.remove(2);
+
+size()
+
+Returns the number of elements in the ArrayList
+
+grades.sizel();
+
+clear()
+
+Delete all elements in the ArrayList
+
+grades.clear();
+
+Arraylist<Integers> grades = new ArraylList<Integers>();
+grades.add(75);
+! grades.add(64);
+
+LT T T T TP
+
+To traverse an ArrayList, you can use a FOR loop:
+
+grades.add(50);
+
+: grades.add(34);
+§
+
+for(int i=0;i<grades.size()
+;i++)
+
+{
+
+System.out.println(grades.get(i));
+
+sessnnsnies B
+
+: grades.add (95) ;
+
+B2 Programming
+
+In the code above, the grades ArrayList of type integer is declared. Five elements are added
+
+to the ArrayList. A loop is used to traverse it (the size () method will return the number
+of items in the ArrayList to specify how many repetitions will occur), and each element is
+retrieved using the get () function and passing the corresponding index of the element that is
+
+then displayed on the screen.
+Another example of traversing the ArrayList is by using a FOR-EACH loop instead:
+ArrayList<Integers> grades = new ArrayList<Integers();
+grades.add(75);
+grades.add(64);
+
+grades.add(95);
+grades.add(50);
+grades.add(34)
+;
+
+for
+
+(int i: grades)
+
+{
+
+System.out.println (i) ;
+
+In this example, the variable 1 is not an index, but it is an element in the grades
+ArrayList instead.
+
+B Dynamic lists in Python
+A dynamic list in Python is a dynamic data structure, meaning it does not have a fixed size.
+Dynamic lists can store duplicate values. When creating a dynamic list, you can simply declare
+it as an empty list: grades =
+
+[]
+
+However, when wanting to insert a new element, attempting to write something like this:
+grades [0]
+
+= 75 will throw an error.
+
+To manipulate dynamic lists, specific methods can be used:
+Method
+
+Explanation
+
+Code example
+
+append() | Add a new element passed as an argument at the end of the list
+
+grades.append(75)
+
+insert()
+
+grades.insert(0,64)
+
+Insert a new element at a given index (first argument is the index,
+the second is the value to be inserted)
+
+remove() | Delete the first occurrence of a given item passed as an argument
+
+grades.remove(75)
+
+popl()
+
+Delete the element at the specified index
+
+grades.pop|(0)
+
+popl)
+
+Delete the last element if no index is given
+
+grades.popl)
+
+clear()
+
+Empty the entire list
+
+grades.clear()
+
+len()
+
+Return the size of the list
+
+len(grades)
+
+To loop through a dynamic list, a FOR loop can be used:
+grades=[]
+grades.append (75)
+grades.append (64)
+grades.append (95)
+
+grades.append (50)
+grades.append (34)
+for i in range
+
+(len(grades)):
+
+print (grades[i])
+
+B2.2 Data structures
+
+Another way to achieve the same is:
+grades=1[]
+
+grades.append
+(75)
+grades.append
+(64)
+grades.append
+(95)
+grades.append
+(50)
+grades.append
+(34)
+for i in grades:
+print (i)
+
+In this case, i is not the index, but an element in the dynamic list.
+
+1
+
+2
+
+Construct programming code to create an ArrayList in Java or a dynamic list in Python that
+stores five colours.
+a
+
+Construct code to insert a sixth colour after the third.
+
+b
+
+Change the element at the second position to a different colour.
+
+¢
+
+Delete the last element.
+
+d
+
+Display the new data structure.
+
+Construct a program that creates an ArrayList in Java or a dynamic list in Python that stores
+
+3
+
+4
+
+Append three more values to the end of the data structure.
+
+N
+Qo
+
+Store the first element into a variable.
+
+o
+
+Display the size of the data structure.
+Display the first element.
+
+Replace all the other elements with this value.
+
+-
+
+oW
+
+three numbers.
+
+Display the new values.
+
+Construct a program that creates an ArrayList in Java or a dynamic list in Python that stores
+three different numbers.
+a
+
+Store the second value into a variable and insert it into the data structure at the end.
+
+b
+
+Display the index of the first occurrence of that value.
+
+Construct programming code that creates an ArraylList in Java or a dynamic list in Python that
+stores four different values.
+a
+
+Display all the elements.
+
+b
+
+Swap the values of the second and third elements.
+
+¢
+
+Display the new data structure.
+
+B2.2.3 Stacks
+If you were a bank cashier, you would deal with lots of coins. To easily manipulate those, the
+coins are categorized based on their values and stored in piles, for example a pile of 10p coins,
+a stack of 20p coins, another stack of 50p coins, and so on. When the cashier needs one of
+
+these coins, they would get it from the top of the pile containing the required coin value, so the
+stack remains intact. When the cashier needs to add a new coin to one of the piles, they would
+add the new coin to the pile; again, on top of it.
+B2 Programming
+
+Another example would be a stack of plates: a new plate is
+added to the top of the stack and a plate is removed from
+the top of the stack, otherwise plates can break.
+
+In Computer Science, when performing actions that work
+on the same principle, a specific abstract data structure
+called stack can be used. The stack works on the principle
+of Last In First Out (LIFO) or First In Last Out (FILO),
+
+meaning that only the top element is accessed. The
+operation of removing an item from the stack is called
+pop, which means taking off the top element, while the
+operation of adding an item to the stack is called push,
+meaning adding an item to the top of the stack.
+
+B Stacks of coins
+
+# Stack: an abstract
+
+push (value)
+
+data structure that
+works on the LIFO
+principle.
+
+pop ()
+
+# Last In First Out
+or First In Last Out
+
+principle: the last
+
+8
+
+toplndex =1
+
+element inserted is the
+first element removed.
+
+5
+
+# Pop: a method for
+deleting the element
+from the top of a stack.
+Push: 2 method for
+
+M Stack
+
+inserting an element at
+
+A stack can be implemented as a static data structure using arrays (it would have a fixed size)
+
+the top of a stack.
+
+or as a dynamic data structure using a linked list (which would not have a fixed size).
+
+A stack could use a stack pointer variable to indicate the next free available slot in the stack.
+
+# Stack pointer: a
+
+register used to store
+
+B Stack operations
+
+the memory address of
+the last added data in a
+stack, or sometimes the
+first available address in
+a stack.
+
+Operations performed on a stack are:
+B
+
+isEmpty: to check whether the stack is empty; attempting to pop an item from an empty
+stack would throw an undertlow error
+
+public static boolean isEmpty() {
+if(topindex ==-1)
+return true;
+else
+return false;
+
+}
+topindex = -1
+def IsEmpty():
+if toplndex == -1:
+return True
+
+else
+return False
+M Stack operation: isEmpty
+
+B2.2 Data structures
+
+__
+t0p|ndex =-1
+stack is empty
+
+B
+
+isFull:to check whether the stack is full; attempting to push an item into a full stack
+would throw an overflow error
+
+public static boolean isFull() {
+if(topindex == StackSize -1)
+
+topindex =3
+
+return true;
+
+else
+
+return false;
+
+12
+
+}
+def IsFull():
+if topIndex == StackSize -1:
+return True
+else:
+
+5
+
+StackSize = 4
+
+M Stack operation: isFull
+
+B push: to add an item to the top of the stack
+public static void push(int value) {
+
+push(9)
+
+if(isFull())
+System.out.println("Stack
+overflow!");
+
+else {
+topindex++;
+
+stack[topIndex]=value;
+
+12
+
+topIndex = 2
+
+}
+def push(value):
+
+global topindex
+
+5
+
+if IsFull():
+print("Stack overflow")
+
+else:
+toplndex += 1
+Stack[topindex] = value
+M Stack operation: push
+
+® pop: to delete an item from the top ofthe stack
+public static void pop() {
+
+if(isEmpty()
+System.out.println("Stack underflow");
+else
+toplndex—;
+}
+
+/) pop()
+
+12|
+
+toplndex =2
+
+def pop():
+
+global topindex
+if isEmpty():
+print("Stack underflow")
+else:
+toplndex = 1
+M Stack operation: pop
+
+B peek: to return the top element
+
+public static int peek() {
+return stack[topindex];
+
+12) toplindex =2
+
+}
+def peek():
+
+return Stack[topindex]
+M Stack operation: peek
+
+B2 Programming
+
+B Uses of stacks
+Stacks are used when storing data in the order they occurred and when it might be necessary to
+track back to a certain point or action in the past, as they respect the LIFO principle of operation.
+Stacks can be used:
+
+B
+4 Interrupt handling:
+handling interrupt
+reguests.
+
+# Interrupt: a signal
+sent from a device or
+software to request the
+processor’s attention;
+
+the processor will stop
+its current activity
+until the interrupt has
+been serviced.
+# Recursion: a process
+that uses a function
+or procedure that is
+defined in terms of itself
+
+to create an UNDO feature in games: actions are pushed into the stack; when undoing,
+
+actions are popped
+m
+
+to allow backwards navigation on a web browser: pressing the back button performs a pop
+operation; opening a new website performs a push operation
+
+m for interrupt handling: when the current activity of the CPU is interrupted, the content of
+variables and return addresses are stored in a stack; after the interrupt is dealt with, those
+are popped from the stack to restore its activiry
+
+B to evaluate arithmetic expressions: when evaluating RPN (reverse polish notation)
+expressions, the operands are pushed on to the stack; when an operator is met, if it
+
+is a binary operator (requires two operands) two more pop operations will occur, the
+calculation is performed and the result is pushed back into the stack — the process will
+
+continue until the result is reached
+B for recursion: return addresses and values of parameters are stored into a stack to help with
+the unwinding process.
+
+and calls itself.
+4 Queue: an abstract
+
+B2.2.4 Queues
+
+data structure that
+works on the FIFO
+principle.
+
+A queue is a data structure that functions on the FIFO (First In First Out) principle. An example
+
+# First In First Out
+
+of a queue is a line of people waiting to check out at a grocery store. The first to join the queue is
+
+principle: when the first
+element inserted is the
+first element removed.
+
+the first to leave. A new person who joins the line will enter at the end of the queue.
+A queue uses a front pointer to show where elements will be removed from and a rear pointer
+to show where elements will be added to.
+
+LLim
+B Queue
+
+B2.2 Data structures
+
+A queue can be implemented as a static data structure
+using arrays (it will have a fixed size, and it is possible to
+become full as this fixed size cannot be exceeded). Or, a
+queue can be implemented as a dynamic data structure,
+using a linked list (which would not have a fixed size).
+When a queue is implemented as an array, it can often be
+
+seen and managed as a circular queue. This is in case there
+are elements removed from the queue, so that there is still
+
+a way to add new elements, even if the last index has been
+reached, as the queue will not actually be full. In a circular
+
+queue, if the rear pointer becomes equal to the front
+pointer after an item is added, the queue becomes full; it
+they become equal after an item is removed, the queue
+becomes empty.
+
+B Queue operations
+5
+
+Operations performed on a queue are:
+B isFull: checking whether the queue is full; trying to
+
+ENQUEUE
+
+front / head
+
+enqueue an item into a full queue would throw an
+
+overflow error
+=
+
+DEQUEUE
+
+® isEmpry: checking whether the queue is empty; trying
+
+3
+
+9
+
+2
+
+4
+
+to dequeue an item from an empty queue would throw
+
+3
+
+an underflow error
+
+/
+rear / tail / back
+
+B enqueue: adding an item to the rear of the queue
+.
+
+.
+
+B dequeue: removing an item from the front of the queue
+B front displaying the element stored at the front of
+
+the queue.
+
+3
+W Queue pointers
+
+# Enqueue: a method
+of inserting an element
+at the rear of a queue.
+
+Bl Uses of queues
+Queues are used when dealing with simulations or situations that require the first item entered
+to be the first item dealt with. Applications of queues include:
+
+4 Dequeue: a method
+of deleting an element
+from the front of
+
+Printer queues: Printing jobs are stored in a queue. The first printing job sent is the first
+to be dealt with. New printing jobs join the queue at the rear of the queue. As such, all
+
+a queue.
+
+printing jobs are dealt with on a first come first served basis.
+Keyboard queues: The keyboard buffer (which stores characters as they are typed) operates
+as a queue. As such, the first letter to be shown on the screen is the first letter typed. New
+characters are added to the end of the queue.
+Simulations of real-life situations: Checkout queues, car-washing queues, carpark-exiting
+queues, and so on, are all situations that require a queue. People or cars enter the queue on
+one side and exit it on the other side.
+
+1
+
+Define the term “stack”.
+
+2
+
+Define the term “queue”.
+
+3
+
+Identify the main operations of a stack.
+
+4
+
+ldentify the main operations of a queue.
+
+5
+
+Explain the FIFO and the LIFO principles and how they apply to stacks and queues.
+
+6
+
+Identify a real-life scenario where you could use a stack.
+
+7
+
+Identify a real-life scenario where you could use a queue.
+
+8
+
+Outline a situation where the use of a stack might be more efficient than the use of a queue.
+
+9
+
+Qutline a situation where the use of a queue might be more efficient than the use of a stack.
+
+10 Identify a scenario where you might combine a stack and a queue within the same program.
+11 You must store a list of numbers in a particular sequence and then retrieve them in reverse
+order. Identify the data structure that is most suitable for this task and explain your reasoning.
+12 Outline three uses of a stack.
+13 Outline three uses of a queue.
+14 Describe two characteristics of a stack.
+
+B2 Programming
+
+15 Describe two characteristics of a queue.
+16 Compare the use of a stack with arrays or lists.
+17 Compare static and dynamic data structures in terms of data storage and data access.
+18 Explain the meaning of stack overflow and stack underflow and describe when they occur.
+
+19 Use a stack to evaluate the following arithmetic expression: 52 * 3 2+ -
+
+1
+
+Construct a program that creates a stack that has a maximum size of seven elements. Push
+
+five words into the stack. Display the top element. Pop two words from the stack and display
+the top element.
+2
+
+Construct a program to reverse the elements from a given queue using a stack.
+
+(;Common
+mistake
+Students often lose
+marks by not giving
+responses appropriate
+
+Use your solutions to the programming exercises above to answer the following questions.
+1
+
+Why is the maximum size of the stack important? What happens if this maximum size
+
+to the keywords used
+
+2
+
+is exceeded?
+How would you change the solution to Exercise 2 if you were asked to reverse the
+elements of a stack using a queue structure instead?
+
+in the question. For
+example, “compare
+static and dynamic
+
+data structures”
+is expecting you
+to provide both
+similarities and
+
+differences between
+the two types of data
+structures, rather than
+just differences.
+
+B2.2 Data structures
+
+(;Common mistake
+When required to state applications of a data structure, such as a queue or stack, students often
+
+lose marks for not being clear enough to gain the marks. For example, saying that stacks are used
+to undo would not be enough to gain any marks.
+Be specific and explain a clear situation where an undo feature is needed, such as implementing
+an undo feature in games: actions are pushed on to the stack and, when the previous action is
+needed, the undo feature is used to pop the top action from the stack.
+

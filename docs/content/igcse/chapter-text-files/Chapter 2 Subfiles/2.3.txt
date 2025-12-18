@@ -1,0 +1,874 @@
+2.3 Symmetric and asymmetric encryption
+2.3.1 The purpose of encryption
+When data is transmitted over any public network (wired or wireless), there
+is always a risk of it being intercepted by, for example, a hacker. Under
+these circumstances, a hacker is often referred to as an eavesdropper. Using
+encryption helps to minimise this risk.
+Encryption alters data into a form that is unreadable by anybody for whom the
+data is not intended. It cannot prevent the data being intercepted, but it stops it
+from making any sense to the eavesdropper. This is particularly important if the
+data is sensitive or confidential (for example, credit card/bank details, medical
+history or legal documents).
+
+Link
+For more on cyber
+security see
+Chapter 5.
+
+Plaintext and ciphertext
+The original data being sent is known as plaintext. Once it has gone through an
+encryption algorithm, it produces ciphertext:
+Ciphertext
+
+Plaintext
+
+Ciphertext
+Plaintext
+
+Decryption
+algorithm
+
+Encryption
+algorithm
+
+Internet
+
+Encryption
+key
+
+Decryption
+key
+
+▲ Figure 2.18 Plaintext and ciphertext
+
+2.3.2 Symmetric and asymmetric encryption
+Symmetric encryption
+Symmetric encryption uses an encryption key; the same key is used to encrypt
+and decrypt the encoded message. First of all, consider a simple system that
+uses a 10-digit denary encryption key (this gives 1 × 1010 possible codes); and a
+decryption key. Suppose our encryption key is:
+4291362856
+which means every letter in a word is shifted across the alphabet +4, +2, +9, +1,
+and so on, places. For example, here is the message COMPUTER SCIENCE IS
+EXCITING (plaintext on the top line of Figure 2.19) before and after applying
+the encryption key (forming the ciphertext shown on the bottom line of
+Figure 2.19):
+C
+
+O M P
+
+U
+
+T
+
+E
+
+R
+
+S
+
+C
+
+I
+
+E
+
+N
+
+C
+
+E
+
+I
+
+S
+
+E
+
+X
+
+C
+
+I
+
+T
+
+I
+
+N
+
+G
+
+4
+
+2
+
+9
+
+1
+
+3
+
+6
+
+2
+
+8
+
+5
+
+6
+
+4
+
+2
+
+9
+
+1
+
+3
+
+6
+
+2
+
+8
+
+5
+
+6
+
+4
+
+2
+
+9
+
+1
+
+3
+
+G
+
+Q
+
+V
+
+Q
+
+X
+
+Z
+
+G
+
+Z
+
+X
+
+I
+
+M G W D
+
+H
+
+O
+
+U
+
+M C
+
+I
+
+M
+
+V
+
+R
+
+O
+
+J
+
+▲ Figure 2.19 Plaintext into ciphertext using 10-digit encryption key
+
+63
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 63
+
+25/02/21 11:21 AM
+
+2 Data transmission
+
+To get back to the original message, it will be necessary to apply the same
+decryption key; that is, 4 2 9 1 3 6 2 8 5 6. But in this case, the decryption
+process would be the reverse of encryption and each letter would be shifted –4,
+–2, –9, –1, and so on. For example, ‘G’
+‘C’, ‘Q’
+‘O’, ‘V’
+‘M’, ‘Q’
+‘P’, and
+so on.
+However, modern computers could ‘crack’ this encryption key in a matter of
+seconds. To try to combat this, we now use 256-bit binary encryption keys that
+give 2256 (approximately, 1.2 × 1077) possible combinations. (Even this may not be
+enough as we head towards quantum computers.)
+Find out more
+One of the ways of
+mitigating the risk of
+symmetric keys falling
+into the wrong hands
+(known as the key
+distribution problem)
+is to use a system
+based on modulo-11,
+where both sender and
+receiver can calculate
+the encryption key
+without it actually
+being exchanged in any
+way. Find out how this
+system works.
+
+The real difficulty is keeping the encryption key a secret (for example, it needs
+to be sent in an email or a text message which can be intercepted). Therefore,
+the issue of security is always the main drawback of symmetrical encryption,
+since a single encryption key is required for both sender and recipient.
+
+Asymmetric encryption
+Asymmetric encryption was developed to overcome the security problems
+associated with symmetric encryption. It makes use of two keys called the public
+key and the private key:
+» public key (made available to everybody)
+» private key (only known to the computer user).
+Both types of key are needed to encrypt and decrypt messages.
+We will use an example to explain how this works; suppose Tom and Jane work for
+the same company and Tom wishes to send a confidential document to Jane:
+1 Jane uses an algorithm to generate a matching pair of keys (private and
+public) that they must keep stored on their computers; the matching pairs of
+keys are mathematically linked but can’t be derived from each other.
+2 Jane now sends her public key to Tom.
+Tom
+Public key
+
+Jane sends Tom
+her public key
+
+Jane
+Public key
+Private key
+
+▲ Figure 2.20 Jane sends Tom her public key
+
+3 Tom now uses Jane’s public key ( ) to encrypt the document he wishes to
+send to her. He then sends his encrypted document (ciphertext) back to Jane.
+Tom
+Public key
+
+Tom sends Jane
+an encrypted
+document
+
+Jane
+Public key
+Private key
+
+▲ Figure 2.21 Encrypted document sent from Tom to Jane
+
+4 Jane uses her matching private key ( ) to unlock Tom’s document and
+decrypt it; this works because the public key used to encrypt the document
+and the private key used to decrypt it are a matching pair generated on Jane’s
+computer. (Jane can’t use the public key to decrypt the message.)
+
+64
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 64
+
+18/02/21 3:48 PM
+
+2.3 Symmetric and asymmetric encryption
+
+Activity 2.8
+1 At the moment Jane can only receive encrypted documents from Tom.
+Describe what would need to happen for Jane to be able to send encrypted
+documents back to Tom.
+2 Explain why this method is much more secure than symmetric encryption.
+
+Jane can also exchange her public key with any number of people working in
+the company, so she is able to receive encrypted messages (which have been
+encrypted using her public key
+) and she can then decrypt them using her
+matching private key:
+Tom
+
+Susan
+
+Mike
+
+Megan
+
+Public key
+
+Public key
+
+Public key
+
+Public key
+
+Jane
+Public key
+Private key
+
+▲ Figure 2.22  The sharing of Jane’s public key
+
+However, if a two-way communication is required between all five workers, then
+they all need to generate their own matching public and private keys. Once this
+is done, all users then need to swap public keys so that they can send encrypted
+documents/files/messages between each other. Each worker will then use their
+own private key to decrypt information being sent to them.
+Find out more
+1 Using Figure 2.22 as your template, draw a new diagram showing the public
+keys and private keys that need to be swapped if Jane wishes to have a two-way
+exchange of encrypted documents between Tom, Susan, Mike and Megan.
+2 Consider the complexity, if all five people want to have secure two-way
+communication between each other (and not just with Jane). This would mean each
+of the five workers sharing their own public keys with each of the other workers.
+
+Activity 2.9
+For each of the following ten questions, choose which of the five options
+corresponds to the correct response.
+a What is meant by the term ciphertext when used in encryption?
+A an encryption or decryption algorithm
+B an encrypted message
+C a type of session key
+D another name for plaintext
+E text following an encryption algorithm
+
+65
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 65
+
+25/02/21 11:22 AM
+
+2 Data transmission
+
+b When carrying out asymmetric encryption, which of the following users would
+keep the private key?
+D all recipients of the message
+A the sender
+E none of the above
+B the receiver
+C both sender and receiver
+c In encryption, which of the following is the term used to describe the message
+before it is encrypted?
+D ciphertext
+A simpletext
+E firsttext
+B plaintext
+C notext
+d Which of the following is the biggest disadvantage of using symmetric encryption?
+A it is very complex and time consuming
+B it is rarely used anymore
+C the value of the key reads the same in both directions
+D it only works on computers with older operating systems
+E there is a security problem when transmitting the encryption key
+e Which of the following is the correct name for a form of encryption in which
+both the sender and the recipient use the same key to encrypt and decrypt?
+D same key encryption
+A symmetric key encryption
+E block cipher encryption
+B asymmetric key encryption
+C public key encryption
+f What of the following is the final number in a code, which is calculated from all
+the numbers in the code; its purpose is to find errors in data entry?
+D parity bit
+A parity check
+E check digit
+B checksum
+C cyclic redundancy check
+g Which of the following is a form of error detection that makes use of a system
+of acknowledgements and timeouts?
+D parity bit
+A automatic repeat request
+E cyclic redundancy check
+B echo check
+C check digit
+h Which of the following methods uses an extra bit added to a byte to ensure it
+contains an even number of 1s or odd number of 1s?
+D check digit
+A cyclic redundancy check
+E echo check
+B parity check
+C checksum
+i Which of the following uses a calculated value which is sent after a block of
+data; the receiving computer also calculates the value from the block of data
+and compares the values?
+D checksum
+A parity check
+E automatic repeat request
+B check digit
+C packet switching
+
+66
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 66
+
+18/02/21 3:48 PM
+
+2.3 Symmetric and asymmetric encryption
+
+j
+
+Which of the following describes the check where the receiving computer
+sends back a copy of the data to the sending computer to allow it to compare
+the data?
+D parity check
+A echo check
+E check digit
+B automatic repeat request
+C checksum
+
+Extension
+For those students considering the study of this subject at A Level, the following
+section gives some insight into further study on encryption.
+Quantum cryptography exploits the laws of quantum mechanics to improve
+on the security of data. Quantum cryptography is based on the use of particles
+of light called photons (with energy calculated according to the formula: E =
+hf) and their physical quantum properties to produce a virtually unbreakable
+encryption system. This helps protect the security of data being transmitted over
+fibre optic cables. The technology is based on the laws of physics, rather than
+mathematics which is how the current cryptography methods already covered in
+this chapter work.
+One of the uses of quantum cryptography is when sending encryption keys across
+a network – this uses a Quantum Key Distribution (QKD) protocol (one of the most
+common is called BB84).
+QKD uses quantum mechanics to ensure a secure transmission of encryption
+keys. They use a Qubit (Quantum bit) which is the basic unit of quantum ‘data’.
+Unlike normal binary (which uses discrete 0s and 1s), the state of a Qubit is both 0
+and 1 until the photon is measured.
+A photon normally vibrates or oscillates in all different directions. Polarisation
+restricts these vibrations to particular directions. The following diagram shows
+how a photon can be polarised in one of two bases – the rectilinear (up/down and
+side-to-side) basis and the diagonal basis. Do not worry too much about what
+a basis is – you can just think of them as two different ways of preparing and
+measuring the photon.
+Photon oscillating in its various directions
+Diagonal basis
+
+The effect of four
+polarisers on a
+photon showing
+the resultant
+polarised photon
+Rectilinear basis
+
+▲ Figure 2.23 Quantum cryptography
+67
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 67
+
+18/02/21 3:48 PM
+
+2 Data transmission
+
+So how do we use quantum cryptography to send an encryption key from ‘A’ to ‘B’
+using the QKD protocol? To understand this we need to note that:
+» Photons can be polarised in one of two bases – rectilinear or diagonal.
+» In the rectilinear basis, 1 can be represented by and 0 by . In the diagonal
+basis 1 is and 0 is .
+» A photon that is polarised in the rectilinear basis will always give the same
+result when measured in the rectilinear basis. So, if a photon is polarised as ‘1’
+in the rectilinear basis ( ) it will always be measured in the rectilinear basis to
+have the polarisation .
+» Similarly, a photon that is polarised in the diagonal basis will always give the
+same result when measured in the diagonal basis. So, if a photon is polarised
+as ‘1’ in the diagonal basis ( ) it will always be measured in the diagonal basis
+to have the polarisation .
+» However, if a photon is polarised in the rectilinear basis but measured in the
+diagonal basis then information about the original polarisation is lost. The
+result of the measurement has a 50-50 chance of being or because in
+the diagonal basis the photon is in both 1 and 0 states at the same time! This
+measurement tells the receiver nothing about the photon’s original polarisation
+in the rectilinear basis.
+» Similarly, if a photon is polarised in the diagonal basis but measured in the
+rectilinear basis then information about the original polarisation is lost. The
+result of the measurement has a 50-50 chance of being or because in
+the rectilinear basis the photon is in both 1 and 0 states at the same time!
+This tells the receiver nothing about the photon’s original polarisation in the
+diagonal basis.
+1 So, the sender polarises each photon using a basis that is selected at random.
+2 The receiver measures each photon using a basis that is selected at random.
+3 The sender and receiver publicly exchange which basis they used for each
+photon.
+Only when the sender and receiver use the same basis for measurement can they
+be sure that are both reading a 1 or 0. When they used the same basis the receiver
+knows they have measured a ‘1’ or ‘0’ correctly.
+
+In this chapter, you have learnt about:
+✔ the use of data packets when sending data over networks
+✔ packet switching
+✔ types of data transmission (serial, parallel, simplex, half-duplex and full-duplex)
+✔ the universal serial bus (USB)
+✔ how errors during transmission can occur and how to recognise them and
+recover from them (using parity check, checksum and echo check)
+✔ the use of check digits to identify errors following data entry
+✔ how automatic repeat requests are used to find errors in transmitted data
+✔ why encryption of data is used
+✔ symmetric and asymmetric encryption
+✔ the use of public keys and private keys in asymmetric encryption.
+
+68
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 68
+
+18/02/21 3:48 PM
+
+2.3 Symmetric and asymmetric encryption
+
+Key terms used throughout this chapter
+data packet – a small part of a message/data that is transmitted over a network; after
+transmission all the data packets are reassembled to form the original message/data
+packet header – the part of the data packet that contains the IP addresses of the sender
+and receiver, and includes the packet number which allows reassembly of the data packets
+packet trailer – the part of a data packet that indicates the end of the data packet and cyclic
+redundancy check error check
+cyclic redundancy check (CRC) – an error checking method in which all the 1-bits in
+the data packet payload are added and the total is stored in the packet trailer; the same
+calculation is repeated at the receiving station
+payload – the actual data being carried in a data packet
+node – stages in a network that can receive and transmit data packets; routers are nodes in
+communication networks
+packet switching – a method of transmission in which a message is broken into many data
+packets which can then be sent along pathways independently of each other
+router – a device that enables data packets to be moved between different networks, for
+example to join a LAN to a WAN
+real time streaming – the transmission of data over a network for live events where the
+data is sent as soon as it is received or generated
+hopping/hop number – a number in a data packet header used to stop data packets that
+never reach their destination from ‘clogging up’ the data paths/routes
+simplex – data that can be sent on one direction only
+half-duplex – data that can be sent in both directions but not at the same time
+full-duplex – data that can be sent in both directions at the same time (simultaneously)
+serial data transmission – sending data down one channel/wire one bit at a time
+parallel data transmission – sending data down several channels/wires several bits at a
+time (usually 1 byte)
+skewed (data) – data that arrives at the destination with the bits no longer synchronised
+universal serial bus (USB) – a type of serial data transmission which has become the
+industry standard for connecting computers to devices via a USB port
+parity check – a method used to check if data has been transferred correctly; it makes use
+of even parity (an even number of 1-bits) or odd parity (an odd number of 1-bits)
+parity bit – a bit (either 0 or 1) added to a byte of data in the most significant bit position;
+this ensures that the byte follows the correct even parity or odd parity protocol
+parity block – a horizontal and vertical parity check on a block of data being transmitted
+parity byte – an extra byte of data sent at the end of a parity block; it is composed of the
+parity bits generated from a vertical parity check of the data block
+checksum – a verification method used to check if data transferred has been altered or
+corrupted; calculated from the block of data of data being sent; the checksum value is sent
+after each data block
+
+69
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 69
+
+18/02/21 3:48 PM
+
+2 Data transmission
+
+automatic repeat request (ARQ) – a method of checking transmitted data for errors; it
+makes use of acknowledgement and timeout to automatically request re-sending of data if
+the time interval before positive acknowledgement is too long
+acknowledgement – a message sent to the receiver indicating that data has been received
+correctly (used in the ARQ error detection method)
+timeout – the time interval allowed to elapse before an acknowledgement is received (in
+the ARQ error detection method)
+echo check – a method used to check if data has been transferred correctly; data is sent
+to a receiver and then immediately sent back to the sender; the sender then checks if the
+received data matches the sent data
+check digit – an additional digit appended to a number to check if the entered number is
+error-free; check digit is a data entry check and not a data transmission check
+eavesdropper – another name for a hacker who intercepts data being transmitted on a
+wired or wireless network
+encryption – the process of making data meaningless using encryption keys; without the
+correct decryption key the data cannot be decoded (unscrambled)
+plaintext – the original text/message before it is put through an encryption algorithm
+ciphertext – encrypted data that is the result of putting a plaintext message through an
+encryption algorithm
+encryption algorithm – a complex piece of software that takes plaintext and generates an
+encrypted string known as ciphertext
+symmetric encryption – a type of encryption in which the same encryption key is used both
+to encrypt and decrypt a message
+asymmetric encryption – a type of encryption that uses public keys and private keys to
+ensure data is secure
+public key – a type of encryption key that is known to all users
+private key – a type of encryption key which is known only to the single computer/user
+quantum computer – a computer that can perform very fast calculations; it can perform
+calculations that are based on probability rather than simple 0 or 1 values; this gives
+a quantum computer the potential to process considerably more data than existing
+computers
+
+70
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 70
+
+18/02/21 3:48 PM
+
+Exam-style questions
+
+Exam-style questions
+1 A company owns a number of vending machines. Data is sent from each of
+these machines at the end of the day. The data contains amount of money
+taken, products sold and any error conditions/reports.
+a The company uses both echo checking and automatic repeat requests (ARQs).
+i Describe how echo checks work. Explain whether this is a
+suitable error checking method in this application.
+[2]
+ii Describe how automatic repeat request (ARQ) works.
+[3]
+b Checksum and check digit are two terms often confused by
+students.
+Describe three differences of the two techniques.
+[3]
+2 Explain each of the following computer terms:
+i		packet switching
+ii		cyclic redundancy check
+iii data skewing
+iv universal serial bus
+v parity bit.
+
+[10]
+
+3 Eight descriptions are given in the following table. The table
+columns are labelled checksum, parity check and ARQ.
+Tick (✓) the appropriate column which correctly matches each
+description to the error-checking technique. For each description, it
+is possible to match 1, 2, 3 or none of the error-checking methods.
+
+[8]
+
+Description
+
+Checksum
+
+Parity check
+
+ARQ
+
+✓
+
+✓
+
+✓
+
+extra bit sent with each byte of data
+makes use of timeout and acknowledgement
+if an error is found, a request is made to
+re-send the data
+check on whether a data packet has been
+changed following transmission
+re-calculation made on any additional data
+values sent to the recipient
+data is transmitted in blocks or packets
+a method that can determine which bit in a data
+stream has been changed
+additional value sent at the end of a block of
+data to be used to check if any data transmission
+errors occurred
+
+4 a	Four statements about automatic repeat requests (ARQs) are given below,
+but they are not in the correct order. Put the statements into their correct
+sequence.
+i the sending computer waits for a period of time to see if the receiving
+computer acknowledges receipt of the data
+ii after a set time period, a timeout occurs which automatically triggers
+the re-sending of the data
+71
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 71
+
+18/02/21 3:48 PM
+
+2 Data transmission
+
+iii the sending computer transmits a block of data to the receiving
+computer
+iv this continues until the receiving computer sends an
+acknowledgement that the data has been received
+[3]
+b Five statements about checksum error checking are given below, but
+they are not in the correct order. Put the statements into their correct
+sequence.
+i if the two checksum values don’t match, the receiving computer
+requests the data to be re-transmitted
+ii the sending computer sends a block of data together with the
+checksum value
+iii the receiving computer uses the block of data it receives to
+re-calculate the checksum using the same method as the
+sending computer
+iv the two checksum values are compared by the receiving computer
+v the sending computer uses the block of data to calculate the
+[4]
+checksum using an agreed method
+c Five statements about parity checking are given below, but they
+are not in the correct order. Put the statements into their correct
+sequence.
+i the sending computer sends the binary data including the
+parity bits
+ii the sending and receiving computers agree the parity protocol
+(odd or even)
+iii the sending computer adds a parity bit to each byte to make the
+byte odd or even parity
+iv the receiving computer checks the parity of each byte received
+and checks it against the agreed protocol
+v if the parity of the byte is incorrect, the receiving computer
+requests the data to be re-sent
+[4]
+d Six statements about check digits are given below, but they are
+not in the correct order. Put the statements into their correct sequence.
+i a human operator will be asked by the computer to re-enter the
+numerical code
+ii the computer calculates the check digit based on the numerical code
+entered into the computer by a human operator
+iii if the two check digits don’t match, the human operator has made an
+error when entering the numerical code
+iv the computer compares the calculated check digit with the check digit
+typed in by the human operator
+v a human operator types in the numerical code into the computer
+vi the check digit is calculated and added to the numerical
+code[5]
+5 a Describe what is meant by symmetric encryption.[2]
+b Describe what is meant by asymmetric encryption.[3]
+c Explain why encryption is used when transmitting data over
+a network.
+[2]
+
+72
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 72
+
+18/02/21 3:48 PM
+
+Exam-style questions
+
+6 Six descriptions are shown on the left and ten computer terms on
+the right.
+By drawing lines, connect each description to the correct computer
+term (not all of the computer terms will be used).
+a method of error detection; a value is calculated
+from a block of data and is sent with the block of
+data during data transmission
+
+[6]
+
+skewed data
+half-duplex
+
+a method of error detection; it is based on
+counting the number of 1-bits; uses an additional
+bit which is the most significant bit in the byte
+
+checksum
+ARQ
+
+a data transmission method where data can
+be sent in both directions at the same time
+(simultaneously)
+
+full-duplex
+check digit
+
+a data transmission method where data is sent
+one bit at a time over a single channel/wire
+
+universal serial bus
+a data error occurring when data arrives at the
+destination out of synchronisation
+
+encryption
+serial
+
+a form of serial data transmission which allows
+devices to communicate with a computer; it has
+become the industrial standard
+
+parity check
+
+7 A file server is used as a central data store for a network of computers.
+Rory sends data from his computer to a file server that is approximately
+100 metres away. It is important that the data is transmitted accurately. Rory
+needs to be able to read data from and write data to the file server at the
+same time.
+a i	Use ticks (✓) to identify the most suitable data transmission
+methods for this application.
+[2]
+Method 1
+
+Tick ✓
+
+Method 2
+
+Serial
+
+Simplex
+
+Parallel
+
+Half-duplex
+
+Tick ✓
+
+Duplex
+
+ii Explain why your answer to a i is the most suitable
+data transmission.[4]
+b Identify and describe two methods of error checking that
+can be used to make sure that the data stored after
+transmission is accurate.
+[6]
+Cambridge O Level Computer Science 2210, Paper 12 Q4, Oct/Nov 2017
+
+73
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 73
+
+18/02/21 3:48 PM
+
+2 Data transmission
+
+8 Maisey purchases a new router and attaches it to her computer.
+The connection she sets up uses duplex data transmission.
+a Five statements are given about duplex data transmission.
+Tick (✓) to show if the statement is True or False.[5]
+Statement
+
+True ✓
+
+False ✓
+
+Duplex data transmission can be either serial or parallel
+Duplex data transmission is when data is transmitted both ways,
+but only one way at a time
+Duplex transmission is always used to connect a device to a
+computer
+Duplex data transmission is when data is transmitted both ways
+at the same time
+Duplex data transmission automatically detects any errors in
+data
+
+b Maisey’s computer uses an integrated circuit (IC) for data transmission
+that sends multiple bits at the same time.
+State whether the IC uses serial or parallel data
+transmission.[1]
+c Maisey purchases a new printer and connects it to her computer
+using the USB port.
+Explain two benefits of using a USB connection.
+[4]
+Cambridge O Level Computer Science 2210, Paper 12 Q9, Oct/Nov 2019
+
+74
+
+318281_C02_CAM_IGCSE CO_SCI_045_074.indd 74
+
+18/02/21 3:48 PM
+
+

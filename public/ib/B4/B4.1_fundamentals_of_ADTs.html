@@ -1,0 +1,326 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B4.1 Fundamentals of ADTs (HL) | IB Computer Science</title>
+    <meta name="description" content="HL: Abstract data types, linked lists, BSTs, sets, and hash tables (including collisions and load factor).">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../../ib/B4/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B4.1 Fundamentals of ADTs <span class="hl-badge">HL</span></h1>
+            <h3 class="sub-title">Topic B4: Abstract Data Types | Structure = Speed</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question <span class="hl-badge">HL</span></h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 How can a website find a username in a database of <strong>millions</strong>…</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">in a fraction of a second?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Common misconception:</strong> “It’s just faster computers.”</p>
+                <p class="small-text">Hardware helps, but data structure choices often matter more.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> the right <strong>abstract data type</strong> can reduce work from <span class="keyword" data-def="Linear time: runtime grows proportionally with input size.">O(n)</span> to <span class="keyword" data-def="Constant time: runtime does not depend on input size.">O(1)</span> or <span class="keyword" data-def="Logarithmic time: runtime grows slowly as input size increases (common in balanced trees).">O(log n)</span>.</p>
+                <p class="small-text">That’s the difference between “scan everything” and “jump straight to it”.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. WHAT IS AN ADT? -->
+<section>
+    <h3><span class="hl-badge">HL</span> What is an <span class="keyword" data-def="A data type defined by its operations/behaviour, not by its implementation.">ADT</span>?</h3>
+    <div class="question-box">Why describe “what it does” separately from “how it’s built”?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">An ADT is defined by its <span class="keyword" data-def="The set of operations a data structure provides (what you can do).">interface</span> (operations).</p>
+            <p class="fragment">You can change the <span class="keyword" data-def="The internal way a data structure is built (how it works).">implementation</span> without changing how users interact with it.</p>
+            <p class="fragment">This is <span class="keyword" data-def="Hiding implementation details and exposing only essential features/operations.">abstraction</span>.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Example</h4>
+            <p class="small-text fragment">A “set” ADT supports <strong>add</strong>, <strong>remove</strong>, <strong>contains</strong>…</p>
+            <p class="small-text fragment">It could be implemented using a hash table or a balanced tree.</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to B2.4:</strong> we compare implementations using <span class="keyword" data-def="Notation describing the upper bound (worst-case growth) of time/space complexity.">Big O</span>.</p>
+    </div>
+</section>
+
+<!-- 4. CHOOSING THE RIGHT STRUCTURE -->
+<section>
+    <h3><span class="hl-badge">HL</span> Choosing a data structure</h3>
+    <div class="question-box">What operations matter most for your problem?</div>
+    <div class="box">
+        <p class="fragment">Different structures optimize different operations (search, insert, delete, traversal).</p>
+        <p class="fragment">You often trade <strong>time</strong> for <strong>space</strong> (or vice versa).</p>
+        <p class="fragment">Worst-case vs average-case can differ (especially with hash tables).</p>
+    </div>
+    <div class="fragment box-blue">
+        <p class="small-text"><strong>Exam skill:</strong> justify a choice using operation needs + complexity.</p>
+    </div>
+</section>
+
+<!-- 5. LINKED LISTS (VERTICAL) -->
+<section>
+    <section>
+        <h3><span class="hl-badge">HL</span> Linked lists</h3>
+        <div class="question-box">What if you need a structure that can grow and shrink efficiently?</div>
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Collection of nodes where each node points to the next node.">linked list</span> is made of <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">nodes</span> connected by <span class="keyword" data-def="A value that refers to another node’s memory location.">pointers</span>.</p>
+            <p class="fragment">The <span class="keyword" data-def="Pointer/reference to the first node in a linked list.">head</span> points to the first node; the <span class="keyword" data-def="The final node in a linked list (often points to null).">tail</span> ends the chain.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Deep Dive:</span> singly, doubly, circular
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="Each node points to the next node only.">Singly linked list</span></h3>
+        <div class="box">
+            <p class="fragment">Each node stores data + a pointer to the next node.</p>
+            <p class="fragment">Traversal is one direction only.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="Each node points to both the next and previous node.">Doubly linked list</span></h3>
+        <div class="box">
+            <p class="fragment">Nodes have <strong>next</strong> and <strong>previous</strong> pointers.</p>
+            <p class="fragment">Faster navigation backwards, but uses more memory.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="The tail node points back to the head node.">Circular linked list</span></h3>
+        <div class="box">
+            <p class="fragment">Tail points back to head → continuous traversal.</p>
+            <p class="fragment">Useful for round-robin scheduling patterns.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 6. LINKED LIST OPERATIONS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Linked list operations</h3>
+    <div class="question-box">Why can linked lists be efficient for inserts but slow for searching?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Visiting nodes one-by-one by following pointers.">Traversal/search</span> follows pointers node-by-node → often <span class="keyword" data-def="Linear time: runtime grows proportionally with input size.">O(n)</span>.</p>
+            <p class="fragment"><span class="keyword" data-def="Adding a node to a linked structure.">Insertion</span> (with the right pointer) can be <span class="keyword" data-def="Constant time: runtime does not depend on input size.">O(1)</span>.</p>
+            <p class="fragment"><span class="keyword" data-def="Removing a node from a linked structure.">Deletion</span> can also be <span class="keyword" data-def="Constant time: runtime does not depend on input size.">O(1)</span> once you locate the node.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Key idea</h4>
+            <p class="small-text fragment">Lists don’t have random access like arrays (<code>arr[i]</code>).</p>
+            <p class="small-text fragment">You must traverse to reach the i-th element.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 7. QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment"><strong>Explain</strong> one situation where a linked list is a better choice than an array.</p>
+        <p class="fragment">Then state one disadvantage of linked lists.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>Good use:</strong> lots of insertions/deletions in the middle (no shifting elements).</p>
+        <p><strong>Disadvantage:</strong> slow random access/search (often O(n)) and extra memory for pointers.</p>
+    </div>
+</section>
+
+<!-- 8. BST STRUCTURE -->
+<section>
+    <h3><span class="hl-badge">HL</span> Binary search trees (BSTs)</h3>
+    <div class="question-box">How can a tree make searching faster than scanning a list?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Tree where left subtree values are less than the node and right subtree values are greater.">BST</span> stores values so that:</p>
+            <p class="fragment"><strong>Left</strong> subtree &lt; node &lt; <strong>Right</strong> subtree</p>
+            <p class="fragment">Search compares and moves left/right.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Terminology</h4>
+            <p class="small-text fragment"><span class="keyword" data-def="Top node of a tree.">root</span>, <span class="keyword" data-def="A node that has child nodes.">parent</span>, <span class="keyword" data-def="A node directly below a parent node.">child</span>, <span class="keyword" data-def="A node with no children.">leaf</span>, <span class="keyword" data-def="A node and its descendants considered as a tree.">subtree</span></p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>Complexity:</strong> balanced BST operations are often <span class="keyword" data-def="Logarithmic time: runtime grows slowly as input size increases (common in balanced trees).">O(log n)</span>; unbalanced trees can degrade toward <span class="keyword" data-def="Linear time: runtime grows proportionally with input size.">O(n)</span>.</p>
+    </div>
+</section>
+
+<!-- 9. BST OPERATIONS -->
+<section>
+    <h3><span class="hl-badge">HL</span> BST operations</h3>
+    <div class="question-box">What operations should you be able to describe?</div>
+    <div class="box">
+        <p class="fragment"><strong>Insertion:</strong> compare and move left/right until a free leaf position.</p>
+        <p class="fragment"><strong>Search:</strong> compare key with node, then move left/right.</p>
+        <p class="fragment"><strong>Traversal:</strong> visiting nodes (e.g., in-order gives sorted order in a BST).</p>
+        <p class="fragment"><strong>Deletion:</strong> cases depend on node children (0, 1, or 2 children).</p>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A3:</strong> tree-based indexes can speed up database searching.</p>
+    </div>
+</section>
+
+<!-- 10. SETS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Sets as an ADT</h3>
+    <div class="question-box">What makes a set different from a list?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Collection of unique elements with no duplicates.">set</span> contains <strong>unique</strong> elements (no duplicates).</p>
+            <p class="fragment">Order is not the focus; membership is.</p>
+            <p class="fragment">Common operations: contains, add, remove.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Set operations</h4>
+            <p class="small-text fragment"><span class="keyword" data-def="Set operation combining elements in either set.">Union</span>, <span class="keyword" data-def="Set operation returning elements common to both sets.">intersection</span>, <span class="keyword" data-def="Set operation returning elements in one set but not the other.">difference</span>, <span class="keyword" data-def="Set A is a subset of B if every element of A is in B.">subset</span></p>
+        </div>
+    </div>
+</section>
+
+<!-- 11. QUICK CHECK (SETS) -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment">Let <code>A = {1, 2, 3}</code> and <code>B = {3, 4}</code>.</p>
+        <p class="fragment"><strong>State</strong> <code>A ∪ B</code>, <code>A ∩ B</code>, and <code>A − B</code>.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>A ∪ B:</strong> {1, 2, 3, 4}</p>
+        <p><strong>A ∩ B:</strong> {3}</p>
+        <p><strong>A − B:</strong> {1, 2}</p>
+    </div>
+</section>
+
+<!-- 12. HASH TABLES -->
+<section>
+    <h3><span class="hl-badge">HL</span> Hash tables</h3>
+    <div class="question-box">How can we look up values without searching through everything?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Key–value data structure that uses a hash function to map keys to indices.">hash table</span> maps a key to an index using a <span class="keyword" data-def="Function that maps a key to an index (ideally evenly distributed).">hash function</span>.</p>
+            <p class="fragment">Average-case search/insert/delete can be near <span class="keyword" data-def="Constant time: runtime does not depend on input size.">O(1)</span>.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Example</h4>
+            <p class="small-text fragment">Key: <code>"name"</code> → hash → index → stored value</p>
+            <p class="small-text fragment">Used in dictionaries/maps, caches, and many database internals.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 13. COLLISIONS + LOAD FACTOR -->
+<section>
+    <h3><span class="hl-badge">HL</span> Collisions, load factor &amp; rehashing</h3>
+    <div class="question-box">What if two different keys map to the same index?</div>
+    <div class="box">
+        <p class="fragment"><span class="keyword" data-def="Two different keys map to the same index.">Collision</span> → needs a resolution strategy.</p>
+        <p class="fragment"><span class="keyword" data-def="Measure of how full a hash table is (items ÷ table size).">Load factor</span> increases as the table fills → more collisions.</p>
+        <p class="fragment"><span class="keyword" data-def="Resizing a hash table and re-inserting items to reduce collisions.">Rehashing</span> increases table size and redistributes items.</p>
+    </div>
+    <div class="cols">
+        <div class="box-blue fragment">
+            <h4>Two collision strategies</h4>
+            <p class="small-text"><span class="keyword" data-def="Collision resolution method using a list/collection at each index.">Chaining</span> (store a list at each index)</p>
+            <p class="small-text"><span class="keyword" data-def="Collision resolution method that finds another slot in the table when a collision occurs.">Open addressing</span> (probe for another slot)</p>
+        </div>
+        <div class="box fragment">
+            <h4>Trade-off</h4>
+            <p class="small-text">High load factor → slower operations; rehashing costs time but restores performance.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 14. MISCONCEPTION CHECK -->
+<section>
+    <h3>Misconception Check <span class="hl-badge">HL</span></h3>
+    <div class="question-box">True or False: “Hash table operations are always O(1).”</div>
+    <div class="fragment box-red">
+        <p><strong>False.</strong> Collisions and high load factors can degrade performance; worst-case can approach O(n).</p>
+    </div>
+    <div class="fragment box">
+        <p>That’s why good hash functions, resizing/rehashing, and collision strategies matter.</p>
+    </div>
+</section>
+
+<!-- 15. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color:white;">Key Takeaways <span class="hl-badge">HL</span></h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color:white;">
+        <ul style="line-height:1.5;">
+            <li>An <strong>ADT</strong> is defined by operations; implementations can vary (abstraction).</li>
+            <li>Linked lists enable efficient inserts/deletes but searching is often O(n).</li>
+            <li>BSTs can support O(log n) operations when balanced; unbalanced trees can degrade.</li>
+            <li>Sets store unique values and support union/intersection/difference operations.</li>
+            <li>Hash tables offer fast average lookup, but collisions/load factor affect performance.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color:white;">
+        <p><strong>Connections:</strong> A3 uses indexes/hashing internally; B2 uses simpler structures (stacks/queues); A4 uses hashing in data workflows.</p>
+    </div>
+</section>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>
