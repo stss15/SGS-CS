@@ -1,117 +1,29 @@
-<!-- GENERATED FILE - Edit source in src/pages/ instead -->
-<!DOCTYPE html>
-<html lang="en">
+{#
+  Unit Plan Layout Template
+  
+  This template provides a consistent structure for all IB unit plan pages.
+  Individual unit pages pass their data through frontmatter and this template renders it.
+  
+  Required frontmatter:
+  - title: Page title
+  - unitNumber: e.g., 1
+  - unitName: e.g., "Computational Thinking"  
+  - level: "SL" or "HL"
+  
+  Optional sections (pass as frontmatter):
+  - introduction: { bigQuestion, overview, journey }
+  - pillars: [{ icon, name, description }]
+  - concepts: [{ title, content | safe }]
+  - terminology: [{ term, definition }]
+  - misconceptions: [{ mistake, correction }]
+  - thinkDeeper: { question, context }
+  - syllabusPoints: [{ code, topic }]
+  - applications: ["item1", "item2"]
+#}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit {{ unitNumber }}: {{ unitName }} - SGS Computer Science</title>
-    <meta name="description" content="IB Computer Science HL Unit 8 - Supervised & Unsupervised">
+{% extends "layouts/base.njk" %}
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="../../../css/style.css">
-    
-
-    
-</head>
-
-<body class="">
-    <header class="main-header">
-        <div class="header-primary">
-            <div class="logo-container">
-                <a href="../../../index.html">
-                    <img src="../../../images/Logo.png" alt="St George's Logo" class="logo-img">
-                </a>
-                <a href="../../../index.html" class="site-title-link">
-                    <span class="site-title">SGS Computer Science</span>
-                </a>
-            </div>
-
-            <nav class="main-nav" aria-label="Main navigation">
-                <a href="../../../ks3/index.html" class="nav-link ">KS3</a>
-                <a href="../../../igcse/index.html" class="nav-link ">IGCSE</a>
-                <a href="../../../ib/index.html" class="nav-link active">IB</a>
-            </nav>
-
-            <div class="header-tools">
-                <button class="tools-toggle" aria-expanded="false" aria-controls="tools-menu">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                    <span class="sr-only">Tools menu</span>
-                </button>
-                <div class="tools-dropdown" id="tools-menu">
-                    <button class="tool-item" data-open-feedback="bug">
-                        <i class="fa-solid fa-bug"></i> Report a bug
-                    </button>
-                    <button class="tool-item" data-open-feedback="feature">
-                        <i class="fa-solid fa-lightbulb"></i> Request a feature
-                    </button>
-                    <a class="tool-item" href="../../../admin.html">
-                        <i class="fa-solid fa-user-shield"></i> Admin
-                    </a>
-                </div>
-            </div>
-
-            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
-                <i class="fa-solid fa-bars"></i>
-                <span class="sr-only">Menu</span>
-            </button>
-        </div>
-
-        
-        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-            <ol class="breadcrumb-list">
-                
-                    
-                        <li class="breadcrumb-item">
-                            <a href="../../../index.html">Home</a>
-                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
-                        </li>
-                    
-                
-                    
-                        <li class="breadcrumb-item">
-                            <a href="../../../ib-2027/index.html">IB 2027</a>
-                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
-                        </li>
-                    
-                
-                    
-                        <li class="breadcrumb-item">
-                            <a href="../../../ib-2027/hl/index.html">HL</a>
-                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
-                        </li>
-                    
-                
-                    
-                        <li class="breadcrumb-item">
-                            <a href="../../../ib-2027/hl/unit-8/index.html">Unit 8</a>
-                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
-                        </li>
-                    
-                
-                    
-                        <li class="breadcrumb-item current" aria-current="page">Unit Plan</li>
-                    
-                
-            </ol>
-        </nav>
-        
-    </header>
-
-    <main class="">
-        
-
-        
+{% block content %}
 <style>
     /* Wider textbook layout - force full width */
     .textbook-container {
@@ -387,8 +299,8 @@
     
     <!-- Chapter Header -->
     <header class="chapter-header">
-        <div class="chapter-number">Unit 8 • HL</div>
-        <h1 class="chapter-title">Supervised & Unsupervised</h1>
+        <div class="chapter-number">Unit {{ unitNumber }} • {{ level }}</div>
+        <h1 class="chapter-title">{{ unitName }}</h1>
     </header>
 
     <!-- Two-column layout -->
@@ -405,17 +317,40 @@
                     <i class="fa-solid fa-chevron-down toggle-arrow"></i>
                 </summary>
                 <div class="section-body">
-                    
+                    {% if introduction %}
+                        {% if introduction.bigQuestion %}
+                        <p><strong>{{ introduction.bigQuestion }}</strong></p>
+                        {% endif %}
+                        {% if introduction.overview %}
+                        <p>{{ introduction.overview | safe }}</p>
+                        {% endif %}
+                        {% if introduction.journey %}
+                        <p>{{ introduction.journey | safe }}</p>
+                        {% endif %}
+                    {% else %}
                         <div class="placeholder-content">
                             <i class="fa-solid fa-pen-to-square"></i>
                             <p>Introduction content coming soon.</p>
                         </div>
-                    
+                    {% endif %}
                 </div>
             </details>
 
             <!-- Core Concepts (dynamic sections) -->
-            
+            {% if concepts %}
+                {% for concept in concepts %}
+                <details class="section-accordion">
+                    <summary class="section-header">
+                        <div class="section-icon"><i class="fa-solid {{ concept.icon | default('fa-lightbulb') }}"></i></div>
+                        <h2>{{ concept.title }}</h2>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </summary>
+                    <div class="section-body">
+                        {{ concept.content | safe }}
+                    </div>
+                </details>
+                {% endfor %}
+            {% else %}
                 <details class="section-accordion">
                     <summary class="section-header">
                         <div class="section-icon"><i class="fa-solid fa-book-open"></i></div>
@@ -429,7 +364,7 @@
                         </div>
                     </div>
                 </details>
-            
+            {% endif %}
 
             <!-- Key Terminology -->
             <details class="section-accordion">
@@ -439,12 +374,19 @@
                     <i class="fa-solid fa-chevron-down toggle-arrow"></i>
                 </summary>
                 <div class="section-body">
-                    
+                    {% if terminology %}
+                    <table class="term-table">
+                        <tr><th style="width: 180px;">Term</th><th>Definition</th></tr>
+                        {% for item in terminology %}
+                        <tr><td class="term-name">{{ item.term }}</td><td>{{ item.definition }}</td></tr>
+                        {% endfor %}
+                    </table>
+                    {% else %}
                         <div class="placeholder-content">
                             <i class="fa-solid fa-pen-to-square"></i>
                             <p>Terminology content coming soon.</p>
                         </div>
-                    
+                    {% endif %}
                 </div>
             </details>
 
@@ -456,12 +398,19 @@
                     <i class="fa-solid fa-chevron-down toggle-arrow"></i>
                 </summary>
                 <div class="section-body">
-                    
+                    {% if misconceptions %}
+                        {% for item in misconceptions %}
+                        <div class="warning-box">
+                            <h4><i class="fa-solid fa-times-circle"></i> {{ item.mistake }}</h4>
+                            <p>{{ item.correction }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
                         <div class="placeholder-content">
                             <i class="fa-solid fa-pen-to-square"></i>
                             <p>Misconceptions content coming soon.</p>
                         </div>
-                    
+                    {% endif %}
                 </div>
             </details>
 
@@ -473,16 +422,36 @@
             <!-- Syllabus Coverage -->
             <div class="sidebar-card">
                 <h3>Syllabus Coverage</h3>
-                
+                {% if syllabusPoints %}
+                <ul class="syllabus-list">
+                    {% for item in syllabusPoints %}
+                    <li><span class="syllabus-code">{{ item.code }}</span> {{ item.topic }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
                 <p style="color: #999; font-size: 0.9rem; margin: 0;">Syllabus points to be added.</p>
-                
+                {% endif %}
             </div>
             
             <!-- Applications -->
-            
+            {% if applications %}
+            <div class="sidebar-card">
+                <h3>Real-World Uses</h3>
+                <ul style="padding-left: 1.25rem; margin: 0; font-size: 0.9rem; line-height: 1.8;">
+                    {% for app in applications %}
+                    <li>{{ app }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             
             <!-- Think Deeper -->
-            
+            {% if thinkDeeper %}
+            <div class="sidebar-card" style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f0ff 100%);">
+                <h3>Think Deeper</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6; margin: 0;"><em>"{{ thinkDeeper.question }}"</em> {{ thinkDeeper.context }}</p>
+            </div>
+            {% endif %}
             
         </aside>
         
@@ -490,94 +459,8 @@
     
     <!-- Back link -->
     <a href="index.html" class="back-link">
-        <i class="fa-solid fa-arrow-left"></i> Back to Unit 8
+        <i class="fa-solid fa-arrow-left"></i> Back to Unit {{ unitNumber }}
     </a>
 
 </div>
-
-    </main>
-
-    <footer>
-        <p>&copy; 2026 SGSD Computer Science. All rights reserved.</p>
-    </footer>
-
-    
-    
-
-    
-    <div class="feedback-modals" data-feedback-default-level="General">
-        <div class="feedback-overlay" data-feedback-overlay></div>
-
-        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <p class="modal-kicker">Something broken?</p>
-            <h2 id="bug-modal-title">Report a bug</h2>
-            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
-
-            <form id="bug-form" class="feedback-form" data-form-type="bug">
-                <label for="bug-level">Course area</label>
-                <select id="bug-level" name="level" required>
-                    <option value="">Select a course</option>
-                    <option value="KS3">KS3</option>
-                    <option value="IGCSE">IGCSE</option>
-                    <option value="IB">IB</option>
-                    <option value="General">General</option>
-                </select>
-
-                <label for="bug-category">Resource type</label>
-                <select id="bug-category" name="category" required>
-                    <option value="">Choose a resource type</option>
-                    <option value="Slide deck">Slide deck</option>
-                    <option value="Game">Game</option>
-                    <option value="Image">Image</option>
-                    <option value="Simulation">Simulation</option>
-                    <option value="Misc">Misc</option>
-                </select>
-
-                <label for="bug-title">Title (be specific)</label>
-                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes" required>
-
-                <label for="bug-details">What happened?</label>
-                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up" required></textarea>
-                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
-
-                <button type="submit" class="submit-btn">Submit bug report</button>
-                <p class="form-feedback" data-feedback-message="bug"></p>
-            </form>
-        </div>
-
-        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <p class="modal-kicker">Have an idea?</p>
-            <h2 id="feature-modal-title">Request a feature</h2>
-            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
-
-            <form id="feature-form" class="feedback-form" data-form-type="feature">
-                <label for="feature-level">Course area</label>
-                <select id="feature-level" name="level" required>
-                    <option value="">Select a course</option>
-                    <option value="KS3">KS3</option>
-                    <option value="IGCSE">IGCSE</option>
-                    <option value="IB">IB</option>
-                    <option value="General">General</option>
-                </select>
-
-                <label for="feature-details">What should we add?</label>
-                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1" required></textarea>
-                <p class="form-note">Share enough detail so teachers can understand the request.</p>
-
-                <button type="submit" class="submit-btn">Submit feature request</button>
-                <p class="form-feedback" data-feedback-message="feature"></p>
-            </form>
-        </div>
-    </div>
-
-    <script src="../../../js/nav.js"></script>
-    <script src="../../../js/feedback.js"></script>
-</body>
-
-</html>
+{% endblock %}

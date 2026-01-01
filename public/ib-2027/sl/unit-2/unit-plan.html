@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit Plan: SL Unit 2 - Programming Fundamentals - SGS Computer Science</title>
-    <meta name="description" content="Your guide to SL Unit 2: Programming Fundamentals">
+    <title>Unit {{ unitNumber }}: {{ unitName }} - SGS Computer Science</title>
+    <meta name="description" content="IB Computer Science SL Unit 2 - Programming Fundamentals">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,12 +20,6 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="../../../css/style.css">
-    
-        
-            
-                <link rel="stylesheet" href="../../../css/specification.css">
-            
-        
     
 
     
@@ -118,92 +112,386 @@
         
 
         
-<div class="spec-container">
+<style>
+    /* Wider textbook layout - force full width */
+    .textbook-container {
+        max-width: 1100px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2rem;
+        box-sizing: border-box;
+    }
     
-    <!-- Unit Header -->
-    <div class="spec-header">
-        <h1 class="spec-title">Programming Fundamentals</h1>
-        <p class="spec-subtitle">Unit 2 • SL</p>
-        <span class="spec-exam-code">5 Weeks (15 Lessons) • B2.1.1, B2.1.2, B2.1.3, B2.1.4</span>
+    /* Chapter header */
+    .chapter-header {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: linear-gradient(135deg, #0E214B 0%, #1a3a6b 100%);
+        color: white;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+    }
+    .chapter-number {
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+    }
+    .chapter-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+    
+    /* Two-column layout - fixed widths */
+    .textbook-grid {
+        display: grid;
+        grid-template-columns: calc(100% - 320px - 2rem) 320px;
+        gap: 2rem;
+        align-items: start;
+    }
+    @media (max-width: 900px) {
+        .textbook-grid { grid-template-columns: 1fr; }
+    }
+    
+    /* Main content area */
+    .main-content {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Collapsible sections */
+    .section-accordion {
+        border-bottom: 1px solid #e9ecef;
+        display: block;
+        width: 100%;
+    }
+    .section-accordion:last-child {
+        border-bottom: none;
+    }
+    .section-accordion > summary {
+        list-style: none;
+    }
+    .section-accordion > summary::-webkit-details-marker {
+        display: none;
+    }
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+        cursor: pointer;
+        background: #f8f9fa;
+        transition: background 0.2s;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .section-header:hover {
+        background: #e9ecef;
+    }
+    .section-header h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #0E214B;
+        margin: 0;
+        flex: 1;
+    }
+    .section-icon {
+        width: 36px;
+        height: 36px;
+        background: #0E214B;
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .toggle-arrow {
+        color: #999;
+        transition: transform 0.3s;
+    }
+    details[open] .toggle-arrow {
+        transform: rotate(180deg);
+    }
+    
+    /* Section body content */
+    .section-body {
+        padding: 1.5rem;
+        line-height: 1.8;
+        color: #333;
+        overflow-x: auto;
+    }
+    .section-body p {
+        margin-bottom: 1rem;
+    }
+    .section-body ul {
+        margin-left: 1.5rem;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+        position: sticky;
+        top: 100px;
+    }
+    .sidebar-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .sidebar-card h3 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #666;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #BE9A5E;
+    }
+    
+    /* Syllabus list */
+    .syllabus-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .syllabus-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 0.9rem;
+    }
+    .syllabus-list li:last-child {
+        border-bottom: none;
+    }
+    .syllabus-code {
+        font-weight: 700;
+        color: #0E214B;
+    }
+    
+    /* Term table */
+    .term-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .term-table th {
+        background: #0E214B;
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .term-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: top;
+    }
+    .term-table tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    .term-table .term-name {
+        font-weight: 600;
+        color: #0E214B;
+        white-space: nowrap;
+    }
+    
+    /* Pillar cards */
+    .pillar-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    @media (max-width: 600px) {
+        .pillar-grid { grid-template-columns: 1fr; }
+    }
+    .pillar-card {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e8f0ff 100%);
+        border-left: 4px solid #0E214B;
+        border-radius: 8px;
+        padding: 1.25rem;
+    }
+    .pillar-card h4 {
+        color: #0E214B;
+        margin: 0 0 0.5rem 0;
+        font-size: 1rem;
+    }
+    .pillar-card p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #555;
+    }
+    
+    /* Warning box */
+    .warning-box {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffe5a0 100%);
+        border-left: 4px solid #ffc107;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin: 1rem 0;
+    }
+    .warning-box h4 {
+        color: #856404;
+        margin: 0 0 0.5rem 0;
+        font-size: 0.95rem;
+    }
+    .warning-box p {
+        margin: 0;
+        color: #664d03;
+    }
+    
+    /* Placeholder content */
+    .placeholder-content {
+        background: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        color: #6c757d;
+    }
+    .placeholder-content i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    /* Back link */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #0E214B;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        transition: all 0.2s;
+        margin-top: 2rem;
+    }
+    .back-link:hover {
+        background: #0E214B;
+        color: white;
+    }
+</style>
+
+<div class="textbook-container">
+    
+    <!-- Chapter Header -->
+    <header class="chapter-header">
+        <div class="chapter-number">Unit 2 • SL</div>
+        <h1 class="chapter-title">Programming Fundamentals</h1>
+    </header>
+
+    <!-- Two-column layout -->
+    <div class="textbook-grid">
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Introduction -->
+            <details class="section-accordion" open>
+                <summary class="section-header">
+                    <div class="section-icon"><i class="fa-solid fa-compass"></i></div>
+                    <h2>Introduction</h2>
+                    <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                </summary>
+                <div class="section-body">
+                    
+                        <div class="placeholder-content">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <p>Introduction content coming soon.</p>
+                        </div>
+                    
+                </div>
+            </details>
+
+            <!-- Core Concepts (dynamic sections) -->
+            
+                <details class="section-accordion">
+                    <summary class="section-header">
+                        <div class="section-icon"><i class="fa-solid fa-book-open"></i></div>
+                        <h2>Core Concepts</h2>
+                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                    </summary>
+                    <div class="section-body">
+                        <div class="placeholder-content">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <p>Core concepts content coming soon.</p>
+                        </div>
+                    </div>
+                </details>
+            
+
+            <!-- Key Terminology -->
+            <details class="section-accordion">
+                <summary class="section-header">
+                    <div class="section-icon"><i class="fa-solid fa-book"></i></div>
+                    <h2>Key Terminology</h2>
+                    <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                </summary>
+                <div class="section-body">
+                    
+                        <div class="placeholder-content">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <p>Terminology content coming soon.</p>
+                        </div>
+                    
+                </div>
+            </details>
+
+            <!-- Common Misconceptions -->
+            <details class="section-accordion">
+                <summary class="section-header">
+                    <div class="section-icon" style="background: #ffc107;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <h2>Common Misconceptions</h2>
+                    <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                </summary>
+                <div class="section-body">
+                    
+                        <div class="placeholder-content">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <p>Misconceptions content coming soon.</p>
+                        </div>
+                    
+                </div>
+            </details>
+
+        </main>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            
+            <!-- Syllabus Coverage -->
+            <div class="sidebar-card">
+                <h3>Syllabus Coverage</h3>
+                
+                <p style="color: #999; font-size: 0.9rem; margin: 0;">Syllabus points to be added.</p>
+                
+            </div>
+            
+            <!-- Applications -->
+            
+            
+            <!-- Think Deeper -->
+            
+            
+        </aside>
+        
     </div>
-
-    <!-- Unit Overview -->
-    <section class="welcome-section">
-        <h2><i class="fa-solid fa-compass section-icon"></i> Unit Overview</h2>
-        <p>The transition from abstract algorithms to executable code. This unit focuses on the automation of logic through programming constructs. It introduces the concept of state (variables), transformation (operators), and robustness (exception handling).</p>
-    </section>
-
-    <!-- Syllabus Links -->
-    <section class="content-section">
-        <h2><i class="fa-solid fa-bookmark section-icon"></i> What You'll Learn</h2>
-        <div class="learning-points">
-            <ul>
-                <li>
-                    <strong>B2.1.1</strong> — Global and local variables, declaration, initialization, and primitive data types (int, float, double, char, Boolean).
-                </li>
-                <li>
-                    <strong>B2.1.2</strong> — String manipulation, concatenation, and substring extraction (slicing in Python).
-                </li>
-                <li>
-                    <strong>B2.1.3</strong> — Exception handling (try/except/finally) to manage unexpected inputs or resource unavailability.
-                </li>
-                <li>
-                    <strong>B2.1.4</strong> — Debugging techniques including trace tables, breakpoints, and print statements.
-                </li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- Key Terminology -->
-    <section class="content-section">
-        <h2><i class="fa-solid fa-spell-check section-icon"></i> Key Terminology</h2>
-        <p>Master these terms to succeed in this unit:</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Variable</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Constant</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Identifier</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Data Type</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Assignment</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Concatenation</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Slicing</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Casting</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Exception</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Runtime Error</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Logic Error</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Debugging</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Breakpoint</span>
-            <span style="background: linear-gradient(135deg, #f0f4f8, #e3e8ef); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; color: #0E214B;">Trace Table</span>
-        </div>
-    </section>
-
-    <!-- Watch Out For -->
-    <section class="exam-section" style="background: linear-gradient(135deg, #fff3cd 0%, #ffe5a0 100%); border-left-color: #ffc107;">
-        <h2><i class="fa-solid fa-triangle-exclamation section-icon" style="color: #856404;"></i> Common Misconceptions</h2>
-        <ul>
-            <li><strong>Assignment vs Equality:</strong> Confusion between = (assignment) and == (comparison).</li>
-            <li><strong>Global vs Local Scope:</strong> Believing a variable declared inside a function is accessible everywhere.</li>
-            <li><strong>Data Types:</strong> Assuming Python doesn't have data types because it's dynamically typed (students must understand that 5 and "5" are processed differently).</li>
-            <li><strong>Errors:</strong> Believing a program that runs has no errors (ignoring logic errors).</li>
-        </ul>
-    </section>
-
-    <!-- Big Ideas -->
-    <section class="content-section" style="border-top-color: var(--accent-color);">
-        <h2><i class="fa-solid fa-lightbulb section-icon"></i> Big Ideas to Consider</h2>
-        <div class="learning-points">
-            <ul>
-                <li><strong>Language and Meaning:</strong> Why is natural language (English) unsuitable for programming? Ambiguity vs the rigid syntax required for machine logic.</li>
-                <li><strong>Objective Truth:</strong> Is a computer program's output always "true" if the logic is flawed? "Garbage in, Garbage out."</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- Back button -->
-    <div style="text-align: center; margin-top: 2rem;">
-        <a href="index.html" class="back-button">
-            <i class="fa-solid fa-arrow-left"></i> Back to Unit 2
-        </a>
-    </div>
+    
+    <!-- Back link -->
+    <a href="index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Unit 2
+    </a>
 
 </div>
 
