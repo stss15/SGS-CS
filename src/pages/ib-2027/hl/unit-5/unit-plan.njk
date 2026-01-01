@@ -15,35 +15,99 @@ level: "HL"
 # ------------------------------------------
 # Content sections (to be filled in later)
 # ------------------------------------------
-# introduction:
-#   bigQuestion: "What is the key question for this unit?"
-#   overview: "Brief overview of what students will learn."
-#   journey: "The learning journey description."
-#
-# concepts:
-#   - title: "Concept Name"
-#     icon: "fa-lightbulb"
-#     content: "<p>Concept content here.</p>"
-#
-# terminology:
-#   - term: "Term"
-#     definition: "Definition here."
-#
-# misconceptions:
-#   - mistake: "Common wrong belief"
-#     correction: "The correct understanding."
-#
-# syllabusPoints:
-#   - code: "B1.1.1"
-#     topic: "Topic name"
-#
-# applications:
-#   - "Application 1"
-#   - "Application 2"
-#
-# thinkDeeper:
-#   question: "A thought-provoking question?"
-#   context: "Context for the question."
+introduction:
+  bigQuestion: "How do we handle Data at Global Scale?"
+  overview: "This unit prepares you for the world of <strong>Big Data</strong>. You will move far beyond simple tables to explore <strong>Distributed Systems</strong>, <strong>NoSQL</strong> architectures, and the complex trade-offs between <strong>Consistency</strong> (ACID) and <strong>Availability</strong> (CAP Theorem)."
+  journey: "You'll start by mastering critical reliability with <strong>Transactions (ACID)</strong>. Then you'll break the single-server limit with <strong>Distributed Databases</strong>, before exploring modern alternatives like <strong>NoSQL</strong> and <strong>Data Mining</strong>."
+
+concepts:
+  - title: "Transactions (ACID)"
+    icon: "fa-shield-halved"
+    content: |
+      <p>Banking relies on this. A group of operations (Transfer: -100 here, +100 there) must succeed or fail as a UNIT.</p>
+      <ul>
+          <li><strong>Atomicity:</strong> All or nothing.</li>
+          <li><strong>Consistency:</strong> The DB remains valid.</li>
+          <li><strong>Isolation:</strong> Transactions don't interfere.</li>
+          <li><strong>Durability:</strong> Once saved, it's saved forever.</li>
+      </ul>
+
+  - title: "Distributed Databases"
+    icon: "fa-network-wired"
+    content: |
+      <p>When one server isn't enough. We split the data across the world.</p>
+      <ul>
+          <li><strong>Replication:</strong> Copying data to multiple locations (Safety).</li>
+          <li><strong>Fragmentation:</strong> Splitting a table into pieces (Speed).</li>
+          <li><strong>Trade-off:</strong> Keeping copies in sync is HARD (CAP Theorem).</li>
+      </ul>
+
+  - title: "NoSQL & Modern Models"
+    icon: "fa-file-code"
+    content: |
+      <p>SQL is rigid. Sometimes we need flexibility.</p>
+      <ul>
+          <li><strong>Document Stores (JSON):</strong> Flexible structure (e.g., MongoDB).</li>
+          <li><strong>Key-Value:</strong> Ultra-fast lookups (e.g., Redis).</li>
+          <li><strong>Graph:</strong> Storing relationships (e.g., Social Networks).</li>
+      </ul>
+
+  - title: "Data Intelligence (Mining)"
+    icon: "fa-chart-pie"
+    content: |
+      <p>Turning raw data into knowledge.</p>
+      <ul>
+          <li><strong>Data Warehouse:</strong> A massive archive of historical data.</li>
+          <li><strong>ETL:</strong> Extract, Transform, Load (Cleaning the data).</li>
+          <li><strong>Data Mining:</strong> Using algorithms to find hidden patterns (e.g., "People who buy diapers also buy beer").</li>
+      </ul>
+
+terminology:
+  - term: "Transaction"
+    definition: "A sequence of database operations treated as a single logical unit."
+  - term: "ACID"
+    definition: "The set of properties (Atomicity, Consistency, Isolation, Durability) that guarantee database reliability."
+  - term: "Data Warehouse"
+    definition: "A large, centralized repository of data integrated from disparate sources, used for analysis."
+  - term: "Data Mining"
+    definition: "The process of discovering patterns, correlations, and anomalies within large datasets."
+  - term: "Distributed Database"
+    definition: "A database in which storage devices are not all attached to a common processor (geographic spread)."
+  - term: "Replication"
+    definition: "The process of sharing information to ensure consistency between redundant resources."
+  - term: "NoSQL"
+    definition: "Non-relational databases designed for unrelated, unstructured, or rapidly changing data."
+  - term: "OLAP"
+    definition: "Online Analytical Processing. Technology used to organize large business databases and support complex analysis."
+
+misconceptions:
+  - mistake: "NoSQL is always faster"
+    correction: "It can be faster for simple reads/writes, but it often lacks the strict safety guarantees (ACID) of SQL."
+  - mistake: "Data Mining = Searching"
+    correction: "Searching finds a known record. Mining finds UNKNOWN patterns (e.g., predicting customer churn)."
+  - mistake: "Distributed means Instant"
+    correction: "Speed of light is real. Updating a copy in Tokyo takes time to reach New York (Eventual Consistency)."
+
+syllabusPoints:
+  - code: "A3.3.4"
+    topic: "Transactions & ACID"
+  - code: "A3.4.1"
+    topic: "Distributed & NoSQL"
+  - code: "A3.4.2"
+    topic: "Data Warehousing"
+  - code: "A3.4.3"
+    topic: "Data Mining"
+
+applications:
+  - "Global Banking (ACID)"
+  - "Social Media Feeds (Graph DB)"
+  - "E-commerce Recommendations (Mining)"
+  - "Real-time Gaming (Key-Value Stores)"
+  - "Business Intelligence Dashboards (OLAP)"
+
+thinkDeeper:
+  question: "The Cost of Truth"
+  context: "In a distributed world, it's faster to verify a lie than to wait for the truth. Does 'Eventual Consistency' mean we can never truly trust the state of the Global Network?"
 ---
 
 {# 

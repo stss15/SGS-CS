@@ -15,35 +15,81 @@ level: "HL"
 # ------------------------------------------
 # Content sections (to be filled in later)
 # ------------------------------------------
-# introduction:
-#   bigQuestion: "What is the key question for this unit?"
-#   overview: "Brief overview of what students will learn."
-#   journey: "The learning journey description."
-#
-# concepts:
-#   - title: "Concept Name"
-#     icon: "fa-lightbulb"
-#     content: "<p>Concept content here.</p>"
-#
-# terminology:
-#   - term: "Term"
-#     definition: "Definition here."
-#
-# misconceptions:
-#   - mistake: "Common wrong belief"
-#     correction: "The correct understanding."
-#
-# syllabusPoints:
-#   - code: "B1.1.1"
-#     topic: "Topic name"
-#
-# applications:
-#   - "Application 1"
-#   - "Application 2"
-#
-# thinkDeeper:
-#   question: "A thought-provoking question?"
-#   context: "Context for the question."
+introduction:
+  bigQuestion: "How can a problem solve itself?"
+  overview: "This unit focuses on <strong>Self-Reference</strong> and <strong>Decomposition</strong>. You will learn how to write functions that call themselves to solve complex problems like sorting (Quicksort) and tree traversal. You will start by tracing the <strong>Runtime Stack</strong> and finish by mastering the <strong>Divide and Conquer</strong> strategy."
+  journey: "You'll begin with the anatomy of a recursive method (Base Case vs General Case). Then you'll visualize memory using the <strong>Call Stack</strong> (Winding/Unwinding), and apply this logic to implement efficient algorithms like <strong>Quicksort</strong>."
+
+concepts:
+  - title: "The Anatomy of Recursion"
+    icon: "fa-recycle"
+    content: |
+      <p>A recursive method has two parts. Without both, it fails:</p>
+      <ul>
+          <li><strong>Base Case:</strong> The stopping condition (e.g., if n == 0). Stops the infinite loop.</li>
+          <li><strong>General (Recursive) Case:</strong> The logic that calls the method again with a smaller input (e.g., return n + Sum(n-1)).</li>
+      </ul>
+
+  - title: "The Call Stack (Memory)"
+    icon: "fa-layer-group"
+    content: |
+      <p>How does the computer remember where it was? It uses a Stack.</p>
+      <ul>
+          <li><strong>Winding (Push):</strong> Adding a new "Frame" to the stack for each call.</li>
+          <li><strong>Unwinding (Pop):</strong> When the Base Case is hit, frames pop off, returning values back up the chain.</li>
+      </ul>
+
+  - title: "Divide & Conquer (Sorting)"
+    icon: "fa-sort"
+    content: |
+      <p>Recursion is powerful for breaking big problems into small ones.</p>
+      <ul>
+          <li><strong>Quicksort:</strong> Pick a pivot, partition the list (smaller left, bigger right), then recurse on both sides.</li>
+          <li><strong>Merge Sort:</strong> Split the list in half recursively until size 1, then merge them back in order.</li>
+      </ul>
+
+terminology:
+  - term: "Recursion"
+    definition: "A programming technique where a function calls itself to solve a problem."
+  - term: "Base Case"
+    definition: "The condition that stops the recursion (prevents an infinite loop)."
+  - term: "Recursive Step"
+    definition: "The part of the function where it calls itself with a modified (usually smaller) parameter."
+  - term: "Call Stack"
+    definition: "A memory structure that stores 'Stack Frames' for each active function call (tracks local logic)."
+  - term: "Stack Overflow"
+    definition: "A fatal error that occurs when the Call Stack runs out of memory (usually due to a missing Base Case)."
+  - term: "Stack Frame"
+    definition: "A section of the stack dedicated to a single function call, storing its arguments, return address, and local variables."
+  - term: "Pivot"
+    definition: "The element in Quicksort used to partition the array."
+
+misconceptions:
+  - mistake: "Recursion is just a Loop"
+    correction: "It feels like a loop, but it eats memory! Each 'loop' adds a new frame to the Stack. An infinite recursion crashes execution; an infinite loop just hangs."
+  - mistake: "The Function Stops at Base Case"
+    correction: "No! That's just the half-way point. The function must then 'Unwind' all the way back up the stack to finish."
+  - mistake: "Variables are Shared"
+    correction: "Thinking 'n' is the same variable in every call. Each recursive call has its own separate copy of 'n'."
+
+syllabusPoints:
+  - code: "B2.4.4"
+    topic: "Recursion Definition"
+  - code: "B2.4.5"
+    topic: "Tracing & Stack Frames"
+  - code: "B2.5"
+    topic: "Standard Algorithms (Quicksort)"
+
+applications:
+  - "File System Traversal (folders inside folders)"
+  - "Pathfinding (Mazes)"
+  - "Fractals (Sierpinski Triangle)"
+  - "Game Logic (Chess AI looking ahead)"
+  - "Processing nested data (JSON/XML)"
+
+thinkDeeper:
+  question: "Why use Recursion?"
+  context: "If Iteration (Loops) is faster and uses less memory, why do we use Recursion? Is code readability and 'elegance' worth the performance cost?"
 ---
 
 {# 
