@@ -113,11 +113,13 @@
 
         
 <style>
-    /* Wider textbook layout */
+    /* Wider textbook layout - force full width */
     .textbook-container {
         max-width: 1100px;
+        width: 100%;
         margin: 0 auto;
         padding: 2rem;
+        box-sizing: border-box;
     }
     
     /* Chapter header */
@@ -154,10 +156,10 @@
         font-size: 0.9rem;
     }
     
-    /* Two-column layout */
+    /* Two-column layout - fixed widths to prevent content-based resizing */
     .textbook-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 320px;
+        grid-template-columns: calc(100% - 320px - 2rem) 320px;
         gap: 2rem;
         align-items: start;
     }
@@ -165,13 +167,14 @@
         .textbook-grid { grid-template-columns: 1fr; }
     }
     
-    /* Main content area */
+    /* Main content area - fixed width behavior */
     .main-content {
         background: white;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         overflow: hidden;
-        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     /* Section body content */
