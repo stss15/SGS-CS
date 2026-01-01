@@ -79,7 +79,7 @@ breadcrumbs:
         </div>
         <div class="fragment fade-in-then-out">
             <div class="box" style="background:#ffebee;">
-                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> “Apps talk to hardware directly.”</p>
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> "Apps talk to hardware directly."</p>
                 <p class="small-text">If that were true, any app could overwrite memory, lock devices, or crash the system.</p>
             </div>
         </div>
@@ -99,7 +99,7 @@ breadcrumbs:
     <div class="cols">
         <div class="box">
             <p class="fragment">Acts as an <strong>intermediary</strong> between applications/users and hardware.</p>
-            <p class="fragment">Provides <strong>abstraction</strong>: apps don’t need to know device details.</p>
+            <p class="fragment">Provides <strong>abstraction</strong>: apps don't need to know device details.</p>
             <p class="fragment">Enforces <strong>protection</strong>: processes are isolated from each other.</p>
         </div>
         <div class="box-blue">
@@ -131,7 +131,7 @@ breadcrumbs:
 <section>
     <section>
         <h2>Memory Management</h2>
-        <div class="question-box">How can multiple programs run without overwriting each other’s data?</div>
+        <div class="question-box">How can multiple programs run without overwriting each other's data?</div>
         <div class="box">
             <p class="fragment">Each process is given its own protected memory space.</p>
             <p class="fragment">The OS allocates and de-allocates RAM as programs start/stop.</p>
@@ -158,7 +158,7 @@ breadcrumbs:
 
     <section data-background="#fff3e0">
         <h3>🧠 Quick Check</h3>
-        <div class="question-box">Why can heavy virtual memory use make a computer feel “slow”?</div>
+        <div class="question-box">Why can heavy virtual memory use make a computer feel "slow"?</div>
         <div class="fragment box-blue">
             <p>Because the system starts swapping data between RAM and disk; disk access has much higher latency, so processes stall.</p>
         </div>
@@ -168,7 +168,7 @@ breadcrumbs:
 <!-- 7. FILE + STORAGE MANAGEMENT -->
 <section>
     <h3>File &amp; Storage Management</h3>
-    <div class="question-box">How does an OS stop your files becoming an unsearchable “pile of bytes”?</div>
+    <div class="question-box">How does an OS stop your files becoming an unsearchable "pile of bytes"?</div>
     <div class="cols">
         <div class="box">
             <p class="fragment">Organises data using a <strong>hierarchical file system</strong> (folders/directories).</p>
@@ -236,7 +236,7 @@ breadcrumbs:
         <div class="box">
             <p class="fragment"><strong>Idea:</strong> higher-priority processes run first.</p>
             <p class="fragment"><strong>Risk:</strong> <span class="keyword" data-def="Starvation: when a process waits indefinitely because higher-priority processes keep being scheduled.">starvation</span> — low-priority tasks may never run.</p>
-            <p class="fragment"><strong>Fix:</strong> ageing (gradually increase waiting processes’ priority).</p>
+            <p class="fragment"><strong>Fix:</strong> ageing (gradually increase waiting processes' priority).</p>
         </div>
     </section>
 
@@ -249,25 +249,28 @@ breadcrumbs:
     </section>
 </section>
 
-<!-- 10. INTERRUPTS VS POLLING -->
+<!-- 10. INTERRUPTS VS POLLING (VERTICAL STACK) -->
 <section>
-    <h3>Interrupts vs Polling</h3>
-    <div class="question-box">How does the CPU react instantly to a keypress or network packet?</div>
-    <div class="cols">
-        <div class="box">
-            <p class="fragment"><span class="keyword" data-def="Interrupt: a signal that causes the CPU to temporarily stop its current task to handle an event.">Interrupts</span> notify the CPU when an event happens.</p>
-            <p class="fragment">The CPU pauses current work, runs an interrupt handler, then resumes.</p>
+    <section>
+        <h3>Interrupts vs Polling</h3>
+        <div class="question-box">How does the CPU react instantly to a keypress or network packet?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><span class="keyword" data-def="Interrupt: a signal that causes the CPU to temporarily stop its current task to handle an event.">Interrupts</span> notify the CPU when an event happens.</p>
+                <p class="fragment">The CPU pauses current work, runs an interrupt handler, then resumes.</p>
+            </div>
+            <div class="box-blue">
+                <p class="fragment"><span class="keyword" data-def="Polling: repeatedly checking a device/status at intervals to see if an event has occurred.">Polling</span> means checking repeatedly: "Has anything happened yet?"</p>
+                <p class="small-text fragment">This can waste CPU time if events are rare.</p>
+            </div>
         </div>
-        <div class="box-blue">
-            <p class="fragment"><span class="keyword" data-def="Polling: repeatedly checking a device/status at intervals to see if an event has occurred.">Polling</span> means checking repeatedly: “Has anything happened yet?”</p>
-            <p class="small-text fragment">This can waste CPU time if events are rare.</p>
+        <div class="box fragment">
+            <h4>Evaluating the trade-off</h4>
+            <p class="small-text fragment"><strong>Interrupts:</strong> efficient for rare/unpredictable events; low wasted CPU cycles.</p>
+            <p class="small-text fragment"><strong>Polling:</strong> can be simpler and predictable, but may miss events between checks or waste cycles with frequent checks.</p>
         </div>
-    </div>
-    <div class="box fragment">
-        <h4>Evaluating the trade-off</h4>
-        <p class="small-text fragment"><strong>Interrupts:</strong> efficient for rare/unpredictable events; low wasted CPU cycles.</p>
-        <p class="small-text fragment"><strong>Polling:</strong> can be simpler and predictable, but may miss events between checks or waste cycles with frequent checks.</p>
-    </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
     <section data-background="#fff3e0">
         <h3>🧠 Quick Check</h3>
         <div class="question-box">If a sensor updates once per hour, which approach is usually more efficient?</div>
@@ -280,11 +283,11 @@ breadcrumbs:
 <!-- 11. HL: MULTITASKING + DEADLOCK -->
 <section>
     <h3><span class="hl-badge">HL</span> Multitasking, Resource Allocation &amp; Deadlock</h3>
-    <div class="question-box">What happens when processes compete for resources that can’t be shared?</div>
+    <div class="question-box">What happens when processes compete for resources that can't be shared?</div>
     <div class="cols">
         <div class="box">
             <p class="fragment">Multitasking requires allocating CPU time, memory, files, and devices across processes.</p>
-            <p class="fragment">A <span class="keyword" data-def="Deadlock: a state where processes are stuck waiting for each other’s resources, so none can proceed.">deadlock</span> occurs when processes wait indefinitely for resources held by others.</p>
+            <p class="fragment">A <span class="keyword" data-def="Deadlock: a state where processes are stuck waiting for each other's resources, so none can proceed.">deadlock</span> occurs when processes wait indefinitely for resources held by others.</p>
         </div>
         <div class="box-blue">
             <h4><i class="fa-solid fa-triangle-exclamation"></i> Four conditions (classic)</h4>
@@ -303,7 +306,7 @@ breadcrumbs:
 <section>
     <section>
         <h2><span class="hl-badge">HL</span> Control Systems</h2>
-        <div class="question-box">How can a system keep a variable “near a target” despite disturbances?</div>
+        <div class="question-box">How can a system keep a variable "near a target" despite disturbances?</div>
         <div class="box">
             <p class="fragment">A control system uses feedback to reduce the gap between <strong>actual state</strong> and a <strong>target state</strong> (<span class="keyword" data-def="Setpoint: the desired target value a control system aims to maintain.">setpoint</span>).</p>
             <p class="fragment">This is the same core idea behind thermostats, autopilot, robotics, and industrial automation.</p>
@@ -366,7 +369,7 @@ breadcrumbs:
     <section>
         <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
         <div class="box">
-            <p class="fragment"><strong>A.</strong> Virtual memory makes programs run faster because there is “more memory”.</p>
+            <p class="fragment"><strong>A.</strong> Virtual memory makes programs run faster because there is "more memory".</p>
             <p class="fragment"><strong>B.</strong> Priority scheduling can cause starvation.</p>
             <p class="fragment"><strong>C.</strong> Polling is always more efficient than interrupts.</p>
             <p class="fragment"><strong>D.</strong> A control system uses feedback to reduce error against a setpoint.</p>
@@ -403,4 +406,3 @@ breadcrumbs:
         <p><strong>Coming up:</strong> A1.4 Translation (HL) — interpreters, compilers, bytecode, and JIT.</p>
     </div>
 </section>
-

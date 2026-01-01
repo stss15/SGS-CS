@@ -201,11 +201,40 @@ This creates a **2D navigation** structure:
 [More]      [More]
 ```
 
+### ⚠️ CRITICAL: Correct Vertical Slide Structure
+
+**The #1 mistake** that causes visual bugs (overlapping content) is mixing direct content with nested sections:
+
+```html
+<!-- ❌ WRONG: Content + nested section causes overlap! -->
+<section>
+    <h3>Main Topic</h3>
+    <div class="cols">...</div>
+    <section data-background="#fff3e0">
+        <h3>Quick Check</h3>
+    </section>
+</section>
+
+<!-- ✅ CORRECT: Wrap parent content in its own section -->
+<section>
+    <section>
+        <h3>Main Topic</h3>
+        <div class="cols">...</div>
+        <p class="small-text"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>Quick Check</h3>
+    </section>
+</section>
+```
+
+**Rule:** When using vertical slides, ALL content must be inside `<section>` tags. Never mix direct HTML content (like `<h3>`, `<div>`) with nested `<section>` tags in the same parent.
+
 ### Basic Vertical Stack
 
 ```html
 <section>
-    <!-- Main slide (horizontal) -->
+    <!-- Main slide (horizontal) — wrapped in section -->
     <section>
         <h3>The CPU</h3>
         <p>The "brain" of the computer</p>
@@ -518,6 +547,31 @@ Add notes only you can see (press `S` to open speaker view):
 
 ## 10. Anti-Patterns to Avoid
 
+### ❌ DON'T: Mix Direct Content with Nested Sections (CRITICAL!)
+
+```html
+<!-- BAD: Causes overlapping/visual bugs -->
+<section>
+    <h3>Topic</h3>
+    <div>Content</div>
+    <section data-background="#fff3e0">Quick Check</section>
+</section>
+```
+
+### ✅ DO: Wrap All Content in Sections When Using Vertical Slides
+
+```html
+<!-- GOOD: Parent content wrapped properly -->
+<section>
+    <section>
+        <h3>Topic</h3>
+        <div>Content</div>
+        <p class="small-text"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">Quick Check</section>
+</section>
+```
+
 ### ❌ DON'T: One Point Per Slide
 
 ```html
@@ -608,6 +662,7 @@ Add notes only you can see (press `S` to open speaker view):
 □ Questions appear BEFORE answers (fragments)
 □ Related points are grouped (not one-per-slide)
 □ Complex topics have vertical deep dives
+□ Vertical slides have parent content wrapped in <section> (CRITICAL!)
 □ Code uses line-by-line highlighting
 □ Key terms use highlight fragments
 □ R-stack used for layered reveals

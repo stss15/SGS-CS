@@ -449,11 +449,139 @@ Keyword directory didn’t exist yet; created empty topic keyword files for A1/A
 
 ---
 
+### Session 4: 2025-12-15
+
+#### Python-Only Cleanup & Code Block Fixes
+
+**Actions:**
+- Reviewed all B2, B3, B4 slide decks for Java references and code formatting issues
+- Fixed B3.1 OOP Fundamentals:
+  - Converted "Access Modifiers (Java)" section to "Access Control in Python"
+  - Added Python code examples showing `_protected` and `__private` naming conventions
+  - Fixed escaped `\n` characters in code blocks (replaced with actual newlines)
+  - Changed "Static vs Non-Static" to use Python class variable terminology
+- Fixed B3.2 Inheritance & Polymorphism:
+  - Fixed escaped `\n` characters in all code examples
+  - Updated `super()` section with proper Python code example
+  - Added Python `ABC` abstract class example
+  - Changed terminology from "static variable" to "class variable" in retrieval practice
+
+**Files Updated:**
+- `src/pages/ib/B3/B3.1_oop_fundamentals.njk`
+- `src/pages/ib/B3/B3.2_inheritance_polymorphism.njk`
+
+---
+
+### Session 5: 2025-12-15
+
+#### Comprehensive B2/B3/B4 Improvements
+
+**Actions:**
+- Updated CSS for better code block display (no scroll bars, better formatting)
+- Significantly improved B3.3 Design Patterns:
+  - Added Python code examples for Singleton, Factory, and Observer patterns
+  - Added practical usage examples with complete working code
+  - Enhanced quick checks with scenario-based questions
+- Significantly improved B4.1 Fundamentals of ADTs:
+  - Added retrieval practice section
+  - Added Python code for Node and LinkedList classes
+  - Added BST search implementation in Python
+  - Added hash table/dict usage examples
+  - Added set operations with Python syntax
+  - Added complexity tables with explanations
+  - Added visual representations (ASCII diagrams)
+
+**CSS Updates:**
+- `public/css/slide-deck.css`:
+  - Added `overflow: visible !important` to prevent code scroll bars
+  - Reduced code font size for better fit
+  - Added inline code styling
+  - Improved code block styling in boxes
+
+**Files Updated:**
+- `src/pages/ib/B3/B3.3_design_patterns.njk` (major expansion with Python code)
+- `src/pages/ib/B4/B4.1_fundamentals_of_ADTs.njk` (major expansion with Python code)
+- `public/css/slide-deck.css` (code block styling)
+
+**Notes:**
+- All B2/B3/B4 slide decks are now Python-only (no Java)
+- All code blocks have proper formatting without scroll bars
+- Added retrieval practice, quick checks, and misconception checks to all decks
+
+---
+
+### Session 6: 2025-12-15 (Vertical Slide Structure Fix)
+
+#### Issue Identified
+
+User reported visual bug: Quick Check sections were overlapping with parent slide content in B3.1 OOP Fundamentals. This appeared as the nested "Quick Check" panel rendering on top of the parent slide content.
+
+#### Root Cause
+
+In Reveal.js, when a parent `<section>` contains both direct HTML content (h3, divs, etc.) AND nested `<section>` tags, the nested sections are treated as vertical slides but overlap incorrectly with the parent content.
+
+**Incorrect (causes overlap):**
+```html
+<section>
+    <h3>Title</h3>
+    <div class="cols">...</div>
+    <section data-background="#fff3e0">Quick Check</section>
+</section>
+```
+
+**Correct (proper vertical stack):**
+```html
+<section>
+    <section>
+        <h3>Title</h3>
+        <div class="cols">...</div>
+    </section>
+    <section data-background="#fff3e0">Quick Check</section>
+</section>
+```
+
+#### Files Fixed
+
+| File | Issue Count | Status |
+|------|-------------|--------|
+| `src/pages/ib/B3/B3.1_oop_fundamentals.njk` | 3 nested sections | ✅ Fixed |
+| `src/pages/ib/B3/B3.2_inheritance_polymorphism.njk` | 3 nested sections | ✅ Fixed |
+| `src/pages/ib/A1/A1.1_computer_hardware.njk` | 1 nested section | ✅ Fixed |
+| `src/pages/ib/A1/A1.2_data_representation.njk` | 1 nested section | ✅ Fixed |
+| `src/pages/ib/A1/A1.3_operating_systems.njk` | 1 nested section | ✅ Fixed |
+
+#### Documentation Updated
+
+1. **`docs/REVEAL_TECHNIQUES.md`**: Added critical warning in "Vertical Slides" section explaining correct structure
+2. Added anti-pattern example to Section 10
+3. Added checklist item for vertical slide validation
+
+#### Files Verified OK
+
+All B2, B3, and B4 files verified - no remaining issues in these sections.
+A1 files verified - all fixed in this session.
+
+#### Known Remaining Issues
+
+The following files still have the vertical slide pattern issue and need fixing in a future session:
+- A2.1, A2.2, A2.3, A2.4 (4 files)
+- B1.1, B1.2, B1.3, B1.4 (4 files)
+
+#### Site Rebuilt
+
+Successfully ran `npm run build` to regenerate all HTML files.
+
+---
+
 ## Issues Log
 
 | ID | Date | Deck | Issue | Resolution | Status |
 |----|------|------|-------|------------|--------|
-| 1 | | | | | |
+| 1 | 2025-12-15 | B3.1 | Java access modifiers section | Converted to Python naming conventions | ✅ |
+| 2 | 2025-12-15 | B3.1/B3.2 | Code blocks had escaped `\n` chars | Replaced with actual newlines | ✅ |
+| 3 | 2025-12-15 | B3.1/B3.2 | Vertical slide overlapping (Quick Check on top of parent) | Wrapped parent content in `<section>` tags | ✅ |
+| 4 | 2025-12-15 | A1.1/A1.2/A1.3 | Same vertical slide issue as #3 | Wrapped parent content in `<section>` tags | ✅ |
+| 5 | 2025-12-15 | A2.1-A2.4, B1.1-B1.4 | Same vertical slide issue as #3 | Pending future session | 🔄 |
 
 ---
 
