@@ -1,0 +1,296 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B3.1 OOP Fundamentals | IB Computer Science</title>
+    <meta name="description" content="Classes vs objects, instantiation, constructors, encapsulation, access control, and static vs instance members.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B3.1 OOP Fundamentals</h1>
+            <h3 class="sub-title">Topic B3: Object‑Oriented Programming | Modelling with Objects</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A2) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Interleave recall from A2 (Networks) before we switch paradigms.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>Which device forwards traffic between networks using IP addresses?</li>
+            <li>What is the purpose of a checksum?</li>
+            <li>What does a digital certificate help a browser verify?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">Which device forwards traffic between networks using IP addresses?</div>
+        <div class="fragment box-blue">
+            <p><strong>Router</strong> — it uses IP addressing and routing tables.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What is the purpose of a checksum?</div>
+        <div class="fragment box-blue">
+            <p>To detect corruption in transmitted data by comparing computed and received values.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What does a digital certificate help a browser verify?</div>
+        <div class="fragment box-blue">
+            <p>That a public key belongs to a specific identity (e.g., a domain), via a CA signature.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 How would you model a school in code?</p>
+                <p style="font-size:1.15em; margin-top:0.6em;">Students, teachers, classes, timetables, attendance…</p>
+                <p style="font-size:1.1em; margin-top:0.8em;">Where do you put the data — and the behaviour?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> "Functions + global variables scale fine."</p>
+                <p class="small-text">Large systems become hard to maintain when data is scattered and unprotected.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Key idea:</strong> OOP bundles <strong>state</strong> and <strong>behaviour</strong> together.</p>
+                <p class="small-text">We design classes (blueprints) and create objects (instances).</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. CLASS VS OBJECT (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3><span class="keyword" data-def="Class: a blueprint/template defining shared attributes and methods for objects.">Class</span> vs <span class="keyword" data-def="Object: an instance of a class with its own state (data) and behaviour (methods).">Object</span></h3>
+        <div class="question-box">What's the difference between the "idea" of a thing and a real thing?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><strong>Class</strong> = blueprint (what attributes/methods exist).</p>
+                <p class="fragment"><strong>Object</strong> = a specific instance with its own values.</p>
+                <p class="fragment"><span class="keyword" data-def="Instantiation: the process of creating an object from a class.">Instantiation</span> creates an object from a class.</p>
+            </div>
+            <div class="box-blue">
+                <h4><i class="fa-solid fa-house"></i> Blueprint analogy</h4>
+                <p class="small-text fragment">A blueprint describes a house design.</p>
+                <p class="small-text fragment">A built house is a particular instance with a specific address and contents.</p>
+            </div>
+        </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">Is <code>Student</code> a class or an object?</div>
+        <div class="fragment box-blue">
+            <p><strong>Class</strong> — it describes what all student objects have/do.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 5. CONSTRUCTORS -->
+<section>
+    <h3><span class="keyword" data-def="Constructor: special method that initialises a new object when it is created (e.g., __init__ in Python).">Constructors</span></h3>
+    <div class="question-box">When an object is created, who sets its starting state?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A constructor sets initial attribute values.</p>
+            <p class="fragment">It enforces valid starting conditions (invariants).</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-code"></i> Python</h4>
+<pre class="fragment"><code class="python">class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 6. ENCAPSULATION -->
+<section>
+    <h3><span class="keyword" data-def="Encapsulation: bundling data and methods together and restricting direct access to internal state.">Encapsulation</span></h3>
+    <div class="question-box">Why might we stop other code from changing an object's data directly?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Encapsulation protects internal state (prevents invalid values).</p>
+            <p class="fragment">It creates a clear interface: methods define allowed actions.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-lock"></i> Example idea</h4>
+            <p class="small-text fragment">A bank account should not allow balance to become negative through direct edits.</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>Accessors/Mutators:</strong> "Getters" and "Setters" control how data is read/updated.</p>
+    </div>
+</section>
+
+<!-- 7. ACCESS CONTROL (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3>Access Control in Python</h3>
+        <div class="question-box">How do we signal "who is allowed to access this attribute/method"?</div>
+        <div class="box">
+            <p class="fragment"><code>public_attr</code> — no prefix: accessible from anywhere</p>
+            <p class="fragment"><code>_protected_attr</code> — single underscore: "internal use" convention</p>
+            <p class="fragment"><code>__private_attr</code> — double underscore: name-mangled (harder to access)</p>
+        </div>
+        <div class="box-blue fragment">
+<pre><code class="python">class BankAccount:
+    def __init__(self, owner):
+        self.owner = owner      # public
+        self._balance = 0       # protected (convention)
+        self.__pin = "1234"     # private (name-mangled)</code></pre>
+        </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">What does a double underscore prefix indicate in Python?</div>
+        <div class="fragment box-blue">
+            <p><strong>Name-mangling</strong> — Python makes it harder (but not impossible) to access from outside.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 8. STATIC VS INSTANCE (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3>Static vs Instance Members</h3>
+        <div class="question-box">Does this value belong to each object… or to the class as a whole?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><span class="keyword" data-def="Instance member: belongs to a specific object; each object has its own copy.">Instance</span>: each object has its own copy.</p>
+                <p class="fragment"><span class="keyword" data-def="Class variable: belongs to the class; one shared copy exists for all instances.">Class variable</span>: one shared copy for all instances.</p>
+            </div>
+            <div class="box-blue">
+                <h4><i class="fa-solid fa-code"></i> Python Example</h4>
+<pre class="fragment"><code class="python">class Student:
+    count = 0  # class variable (shared)
+    
+    def __init__(self, name):
+        self.name = name  # instance variable
+        Student.count += 1</code></pre>
+            </div>
+        </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">How many copies of a class variable exist across all objects?</div>
+        <div class="fragment box-blue">
+            <p><strong>One</strong> — it is shared at the class level.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 9. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> A class is a specific instance with concrete attribute values.</p>
+            <p class="fragment"><strong>B.</strong> Encapsulation is about controlling access to internal state through methods.</p>
+            <p class="fragment"><strong>C.</strong> Class variables are duplicated for every object instance.</p>
+            <p class="fragment"><strong>D.</strong> A constructor helps initialise an object's starting state.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> That describes an object (instance), not a class.</p>
+            <p class="fragment"><strong>B: True.</strong> Encapsulation protects invariants and reduces unintended changes.</p>
+            <p class="fragment"><strong>C: False.</strong> Class variables have one shared copy.</p>
+            <p class="fragment"><strong>D: True.</strong> Constructors set up the initial state when instantiating.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 10. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li><strong>Classes</strong> define blueprints; <strong>objects</strong> are instances with state and behaviour.</li>
+            <li>Constructors (<code>__init__</code>) initialise valid starting state.</li>
+            <li><strong>Encapsulation</strong> protects internal state and defines controlled interfaces.</li>
+            <li>Class variables belong to the class; instance variables belong to each object.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> B3.2 Inheritance &amp; Polymorphism <span class="hl-badge">HL</span> — modelling families of related classes.</p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>

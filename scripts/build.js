@@ -84,7 +84,9 @@ const buildFile = async (relativePath) => {
     const permalink = toPosix(data.permalink || relativePath.replace(/\.njk$/, '.html'));
     const outPath = path.join(OUTPUT_DIR, permalink);
     const basePath = data.basePath !== undefined ? data.basePath : computeBasePath(permalink);
-    const layout = data.layout || 'layouts/base.njk';
+    // For HTML files (slides), default to no layout if not specified
+    const isHtml = relativePath.endsWith('.html');
+    const layout = data.layout || (isHtml ? null : 'layouts/base.njk');
 
     const context = {
         ...data,
@@ -93,7 +95,7 @@ const buildFile = async (relativePath) => {
     };
 
     const renderedContent = env.renderString(content, context);
-    const html = env.render(layout, { ...context, content: renderedContent });
+    const html = layout ? env.render(layout, { ...context, content: renderedContent }) : renderedContent;
 
     await fs.ensureDir(path.dirname(outPath));
     const marker = '<!-- GENERATED FILE - Edit source in src/pages/ instead -->\n';
@@ -105,7 +107,7 @@ const buildFile = async (relativePath) => {
 const buildAll = async () => {
     await fs.ensureDir(OUTPUT_DIR);
 
-    const files = await fg('**/*.njk', { cwd: SRC_DIR });
+    const files = await fg('**/*.{njk,html}', { cwd: SRC_DIR });
     if (!files.length) {
         console.warn('No templates found under src/pages');
         return;

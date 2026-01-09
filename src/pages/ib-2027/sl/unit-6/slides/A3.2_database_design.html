@@ -1,0 +1,363 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A3.2 Database Design | IB Computer Science</title>
+    <meta name="description" content="Schemas, ERDs, data types, table construction, normalization (to 3NF), and when denormalization is useful.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A3.2 Database Design</h1>
+            <h3 class="sub-title">Topic A3: Databases | Blueprints, ERDs &amp; Normal Forms</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A3.1) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall A3.1 (Database fundamentals) before we design.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What is the difference between a <em>primary key</em> and a <em>foreign key</em>?</li>
+            <li>What does <em>referential integrity</em> prevent?</li>
+            <li>How do we usually implement a <em>many-to-many</em> relationship?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What is the difference between a primary key and a foreign key?</div>
+        <div class="fragment box-blue">
+            <p><strong>Primary key</strong> uniquely identifies a record in its table.</p>
+            <p><strong>Foreign key</strong> references a primary key in another table to create a link.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What does referential integrity prevent?</div>
+        <div class="fragment box-blue">
+            <p>It prevents <strong>broken links</strong>: a foreign key value that doesn’t match an existing primary key.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">How do we usually implement a many-to-many relationship?</div>
+        <div class="fragment box-blue">
+            <p>Using a <strong>junction table</strong> that stores pairs of foreign keys (e.g., <code>StudentID</code> + <code>ClubID</code>).</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 Why not store everything in <strong>one giant table</strong>?</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">Wouldn’t that be simpler?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Common misconception:</strong> “Fewer tables = better design.”</p>
+                <p class="small-text">You often end up repeating data and creating contradictions.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> good design reduces <strong>redundancy</strong> and makes updates safer.</p>
+                <p class="small-text">That’s what <span class="keyword" data-def="Process of structuring tables to reduce redundancy and improve integrity.">normalization</span> is for.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. SCHEMA (VERTICAL DEEP DIVE) -->
+<section>
+    <section>
+        <h3><span class="keyword" data-def="Blueprint describing how a database is structured (tables, fields, relationships, constraints).">Database schema</span></h3>
+        <div class="question-box">Before you build tables, what “plan” do you need?</div>
+        <div class="box">
+            <p class="fragment">A schema is a <strong>blueprint</strong> of the database structure.</p>
+            <p class="fragment">It describes tables, fields, relationships, and constraints.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Deep Dive:</span> conceptual → logical → physical
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="High-level model of data requirements (often an ERD), independent of implementation.">Conceptual schema</span></h3>
+        <div class="box">
+            <p class="fragment"><strong>Focus:</strong> what data exists and how it relates (not how it’s stored).</p>
+            <p class="fragment"><strong>Common tool:</strong> <span class="keyword" data-def="Diagram showing entities, attributes, and relationships (with cardinality).">ERDs</span>.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="Detailed design of tables, fields, keys, and relationships for a chosen data model.">Logical schema</span></h3>
+        <div class="box">
+            <p class="fragment"><strong>Focus:</strong> tables, primary/foreign keys, and constraints.</p>
+            <p class="fragment">This is where you map an ERD into table structures.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="Implementation details in a DBMS (storage, indexes, partitions, access paths).">Physical schema</span></h3>
+        <div class="box">
+            <p class="fragment"><strong>Focus:</strong> performance and storage (indexes, partitions, file layout).</p>
+            <p class="fragment">Different DBMS choices can produce different physical designs.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 5. ERDs -->
+<section>
+    <h3>Entity–Relationship Diagrams (ERDs)</h3>
+    <div class="question-box">How can you show database structure before writing SQL?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Entities</strong> become tables (e.g., STUDENT).</p>
+            <p class="fragment"><strong>Attributes</strong> become fields (e.g., Name, DOB).</p>
+            <p class="fragment"><strong>Relationships</strong> determine foreign keys or junction tables.</p>
+            <p class="fragment"><strong>Cardinality</strong> shows 1:1, 1:m, or m:m.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Mini example</h4>
+            <p class="small-text fragment"><code>STUDENT</code> —1:m→ <code>ATTENDANCE</code></p>
+            <p class="small-text fragment">ATTENDANCE stores <code>StudentID</code> as a foreign key.</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>Exam skill:</strong> you may be asked to <strong>construct</strong> an ERD from a scenario, then build the tables.</p>
+    </div>
+</section>
+
+<!-- 6. QUICK CHECK (ERD THINKING) -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check</h3>
+    <div class="box">
+        <p class="fragment">A student can enrol in <strong>many</strong> courses, and each course has <strong>many</strong> students.</p>
+        <p class="fragment"><strong>Identify</strong> the relationship type and <strong>outline</strong> how you implement it in tables.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>Relationship:</strong> many-to-many (m:m).</p>
+        <p><strong>Implementation:</strong> a junction table like <code>ENROLMENT(StudentID, CourseID, ...)</code> holding two foreign keys.</p>
+    </div>
+</section>
+
+<!-- 6. DATA TYPES -->
+<section>
+    <h3>Data types (relational databases)</h3>
+    <div class="question-box">Why can’t every field just be “text”?</div>
+    <div class="box">
+        <table style="font-size:0.9em; width:100%;">
+            <tr><th>Type</th><th>Stores…</th><th>Example</th></tr>
+            <tr><td><strong>INTEGER</strong></td><td>whole numbers</td><td><code>StudentID = 1024</code></td></tr>
+            <tr><td><strong>DECIMAL</strong></td><td>numbers with fractions</td><td><code>Price = 4.99</code></td></tr>
+            <tr><td><strong>VARCHAR</strong></td><td>variable-length text</td><td><code>Name = "Leah"</code></td></tr>
+            <tr><td><strong>DATE</strong></td><td>calendar dates</td><td><code>2025-09-01</code></td></tr>
+            <tr><td><strong>BOOLEAN</strong></td><td>true/false values</td><td><code>Present = True</code></td></tr>
+        </table>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>Why it matters:</strong> types enable validation (e.g., dates behave like dates) and improve query correctness.</p>
+    </div>
+</section>
+
+<!-- 7. CONSTRUCTING TABLES -->
+<section>
+    <h3>From ERD → tables</h3>
+    <div class="question-box">How do we translate a diagram into a working database?</div>
+    <div class="box">
+        <p class="fragment">1) Each entity becomes a table.</p>
+        <p class="fragment">2) Choose a <strong>primary key</strong> for each table.</p>
+        <p class="fragment">3) Implement 1:m by placing the <strong>foreign key on the “many” side</strong>.</p>
+        <p class="fragment">4) Implement m:m using a <span class="keyword" data-def="Table used to represent a many-to-many relationship by storing pairs of foreign keys.">junction table</span>.</p>
+        <p class="fragment">5) Add constraints (NOT NULL, UNIQUE) to enforce valid data.</p>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A3.3:</strong> SQL <span class="keyword" data-def="Data definition language: SQL commands that create/modify database structures (CREATE, ALTER, DROP).">DDL</span> is how you actually create these tables.</p>
+    </div>
+</section>
+
+<!-- 8. NORMALIZATION INTRO -->
+<section>
+    <h3>Why normalize?</h3>
+    <div class="question-box">What breaks when we duplicate the same fact in many places?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Update anomaly:</strong> inconsistent data after partial updates.</p>
+            <p class="fragment"><strong>Insert anomaly:</strong> can’t add a fact without adding unrelated data.</p>
+            <p class="fragment"><strong>Delete anomaly:</strong> deleting one record accidentally deletes other facts.</p>
+        </div>
+        <div class="box-red fragment">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> Example</h4>
+            <p class="small-text">If a student’s tutor group is duplicated in 5 tables, changing it in only 4 creates contradictions.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 9. NORMAL FORMS (VERTICAL DEEP DIVE) -->
+<section>
+    <section>
+        <h3>Normal forms (1NF → 3NF)</h3>
+        <div class="question-box">How do we structure tables to reduce redundancy?</div>
+        <div class="box">
+            <p class="fragment"><strong>Goal:</strong> store each fact in the “right” place, linked by keys.</p>
+            <p class="fragment">You’re expected to explain the difference between normal forms and create 3NF designs.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> to step through 1NF, 2NF, 3NF
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="Table with atomic values (no repeating groups) and a primary key.">1NF</span> (First Normal Form)</h3>
+        <div class="box">
+            <p class="fragment"><strong>Atomic values:</strong> each field holds a single value (no lists in a cell).</p>
+            <p class="fragment"><strong>No repeating groups:</strong> don’t use columns like <code>Phone1</code>, <code>Phone2</code>, <code>Phone3</code>.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="1NF plus no partial dependency on part of a composite key.">2NF</span> (Second Normal Form)</h3>
+        <div class="box">
+            <p class="fragment">Applies when a table has a <strong>composite key</strong>.</p>
+            <p class="fragment"><strong>No partial dependency:</strong> non-key fields must depend on <em>the whole key</em>, not just part.</p>
+        </div>
+        <div class="fragment box-blue">
+            <p class="small-text">If <code>(StudentID, SubjectID)</code> is the key, then <code>StudentName</code> depends only on StudentID → move it to STUDENT.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="2NF plus no transitive dependencies (non-key depends only on the key).">3NF</span> (Third Normal Form)</h3>
+        <div class="box">
+            <p class="fragment"><strong>No transitive dependency:</strong> non-key fields should not depend on other non-key fields.</p>
+            <p class="fragment">Every non-key attribute depends on <strong>the key, the whole key, and nothing but the key</strong>.</p>
+        </div>
+        <div class="fragment box-blue">
+            <p class="small-text">If <code>Postcode → City</code> and you store both in STUDENT, City depends on Postcode, not StudentID → separate table.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 10. DENORMALIZATION -->
+<section>
+    <h3><span class="keyword" data-def="Deliberate introduction of redundancy (e.g., duplicated fields) to improve performance or reporting.">Denormalization</span></h3>
+    <div class="question-box">If normalization is good, why ever undo it?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Sometimes, highly normalized databases require many <strong>joins</strong> to answer common queries.</p>
+            <p class="fragment">Denormalization can improve <strong>read performance</strong> for reporting/analytics.</p>
+        </div>
+        <div class="box-red">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> Trade-off</h4>
+            <p class="small-text fragment">You usually reintroduce some redundancy, so you must manage consistency carefully.</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A3.4 HL:</strong> data warehouses often denormalize (e.g., star schemas) to speed up analytics.</p>
+    </div>
+</section>
+
+<!-- 11. QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check</h3>
+    <div class="box">
+        <p class="fragment"><strong>Explain</strong> why this is a problem:</p>
+        <p class="fragment"><code>ORDER(OrderID, CustomerID, CustomerName, CustomerEmail, ProductID, ProductName)</code></p>
+        <p class="fragment"><strong>Identify</strong> one likely anomaly and one way to improve the design.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>Issue:</strong> customer and product details repeat across many orders → redundancy.</p>
+        <p><strong>Likely anomaly:</strong> updating a customer email in one order but not others → inconsistency.</p>
+        <p><strong>Fix:</strong> separate into tables like <code>CUSTOMER</code>, <code>PRODUCT</code>, and <code>ORDER</code> linked by keys (normalization).</p>
+    </div>
+</section>
+
+<!-- 12. MISCONCEPTION CHECK -->
+<section>
+    <h3>Misconception Check</h3>
+    <div class="question-box">True or False: “A 3NF database is always the fastest option.”</div>
+    <div class="fragment box-red">
+        <p><strong>False.</strong> 3NF improves integrity, but performance depends on workload.</p>
+    </div>
+    <div class="fragment box">
+        <p>For analytics-heavy systems, denormalization or a data warehouse design can reduce expensive joins.</p>
+    </div>
+</section>
+
+<!-- 13. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color:white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color:white;">
+        <ul style="line-height:1.5;">
+            <li>A <strong>schema</strong> is a blueprint: conceptual (ERD), logical (tables), physical (storage/indexing).</li>
+            <li>ERDs model <strong>entities</strong>, <strong>attributes</strong>, and <strong>relationships</strong> before implementation.</li>
+            <li>Data types and constraints help enforce valid data.</li>
+            <li><strong>Normalization</strong> reduces redundancy and prevents anomalies (aim for <strong>3NF</strong>).</li>
+            <li><strong>Denormalization</strong> can improve reporting performance, but reintroduces redundancy.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color:white;">
+        <p><strong>Coming up:</strong> A3.3 Database Programming — SQL queries, joins, updates, and (HL) transactions.</p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>
