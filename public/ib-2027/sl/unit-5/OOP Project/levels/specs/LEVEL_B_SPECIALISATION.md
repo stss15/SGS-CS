@@ -8,7 +8,7 @@
 
 ## Overview
 
-Students create subclasses that inherit from Player and override the `get_starting_stats()` method. This demonstrates inheritance and polymorphism.
+Students create subclasses that inherit from Player and customize attributes in their constructor. This demonstrates inheritance and the standard pattern of "call parent constructor, then customize."
 
 ---
 
@@ -16,9 +16,9 @@ Students create subclasses that inherit from Player and override the `get_starti
 
 By the end of this level, students will be able to:
 1. Create a subclass that inherits from a parent class
-2. Override a method in a subclass
-3. Understand how polymorphism works (same interface, different behaviour)
-4. Use `super()` to call parent class methods
+2. Call the parent constructor using `super().__init__()`
+3. Override attributes after calling the parent constructor
+4. Understand how polymorphism works (same interface, different behaviour)
 5. Explain why inheritance is useful for code reuse
 
 ---
@@ -30,9 +30,9 @@ By the end of this level, students will be able to:
 | Inheritance | A class deriving from another class, gaining its attributes and methods |
 | Subclass | A class that inherits from another (also called child class) |
 | Parent class | The class being inherited from (also called superclass) |
-| Override | Replacing a parent's method with a new implementation in the subclass |
-| Polymorphism | Same method name produces different behaviour based on object type |
 | `super()` | Reference to the parent class, used to call parent methods |
+| Polymorphism | Same method name produces different behaviour based on object type |
+| Constructor chaining | Calling the parent constructor before adding subclass-specific setup |
 
 ---
 
@@ -45,36 +45,30 @@ By the end of this level, students will be able to:
 | Aspect | Value |
 |--------|-------|
 | Inherits from | Player |
-| Overrides | get_starting_stats() |
+| Pattern | Call `super().__init__(name)`, then override stats |
 
-**get_starting_stats() must return:**
-
-```
-{
-    "health": 120,
-    "max_health": 120,
-    "armour": 3,
-    "accuracy": 70
-}
-```
+**Constructor must:**
+1. Call `super().__init__(name)` to set up the base Player
+2. Override attributes:
+   - `health = 120`
+   - `max_health = 120`
+   - `armour = 3`
+   - `accuracy = 70`
 
 ### Class: `Scout(Player)`
 
 | Aspect | Value |
 |--------|-------|
 | Inherits from | Player |
-| Overrides | get_starting_stats() |
+| Pattern | Call `super().__init__(name)`, then override stats |
 
-**get_starting_stats() must return:**
-
-```
-{
-    "health": 80,
-    "max_health": 80,
-    "armour": 1,
-    "accuracy": 95
-}
-```
+**Constructor must:**
+1. Call `super().__init__(name)` to set up the base Player
+2. Override attributes:
+   - `health = 80`
+   - `max_health = 80`
+   - `armour = 1`
+   - `accuracy = 95`
 
 ---
 
@@ -94,8 +88,8 @@ By the end of this level, students will be able to:
 
 ### New Features
 - Character type selection at game start
-- Engine calls get_starting_stats() on whichever type is chosen
-- Same interface, different results = polymorphism demo
+- All Player methods (take_damage, heal, etc.) work automatically on subclasses
+- Same interface, different starting stats = polymorphism demo
 
 ---
 
@@ -106,14 +100,14 @@ The validator for Level B checks:
 1. **Structure**
    - `Brute` class exists and inherits from `Player`
    - `Scout` class exists and inherits from `Player`
-   - Both classes have get_starting_stats() method
+   - Both classes can be instantiated with a name
 
 2. **Behaviour**
-   - Brute's stats differ from base Player
-   - Scout's stats differ from base Player
+   - Brute has correct stats (health=120, armour=3, accuracy=70)
+   - Scout has correct stats (health=80, armour=1, accuracy=95)
    - Brute and Scout have different stats from each other
-   - Creating Brute("Test") works and has correct health
-   - Creating Scout("Test") works and has correct accuracy
+   - Inherited methods (take_damage, heal) work correctly
+   - Name is stored correctly via parent constructor
 
 ---
 
@@ -129,9 +123,9 @@ Students only need to create `player_types.py` with Brute and Scout.
 
 - What is inheritance and why use it?
 - The "is-a" relationship (Brute IS-A Player)
-- What does overriding mean?
-- How does the engine use polymorphism? (calls same method, gets different stats)
-- When to use super()
+- Why call `super().__init__()` first? (reuse parent setup)
+- How do inherited methods work? (take_damage works without reimplementing)
+- When to override attributes vs methods
 
 ---
 
@@ -141,18 +135,21 @@ Students only need to create `player_types.py` with Brute and Scout.
          ┌─────────────────┐
          │     Player      │
          ├─────────────────┤
-         │ + get_starting_ │
-         │   stats(): dict │
+         │ + __init__(name)│
+         │ + get_status()  │
+         │ + take_damage() │
+         │ + heal()        │
          └────────┬────────┘
                   │
+                  │ inherits from
         ┌─────────┴─────────┐
         │                   │
 ┌───────┴───────┐   ┌───────┴───────┐
 │     Brute     │   │     Scout     │
 ├───────────────┤   ├───────────────┤
-│ + get_starting│   │ + get_starting│
-│   _stats()    │   │   _stats()    │
-│   [override]  │   │   [override]  │
+│ + __init__()  │   │ + __init__()  │
+│   [calls      │   │   [calls      │
+│    super()]   │   │    super()]   │
 └───────────────┘   └───────────────┘
 ```
 
@@ -162,8 +159,9 @@ Students only need to create `player_types.py` with Brute and Scout.
 
 - This is the first inheritance lesson
 - Emphasise the `(Player)` syntax for inheritance
-- Show how the engine calls the method without knowing which subclass it is
+- The pattern: `super().__init__()` first, then customize
+- Show how inherited methods work without reimplementation
 - Common mistake: forgetting to import Player
-- Common mistake: forgetting parentheses in class definition
+- Common mistake: forgetting to call `super().__init__(name)`
 - Brute = high HP/armour, low accuracy (tank archetype)
 - Scout = low HP/armour, high accuracy (precision archetype)

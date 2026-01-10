@@ -1,7 +1,8 @@
 """
 Player Types - Student reference implementation.
 
-Brute and Scout subclasses demonstrating inheritance and method overriding.
+Brute and Scout subclasses demonstrating inheritance.
+Each subclass calls the parent constructor, then customizes specific attributes.
 """
 
 from student_reference.player import Player
@@ -15,19 +16,20 @@ class Brute(Player):
     When you hit, you hit hard.
     """
     
-    def get_starting_stats(self) -> dict:
+    def __init__(self, name: str):
         """
-        Get Brute starting stats.
+        Create a Brute player.
         
-        Returns:
-            Dict with boosted health and armour, reduced accuracy.
+        First calls the parent constructor to set up base Player,
+        then overrides specific stats for the Brute archetype.
         """
-        return {
-            "health": 120,
-            "max_health": 120,
-            "armour": 3,
-            "accuracy": 70
-        }
+        super().__init__(name)  # Set up as a Player first
+        
+        # Then customize for Brute
+        self.health = 120
+        self.max_health = 120
+        self.armour = 3
+        self.accuracy = 70
     
     def to_save_data(self) -> dict:
         """
@@ -64,19 +66,20 @@ class Scout(Player):
     Every shot counts.
     """
     
-    def get_starting_stats(self) -> dict:
+    def __init__(self, name: str):
         """
-        Get Scout starting stats.
+        Create a Scout player.
         
-        Returns:
-            Dict with reduced health and armour, boosted accuracy.
+        First calls the parent constructor to set up base Player,
+        then overrides specific stats for the Scout archetype.
         """
-        return {
-            "health": 80,
-            "max_health": 80,
-            "armour": 1,
-            "accuracy": 95
-        }
+        super().__init__(name)  # Set up as a Player first
+        
+        # Then customize for Scout
+        self.health = 80
+        self.max_health = 80
+        self.armour = 1
+        self.accuracy = 95
     
     def to_save_data(self) -> dict:
         """

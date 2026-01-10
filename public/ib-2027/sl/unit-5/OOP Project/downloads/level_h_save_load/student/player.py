@@ -1,18 +1,16 @@
 from student.inventory import Inventory
 
 class Player:
+    """Base player class with full functionality including save/load."""
 
     def __init__(self, name: str):
         self.name = name
-        stats = self.get_starting_stats()
-        self.health = stats["health"]
-        self.max_health = stats["max_health"]
-        self.armour = stats["armour"]
-        self.accuracy = stats["accuracy"]
+        # Direct attribute assignment
+        self.health = 100
+        self.max_health = 100
+        self.armour = 2
+        self.accuracy = 85
         self.inventory = Inventory()
-
-    def get_starting_stats(self) -> dict:
-        return {"health": 100, "max_health": 100, "armour": 2, "accuracy": 85}
 
     def get_status(self) -> str:
         return f"{self.name}: {self.health}/{self.max_health} HP"
@@ -59,9 +57,19 @@ class Player:
     def compute_damage(self, base: int, armour: int) -> int:
         return max(0, base - armour)
 
-    # TO SAVE DATA (NEW)
-    to_save_data()
+    # TO SAVE DATA (YOUR TASK FOR THIS LEVEL)
+    # This is where dictionaries become useful!
+    # - Returns: a dictionary containing all player data
+    # - Include: name, player_type ("player"), health, max_health, armour, accuracy, inventory items
+    # The dictionary can be converted to JSON for file storage
+    pass
 
-    # FROM SAVE DATA (NEW)
+    # FROM SAVE DATA (YOUR TASK FOR THIS LEVEL)
+    # This is a class method that creates a new Player from saved data
+    # - Receives: data (a dictionary from to_save_data)
+    # - Creates a new Player instance
+    # - Sets all attributes from the dictionary
+    # - Returns: the new Player instance
     @classmethod
-    from_save_data()
+    def from_save_data(cls, data: dict) -> "Player":
+        pass

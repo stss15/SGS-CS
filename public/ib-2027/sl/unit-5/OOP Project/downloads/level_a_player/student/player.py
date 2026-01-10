@@ -1,15 +1,17 @@
 class Player:
 
     # CONSTRUCTOR
-
-    # GET STARTING STATS
-    get_starting_stats()
+    # - Receives: name
+    # - Store: name, health (100), max_health (100), armour (2), accuracy (85)
 
     # GET STATUS
-    get_status()
+    # - Returns: "Name: health/max_health HP"
 
     # TAKE DAMAGE
-    take_damage()
+    # - Receives: amount
+    # - Reduce health (minimum 0)
 
     # HEAL
-    heal()
+    # - Receives: amount
+    # - Increase health (maximum max_health)
+    pass

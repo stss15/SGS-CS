@@ -111,12 +111,17 @@ def main():
         scout = None
     
     # Stats checks
-    print("\n--- Stats Checks ---")
+    print("\n--- Brute Stats Checks ---")
     if brute:
         if brute.health == 120:
             results.add_pass("Brute has correct health (120)")
         else:
             results.add_fail("Brute health", f"Expected 120, got {brute.health}")
+        
+        if brute.max_health == 120:
+            results.add_pass("Brute has correct max_health (120)")
+        else:
+            results.add_fail("Brute max_health", f"Expected 120, got {brute.max_health}")
         
         if brute.armour == 3:
             results.add_pass("Brute has correct armour (3)")
@@ -127,12 +132,23 @@ def main():
             results.add_pass("Brute has correct accuracy (70)")
         else:
             results.add_fail("Brute accuracy", f"Expected 70, got {brute.accuracy}")
+        
+        if brute.name == "TestBrute":
+            results.add_pass("Brute stores name correctly")
+        else:
+            results.add_fail("Brute name", f"Expected 'TestBrute', got {brute.name}")
     
+    print("\n--- Scout Stats Checks ---")
     if scout:
         if scout.health == 80:
             results.add_pass("Scout has correct health (80)")
         else:
             results.add_fail("Scout health", f"Expected 80, got {scout.health}")
+        
+        if scout.max_health == 80:
+            results.add_pass("Scout has correct max_health (80)")
+        else:
+            results.add_fail("Scout max_health", f"Expected 80, got {scout.max_health}")
         
         if scout.armour == 1:
             results.add_pass("Scout has correct armour (1)")
@@ -143,17 +159,39 @@ def main():
             results.add_pass("Scout has correct accuracy (95)")
         else:
             results.add_fail("Scout accuracy", f"Expected 95, got {scout.accuracy}")
+        
+        if scout.name == "TestScout":
+            results.add_pass("Scout stores name correctly")
+        else:
+            results.add_fail("Scout name", f"Expected 'TestScout', got {scout.name}")
     
-    # Polymorphism check
+    # Polymorphism check (inherited methods work)
     print("\n--- Polymorphism Check ---")
     if brute and scout:
-        base = Player("Base")
-        if (brute.get_starting_stats() != base.get_starting_stats() and
-            scout.get_starting_stats() != base.get_starting_stats() and
-            brute.get_starting_stats() != scout.get_starting_stats()):
-            results.add_pass("Each class returns different stats (polymorphism)")
-        else:
-            results.add_fail("Polymorphism", "Brute, Scout, and Player should all have different stats")
+        try:
+            # Test that inherited methods work
+            brute.take_damage(50)
+            if brute.health == 70:
+                results.add_pass("Brute inherits take_damage correctly")
+            else:
+                results.add_fail("Brute take_damage", f"Expected 70, got {brute.health}")
+            
+            scout.heal(10)
+            if scout.health == 90:
+                results.add_pass("Scout inherits heal correctly")
+            else:
+                results.add_fail("Scout heal", f"Expected 90, got {scout.health}")
+            
+            # Different classes have different stats (polymorphism through constructor)
+            base = Player("Base")
+            if (brute.max_health != base.max_health and
+                scout.max_health != base.max_health and
+                brute.max_health != scout.max_health):
+                results.add_pass("Each class has different stats (polymorphism)")
+            else:
+                results.add_fail("Polymorphism", "Brute, Scout, and Player should all have different stats")
+        except Exception as e:
+            results.add_fail("Polymorphism check", str(e))
     
     # Summary
     if results.summary():

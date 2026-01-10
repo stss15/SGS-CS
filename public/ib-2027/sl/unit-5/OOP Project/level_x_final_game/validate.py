@@ -117,16 +117,19 @@ def check_player(results: ValidationResult):
         results.add_fail("Player constructor", str(e))
         return
     
-    # get_starting_stats
+    # Check initial attributes
     try:
-        stats = p.get_starting_stats()
-        required = {"health", "max_health", "armour", "accuracy"}
-        if required.issubset(set(stats.keys())):
-            results.add_pass("get_starting_stats returns dict with required keys")
+        if p.health == 100 and p.max_health == 100:
+            results.add_pass("Player has correct initial health (100)")
         else:
-            results.add_fail("get_starting_stats", f"Missing keys: {required - set(stats.keys())}")
+            results.add_fail("Initial health", f"Expected 100, got health={p.health}")
+        
+        if hasattr(p, 'armour') and hasattr(p, 'accuracy'):
+            results.add_pass("Player has armour and accuracy attributes")
+        else:
+            results.add_fail("Attributes", "Missing armour or accuracy")
     except Exception as e:
-        results.add_fail("get_starting_stats", str(e))
+        results.add_fail("Initial attributes", str(e))
     
     # take_damage clamping
     try:
@@ -217,17 +220,17 @@ def check_player_types(results: ValidationResult):
         results.add_fail("Scout creation", str(e))
         return
     
-    # Different stats
+    # Different stats (via direct attribute access)
     try:
-        b_stats = Brute("Test").get_starting_stats()
-        s_stats = Scout("Test").get_starting_stats()
+        brute = Brute("Test")
+        scout = Scout("Test")
         
-        if b_stats["health"] != s_stats["health"]:
+        if brute.health != scout.health:
             results.add_pass("Brute and Scout have different health")
         else:
             results.add_fail("Different stats", "Brute and Scout should have different health")
         
-        if b_stats["accuracy"] != s_stats["accuracy"]:
+        if brute.accuracy != scout.accuracy:
             results.add_pass("Brute and Scout have different accuracy")
         else:
             results.add_fail("Different stats", "Brute and Scout should have different accuracy")

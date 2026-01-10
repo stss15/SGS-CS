@@ -47,17 +47,16 @@ By the end of this level, students will be able to:
 | Name | Type | Description |
 |------|------|-------------|
 | name | str | The player's name |
-| health | int | Current health points |
-| max_health | int | Maximum health cap |
-| armour | int | Damage reduction |
-| accuracy | int | Hit chance percentage |
+| health | int | Current health points (100) |
+| max_health | int | Maximum health cap (100) |
+| armour | int | Damage reduction (2) |
+| accuracy | int | Hit chance percentage (85) |
 
 #### Methods
 
 | Method | Parameters | Returns | Description |
 |--------|------------|---------|-------------|
-| `__init__` | name: str | None | Create player, set name, call get_starting_stats() |
-| `get_starting_stats` | — | dict | Return dict with health, max_health, armour, accuracy |
+| `__init__` | name: str | None | Create player, set name, and assign all starting stats directly |
 | `get_status` | — | str | Return formatted string with name and health |
 | `take_damage` | amount: int | None | Reduce health by amount, clamp at 0 |
 | `heal` | amount: int | None | Increase health, clamp at max_health |
@@ -67,7 +66,7 @@ By the end of this level, students will be able to:
 - Health must NEVER go below 0
 - Health must NEVER exceed max_health
 - get_status must include the player's name in the returned string
-- get_starting_stats must return a dict with all four keys
+- All attributes must be set directly in `__init__` (no helper methods needed)
 
 ---
 
@@ -101,7 +100,7 @@ The validator for Level A checks:
 
 2. **Behaviour**
    - Constructor sets name correctly
-   - get_starting_stats returns dict with required keys
+   - Constructor sets health=100, max_health=100, armour=2, accuracy=85
    - take_damage reduces health
    - take_damage clamps at 0
    - heal increases health
@@ -138,7 +137,6 @@ None — this is the first student code level.
 │ - accuracy: int                 │
 ├─────────────────────────────────┤
 │ + __init__(name: str)           │
-│ + get_starting_stats(): dict    │
 │ + get_status(): str             │
 │ + take_damage(amount: int)      │
 │ + heal(amount: int)             │
@@ -151,6 +149,7 @@ None — this is the first student code level.
 
 - This is students' first real OOP code
 - Emphasise the `self.` pattern for attributes
+- Direct attribute assignment is the simplest and clearest pattern
 - Common mistake: forgetting `self` parameter
 - Common mistake: not clamping health correctly
 - The validator gives clear feedback — encourage students to read it

@@ -90,21 +90,28 @@ def main():
         else:
             results.add_fail(f"Missing attribute", f"Player should have a '{attr}' attribute")
     
-    # get_starting_stats check
-    print("\n--- Method Checks ---")
+    # Check attribute values are sensible
+    print("\n--- Initial Values Check ---")
     try:
-        stats = p.get_starting_stats()
-        if isinstance(stats, dict):
-            required_keys = {'health', 'max_health', 'armour', 'accuracy'}
-            if required_keys.issubset(set(stats.keys())):
-                results.add_pass("get_starting_stats returns dict with required keys")
-            else:
-                missing = required_keys - set(stats.keys())
-                results.add_fail("get_starting_stats", f"Missing keys: {missing}")
+        if p.health == 100 and p.max_health == 100:
+            results.add_pass("Health and max_health are 100")
         else:
-            results.add_fail("get_starting_stats", "Should return a dictionary")
+            results.add_fail("Initial health", f"Expected health=100, max_health=100, got {p.health}, {p.max_health}")
+        
+        if p.armour == 2:
+            results.add_pass("Armour is 2")
+        else:
+            results.add_fail("Initial armour", f"Expected armour=2, got {p.armour}")
+        
+        if p.accuracy == 85:
+            results.add_pass("Accuracy is 85")
+        else:
+            results.add_fail("Initial accuracy", f"Expected accuracy=85, got {p.accuracy}")
     except Exception as e:
-        results.add_fail("get_starting_stats", str(e))
+        results.add_fail("Initial values", str(e))
+    
+    # Method checks
+    print("\n--- Method Checks ---")
     
     # get_status check
     try:

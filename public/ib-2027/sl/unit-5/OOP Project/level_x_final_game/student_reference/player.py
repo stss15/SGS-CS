@@ -28,33 +28,15 @@ class Player:
         """
         self.name = name
         
-        # Get starting stats (can be overridden in subclasses)
-        stats = self.get_starting_stats()
-        self.health = stats.get("health", 100)
-        self.max_health = stats.get("max_health", 100)
-        self.armour = stats.get("armour", 0)
-        self.accuracy = stats.get("accuracy", 80)
+        # Set starting stats directly
+        self.health = 100
+        self.max_health = 100
+        self.armour = 2
+        self.accuracy = 85
         
         # Composition: Player has-a Inventory
         from student_reference.inventory import Inventory
         self.inventory = Inventory()
-    
-    def get_starting_stats(self) -> dict:
-        """
-        Get the starting stats for this player type.
-        
-        This method can be overridden in subclasses to provide
-        different stat distributions.
-        
-        Returns:
-            A dict with keys: health, max_health, armour, accuracy.
-        """
-        return {
-            "health": 100,
-            "max_health": 100,
-            "armour": 0,
-            "accuracy": 80
-        }
     
     def get_status(self) -> str:
         """
@@ -168,8 +150,6 @@ class Player:
         Returns:
             The index of the chosen option (0 to len(options)-1).
         """
-        # For the reference implementation, we'll ask for input
-        # In a real game, this could be AI-driven or follow a pattern
         print("\nChoose your response (enter number):")
         for i, opt in enumerate(options):
             print(f"  {i + 1}. {opt}")
@@ -194,7 +174,6 @@ class Player:
         Returns:
             The index of the chosen action (0 to len(options)-1).
         """
-        # For the reference implementation, we'll ask for input
         while True:
             try:
                 choice = input("Enter action number: ").strip()
@@ -252,8 +231,8 @@ class Player:
         # Restore stats
         player.health = data.get("health", 100)
         player.max_health = data.get("max_health", 100)
-        player.armour = data.get("armour", 0)
-        player.accuracy = data.get("accuracy", 80)
+        player.armour = data.get("armour", 2)
+        player.accuracy = data.get("accuracy", 85)
         
         # Restore inventory
         from student_reference.inventory import Inventory

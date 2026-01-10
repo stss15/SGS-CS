@@ -1,18 +1,16 @@
 from student.inventory import Inventory
 
 class Player:
+    """Base player class with inventory, items, dialogue, and combat."""
 
     def __init__(self, name: str):
         self.name = name
-        stats = self.get_starting_stats()
-        self.health = stats["health"]
-        self.max_health = stats["max_health"]
-        self.armour = stats["armour"]
-        self.accuracy = stats["accuracy"]
+        # Direct attribute assignment
+        self.health = 100
+        self.max_health = 100
+        self.armour = 2
+        self.accuracy = 85
         self.inventory = Inventory()
-
-    def get_starting_stats(self) -> dict:
-        return {"health": 100, "max_health": 100, "armour": 2, "accuracy": 85}
 
     def get_status(self) -> str:
         return f"{self.name}: {self.health}/{self.max_health} HP"
@@ -44,8 +42,15 @@ class Player:
             except ValueError:
                 print("Please enter a number.")
 
-    # CHOOSE ACTION (NEW)
-    choose_action()
+    # CHOOSE ACTION (YOUR TASK FOR THIS LEVEL)
+    # - Receives: options (list of combat actions)
+    # - Display each option with a number
+    # - Get user input and validate it
+    # - Return the chosen index (0-based)
+    pass
 
-    # COMPUTE DAMAGE (NEW)
-    compute_damage()
+    # COMPUTE DAMAGE (YOUR TASK FOR THIS LEVEL)
+    # - Receives: base (base damage), armour (target's armour)
+    # - Calculate: damage = base - armour
+    # - Return: the damage (minimum 0, cannot be negative)
+    pass

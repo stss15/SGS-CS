@@ -22,6 +22,18 @@ level_b_specialisation/
 
 1. Open `student/player_types.py`
 2. Create `Brute` class that inherits from `Player`
-3. Override `get_starting_stats()` to return Brute stats
-4. Create `Scout` class the same way
-5. Run `python3 validate.py` to check your work
+3. Call `super().__init__(name)` to set up the base Player
+4. Override the stats with Brute-specific values
+5. Create `Scout` class the same way
+6. Run `python3 validate.py` to check your work
+
+## The Pattern
+
+```
+class Brute(Player):
+    def __init__(self, name):
+        super().__init__(name)  # Set up as Player first
+        # Then customize stats...
+```
+
+This pattern is standard in OOP: call the parent constructor first, then customize what's different.

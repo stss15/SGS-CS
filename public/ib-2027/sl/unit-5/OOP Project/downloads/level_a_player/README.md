@@ -24,7 +24,7 @@ level_a_player/
 ## How to Work
 
 1. Open `student/player.py`
-2. Read the docstrings and TODO comments
+2. Read the comments for guidance
 3. Implement each method
 4. Run `python3 validate.py` to check your work
 5. When all checks pass, run `python3 run_game.py` to see it in action!
@@ -33,18 +33,17 @@ level_a_player/
 
 The `Player` class needs:
 
-| Attribute | Type | Purpose |
-|-----------|------|---------|
-| `name` | str | The player's name |
-| `health` | int | Current health points |
-| `max_health` | int | Maximum health |
-| `armour` | int | Damage reduction |
-| `accuracy` | int | Hit chance (0-100) |
+| Attribute | Type | Default | Purpose |
+|-----------|------|---------|---------|
+| `name` | str | (from param) | The player's name |
+| `health` | int | 100 | Current health points |
+| `max_health` | int | 100 | Maximum health |
+| `armour` | int | 2 | Damage reduction |
+| `accuracy` | int | 85 | Hit chance (0-100) |
 
 | Method | Return | Purpose |
 |--------|--------|---------|
-| `__init__(name)` | None | Set up the player |
-| `get_starting_stats()` | dict | Return initial stat values |
+| `__init__(name)` | None | Set up the player with name and stats |
 | `get_status()` | str | Return formatted status |
 | `take_damage(amount)` | None | Reduce health (clamp at 0) |
 | `heal(amount)` | None | Increase health (clamp at max) |
