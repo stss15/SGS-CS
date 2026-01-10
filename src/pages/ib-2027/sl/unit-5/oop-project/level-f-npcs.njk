@@ -1,0 +1,248 @@
+---
+layout: layouts/base.njk
+title: "Level F: First Contact - NPCs | OOP Project"
+description: "Implement a dialogue response hook to interact with NPCs."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 5", href: "ib-2027/sl/unit-5/index.html" }
+  - { label: "OOP Project", href: "ib-2027/sl/unit-5/oop-project/index.html" }
+  - { label: "Level F" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<!-- HERO SECTION -->
+<div class="oop-hero">
+    <img src="{{ basePath }}ib-2027/sl/unit-5/OOP%20Project/images/level_f_hero.png" alt="Dialogue with a maintenance drone" class="oop-hero-image">
+    <div class="oop-hero-overlay">
+        <span class="oop-hero-level">Level F</span>
+        <h1 class="oop-hero-title">First Contact: NPCs</h1>
+        <p class="oop-hero-subtitle">Implement a dialogue hook to talk to characters</p>
+    </div>
+</div>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <h2 class="oop-section-title">What You'll Learn</h2>
+    </div>
+    
+    <div class="objectives-grid">
+        <div class="objective-card">
+            <span class="objective-number">1</span>
+            <span class="objective-text">Implement a hook method called by the engine</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">2</span>
+            <span class="objective-text">Handle user input validation loops</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">3</span>
+            <span class="objective-text">Convert 1-based user choice to 0-based index</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">4</span>
+            <span class="objective-text">Integrate with an existing dialogue system</span>
+        </div>
+    </div>
+</section>
+
+<!-- KEYWORDS -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-book"></i>
+        </div>
+        <h2 class="oop-section-title">Key Terms</h2>
+    </div>
+    
+    <div class="keywords-table">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Term</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="keyword-term">Hook</span></td>
+                    <td>A method that the engine calls at a specific moment to get a result</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">NPC</span></td>
+                    <td>Non-Player Character — an entity controlled by the game engine</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Input Validation</span></td>
+                    <td>Checking if the user's input is acceptable (e.g., within range)</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Zero-based Indexing</span></td>
+                    <td>Counting starts from 0 (used by lists) vs 1 (used by humans)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- UML DIAGRAM -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <h2 class="oop-section-title">The Interaction Hook</h2>
+    </div>
+    
+    <div class="uml-container">
+        <div class="uml-class" style="align-self: center;">
+            <div class="uml-class-name">Player</div>
+            <div class="uml-class-section">
+                <div class="uml-item new-method">
+                    <span class="uml-visibility public">+</span>
+                    <span class="uml-name">respond_to_npc(options)</span>
+                    <span class="uml-type">→ int</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="uml-note-connector">
+            <div class="uml-note-line" style="height: 40px;"></div>
+            <div class="uml-note-text">
+                Called by the Engine when you talk to an NPC.<br>
+                Engine sends <strong>["Hi", "Bye"]</strong>.<br>
+                You return index <strong>0</strong> or <strong>1</strong>.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STRUCTURE GUIDE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-code"></i>
+        </div>
+        <h2 class="oop-section-title">Structure Guide</h2>
+    </div>
+    
+    <p class="section-intro">Add this method to your Player class. The engine does the rest!</p>
+    
+    <!-- 1. Method Signature -->
+    <details class="skeleton-block" open>
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">1</span>
+            <span class="skeleton-title">Method Signature</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">METHOD respond_to_npc(options_list) → integer:</div>
+            <div class="skeleton-desc">
+                <strong>Parameters:</strong> <code>options_list</code> is a list of strings (the choices).<br>
+                <strong>Returns:</strong> The index (integer) of the choice selected.
+            </div>
+        </div>
+    </details>
+    
+    <!-- 2. Display Options -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">2</span>
+            <span class="skeleton-title">Display Options</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                Loop through the <code>options_list</code> and print each one with a number.
+                <div class="skeleton-line code" style="margin-top: 0.5rem;">FOR index, option IN ENUMERATE(options_list):</div>
+                <div class="skeleton-line code">    PRINT (index + 1) ": " option</div>
+                <p style="margin-top: 0.5rem; font-size: 0.9em; color: #666;">Note: Use <code>index + 1</code> so humans see 1, 2, 3... instead of 0, 1, 2...</p>
+            </div>
+        </div>
+    </details>
+    
+    <!-- 3. Get Valid Input -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">3</span>
+            <span class="skeleton-title">Get Valid Input</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                Create a <code>WHILE True</code> loop to keep asking until you get a valid number.
+                <ul>
+                    <li>Ask user for input</li>
+                    <li>Check if it is a number</li>
+                    <li>Check if it is between 1 and <code>len(options_list)</code></li>
+                    <li>If valid, BREAK the loop</li>
+                    <li>If invalid, print an error message and loop again</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+    
+    <!-- 4. Return Index -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">4</span>
+            <span class="skeleton-title">Return Zero-based Index</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                The user typed <code>1</code>, but the list starts at <code>0</code>.
+                <div class="skeleton-line code" style="margin-top: 0.5rem;">RETURN (user_choice - 1)</div>
+            </div>
+        </div>
+    </details>
+</section>
+
+<!-- CHALLENGE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h2 class="oop-section-title">Your Mission</h2>
+    </div>
+    
+    <div class="challenge-box">
+        <div class="challenge-title">
+            <i class="fa-solid fa-comments"></i>
+            Talk to the Drone
+        </div>
+        
+        <div class="challenge-description">
+            <p>M-Unit 7 is waiting in the Main Corridor. It has information, but you need to be able to answer it.</p>
+            <p>Implement <strong>respond_to_npc</strong> in <code>student/player.py</code> so you can choose what to say.</p>
+        </div>
+        
+        <div class="challenge-actions">
+            <a href="{{ basePath }}ib-2027/sl/unit-5/OOP%20Project/downloads/level_f_npc_dialogue.zip" class="download-btn" download>
+                <i class="fa-solid fa-download"></i>
+                Download Level F Files
+            </a>
+            <code class="validate-command">python3 validate.py</code>
+        </div>
+    </div>
+</section>
+
+<!-- LEVEL NAVIGATION -->
+<nav class="level-nav">
+    <a href="level-e-exploring.html" class="level-nav-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Level E: Exploring
+    </a>
+    <a href="level-g-encounters.html" class="level-nav-btn">
+        Level G: Encounters
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+</nav>

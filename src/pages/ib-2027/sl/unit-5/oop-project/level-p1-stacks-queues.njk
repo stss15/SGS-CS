@@ -1,0 +1,231 @@
+---
+layout: layouts/base.njk
+title: "Level P1: Terminal Access - Stacks & Queues | OOP Project"
+description: "Implement Stack and Queue data structures to hack a terminal."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 5", href: "ib-2027/sl/unit-5/index.html" }
+  - { label: "OOP Project", href: "ib-2027/sl/unit-5/oop-project/index.html" }
+  - { label: "Level P1" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<!-- HERO SECTION -->
+<div class="oop-hero">
+    <img src="{{ basePath }}ib-2027/sl/unit-5/OOP%20Project/images/level_p1_hero.png" alt="Visualisation of Stack and Queue structures" class="oop-hero-image">
+    <div class="oop-hero-overlay">
+        <span class="oop-hero-level">Level P1</span>
+        <h1 class="oop-hero-title">Terminal Access: Stacks & Queues</h1>
+        <p class="oop-hero-subtitle">Master LIFO and FIFO correctly to hack the system</p>
+    </div>
+</div>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <h2 class="oop-section-title">What You'll Learn</h2>
+    </div>
+    
+    <div class="objectives-grid">
+        <div class="objective-card">
+            <span class="objective-number">1</span>
+            <span class="objective-text">Implement a Stack (LIFO) with push/pop</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">2</span>
+            <span class="objective-text">Implement a Queue (FIFO) with enqueue/dequeue</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">3</span>
+            <span class="objective-text">Use <code>collections.deque</code> for efficiency</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">4</span>
+            <span class="objective-text">Handle empty structure edge cases</span>
+        </div>
+    </div>
+</section>
+
+<!-- KEYWORDS -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-book"></i>
+        </div>
+        <h2 class="oop-section-title">Key Terms</h2>
+    </div>
+    
+    <div class="keywords-table">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Term</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="keyword-term">LIFO</span></td>
+                    <td><strong>Last In, First Out</strong> (Stack). Like a stack of plates.</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">FIFO</span></td>
+                    <td><strong>First In, First Out</strong> (Queue). Like a line at a store.</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Push/Pop</span></td>
+                    <td>Add to / Remove from the <strong>top</strong> of a Stack.</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Enqueue/Dequeue</span></td>
+                    <td>Add to the <strong>back</strong> / Remove from the <strong>front</strong> of a Queue.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- UML DIAGRAM -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <h2 class="oop-section-title">Data Structures</h2>
+    </div>
+    
+    <div class="uml-container">
+        <!-- Stack UML -->
+        <div class="uml-class" style="align-self: flex-start;">
+            <div class="uml-class-name">Stack</div>
+            <div class="uml-class-section">
+                <div class="uml-item property"><span class="uml-visibility private">-</span> _items: list</div>
+            </div>
+            <div class="uml-class-section">
+                <div class="uml-item method"><span class="uml-visibility public">+</span> push(item)</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> pop() → item</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> peek() → item</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> is_empty() → bool</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> size() → int</div>
+            </div>
+        </div>
+        
+        <!-- Queue UML -->
+        <div class="uml-class" style="align-self: flex-start;">
+            <div class="uml-class-name">Queue</div>
+            <div class="uml-class-section">
+                <div class="uml-item property"><span class="uml-visibility private">-</span> _items: deque</div>
+            </div>
+            <div class="uml-class-section">
+                <div class="uml-item method"><span class="uml-visibility public">+</span> enqueue(item)</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> dequeue() → item</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> front() → item</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> is_empty() → bool</div>
+                <div class="uml-item method"><span class="uml-visibility public">+</span> size() → int</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STRUCTURE GUIDE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-code"></i>
+        </div>
+        <h2 class="oop-section-title">Structure Guide</h2>
+    </div>
+    
+    <p class="section-intro">Implement these two classes in <code>student/data_structs.py</code>.</p>
+    
+    <!-- Stack Guide -->
+    <details class="skeleton-block" open>
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">1</span>
+            <span class="skeleton-title">Stack Implementation</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                Use a Python <code>list</code>. The <strong>end</strong> of the list is the "top" of the stack.
+                <ul>
+                    <li>push: <code>append(item)</code></li>
+                    <li>pop: <code>pop()</code> (removes from end)</li>
+                    <li>peek: <code>return list[-1]</code></li>
+                    <li>Check for empty before popping/peeking! Return <code>None</code> if empty.</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+    
+    <!-- Queue Guide -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">2</span>
+            <span class="skeleton-title">Queue Implementation</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                Use <code>collections.deque</code> for efficiency.
+                <ul>
+                    <li>Import: <code>from collections import deque</code></li>
+                    <li>Init: <code>self._items = deque()</code></li>
+                    <li>enqueue: <code>append(item)</code></li>
+                    <li>dequeue: <code>popleft()</code> (removes from front)</li>
+                    <li>front: <code>return deque[0]</code></li>
+                    <li>Check for empty! Return <code>None</code> if empty.</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+</section>
+
+<!-- CHALLENGE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h2 class="oop-section-title">Your Mission</h2>
+    </div>
+    
+    <div class="challenge-box">
+        <div class="challenge-title">
+            <i class="fa-solid fa-terminal"></i>
+            Hack the Terminal
+        </div>
+        
+        <div class="challenge-description">
+            <p>The Control Hub terminal is locked. It expects commands to be processed in reverse (Stack) and in order (Queue).</p>
+            <p>Implement the data structures to pass the system checks and unlock the door.</p>
+        </div>
+        
+        <div class="challenge-actions">
+            <a href="{{ basePath }}ib-2027/sl/unit-5/OOP%20Project/downloads/level_p1_stacks_queues.zip" class="download-btn" download>
+                <i class="fa-solid fa-download"></i>
+                Download Level P1 Files
+            </a>
+            <code class="validate-command">python3 run_puzzle.py</code>
+        </div>
+    </div>
+</section>
+
+<!-- LEVEL NAVIGATION -->
+<nav class="level-nav">
+    <a href="index.html" class="level-nav-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Project Home
+    </a>
+    <a href="level-p2-log-search.html" class="level-nav-btn">
+        Level P2: Log Search
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+</nav>

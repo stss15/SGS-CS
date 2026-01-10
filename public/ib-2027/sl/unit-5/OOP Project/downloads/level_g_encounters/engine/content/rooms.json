@@ -1,0 +1,172 @@
+{
+    "meta": {
+        "version": "1.0",
+        "title": "Sigma-7 Research Station",
+        "description": "An orbital research facility that went dark three months ago."
+    },
+    "rooms": [
+        {
+            "id": "airlock",
+            "name": "Emergency Airlock",
+            "description_first": "You regain consciousness in a cramped emergency pod bay. Red emergency lights pulse rhythmically, casting crimson shadows across the metallic walls. The air tastes stale, recycled too many times. Through the reinforced viewport, you glimpse the disabled escape pod—your ticket out of this nightmare. But the launch controls are dark, waiting for power that isn't there. The main corridor stretches north, promising answers... or danger.",
+            "description_revisit": "The emergency airlock. Red lights still pulse. The escape pod remains powerless, a tantalising promise of freedom just out of reach.",
+            "exits": {
+                "north": "main_corridor"
+            },
+            "items": [],
+            "npcs": [],
+            "encounter_on_first_exit": "sentry_droid"
+        },
+        {
+            "id": "storage_cage",
+            "name": "Storage Cage",
+            "description_first": "Behind reinforced mesh barriers, supply crates and equipment lockers line the walls. Most have been ransacked—someone was here before you, and they were desperate. A heavy-duty storage chest sits in the corner, its lock mechanism jammed shut. The rust-coloured stains on the floor might be hydraulic fluid. You hope it's hydraulic fluid. The corridor leads back north.",
+            "description_revisit": "The storage cage. Ransacked crates, empty lockers, and that suspicious chest in the corner.",
+            "exits": {
+                "north": "main_corridor"
+            },
+            "items": [
+                "keycard"
+            ],
+            "chest": {
+                "id": "storage_chest",
+                "locked": true,
+                "requires": "crowbar",
+                "contains": [
+                    "torch",
+                    "shield_plate"
+                ]
+            }
+        },
+        {
+            "id": "lab_bench",
+            "name": "Research Lab",
+            "description_first": "Banks of shattered monitors flicker with corrupted data. Research equipment lies scattered across steel benches—centrifuges, spectrometers, devices you can't identify. Someone left in a hurry. A handwritten note is pinned to a corkboard, and medical supplies spill from an overturned cabinet. The security door behind you leads south, and the main corridor is to the west.",
+            "description_revisit": "The research lab. Broken equipment, scattered notes, and the lingering sense that terrible things happened here.",
+            "exits": {
+                "west": "main_corridor"
+            },
+            "locked_from": {
+                "south": "security_door"
+            },
+            "items": [
+                "med_patch",
+                "access_code_note",
+                "data_chip"
+            ]
+        },
+        {
+            "id": "main_corridor",
+            "name": "Main Corridor",
+            "description_first": "The central hub of Sigma-7 stretches before you—a wide passage with damaged ceiling panels and exposed conduits sparking intermittently. Emergency lighting casts long shadows. Doors branch off in multiple directions: storage to the south, the research lab to the east (security locked), engineering to the west, and crew quarters further north. A small maintenance drone hovers near the ceiling, its optical sensor tracking your movements.",
+            "description_revisit": "The main corridor hub. Sparking conduits, damaged panels, and M-Unit 7 still watching from above.",
+            "exits": {
+                "south": "airlock",
+                "east": "lab_bench",
+                "west": "engineering",
+                "north": "crew_quarters"
+            },
+            "locked_exits": {
+                "east": "security_door"
+            },
+            "items": [
+                "crowbar"
+            ],
+            "hidden_items": {
+                "crowbar": "Behind a loose wall panel, something metallic glints."
+            },
+            "npcs": [
+                "maintenance_drone"
+            ]
+        },
+        {
+            "id": "engineering",
+            "name": "Engineering Bay",
+            "description_first": "The heart of the station's power systems. The massive engine core dominates the chamber, its surface scarred with impact damage. Warning klaxons would be blaring if the speakers still worked. Sparking conduits snake across the floor like dying serpents. Control panels display cascading errors in languages you don't recognise. Something moved in the shadows near the auxiliary systems—something mechanical.",
+            "description_revisit": "Engineering. The damaged core, the endless error messages, and the constant threat of something lurking.",
+            "exits": {
+                "east": "main_corridor"
+            },
+            "items": [
+                "battery"
+            ],
+            "encounter_on_first_entry": "repair_bot"
+        },
+        {
+            "id": "crew_quarters",
+            "name": "Crew Quarters",
+            "description_first": "Personal bunks line the walls, their privacy curtains torn. Personal belongings are scattered everywhere—photos of loved ones, half-packed bags, a child's drawing of a space station. Someone's coffee mug still sits on a bedside table, its contents long evaporated. In the corner, huddled behind an overturned mattress, a woman in a torn lab coat stares at you with terrified eyes.",
+            "description_revisit": "The crew quarters. Evidence of lives interrupted, and Dr. Aria Chen still waiting for rescue.",
+            "exits": {
+                "south": "main_corridor",
+                "north": "control_hub"
+            },
+            "items": [
+                "personal_log"
+            ],
+            "npcs": [
+                "aria"
+            ]
+        },
+        {
+            "id": "control_hub",
+            "name": "Control Hub",
+            "description_first": "The station's nerve centre. Curved displays line the walls, most showing static or error codes. The central control terminal hums with dormant power, its interface locked behind a security protocol. Access points to the research archive lie to the west, the medical bay to the east, and the command deck to the north—but that door is sealed tight. A synthesised voice echoes: 'Unauthorised access detected. Security protocols active.'",
+            "description_revisit": "The control hub. Locked terminals, sealed doors, and SIGMA's watchful presence.",
+            "exits": {
+                "south": "crew_quarters",
+                "west": "research_archive",
+                "east": "medical_bay",
+                "north": "command_deck"
+            },
+            "locked_exits": {
+                "north": "command_door"
+            },
+            "items": [
+                "power_cell"
+            ],
+            "puzzle": "terminal_puzzle"
+        },
+        {
+            "id": "research_archive",
+            "name": "Research Archive",
+            "description_first": "Rows of data servers stretch into the darkness, their indicator lights blinking in patterns that might be code—or might be death throes. The air is cold here, climate control still functioning to protect the precious data. A research terminal glows faintly, its screen displaying thousands of corrupted log entries. Somewhere in this digital graveyard lies the information you need.",
+            "description_revisit": "The research archive. Cold servers, corrupted data, and secrets waiting to be uncovered.",
+            "exits": {
+                "east": "control_hub"
+            },
+            "items": [
+                "override_key"
+            ],
+            "puzzle": "log_search_puzzle"
+        },
+        {
+            "id": "medical_bay",
+            "name": "Medical Bay",
+            "description_first": "Sterile white walls are splattered with something dark and dried. Emergency stretchers line the corridor, some with restraints still attached. The supply cabinet hangs open, its contents mostly looted but a few items remain. A medical robot stands frozen mid-procedure, its arms locked in place, scalpel still extended. Its optical sensor flickers—it's not as dead as it looks.",
+            "description_revisit": "The medical bay. Dried stains, frozen robot, and the supplies that might keep you alive.",
+            "exits": {
+                "west": "control_hub"
+            },
+            "items": [
+                "med_kit",
+                "stim_pack"
+            ],
+            "encounter_on_first_entry": "medical_bot"
+        },
+        {
+            "id": "command_deck",
+            "name": "Command Deck",
+            "description_first": "The bridge of Sigma-7. Panoramic viewports reveal the endless void of space, stars wheeling slowly as the station drifts. The captain's chair faces a massive display showing critical system failures. At the helm controls, a hulking security unit stands guard—the station's last line of defence, still following orders from a dead crew. On the console behind it, you spot the distress beacon. Your way home.",
+            "description_revisit": "The command deck. Stars, silence, and the Security Chief standing between you and freedom.",
+            "exits": {
+                "south": "control_hub"
+            },
+            "items": [
+                "signal_beacon"
+            ],
+            "encounter_on_first_entry": "security_chief",
+            "is_final_room": true
+        }
+    ]
+}
