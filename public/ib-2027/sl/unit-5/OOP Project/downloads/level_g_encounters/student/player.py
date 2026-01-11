@@ -34,8 +34,7 @@ class Player:
         return f"You use the {item_id} on the {target}."
 
     def respond_to_npc(self, options: list) -> int:
-        for i, option in enumerate(options):
-            print(f"{i+1}: {option}")
+        # Engine displays options - just get input and return index
         while True:
             try:
                 choice = int(input("Choose an option: ")) - 1
@@ -48,9 +47,10 @@ class Player:
     # =========================================================================
     # YOUR TASK: Add the choose_action() method
     # =========================================================================
-    # choose_action(self, options):
-    #   - Same as respond_to_npc but for combat
-    #   - Display options with numbers, get input, validate, return 0-based index
+    # choose_action(self, options)
+    #   - The ENGINE displays the options - don't print them again!
+    #   - Get user input, validate it's a number 1-4
+    #   - Return the 0-based index (0, 1, 2, or 3)
     # =========================================================================
 
     # =========================================================================

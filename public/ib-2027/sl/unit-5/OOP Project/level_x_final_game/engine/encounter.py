@@ -141,7 +141,7 @@ class EncounterManager:
             # Show status
             print(f"\n--- {enemy.name}: {enemy.health}/{enemy.max_health} HP | You: {player.health}/{player.max_health} HP ---")
             
-            # Player chooses action
+            # Player chooses action - engine shows options, student provides input
             print("\nWhat do you do?")
             for i, option in enumerate(self.OPTIONS):
                 print(f"  {i + 1}. {option}")

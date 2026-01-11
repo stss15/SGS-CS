@@ -150,10 +150,7 @@ class Player:
         Returns:
             The index of the chosen option (0 to len(options)-1).
         """
-        print("\nChoose your response (enter number):")
-        for i, opt in enumerate(options):
-            print(f"  {i + 1}. {opt}")
-        
+        # Engine displays options - just get input and return index
         while True:
             try:
                 choice = input("> ").strip()

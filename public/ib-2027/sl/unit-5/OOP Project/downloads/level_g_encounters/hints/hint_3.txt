@@ -1,17 +1,20 @@
-=== HINT 3: Complete Pattern ===
+=== HINT 3: Method Guidance ===
 
 CHOOSE_ACTION:
 
+The engine ALREADY displays the options to the player.
+Your method just needs to:
+  1. Get input from the user
+  2. Validate it's a valid number
+  3. Return the 0-indexed choice (0, 1, 2, or 3)
+
 def choose_action(self, options):
-    print("\nWhat do you do?")
-    for i, option in enumerate(options):
-        print(f"  {i+1}. {option}")
-    
+    # DON'T print options - the engine does this!
     while True:
         try:
-            choice = int(input("Choice: ")) - 1
+            choice = int(input("Choose action: ")) - 1
             if 0 <= choice < len(options):
-                return options[choice]
+                return choice  # Return the INDEX, not the string
             else:
                 print("Invalid choice.")
         except ValueError:
@@ -20,16 +23,17 @@ def choose_action(self, options):
 COMPUTE_DAMAGE:
 
 def compute_damage(self, base_damage, armour):
+    # Simple subtraction with clamping
     damage = base_damage - armour
-    return max(0, damage)  # Never negative!
+    return max(0, damage)  # Damage can't be negative!
 
 ---------------------------------------------
 KEY CONCEPTS
 ---------------------------------------------
 
-✓ max(0, value) ensures never below 0
-✓ Return the actual option string, not the index
-✓ Input validation with try/except
-✓ Combat logic stays simple - engine handles the rest
+✓ choose_action returns an INDEX (0, 1, 2, or 3)
+✓ The ENGINE displays options - you just get input
+✓ compute_damage uses max() to prevent negative damage
+✓ Both methods are called by the engine during combat
 
 Run validate.py to check your work!

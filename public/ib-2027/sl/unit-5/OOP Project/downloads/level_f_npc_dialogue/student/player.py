@@ -36,16 +36,16 @@ class Player:
     # =========================================================================
     # YOUR TASK: Add the respond_to_npc() method
     # =========================================================================
-    # respond_to_npc(self, options):
+    # respond_to_npc(self, options)
     #   - options is a list of dialogue choices (strings)
-    #   - Display each option with a number (1, 2, 3...)
-    #   - Use input() to get user's choice
-    #   - Validate the input (must be a number in valid range)
-    #   - Return the index (0-based) of the chosen option
+    #   - The ENGINE displays the options - don't print them again!
+    #   - Use input() to get user's choice (a number 1, 2, 3...)
+    #   - Validate the input (must be in valid range)
+    #   - Return the 0-based INDEX of the chosen option
     # 
     # Example: If options = ["Ask about the station", "Say goodbye"]
-    #   Display:  1. Ask about the station
-    #             2. Say goodbye
+    #   Engine shows:  1. Ask about the station
+    #                  2. Say goodbye
     #   If user types "1", return 0
     #   If user types "2", return 1
     # =========================================================================

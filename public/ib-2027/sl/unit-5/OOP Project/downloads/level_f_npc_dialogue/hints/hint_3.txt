@@ -1,42 +1,34 @@
-=== HINT 3: Complete Pattern ===
+=== HINT 3: Method Structure ===
 
-def respond_to_npc(self, npc_name, dialogue_tree):
-    # Show greeting
-    print(f"\n{npc_name}: \"{dialogue_tree['greeting']}\"")
-    print()
+CORRECT METHOD SIGNATURE:
+
+def respond_to_npc(self, options):
+    # 'options' is a list like ["Ask about the station", "Say goodbye"]
+    # The ENGINE already displayed these - don't print them again!
     
-    # Show options
-    options = dialogue_tree["options"]
-    for i, option in enumerate(options):
-        print(f"  {i+1}. {option}")
-    print()
-    
-    # Get valid choice
     while True:
         try:
-            choice = int(input("Your response: ")) - 1
+            # Get input, convert to integer, adjust to 0-indexed
+            choice = int(input("Your choice: ")) - 1
+            
+            # Validate range
             if 0 <= choice < len(options):
-                break
+                return choice  # Return the INDEX (0, 1, 2...)
             else:
                 print("Please enter a valid number.")
         except ValueError:
             print("Please enter a number.")
-    
-    # Show NPC response
-    response = dialogue_tree["responses"][choice]
-    print(f"\n{npc_name}: \"{response}\"")
-    
-    return choice
 
 ---------------------------------------------
 KEY CONCEPTS
 ---------------------------------------------
 
-✓ enumerate() gives you index AND value
-✓ input() always returns a string
-✓ int() converts to integer
-✓ Use while True for input validation
+✓ Method takes just 'options' (a list of strings)
+✓ Engine ALREADY displays the numbered options
+✓ Your method: get input → validate → return index
+✓ Use while True for input validation loop
+✓ int() converts string to number
 ✓ Handle ValueError for non-numeric input
-✓ Lists are 0-indexed, but show 1-indexed to users
+✓ Return 0-indexed value (user types 1, you return 0)
 
 Run validate.py to check your work!
