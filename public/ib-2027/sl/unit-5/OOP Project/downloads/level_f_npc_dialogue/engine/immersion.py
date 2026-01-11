@@ -8,30 +8,66 @@ No dependencies on student code.
 import time
 import sys
 import random
+import textwrap
+
+
+# ============================================================================
+# TEXT UTILITIES
+# ============================================================================
+
+MAX_LINE_WIDTH = 76  # Max characters per line before wrapping
+
+
+def wrap_text(text: str, width: int = MAX_LINE_WIDTH) -> str:
+    """
+    Wrap text at word boundaries without hyphenation.
+    
+    Args:
+        text: The text to wrap.
+        width: Maximum line width (default 76).
+    
+    Returns:
+        Text with newlines inserted at word boundaries.
+    """
+    # Handle multi-paragraph text
+    paragraphs = text.split('\n')
+    wrapped_paragraphs = []
+    for para in paragraphs:
+        if para.strip():
+            wrapped_paragraphs.append('\n'.join(textwrap.wrap(para, width=width)))
+        else:
+            wrapped_paragraphs.append('')
+    return '\n'.join(wrapped_paragraphs)
 
 
 # ============================================================================
 # TEXT EFFECTS
 # ============================================================================
 
-def type_text(text, delay=0.02):
+def type_text(text, delay=0.02, wrap=True):
     """Print text with typewriter effect."""
+    if wrap:
+        text = wrap_text(text)
     for char in text:
         print(char, end='', flush=True)
         time.sleep(delay)
     print()
 
 
-def type_text_slow(text, delay=0.04):
+def type_text_slow(text, delay=0.04, wrap=True):
     """Slower typewriter for dramatic moments."""
+    if wrap:
+        text = wrap_text(text)
     for char in text:
         print(char, end='', flush=True)
         time.sleep(delay)
     print()
 
 
-def type_text_fast(text, delay=0.01):
+def type_text_fast(text, delay=0.01, wrap=True):
     """Faster typewriter for dialogue."""
+    if wrap:
+        text = wrap_text(text)
     for char in text:
         print(char, end='', flush=True)
         time.sleep(delay)
@@ -181,3 +217,105 @@ def room_atmosphere(room_name, first_visit=True):
     if first_visit:
         dramatic_pause(0.3)
     ambient_flavor()
+
+
+# ============================================================================
+# SCREEN CONTROL (Zork-style)
+# ============================================================================
+
+def clear_screen():
+    """Clear screen with blank lines (Zork-style)."""
+    print("\n" * 35)
+
+
+def wait_for_enter(prompt="Press Enter to continue..."):
+    """Wait for user to press Enter before continuing."""
+    input(prompt)
+
+
+def screen_break():
+    """Clear screen and wait for Enter - use between major sections."""
+    wait_for_enter()
+    clear_screen()
+
+
+# ============================================================================
+# ASCII ROOM MAP
+# ============================================================================
+
+def generate_room_map(room_data, items_taken=None, npcs=None, enemies=None):
+    """
+    Generate a simple ASCII map of the current room.
+    
+    Legend:
+        @ = You (player)
+        # = Wall
+        . = Floor
+        ? = Item
+        N = NPC
+        X = Enemy
+        ^ v < > = Exits (N/S/E/W)
+    """
+    items_taken = items_taken or set()
+    npcs = npcs or []
+    enemies = enemies or []
+    
+    # 7x7 grid with walls
+    grid = [
+        list("#######"),
+        list("#.....#"),
+        list("#.....#"),
+        list("#..@..#"),  # Player in center
+        list("#.....#"),
+        list("#.....#"),
+        list("#######"),
+    ]
+    
+    exits = room_data.get("exits", {})
+    
+    # Mark exits
+    if "north" in exits:
+        grid[0][3] = "^"
+    if "south" in exits:
+        grid[6][3] = "v"
+    if "east" in exits:
+        grid[3][6] = ">"
+    if "west" in exits:
+        grid[3][0] = "<"
+    
+    # Place items (not taken)
+    items = room_data.get("items", [])
+    item_positions = [(1, 1), (1, 5), (5, 1), (5, 5)]  # Corners
+    for i, item_id in enumerate(items):
+        if item_id not in items_taken and i < len(item_positions):
+            row, col = item_positions[i]
+            grid[row][col] = "?"
+    
+    # Place NPCs
+    npc_positions = [(2, 2), (2, 4)]
+    for i, npc in enumerate(npcs):
+        if i < len(npc_positions):
+            row, col = npc_positions[i]
+            grid[row][col] = "N"
+    
+    # Place enemies
+    if enemies:
+        grid[2][3] = "X"
+    
+    # Build map string
+    lines = ["".join(row) for row in grid]
+    
+    # Add legend
+    map_str = "\n  ┌─────────┐\n"
+    for line in lines:
+        map_str += f"  │ {line} │\n"
+    map_str += "  └─────────┘\n"
+    map_str += "  @ You  ? Item  N NPC  X Enemy"
+    
+    return map_str
+
+
+def show_room_map(room_data, items_taken=None):
+    """Display the ASCII room map."""
+    map_str = generate_room_map(room_data, items_taken)
+    print(map_str)

@@ -10,6 +10,8 @@
 
 Students create subclasses that inherit from Player and customize attributes in their constructor. This demonstrates inheritance and the standard pattern of "call parent constructor, then customize."
 
+Optional extension: add a simple method override (e.g., get_status) to make polymorphism visible as different output, not just different stats. This is not required for validators.
+
 ---
 
 ## Learning Objectives
@@ -18,7 +20,8 @@ By the end of this level, students will be able to:
 1. Create a subclass that inherits from a parent class
 2. Call the parent constructor using `super().__init__()`
 3. Override attributes after calling the parent constructor
-4. Understand how polymorphism works (same interface, different behaviour)
+4. Override a simple method to demonstrate polymorphism
+5. Understand how polymorphism works (same interface, different behaviour)
 5. Explain why inheritance is useful for code reuse
 
 ---
@@ -55,6 +58,11 @@ By the end of this level, students will be able to:
    - `armour = 3`
    - `accuracy = 70`
 
+**Additional method (polymorphism):**
+- `describe_specialty(self) -> str`
+  - Return a short string describing the Brute's strengths.
+  - This is an override to show the same method name can behave differently.
+
 ### Class: `Scout(Player)`
 
 | Aspect | Value |
@@ -69,6 +77,11 @@ By the end of this level, students will be able to:
    - `max_health = 80`
    - `armour = 1`
    - `accuracy = 95`
+
+**Additional method (polymorphism):**
+- `describe_specialty(self) -> str`
+  - Return a short string describing the Scout's strengths.
+  - This is an override to show the same method name can behave differently.
 
 ---
 
@@ -108,6 +121,7 @@ The validator for Level B checks:
    - Brute and Scout have different stats from each other
    - Inherited methods (take_damage, heal) work correctly
    - Name is stored correctly via parent constructor
+   - describe_specialty exists and returns a string for both Brute and Scout
 
 ---
 
@@ -126,6 +140,7 @@ Students only need to create `player_types.py` with Brute and Scout.
 - Why call `super().__init__()` first? (reuse parent setup)
 - How do inherited methods work? (take_damage works without reimplementing)
 - When to override attributes vs methods
+- Optional: override a method (e.g., get_status) to show behaviour differences
 
 ---
 
@@ -161,6 +176,7 @@ Students only need to create `player_types.py` with Brute and Scout.
 - Emphasise the `(Player)` syntax for inheritance
 - The pattern: `super().__init__()` first, then customize
 - Show how inherited methods work without reimplementation
+- Clarify that this level overrides attributes; method overriding is an optional extension
 - Common mistake: forgetting to import Player
 - Common mistake: forgetting to call `super().__init__(name)`
 - Brute = high HP/armour, low accuracy (tank archetype)

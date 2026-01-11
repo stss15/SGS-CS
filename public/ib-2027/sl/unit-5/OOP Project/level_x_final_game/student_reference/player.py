@@ -37,6 +37,9 @@ class Player:
         # Composition: Player has-a Inventory
         from .inventory import Inventory
         self.inventory = Inventory()
+
+        # Aggregation: Logbook can exist independently
+        self.logbook = None
     
     def get_status(self) -> str:
         """
@@ -108,16 +111,12 @@ class Player:
         
         elif item_id == "med_patch":
             if target == "self" or target.lower() == self.name.lower():
-                self.heal(20)
-                self.inventory.consume(item_id)
                 return "You apply the med patch. A cool sensation spreads as nano-repair compounds go to work. +20 HP"
             else:
                 return "You can only use the med patch on yourself."
         
         elif item_id == "med_kit":
             if target == "self" or target.lower() == self.name.lower():
-                self.heal(50)
-                self.inventory.consume(item_id)
                 return "You use the medical kit. Advanced healing compounds flood your system. +50 HP"
             else:
                 return "You can only use the med kit on yourself."
@@ -139,6 +138,17 @@ class Player:
         
         else:
             return f"You're not sure how to use the {item_id} on {target}."
+
+    def attach_logbook(self, logbook) -> None:
+        """Attach an external logbook to this player."""
+        self.logbook = logbook
+
+    def record_event(self, entry: str) -> str:
+        """Record an event in the attached logbook."""
+        if self.logbook is None:
+            return "No logbook attached."
+        self.logbook.add_entry(entry)
+        return "Logbook updated."
     
     def respond_to_npc(self, options: list) -> int:
         """
@@ -193,6 +203,22 @@ class Player:
             The actual damage dealt (minimum 0).
         """
         return max(0, base - armour)
+    
+    def calculate_critical_hit(self, base_damage: int) -> tuple:
+        """
+        Determine if this attack is a critical hit.
+        
+        Args:
+            base_damage: The base damage before crit check.
+            
+        Returns:
+            A tuple of (final_damage, is_critical).
+            Critical hits deal double damage.
+        """
+        import random
+        if random.random() < 0.15:  # 15% crit chance
+            return base_damage * 2, True
+        return base_damage, False
     
     def to_save_data(self) -> dict:
         """

@@ -11,6 +11,9 @@ class Brute(Player):
         self.armour = 3
         self.accuracy = 70
 
+    def describe_specialty(self) -> str:
+        return "Brute: heavy combat specialist with high health and armour."
+
     def to_save_data(self) -> dict:
         """Convert to save data with correct player_type."""
         data = super().to_save_data()
@@ -43,6 +46,9 @@ class Scout(Player):
         self.max_health = 80
         self.armour = 1
         self.accuracy = 95
+
+    def describe_specialty(self) -> str:
+        return "Scout: precision specialist with high accuracy and mobility."
 
     def to_save_data(self) -> dict:
         """Convert to save data with correct player_type."""

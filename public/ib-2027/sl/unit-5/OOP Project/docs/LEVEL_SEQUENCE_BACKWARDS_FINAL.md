@@ -11,7 +11,7 @@
 
 We built Level X (final game) first. This document peels it back into learnable chunks.
 
-**Level count is an OUTPUT, not a target.** Based on cognitive load and workload analysis, we arrive at **12 distinct levels** (including Preflight and 3 contained puzzles).
+**Level count is an OUTPUT, not a target.** Based on cognitive load and workload analysis, we arrive at **12 distinct levels** (including Preflight and 2 contained puzzles).
 
 ---
 
@@ -26,12 +26,11 @@ We built Level X (final game) first. This document peels it back into learnable 
 | 4 | P1 | Terminal Access: Stacks & Queues | Stack, Queue | 1-2 lessons |
 | 5 | D | Making Things Happen: Item Use | use_item, consume | 2-3 lessons |
 | 6 | P2 | Data Retrieval: Log Search | search_logs, sort_logs | 1-2 lessons |
-| 7 | E | Exploring the Facility | (code reading) | 1 lesson |
+| 7 | E | Mission Log + Exploration | Logbook (aggregation) | 1–2 lessons |
 | 8 | F | First Contact: Drone Dialogue | respond_to_npc | 1-2 lessons |
 | 9 | G | Threat Response: Security Bot | choose_action, compute_damage | 2-3 lessons |
-| 10 | P3 | Access Validation: Code Checker | validate_code | 1 lesson |
-| 11 | H | Checkpoints: Save & Load | to_save_data, from_save_data | 2-3 lessons |
-| 12 | I | Mission Complete: Playthrough | (reflection) | 1 lesson |
+| 10 | H | Checkpoints: Save & Load | to_save_data, from_save_data | 2-3 lessons |
+| 11 | I | Mission Complete: Playthrough | (reflection) | 1 lesson |
 
 **Total**: ~20-26 lessons (approximately one academic term)
 
@@ -64,7 +63,6 @@ We built Level X (final game) first. This document peels it back into learnable 
 **Student builds**:
 - `Player` class with:
   - `__init__(self, name: str)`
-  - `get_starting_stats(self) -> dict`
   - `get_status(self) -> str`
   - `take_damage(self, amount: int) -> None`
   - `heal(self, amount: int) -> None`
@@ -77,7 +75,6 @@ We built Level X (final game) first. This document peels it back into learnable 
 **Validator checks**:
 - Player class exists
 - Constructor accepts name
-- get_starting_stats returns dict with health, max_health, armour, accuracy
 - get_status returns string containing name
 - take_damage reduces health, clamps at 0
 - heal increases health, clamps at max_health
@@ -90,19 +87,21 @@ We built Level X (final game) first. This document peels it back into learnable 
 ### Level B: Specialisation — Brute & Scout
 
 **Student builds**:
-- `Brute(Player)` class overriding `get_starting_stats()`
-- `Scout(Player)` class overriding `get_starting_stats()`
+- `Brute(Player)` class overriding stats in `__init__`
+- `Scout(Player)` class overriding stats in `__init__`
+- `describe_specialty()` method in both subclasses (polymorphism)
 
 **Engine provides**:
 - Player type selection at start
 - Same 1 room: Airlock
-- Polymorphic calling of get_starting_stats()
+- Polymorphic calling of describe_specialty()
 
 **Validator checks**:
 - Brute inherits from Player
 - Scout inherits from Player
-- Brute.get_starting_stats() returns different values than base
-- Scout.get_starting_stats() returns different values than Brute
+- Brute and Scout stats differ from base Player
+- Brute.describe_specialty() returns a string
+- Scout.describe_specialty() returns a string
 
 **Reference baseline from A**: Teacher's Player implementation
 
@@ -202,13 +201,16 @@ We built Level X (final game) first. This document peels it back into learnable 
 
 ---
 
-### Level E: Exploring the Facility
+### Level E: Mission Log + Exploration
 
-**Type**: Engine/content expansion (code reading)
+**Type**: Micro-lab + engine/content expansion
 
-**Student builds**: Nothing new
+**Student builds**:
+- `Logbook` class (aggregation)
+- `Player.attach_logbook()` and `Player.record_event()`
 
 **Worksheet teaches**:
+- Aggregation vs composition (logbook exists independently)
 - How the engine loads rooms from JSON
 - How exits connect rooms
 - How the command parser works
@@ -218,7 +220,7 @@ We built Level X (final game) first. This document peels it back into learnable 
 - Full 10-room map unlocked
 - Navigation working
 
-**Purpose**: Students see the bigger picture before adding more mechanics.
+**Purpose**: Small OOP lab before adding more mechanics, plus code reading practice.
 
 ---
 
@@ -254,23 +256,6 @@ We built Level X (final game) first. This document peels it back into learnable 
 - compute_damage returns max(0, base - armour)
 
 **Note**: Engine handles 3-5 total encounters using same system; students only build hooks once.
-
----
-
-### P3: Access Validation — Code Checker
-
-**Type**: Contained puzzle
-
-**Student builds**:
-- `validate_code(code: str, used_codes: set) -> bool`
-
-**Engine provides**:
-- Security terminal requiring unique codes
-- Set of previously used codes
-
-**Validator checks**:
-- Returns False if code in used_codes
-- Returns True if code not in used_codes
 
 ---
 
@@ -314,18 +299,17 @@ We built Level X (final game) first. This document peels it back into learnable 
 
 | Level | New Methods | Cumulative |
 |-------|-------------|------------|
-| A | 5 (init, get_starting_stats, get_status, take_damage, heal) | 5 |
-| B | 2 (Brute/Scout overrides) | 7 |
-| C | 8 (Inventory methods + integration) | 15 |
-| P1 | 10 (Stack + Queue) | 25 |
-| D | 2 (use_item, consume) | 27 |
-| P2 | 2 (search_logs, sort_logs) | 29 |
-| E | 0 | 29 |
-| F | 1 (respond_to_npc) | 30 |
-| G | 2 (choose_action, compute_damage) | 32 |
-| P3 | 1 (validate_code) | 33 |
-| H | 2 (to_save_data, from_save_data) | 35 |
-| I | 0 | 35 |
+| A | 4 (init, get_status, take_damage, heal) | 4 |
+| B | 4 (Brute/Scout __init__ + describe_specialty) | 8 |
+| C | 8 (Inventory methods + integration) | 16 |
+| P1 | 12 (Stack + Queue) | 28 |
+| D | 2 (use_item, consume) | 30 |
+| P2 | 4 (load_logs_from_file, search_logs, sort_logs, validate_code) | 34 |
+| E | 0 | 34 |
+| F | 1 (respond_to_npc) | 35 |
+| G | 2 (choose_action, compute_damage) | 37 |
+| H | 2 (to_save_data, from_save_data) | 39 |
+| I | 0 | 39 |
 
 **Average per level**: ~3 new methods (manageable)
 
@@ -341,10 +325,9 @@ We built Level X (final game) first. This document peels it back into learnable 
 | P1 | 2 | 3 | 0 | 0 | 1 |
 | D | 3 | 5 | 0 | 0 | 0 |
 | P2 | 3 | 5 | 0 | 0 | 1 |
-| E | 10 | 8 | 0 | 0 | 0 |
-| F | 10 | 8 | 1 | 0 | 0 |
+| E | 10 | 8 | 1 | 2 | 0 |
+| F | 10 | 8 | 1 | 2 | 0 |
 | G | 10 | 10 | 1 | 1 | 0 |
-| P3 | 10 | 10 | 1 | 1 | 1 |
 | H | 10 | 12 | 2 | 2 | 2 |
 | I | 10 | 14 | 3 | 4 | 3 |
 
@@ -365,8 +348,7 @@ Each level builds on teacher reference solutions from previous levels.
 | E | Reference all from P2 |
 | F | Reference all from E |
 | G | Reference all from F |
-| P3 | Reference all from G |
-| H | Reference all from P3 |
+| H | Reference all from G |
 | I | Reference all from H |
 
 Students do NOT carry their code forward. Each level starts fresh with teacher baselines.

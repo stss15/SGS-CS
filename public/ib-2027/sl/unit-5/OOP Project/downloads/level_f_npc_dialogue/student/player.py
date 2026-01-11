@@ -14,6 +14,7 @@ class Player:
         self.armour = 2
         self.accuracy = 85
         self.inventory = Inventory()
+        self.logbook = None
 
     def get_status(self) -> str:
         return f"{self.name}: {self.health}/{self.max_health} HP"
@@ -28,10 +29,17 @@ class Player:
         if not self.inventory.has_item(item_id):
             return f"You don't have '{item_id}'."
         if item_id == "med_patch" and target == "self":
-            self.heal(20)
-            self.inventory.consume("med_patch")
             return "You apply the med patch. +20 HP."
         return f"You use the {item_id} on the {target}."
+
+    def attach_logbook(self, logbook) -> None:
+        self.logbook = logbook
+
+    def record_event(self, entry: str) -> str:
+        if self.logbook is None:
+            return "No logbook attached."
+        self.logbook.add_entry(entry)
+        return "Logbook updated."
 
     # =========================================================================
     # YOUR TASK: Add the respond_to_npc() method

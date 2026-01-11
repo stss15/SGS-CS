@@ -68,6 +68,31 @@ By the end of this level, students will be able to:
 - The bottom section shows methods (behaviour)
 - `-` means private/protected, `+` means public
 
+### Section 2b: Access Modifiers in Python (Concept Only)
+
+In languages like Java/C#, access modifiers are enforced keywords:
+- public: accessible everywhere
+- protected: accessible in subclasses
+- private: accessible only inside the class
+
+Python does not enforce access modifiers. Instead it uses naming conventions:
+- public: no underscore (e.g., health)
+- protected (by convention): single underscore (e.g., _items)
+- private-ish: double underscore name-mangling (e.g., __items)
+
+Why this matters:
+- You can still access these attributes, but you should not from outside the class
+- This supports encapsulation without strict enforcement
+
+### Section 2c: Abstraction (Concept Only)
+
+Abstraction means defining what an object can do, not how it does it.
+- In Java/C#, this is done with abstract classes or interfaces
+- In Python, you can use ABC and @abstractmethod, but this project keeps it conceptual
+
+In this project, the engine is written to "expect" certain methods on Player.
+That expectation is an abstraction: any class that provides those methods can be used.
+
 ### Section 3: How This Project Works
 
 1. The **engine** runs the game (teacher-provided, do not edit)

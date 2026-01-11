@@ -8,6 +8,7 @@ The engine calls student-built methods (to_save_data, from_save_data) for player
 import json
 import os
 from pathlib import Path
+from importlib import import_module
 
 
 class SaveLoadManager:
@@ -89,13 +90,14 @@ class SaveLoadManager:
             
             # Reconstruct player via student method
             player_data = save_data.get("player", {})
-            
-            # Determine correct player class based on saved type
             player_type = player_data.get("player_type", "player").lower()
+            resolved_class = self._resolve_player_class(player_type, player_class)
             
-            # Note: The caller should pass the appropriate class factory
-            # For simplicity, we'll use from_save_data on the provided class
-            player = player_class.from_save_data(player_data)
+            if resolved_class is None:
+                print("Could not determine player class for save file.")
+                return (None, None)
+            
+            player = resolved_class.from_save_data(player_data)
             
             # Get engine state
             engine_state = save_data.get("engine_state", {})
@@ -108,6 +110,33 @@ class SaveLoadManager:
         except Exception as e:
             print(f"Error loading game: {e}")
             return (None, None)
+
+    def _resolve_player_class(self, player_type: str, fallback_class):
+        """Resolve the correct player class based on saved player_type."""
+        class_map = {}
+        
+        for module_name in ("student.player_types", "student_reference.player_types"):
+            try:
+                module = import_module(module_name)
+                brute_cls = getattr(module, "Brute", None)
+                scout_cls = getattr(module, "Scout", None)
+                if brute_cls:
+                    class_map["brute"] = brute_cls
+                if scout_cls:
+                    class_map["scout"] = scout_cls
+            except ImportError:
+                continue
+        
+        for module_name in ("student.player", "student_reference.player"):
+            try:
+                module = import_module(module_name)
+                player_cls = getattr(module, "Player", None)
+                if player_cls:
+                    class_map["player"] = player_cls
+            except ImportError:
+                continue
+        
+        return class_map.get(player_type, fallback_class)
     
     def has_save(self) -> bool:
         """Check if a save file exists."""

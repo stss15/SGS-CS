@@ -52,7 +52,7 @@
 | B2.4.1 | 1D arrays/lists | Student Mechanic | Level C, P1, P2 | Inventory._items, Stack, Queue, logs |
 | B2.4.2 | **2D arrays/matrices** | **Worksheet-Only** | Level P2 worksheet | Explained, NOT in engine |
 | B2.4.3 | Dictionaries | Student Mechanic | Level B, P2, H | Stats dict, log entries, save data |
-| B2.4.4 | Sets | Contained Puzzle | P3 | validate_code() uses set membership |
+| B2.4.4 | Sets | Contained Puzzle | P2 | validate_code() uses set membership |
 | B2.4.5 | Stacks (LIFO) | Contained Puzzle | P1 | Stack class, terminal puzzle |
 | B2.4.6 | Queues (FIFO) | Contained Puzzle | P1 | Queue class, terminal puzzle |
 
@@ -71,9 +71,9 @@
 | Topic | Concept | Mode | Location | Notes |
 |-------|---------|------|----------|-------|
 | B2.6.1 | Defensive programming | Student Mechanic | Level A, C, D | Clamping, capacity checks |
-| B2.6.2 | Input validation | Student Mechanic | Level D, P3 | use_item targets, code validation |
-| B2.6.3 | Error handling (try/except) | Worksheet-Only | Level H worksheet | Engine handles; shown to students |
-| B2.6.4 | File I/O | Student Mechanic | Level H | to_save_data/from_save_data |
+| B2.6.2 | Input validation | Student Mechanic | Level D, F, G, P2 | use_item targets, choice validation, code validation |
+| B2.6.3 | Error handling (try/except) | Student Mechanic | Level F, G | Input conversion in choice loops |
+| B2.6.4 | File I/O | Student Mechanic | P2 | load_logs_from_file() |
 | B2.6.5 | Testing concepts | Worksheet-Only | All level worksheets | Success criteria = test cases |
 
 ### B2.7 Complexity (HL Focus)
@@ -107,11 +107,11 @@
 |-------|---------|------|----------|-------|
 | B3.2.1 | Inheritance | Student Mechanic | Level B | Brute/Scout extend Player |
 | B3.2.2 | super() usage | Student Mechanic | Level B | Subclass constructors |
-| B3.2.3 | Method overriding | Student Mechanic | Level B | get_starting_stats() |
-| B3.2.4 | Polymorphism | Student Mechanic | Level B | Engine calls same interface |
+| B3.2.3 | Method overriding | Student Mechanic | Level B | describe_specialty() |
+| B3.2.4 | Polymorphism | Student Mechanic | Level B | Same method, different outputs |
 | B3.2.5 | Composition ("has-a") | Student Mechanic | Level C | Player has-a Inventory |
-| B3.2.6 | Aggregation | Worksheet-Only | Level C worksheet | Explained vs composition |
-| B3.2.7 | Abstract classes | Worksheet-Only | Level B worksheet | Concept shown, not required |
+| B3.2.6 | Aggregation | Student Mechanic | Level E micro-lab | Logbook exists independently, attached to Player |
+| B3.2.7 | Abstract classes | Worksheet-Only | Preflight worksheet | Concept shown, not required |
 | B3.2.8 | Design patterns | Worksheet-Only | Various | Shown in engine examples |
 
 ---
@@ -122,16 +122,15 @@
 |-------|--------------------------|-------------------|----------------------|
 | Preflight | — | — | OOP mental model, UML reading |
 | Level A | Classes, constructors, attributes, methods, clamping | — | Sequence, selection basics |
-| Level B | Inheritance, super(), overriding, polymorphism, dicts | — | Aggregation vs composition concept |
-| Level C | Composition, encapsulation, static var, lists | — | Information hiding terminology |
+| Level B | Inheritance, super(), overriding, polymorphism, dicts | — | — |
+| Level C | Composition, encapsulation, static var, lists | — | Information hiding + aggregation vs composition contrast |
 | P1 (C+) | — | Stack (LIFO), Queue (FIFO) | ADT concept |
 | Level D | Conditional logic, string construction | — | String methods |
-| P2 | — | Linear search, sorting (built-in) | 2D arrays, binary search, Big-O |
-| Level E | — | — | Engine architecture, code reading |
-| Level F | Method hooks, return values | — | NPC design patterns |
-| Level G | Arithmetic, damage formula | — | While loops (engine demo) |
-| P3 | — | Set membership, dict lookup | — |
-| Level H | Dict serialisation, class methods | — | File I/O, error handling |
+| P2 | File I/O, set membership | Linear search, sorting (built-in) | 2D arrays, binary search, Big-O |
+| Level E | Aggregation (logbook), method integration | — | Engine architecture, code reading |
+| Level F | Method hooks, return values, try/except | — | NPC design patterns |
+| Level G | Arithmetic, damage formula, try/except | — | While loops (engine demo) |
+| Level H | Dict serialisation, class methods | — | Error handling patterns |
 | Level I | — | — | Integration, reflection |
 
 ---
@@ -172,7 +171,7 @@
 - [x] Sorting — Contained Puzzle (built-in)
 - [x] Defensive programming — Student Mechanic
 - [x] File I/O — Student Mechanic
-- [x] Error handling — Worksheet-Only
+- [x] Error handling — Student Mechanic (input conversion)
 
 ### B3 Coverage Checklist
 
@@ -189,7 +188,7 @@
 - [x] Method overriding — Student Mechanic
 - [x] Polymorphism — Student Mechanic
 - [x] Composition — Student Mechanic
-- [x] Aggregation — Worksheet-Only
+- [x] Aggregation — Student Mechanic
 - [x] Design patterns — Worksheet-Only
 
 **Result**: All required B2/B3 concepts are covered with explicit mode classification.

@@ -25,6 +25,7 @@ class CommandParser:
         "pickup": "take",
         "i": "inventory",
         "inv": "inventory",
+        "inven": "inventory",
         "items": "inventory",
         "l": "look",
         "examine": "look",
@@ -45,6 +46,10 @@ class CommandParser:
         "stats": "status",
         "hp": "status",
         "health": "status",
+        "logbook": "log",
+        "journal": "log",
+        "notes": "log",
+        "note": "log",
     }
     
     # Valid commands
@@ -64,6 +69,8 @@ class CommandParser:
         "save": "save_handler",
         "load": "load_handler",
         "status": "status_handler",
+        "log": "log_handler",
+        "drop": "drop_handler",
         "help": "help_handler",
         "quit": "quit_handler",
     }

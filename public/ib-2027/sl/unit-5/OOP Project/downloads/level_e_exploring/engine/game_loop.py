@@ -12,8 +12,11 @@ from .save_load import SaveLoadManager
 from .immersion import (
     type_text, type_text_slow, type_text_fast, dramatic_pause,
     show_divider, movement_narration, npc_greeting, death_sequence,
-    room_atmosphere, item_pickup_narration, ambient_flavor
+    room_atmosphere, item_pickup_narration, ambient_flavor,
+    clear_screen, wait_for_enter, screen_break,
+    wrap_text
 )
+from .map_renderer import show_station_map
 
 
 class GameState:
@@ -96,6 +99,12 @@ The escape pod is offline. The station AI watches your every move.
 And something in the shadows doesn't want you to leave.
 
 Welcome to Sigma-7. Good luck.
+
+─────────────────────────────────────────────────────────────
+  TIPS: Type 'help' for commands. For items, use key words
+  (e.g., 'take crowbar' not 'take heavy crowbar').
+  Stuck? Check the hints/ folder for guidance.
+─────────────────────────────────────────────────────────────
 """
     
     def __init__(self):
@@ -155,13 +164,17 @@ Welcome to Sigma-7. Good luck.
         if not name:
             name = "Unknown Survivor"
         
-        # Import player classes
+        # Import player classes (prefer student, fallback to student_reference)
         try:
             from student.player_types import Brute, Scout
             from student.player import Player
         except ImportError:
-            print("Error: Could not load player classes from student/")
-            sys.exit(1)
+            try:
+                from student_reference.player_types import Brute, Scout
+                from student_reference.player import Player
+            except ImportError:
+                print("Error: Could not load player classes from student/ or student_reference/")
+                sys.exit(1)
         
         # Choose class
         print(f"\nWelcome, {name}. Choose your background:")
@@ -226,6 +239,8 @@ Welcome to Sigma-7. Good luck.
             self._move_handler(args)
         elif cmd == "take":
             self._take_handler(args)
+        elif cmd == "drop":
+            self._drop_handler(args)
         elif cmd == "inventory":
             self._inventory_handler(args)
         elif cmd == "use":
@@ -240,6 +255,8 @@ Welcome to Sigma-7. Good luck.
             self._load_handler(args)
         elif cmd == "help":
             self._help_handler(args)
+        elif cmd == "log":
+            self._log_handler(args)
         elif cmd == "quit":
             self._quit_handler(args)
         else:
@@ -271,15 +288,24 @@ Welcome to Sigma-7. Good luck.
             desc = room.get("description_revisit")
         
         # Typewriter effect for room descriptions
+        # Wrap long descriptions
+        wrapped_desc = wrap_text(desc)
         if first_visit:
-            type_text(desc)
+            type_text(wrapped_desc, wrap=False)  # Already wrapped
         else:
-            print(desc)
+            print(wrapped_desc)
         
         self.state.visited_rooms.add(self.state.current_room)
         
         # Occasional ambient atmosphere
         room_atmosphere(room['name'], first_visit)
+        
+        # Show station map with fog of war
+        show_station_map(
+            self.state.current_room,
+            self.state.visited_rooms,
+            self.state.unlocked_doors
+        )
         
         # Show items (not taken)
         self._show_room_items()
@@ -316,17 +342,22 @@ Welcome to Sigma-7. Good luck.
         if "chest" in room:
             chest = room["chest"]
             if chest["id"] not in self.state.opened_containers:
-                if chest.get("locked", False):
-                    print(f"\nA heavy chest sits in the corner, its lock jammed shut.")
-                else:
-                    print(f"\nAn open chest reveals its contents.")
+                # Chest is still closed/locked
+                print(f"\nA heavy chest sits in the corner, its lock jammed shut.")
             else:
-                # Show chest contents if not taken
-                for item_id in chest.get("contains", []):
-                    if item_id not in self.state.taken_items:
+                # Chest has been opened - show contents if any remain
+                remaining_items = [
+                    item_id for item_id in chest.get("contains", [])
+                    if item_id not in self.state.taken_items
+                ]
+                if remaining_items:
+                    print(f"\nAn open chest reveals remaining items:")
+                    for item_id in remaining_items:
                         item = self.world.get_item(item_id)
                         if item:
-                            print(f"\nIn the chest: {item.get('description_room')}")
+                            print(f"  • {item.get('name')}")
+                else:
+                    print(f"\nAn empty chest stands open in the corner.")
     
     def _show_room_npcs(self):
         """Show NPCs in the current room."""
@@ -433,7 +464,7 @@ Welcome to Sigma-7. Good luck.
             self.state.triggered_encounters.add(encounter_id)
             result = self.encounters.run_encounter(encounter_id, self.player)
             if result == "defeat":
-                self._handle_death()
+                self._handle_death(encounter_id)
                 return
             elif result == "escaped":
                 print("You retreat back into the room.")
@@ -455,7 +486,7 @@ Welcome to Sigma-7. Good luck.
                 self.state.triggered_encounters.add(encounter_id)
                 result = self.encounters.run_encounter(encounter_id, self.player)
                 if result == "defeat":
-                    self._handle_death()
+                    self._handle_death(encounter_id)
                     return
                 return
         
@@ -473,11 +504,23 @@ Welcome to Sigma-7. Good luck.
         if not room:
             return
         
+        def matches_item(item, target):
+            """Check if target matches item by id, name, or alias."""
+            if target in item.get("id", "").lower():
+                return True
+            if target in item.get("name", "").lower():
+                return True
+            # Check aliases
+            for alias in item.get("aliases", []):
+                if target in alias.lower():
+                    return True
+            return False
+        
         # Check regular items
         for item_id in room.get("items", []):
             if item_id not in self.state.taken_items:
                 item = self.world.get_item(item_id)
-                if item and (target in item_id.lower() or target in item.get("name", "").lower()):
+                if item and matches_item(item, target):
                     if self.player.inventory.add(item_id):
                         self.state.taken_items.add(item_id)
                         item_pickup_narration(item['name'])
@@ -489,7 +532,7 @@ Welcome to Sigma-7. Good luck.
         for item_id in room.get("hidden_items", {}).keys():
             if item_id not in self.state.taken_items:
                 item = self.world.get_item(item_id)
-                if item and (target in item_id.lower() or target in item.get("name", "").lower()):
+                if item and matches_item(item, target):
                     if self.player.inventory.add(item_id):
                         self.state.taken_items.add(item_id)
                         print(f"You find and take the {item['name']}!")
@@ -504,7 +547,7 @@ Welcome to Sigma-7. Good luck.
                 for item_id in chest.get("contains", []):
                     if item_id not in self.state.taken_items:
                         item = self.world.get_item(item_id)
-                        if item and (target in item_id.lower() or target in item.get("name", "").lower()):
+                        if item and matches_item(item, target):
                             if self.player.inventory.add(item_id):
                                 self.state.taken_items.add(item_id)
                                 print(f"You take the {item['name']} from the chest.")
@@ -588,18 +631,32 @@ Welcome to Sigma-7. Good luck.
                     if contained:
                         print(f"  → {contained['name']}")
         
-        # Handle healing
+        # Handle consumables with clear feedback
         if item.get("consumable"):
             if item.get("heal_amount"):
-                self.player.heal(item["heal_amount"])
+                heal = item["heal_amount"]
+                old_hp = self.player.health
+                self.player.heal(heal)
+                new_hp = self.player.health
                 self.player.inventory.consume(item_id)
+                print(f"✚ Healed {new_hp - old_hp} HP! (Now: {new_hp}/{self.player.max_health})")
+            elif item.get("armor_amount"):
+                armor = item["armor_amount"]
+                self.player.armour = getattr(self.player, 'armour', 0) + armor
+                self.player.inventory.consume(item_id)
+                print(f"🛡 Shield equipped! +{armor} armour")
+            elif item.get("damage_boost"):
+                boost = item["damage_boost"]
+                self.player.attack = getattr(self.player, 'attack', 10) + boost
+                self.player.inventory.consume(item_id)
+                print(f"⚔ Stim applied! +{boost} attack damage")
         
         # Handle victory item
         if item.get("is_victory_item"):
             self.state.game_complete = True
     
     def _talk_handler(self, args: list):
-        """Handle talking to NPCs."""
+        """Handle talking to NPCs with conversation loop."""
         room = self.world.get_room(self.state.current_room)
         if not room:
             return
@@ -609,33 +666,50 @@ Welcome to Sigma-7. Good luck.
             print("There's no one here to talk to.")
             return
         
-        # Find NPC
+        # Find NPC - support multiple name formats
         target = " ".join(args).lower() if args else ""
         
         found_npc = None
         for npc_id in npc_ids:
             npc = self.world.get_npc(npc_id)
             if npc:
-                if not target or target in npc_id.lower() or target in npc.get("name", "").lower():
+                # Match by id, name, or any alias
+                aliases = npc.get("aliases", [])
+                name_lower = npc.get("name", "").lower()
+                if not target or target in npc_id.lower() or target in name_lower:
                     found_npc = npc
                     break
+                # Check aliases
+                for alias in aliases:
+                    if target in alias.lower():
+                        found_npc = npc
+                        break
         
         if not found_npc:
-            print(f"You don't see '{target}' to talk to.")
-            return
+            if not target:
+                # No target specified, use first NPC in room
+                for npc_id in npc_ids:
+                    npc = self.world.get_npc(npc_id)
+                    if npc:
+                        found_npc = npc
+                        break
+            if not found_npc:
+                print(f"You don't see '{target}' to talk to.")
+                return
         
         # Get dialogue state
         npc_id = found_npc["id"]
-        dialogue_trigger = self.state.npc_dialogue_state.get(npc_id, "first_talk")
+        is_first_talk = self.state.npc_dialogue_state.get(npc_id) != "after_first"
         
         # Find matching dialogue
+        dialogue_trigger = "first_talk" if is_first_talk else "after_first"
         dialogue_data = None
         for dialogue in found_npc.get("dialogue", []):
             if dialogue.get("trigger") == dialogue_trigger:
                 dialogue_data = dialogue
                 break
         
-        # Fallback to first_talk
+        # Fallback to first_talk if no after_first dialogue
         if not dialogue_data:
             for dialogue in found_npc.get("dialogue", []):
                 if dialogue.get("trigger") == "first_talk":
@@ -646,28 +720,47 @@ Welcome to Sigma-7. Good luck.
             print(f"{found_npc['name']} has nothing to say.")
             return
         
-        # Show dialogue with immersion
+        # Show greeting
         npc_greeting(found_npc['name'])
         print()
-        type_text(dialogue_data.get("text", "..."))
         
-        # Handle options
-        options = dialogue_data.get("options")
-        responses = dialogue_data.get("responses")
+        # Show intro text (shorter for repeat visits if available)
+        intro_text = dialogue_data.get("text", "...")
+        if not is_first_talk and dialogue_data.get("text_repeat"):
+            intro_text = dialogue_data.get("text_repeat")
+        type_text(intro_text)
+        
+        # Handle conversation loop with options
+        options = dialogue_data.get("options", [])
+        responses = dialogue_data.get("responses", [])
         
         if options and responses:
-            print("\nYou can ask about:")
-            for i, opt in enumerate(options):
-                print(f"  {i + 1}. {opt}")
-            
-            # Get player choice via student method
-            try:
-                choice = self.player.respond_to_npc(options)
-                if isinstance(choice, int) and 0 <= choice < len(responses):
-                    print()
-                    print(responses[choice])
-            except Exception as e:
-                print(f"(Error in respond_to_npc: {e})")
+            # Conversation loop - keep showing options until exit
+            while True:
+                print("\nYou can ask about:")
+                for i, opt in enumerate(options):
+                    print(f"  {i + 1}. {opt}")
+                print(f"  {len(options) + 1}. [End conversation]")
+                
+                # Get player choice via student method
+                try:
+                    # Create extended options list for student method
+                    extended_options = options + ["[End conversation]"]
+                    choice = self.player.respond_to_npc(extended_options)
+                    
+                    # Check for exit choice
+                    if choice == len(options):
+                        print(f"\nYou step away from {found_npc['name']}.")
+                        break
+                    
+                    if isinstance(choice, int) and 0 <= choice < len(responses):
+                        print()
+                        type_text_fast(responses[choice])
+                    else:
+                        print("Invalid choice.")
+                except Exception as e:
+                    print(f"(Error in respond_to_npc: {e})")
+                    break
         
         # Update dialogue state
         self.state.npc_dialogue_state[npc_id] = "after_first"
@@ -705,7 +798,11 @@ Welcome to Sigma-7. Good luck.
             from student.player_types import Brute
             return Brute  # Default to Brute if unknown
         except ImportError:
-            return None
+            try:
+                from student_reference.player_types import Brute
+                return Brute
+            except ImportError:
+                return None
     
     def _help_handler(self, args: list):
         """Show help."""
@@ -717,17 +814,78 @@ Welcome to Sigma-7. Good luck.
 ║  look <thing>      - Examine something closely                    ║
 ║  north/south/etc   - Move in a direction                          ║
 ║  take <item>       - Pick up an item                              ║
+║  drop <item>       - Drop an item from your inventory             ║
 ║  inventory         - Show what you're carrying                    ║
 ║  use <item>        - Use an item on yourself                      ║
 ║  use <item> on <X> - Use an item on something                     ║
 ║  talk <npc>        - Talk to someone                              ║
 ║  status            - Show your health and stats                   ║
+║  log               - View your logbook                            ║
+║  log <note>        - Write a note to your logbook                 ║
 ║  save              - Save your game                               ║
 ║  load              - Load a saved game                            ║
 ║  help              - Show this help                               ║
 ║  quit              - Exit the game                                ║
 ╚═══════════════════════════════════════════════════════════════════╝
         """)
+    
+    def _log_handler(self, args: list):
+        """Handle log command - view or write to logbook."""
+        # Check if player has a logbook
+        if not hasattr(self.player, 'logbook') or self.player.logbook is None:
+            # Auto-attach a logbook if missing
+            try:
+                from student.logbook import Logbook
+            except ImportError:
+                try:
+                    from student_reference.logbook import Logbook
+                except ImportError:
+                    print("Logbook not available.")
+                    return
+            self.player.attach_logbook(Logbook())
+            print("You find a small notebook and begin using it as a logbook.")
+        
+        if not args:
+            # View logbook
+            entries = self.player.logbook.list_entries()
+            print("\n--- YOUR LOGBOOK ---")
+            if not entries:
+                print("  (empty - use 'log <note>' to write something)")
+            else:
+                for i, entry in enumerate(entries, 1):
+                    print(f"  {i}. {entry}")
+            print()
+        else:
+            # Write to logbook
+            note = " ".join(args)
+            result = self.player.record_event(note)
+            print(f"Logged: \"{note}\"")
+
+    def _drop_handler(self, args: list):
+        """Handle dropping items from inventory."""
+        if not args:
+            print("Drop what?")
+            return
+        
+        target = " ".join(args).lower()
+        
+        # Find matching item in inventory
+        items = self.player.inventory.list_items()
+        for item_id in items:
+            item = self.world.get_item(item_id)
+            if item:
+                # Check id, name, or aliases
+                if (target in item_id.lower() or 
+                    target in item.get("name", "").lower() or
+                    any(target in alias.lower() for alias in item.get("aliases", []))):
+                    # Remove from inventory
+                    self.player.inventory.remove(item_id)
+                    # Add back to room
+                    self.state.taken_items.discard(item_id)
+                    print(f"You drop the {item['name']}.")
+                    return
+        
+        print(f"You don't have '{target}' to drop.")
     
     def _quit_handler(self, args: list):
         """Quit the game."""
@@ -738,8 +896,8 @@ Welcome to Sigma-7. Good luck.
         print("\nGoodbye, survivor. The stars await your return.\n")
         self.running = False
     
-    def _handle_death(self):
-        """Handle player death."""
+    def _handle_death(self, encounter_id: str = None):
+        """Handle player death with respawn."""
         death_sequence()
         print()
         print("═" * 60)
@@ -748,6 +906,10 @@ Welcome to Sigma-7. Good luck.
         type_text_slow("\nYou have fallen. But death is not the end—not here.")
         type_text("The station's emergency systems activate...")
         print()
+        
+        # Clear the encounter that killed us so we can retry
+        if encounter_id and encounter_id in self.state.triggered_encounters:
+            self.state.triggered_encounters.remove(encounter_id)
         
         # Respawn at start with full health
         self.state.current_room = "airlock"
@@ -787,3 +949,9 @@ Welcome to Sigma-7. Good luck.
         print("\nThank you for playing Sigma-7 Research Station!")
         print("You have completed the OOP Text Adventure.\n")
         self.running = False
+
+
+def main():
+    """Entry point for run_game.py."""
+    game = Game()
+    game.start()

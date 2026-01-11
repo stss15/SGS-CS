@@ -3,40 +3,27 @@
 LOAD_LOGS_FROM_FILE(filepath)
 ---------------------------------------------
 Steps:
-  1. Open the file for reading
-  2. Read all lines
-  3. For each line (after the header):
-     - Split by "|"
-     - Create a dictionary with keys:
-       timestamp, author, corrupted, content
-     - Add to list
-  4. Return the list
-
-Useful:
-  - open(filepath, "r")
-  - file.readlines()
-  - line.strip().split("|")
+1) Open the file for reading
+2) Read each line
+3) Split by "|" and build a dictionary
+4) Append to a list
+5) Return the list
 
 SEARCH_LOGS(logs, author)
 ---------------------------------------------
 Steps:
-  1. Create empty result list
-  2. Loop through all logs
-  3. If log["author"] matches, add to result
-  4. Return result
-
-OR use list comprehension:
-  [log for log in logs if log["author"] == author]
+1) Loop through logs
+2) Keep only the ones with matching author
+3) Return the matches
 
 SORT_LOGS(logs, key, descending=False)
 ---------------------------------------------
 Steps:
-  1. Use Python's sorted() function
-  2. Use a key function to extract the field
-  3. Use reverse=descending for order
-  4. Return sorted list
+1) Use Python's sorted() function
+2) Provide a key function for the field
+3) Use reverse=descending when needed
 
-Useful:
+Lambda example (allowed):
   sorted(logs, key=lambda x: x[key], reverse=descending)
 
 Still stuck? Read hint_3.txt

@@ -178,7 +178,7 @@ All encounters use the **same encounter system** with content-only variations.
 
 **Success**: Returns correct log entry → reveals override_key location
 
-### P3: Access Code Validator (Control Hub or Research Archive)
+### Access Code Validator (Control Hub or Research Archive)
 
 **Narrative**: Security system requires codes that haven't been used before.
 
@@ -200,7 +200,7 @@ All encounters use the **same encounter system** with content-only variations.
 | player_name | Player.name |
 | player_type | "brute" or "scout" |
 | player_health | Player.health |
-| player_stats | get_starting_stats() |
+| player_stats | Player.health, max_health, armour, accuracy |
 | inventory_items | Inventory.list_items() |
 | current_room | Engine state |
 | world_flags | Engine state (doors unlocked, encounters defeated) |
@@ -224,7 +224,7 @@ All encounters use the **same encounter system** with content-only variations.
 | Brute | 120 | 3 | 70 | Higher damage, lower accuracy |
 | Scout | 80 | 1 | 95 | Lower damage, higher accuracy |
 
-Both override `get_starting_stats() -> dict`.
+Both override `describe_specialty() -> str`.
 
 ---
 

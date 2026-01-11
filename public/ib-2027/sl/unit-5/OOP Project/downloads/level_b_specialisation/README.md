@@ -6,6 +6,9 @@ Create two subclasses that inherit from Player:
 - **Brute**: High HP (120), High Armour (3), Low Accuracy (70)
 - **Scout**: Low HP (80), Low Armour (1), High Accuracy (95)
 
+Also add a simple method override:
+- **describe_specialty()** → return a short string describing the class
+
 ## Files
 
 ```
@@ -24,16 +27,17 @@ level_b_specialisation/
 2. Create `Brute` class that inherits from `Player`
 3. Call `super().__init__(name)` to set up the base Player
 4. Override the stats with Brute-specific values
-5. Create `Scout` class the same way
-6. Run `python3 validate.py` to check your work
+5. Add `describe_specialty()` to Brute (return a short description)
+6. Create `Scout` class the same way
+7. Add `describe_specialty()` to Scout
+8. Run `python3 validate.py` to check your work
 
 ## The Pattern
 
-```
-class Brute(Player):
-    def __init__(self, name):
-        super().__init__(name)  # Set up as Player first
-        # Then customize stats...
-```
+Use this pattern in words:
+- Create the subclass and inherit from Player
+- In __init__, call the parent constructor first
+- Then override the stats that are different
+- Add describe_specialty() with a short class description
 
 This pattern is standard in OOP: call the parent constructor first, then customize what's different.

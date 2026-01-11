@@ -29,14 +29,32 @@ def main():
         else:
             r.add_fail("Stack storage", "Must use self._items = []")
         
-        if s.is_empty(): r.add_pass("New stack is empty")
+        if s.is_empty():
+            r.add_pass("New stack is empty")
+        else:
+            r.add_fail("New stack is empty", "Expected True for empty stack")
         s.push(10)
         s.push(20)
-        if s.size() == 2: r.add_pass("Stack size is correct")
-        if s.peek() == 20: r.add_pass("Peek returns top item")
-        if s.pop() == 20: r.add_pass("Pop returns top item (LIFO)")
-        if s.pop() == 10: r.add_pass("Pop LIFO order correct")
-        if s.pop() is None: r.add_pass("Pop empty returns None")
+        if s.size() == 2:
+            r.add_pass("Stack size is correct")
+        else:
+            r.add_fail("Stack size is correct", f"Expected 2, got {s.size()}")
+        if s.peek() == 20:
+            r.add_pass("Peek returns top item")
+        else:
+            r.add_fail("Peek returns top item", f"Expected 20, got {s.peek()}")
+        if s.pop() == 20:
+            r.add_pass("Pop returns top item (LIFO)")
+        else:
+            r.add_fail("Pop returns top item (LIFO)", "Expected 20 on first pop")
+        if s.pop() == 10:
+            r.add_pass("Pop LIFO order correct")
+        else:
+            r.add_fail("Pop LIFO order correct", "Expected 10 on second pop")
+        if s.pop() is None:
+            r.add_pass("Pop empty returns None")
+        else:
+            r.add_fail("Pop empty returns None", "Expected None on empty pop")
 
         # Test Queue
         print("\n--- Queue Tests ---")
@@ -46,14 +64,32 @@ def main():
         else:
             r.add_fail("Queue storage", "Must use self._items = deque()")
             
-        if q.is_empty(): r.add_pass("New queue is empty")
+        if q.is_empty():
+            r.add_pass("New queue is empty")
+        else:
+            r.add_fail("New queue is empty", "Expected True for empty queue")
         q.enqueue("A")
         q.enqueue("B")
-        if q.size() == 2: r.add_pass("Queue size is correct")
-        if q.front() == "A": r.add_pass("Front returns first item")
-        if q.dequeue() == "A": r.add_pass("Dequeue returns first item (FIFO)")
-        if q.dequeue() == "B": r.add_pass("Dequeue FIFO order correct")
-        if q.dequeue() is None: r.add_pass("Dequeue empty returns None")
+        if q.size() == 2:
+            r.add_pass("Queue size is correct")
+        else:
+            r.add_fail("Queue size is correct", f"Expected 2, got {q.size()}")
+        if q.front() == "A":
+            r.add_pass("Front returns first item")
+        else:
+            r.add_fail("Front returns first item", f"Expected 'A', got {q.front()}")
+        if q.dequeue() == "A":
+            r.add_pass("Dequeue returns first item (FIFO)")
+        else:
+            r.add_fail("Dequeue returns first item (FIFO)", "Expected 'A' on first dequeue")
+        if q.dequeue() == "B":
+            r.add_pass("Dequeue FIFO order correct")
+        else:
+            r.add_fail("Dequeue FIFO order correct", "Expected 'B' on second dequeue")
+        if q.dequeue() is None:
+            r.add_pass("Dequeue empty returns None")
+        else:
+            r.add_fail("Dequeue empty returns None", "Expected None on empty dequeue")
             
     except Exception as e:
         r.add_fail("Crash", str(e))

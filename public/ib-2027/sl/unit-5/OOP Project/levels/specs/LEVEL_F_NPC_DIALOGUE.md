@@ -53,6 +53,9 @@ By the end of this level, students will be able to:
 - Return the chosen index (0-based)
 - If invalid input, keep asking until valid
 
+**Optional Extension**:
+- Record key NPC info in the Logbook by calling `record_event()` from Level E.
+
 ---
 
 ## Engine Content for This Level
@@ -69,7 +72,8 @@ By the end of this level, students will be able to:
   - Provides hints about the game
 
 ### Encounters
-- None yet
+- Sentry Droid (Airlock exit)
+- Repair Bot (Engineering)
 
 ### New Commands
 - `talk <npc>` — initiate dialogue

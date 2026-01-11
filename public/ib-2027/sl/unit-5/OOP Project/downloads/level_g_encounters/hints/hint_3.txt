@@ -1,39 +1,23 @@
 === HINT 3: Method Guidance ===
 
 CHOOSE_ACTION:
-
-The engine ALREADY displays the options to the player.
-Your method just needs to:
-  1. Get input from the user
-  2. Validate it's a valid number
-  3. Return the 0-indexed choice (0, 1, 2, or 3)
-
-def choose_action(self, options):
-    # DON'T print options - the engine does this!
-    while True:
-        try:
-            choice = int(input("Choose action: ")) - 1
-            if 0 <= choice < len(options):
-                return choice  # Return the INDEX, not the string
-            else:
-                print("Invalid choice.")
-        except ValueError:
-            print("Enter a number.")
+- Do NOT print options (engine already did)
+- Use a loop to keep asking until input is valid
+- Convert to int, subtract 1, validate range
+- Return the 0-based index
 
 COMPUTE_DAMAGE:
+- Subtract armour from base damage
+- If the result is negative, return 0
 
-def compute_damage(self, base_damage, armour):
-    # Simple subtraction with clamping
-    damage = base_damage - armour
-    return max(0, damage)  # Damage can't be negative!
+BONUS: CALCULATE_CRITICAL_HIT:
+- Optional challenge
+- 15% chance to double damage (or your own design)
+- Return a TUPLE: (final_damage, is_critical)
 
----------------------------------------------
-KEY CONCEPTS
----------------------------------------------
-
-✓ choose_action returns an INDEX (0, 1, 2, or 3)
-✓ The ENGINE displays options - you just get input
-✓ compute_damage uses max() to prevent negative damage
-✓ Both methods are called by the engine during combat
+KEY CONCEPTS:
+- choose_action returns an INDEX (0, 1, 2, or 3)
+- compute_damage must clamp at 0
+- calculate_critical_hit returns a tuple (damage, flag)
 
 Run validate.py to check your work!

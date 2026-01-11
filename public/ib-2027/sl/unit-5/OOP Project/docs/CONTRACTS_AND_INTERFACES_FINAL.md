@@ -35,28 +35,16 @@ The engine depends on these **contract-critical interfaces**. They must exist an
 
 | Method | Signature | Returns | Behaviour |
 |--------|-----------|---------|-----------|
-| `__init__` | `(self, name: str)` | None | Set name, call get_starting_stats(), create Inventory |
-| `get_starting_stats` | `(self)` | dict | Returns `{health, max_health, armour, accuracy}` |
-| `get_status` | `(self)` | str | Returns formatted status string with name, health, inventory count |
-| `take_damage` | `(self, amount: int)` | None | Reduce health by (amount - armour), clamp at 0 |
+| `__init__` | `(self, name: str)` | None | Set name, set starting stats directly, create Inventory |
+| `get_status` | `(self)` | str | Returns formatted status string with name and health |
+| `take_damage` | `(self, amount: int)` | None | Reduce health by amount, clamp at 0 |
 | `heal` | `(self, amount: int)` | None | Increase health, clamp at max_health |
-| `use_item` | `(self, item_id: str, target: str)` | str | Apply item effect, return outcome message |
+| `use_item` | `(self, item_id: str, target: str)` | str | Return outcome message; engine applies item effects in full-game levels |
 | `respond_to_npc` | `(self, options: list)` | int | Return index of chosen dialogue option (0 to len-1) |
 | `choose_action` | `(self, options: list)` | int | Return index of chosen combat action (0 to len-1) |
 | `compute_damage` | `(self, base: int, armour: int)` | int | Return `max(0, base - armour)` |
 | `to_save_data` | `(self)` | dict | Return serialisable dict with required keys |
 | `from_save_data` | `(cls, data: dict)` | Player | Class method: reconstruct Player from dict |
-
-### get_starting_stats() Return Format
-
-```python
-{
-    "health": int,
-    "max_health": int,
-    "armour": int,
-    "accuracy": int
-}
-```
 
 ### to_save_data() Return Format
 
@@ -83,16 +71,16 @@ The engine depends on these **contract-critical interfaces**. They must exist an
 | Aspect | Value |
 |--------|-------|
 | Inherits from | Player |
-| Overrides | `get_starting_stats()` |
-| Returns | `{health: 120, max_health: 120, armour: 3, accuracy: 70}` |
+| Overrides | Constructor (`__init__`) and `describe_specialty()` |
+| Stats | health=120, max_health=120, armour=3, accuracy=70 |
 
 ### Scout Class
 
 | Aspect | Value |
 |--------|-------|
 | Inherits from | Player |
-| Overrides | `get_starting_stats()` |
-| Returns | `{health: 80, max_health: 80, armour: 1, accuracy: 95}` |
+| Overrides | Constructor (`__init__`) and `describe_specialty()` |
+| Stats | health=80, max_health=80, armour=1, accuracy=95 |
 
 ---
 
@@ -127,6 +115,8 @@ The engine depends on these **contract-critical interfaces**. They must exist an
 | `count` | `(self)` | int | Return number of items |
 
 *Note: `consume` should always remove and return True if item exists; engine determines consumability.
+
+*Note: In Level D (standalone test), `use_item` is responsible for healing and consuming. In full-game levels, the engine handles effects and your method returns narrative text only.
 
 ---
 
@@ -260,8 +250,8 @@ Validators check in this order:
 ### Behaviour Checks (Report All Failures)
 
 1. Player constructor works with name
-2. get_starting_stats returns dict with required keys
-3. Brute and Scout return different stats
+2. Brute and Scout return different stats
+3. describe_specialty returns a string for Brute and Scout
 4. take_damage clamps at 0
 5. heal clamps at max_health
 6. Inventory add/remove/has_item behave correctly
@@ -282,8 +272,8 @@ Validators check in this order:
 
 | File | Methods/Functions | Cumulative |
 |------|-------------------|------------|
-| player.py | 11 methods | 11 |
-| player_types.py | 2 methods (overrides) | 13 |
+| player.py | 10 methods | 10 |
+| player_types.py | 4 methods (overrides) | 14 |
 | inventory.py | 8 methods + 1 class var | 21 |
 | data_structs.py | 12 methods (Stack + Queue) | 33 |
 | log_search.py | 3 functions | 36 |

@@ -11,19 +11,17 @@
 
 ### Overall Alignment: ✅ GOOD (with adjustments needed)
 
-The master spec and existing planning documents are **80% aligned**. The main gaps are:
-1. **Level count mismatch**: Master spec wants 12–14 levels; we planned 10 (Preflight + A–I)
-2. **Coverage mode classification**: Need to re-label skills as "Student mechanic / Contained puzzle / Worksheet-only"
-3. **Missing contained puzzle levels**: Need 2–3 more isolated puzzle segments
-4. **Document consolidation**: Some existing docs are now redundant
+The master spec and existing planning documents are **mostly aligned**. The main gaps are:
+1. **Packaging freshness**: Zips can drift from folder contents if not rebuilt
+2. **Hint strictness**: Avoid hints that resemble full solutions
+3. **Documentation upkeep**: Keep interfaces/specs aligned after any engine or template changes
 
 ### Recommendation: PROCEED with adjustments
 
 The core design is sound. We need to:
-1. Add 2–3 contained puzzle levels to reach 12 total
-2. Update the coverage matrix with explicit mode labels
-3. Consolidate planning docs into the 5 required by master spec
-4. Then start building
+1. Align docs to current interfaces and level set
+2. Keep worksheets and hints conceptual (no full solutions)
+3. Rebuild zips after any template/engine changes
 
 ---
 
@@ -34,10 +32,10 @@ The core design is sound. We need to:
 | Requirement | Master Spec | Current State | Status |
 |-------------|-------------|---------------|--------|
 | AAA feel from content, not mechanics | ✓ Required | ✓ Planned (rich descriptions, lore) | ✅ ALIGNED |
-| Student code stays small/explicit | ✓ Required | ~27 methods across 4 files | ✅ ALIGNED |
+| Student code stays small/explicit | ✓ Required | ~38 callables across 5 files | ✅ ALIGNED |
 | No Python on worksheets | ✓ Required | ✓ Specified in worksheet spec | ✅ ALIGNED |
 | Each level self-contained | ✓ Required | ✓ Packaging rules defined | ✅ ALIGNED |
-| No pre-written skeletons | ✓ Required | ✓ Comments only, no stubs | ✅ ALIGNED |
+| No pre-written skeletons | ✓ Required | Stubs present, no full solutions | ⚠️ REVIEW |
 | validate.py per level | ✓ Required | ✓ Validation framework defined | ✅ ALIGNED |
 | Engine stable, student edits /student only | ✓ Required | ✓ Folder structure defined | ✅ ALIGNED |
 
@@ -49,7 +47,7 @@ The core design is sound. We need to:
 
 | Aspect | Master Spec | Current Plan | Gap |
 |--------|-------------|--------------|-----|
-| Target levels | 12–14 | 10 (Preflight + A–I) | **Need +2–4 levels** |
+| Target levels | 12–14 | 12 (Preflight + A–I + P1 + P2) | ✅ Aligned |
 | Warmup level | X-9 (worksheet-only) | Preflight | ✅ Matches |
 | First class | X-8 | Level A | ✅ Matches |
 | Inheritance | X-7 | Level B | ✅ Matches |
@@ -61,10 +59,10 @@ The core design is sound. We need to:
 | Save/load | X-1 | Level H | ✅ Matches |
 | Final playthrough | X | Level I | ✅ Matches |
 | Stack/Queue puzzle | P1 | Level C+ | ✅ Matches |
-| Search/sort puzzle | P2 | **NOT PLANNED** | ❌ MISSING |
-| Set/dict unique puzzle | P3 | **NOT PLANNED** | ❌ MISSING |
+| Search/sort puzzle | P2 | Level D+ (P2) | ✅ Matches |
+| Set/dict unique puzzle | P3 | **NOT PLANNED** | ✅ Optional (covered in P2 validate_code) |
 
-**Action Required**: Add 2 contained puzzle levels (P2 and P3) to reach 12 levels.
+**Action Required**: None — contained puzzles are in place (P1, P2).
 
 ---
 
@@ -75,9 +73,9 @@ Master spec requires every B2/B3 skill be labelled as:
 - **Contained puzzle**: Isolated challenge, doesn't expand global systems
 - **Worksheet-only**: Taught via worksheet exercises, no engine dependency
 
-**Current State**: Our `COVERAGE_MATRIX_B2_B3_TO_LEVELS.md` uses ✓/○/◇ but doesn't use these exact labels.
+**Current State**: `SYLLABUS_COVERAGE_MAP_B2_B3.md` now uses Student Mechanic, Contained Puzzle, and Worksheet-Only labels.
 
-**Action Required**: Update coverage matrix to use master spec terminology.
+**Action Required**: None.
 
 ---
 
@@ -85,44 +83,24 @@ Master spec requires every B2/B3 skill be labelled as:
 
 | Master Spec Requires | Existing Equivalent | Gap |
 |---------------------|--------------------|----|
-| LEVEL_SEQUENCE_BACKWARDS_FINAL.md | PLAN_LEVEL_SEQUENCE_BACKWARDS.md | ⚠️ Needs update for 12–14 levels |
+| LEVEL_SEQUENCE_BACKWARDS_FINAL.md | PLAN_LEVEL_SEQUENCE_BACKWARDS.md | ✅ Updated |
 | LEVEL_X_FINAL_GAME_SPEC.md | PLAN_FINAL_LEVEL_X_FINAL_PLAYTHROUGH.md | ✅ Exists |
-| WORKSHEET_TEMPLATE_SPEC_FINAL.md | README_07_WEBSITE_WORKSHEET_SPEC.md | ⚠️ Needs consolidation |
-| SYLLABUS_COVERAGE_MAP_B2_B3.md | COVERAGE_MATRIX_B2_B3_TO_LEVELS.md | ⚠️ Needs mode labels |
-| CONTRACTS_AND_INTERFACES_FINAL.md | Scattered in Final Level X doc §4 | ⚠️ Needs extraction |
+| WORKSHEET_TEMPLATE_SPEC_FINAL.md | README_07_WEBSITE_WORKSHEET_SPEC.md | ✅ Consolidated |
+| SYLLABUS_COVERAGE_MAP_B2_B3.md | COVERAGE_MATRIX_B2_B3_TO_LEVELS.md | ✅ Uses mode labels |
+| CONTRACTS_AND_INTERFACES_FINAL.md | Final Level X doc §4 | ✅ Extracted |
 | AUDIT success criteria check | This document | ✅ Creating now |
 
 ---
 
 ## 2) Gap Analysis: What's Missing
 
-### 2.1 Missing Puzzle Levels
+### 2.1 Contained Puzzle Levels
 
-The master spec calls for 2–3 contained puzzle levels. We have Level C+ (Stack/Queue). We need:
+Contained puzzles now in place:
+- **P1**: Stack/Queue terminal (Level C+)
+- **P2**: Log search/sort + validate_code (Level D+)
 
-**Proposed P2: Log Entry Search/Sort**
-- **Location**: After Level D (interactions), before Level E (world expansion)
-- **Slug**: `level-d-plus-log-search`
-- **Student builds**: A method that searches or sorts a list of log entries
-- **Scenario**: "The terminal displays corrupted log files. Sort them by timestamp to find the access code."
-- **Skills covered**: 
-  - Using Python's `sorted()` with key function
-  - List comprehensions (optional)
-  - Linear search pattern
-- **Contained**: Returns a string result; doesn't affect global game state
-
-**Proposed P3: Access Code Validator (Sets/Dicts)**
-- **Location**: Within Level G (encounter) or as separate mini-level
-- **Slug**: `level-g-plus-code-validator`
-- **Student builds**: A method using dict/set to validate access codes
-- **Scenario**: "The Security Bot accepts only codes that haven't been used before. Track used codes."
-- **Skills covered**:
-  - Set membership testing (`in` operator)
-  - Dictionary key-value lookup
-  - Deduplication concept
-- **Contained**: Returns bool; doesn't add permanent mechanics
-
-**Updated Level Count**: Preflight + A, B, C, C+, D, D+, E, F, G, G+, H, I = **12 levels** ✅
+**Updated Level Count**: Preflight + A, B, C, P1, D, P2, E, F, G, H, I = **12 levels** ✅
 
 ---
 
@@ -132,25 +110,25 @@ The master spec calls for 2–3 contained puzzle levels. We have Level C+ (Stack
 |---------|---------------------|-------------------|
 | 2D arrays | "Don't force matrices" | ⚠️ Drop from plan (was in C+) — master spec says NO |
 | Search/sort | Contained puzzle P2 | ✅ Level D+ (log search) |
-| Sets/dicts for validation | Contained puzzle P3 | ✅ Level G+ (code validator) |
-| File I/O | Student serialisation | ✅ Level H (existing) |
-| Exception handling | Engine-owned, student observes | ✅ Worksheet-only |
+| Sets/dicts for validation | Contained puzzle P2 | ✅ validate_code in P2 |
+| File I/O | Student mechanic | ✅ Level P2 (load_logs_from_file) |
+| Exception handling | Student mechanic | ✅ Level F/G input conversion |
 
 **Critical Decision**: The master spec explicitly says **no 2D matrix** — it's a "forced fit". Remove from Level C+ terminal puzzle. Keep terminal simple (Stack/Queue only).
 
 ---
 
-### 2.3 Document Consolidation Needed
+### 2.3 Document Consolidation Status
 
 The `/docs` folder currently has many files. Per master spec, we need exactly 5 planning docs + 1 audit. Here's the consolidation plan:
 
 | Keep/Create | Source | Action |
 |-------------|--------|--------|
-| LEVEL_SEQUENCE_BACKWARDS_FINAL.md | planning/PLAN_LEVEL_SEQUENCE_BACKWARDS.md | Update for 12 levels |
-| LEVEL_X_FINAL_GAME_SPEC.md | planning/PLAN_FINAL_LEVEL_X_FINAL_PLAYTHROUGH.md | Rename, keep content |
-| WORKSHEET_TEMPLATE_SPEC_FINAL.md | README_07 | Extract & consolidate |
-| SYLLABUS_COVERAGE_MAP_B2_B3.md | planning/COVERAGE_MATRIX | Update with mode labels |
-| CONTRACTS_AND_INTERFACES_FINAL.md | Final Level X doc §4 | Extract into standalone |
+| LEVEL_SEQUENCE_BACKWARDS_FINAL.md | planning/PLAN_LEVEL_SEQUENCE_BACKWARDS.md | ✅ Updated for 12 levels |
+| LEVEL_X_FINAL_GAME_SPEC.md | planning/PLAN_FINAL_LEVEL_X_FINAL_PLAYTHROUGH.md | ✅ Renamed, content kept |
+| WORKSHEET_TEMPLATE_SPEC_FINAL.md | README_07 | ✅ Consolidated |
+| SYLLABUS_COVERAGE_MAP_B2_B3.md | planning/COVERAGE_MATRIX | ✅ Mode labels added |
+| CONTRACTS_AND_INTERFACES_FINAL.md | Final Level X doc §4 | ✅ Extracted |
 | FINAL_SANITY_CHECK | This document | ✅ Creating now |
 
 **Files to Archive/Delete**:
@@ -164,11 +142,9 @@ The `/docs` folder currently has many files. Per master spec, we need exactly 5 
 
 ### 3.1 Concern: Level E is Still "Dead"
 
-**Issue**: Level E (world expansion) still has no student code.
+**Issue**: Level E (world expansion) originally had no student code.
 
-**Master Spec Says**: Level X-4 is "mainly engine/content growth with minimal/no new student code" but has worksheet focus on reading UML and understanding engine boundaries.
-
-**Resolution**: ✅ ACCEPTABLE per master spec. Level E becomes a **code reading and architecture understanding** level. Worksheet has comprehension questions, not coding tasks.
+**Resolution**: ✅ Addressed. Level E now includes a micro-lab (Logbook aggregation) plus exploration and code reading.
 
 ---
 
@@ -230,7 +206,7 @@ The `/docs` folder currently has many files. Per master spec, we need exactly 5 
 | 5 | C+ | Terminal Access: Stacks & Queues | Stack, Queue | Contained puzzle |
 | 6 | D | Making Things Happen: Item Use | use_item, consume | Student mechanic |
 | 7 | D+ | Data Retrieval: Log Search | search/sort function | Contained puzzle |
-| 8 | E | Exploring the Facility | (code reading) | Worksheet-only |
+| 8 | E | Mission Log + Exploration | Logbook aggregation | Student mechanic |
 | 9 | F | First Contact: Drone Dialogue | respond_to_npc | Student mechanic |
 | 10 | G | Threat Response: Security Bot | choose_action, compute_damage | Student mechanic |
 | 11 | H | Checkpoints: Save & Load | to_save_data, from_save_data | Student mechanic |
@@ -244,13 +220,13 @@ The `/docs` folder currently has many files. Per master spec, we need exactly 5 
 
 | File | Methods/Attributes | Cumulative |
 |------|--------------------|------------|
-| player.py | __init__, get_status, take_damage, heal, get_starting_stats, use_item, respond_to_npc, choose_action, compute_damage, to_save_data, from_save_data | 11 methods |
-| player_types.py | Brute.get_starting_stats, Scout.get_starting_stats | 2 methods |
-| inventory.py | __init__, add, remove, list_items, has_item, consume + MAX_CAPACITY | 6 methods + 1 class var |
-| data_structs.py | Stack (4 methods), Queue (4 methods) | 8 methods |
-| log_search.py (new) | search_logs or sort_logs | 1 method |
+| player.py | __init__, get_status, take_damage, heal, use_item, respond_to_npc, choose_action, compute_damage, to_save_data, from_save_data | 10 methods |
+| player_types.py | Brute/Scout __init__ + describe_specialty | 4 methods |
+| inventory.py | __init__, add, remove, list_items, has_item, consume, is_full, count + MAX_CAPACITY | 8 methods + 1 class var |
+| data_structs.py | Stack (6 methods), Queue (6 methods) | 12 methods |
+| log_search.py | load_logs_from_file, search_logs, sort_logs, validate_code | 4 functions |
 
-**Total**: ~28 methods across 5 files
+**Total**: ~38 callables across 5 files
 
 **Master Spec Check**: ✅ "Small, explicit, and testable" — YES
 
@@ -323,7 +299,7 @@ Once the above quick updates are done, we can start:
 **Conditions for GO**:
 1. Confirm Level D+ addition is acceptable (adds 1 more level)
 2. Confirm 2D array removal is acceptable (worksheet-only coverage)
-3. Confirm Level E as code-reading-only is acceptable
+3. Confirm Level E micro-lab (Logbook aggregation) is acceptable
 
 **If YES to all**: Start build phase immediately.
 
@@ -340,7 +316,7 @@ OOP Project (12 levels)
 ├── Level C+: Stack/Queue terminal puzzle (contained)
 ├── Level D: use_item/consume interactions
 ├── Level D+: Log search/sort (contained puzzle) [NEW]
-├── Level E: World expansion (code reading)
+├── Level E: Mission Log + Exploration (aggregation)
 ├── Level F: NPC dialogue hook
 ├── Level G: Encounter hooks
 ├── Level H: Save/load serialisation
@@ -348,7 +324,7 @@ OOP Project (12 levels)
 ```
 
 **Engine**: Rich content, command parser, world loader, all mechanics hidden
-**Student**: 5 Python files, ~28 methods, all validated
+**Student**: 6 Python files, ~30 methods, all validated
 **Worksheets**: 12 HTML pages, zero Python, rich visuals
 
 ---

@@ -128,6 +128,8 @@ Ships with teacher's completed:
 - Why encapsulation? (protect internal state)
 - What is a class variable? (shared across instances)
 - Why return a copy from list_items()? (protect encapsulation)
+- Access modifiers in Python (public vs _protected vs __private-ish)
+- Aggregation vs composition (compare: "borrowed" vs "owned" objects)
 
 ---
 
@@ -163,6 +165,8 @@ Note: ◆ represents composition ("filled diamond" = strong ownership)
 
 - Emphasise the difference between composition and inheritance
 - Show why _underscore convention matters (no enforcement in Python)
+- Explain Python access modifiers: public (no underscore), protected by convention (_items), private-ish via name mangling (__items)
+- Contrast aggregation (uses object but does not own its lifetime) with composition (owns the object)
 - Discuss why MAX_CAPACITY is a class variable, not instance
 - Common mistake: forgetting to return a copy from list_items()
 - Common mistake: not checking capacity before adding

@@ -1,25 +1,26 @@
 # Level Specification: Level E - Exploring the Facility
 
-**Type**: Code reading / Engine expansion (no new student code)  
-**Estimated Time**: 1 lesson  
+**Type**: Micro-lab + Engine exploration  
+**Estimated Time**: 1–2 lessons  
 **Prerequisites**: P2
 
 ---
 
 ## Overview
 
-This level expands the world to the full 10 rooms but requires NO new student code. Students learn by reading and understanding the engine's architecture.
+This level expands the world to the full 10 rooms and adds a small OOP micro-lab focused on aggregation (a Logbook that can exist outside the Player).
 
 ---
 
 ## Learning Objectives
 
 By the end of this level, students will be able to:
-1. Read and trace engine code to understand how rooms are connected
-2. Explain how JSON content files are loaded
-3. Understand how the command parser routes input
-4. Identify how their student code integrates with the engine
-5. Read code they didn't write (important real-world skill)
+1. Build a simple Logbook class and attach it to a Player (aggregation)
+2. Record events through object-to-object interaction
+3. Read and trace engine code to understand how rooms are connected
+4. Explain how JSON content files are loaded
+5. Understand how the command parser routes input
+6. Read code they didn't write (important real-world skill)
 
 ---
 
@@ -32,18 +33,29 @@ By the end of this level, students will be able to:
 | Parser | Code that interprets and routes user input |
 | Content loading | Reading external files to populate game data |
 | Integration | How separate code modules work together |
+| Aggregation | A has-a relationship where objects exist independently |
 
 ---
 
 ## Student Deliverables
 
-**None** — this is a code reading level.
+1. `Logbook` class in `student/logbook.py`
+2. `Player.attach_logbook()` and `Player.record_event()` in `student/player.py`
+3. Run `run_lab.py` to verify logbook output
 
 ---
 
 ## Worksheet Content
 
-### Part 1: Understanding rooms.json
+### Part 1: Logbook Micro-Lab (Aggregation)
+
+Tasks:
+- Create a Logbook class that stores entries in a list
+- Add methods to add entries, list entries, and read the latest entry
+- Attach the Logbook to Player using a dedicated method
+- Record events through Player, not by editing Logbook directly
+
+### Part 2: Understanding rooms.json
 
 Questions:
 - How many rooms are defined?
@@ -51,21 +63,21 @@ Questions:
 - How are exits represented?
 - What is the difference between first-visit and revisit descriptions?
 
-### Part 2: Understanding the World Loader
+### Part 3: Understanding the World Loader
 
 Questions:
 - What function loads the rooms from JSON?
 - How does the engine look up a room by ID?
 - What happens if a room ID is not found?
 
-### Part 3: Understanding the Command Parser
+### Part 4: Understanding the Command Parser
 
 Questions:
 - How does the parser interpret "go north"?
 - What synonyms are supported?
 - How is the parsed command routed to a handler?
 
-### Part 4: Tracing Your Code
+### Part 5: Tracing Your Code
 
 Questions:
 - When you call `player.get_status()`, where does it go?
@@ -93,18 +105,19 @@ Questions:
 - 8 items: Previous + Battery, Data Chip
 
 ### NPCs
-- None yet
+- Maintenance Drone (M-Unit 7) in Main Corridor
 
 ### Encounters
-- None yet
+- Sentry Droid (Airlock exit)
+- Repair Bot (Engineering)
 
 ---
 
 ## Validator Scope
 
 Validator for Level E:
-- Runs all previous level checks
-- No new checks (no new student code)
+- Checks Logbook methods exist and work
+- Checks Player.attach_logbook and record_event integrate correctly
 
 ---
 
@@ -162,7 +175,7 @@ From the master spec:
 > Level E is allowed to be "engine/content growth + code reading" with no student code.
 
 This level:
-- Expands the world without expanding student responsibilities
+- Adds a small, focused OOP lab (aggregation)
 - Provides a natural "checkpoint" for understanding
 - Prepares students for the more complex encounter level (G)
 - Demonstrates that games are mostly content, not just code

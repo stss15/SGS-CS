@@ -11,6 +11,9 @@ class Brute(Player):
         self.armour = 3
         self.accuracy = 70
 
+    def describe_specialty(self) -> str:
+        return "Brute: heavy combat specialist with high health and armour."
+
 
 class Scout(Player):
     """Reconnaissance expert - low health, high accuracy."""
@@ -21,3 +24,6 @@ class Scout(Player):
         self.max_health = 80
         self.armour = 1
         self.accuracy = 95
+
+    def describe_specialty(self) -> str:
+        return "Scout: precision specialist with high accuracy and mobility."

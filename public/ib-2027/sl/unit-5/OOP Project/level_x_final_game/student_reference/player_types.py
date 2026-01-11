@@ -30,6 +30,10 @@ class Brute(Player):
         self.max_health = 120
         self.armour = 3
         self.accuracy = 70
+
+    def describe_specialty(self) -> str:
+        """Return a short description of the Brute's strengths."""
+        return "Brute: heavy combat specialist with high health and armour."
     
     def to_save_data(self) -> dict:
         """
@@ -80,6 +84,10 @@ class Scout(Player):
         self.max_health = 80
         self.armour = 1
         self.accuracy = 95
+
+    def describe_specialty(self) -> str:
+        """Return a short description of the Scout's strengths."""
+        return "Scout: precision specialist with high accuracy and mobility."
     
     def to_save_data(self) -> dict:
         """

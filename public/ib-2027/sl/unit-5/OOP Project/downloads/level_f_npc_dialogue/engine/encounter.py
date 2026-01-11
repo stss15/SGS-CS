@@ -37,6 +37,12 @@ class Encounter:
         self.defend_messages = encounter_data.get("defend_messages", ["The enemy defends."])
         
         self.is_final_boss = encounter_data.get("is_final_boss", False)
+        
+        # New attributes for non-violent resolution
+        self.can_be_disabled = encounter_data.get("can_be_disabled", False)
+        self.disable_item = encounter_data.get("disable_item", None)
+        self.disable_text = encounter_data.get("disable_text", "You disabled the enemy.")
+        
         self.is_defeated = False
         self.is_defending = False
     
@@ -135,26 +141,40 @@ class EncounterManager:
         
         player_defending = False
         stim_boost = 0  # Temporary damage boost from stim
+
+        def _fallback_choose_action(options: list) -> int:
+            """Fallback input loop if choose_action is missing."""
+            while True:
+                try:
+                    choice = int(input("Choose action: ")) - 1
+                    if 0 <= choice < len(options):
+                        return choice
+                    print("Invalid choice.")
+                except ValueError:
+                    print("Please enter a number.")
         
         # Combat loop
         while player.health > 0 and enemy.health > 0:
             # Show status
             print(f"\n--- {enemy.name}: {enemy.health}/{enemy.max_health} HP | You: {player.health}/{player.max_health} HP ---")
             
-            # Player chooses action
+            # Player chooses action - engine shows options, student provides input
             print("\nWhat do you do?")
             for i, option in enumerate(self.OPTIONS):
                 print(f"  {i + 1}. {option}")
             
-            # Get player choice via student method
-            try:
-                choice_index = player.choose_action(self.OPTIONS)
-                if not isinstance(choice_index, int) or choice_index < 0 or choice_index >= len(self.OPTIONS):
-                    print("Invalid choice - defaulting to Attack")
+            # Get player choice via student method (fallback if missing)
+            if hasattr(player, 'choose_action'):
+                try:
+                    choice_index = player.choose_action(self.OPTIONS)
+                    if not isinstance(choice_index, int) or choice_index < 0 or choice_index >= len(self.OPTIONS):
+                        print("Invalid choice - defaulting to Attack")
+                        choice_index = 0
+                except Exception as e:
+                    print(f"Error in choose_action: {e} - defaulting to Attack")
                     choice_index = 0
-            except Exception as e:
-                print(f"Error in choose_action: {e} - defaulting to Attack")
-                choice_index = 0
+            else:
+                choice_index = _fallback_choose_action(self.OPTIONS)
             
             chosen_action = self.OPTIONS[choice_index]
             print(f"\nYou choose: {chosen_action}")
@@ -163,30 +183,55 @@ class EncounterManager:
             if chosen_action == "Attack":
                 # Calculate damage using student method
                 base_damage = 15 + stim_boost  # Base player damage + any stim boost
+                
+                # Check for student's critical hit method
+                is_crit = False
+                if hasattr(player, 'calculate_critical_hit'):
+                    try:
+                        base_damage, is_crit = player.calculate_critical_hit(base_damage)
+                        if is_crit:
+                            print("⚡ CRITICAL HIT! ⚡")
+                    except:
+                        pass  # Method not implemented correctly
+                
+                compute_damage = player.compute_damage if hasattr(player, 'compute_damage') else lambda base, armour: max(0, base - armour)
+                effective_armour = enemy.armour * 2 if enemy.is_defending else enemy.armour
                 if hasattr(player, 'accuracy'):
                     # Hit check based on accuracy
                     if random.randint(1, 100) > player.accuracy:
                         print("Your attack misses!")
                         damage_dealt = 0
                     else:
-                        damage_dealt = player.compute_damage(base_damage, enemy.armour if not enemy.is_defending else enemy.armour * 2)
+                        damage_dealt = compute_damage(base_damage, effective_armour)
                         print(f"You strike the {enemy.name} for {damage_dealt} damage!")
                 else:
-                    damage_dealt = player.compute_damage(base_damage, enemy.armour)
+                    damage_dealt = compute_damage(base_damage, effective_armour)
                     print(f"You strike the {enemy.name} for {damage_dealt} damage!")
                 
                 if damage_dealt > 0:
-                    enemy.take_damage(damage_dealt + enemy.armour)  # Re-add armour since take_damage applies it again
+                    enemy.take_damage(damage_dealt + effective_armour)  # Re-add armour since take_damage applies it again
                 player_defending = False
                 stim_boost = 0  # Stim wears off after attacking
                 
             elif chosen_action == "Defend":
-                print("You raise your guard, bracing for the next attack.")
+                print("You raise your guard and prepare to counter!")
+                print("(Next enemy attack will trigger a counterattack)")
                 player_defending = True
                 
             elif chosen_action == "Use Item":
-                print("(Item use in combat - simplified: healing items heal, stim boosts next attack)")
-                # Check for healing items
+                # Check for special disable items (non-violent boss defeat)
+                if enemy.can_be_disabled:
+                    disable_item = enemy.disable_item
+                    if player.inventory.has_item(disable_item):
+                        player.inventory.consume(disable_item)
+                        print()
+                        print("=" * 60)
+                        print(enemy.disable_text)
+                        print("=" * 60)
+                        return "victory"
+                
+                # Normal item usage
+                print("(Item use in combat - healing items heal, stim boosts attack)")
                 if player.inventory.has_item("med_patch"):
                     player.inventory.consume("med_patch")
                     player.heal(20)
@@ -237,9 +282,17 @@ class EncounterManager:
                     effective_armour *= 2
                     print("Your defensive stance absorbs some of the blow!")
                 
-                damage_to_player = player.compute_damage(enemy.damage, effective_armour)
+                compute_damage = player.compute_damage if hasattr(player, 'compute_damage') else lambda base, armour: max(0, base - armour)
+                damage_to_player = compute_damage(enemy.damage, effective_armour)
                 player.take_damage(damage_to_player + effective_armour)  # Offset armour double-application
                 print(f"You take {damage_to_player} damage!")
+                
+                # Counterattack if defending!
+                if player_defending:
+                    counter_damage = 8  # Fixed counter damage
+                    print(f"\n⚔️ You counter-strike the {enemy.name} for {counter_damage} damage!")
+                    enemy.take_damage(counter_damage + enemy.armour)
+                    player_defending = False
                 
             elif enemy_action == "defend":
                 print(f"\n{enemy.get_defend_message()}")

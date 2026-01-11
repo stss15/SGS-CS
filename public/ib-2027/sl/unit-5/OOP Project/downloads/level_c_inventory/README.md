@@ -6,7 +6,7 @@ Create an Inventory class with:
 - Class variable MAX_CAPACITY = 10
 - Methods: add, remove, list_items, has_item, is_full, count
 
-Then update Player to have an inventory attribute.
+Player already includes an inventory attribute in this level.
 
 ## Files
 
@@ -23,5 +23,5 @@ level_c_inventory/
 ## How to Work
 
 1. Implement Inventory class methods
-2. Add `self.inventory = Inventory()` to Player constructor
+2. Confirm `player.py` already creates `self.inventory = Inventory()`
 3. Run `python3 validate.py` to check your work

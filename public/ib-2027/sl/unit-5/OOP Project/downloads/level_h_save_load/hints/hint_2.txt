@@ -2,34 +2,23 @@
 
 TO_SAVE_DATA()
 ---------------------------------------------
-Returns a dictionary with everything that needs saving:
-  - name
-  - health
-  - max_health
-  - inventory items
-  - any other state
-
-  def to_save_data(self):
-      return {
-          "name": self.name,
-          "health": self.health,
-          # ... more fields
-      }
+Return a dictionary with everything that needs saving:
+- name
+- health
+- max_health
+- armour
+- accuracy
+- inventory items
+- player_type (so subclasses can reload correctly)
 
 FROM_SAVE_DATA(data) - CLASS METHOD
 ---------------------------------------------
-This is different! It's a CLASS METHOD, not an instance method.
-It creates a NEW Player from the data.
-
-  @classmethod
-  def from_save_data(cls, data):
-      # Create a new player
-      # Restore all the saved values
-      # Return it
+This is a CLASS METHOD (called on the class, not an instance).
+It creates a NEW Player from the saved data.
 
 WHAT IS @classmethod?
-  - Called on the class, not an instance
-  - First argument is 'cls' (the class itself)
-  - Can be called like: Player.from_save_data(data)
+- Called on the class itself
+- First argument is `cls`
+- Lets subclasses reuse the same pattern
 
 Still stuck? Read hint_3.txt

@@ -164,6 +164,32 @@ def main():
             results.add_pass("Scout stores name correctly")
         else:
             results.add_fail("Scout name", f"Expected 'TestScout', got {scout.name}")
+
+    print("\n--- describe_specialty Checks ---")
+    if brute:
+        if hasattr(brute, "describe_specialty"):
+            try:
+                desc = brute.describe_specialty()
+                if isinstance(desc, str) and desc.strip():
+                    results.add_pass("Brute.describe_specialty returns a string")
+                else:
+                    results.add_fail("Brute.describe_specialty", "Should return a non-empty string")
+            except Exception as e:
+                results.add_fail("Brute.describe_specialty", str(e))
+        else:
+            results.add_fail("Brute.describe_specialty", "Method not found")
+    if scout:
+        if hasattr(scout, "describe_specialty"):
+            try:
+                desc = scout.describe_specialty()
+                if isinstance(desc, str) and desc.strip():
+                    results.add_pass("Scout.describe_specialty returns a string")
+                else:
+                    results.add_fail("Scout.describe_specialty", "Should return a non-empty string")
+            except Exception as e:
+                results.add_fail("Scout.describe_specialty", str(e))
+        else:
+            results.add_fail("Scout.describe_specialty", "Method not found")
     
     # Polymorphism check (inherited methods work)
     print("\n--- Polymorphism Check ---")

@@ -14,6 +14,7 @@ class Player:
         self.armour = 2
         self.accuracy = 85
         self.inventory = Inventory()
+        self.logbook = None
 
     def get_status(self) -> str:
         return f"{self.name}: {self.health}/{self.max_health} HP"
@@ -28,10 +29,17 @@ class Player:
         if not self.inventory.has_item(item_id):
             return f"You don't have '{item_id}'."
         if item_id == "med_patch" and target == "self":
-            self.heal(20)
-            self.inventory.consume("med_patch")
             return "You apply the med patch. +20 HP."
         return f"You use the {item_id} on the {target}."
+
+    def attach_logbook(self, logbook) -> None:
+        self.logbook = logbook
+
+    def record_event(self, entry: str) -> str:
+        if self.logbook is None:
+            return "No logbook attached."
+        self.logbook.add_entry(entry)
+        return "Logbook updated."
 
     def respond_to_npc(self, options: list) -> int:
         # Engine displays options - just get input and return index
@@ -59,4 +67,16 @@ class Player:
     # compute_damage(self, base, armour):
     #   - Calculate damage after armour reduction: base - armour
     #   - Return the result (minimum 0, cannot be negative)
+    # =========================================================================
+
+    # =========================================================================
+    # BONUS TASK: Add the calculate_critical_hit() method
+    # =========================================================================
+    # calculate_critical_hit(self, base_damage)
+    #   - Use random.random() to get a number between 0 and 1
+    #   - If < 0.15 (15% chance), it's a critical hit: double the damage
+    #   - Return a TUPLE: (final_damage, is_critical)
+    #     e.g., (30, True) for a crit, or (15, False) for normal
+    # 
+    # This is GAME MECHANICS DESIGN - you decide how crits work!
     # =========================================================================

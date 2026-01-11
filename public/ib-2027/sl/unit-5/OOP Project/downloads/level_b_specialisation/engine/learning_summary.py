@@ -38,6 +38,7 @@ def show_level_b_summary(player, player_class_name, base_player):
         print()
         print(f"  Your {player_class_name} OVERRODE:")
         print(f"    ✓ Starting stats (different health, armour, accuracy)")
+        print(f"    ✓ describe_specialty() output (class-specific description)")
     
     print()
     print("-" * 50)

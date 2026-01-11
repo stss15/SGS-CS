@@ -180,8 +180,7 @@ NOT in core path. Optional extension only.
 | ID | Name | Skills Covered |
 |----|------|----------------|
 | P1 | Stack/Queue Terminal | ADT behaviour, LIFO/FIFO |
-| P2 | Log Search/Sort | sorted(), key functions, linear search |
-| P3 | Set/Dict Validator | set membership, dict lookup, deduplication |
+| P2 | Log Search/Sort | sorted(), key functions, linear search, validate_code |
 
 All puzzles are **contained** — they don't expand global mechanics.
 
@@ -290,4 +289,4 @@ level_x_final_game/
 - [ ] Student-facing method surface is minimal and stable
 - [ ] Coverage map labels every B2/B3 item with 3-mode classification
 - [ ] Worksheets contain zero Python code
-- [ ] Contained puzzles P1/P2/P3 are explicitly present
+- [ ] Contained puzzles P1/P2 are explicitly present
