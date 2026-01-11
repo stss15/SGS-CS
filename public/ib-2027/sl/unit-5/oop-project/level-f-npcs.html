@@ -212,102 +212,113 @@
         <h2 class="oop-section-title">The Interaction Hook</h2>
     </div>
     
-    <div class="uml-svg-container">
-        <svg viewBox="0 0 400 160" class="uml-svg" preserveAspectRatio="xMidYMid meet">
+    <div class="uml-svg-container" style="max-width: 500px;">
+        <svg viewBox="0 0 450 160" class="uml-svg" preserveAspectRatio="xMidYMid meet">
             <!-- Player Class Box -->
-            <rect x="100" y="10" width="200" height="60" class="uml-svg-class" rx="4" style="stroke: #28a745;"/>
-            <line x1="100" y1="40" x2="300" y2="40" style="stroke: #28a745;"/>
-            <text x="200" y="30" class="uml-svg-text title" style="fill: #28a745;">Player</text>
+            <rect x="100" y="10" width="250" height="60" class="uml-svg-class" rx="4" style="stroke: #28a745;"/>
+            <line x1="100" y1="40" x2="350" y2="40" style="stroke: #28a745;"/>
+            <text x="225" y="30" class="uml-svg-text title" style="fill: #28a745;">Player</text>
             <text x="110" y="58" class="uml-svg-text method"><tspan fill="#28a745">+</tspan> respond_to_npc(options) → int</text>
             
             <!-- Note connector line -->
-            <line x1="200" y1="70" x2="200" y2="95" class="uml-svg-line" stroke-dasharray="4,2"/>
+            <line x1="225" y1="70" x2="225" y2="95" class="uml-svg-line" stroke-dasharray="4,2"/>
             
             <!-- Note box -->
-            <rect x="50" y="95" width="300" height="55" fill="#f8f9fa" stroke="#6c757d" stroke-width="1" rx="4"/>
-            <text x="200" y="112" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">Called by Engine when you talk to an NPC.</text>
-            <text x="200" y="126" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">Engine sends ["Hi", "Bye"]</text>
-            <text x="200" y="140" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">You return index 0 or 1</text>
+            <rect x="50" y="95" width="350" height="55" fill="#f8f9fa" stroke="#6c757d" stroke-width="1" rx="4"/>
+            <text x="225" y="112" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">Called by Engine when you talk to an NPC.</text>
+            <text x="225" y="126" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">Engine sends ["Hi", "Bye"]</text>
+            <text x="225" y="140" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">You return index 0 or 1</text>
         </svg>
     </div>
 </section>
 
-<!-- STRUCTURE GUIDE -->
+<!-- NEW CONCEPT: ENUMERATE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-lightbulb"></i>
+        </div>
+        <h2 class="oop-section-title">New Concept: enumerate()</h2>
+    </div>
+    
+    <div class="concept-explanation" style="background: #f8f9fa; border-left: 4px solid var(--primary-color); padding: 1.5rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem;">
+        <p style="margin-bottom: 1rem;">When looping through a list, sometimes you need both the <strong>item</strong> AND its <strong>position</strong>. That's what <code>enumerate()</code> does.</p>
+        
+        <div style="display: grid; gap: 1rem; margin: 1rem 0;">
+            <div style="background: #1a1a2e; color: #f8f9fa; padding: 1rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.9rem;">
+                <div style="color: #6c757d; margin-bottom: 0.5rem;"># Without enumerate - only get the item</div>
+                <div>options = ["Attack", "Defend", "Run"]</div>
+                <div><span style="color: #c9a227;">for</span> option <span style="color: #c9a227;">in</span> options:</div>
+                <div style="padding-left: 1.5rem;">print(option)  <span style="color: #6c757d;"># Attack, Defend, Run</span></div>
+            </div>
+            
+            <div style="background: #1a1a2e; color: #f8f9fa; padding: 1rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.9rem;">
+                <div style="color: #6c757d; margin-bottom: 0.5rem;"># With enumerate - get index AND item</div>
+                <div><span style="color: #c9a227;">for</span> index, option <span style="color: #c9a227;">in</span> <span style="color: #c9a227;">enumerate</span>(options):</div>
+                <div style="padding-left: 1.5rem;">print(index, option)</div>
+                <div style="color: #6c757d; margin-top: 0.5rem;"># Output: 0 Attack, 1 Defend, 2 Run</div>
+            </div>
+        </div>
+        
+        <p style="margin-top: 1rem;"><strong>Why is this useful?</strong> When displaying a menu, you want to show numbers next to each option so the user can choose.</p>
+    </div>
+</section>
+
+<!-- FUNCTION SPECIFICATION -->
 <section class="oop-section">
     <div class="oop-section-header">
         <div class="oop-section-icon">
             <i class="fa-solid fa-code"></i>
         </div>
-        <h2 class="oop-section-title">Structure Guide</h2>
+        <h2 class="oop-section-title">Function Specification</h2>
     </div>
     
-    <p class="section-intro">Add this method to your Player class. The engine does the rest!</p>
+    <p class="section-intro">Add this method to your Player class in <code>student/player.py</code>.</p>
     
-    <!-- 1. Method Signature -->
     <details class="skeleton-block" open>
         <summary class="skeleton-summary">
             <span class="skeleton-step">1</span>
-            <span class="skeleton-title">Method Signature</span>
+            <span class="skeleton-title">respond_to_npc(options)</span>
             <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
         </summary>
         <div class="skeleton-content">
-            <div class="skeleton-line code">METHOD respond_to_npc(options_list) → integer:</div>
-            <div class="skeleton-desc">
-                <strong>Parameters:</strong> <code>options_list</code> is a list of strings (the choices).<br>
-                <strong>Returns:</strong> The index (integer) of the choice selected.
-            </div>
-        </div>
-    </details>
-    
-    <!-- 2. Display Options -->
-    <details class="skeleton-block">
-        <summary class="skeleton-summary">
-            <span class="skeleton-step">2</span>
-            <span class="skeleton-title">Display Options</span>
-            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
-        </summary>
-        <div class="skeleton-content">
-            <div class="skeleton-desc">
-                Loop through the <code>options_list</code> and print each one with a number.
-                <div class="skeleton-line code" style="margin-top: 0.5rem;">FOR index, option IN ENUMERATE(options_list):</div>
-                <div class="skeleton-line code">    PRINT (index + 1) ": " option</div>
-                <p style="margin-top: 0.5rem; font-size: 0.9em; color: #666;">Note: Use <code>index + 1</code> so humans see 1, 2, 3... instead of 0, 1, 2...</p>
-            </div>
-        </div>
-    </details>
-    
-    <!-- 3. Get Valid Input -->
-    <details class="skeleton-block">
-        <summary class="skeleton-summary">
-            <span class="skeleton-step">3</span>
-            <span class="skeleton-title">Get Valid Input</span>
-            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
-        </summary>
-        <div class="skeleton-content">
-            <div class="skeleton-desc">
-                Create a <code>WHILE True</code> loop to keep asking until you get a valid number.
-                <ul>
-                    <li>Ask user for input</li>
-                    <li>Check if it is a number</li>
-                    <li>Check if it is between 1 and <code>len(options_list)</code></li>
-                    <li>If valid, BREAK the loop</li>
-                    <li>If invalid, print an error message and loop again</li>
-                </ul>
-            </div>
-        </div>
-    </details>
-    
-    <!-- 4. Return Index -->
-    <details class="skeleton-block">
-        <summary class="skeleton-summary">
-            <span class="skeleton-step">4</span>
-            <span class="skeleton-title">Return Zero-based Index</span>
-            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
-        </summary>
-        <div class="skeleton-content">
-            <div class="skeleton-desc">
-                The user typed <code>1</code>, but the list starts at <code>0</code>.
-                <div class="skeleton-line code" style="margin-top: 0.5rem;">RETURN (user_choice - 1)</div>
+            <div class="challenge-spec" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden;">
+                <div style="background: var(--primary-color); color: white; padding: 0.75rem 1rem; font-weight: 600;">
+                    Display choices and get user selection
+                </div>
+                <div style="padding: 1rem;">
+                    <p><strong>Parameter:</strong> <code>options</code> — a list of dialogue choices (strings)</p>
+                    <p style="margin-top: 0.5rem;"><strong>Returns:</strong> The index (0-based) of the chosen option</p>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                        <strong>What it should do:</strong>
+                        <ol style="margin-top: 0.5rem;">
+                            <li>Display each option with a number (1, 2, 3...)</li>
+                            <li>Ask the user to enter their choice</li>
+                            <li>Validate the input (must be a number in range)</li>
+                            <li>Keep asking until valid input is given</li>
+                            <li>Return the 0-based index</li>
+                        </ol>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                        <strong>Example:</strong>
+                        <pre style="margin: 0.5rem 0; font-size: 0.85rem;">options = ["Ask about the station", "Request supplies", "Leave"]
+
+# Your function should display:
+#   1. Ask about the station
+#   2. Request supplies
+#   3. Leave
+# Then prompt: "Enter choice: "
+
+# If user types "2", return 1 (0-based index)
+# If user types "abc" or "99", ask again</pre>
+                    </div>
+                    
+                    <div style="background: #fff3cd; padding: 1rem; border-radius: 4px; margin-top: 1rem; border-left: 4px solid #ffc107;">
+                        <strong>💡 Key insight:</strong> Users see 1, 2, 3 but Python lists start at 0. You'll need to convert between these.
+                    </div>
+                </div>
             </div>
         </div>
     </details>
