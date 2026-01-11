@@ -1,0 +1,75 @@
+---
+layout: layouts/base.njk
+title: "Teacher Guide: Level P1 | OOP Project"
+description: "Solutions and notes for Level P1: Stacks & Queues."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 5", href: "ib-2027/sl/unit-5/index.html" }
+  - { label: "OOP Project", href: "ib-2027/sl/unit-5/oop-project/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/sl/unit-5/oop-project/teacher/index.html" }
+  - { label: "Level P1 Guide" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
+        <p style="margin-bottom: 0;">Solutions for Level P1: Data Structures.</p>
+    </div>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Concept Overview</h2>
+        <ul style="list-style-type: disc; margin-left: 1.5rem;">
+            <li><strong>Stack (LIFO)</strong>: Last In, First Out. Like a stack of plates. Use `append()` and `pop()`.</li>
+            <li><strong>Queue (FIFO)</strong>: First In, First Out. Like a lunch line. Use `append()` and `pop(0)`.</li>
+        </ul>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Common Misconceptions</h2>
+        <div class="info-content">
+            <p><strong>1. `pop(0)` vs `pop()`</strong></p>
+            <p>For Queue, removing the <em>first</em> item is `pop(0)`. Removing the last (Stack) is `pop()`. If they swap them, the tests will fail.</p>
+            
+            <p><strong>2. `peek()` errors</strong></p>
+            <p>Checking the top/front without removing. Must handle empty lists (return None) to avoid `IndexError`.</p>
+        </div>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Solution Code</h2>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+            <pre><code>class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        if not self.items: return None
+        return self.items.pop()  # Removes last
+
+    def peek(self):
+        if not self.items: return None
+        return self.items[-1]
+
+class Queue:
+    def __init__(self):
+        self.items = []
+
+    def enqueue(self, item):
+        self.items.append(item)
+
+    def dequeue(self):
+        if not self.items: return None
+        return self.items.pop(0)  # Removes first</code></pre>
+        </div>
+    </section>
+
+</div>

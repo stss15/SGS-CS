@@ -1,0 +1,73 @@
+---
+layout: layouts/base.njk
+title: "Teacher Guide: Level G | OOP Project"
+description: "Solutions and notes for Level G: Combat."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 5", href: "ib-2027/sl/unit-5/index.html" }
+  - { label: "OOP Project", href: "ib-2027/sl/unit-5/oop-project/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/sl/unit-5/oop-project/teacher/index.html" }
+  - { label: "Level G Guide" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
+        <p style="margin-bottom: 0;">Solutions for Level G: Combat Logic.</p>
+    </div>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Concept Overview</h2>
+        <ul style="list-style-type: disc; margin-left: 1.5rem;">
+            <li><strong>Code Reuse</strong>: `choose_action` is almost identical to `respond_to_npc`.</li>
+            <li><strong>Game Logic</strong>: `compute_damage` implements the rules (`Base - Armour`).</li>
+            <li><strong>Math functions</strong>: Using `max(0, ...)` to prevent healing via negative damage.</li>
+        </ul>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Common Misconceptions</h2>
+        <div class="info-content">
+            <p><strong>1. Negative Damage</strong></p>
+            <p>If Armour (8) > Damage (5), the result is -3. If we subtract -3 HP, we ADD 3 HP! Students <em>must</em> use `max(0, result)`.</p>
+            
+            <p><strong>2. Duplicating `print`</strong></p>
+            <p>Students often print the list of options inside `choose_action`. The Engine already prints it. If they print it again, it shows twice.</p>
+        </div>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Solution Code</h2>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+            <pre><code>    def choose_action(self, options):
+        # Exactly like interaction!
+        while True:
+            try:
+                choice = int(input("Choose action: ")) - 1
+                if 0 <= choice < len(options):
+                    return choice
+                print("Invalid choice.")
+            except ValueError:
+                print("Please enter a number.")
+
+    def compute_damage(self, base_damage, armour):
+        # Prevent negative damage (healing)
+        damage = base_damage - armour
+        return max(0, damage)
+
+    # Bonus: Critical Hit
+    import random
+    def calculate_critical_hit(self, base_damage):
+        if random.random() < 0.15: # 15% chance
+            return (base_damage * 2, True)
+        return (base_damage, False)</code></pre>
+        </div>
+    </section>
+
+</div>
