@@ -203,16 +203,52 @@
     </div>
 </section>
 
-<!-- STRUCTURE GUIDE -->
+<!-- NEW CONCEPT: LAMBDA FUNCTIONS -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-lightbulb"></i>
+        </div>
+        <h2 class="oop-section-title">New Concept: Lambda Functions</h2>
+    </div>
+    
+    <div class="concept-explanation" style="background: #f8f9fa; border-left: 4px solid var(--primary-color); padding: 1.5rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem;">
+        <p style="margin-bottom: 1rem;">A <strong>lambda</strong> is a tiny, one-line function. Instead of writing a full function definition, you can create one inline.</p>
+        
+        <div style="display: grid; gap: 1rem; margin: 1rem 0;">
+            <div style="background: #1a1a2e; color: #f8f9fa; padding: 1rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.9rem;">
+                <div style="color: #6c757d; margin-bottom: 0.5rem;"># Normal function</div>
+                <div>def get_age(person):</div>
+                <div style="padding-left: 1.5rem;">return person['age']</div>
+            </div>
+            
+            <div style="background: #1a1a2e; color: #f8f9fa; padding: 1rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.9rem;">
+                <div style="color: #6c757d; margin-bottom: 0.5rem;"># Same thing as a lambda</div>
+                <div>get_age = <span style="color: #c9a227;">lambda</span> person: person['age']</div>
+            </div>
+        </div>
+        
+        <p style="margin-top: 1rem;"><strong>Why use lambdas?</strong> They're perfect for simple operations you need to pass to functions like <code>sorted()</code>.</p>
+        
+        <div style="background: #1a1a2e; color: #f8f9fa; padding: 1rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.9rem; margin-top: 1rem;">
+            <div style="color: #6c757d;"># Sort a list of people by their age</div>
+            <div>people = [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}]</div>
+            <div style="margin-top: 0.5rem;">sorted_people = sorted(people, key=<span style="color: #c9a227;">lambda</span> x: x['age'])</div>
+            <div style="color: #6c757d; margin-top: 0.5rem;"># Result: Bob (25) comes before Alice (30)</div>
+        </div>
+    </div>
+</section>
+
+<!-- CHALLENGE SPECIFICATIONS -->
 <section class="oop-section">
     <div class="oop-section-header">
         <div class="oop-section-icon">
             <i class="fa-solid fa-code"></i>
         </div>
-        <h2 class="oop-section-title">Structure Guide</h2>
+        <h2 class="oop-section-title">Function Specifications</h2>
     </div>
     
-    <p class="section-intro">Implement these functions in <code>student/log_search.py</code>.</p>
+    <p class="section-intro">Implement these functions in <code>student/log_search.py</code>. Each log is a dictionary with keys like <code>'author'</code>, <code>'timestamp'</code>, <code>'message'</code>.</p>
     
     <!-- search_logs -->
     <details class="skeleton-block" open>
@@ -222,12 +258,30 @@
             <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
         </summary>
         <div class="skeleton-content">
-            <div class="skeleton-desc">
-                Create a new list. Loop through <code>logs</code>. If <code>log['author'] == author</code>, append to the new list. Return the new list.
-                <div class="skeleton-line code" style="margin-top: 0.5rem;">matches = []</div>
-                <div class="skeleton-line code">FOR log IN logs:</div>
-                <div class="skeleton-line code">    IF log['author'] == author: matches.append(log)</div>
-                <div class="skeleton-line code">RETURN matches</div>
+            <div class="challenge-spec" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden;">
+                <div style="background: var(--primary-color); color: white; padding: 0.75rem 1rem; font-weight: 600;">
+                    Filter logs by author
+                </div>
+                <div style="padding: 1rem;">
+                    <p><strong>Parameters:</strong></p>
+                    <ul>
+                        <li><code>logs</code> — a list of log dictionaries</li>
+                        <li><code>author</code> — the author name to search for (string)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 1rem;"><strong>Returns:</strong> A new list containing only logs where the author matches.</p>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                        <strong>Example:</strong>
+                        <pre style="margin: 0.5rem 0; font-size: 0.85rem;">logs = [
+    {"author": "Dr. Chen", "message": "Test 1"},
+    {"author": "Dr. Smith", "message": "Test 2"},
+    {"author": "Dr. Chen", "message": "Test 3"}
+]
+search_logs(logs, "Dr. Chen")
+# Returns: [{"author": "Dr. Chen", ...}, {"author": "Dr. Chen", ...}]</pre>
+                    </div>
+                </div>
             </div>
         </div>
     </details>
@@ -240,13 +294,40 @@
             <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
         </summary>
         <div class="skeleton-content">
-            <div class="skeleton-desc">
-                Use the built-in <code>sorted()</code> function.
-                <ul>
-                    <li><strong>Key:</strong> Use a lambda to get the value from the dict: <code>lambda x: x[key]</code></li>
-                    <li><strong>Reverse:</strong> Pass the <code>descending</code> boolean to the <code>reverse</code> parameter.</li>
-                </ul>
-                <div class="skeleton-line code" style="margin-top: 0.5rem;">RETURN sorted(logs, key=lambda x: x[key], reverse=descending)</div>
+            <div class="challenge-spec" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden;">
+                <div style="background: var(--primary-color); color: white; padding: 0.75rem 1rem; font-weight: 600;">
+                    Sort logs by any field
+                </div>
+                <div style="padding: 1rem;">
+                    <p><strong>Parameters:</strong></p>
+                    <ul>
+                        <li><code>logs</code> — a list of log dictionaries</li>
+                        <li><code>key</code> — which field to sort by (e.g., "timestamp", "author")</li>
+                        <li><code>descending</code> — True for newest first, False for oldest first</li>
+                    </ul>
+                    
+                    <p style="margin-top: 1rem;"><strong>Returns:</strong> A new sorted list of logs.</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Hint:</strong> Use Python's <code>sorted()</code> function. It takes two useful parameters:</p>
+                    <ul>
+                        <li><code>key</code> — a function that extracts the value to sort by</li>
+                        <li><code>reverse</code> — True for descending order</li>
+                    </ul>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                        <strong>Example:</strong>
+                        <pre style="margin: 0.5rem 0; font-size: 0.85rem;">logs = [
+    {"timestamp": 3, "message": "Third"},
+    {"timestamp": 1, "message": "First"},
+    {"timestamp": 2, "message": "Second"}
+]
+sort_logs(logs, "timestamp", False)
+# Returns logs ordered: timestamp 1, 2, 3
+
+sort_logs(logs, "timestamp", True)
+# Returns logs ordered: timestamp 3, 2, 1</pre>
+                    </div>
+                </div>
             </div>
         </div>
     </details>
@@ -259,12 +340,31 @@
             <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
         </summary>
         <div class="skeleton-content">
-            <div class="skeleton-desc">
-                Check if <code>code</code> is in the <code>used_codes</code> set.
-                <ul>
-                    <li>If it IS in the set: Return <code>False</code> (already used)</li>
-                    <li>If it is NOT in the set: Return <code>True</code> (valid)</li>
-                </ul>
+            <div class="challenge-spec" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden;">
+                <div style="background: var(--primary-color); color: white; padding: 0.75rem 1rem; font-weight: 600;">
+                    Check if a code has been used
+                </div>
+                <div style="padding: 1rem;">
+                    <p><strong>Parameters:</strong></p>
+                    <ul>
+                        <li><code>code</code> — the code to check (string)</li>
+                        <li><code>used_codes</code> — a set of codes that have already been used</li>
+                    </ul>
+                    
+                    <p style="margin-top: 1rem;"><strong>Returns:</strong></p>
+                    <ul>
+                        <li><code>True</code> if the code is valid (NOT in used_codes)</li>
+                        <li><code>False</code> if the code is invalid (already used)</li>
+                    </ul>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                        <strong>Example:</strong>
+                        <pre style="margin: 0.5rem 0; font-size: 0.85rem;">used = {"ABC123", "XYZ789"}
+
+validate_code("ABC123", used)  # Returns: False (already used)
+validate_code("NEW456", used)  # Returns: True (not used yet)</pre>
+                    </div>
+                </div>
             </div>
         </div>
     </details>
