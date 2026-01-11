@@ -9,6 +9,11 @@ from .world_loader import WorldLoader
 from .command_parser import CommandParser
 from .encounter import EncounterManager
 from .save_load import SaveLoadManager
+from .immersion import (
+    type_text, type_text_slow, type_text_fast, dramatic_pause,
+    show_divider, movement_narration, npc_greeting, death_sequence,
+    room_atmosphere, item_pickup_narration, ambient_flavor
+)
 
 
 class GameState:
@@ -107,7 +112,13 @@ Welcome to Sigma-7. Good luck.
     def start(self):
         """Start the game."""
         print(self.TITLE)
-        print(self.INTRO)
+        dramatic_pause(0.5)
+        for line in self.INTRO.strip().split('\n'):
+            if line.strip():
+                type_text(line)
+            else:
+                print()
+            dramatic_pause(0.1)
         print()
         
         # Check for existing save
@@ -251,16 +262,24 @@ Welcome to Sigma-7. Good luck.
         first_visit = self.state.current_room not in self.state.visited_rooms
         
         print()
-        print("=" * 60)
-        print(f"  {room['name'].upper()}")
-        print("=" * 60)
+        print("═" * 60)
+        print(f"  ▸ {room['name'].upper()}")
+        print("═" * 60)
         
-        if first_visit or "description_revisit" not in room:
-            print(room.get("description_first", room.get("description", "You are here.")))
+        desc = room.get("description_first", room.get("description", "You are here."))
+        if not first_visit and "description_revisit" in room:
+            desc = room.get("description_revisit")
+        
+        # Typewriter effect for room descriptions
+        if first_visit:
+            type_text(desc)
         else:
-            print(room.get("description_revisit"))
+            print(desc)
         
         self.state.visited_rooms.add(self.state.current_room)
+        
+        # Occasional ambient atmosphere
+        room_atmosphere(room['name'], first_visit)
         
         # Show items (not taken)
         self._show_room_items()
@@ -421,6 +440,7 @@ Welcome to Sigma-7. Good luck.
                 return
         
         # Move to new room
+        movement_narration(direction)
         new_room_id = exits[direction]
         self.state.current_room = new_room_id
         
@@ -460,7 +480,7 @@ Welcome to Sigma-7. Good luck.
                 if item and (target in item_id.lower() or target in item.get("name", "").lower()):
                     if self.player.inventory.add(item_id):
                         self.state.taken_items.add(item_id)
-                        print(f"You take the {item['name']}.")
+                        item_pickup_narration(item['name'])
                     else:
                         print("Your inventory is full!")
                     return
@@ -626,9 +646,10 @@ Welcome to Sigma-7. Good luck.
             print(f"{found_npc['name']} has nothing to say.")
             return
         
-        # Show dialogue
+        # Show dialogue with immersion
+        npc_greeting(found_npc['name'])
         print()
-        print(dialogue_data.get("text", "..."))
+        type_text(dialogue_data.get("text", "..."))
         
         # Handle options
         options = dialogue_data.get("options")
@@ -719,12 +740,13 @@ Welcome to Sigma-7. Good luck.
     
     def _handle_death(self):
         """Handle player death."""
+        death_sequence()
         print()
-        print("=" * 60)
-        print("                     GAME OVER")
-        print("=" * 60)
-        print("\nYou have fallen. But death is not the end—not here.")
-        print("The station's emergency systems activate...")
+        print("═" * 60)
+        print("                     G A M E   O V E R")
+        print("═" * 60)
+        type_text_slow("\nYou have fallen. But death is not the end—not here.")
+        type_text("The station's emergency systems activate...")
         print()
         
         # Respawn at start with full health

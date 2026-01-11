@@ -1,0 +1,56 @@
+=== HINT 3: Method Patterns (Without Complete Solutions) ===
+
+You need THREE methods besides __init__:
+
+---------------------------------------------
+METHOD 1: get_status()
+---------------------------------------------
+Purpose: Return a string showing the player's name and health
+
+Expected format: "Alice: 85/100 HP"
+
+Think about:
+  - What string format do you need?
+  - Which attributes do you combine?
+  - Use an f-string to build the result
+
+---------------------------------------------
+METHOD 2: take_damage(amount)
+---------------------------------------------
+Purpose: Reduce health by the amount given
+
+Steps:
+  1. Subtract the amount from self.health
+  2. Check if health went below 0
+  3. If it did, set it to 0 (this is called "clamping")
+
+Why clamp? → Defensive programming prevents invalid states
+  - A player with -50 HP makes no sense!
+
+Hint: You can use an if statement OR the max() function
+
+---------------------------------------------
+METHOD 3: heal(amount)
+---------------------------------------------
+Purpose: Increase health by the amount given
+
+Steps:
+  1. Add the amount to self.health
+  2. Check if health exceeded max_health
+  3. If it did, set it to max_health (clamping again!)
+
+Why clamp? → You can't heal beyond your maximum
+  - 150/100 HP would break game logic!
+
+Hint: You can use an if statement OR the min() function
+
+---------------------------------------------
+TESTING YOUR WORK
+---------------------------------------------
+
+Try this in Python:
+  p = Player("Test")
+  p.take_damage(200)  # Should set health to 0, not -100
+  p.heal(500)         # Should set health to max_health, not 500
+
+Run validate.py to check your implementation!

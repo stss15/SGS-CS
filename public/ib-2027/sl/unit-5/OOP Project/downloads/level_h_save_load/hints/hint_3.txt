@@ -1,0 +1,58 @@
+=== HINT 3: Method Patterns ===
+
+TO_SAVE_DATA STRUCTURE:
+
+def to_save_data(self):
+    # Return a dictionary with ALL player state:
+    # - name
+    # - health  
+    # - max_health
+    # - armour
+    # - accuracy
+    # - inventory items (use list_items())
+    
+    # Format: {"key": value, "key2": value2, ...}
+    pass
+
+FROM_SAVE_DATA STRUCTURE (CLASS METHOD):
+
+@classmethod
+def from_save_data(cls, data):
+    # 1. Create a new player using cls(data["name"])
+    #    (cls is the class itself - allows subclasses to work)
+    
+    # 2. Restore each attribute from the data dictionary
+    #    player.health = data["health"]
+    #    ... and so on
+    
+    # 3. Restore inventory items (loop through the list)
+    #    for item in data["inventory"]:
+    #        player.inventory.add(item)
+    
+    # 4. Return the restored player
+    pass
+
+---------------------------------------------
+KEY CONCEPTS
+---------------------------------------------
+
+✓ Dictionaries can be saved as JSON
+✓ @classmethod makes it callable on the class
+✓ cls(name) creates a new instance of the class
+✓ Inventory items saved as a list
+✓ ROUND-TRIP: to_save_data → from_save_data = same state
+
+---------------------------------------------
+TESTING
+---------------------------------------------
+
+p1 = Player("Test")
+p1.take_damage(20)
+p1.inventory.add("keycard")
+
+data = p1.to_save_data()
+p2 = Player.from_save_data(data)
+
+# p1 and p2 should have identical state!
+
+Run validate.py to check your work!

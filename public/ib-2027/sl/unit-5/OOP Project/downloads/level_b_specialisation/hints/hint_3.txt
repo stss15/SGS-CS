@@ -1,0 +1,57 @@
+=== HINT 3: Structure and Pattern ===
+
+Here's the structure—you fill in the logic:
+
+---------------------------------------------
+BRUTE CLASS
+---------------------------------------------
+class Brute(Player):
+    def __init__(self, name):
+        super().__init__(name)   # Call parent's __init__
+        # Now override the stats that are different:
+        # - health: higher than normal (try 120)
+        # - max_health: same as health
+        # - armour: higher (try 3)
+        # - accuracy: lower trade-off (try 70)
+
+---------------------------------------------
+SCOUT CLASS
+---------------------------------------------
+class Scout(Player):
+    def __init__(self, name):
+        super().__init__(name)   # Call parent's __init__
+        # Override for precision build:
+        # - health: lower than normal (try 80)
+        # - max_health: same as health  
+        # - armour: lower (try 1)
+        # - accuracy: much higher (try 95)
+
+---------------------------------------------
+WHY THIS WORKS
+---------------------------------------------
+
+1. Both classes INHERIT from Player
+   → They automatically have get_status(), take_damage(), heal()
+   → You don't need to rewrite those methods!
+
+2. super().__init__(name) runs Player's __init__
+   → Sets up self.name and default values
+
+3. After super(), you OVERRIDE specific attributes
+   → This is called "specialisation"
+
+---------------------------------------------
+COMMON MISTAKES
+---------------------------------------------
+
+✗ Forgetting to import Player:
+    from student.player import Player
+
+✗ Forgetting (Player) after the class name:
+    class Brute(Player):  # Not just `class Brute:`
+
+✗ Forgetting super().__init__(name):
+    → The name won't be set!
+
+---------------------------------------------
+Run validate.py to check your work!

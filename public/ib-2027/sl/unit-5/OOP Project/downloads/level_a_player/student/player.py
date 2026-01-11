@@ -17,6 +17,8 @@
 #   - take_damage(self, amount): Reduce health (minimum 0)
 #   - heal(self, amount): Increase health (maximum max_health)
 #
+# STUCK? Read the hint files in the hints/ folder!
+#
 # =============================================================================
 
 class Player:

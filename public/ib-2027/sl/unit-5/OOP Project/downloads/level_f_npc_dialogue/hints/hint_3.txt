@@ -1,0 +1,42 @@
+=== HINT 3: Complete Pattern ===
+
+def respond_to_npc(self, npc_name, dialogue_tree):
+    # Show greeting
+    print(f"\n{npc_name}: \"{dialogue_tree['greeting']}\"")
+    print()
+    
+    # Show options
+    options = dialogue_tree["options"]
+    for i, option in enumerate(options):
+        print(f"  {i+1}. {option}")
+    print()
+    
+    # Get valid choice
+    while True:
+        try:
+            choice = int(input("Your response: ")) - 1
+            if 0 <= choice < len(options):
+                break
+            else:
+                print("Please enter a valid number.")
+        except ValueError:
+            print("Please enter a number.")
+    
+    # Show NPC response
+    response = dialogue_tree["responses"][choice]
+    print(f"\n{npc_name}: \"{response}\"")
+    
+    return choice
+
+---------------------------------------------
+KEY CONCEPTS
+---------------------------------------------
+
+✓ enumerate() gives you index AND value
+✓ input() always returns a string
+✓ int() converts to integer
+✓ Use while True for input validation
+✓ Handle ValueError for non-numeric input
+✓ Lists are 0-indexed, but show 1-indexed to users
+
+Run validate.py to check your work!

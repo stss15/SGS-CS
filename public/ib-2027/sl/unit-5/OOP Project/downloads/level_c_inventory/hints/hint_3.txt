@@ -1,0 +1,64 @@
+=== HINT 3: Putting It All Together ===
+
+Now you need to do TWO things:
+  1. Complete the Inventory class
+  2. Add an Inventory to the Player class
+
+---------------------------------------------
+INVENTORY CLASS STRUCTURE
+---------------------------------------------
+
+class Inventory:
+    MAX_CAPACITY = ???  # Pick a number (try 5)
+    
+    def __init__(self):
+        # Create an empty list to store items
+        pass
+    
+    def add(self, item_name):
+        # Check if full → return False
+        # Check if duplicate → return False
+        # Otherwise add to list → return True
+        pass
+    
+    def remove(self, item_name):
+        # Check if item exists → remove and return True
+        # Otherwise → return False
+        pass
+    
+    # Complete has_item, list_items, count, is_full yourself!
+
+HINTS FOR EACH METHOD:
+  - add: Use 'in' to check for duplicates
+  - remove: Use list's remove() method
+  - has_item: Just return a boolean expression
+  - list_items: Return a COPY (use .copy())
+  - count: Use len()
+  - is_full: Compare count to MAX_CAPACITY
+
+---------------------------------------------
+PLAYER CLASS UPDATE
+---------------------------------------------
+
+In player.py, you need to:
+  1. Import Inventory at the top of the file
+  2. In __init__, create self.inventory = Inventory()
+
+This is COMPOSITION: Player HAS-A Inventory
+(Different from inheritance, which is IS-A)
+
+---------------------------------------------
+COMMON MISTAKES
+---------------------------------------------
+
+✗ Putting MAX_CAPACITY inside __init__
+    → It's a CLASS variable, so put it outside
+
+✗ Forgetting to return True/False from add/remove
+    → The game engine checks these return values!
+
+✗ Returning the actual _items list instead of a copy
+    → This lets external code modify your internal list
+
+---------------------------------------------
+Run validate.py to check your work!
