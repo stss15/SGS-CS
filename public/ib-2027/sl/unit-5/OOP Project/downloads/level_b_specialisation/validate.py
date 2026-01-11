@@ -176,11 +176,13 @@ def main():
             else:
                 results.add_fail("Brute take_damage", f"Expected 70, got {brute.health}")
             
-            scout.heal(10)
-            if scout.health == 90:
+            # First damage scout, then heal to test both methods
+            scout.take_damage(20)  # 80 - 20 = 60
+            scout.heal(10)  # 60 + 10 = 70
+            if scout.health == 70:
                 results.add_pass("Scout inherits heal correctly")
             else:
-                results.add_fail("Scout heal", f"Expected 90, got {scout.health}")
+                results.add_fail("Scout heal", f"Expected 70 after take_damage(20) then heal(10), got {scout.health}")
             
             # Different classes have different stats (polymorphism through constructor)
             base = Player("Base")
