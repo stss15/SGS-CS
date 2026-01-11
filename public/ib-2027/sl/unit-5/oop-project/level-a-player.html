@@ -386,110 +386,78 @@
     
     <div class="station-map-container hero-map">
         <div class="map-header">
-            <div class="map-title">Sigma-7 Research Station — Level A</div>
+            <div class="map-title">Sigma-7 Research Station — Level A: You Wake Up Here</div>
             <div class="map-legend">
                 <div class="legend-item"><span class="legend-dot player"></span> You</div>
             </div>
         </div>
         
-        <svg viewBox="0 0 800 400" class="station-map" preserveAspectRatio="xMidYMid meet">
-            <!-- SVG Patterns -->
+        <svg viewBox="0 0 500 400" class="station-map" preserveAspectRatio="xMidYMid meet">
             <defs>
-                <pattern id="floor-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <pattern id="floor-grid-a" width="20" height="20" patternUnits="userSpaceOnUse">
                     <rect width="20" height="20" fill="#1a1a2e"/>
                     <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,200,255,0.05)" stroke-width="0.5"/>
                 </pattern>
-                <pattern id="fog-noise" width="100" height="100" patternUnits="userSpaceOnUse">
-                    <rect width="100" height="100" fill="#050508"/>
-                    <circle cx="20" cy="30" r="2" fill="rgba(20,20,40,0.5)"/>
-                    <circle cx="70" cy="60" r="3" fill="rgba(30,30,50,0.4)"/>
-                    <circle cx="40" cy="80" r="2" fill="rgba(20,20,40,0.6)"/>
-                </pattern>
-                <filter id="glow">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                    <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
             </defs>
             
-            <!-- Background -->
-            <rect width="800" height="400" fill="#0a0a12"/>
+            <rect width="500" height="400" fill="#0a0a12"/>
             
-            <!-- AIRLOCK ROOM (Current - Revealed) -->
+            <!-- FOG: Everything NORTH (Main Corridor and beyond) -->
+            <g class="fog-region">
+                <rect x="0" y="0" width="500" height="150" fill="#050508"/>
+                <text x="250" y="80" fill="rgba(0,200,255,0.15)" font-size="16" text-anchor="middle" font-family="monospace">??? NORTH ???</text>
+                <text x="250" y="105" fill="rgba(0,200,255,0.1)" font-size="10" text-anchor="middle" font-family="monospace">Type "go north" to explore</text>
+            </g>
+            
+            <!-- AIRLOCK ROOM (START - Current Location) -->
             <g class="room-current room-revealed">
-                <!-- Room floor -->
-                <rect x="300" y="120" width="200" height="160" fill="url(#floor-grid)" class="room-floor"/>
+                <rect x="150" y="180" width="200" height="140" fill="url(#floor-grid-a)" class="room-floor"/>
                 
-                <!-- Room walls -->
-                <rect x="300" y="120" width="200" height="10" class="room-wall"/>
-                <rect x="300" y="270" width="200" height="10" class="room-wall"/>
-                <rect x="300" y="120" width="10" height="160" class="room-wall"/>
-                <rect x="490" y="120" width="10" height="160" class="room-wall"/>
+                <!-- Walls -->
+                <rect x="150" y="180" width="200" height="8" class="room-wall"/>
+                <rect x="150" y="312" width="200" height="8" class="room-wall"/>
+                <rect x="150" y="180" width="8" height="140" class="room-wall"/>
+                <rect x="342" y="180" width="8" height="140" class="room-wall"/>
                 
-                <!-- Door to corridor (East) - locked/fogged -->
-                <rect x="490" y="180" width="10" height="40" class="room-door"/>
+                <!-- Door NORTH to Main Corridor -->
+                <rect x="225" y="180" width="50" height="8" class="room-door"/>
+                <text x="250" y="170" fill="#00c8ff" font-size="9" text-anchor="middle" font-family="monospace">↑ NORTH</text>
                 
-                <!-- Airlock door (West) -->
-                <rect x="300" y="180" width="10" height="40" fill="#ff3333" stroke="#ff6666"/>
-                <text x="280" y="205" fill="#ff3333" font-size="9" text-anchor="end" font-family="monospace">SEALED</text>
+                <!-- Escape pod bay (powered down) -->
+                <rect x="280" y="250" width="50" height="70" fill="#1a1a2e" stroke="#ff3333" stroke-width="2" rx="4"/>
+                <text x="305" y="290" fill="#ff3333" font-size="8" text-anchor="middle" font-family="monospace">ESCAPE</text>
+                <text x="305" y="302" fill="#ff3333" font-size="8" text-anchor="middle" font-family="monospace">POD</text>
+                <circle cx="305" cy="265" r="4" fill="#ff3333" opacity="0.3"/>
+                <text x="305" y="330" fill="#ff6666" font-size="7" text-anchor="middle">NO POWER</text>
                 
-                <!-- Room details - Control panel -->
-                <rect x="320" y="135" width="40" height="25" class="room-panel"/>
-                <rect x="325" y="140" width="30" height="15" class="room-panel-screen"/>
-                <circle cx="360" cy="155" r="3" class="room-panel-light"/>
+                <!-- Control panel -->
+                <rect x="170" y="200" width="50" height="30" fill="#2d3748" stroke="#4a5568"/>
+                <rect x="175" y="205" width="40" height="18" fill="#0a0a12"/>
+                <circle cx="200" cy="225" r="3" fill="#ff3333">
+                    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
                 
-                <!-- Crate -->
-                <rect x="450" y="230" width="30" height="25" class="room-crate"/>
-                <rect x="450" y="230" width="30" height="5" class="room-crate-lid"/>
-                
-                <!-- Current room glow border -->
-                <rect x="300" y="120" width="200" height="160" fill="none" stroke="#ffd166" stroke-width="2" stroke-dasharray="8 4" class="current-room-border"/>
+                <!-- Current room highlight -->
+                <rect x="150" y="180" width="200" height="140" fill="none" stroke="#ffd166" stroke-width="3" stroke-dasharray="8 4"/>
                 
                 <!-- Room label -->
-                <text x="400" y="295" class="room-label current">AIRLOCK</text>
+                <text x="250" y="350" class="room-label" style="fill: #ffd166; font-size: 12px;">🚀 EMERGENCY AIRLOCK (START)</text>
                 
-                <!-- PLAYER SPRITE (Generic - no class yet) -->
-                <g class="player-sprite" transform="translate(400, 200)">
-                    <!-- Glow effect -->
-                    <circle r="20" class="player-glow"/>
-                    <!-- Body -->
-                    <circle r="12" class="player-generic-body"/>
-                    <!-- Visor -->
-                    <ellipse rx="6" ry="3" cy="-2" class="player-generic-visor"/>
-                    <!-- Position marker -->
-                    <circle r="18" class="player-marker"/>
+                <!-- PLAYER SPRITE -->
+                <g class="player-sprite" transform="translate(210, 270)">
+                    <circle r="18" fill="rgba(255,209,102,0.15)"/>
+                    <circle r="12" fill="#ff6b6b"/>
+                    <ellipse rx="5" ry="2" cy="-2" fill="#00c8ff"/>
                 </g>
             </g>
             
-            <!-- FOG OF WAR - Everything else -->
-            <!-- East corridor and rooms -->
-            <g class="fog-region">
-                <rect x="500" y="100" width="300" height="200" class="fog-of-war"/>
-                <rect x="500" y="100" width="300" height="200" fill="url(#fog-noise)" opacity="0.5"/>
-                <text x="650" y="200" fill="rgba(0,200,255,0.15)" font-size="14" text-anchor="middle" font-family="monospace">???</text>
-            </g>
-            
-            <!-- North rooms -->
-            <g class="fog-region">
-                <rect x="250" y="0" width="300" height="120" class="fog-of-war"/>
-                <rect x="250" y="0" width="300" height="120" fill="url(#fog-noise)" opacity="0.5"/>
-                <text x="400" y="60" fill="rgba(0,200,255,0.15)" font-size="14" text-anchor="middle" font-family="monospace">???</text>
-            </g>
-            
-            <!-- South rooms -->
-            <g class="fog-region">
-                <rect x="250" y="280" width="300" height="120" class="fog-of-war"/>
-                <rect x="250" y="280" width="300" height="120" fill="url(#fog-noise)" opacity="0.5"/>
-                <text x="400" y="350" fill="rgba(0,200,255,0.15)" font-size="14" text-anchor="middle" font-family="monospace">???</text>
-            </g>
-            
-            <!-- West area -->
-            <g class="fog-region">
-                <rect x="0" y="100" width="300" height="200" class="fog-of-war"/>
-                <rect x="0" y="100" width="300" height="200" fill="url(#fog-noise)" opacity="0.5"/>
-                <text x="150" y="200" fill="rgba(255,50,50,0.2)" font-size="12" text-anchor="middle" font-family="monospace">EXTERIOR</text>
+            <!-- Compass -->
+            <g transform="translate(450, 360)">
+                <circle r="25" fill="rgba(0,200,255,0.1)" stroke="rgba(0,200,255,0.3)"/>
+                <text y="-10" fill="#00c8ff" font-size="10" text-anchor="middle" font-weight="bold">N</text>
+                <text y="15" fill="#00c8ff" font-size="8" text-anchor="middle">S</text>
+                <text x="-15" y="3" fill="#00c8ff" font-size="8" text-anchor="middle">W</text>
+                <text x="15" y="3" fill="#00c8ff" font-size="8" text-anchor="middle">E</text>
             </g>
         </svg>
     </div>
