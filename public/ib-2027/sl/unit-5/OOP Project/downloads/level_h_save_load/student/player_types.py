@@ -1,3 +1,8 @@
+# =============================================================================
+# Player Types - Brute and Scout with save/load support
+# NOTE: These are provided complete. Focus on implementing Player's methods.
+# =============================================================================
+
 from .player import Player
 
 
@@ -12,10 +17,16 @@ class Brute(Player):
         self.accuracy = 70
 
     def to_save_data(self) -> dict:
-        """Override to include correct player_type."""
-        data = super().to_save_data()
-        data["player_type"] = "brute"
-        return data
+        """Convert Brute to dictionary for saving."""
+        return {
+            "name": self.name,
+            "player_type": "brute",
+            "health": self.health,
+            "max_health": self.max_health,
+            "armour": self.armour,
+            "accuracy": self.accuracy,
+            "inventory": self.inventory.list_items()
+        }
 
     @classmethod
     def from_save_data(cls, data: dict) -> "Brute":
@@ -45,10 +56,16 @@ class Scout(Player):
         self.accuracy = 95
 
     def to_save_data(self) -> dict:
-        """Override to include correct player_type."""
-        data = super().to_save_data()
-        data["player_type"] = "scout"
-        return data
+        """Convert Scout to dictionary for saving."""
+        return {
+            "name": self.name,
+            "player_type": "scout",
+            "health": self.health,
+            "max_health": self.max_health,
+            "armour": self.armour,
+            "accuracy": self.accuracy,
+            "inventory": self.inventory.list_items()
+        }
 
     @classmethod
     def from_save_data(cls, data: dict) -> "Scout":

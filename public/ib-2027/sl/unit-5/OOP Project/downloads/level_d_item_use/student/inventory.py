@@ -1,3 +1,7 @@
+# =============================================================================
+# Inventory class - Complete from Level C, plus consume() for Level D
+# =============================================================================
+
 class Inventory:
 
     MAX_CAPACITY = 10
@@ -28,6 +32,11 @@ class Inventory:
 
     def count(self) -> int:
         return len(self._items)
-
-    # CONSUME (NEW)
-    consume()
+    
+    # =========================================================================
+    # YOUR TASK: Add the consume() method
+    # =========================================================================
+    # consume(self, item_id): 
+    #   - Use and remove an item (same as remove)
+    #   - Return True if consumed, False if not found
+    # =========================================================================

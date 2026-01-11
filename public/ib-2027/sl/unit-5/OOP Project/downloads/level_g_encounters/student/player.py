@@ -1,3 +1,7 @@
+# =============================================================================
+# Player class - Complete from Levels A-F, plus combat methods for Level G
+# =============================================================================
+
 from .inventory import Inventory
 
 class Player:
@@ -5,7 +9,6 @@ class Player:
 
     def __init__(self, name: str):
         self.name = name
-        # Direct attribute assignment
         self.health = 100
         self.max_health = 100
         self.armour = 2
@@ -42,15 +45,18 @@ class Player:
             except ValueError:
                 print("Please enter a number.")
 
-    # CHOOSE ACTION (YOUR TASK FOR THIS LEVEL)
-    # - Receives: options (list of combat actions)
-    # - Display each option with a number
-    # - Get user input and validate it
-    # - Return the chosen index (0-based)
-    pass
+    # =========================================================================
+    # YOUR TASK: Add the choose_action() method
+    # =========================================================================
+    # choose_action(self, options):
+    #   - Same as respond_to_npc but for combat
+    #   - Display options with numbers, get input, validate, return 0-based index
+    # =========================================================================
 
-    # COMPUTE DAMAGE (YOUR TASK FOR THIS LEVEL)
-    # - Receives: base (base damage), armour (target's armour)
-    # - Calculate: damage = base - armour
-    # - Return: the damage (minimum 0, cannot be negative)
-    pass
+    # =========================================================================
+    # YOUR TASK: Add the compute_damage() method
+    # =========================================================================
+    # compute_damage(self, base, armour):
+    #   - Calculate damage after armour reduction: base - armour
+    #   - Return the result (minimum 0, cannot be negative)
+    # =========================================================================

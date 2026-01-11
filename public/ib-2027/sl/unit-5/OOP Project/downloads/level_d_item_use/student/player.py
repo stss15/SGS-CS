@@ -1,3 +1,7 @@
+# =============================================================================
+# Player class - Complete from Levels A-C, plus use_item() for Level D
+# =============================================================================
+
 from .inventory import Inventory
 
 class Player:
@@ -5,7 +9,6 @@ class Player:
 
     def __init__(self, name: str):
         self.name = name
-        # Direct attribute assignment
         self.health = 100
         self.max_health = 100
         self.armour = 2
@@ -21,9 +24,14 @@ class Player:
     def heal(self, amount: int) -> None:
         self.health = min(self.max_health, self.health + amount)
 
-    # USE ITEM (YOUR TASK FOR THIS LEVEL)
-    # - Receives: item_id, target
-    # - Check if you have the item
-    # - Handle med_patch: heal 20, consume item, return message
-    # - Return appropriate message for other items
-    pass
+    # =========================================================================
+    # YOUR TASK: Add the use_item() method
+    # =========================================================================
+    # use_item(self, item_id, target):
+    #   - Check if you have the item (return message if not)
+    #   - If item_id is "med_patch" and target is "self":
+    #       - Heal 20 HP
+    #       - Consume (remove) the item
+    #       - Return a success message
+    #   - For other items: return a generic "You use the X on Y" message
+    # =========================================================================

@@ -1,3 +1,7 @@
+# =============================================================================
+# Player class - Complete from Levels A-G, plus save/load for Level H
+# =============================================================================
+
 from .inventory import Inventory
 
 class Player:
@@ -5,7 +9,6 @@ class Player:
 
     def __init__(self, name: str):
         self.name = name
-        # Direct attribute assignment
         self.health = 100
         self.max_health = 100
         self.armour = 2
@@ -57,19 +60,24 @@ class Player:
     def compute_damage(self, base: int, armour: int) -> int:
         return max(0, base - armour)
 
-    # TO SAVE DATA (YOUR TASK FOR THIS LEVEL)
-    # This is where dictionaries become useful!
-    # - Returns: a dictionary containing all player data
-    # - Include: name, player_type ("player"), health, max_health, armour, accuracy, inventory items
-    # The dictionary can be converted to JSON for file storage
-    pass
+    # =========================================================================
+    # YOUR TASK: Add the to_save_data() method
+    # =========================================================================
+    # to_save_data(self):
+    #   - Return a dictionary containing all player data
+    #   - Keys: "name", "player_type", "health", "max_health", "armour", 
+    #           "accuracy", "inventory"
+    #   - For player_type, use "player" (subclasses will override)
+    #   - For inventory, use self.inventory.list_items()
+    # =========================================================================
 
-    # FROM SAVE DATA (YOUR TASK FOR THIS LEVEL)
-    # This is a class method that creates a new Player from saved data
-    # - Receives: data (a dictionary from to_save_data)
-    # - Creates a new Player instance
-    # - Sets all attributes from the dictionary
-    # - Returns: the new Player instance
-    @classmethod
-    def from_save_data(cls, data: dict) -> "Player":
-        pass
+    # =========================================================================
+    # YOUR TASK: Add the from_save_data() class method
+    # =========================================================================
+    # @classmethod
+    # def from_save_data(cls, data):
+    #   - Create a new Player using cls(data["name"])
+    #   - Set health, max_health, armour, accuracy from the dictionary
+    #   - Add each item from data["inventory"] to the player's inventory
+    #   - Return the new player instance
+    # =========================================================================
