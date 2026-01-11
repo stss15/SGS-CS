@@ -153,59 +153,45 @@ extraStyles:
         </div>
     </details>
     
-    <!-- 2. use_item setup -->
+    <!-- 2. use_item -->
     <details class="skeleton-block">
         <summary class="skeleton-summary">
             <span class="skeleton-step">2</span>
-            <span class="skeleton-title">use_item Setup (in Player)</span>
-            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
-        </summary>
-        <div class="skeleton-content">
-            <div class="skeleton-line code">METHOD use_item(item_id, target) → string:</div>
-            <div class="skeleton-desc">
-                <strong>First:</strong> Check if item is in inventory<br>
-                If not found, return: <code>"You don't have 'item_id'."</code>
-            </div>
-        </div>
-    </details>
-    
-    <!-- 3. Item handling -->
-    <details class="skeleton-block">
-        <summary class="skeleton-summary">
-            <span class="skeleton-step">3</span>
-            <span class="skeleton-title">use_item Logic</span>
+            <span class="skeleton-title">use_item(item_id, target) → str</span>
             <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
         </summary>
         <div class="skeleton-content">
             <div class="skeleton-desc">
-                Use conditional logic to handle each item type:
-                <ul>
-                    <li><strong>keycard</strong> → return unlock message</li>
-                    <li><strong>crowbar</strong> → return pry open message</li>
-                    <li><strong>med_patch</strong> → call heal(20), consume item, return heal message</li>
-                    <li><strong>torch</strong> → return illuminate message</li>
-                    <li><strong>other</strong> → return "not sure how to use" message</li>
-                </ul>
-            </div>
-        </div>
-    </details>
-    
-    <!-- 4. Method chaining -->
-    <details class="skeleton-block">
-        <summary class="skeleton-summary">
-            <span class="skeleton-step">4</span>
-            <span class="skeleton-title">Method Chaining Example</span>
-            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
-        </summary>
-        <div class="skeleton-content">
-            <div class="skeleton-desc">
-                For med_patch, your code should:
-                <ol>
-                    <li>Call <code>heal(20)</code> to increase health</li>
-                    <li>Call <code>inventory.consume("med_patch")</code> to remove it</li>
-                    <li>Return a message like "You apply the med patch. +20 HP"</li>
-                </ol>
-                This is <strong>method integration</strong> — use_item calls heal and consume.
+                <strong>Called when:</strong> Player types <code>use keycard</code> or <code>use med_patch self</code><br><br>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <thead>
+                        <tr style="background: #f1f3f5; border-bottom: 2px solid #dee2e6;">
+                            <th style="padding: 0.5rem; text-align: left;">Check / Item</th>
+                            <th style="padding: 0.5rem; text-align: left;">Action</th>
+                            <th style="padding: 0.5rem; text-align: left;">Return Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 0.5rem;">Item not in inventory</td>
+                            <td style="padding: 0.5rem;">—</td>
+                            <td style="padding: 0.5rem;"><code>"You don't have '{item_id}'."</code></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 0.5rem;"><code>med_patch</code> + <code>self</code></td>
+                            <td style="padding: 0.5rem;">heal(20), consume it</td>
+                            <td style="padding: 0.5rem;"><code>"You apply the med patch. +20 HP."</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;">Any other item</td>
+                            <td style="padding: 0.5rem;">—</td>
+                            <td style="padding: 0.5rem;"><code>"You use the {item_id} on the {target}."</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; color: #6c757d; font-size: 0.85rem;">
+                    <strong>Method integration:</strong> use_item calls <code>self.heal()</code> and <code>self.inventory.consume()</code> — methods working together.
+                </p>
             </div>
         </div>
     </details>
