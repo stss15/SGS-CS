@@ -109,8 +109,7 @@ extraStyles:
                 <div class="uml-class-section">
                     <div class="uml-item">
                         <span class="uml-visibility public">+</span>
-                        <span class="uml-name">get_starting_stats()</span>
-                        <span class="uml-type">→ dict</span>
+                        <span class="uml-name">constructor(name)</span>
                     </div>
                 </div>
             </div>
@@ -131,7 +130,7 @@ extraStyles:
                     <div class="uml-class-section">
                         <div class="uml-item">
                             <span class="uml-visibility public">+</span>
-                            <span class="uml-name">get_starting_stats()</span>
+                            <span class="uml-name">constructor(name)</span>
                             <span class="uml-override">[override]</span>
                         </div>
                     </div>
@@ -142,7 +141,7 @@ extraStyles:
                     <div class="uml-class-section">
                         <div class="uml-item">
                             <span class="uml-visibility public">+</span>
-                            <span class="uml-name">get_starting_stats()</span>
+                            <span class="uml-name">constructor(name)</span>
                             <span class="uml-override">[override]</span>
                         </div>
                     </div>
@@ -157,7 +156,7 @@ extraStyles:
             </div>
             <div class="uml-legend-item">
                 <span class="uml-legend-symbol">[override]</span>
-                <span>Method replaces parent version</span>
+                <span>Extends parent behaviour</span>
             </div>
         </div>
     </div>
@@ -199,13 +198,14 @@ extraStyles:
         <div class="skeleton-content">
             <div class="skeleton-line code">CLASS Brute INHERITS FROM Player:</div>
             <div class="skeleton-desc">
-                <strong>The Tank Archetype:</strong>
+                <strong>The Tank Archetype:</strong> Create a constructor that:
                 <ul>
-                    <li>High health (120)</li>
-                    <li>High armour (3)</li>
-                    <li>Lower accuracy (70)</li>
+                    <li>Calls the parent constructor first (pass the name)</li>
+                    <li>Then overrides: health = 120, max_health = 120</li>
+                    <li>armour = 3</li>
+                    <li>accuracy = 70</li>
                 </ul>
-                Override <code>get_starting_stats()</code> to return these values.
+                <em>Hint: Use super() to call the parent constructor, then set the attributes you want to change.</em>
             </div>
         </div>
     </details>
@@ -220,29 +220,31 @@ extraStyles:
         <div class="skeleton-content">
             <div class="skeleton-line code">CLASS Scout INHERITS FROM Player:</div>
             <div class="skeleton-desc">
-                <strong>The Precision Archetype:</strong>
+                <strong>The Precision Archetype:</strong> Create a constructor that:
                 <ul>
-                    <li>Lower health (80)</li>
-                    <li>Low armour (1)</li>
-                    <li>High accuracy (95)</li>
+                    <li>Calls the parent constructor first (pass the name)</li>
+                    <li>Then overrides: health = 80, max_health = 80</li>
+                    <li>armour = 1</li>
+                    <li>accuracy = 95</li>
                 </ul>
-                Override <code>get_starting_stats()</code> to return these values.
+                <em>Hint: Same pattern as Brute — call parent first, then customise.</em>
             </div>
         </div>
     </details>
     
-    <!-- 4. Understanding Polymorphism -->
+    <!-- 4. Understanding Inheritance -->
     <details class="skeleton-block">
         <summary class="skeleton-summary">
             <span class="skeleton-step">4</span>
-            <span class="skeleton-title">How Polymorphism Works</span>
+            <span class="skeleton-title">How Inheritance Works</span>
             <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
         </summary>
         <div class="skeleton-content">
             <div class="skeleton-desc">
-                The game engine doesn't need to know if you're a Brute or Scout. It just calls:
-                <div class="skeleton-line code" style="margin-top: 1rem;">player.get_starting_stats()</div>
-                <p style="margin-top: 1rem;">The correct version runs automatically based on which class was created. That's polymorphism — same method call, different behaviour.</p>
+                Both Brute and Scout <strong>inherit</strong> from Player, meaning they get all Player methods (get_status, take_damage, heal) for free.
+                <p style="margin-top: 1rem;">By calling the parent constructor and then overriding specific attributes, each class becomes a specialised version of Player with its own stats.</p>
+                <div class="skeleton-line code" style="margin-top: 1rem;">brute = Brute("Tank")<br>scout = Scout("Ghost")</div>
+                <p style="margin-top: 1rem;">Both work with any code that expects a Player — that's the power of inheritance.</p>
             </div>
         </div>
     </details>
@@ -265,7 +267,7 @@ extraStyles:
         
         <div class="challenge-description">
             <p>The station's security system offers you a choice: register as a <strong>Brute</strong> (tough but imprecise) or a <strong>Scout</strong> (fragile but accurate).</p>
-            <p>Create <strong>student/player_types.py</strong> with both classes. Each must inherit from Player and override <code>get_starting_stats()</code>.</p>
+            <p>Create <strong>student/player_types.py</strong> with both classes. Each must inherit from Player and customise their stats in the constructor.</p>
         </div>
         
         <div class="challenge-actions">
