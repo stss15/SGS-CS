@@ -1,4 +1,4 @@
-from student.player import Player
+from .player import Player
 
 
 class Brute(Player):

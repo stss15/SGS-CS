@@ -35,7 +35,7 @@ class Player:
         self.accuracy = 85
         
         # Composition: Player has-a Inventory
-        from student_reference.inventory import Inventory
+        from .inventory import Inventory
         self.inventory = Inventory()
     
     def get_status(self) -> str:
@@ -235,7 +235,7 @@ class Player:
         player.accuracy = data.get("accuracy", 85)
         
         # Restore inventory
-        from student_reference.inventory import Inventory
+        from .inventory import Inventory
         player.inventory = Inventory()
         for item_id in data.get("inventory", []):
             player.inventory.add(item_id)

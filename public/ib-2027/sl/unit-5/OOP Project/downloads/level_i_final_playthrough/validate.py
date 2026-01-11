@@ -59,7 +59,7 @@ def check_imports(results: ValidationResult):
     
     # Player
     try:
-        from student_reference.player import Player
+        from student.player import Player
         results.add_pass("Import Player class")
     except ImportError as e:
         results.add_fail("Import Player class", str(e))
@@ -67,7 +67,7 @@ def check_imports(results: ValidationResult):
     
     # Player types
     try:
-        from student_reference.player_types import Brute, Scout
+        from student.player_types import Brute, Scout
         results.add_pass("Import Brute and Scout classes")
     except ImportError as e:
         results.add_fail("Import Brute and Scout classes", str(e))
@@ -75,7 +75,7 @@ def check_imports(results: ValidationResult):
     
     # Inventory
     try:
-        from student_reference.inventory import Inventory
+        from student.inventory import Inventory
         results.add_pass("Import Inventory class")
     except ImportError as e:
         results.add_fail("Import Inventory class", str(e))
@@ -83,7 +83,7 @@ def check_imports(results: ValidationResult):
     
     # Data structures
     try:
-        from student_reference.data_structs import Stack, Queue
+        from student.data_structs import Stack, Queue
         results.add_pass("Import Stack and Queue classes")
     except ImportError as e:
         results.add_fail("Import Stack and Queue classes", str(e))
@@ -91,7 +91,7 @@ def check_imports(results: ValidationResult):
     
     # Log search functions
     try:
-        from student_reference.log_search import search_logs, sort_logs, validate_code
+        from student.log_search import search_logs, sort_logs, validate_code
         results.add_pass("Import search_logs, sort_logs, validate_code")
     except ImportError as e:
         results.add_fail("Import log search functions", str(e))
@@ -104,7 +104,7 @@ def check_player(results: ValidationResult):
     """Check Player class implementation."""
     print("\n--- Player Class Checks ---")
     
-    from student_reference.player import Player
+    from student.player import Player
     
     # Constructor
     try:
@@ -196,8 +196,8 @@ def check_player_types(results: ValidationResult):
     """Check Brute and Scout classes."""
     print("\n--- Player Types Checks ---")
     
-    from student_reference.player import Player
-    from student_reference.player_types import Brute, Scout
+    from student.player import Player
+    from student.player_types import Brute, Scout
     
     # Inheritance
     try:
@@ -242,7 +242,7 @@ def check_inventory(results: ValidationResult):
     """Check Inventory class."""
     print("\n--- Inventory Checks ---")
     
-    from student_reference.inventory import Inventory
+    from student.inventory import Inventory
     
     # Constructor
     try:
@@ -315,7 +315,7 @@ def check_data_structures(results: ValidationResult):
     """Check Stack and Queue classes."""
     print("\n--- Data Structure Checks ---")
     
-    from student_reference.data_structs import Stack, Queue
+    from student.data_structs import Stack, Queue
     
     # Stack LIFO
     try:
@@ -370,7 +370,7 @@ def check_log_functions(results: ValidationResult):
     """Check log search functions."""
     print("\n--- Log Function Checks ---")
     
-    from student_reference.log_search import search_logs, sort_logs, validate_code
+    from student.log_search import search_logs, sort_logs, validate_code
     
     # Test data
     logs = [
@@ -421,7 +421,7 @@ def check_log_functions(results: ValidationResult):
     
     # load_logs_from_file (B2.5 File I/O)
     try:
-        from student_reference.log_search import load_logs_from_file
+        from student.log_search import load_logs_from_file
         import os
         log_path = os.path.join(os.path.dirname(__file__), "engine", "content", "logs.txt")
         loaded_logs = load_logs_from_file(log_path)

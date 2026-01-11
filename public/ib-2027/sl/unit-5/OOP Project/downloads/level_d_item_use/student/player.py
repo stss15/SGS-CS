@@ -1,4 +1,4 @@
-from student.inventory import Inventory
+from .inventory import Inventory
 
 class Player:
     """Base player class with inventory and item usage."""

@@ -1,4 +1,4 @@
-from student.inventory import Inventory
+from .inventory import Inventory
 
 class Player:
     """Complete Player class implementation for the final game."""
@@ -78,7 +78,7 @@ class Player:
         player.armour = data.get("armour", 2)
         player.accuracy = data.get("accuracy", 85)
         
-        from student.inventory import Inventory
+        from .inventory import Inventory
         player.inventory = Inventory()
         for item_id in data.get("inventory", []):
             player.inventory.add(item_id)

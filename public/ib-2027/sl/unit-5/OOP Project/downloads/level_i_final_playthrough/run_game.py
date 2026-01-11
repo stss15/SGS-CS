@@ -8,7 +8,7 @@ Usage:
     python run_game.py
 
 This is the main entry point. The engine is in engine/, 
-and student code (reference implementations) is in student_reference/.
+and student code is in student/.
 """
 
 import sys

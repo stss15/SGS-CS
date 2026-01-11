@@ -146,10 +146,10 @@ Welcome to Sigma-7. Good luck.
         
         # Import player classes
         try:
-            from student_reference.player_types import Brute, Scout
-            from student_reference.player import Player
+            from student.player_types import Brute, Scout
+            from student.player import Player
         except ImportError:
-            print("Error: Could not load player classes from student_reference/")
+            print("Error: Could not load player classes from student/")
             sys.exit(1)
         
         # Choose class
@@ -681,7 +681,7 @@ Welcome to Sigma-7. Good luck.
     def _get_player_class(self):
         """Get the appropriate player class for loading."""
         try:
-            from student_reference.player_types import Brute
+            from student.player_types import Brute
             return Brute  # Default to Brute if unknown
         except ImportError:
             return None

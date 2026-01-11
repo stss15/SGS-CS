@@ -1,4 +1,4 @@
-from student.player import Player
+from .player import Player
 
 
 class Brute(Player):
@@ -26,7 +26,7 @@ class Brute(Player):
         player.armour = data.get("armour", 3)
         player.accuracy = data.get("accuracy", 70)
         
-        from student.inventory import Inventory
+        from .inventory import Inventory
         player.inventory = Inventory()
         for item_id in data.get("inventory", []):
             player.inventory.add(item_id)
@@ -59,7 +59,7 @@ class Scout(Player):
         player.armour = data.get("armour", 1)
         player.accuracy = data.get("accuracy", 95)
         
-        from student.inventory import Inventory
+        from .inventory import Inventory
         player.inventory = Inventory()
         for item_id in data.get("inventory", []):
             player.inventory.add(item_id)
