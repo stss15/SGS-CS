@@ -12,6 +12,7 @@ breadcrumbs:
   - { label: "Level F" }
 extraStyles:
   - "css/oop-worksheet.css"
+  - "css/sigma7-map.css"
 ---
 
 <!-- HERO SECTION -->
@@ -231,6 +232,94 @@ extraStyles:
             <li>The Director then handles the rest (printing the response).</li>
         </ul>
         <p style="margin-top: 1rem;">You don't need to print the options or the response. <strong>Just return the choice.</strong></p>
+    </div>
+</section>
+
+<!-- STATION MAP -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-map"></i>
+        </div>
+        <h2 class="oop-section-title">Station Map</h2>
+    </div>
+    
+    <div class="station-map-container hero-map">
+        <div class="map-header">
+            <div class="map-title">Sigma-7 Research Station — NPC Encounter</div>
+            <div class="map-legend">
+                <div class="legend-item"><span class="legend-dot player"></span> You</div>
+                <div class="legend-item"><span class="legend-dot npc"></span> NPC</div>
+            </div>
+        </div>
+        
+        <svg viewBox="0 0 800 400" class="station-map" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <pattern id="floor-grid-f" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <rect width="20" height="20" fill="#1a1a2e"/>
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,200,255,0.05)" stroke-width="0.5"/>
+                </pattern>
+            </defs>
+            
+            <rect width="800" height="400" fill="#0a0a12"/>
+            
+            <!-- Previous rooms (dimmed) -->
+            <g opacity="0.5">
+                <rect x="50" y="160" width="100" height="80" fill="url(#floor-grid-f)"/>
+                <text x="100" y="260" class="room-label" font-size="9">AIRLOCK</text>
+                <rect x="150" y="185" width="40" height="30" fill="url(#floor-grid-f)" class="corridor"/>
+                <rect x="190" y="150" width="100" height="100" fill="url(#floor-grid-f)"/>
+                <text x="240" y="270" class="room-label" font-size="9">CLASS</text>
+                <rect x="290" y="185" width="40" height="30" fill="url(#floor-grid-f)" class="corridor"/>
+                <rect x="330" y="140" width="100" height="120" fill="url(#floor-grid-f)"/>
+                <text x="380" y="280" class="room-label" font-size="9">STORAGE</text>
+                <rect x="430" y="185" width="40" height="30" fill="url(#floor-grid-f)" class="corridor"/>
+                <rect x="470" y="130" width="120" height="140" fill="url(#floor-grid-f)"/>
+                <text x="530" y="290" class="room-label" font-size="9">MEDICAL</text>
+            </g>
+            
+            <!-- Corridor to Command -->
+            <rect x="590" y="185" width="50" height="30" fill="url(#floor-grid-f)" class="corridor"/>
+            
+            <!-- COMMAND CENTER (Current) - With NPC -->
+            <g class="room-current room-revealed">
+                <rect x="640" y="100" width="150" height="200" fill="url(#floor-grid-f)" class="room-floor"/>
+                <rect x="640" y="100" width="150" height="10" class="room-wall"/>
+                <rect x="640" y="290" width="150" height="10" class="room-wall"/>
+                <rect x="640" y="100" width="10" height="200" class="room-wall"/>
+                <rect x="780" y="100" width="10" height="200" class="room-wall"/>
+                <rect x="640" y="185" width="10" height="30" class="room-door open"/>
+                
+                <!-- Control panels -->
+                <rect x="700" y="120" width="60" height="40" class="room-panel"/>
+                <rect x="705" y="125" width="50" height="30" class="room-panel-screen"/>
+                <circle cx="760" cy="155" r="3" class="room-panel-light"/>
+                
+                <!-- M-Unit 7 Drone NPC -->
+                <g class="npc-sprite" transform="translate(715, 200)">
+                    <ellipse rx="20" ry="8" class="npc-drone-hover"/>
+                    <rect x="-15" y="-12" width="30" height="20" rx="4" class="npc-drone-body"/>
+                    <circle cy="-3" r="5" class="npc-drone-eye"/>
+                    <text y="30" fill="#ffd166" font-size="11" text-anchor="middle" font-weight="bold">M-Unit 7</text>
+                </g>
+                
+                <rect x="640" y="100" width="150" height="200" fill="none" stroke="#ffd166" stroke-width="2" stroke-dasharray="8 4"/>
+                <text x="715" y="315" class="room-label current">COMMAND CENTER</text>
+                
+                <!-- Player approaching NPC -->
+                <g class="player-sprite" transform="translate(680, 250)">
+                    <circle r="15" class="player-glow"/>
+                    <circle r="10" class="player-scout-body"/>
+                    <ellipse rx="4" ry="2" cy="-2" class="player-scout-visor"/>
+                </g>
+            </g>
+            
+            <!-- Dialogue indicator -->
+            <g transform="translate(715, 150)">
+                <rect x="-40" y="-20" width="80" height="25" fill="rgba(255,209,102,0.2)" rx="4" stroke="#ffd166"/>
+                <text y="-3" fill="#ffd166" font-size="10" text-anchor="middle" font-family="monospace">TALK</text>
+            </g>
+        </svg>
     </div>
 </section>
 

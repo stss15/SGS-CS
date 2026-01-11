@@ -26,6 +26,10 @@
                 <link rel="stylesheet" href="../../../../css/oop-worksheet.css">
             
         
+            
+                <link rel="stylesheet" href="../../../../css/sigma7-map.css">
+            
+        
     
 
     
@@ -332,6 +336,118 @@
             </div>
         </div>
     </details>
+</section>
+
+<!-- STATION MAP -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-map"></i>
+        </div>
+        <h2 class="oop-section-title">Station Map</h2>
+    </div>
+    
+    <div class="station-map-container hero-map">
+        <div class="map-header">
+            <div class="map-title">Sigma-7 Research Station — Full Exploration</div>
+            <div class="map-legend">
+                <div class="legend-item"><span class="legend-dot player"></span> You</div>
+                <div class="legend-item"><span class="legend-dot item"></span> Items</div>
+                <div class="legend-item"><span class="legend-dot npc"></span> NPC</div>
+            </div>
+        </div>
+        
+        <svg viewBox="0 0 900 450" class="station-map" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <pattern id="floor-grid-e" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <rect width="20" height="20" fill="#1a1a2e"/>
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,200,255,0.05)" stroke-width="0.5"/>
+                </pattern>
+            </defs>
+            
+            <rect width="900" height="450" fill="#0a0a12"/>
+            
+            <!-- Row 1: Labs -->
+            <g class="room-revealed">
+                <rect x="50" y="50" width="120" height="90" fill="url(#floor-grid-e)"/>
+                <text x="110" y="160" class="room-label" font-size="10">RESEARCH LAB</text>
+            </g>
+            <rect x="170" y="80" width="40" height="30" fill="url(#floor-grid-e)" class="corridor"/>
+            <g class="room-revealed">
+                <rect x="210" y="50" width="120" height="90" fill="url(#floor-grid-e)"/>
+                <text x="270" y="160" class="room-label" font-size="10">SERVER ROOM</text>
+            </g>
+            
+            <!-- Row 2: Main Corridor (horizontal) -->
+            <g class="room-current room-revealed">
+                <rect x="50" y="180" width="400" height="60" fill="url(#floor-grid-e)" class="room-floor"/>
+                <rect x="50" y="180" width="400" height="60" fill="none" stroke="#ffd166" stroke-width="2" stroke-dasharray="8 4"/>
+                <text x="250" y="260" class="room-label current" font-size="11">MAIN CORRIDOR</text>
+                
+                <!-- Player -->
+                <g class="player-sprite" transform="translate(250, 210)">
+                    <circle r="15" class="player-glow"/>
+                    <circle r="10" class="player-brute-body"/>
+                    <ellipse rx="4" ry="2" cy="-2" class="player-brute-visor"/>
+                </g>
+            </g>
+            
+            <!-- Vertical corridors -->
+            <rect x="100" y="140" width="30" height="40" fill="url(#floor-grid-e)" class="corridor"/>
+            <rect x="260" y="140" width="30" height="40" fill="url(#floor-grid-e)" class="corridor"/>
+            <rect x="100" y="240" width="30" height="40" fill="url(#floor-grid-e)" class="corridor"/>
+            <rect x="260" y="240" width="30" height="40" fill="url(#floor-grid-e)" class="corridor"/>
+            <rect x="400" y="195" width="50" height="30" fill="url(#floor-grid-e)" class="corridor"/>
+            
+            <!-- Row 3: Support rooms -->
+            <g class="room-revealed">
+                <rect x="50" y="280" width="120" height="90" fill="url(#floor-grid-e)"/>
+                <text x="110" y="390" class="room-label" font-size="10">STORAGE</text>
+                <!-- Items -->
+                <circle cx="80" cy="320" r="5" class="item-marker"/>
+                <circle cx="140" cy="340" r="5" class="item-marker"/>
+            </g>
+            <g class="room-revealed">
+                <rect x="210" y="280" width="120" height="90" fill="url(#floor-grid-e)"/>
+                <text x="270" y="390" class="room-label" font-size="10">MEDICAL BAY</text>
+                <!-- Med patches -->
+                <circle cx="250" cy="320" r="5" fill="#e63946"/>
+                <circle cx="290" cy="340" r="5" fill="#e63946"/>
+            </g>
+            
+            <!-- Right side rooms -->
+            <g class="room-revealed">
+                <rect x="450" y="160" width="140" height="100" fill="url(#floor-grid-e)"/>
+                <text x="520" y="280" class="room-label" font-size="10">COMMAND CENTER</text>
+                <!-- NPC -->
+                <g transform="translate(520, 210)">
+                    <circle r="10" class="npc-marker"/>
+                    <text y="25" fill="#ffd166" font-size="9" text-anchor="middle">M-Unit 7</text>
+                </g>
+            </g>
+            
+            <rect x="590" y="195" width="40" height="30" fill="url(#floor-grid-e)" class="corridor"/>
+            
+            <!-- Airlock area -->
+            <g class="room-revealed">
+                <rect x="630" y="150" width="120" height="120" fill="url(#floor-grid-e)"/>
+                <text x="690" y="290" class="room-label" font-size="10">AIRLOCK</text>
+                <rect x="630" y="195" width="10" height="30" fill="#ff3333"/>
+            </g>
+            
+            <!-- Engineering (fog) -->
+            <g class="fog-region">
+                <rect x="700" y="300" width="150" height="100" class="fog-of-war"/>
+                <text x="775" y="360" fill="rgba(0,200,255,0.2)" font-size="11" text-anchor="middle" font-family="monospace">ENGINEERING?</text>
+            </g>
+            
+            <!-- Reactor (fog) -->
+            <g class="fog-region">
+                <rect x="380" y="320" width="100" height="80" class="fog-of-war"/>
+                <text x="430" y="370" fill="rgba(255,50,50,0.2)" font-size="11" text-anchor="middle" font-family="monospace">REACTOR?</text>
+            </g>
+        </svg>
+    </div>
 </section>
 
 <!-- CHALLENGE -->
