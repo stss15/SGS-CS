@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Control Repair | Year 8</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Prism.js Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
+        rel="stylesheet" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* Layout */
@@ -192,16 +196,31 @@
         }
 
         .example-block {
-            background: #000;
+            background: #1e1e1e;
             border-left: 3px solid #8b5cf6;
-            padding: 0.75rem 1rem;
+            padding: 0;
             margin: 0.75rem 0;
             border-radius: 0 6px 6px 0;
-            font-family: monospace;
-            font-size: 0.85rem;
-            color: #a5b4fc;
-            white-space: pre;
             overflow-x: auto;
+        }
+
+        .example-block pre {
+            margin: 0;
+            padding: 0.75rem 1rem;
+            background: transparent;
+        }
+
+        .example-block code {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* Override Prism theme for our dark UI */
+        .example-block pre[class*="language-"],
+        .example-block code[class*="language-"] {
+            background: transparent;
+            text-shadow: none;
         }
 
         /* Progress */
@@ -1034,7 +1053,33 @@ justify-content</div>`,
         cssEditor.addEventListener('input', updatePreview);
 
         init();
+
+        // Highlight code blocks with Prism.js after content loads
+        function highlightCodeBlocks() {
+            document.querySelectorAll('.example-block').forEach(block => {
+                if (block.querySelector('pre')) return; // Already processed
+                const content = block.innerHTML;
+                block.innerHTML = `<pre><code class="language-html">${content}</code></pre>`;
+            });
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAll();
+            }
+        }
+
+        // Override setPhase to add highlighting
+        const originalSetPhase = setPhase;
+        setPhase = function (phase) {
+            originalSetPhase(phase);
+            setTimeout(highlightCodeBlocks, 50);
+        };
+
+        // Initial highlight
+        setTimeout(highlightCodeBlocks, 100);
     </script>
+    <!-- Prism.js Syntax Highlighting Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
 </body>
 
 </html>
