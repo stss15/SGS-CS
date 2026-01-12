@@ -236,6 +236,12 @@
             border-radius: 50%;
             background: #334155;
             transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .progress-dot:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
         }
 
         .progress-dot.active {
@@ -1044,8 +1050,10 @@ justify-content</div>`,
         function toggleRefModal() { refModal.classList.toggle('visible'); }
 
         function updateProgressDots() {
-            document.getElementById('progress-dots').innerHTML = LEVELS.map((_, i) => `
-        <div class="progress-dot ${i < currentLevel ? 'completed' : ''} ${i === currentLevel ? 'active' : ''}"></div>
+            document.getElementById('progress-dots').innerHTML = LEVELS.map((level, i) => `
+        <div class="progress-dot ${i < currentLevel ? 'completed' : ''} ${i === currentLevel ? 'active' : ''}" 
+             onclick="loadLevel(${i})" 
+             title="Level ${level.id}: ${level.title}"></div>
     `).join('');
         }
 
