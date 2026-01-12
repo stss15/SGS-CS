@@ -1,0 +1,190 @@
+---
+layout: layouts/base.njk
+title: "Teacher Solutions: OOP Scenarios"
+description: "Complete Python code solutions for the 'We Do' classroom activities."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 5", href: "ib-2027/sl/unit-5/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/sl/unit-5/oop-project/teacher/index.html" }
+  - { label: "Scenario Solutions" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Solutions</h4>
+        <p style="margin-bottom: 0;">These are the complete code files for the "We Do" activities. Students will start with blank files containing only comments.</p>
+    </div>
+
+    <!-- SCENARIO 1 -->
+    <section class="oop-section">
+        <h2 class="oop-section-title">Scenario 1: The Animal Kingdom</h2>
+        <div class="class-overview">
+            <p><strong>Topic:</strong> Inheritance & Polymorphism (Method Overriding)</p>
+        </div>
+        
+        <pre><code class="language-python"># 1_animals.py - SOLUTION
+
+class Animal:
+    def __init__(self, name):
+        self.name = name
+    
+    def speak(self):
+        # Generic implementation
+        return "..."
+
+class Dog(Animal):
+    # Inherits __init__ from Animal
+    
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+# Polymorphism Test
+zoo = [
+    Dog("Buddy"),
+    Cat("Whiskers"),
+    Dog("Rex")
+]
+
+for animal in zoo:
+    # Polymorphism: The correct speak() method is called for each type
+    print(f"{animal.name} says: {animal.speak()}")
+</code></pre>
+    </section>
+
+    <!-- SCENARIO 2 -->
+    <section class="oop-section">
+        <h2 class="oop-section-title">Scenario 2: The University</h2>
+        <div class="class-overview">
+            <p><strong>Topic:</strong> Composition (Strong) vs Aggregation (Weak)</p>
+        </div>
+        
+        <pre><code class="language-python"># 2_university.py - SOLUTION
+
+class Student:
+    def __init__(self, name):
+        self.name = name
+
+class Department:
+    def __init__(self, name):
+        self.name = name
+    
+    def announce(self):
+        return f"The {self.name} Department is open."
+
+class University:
+    def __init__(self, name):
+        self.name = name
+        self.students = []      # Aggregation list
+        self.departments = []   # Composition list
+        
+        # COMPOSITION: The University creates its own Departments
+        # If the University is deleted, these objects go with it.
+        self.departments.append(Department("Computer Science"))
+        self.departments.append(Department("Engineering"))
+
+    def enroll_student(self, student):
+        # AGGREGATION: The student is created OUTSIDE and passed in.
+        # If the University is deleted, the student still exists elsewhere.
+        self.students.append(student)
+        
+    def show_details(self):
+        print(f"Welcome to {self.name}")
+        print("--- DEPARTMENTS (Composition) ---")
+        for dept in self.departments:
+            print(dept.announce())
+            
+        print("\n--- STUDENTS (Aggregation) ---")
+        for s in self.students:
+            print(f"- Student: {s.name}")
+
+# Simulation
+if __name__ == "__main__":
+    uni = University("Tech University")
+    
+    # Students created independently (Aggregation)
+    s1 = Student("Alice")
+    s2 = Student("Bob")
+    
+    uni.enroll_student(s1)
+    uni.enroll_student(s2)
+    
+    uni.show_details()
+</code></pre>
+    </section>
+
+    <!-- SCENARIO 3 -->
+    <section class="oop-section">
+        <h2 class="oop-section-title">Scenario 3: Theme Park</h2>
+        <div class="class-overview">
+            <p><strong>Topic:</strong> Encapsulation & Static Variables</p>
+        </div>
+        
+        <pre><code class="language-python"># 3_themepark.py - SOLUTION
+
+class Visitor:
+    # STATIC VARIABLE: Shared by all instances
+    total_visitors = 0 
+    
+    def __init__(self, height_cm, money):
+        self.height_cm = height_cm
+        self.money = money
+        
+        # Increment static counter
+        Visitor.total_visitors += 1
+
+class Ride:
+    def __init__(self, name, min_height, cost):
+        self.name = name
+        # Encapsulation: Protected/Private attributes
+        self._min_height = min_height
+        self._cost = cost
+        self._earnings = 0
+        
+    def attempt_ride(self, visitor):
+        print(f"\nVisitor trying to ride {self.name}...")
+        
+        # Logic Check 1: Height
+        if visitor.height_cm < self._min_height:
+            print("Sorry, you are not tall enough.")
+            return
+        
+        # Logic Check 2: Money
+        if visitor.money < self._cost:
+            print("Sorry, you cannot afford this ride.")
+            return
+        
+        # Success Logic
+        visitor.money -= self._cost
+        self._earnings += self._cost
+        print("Ride successful! Have fun!")
+
+    def get_earnings(self):
+        return self._earnings
+
+# Simulation
+print(f"Park Visitors at start: {Visitor.total_visitors}")
+
+coaster = Ride("Dragon Loop", 140, 5.00)
+
+kid = Visitor(120, 20.00)
+adult = Visitor(175, 50.00)
+
+coaster.attempt_ride(kid)   # Fails height
+coaster.attempt_ride(adult) # Succeeds
+
+print(f"Ride Earnings: ${coaster.get_earnings()}")
+print(f"Total Visitors tracked by Static variable: {Visitor.total_visitors}")
+</code></pre>
+    </section>
+
+</div>

@@ -1,58 +1,46 @@
 # ==========================================
 # SCENARIO 2: THE UNIVERSITY SYSTEM
 # Focus: Object Relationships
-# 1. Aggregation (Empty Diamond): Weak link (Student exists without Uni)
-# 2. Composition (Filled Diamond): Strong link (Department dies with Uni)
+# 1. Aggregation (Weak): Student exists without Uni
+# 2. Composition (Strong): Department dies with Uni
 # ==========================================
 
 # ------------------------------------------
 # STEP 1: The Components
 # ------------------------------------------
-class Student:
-    def __init__(self, name):
-        self.name = name
+# TODO: Create a 'Student' class with a 'name' attribute
 
-class Department:
-    def __init__(self, name):
-        self.name = name
-    
-    def announce(self):
-        return f"The {self.name} Department is open."
+
+# TODO: Create a 'Department' class with a 'name' attribute
+# - Add a method 'announce()' that returns "The [Name] Department is open."
+
 
 # ------------------------------------------
 # STEP 2: The Container (University)
 # ------------------------------------------
-class University:
-    def __init__(self, name):
-        self.name = name
-        self.students = []      # Aggregation list
-        self.departments = []   # Composition list
-        
-        # COMPOSITION: The University creates its own Departments
-        # If the University is deleted, these objects go with it.
-        self.departments.append(Department("Computer Science"))
-        self.departments.append(Department("Engineering"))
+# TODO: Create a 'University' class
+# 1. __init__(self, name):
+#    - self.name = name
+#    - self.students = []      (List for Aggregation)
+#    - self.departments = []   (List for Composition)
+#
+#    - COMPOSITION TASK: Create 2 Department objects *inside* the __init__ 
+#      and append them to self.departments. (e.g., "Computer Science", "Engineering")
 
-    def enroll_student(self, student):
-        # AGGREGATION: The student is created OUTSIDE and passed in.
-        # If the University is deleted, the student still exists elsewhere.
-        self.students.append(student)
-        
-    def show_details(self):
-        print(f"Welcome to {self.name}")
-        print("--- DEPARTMENTS (Composition) ---")
-        for dept in self.departments:
-            print(dept.announce())
-            
-        print("\n--- STUDENTS (Aggregation) ---")
-        # TODO: Loop through self.students and print their names
-        pass
+# 2. enroll_student(self, student):
+#    - AGGREGATION TASK: Append the passed 'student' object to self.students
+
+# 3. show_details(self):
+#    - Print the university name
+#    - Loop through self.departments and call .announce()
+#    - Loop through self.students and print their names
+
 
 # ------------------------------------------
 # STEP 3: The Simulation
 # ------------------------------------------
-# 1. Create a University
-# 2. Create a Student (independently)
+# TODO:
+# 1. Create a University ("Tech Uni")
+# 2. Create a Student ("Alice") *outside* the university
 # 3. Enroll the student
-# 4. Run show_details()
-# 5. Question: If you delete the university object, what happens to the student variable?
+# 4. Call uni.show_details()

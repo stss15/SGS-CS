@@ -6,14 +6,10 @@
 # ------------------------------------------
 # STEP 1: The Parent Class (Superclass)
 # ------------------------------------------
-class Animal:
-    def __init__(self, name):
-        self.name = name
-    
-    def speak(self):
-        # This is a generic method intended to be overridden
-        # We can return a generic sound or "..."
-        return "..."
+# TODO: Create a class called 'Animal'
+# - It should have an __init__ method that takes 'name'
+# - It should have a 'speak' method that returns "..."
+
 
 # ------------------------------------------
 # STEP 2: The Child Classes (Subclasses)
@@ -28,16 +24,8 @@ class Animal:
 # ------------------------------------------
 # STEP 3: Testing Polymorphism
 # ------------------------------------------
-# This code will run once you implement the classes above
-
-# dog = Dog("Buddy")
-# cat = Cat("Whiskers")
-
-# print(f"{dog.name} says: {dog.speak()}")
-# print(f"{cat.name} says: {cat.speak()}")
-
-# ------------------------------------------
-# CHALLENGE: 
-# Create a list of animals called 'zoo'
-# Add a Dog and a Cat to it
-# Loop through the list and make each one speak
+# TODO:
+# 1. Create a list called 'zoo'
+# 2. Add some Dog and Cat objects to the list
+# 3. Loop through the list and make each animal speak()
+#    (Notice how the correct method is called automatically based on the object type!)
