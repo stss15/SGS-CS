@@ -25,28 +25,38 @@ extraStyles:
     <section class="oop-section">
         <h2 class="oop-section-title">Scenario 1: The Animal Kingdom</h2>
         <div class="class-overview">
-            <p><strong>Topic:</strong> Inheritance & Polymorphism (Method Overriding)</p>
+            <p><strong>Topic:</strong> Inheritance & Polymorphism</p>
         </div>
         
-        <pre><code class="language-python"># 1_animals.py - SOLUTION
-
-class Animal:
+        <h3>Animal.py</h3>
+        <pre><code class="language-python">class Animal:
     def __init__(self, name):
         self.name = name
     
     def speak(self):
         # Generic implementation
         return "..."
+</code></pre>
+
+        <h3>Dog.py</h3>
+        <pre><code class="language-python">from Animal import Animal
 
 class Dog(Animal):
-    # Inherits __init__ from Animal
-    
     def speak(self):
         return "Woof!"
+</code></pre>
+
+        <h3>Cat.py</h3>
+        <pre><code class="language-python">from Animal import Animal
 
 class Cat(Animal):
     def speak(self):
         return "Meow!"
+</code></pre>
+
+        <h3>Main.py</h3>
+        <pre><code class="language-python">from Dog import Dog
+from Cat import Cat
 
 # Polymorphism Test
 zoo = [
@@ -65,21 +75,26 @@ for animal in zoo:
     <section class="oop-section">
         <h2 class="oop-section-title">Scenario 2: The University</h2>
         <div class="class-overview">
-            <p><strong>Topic:</strong> Composition (Strong) vs Aggregation (Weak)</p>
+            <p><strong>Topic:</strong> Composition vs Aggregation</p>
         </div>
         
-        <pre><code class="language-python"># 2_university.py - SOLUTION
-
-class Student:
-    def __init__(self, name):
-        self.name = name
-
-class Department:
+        <h3>Department.py</h3>
+        <pre><code class="language-python">class Department:
     def __init__(self, name):
         self.name = name
     
     def announce(self):
         return f"The {self.name} Department is open."
+</code></pre>
+
+        <h3>Student.py</h3>
+        <pre><code class="language-python">class Student:
+    def __init__(self, name):
+        self.name = name
+</code></pre>
+
+        <h3>University.py</h3>
+        <pre><code class="language-python">from Department import Department
 
 class University:
     def __init__(self, name):
@@ -88,13 +103,11 @@ class University:
         self.departments = []   # Composition list
         
         # COMPOSITION: The University creates its own Departments
-        # If the University is deleted, these objects go with it.
         self.departments.append(Department("Computer Science"))
         self.departments.append(Department("Engineering"))
 
     def enroll_student(self, student):
         # AGGREGATION: The student is created OUTSIDE and passed in.
-        # If the University is deleted, the student still exists elsewhere.
         self.students.append(student)
         
     def show_details(self):
@@ -106,8 +119,12 @@ class University:
         print("\n--- STUDENTS (Aggregation) ---")
         for s in self.students:
             print(f"- Student: {s.name}")
+</code></pre>
 
-# Simulation
+        <h3>Main.py</h3>
+        <pre><code class="language-python">from University import University
+from Student import Student
+
 if __name__ == "__main__":
     uni = University("Tech University")
     
@@ -129,9 +146,8 @@ if __name__ == "__main__":
             <p><strong>Topic:</strong> Encapsulation & Static Variables</p>
         </div>
         
-        <pre><code class="language-python"># 3_themepark.py - SOLUTION
-
-class Visitor:
+        <h3>Visitor.py</h3>
+        <pre><code class="language-python">class Visitor:
     # STATIC VARIABLE: Shared by all instances
     total_visitors = 0 
     
@@ -141,8 +157,10 @@ class Visitor:
         
         # Increment static counter
         Visitor.total_visitors += 1
+</code></pre>
 
-class Ride:
+        <h3>Ride.py</h3>
+        <pre><code class="language-python">class Ride:
     def __init__(self, name, min_height, cost):
         self.name = name
         # Encapsulation: Protected/Private attributes
@@ -170,6 +188,11 @@ class Ride:
 
     def get_earnings(self):
         return self._earnings
+</code></pre>
+
+        <h3>Main.py</h3>
+        <pre><code class="language-python">from Ride import Ride
+from Visitor import Visitor
 
 # Simulation
 print(f"Park Visitors at start: {Visitor.total_visitors}")
