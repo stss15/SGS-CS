@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Data Detective | Year 9</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+    <style>
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header-bar {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .main-area {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .sidebar {
+            width: 400px;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid #334155;
+            background: #0f172a;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid #334155;
+        }
+
+        .phase-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .phase-tab {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .phase-tab.learn {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .phase-tab.challenge {
+            background: #334155;
+            color: #94a3b8;
+        }
+
+        .phase-tab.active {
+            box-shadow: 0 0 0 2px white;
+        }
+
+        .phase-tab.completed {
+            background: #10b981 !important;
+            color: white !important;
+        }
+
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0f172a;
+        }
+
+        .editor-header {
+            padding: 0.5rem 1rem;
+            background: #1e293b;
+            font-size: 0.75rem;
+            color: #64748b;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .editor-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-panel {
+            height: 35%;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #334155;
+        }
+
+        .results-panel {
+            flex: 1;
+            overflow: auto;
+            background: #0f172a;
+            padding: 1rem;
+        }
+
+        textarea.code-input {
+            flex: 1;
+            background: transparent;
+            color: #f8fafc;
+            border: none;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        .level-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .level-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .instruction-box {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .instruction-box code {
+            background: #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .example-block {
+            background: #000;
+            border-left: 3px solid #8b5cf6;
+            padding: 0.75rem 1rem;
+            margin: 0.75rem 0;
+            border-radius: 0 6px 6px 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #a5b4fc;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #334155;
+            border: none;
+            color: #94a3b8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .copy-btn:hover {
+            background: #475569;
+        }
+
+        .snippet-block {
+            position: relative;
+            background: #000;
+            border-left: 3px solid #10b981;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #6ee7b7;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #334155;
+            transition: all 0.3s;
+        }
+
+        .progress-dot.active {
+            background: #38bdf8;
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: #10b981;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            background: #1e293b;
+        }
+
+        th,
+        td {
+            border: 1px solid #334155;
+            padding: 0.5rem;
+            text-align: left;
+            color: #e2e8f0;
+        }
+
+        th {
+            background: #0f172a;
+            color: #38bdf8;
+        }
+
+        tr:nth-child(even) {
+            background: #334155;
+        }
+
+        .ref-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ref-modal.visible {
+            display: flex;
+        }
+
+        .ref-modal-content {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .ref-modal-header {
+            padding: 1rem;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ref-modal-body {
+            padding: 1rem;
+        }
+
+        .success-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e293b;
+            border: 2px solid #10b981;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            z-index: 1001;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: none;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .success-modal.visible {
+            display: block;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: translate(-50%, -40%) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-8px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(8px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        .schema-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 900px) {
+            .main-area {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 35vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header class="header-bar">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="index.html" class="btn btn-secondary" style="padding: 0.4rem;"><i
+                        data-lucide="arrow-left"></i></a>
+                <div>
+                    <h2 style="margin: 0; font-size: 1rem;">The Data Detective</h2>
+                    <p style="margin: 0; font-size: 0.75rem; color: #64748b;">Year 9 SQL Databases</p>
+                </div>
+            </div>
+            <div class="progress-dots" id="progress-dots"></div>
+        </header>
+
+        <div class="main-area">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="phase-tabs">
+                        <button id="learn-tab" class="phase-tab learn active" onclick="setPhase('learn')">📚
+                            Learn</button>
+                        <button id="challenge-tab" class="phase-tab challenge" onclick="setPhase('challenge')">🎯
+                            Challenge</button>
+                    </div>
+                </div>
+                <div class="sidebar-content" id="sidebar-content"></div>
+                <div class="sidebar-footer">
+                    <button id="action-btn" class="btn btn-primary" style="width: 100%;" onclick="handleAction()">
+                        <i data-lucide="play"></i> <span id="action-btn-text">Run Query</span>
+                    </button>
+                    <p style="text-align: center; font-size: 0.65rem; color: #64748b; margin-top: 0.5rem;"><kbd
+                            style="background:#334155;padding:2px 4px;border-radius:3px;">Ctrl</kbd>+<kbd
+                            style="background:#334155;padding:2px 4px;border-radius:3px;">Enter</kbd></p>
+                </div>
+            </aside>
+
+            <div class="editor-area">
+                <div class="editor-header">
+                    <span>SQL Query</span>
+                    <button id="ref-btn" class="btn btn-secondary"
+                        style="padding: 0.25rem 0.5rem; font-size: 0.7rem; display: none;" onclick="toggleRefModal()">
+                        <i data-lucide="book-open" style="width:12px;height:12px;"></i> SQL Reference
+                    </button>
+                </div>
+                <div class="editor-body">
+                    <div class="code-panel">
+                        <textarea id="code-editor" class="code-input" spellcheck="false"
+                            placeholder="Type your SQL here..."></textarea>
+                    </div>
+                    <div class="results-panel" id="results-output">
+                        <p style="color: #64748b; text-align: center; margin-top: 2rem;">Run a query to see results...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reference Modal -->
+    <div id="ref-modal" class="ref-modal" onclick="if(event.target===this)toggleRefModal()">
+        <div class="ref-modal-content">
+            <div class="ref-modal-header">
+                <h3 style="margin:0;">📖 SQL Reference</h3>
+                <button class="btn btn-secondary" style="padding:0.25rem;" onclick="toggleRefModal()"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <div class="ref-modal-body" id="ref-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="success-modal">
+        <div
+            style="background: #10b981; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+            <i data-lucide="check" style="color: white; width: 28px; height: 28px;"></i>
+        </div>
+        <h3 id="success-title" style="margin-bottom: 0.5rem;">Evidence Found!</h3>
+        <p id="success-text" style="margin-bottom: 1.5rem; color: #94a3b8;"></p>
+        <button class="btn btn-primary" onclick="handleSuccessAction()"><span id="success-btn-text">Next Level</span> <i
+                data-lucide="arrow-right"></i></button>
+    </div>
+    <div id="modal-overlay"
+        style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none;"></div>
+
+    <script>
+        let db;
+
+        // NBA Players Data (2023-24 Season - Top 25 players by points)
+        const NBA_PLAYERS = `
+CREATE TABLE Players (ID INTEGER PRIMARY KEY, Name TEXT, Team TEXT, Position TEXT, GamesPlayed INTEGER, PointsPerGame REAL, AssistsPerGame REAL, ReboundsPerGame REAL, StealsPerGame REAL, Age INTEGER);
+INSERT INTO Players VALUES (1, 'Luka Doncic', 'Dallas Mavericks', 'PG', 70, 33.9, 9.8, 9.2, 1.4, 24);
+INSERT INTO Players VALUES (2, 'Giannis Antetokounmpo', 'Milwaukee Bucks', 'PF', 73, 30.4, 6.5, 11.5, 1.2, 29);
+INSERT INTO Players VALUES (3, 'Shai Gilgeous-Alexander', 'Oklahoma City Thunder', 'SG', 75, 30.1, 6.2, 5.5, 2.0, 25);
+INSERT INTO Players VALUES (4, 'Jalen Brunson', 'New York Knicks', 'PG', 77, 28.7, 6.7, 3.6, 0.9, 27);
+INSERT INTO Players VALUES (5, 'Kevin Durant', 'Phoenix Suns', 'SF', 75, 27.1, 5.0, 6.6, 0.9, 35);
+INSERT INTO Players VALUES (6, 'Devin Booker', 'Phoenix Suns', 'SG', 68, 27.1, 6.9, 4.5, 1.0, 27);
+INSERT INTO Players VALUES (7, 'LeBron James', 'Los Angeles Lakers', 'SF', 71, 25.7, 8.3, 7.3, 1.3, 39);
+INSERT INTO Players VALUES (8, 'Anthony Edwards', 'Minnesota Timberwolves', 'SG', 79, 25.9, 5.1, 5.4, 1.3, 22);
+INSERT INTO Players VALUES (9, 'Jayson Tatum', 'Boston Celtics', 'SF', 74, 26.9, 4.9, 8.1, 1.0, 25);
+INSERT INTO Players VALUES (10, 'Stephen Curry', 'Golden State Warriors', 'PG', 74, 26.4, 5.1, 4.5, 0.7, 35);
+INSERT INTO Players VALUES (11, 'Donovan Mitchell', 'Cleveland Cavaliers', 'SG', 55, 26.6, 6.1, 5.1, 1.8, 27);
+INSERT INTO Players VALUES (12, 'Kyrie Irving', 'Dallas Mavericks', 'PG', 58, 25.6, 5.2, 5.0, 1.3, 31);
+INSERT INTO Players VALUES (13, 'Tyrese Haliburton', 'Indiana Pacers', 'PG', 69, 20.1, 10.9, 3.9, 1.2, 23);
+INSERT INTO Players VALUES (14, 'Nikola Jokic', 'Denver Nuggets', 'C', 79, 26.4, 9.0, 12.4, 1.4, 28);
+INSERT INTO Players VALUES (15, 'Joel Embiid', 'Philadelphia 76ers', 'C', 39, 34.7, 5.6, 11.0, 1.2, 29);
+INSERT INTO Players VALUES (16, 'Trae Young', 'Atlanta Hawks', 'PG', 54, 25.7, 10.8, 2.8, 1.1, 25);
+INSERT INTO Players VALUES (17, 'Damian Lillard', 'Milwaukee Bucks', 'PG', 73, 24.3, 7.0, 4.4, 1.0, 33);
+INSERT INTO Players VALUES (18, 'De Aaron Fox', 'Sacramento Kings', 'PG', 74, 26.6, 5.6, 4.6, 2.0, 26);
+INSERT INTO Players VALUES (19, 'Kawhi Leonard', 'LA Clippers', 'SF', 68, 23.7, 3.6, 6.1, 1.6, 32);
+INSERT INTO Players VALUES (20, 'Anthony Davis', 'Los Angeles Lakers', 'PF', 76, 24.7, 3.5, 12.6, 1.2, 30);
+`;
+
+        // Crime DB for story levels
+        const CRIME_DB = `
+CREATE TABLE Suspects (ID INTEGER, Name TEXT, Hair TEXT, Height INTEGER, LastSeen TEXT);
+INSERT INTO Suspects VALUES (1, 'John Doe', 'Brown', 180, 'Downtown');
+INSERT INTO Suspects VALUES (2, 'Jane Smith', 'Red', 165, 'Park');
+INSERT INTO Suspects VALUES (3, 'Bob Malo', 'Black', 190, 'Cafe');
+INSERT INTO Suspects VALUES (4, 'Alice Red', 'Red', 170, 'Cafe');
+INSERT INTO Suspects VALUES (5, 'Charlie Green', 'Blonde', 175, 'Mall');
+
+CREATE TABLE AccessLogs (ID INTEGER, Location TEXT, Time INTEGER, PersonName TEXT);
+INSERT INTO AccessLogs VALUES (1, 'Neon Cafe', 900, 'John Doe');
+INSERT INTO AccessLogs VALUES (2, 'Neon Cafe', 1200, 'Jane Smith');
+INSERT INTO AccessLogs VALUES (3, 'Neon Cafe', 2230, 'Alice Red');
+INSERT INTO AccessLogs VALUES (4, 'Bank', 1500, 'Charlie Green');
+INSERT INTO AccessLogs VALUES (5, 'Neon Cafe', 2100, 'Bob Malo');
+
+CREATE TABLE Evidence (ID INTEGER, Item TEXT, FoundAt TEXT, Date TEXT);
+INSERT INTO Evidence VALUES (1, 'Fingerprint', 'Counter', '2025-12-03');
+INSERT INTO Evidence VALUES (2, 'Footprint', 'Back Door', '2025-12-02');
+INSERT INTO Evidence VALUES (3, 'Receipt', 'Floor', '2025-12-01');
+INSERT INTO Evidence VALUES (4, 'Hair Sample', 'Chair', '2025-12-03');
+`;
+
+        const LEVELS = [
+            {
+                id: 1,
+                title: "What is a Database?",
+                subtitle: "Understanding tables and data",
+                learnContent: `<p>A <strong>database</strong> stores information in <strong>tables</strong>. Think of it like a spreadsheet.</p>
+<p>Each table has:</p>
+<ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+    <li><strong>Columns</strong> = categories (Name, Age, etc.)</li>
+    <li><strong>Rows</strong> = individual records</li>
+</ul>
+<p><strong>SQL</strong> (Structured Query Language) is how we ask questions.</p>
+<p>The most basic command is:</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM TableName<span class="copy-btn">Copy</span></div>
+<p>• <code>SELECT</code> = Get data</p>
+<p>• <code>*</code> = All columns</p>
+<p>• <code>FROM TableName</code> = Which table</p>
+<p><strong>Try it!</strong> Run <code>SELECT * FROM Suspects</code></p>`,
+                learnStarterCode: `SELECT * FROM Suspects`,
+                challengeContent: `<p>A robbery occurred at 'The Neon Cafe'. We need the suspect list.</p>
+<p><strong>Your task:</strong> View all data from the Suspects table.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">SELECT * FROM TableName</div><p>Returns all columns and rows from a table.</p>`,
+                check: (results) => results && results[0] && results[0].values.length >= 5
+            },
+            {
+                id: 2,
+                title: "Filtering with WHERE",
+                subtitle: "Finding specific data",
+                learnContent: `<p>Use <code>WHERE</code> to filter results based on conditions.</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM Suspects WHERE Hair = 'Red'<span class="copy-btn">Copy</span></div>
+<p>⚠️ Text values need <strong>single quotes</strong>: <code>'Red'</code></p>
+<p>Numbers don't need quotes: <code>WHERE Height = 180</code></p>
+<p><strong>Try it!</strong> Find all suspects with Brown hair.</p>`,
+                learnStarterCode: `SELECT * FROM Suspects WHERE Hair = 'Brown'`,
+                challengeContent: `<p>The witness says the suspect had <strong>Red hair</strong>.</p>
+<p><strong>Your task:</strong> Filter suspects to show only those with Red hair.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">SELECT * FROM Table WHERE column = 'value'</div><p>Text = quotes. Numbers = no quotes.</p>`,
+                check: (results) => {
+                    if (!results || !results[0]) return false;
+                    return results[0].values.length === 2 && results[0].values.every(r => r[2] === 'Red');
+                }
+            },
+            {
+                id: 3,
+                title: "Comparing Numbers",
+                subtitle: "Greater than, less than",
+                learnContent: `<p>Use comparison operators for numbers:</p>
+<ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+    <li><code>></code> greater than</li>
+    <li><code><</code> less than</li>
+    <li><code>=</code> equal to</li>
+    <li><code>>=</code> greater or equal</li>
+    <li><code><=</code> less or equal</li>
+</ul>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM Suspects WHERE Height > 175<span class="copy-btn">Copy</span></div>
+<p><strong>Try:</strong> Find suspects taller than 170cm.</p>`,
+                learnStarterCode: `SELECT * FROM Suspects WHERE Height > 170`,
+                challengeContent: `<p>The witness says the suspect was <strong>tall - over 180cm</strong>.</p>
+<p><strong>Your task:</strong> Find suspects with Height greater than 180.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">> greater than
+< less than
+= equal
+>= greater or equal</div>`,
+                check: (results) => {
+                    if (!results || !results[0]) return false;
+                    return results[0].values.every(r => r[3] > 180);
+                }
+            },
+            {
+                id: 4,
+                title: "Combining Conditions",
+                subtitle: "Using AND and OR",
+                learnContent: `<p>Combine multiple conditions:</p>
+<p><code>AND</code> = both must be true</p>
+<p><code>OR</code> = either can be true</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM Suspects WHERE Hair = 'Red' AND Height > 165<span class="copy-btn">Copy</span></div>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM Suspects WHERE Hair = 'Red' OR Hair = 'Blonde'<span class="copy-btn">Copy</span></div>`,
+                learnStarterCode: `SELECT * FROM Suspects WHERE Hair = 'Red' AND Height > 165`,
+                challengeContent: `<p>The suspect has <strong>Red hair AND is over 165cm tall</strong>.</p>
+<p><strong>Your task:</strong> Use AND to combine both conditions.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">AND = both true
+OR = either true</div>`,
+                check: (results) => {
+                    if (!results || !results[0]) return false;
+                    return results[0].values.every(r => r[2] === 'Red' && r[3] > 165);
+                }
+            },
+            {
+                id: 5,
+                title: "Selecting Specific Columns",
+                subtitle: "Choose what to display",
+                learnContent: `<p>Instead of <code>*</code> (all columns), list specific ones:</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT Name, Hair FROM Suspects<span class="copy-btn">Copy</span></div>
+<p>Separate column names with commas.</p>`,
+                learnStarterCode: `SELECT Name, Hair FROM Suspects`,
+                challengeContent: `<p>For the report, we only need <strong>Name</strong> and <strong>Height</strong>.</p>
+<p><strong>Your task:</strong> Select just those two columns from Suspects.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">SELECT col1, col2 FROM Table</div>`,
+                check: (results) => {
+                    if (!results || !results[0]) return false;
+                    return results[0].columns.includes('Name') && results[0].columns.includes('Height') && results[0].columns.length === 2;
+                }
+            },
+            {
+                id: 6,
+                title: "Checking Times",
+                subtitle: "Time-based filtering",
+                learnContent: `<p>The AccessLogs table stores times as 24-hour numbers:</p>
+<p>9:00 AM = 900, 10:30 PM = 2230</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM AccessLogs WHERE Time > 2000<span class="copy-btn">Copy</span></div>
+<p>This finds entries after 8pm (2000 hours).</p>`,
+                learnStarterCode: `SELECT * FROM AccessLogs WHERE Time > 2000`,
+                challengeContent: `<p>The crime happened at night, <strong>after 2100</strong> (9pm).</p>
+<p><strong>Your task:</strong> Find AccessLogs entries after 2100.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">Time is stored as 24-hour number.
+900 = 9am, 2230 = 10:30pm</div>`,
+                check: (results) => {
+                    if (!results || !results[0]) return false;
+                    return results[0].values.every(r => r[2] > 2100);
+                }
+            },
+            {
+                id: 7,
+                title: "Sorting Results",
+                subtitle: "ORDER BY",
+                learnContent: `<p><code>ORDER BY</code> sorts your results:</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM Suspects ORDER BY Height<span class="copy-btn">Copy</span></div>
+<p>Add <code>DESC</code> for descending (biggest first):</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM Suspects ORDER BY Height DESC<span class="copy-btn">Copy</span></div>`,
+                learnStarterCode: `SELECT * FROM Suspects ORDER BY Height DESC`,
+                challengeContent: `<p>Sort suspects by height from <strong>tallest to shortest</strong>.</p>
+<p><strong>Your task:</strong> Use ORDER BY with DESC.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">ORDER BY column
+ORDER BY column DESC</div>`,
+                check: (results) => {
+                    if (!results || !results[0] || results[0].values.length < 2) return false;
+                    return results[0].values[0][3] >= results[0].values[1][3];
+                }
+            },
+            {
+                id: 8,
+                title: "Counting Results",
+                subtitle: "COUNT function",
+                learnContent: `<p><code>COUNT(*)</code> tells you how many rows match:</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT COUNT(*) FROM Suspects<span class="copy-btn">Copy</span></div>
+<p>Combine with WHERE:</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT COUNT(*) FROM Suspects WHERE Hair = 'Red'<span class="copy-btn">Copy</span></div>`,
+                learnStarterCode: `SELECT COUNT(*) FROM Suspects WHERE Hair = 'Red'`,
+                challengeContent: `<p>How many suspects have <strong>Red hair</strong>?</p>
+<p><strong>Your task:</strong> Use COUNT to find the number.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">SELECT COUNT(*) FROM Table
+SELECT COUNT(*) FROM Table WHERE condition</div>`,
+                check: (results) => {
+                    if (!results || !results[0]) return false;
+                    return results[0].values[0][0] === 2;
+                }
+            },
+            {
+                id: 9,
+                title: "Solve the Case",
+                subtitle: "Put it all together",
+                learnContent: `<p>Time to solve the crime! Here's what we know:</p>
+<ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+    <li>Red hair</li>
+    <li>Was at Neon Cafe after 2100</li>
+</ul>
+<p>You'll need to check both tables!</p>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM AccessLogs WHERE Location = 'Neon Cafe' AND Time > 2100<span class="copy-btn">Copy</span></div>`,
+                learnStarterCode: `SELECT * FROM AccessLogs WHERE Location = 'Neon Cafe' AND Time > 2100`,
+                challengeContent: `<p>Find who was at the <strong>Neon Cafe after 2100</strong>.</p>
+<p>The PersonName from AccessLogs should match our red-haired suspect!</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">Combine all skills:
+SELECT, WHERE, AND, ORDER BY</div>`,
+                check: (results) => {
+                    if (!results || !results[0]) return false;
+                    const names = results[0].values.map(r => r[3] || r[1]).join(' ').toLowerCase();
+                    return names.includes('alice');
+                }
+            },
+            {
+                id: 10,
+                title: "🏀 NBA Stats Explorer",
+                subtitle: "Real player data!",
+                isSandbox: true,
+                learnContent: `<p><strong>Congratulations, Detective!</strong> You've mastered SQL basics.</p>
+<p>Now explore <strong>real NBA 2023-24 season data</strong>!</p>
+<div class="schema-box"><strong>Players Table:</strong><br>ID, Name, Team, Position, GamesPlayed, PointsPerGame, AssistsPerGame, ReboundsPerGame, StealsPerGame, Age</div>
+<p><strong>Ideas to try:</strong></p>
+<ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+    <li>Who scored most points per game?</li>
+    <li>Which players are under 25?</li>
+    <li>Who plays for the Lakers?</li>
+    <li>Top 5 assist leaders?</li>
+</ul>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT * FROM Players ORDER BY PointsPerGame DESC<span class="copy-btn">Copy</span></div>
+<div class="snippet-block" onclick="copySnippet(this)">SELECT Name, Team FROM Players WHERE Age < 25<span class="copy-btn">Copy</span></div>`,
+                learnStarterCode: `SELECT * FROM Players ORDER BY PointsPerGame DESC`,
+                challengeContent: `<p>This is your sandbox! Explore the NBA data freely.</p>
+<p>When ready, click Finish to take the quiz.</p>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">Players columns:
+ID, Name, Team, Position,
+GamesPlayed, PointsPerGame,
+AssistsPerGame, ReboundsPerGame,
+StealsPerGame, Age</div>`,
+                check: () => true
+            }
+        ];
+
+        // State
+        let currentLevel = 0;
+        let currentPhase = 'learn';
+        const editor = document.getElementById('code-editor');
+        const resultsDiv = document.getElementById('results-output');
+        const sidebarContent = document.getElementById('sidebar-content');
+        const learnTab = document.getElementById('learn-tab');
+        const challengeTab = document.getElementById('challenge-tab');
+        const refBtn = document.getElementById('ref-btn');
+        const refModal = document.getElementById('ref-modal');
+        const refModalBody = document.getElementById('ref-modal-body');
+        const successModal = document.getElementById('success-modal');
+        const overlay = document.getElementById('modal-overlay');
+        const actionBtnText = document.getElementById('action-btn-text');
+
+        async function init() {
+            const SQL = await initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${f}` });
+            db = new SQL.Database();
+            db.run(CRIME_DB);
+            db.run(NBA_PLAYERS);
+            loadLevel(0);
+            lucide.createIcons();
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); handleAction(); }
+            });
+        }
+
+        function loadLevel(idx) {
+            currentLevel = idx;
+            currentPhase = 'learn';
+            updateProgressDots();
+            setPhase('learn');
+        }
+
+        function setPhase(phase) {
+            currentPhase = phase;
+            const level = LEVELS[currentLevel];
+            learnTab.classList.toggle('active', phase === 'learn');
+            challengeTab.classList.toggle('active', phase === 'challenge');
+            refBtn.style.display = phase === 'challenge' ? 'flex' : 'none';
+
+            if (phase === 'learn') {
+                sidebarContent.innerHTML = `
+            <h3 class="level-title">Level ${level.id}: ${level.title}</h3>
+            <p class="level-subtitle">${level.subtitle}</p>
+            <div class="instruction-box">${level.learnContent}</div>
+        `;
+                editor.value = level.learnStarterCode;
+                actionBtnText.textContent = 'Run Query';
+            } else {
+                sidebarContent.innerHTML = `
+            <h3 class="level-title">Challenge: ${level.title}</h3>
+            <div class="instruction-box">${level.challengeContent}</div>
+        `;
+                editor.value = level.challengeStarterCode || '';
+                actionBtnText.textContent = level.isSandbox ? 'Finish' : 'Submit';
+                refModalBody.innerHTML = level.reference;
+            }
+            resultsDiv.innerHTML = '<p style="color: #64748b; text-align: center; margin-top: 2rem;">Run a query to see results...</p>';
+            lucide.createIcons();
+        }
+
+        function handleAction() {
+            try {
+                const results = db.exec(editor.value);
+                renderResults(results);
+                if (currentPhase === 'challenge') {
+                    if (LEVELS[currentLevel].check(results)) {
+                        showSuccess();
+                    } else if (!LEVELS[currentLevel].isSandbox) {
+                        document.querySelector('.code-panel').classList.add('shake');
+                        setTimeout(() => document.querySelector('.code-panel').classList.remove('shake'), 400);
+                    }
+                }
+            } catch (e) {
+                resultsDiv.innerHTML = `<div style="color: #ef4444; padding: 1rem; border: 1px solid #ef4444; border-radius: 4px;">Error: ${e.message}</div>`;
+            }
+        }
+
+        function renderResults(results) {
+            if (!results || results.length === 0) {
+                resultsDiv.innerHTML = "<p style='color:#64748b;'>No results returned.</p>";
+                return;
+            }
+            const t = results[0];
+            let html = '<table><thead><tr>' + t.columns.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+            html += t.values.map(row => `<tr>${row.map(v => `<td>${v ?? 'NULL'}</td>`).join('')}</tr>`).join('');
+            html += '</tbody></table>';
+            resultsDiv.innerHTML = html;
+        }
+
+        function showSuccess() {
+            const isFinal = currentLevel === LEVELS.length - 1;
+            document.getElementById('success-title').textContent = isFinal ? "🏆 Case Closed!" : "Evidence Found!";
+            document.getElementById('success-text').textContent = isFinal ? "You've mastered SQL. Take the quiz!" : `Level ${LEVELS[currentLevel].id} complete!`;
+            document.getElementById('success-btn-text').textContent = isFinal ? "Take Quiz" : "Next Level";
+            challengeTab.classList.add('completed');
+            successModal.classList.add('visible');
+            overlay.style.display = 'block';
+            lucide.createIcons();
+        }
+
+        function handleSuccessAction() {
+            successModal.classList.remove('visible');
+            overlay.style.display = 'none';
+            if (currentLevel < LEVELS.length - 1) {
+                loadLevel(currentLevel + 1);
+            } else {
+                window.location.href = "year9-quiz.html";
+            }
+        }
+
+        function toggleRefModal() { refModal.classList.toggle('visible'); }
+
+        function updateProgressDots() {
+            document.getElementById('progress-dots').innerHTML = LEVELS.map((_, i) => `
+        <div class="progress-dot ${i < currentLevel ? 'completed' : ''} ${i === currentLevel ? 'active' : ''}"></div>
+    `).join('');
+        }
+
+        function copySnippet(el) {
+            const text = el.textContent.replace('Copy', '').trim();
+            navigator.clipboard.writeText(text);
+            editor.value = text;
+            el.querySelector('.copy-btn').textContent = 'Copied!';
+            setTimeout(() => el.querySelector('.copy-btn').textContent = 'Copy', 1000);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
