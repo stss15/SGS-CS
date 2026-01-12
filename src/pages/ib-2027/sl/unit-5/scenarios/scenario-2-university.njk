@@ -33,10 +33,12 @@ extraStyles:
     
     <div class="class-overview">
         <p class="class-overview-desc">
-            Classes rarely work alone. 
-            <strong>Association</strong> is when one object knows about another (e.g., A Course knows its Teacher).
-            <strong>Composition</strong> (or Aggregation) is when one object <em>contains</em> a collection of others (e.g., A Course contains a list of Students).
+            Objects relate to each other in two main ways:
         </p>
+        <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+            <li><strong>Aggregation (Has-A):</strong> A weak relationship. The objects can exist independently. (e.g., A University has Students. If the Uni closes, Students still exist). Symbol: <strong>Empty Diamond</strong>.</li>
+            <li><strong>Composition (Part-Of):</strong> A strong relationship. The part belongs to the whole. (e.g., A University is composed of Departments. If the Uni closes, the Departments cease to exist). Symbol: <strong>Filled Diamond</strong>.</li>
+        </ul>
     </div>
 </section>
 
@@ -52,33 +54,39 @@ extraStyles:
     <div class="uml-svg-container">
         <svg viewBox="0 0 600 250" class="uml-svg" preserveAspectRatio="xMidYMid meet">
             
-            <!-- CLASS: Teacher -->
+            <!-- CLASS: Department -->
             <rect x="10" y="50" width="140" height="60" class="uml-svg-class" rx="4"/>
-            <text x="80" y="75" class="uml-svg-text title">Teacher</text>
-            <text x="20" y="95" class="uml-svg-text attribute">- subject: str</text>
+            <text x="80" y="75" class="uml-svg-text title">Department</text>
+            <text x="20" y="95" class="uml-svg-text attribute">- name: str</text>
             
-            <!-- CLASS: Course -->
+            <!-- CLASS: University -->
             <rect x="230" y="30" width="160" height="100" class="uml-svg-class" rx="4"/>
-            <text x="310" y="55" class="uml-svg-text title">Course</text>
+            <text x="310" y="55" class="uml-svg-text title">University</text>
             <text x="240" y="80" class="uml-svg-text attribute">- name: str</text>
-            <text x="240" y="95" class="uml-svg-text attribute">- teacher: Teacher</text>
+            <text x="240" y="95" class="uml-svg-text attribute">- depts: List</text>
             <text x="240" y="110" class="uml-svg-text attribute">- students: List</text>
             
             <!-- CLASS: Student -->
             <rect x="450" y="50" width="140" height="60" class="uml-svg-class" rx="4"/>
             <text x="520" y="75" class="uml-svg-text title">Student</text>
-            <text x="460" y="95" class="uml-svg-text attribute">- id: int</text>
+            <text x="460" y="95" class="uml-svg-text attribute">- name: str</text>
 
-            <!-- CONNECTOR: Teacher -> Course (Association) -->
+            <!-- CONNECTOR: University <>-- Department (Composition/Filled) -->
             <line x1="150" y1="80" x2="230" y2="80" stroke="#333" stroke-width="2" />
-            <text x="190" y="70" class="uml-svg-text override">1</text>
+            <!-- Filled Diamond pointing to University -->
+            <polygon points="230,80 215,85 200,80 215,75" fill="#333" stroke="#333" stroke-width="2" />
+            <text x="180" y="70" class="uml-svg-text override" style="font-size:10px;">Composition</text>
             
-            <!-- CONNECTOR: Course -> Student (Aggregation) -->
+            <!-- CONNECTOR: University o-- Student (Aggregation/Empty) -->
             <line x1="390" y1="80" x2="450" y2="80" stroke="#333" stroke-width="2" />
-            <polygon points="390,80 405,75 420,80 405,85" fill="white" stroke="#333" stroke-width="2" />
-            <text x="430" y="70" class="uml-svg-text override">0..*</text>
+            <!-- Hollow Diamond pointing to University -->
+            <polygon points="390,80 405,85 420,80 405,75" fill="white" stroke="#333" stroke-width="2" />
+            <text x="410" y="70" class="uml-svg-text override" style="font-size:10px;">Aggregation</text>
 
         </svg>
+        <div style="text-align: center; font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+            Filled Diamond = Composition (Strong) &nbsp;&nbsp;|&nbsp;&nbsp; Empty Diamond = Aggregation (Weak)
+        </div>
     </div>
 </section>
 
@@ -94,11 +102,11 @@ extraStyles:
     <div class="guide-progress">
         <h3>Step-by-Step Instructions</h3>
         <ol style="line-height: 1.8; margin-left: 1.5rem;">
-            <li><strong>Open <code>2_university.py</code></strong> from the folder you downloaded in Scenario 1. (If you don't have it, download the zip below).</li>
-            <li>Observe how the <code>Course</code> class takes a <code>Teacher</code> object in its <code>__init__</code>. This is <strong>Dependency Injection</strong>.</li>
-            <li>Complete the <code>enroll_student(self, student)</code> method. It should append the student object to <code>self.students</code>.</li>
-            <li>Complete `roll_call()`. Loop through `self.students` and call `introduce()` on each one.</li>
-            <li><strong>Main Block:</strong> Create one Teacher ("Mr. Smith"), one Course ("CS101"), and three Students. Link them together and verify the roll call works.</li>
+            <li><strong>Open <code>2_university.py</code></strong> from the folder you downloaded in Scenario 1.</li>
+            <li><strong>Identify Composition:</strong> Look at <code>__init__</code>. The University creates its own <code>Department</code> objects. They are born and die with the University.</li>
+            <li><strong>Identify Aggregation:</strong> Look at <code>enroll_student</code>. It accepts a `student` object that exists <em>outside</em>.</li>
+            <li><strong>Task:</strong> Complete the loop in <code>show_details</code> to print the names of the aggregated students.</li>
+            <li><strong>Test:</strong> Run the simulation to see both relationships in action.</li>
         </ol>
     </div>
 

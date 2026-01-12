@@ -1,56 +1,58 @@
 # ==========================================
 # SCENARIO 2: THE UNIVERSITY SYSTEM
-# Focus: Association & Composition
-# "Objects containing other Objects"
+# Focus: Object Relationships
+# 1. Aggregation (Empty Diamond): Weak link (Student exists without Uni)
+# 2. Composition (Filled Diamond): Strong link (Department dies with Uni)
 # ==========================================
 
 # ------------------------------------------
-# STEP 1: The Student Class
+# STEP 1: The Components
 # ------------------------------------------
 class Student:
-    def __init__(self, name, id_number):
+    def __init__(self, name):
         self.name = name
-        self.id_number = id_number
-        
-    def introduce(self):
-        return f"I am {self.name} (ID: {self.id_number})"
+
+class Department:
+    def __init__(self, name):
+        self.name = name
+    
+    def announce(self):
+        return f"The {self.name} Department is open."
 
 # ------------------------------------------
-# STEP 2: The Teacher Class
+# STEP 2: The Container (University)
 # ------------------------------------------
-class Teacher:
-    def __init__(self, name, subject):
+class University:
+    def __init__(self, name):
         self.name = name
-        self.subject = subject
+        self.students = []      # Aggregation list
+        self.departments = []   # Composition list
         
-    def introduce(self):
-        return f"I am Prof. {self.name}, I teach {self.subject}"
+        # COMPOSITION: The University creates its own Departments
+        # If the University is deleted, these objects go with it.
+        self.departments.append(Department("Computer Science"))
+        self.departments.append(Department("Engineering"))
 
-# ------------------------------------------
-# STEP 3: The Course Class ( The Container )
-# ------------------------------------------
-class Course:
-    def __init__(self, course_name, teacher):
-        self.course_name = course_name
-        self.teacher = teacher  # Association: The course HAS A teacher
-        self.students = []      # Composition: The course HAS MANY students
-        
     def enroll_student(self, student):
-        # TODO: Add the student object to the self.students list
-        pass
+        # AGGREGATION: The student is created OUTSIDE and passed in.
+        # If the University is deleted, the student still exists elsewhere.
+        self.students.append(student)
         
-    def roll_call(self):
-        print(f"--- ROLL CALL: {self.course_name} ---")
-        print(f"Teacher: {self.teacher.introduce()}")
-        print("Students:")
-        # TODO: Loop through self.students and print their introduction
+    def show_details(self):
+        print(f"Welcome to {self.name}")
+        print("--- DEPARTMENTS (Composition) ---")
+        for dept in self.departments:
+            print(dept.announce())
+            
+        print("\n--- STUDENTS (Aggregation) ---")
+        # TODO: Loop through self.students and print their names
         pass
 
 # ------------------------------------------
-# STEP 4: Bringing it Together
+# STEP 3: The Simulation
 # ------------------------------------------
-# 1. Create a Teacher
-# 2. Create a Course (pass the teacher in!)
-# 3. Create 3 Students
-# 4. Enroll the students in the course
-# 5. Run the roll_call() method
+# 1. Create a University
+# 2. Create a Student (independently)
+# 3. Enroll the student
+# 4. Run show_details()
+# 5. Question: If you delete the university object, what happens to the student variable?

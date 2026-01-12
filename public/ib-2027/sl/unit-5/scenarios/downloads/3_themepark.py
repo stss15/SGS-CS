@@ -1,24 +1,30 @@
 # ==========================================
 # SCENARIO 3: THEME PARK MANAGER
-# Focus: Encapsulation & Logic
-# "Private Data & Public Methods"
+# Focus: Encapsulation & Static Variables
 # ==========================================
 
 # ------------------------------------------
-# STEP 1: The Visitor Class
+# STEP 1: The Visitor Class (With Static Variable)
 # ------------------------------------------
 class Visitor:
+    # STATIC VARIABLE (Class Level) - Shared by all visitors
+    total_visitors = 0 
+    
     def __init__(self, height_cm, money):
+        # INSTANCE VARIABLES (Object Level) - Unique to this visitor
         self.height_cm = height_cm
         self.money = money
+        
+        # Increment the static counter
+        Visitor.total_visitors += 1
 
 # ------------------------------------------
-# STEP 2: The Ride Class
+# STEP 2: The Ride Class (Encapsulation)
 # ------------------------------------------
 class Ride:
     def __init__(self, name, min_height, cost):
         self.name = name
-        self._min_height = min_height  # Private-ish (by convention)
+        self._min_height = min_height  # Protected/Private convention
         self._cost = cost
         self._earnings = 0
         
@@ -26,28 +32,23 @@ class Ride:
         print(f"\nVisitor trying to ride {self.name}...")
         
         # TODO: Check 1 - Is the visitor tall enough?
-        # If visitor.height_cm < self._min_height: print "Too short!" and return
         
         # TODO: Check 2 - Can they afford it?
-        # If visitor.money < self._cost: print "Too expensive!" and return
         
         # SUCCESS LOGIC
-        # 1. Deduct money from visitor
-        # 2. Add money to self._earnings
-        # 3. Print "Enjoy the ride!"
+        # 1. Deduct cost, add to earnings
         pass
 
     def get_earnings(self):
-        # Getter method to safely see earnings
         return self._earnings
 
 # ------------------------------------------
 # STEP 3: The Simulation
 # ------------------------------------------
+# print(f"Park Visitors at start: {Visitor.total_visitors}")
 
-# roller_coaster = Ride("Dragon Loop", min_height=140, cost=5.00)
-# little_kid = Visitor(height_cm=110, money=20.00)
-# teenager = Visitor(height_cm=160, money=20.00)
+# v1 = Visitor(120, 50)
+# v2 = Visitor(160, 20)
 
-# roller_coaster.attempt_ride(little_kid)  # Should fail (height)
-# roller_coaster.attempt_ride(teenager)    # Should succeed
+# print(f"Park Visitors now: {Visitor.total_visitors}")
+# Note how we access the variable via the CLASS name, not the object!
