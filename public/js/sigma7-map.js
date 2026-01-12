@@ -19,7 +19,7 @@
         'i': ['airlock', 'main_corridor', 'storage', 'lab', 'engineering', 'crew_quarters', 'control_hub', 'archive', 'medical', 'command']
     };
 
-    // Room data for zoom panels
+    // Room data for zoom panels (full names for detail view)
     const ROOM_DATA = {
         airlock: { name: 'Emergency Airlock', desc: 'Starting point. Escape pod offline.', items: [], npcs: [], enemies: ['Sentry Droid (on exit)'] },
         main_corridor: { name: 'Main Corridor', desc: 'Central hub connecting all areas.', items: ['Crowbar'], npcs: ['M-Unit 7'], enemies: [] },
@@ -32,6 +32,23 @@
         medical: { name: 'Medical Bay', desc: 'Medical supplies and treatment.', items: ['Med Kit', 'Stim Pack'], npcs: [], enemies: ['Medical Bot'] },
         command: { name: 'Command Deck', desc: 'Final destination. Boss encounter.', items: ['Signal Beacon'], npcs: [], enemies: ['Security Chief'] }
     };
+
+    // Short labels for map display (fit inside boxes)
+    const MAP_LABELS = {
+        airlock: 'AIRLOCK',
+        main_corridor: 'CORRIDOR',
+        storage: 'STORAGE',
+        lab: 'LAB',
+        engineering: 'ENGINEERING',
+        crew_quarters: 'CREW QTR',
+        control_hub: 'CONTROL',
+        archive: 'ARCHIVE',
+        medical: 'MEDICAL',
+        command: 'COMMAND'
+    };
+
+    // Rooms with only vertical connections (labels can go outside)
+    const BRANCH_ROOMS = ['archive', 'engineering', 'medical', 'lab'];
 
     let modal = null;
     let currentLevel = 'a';
@@ -178,6 +195,8 @@
     function renderRoom(id, x, y, w, h, revealed, color, highlight) {
         const isRevealed = revealed.includes(id);
         const data = ROOM_DATA[id];
+        const label = MAP_LABELS[id] || data.name.toUpperCase();
+        const isBranch = BRANCH_ROOMS.includes(id);
         
         if (!isRevealed) {
             // Fog of war - hidden room
@@ -195,19 +214,38 @@
         const hasItems = data.items && data.items.length > 0;
         const isStart = id === 'airlock';
         
+        // Determine label position for branch rooms (above/below to avoid connection lines)
+        const isTopBranch = (id === 'archive' || id === 'engineering');
+        const isBottomBranch = (id === 'medical' || id === 'lab');
+        
+        let labelElement;
+        if (isBranch) {
+            // Position label outside the box
+            if (isTopBranch) {
+                // Label below the box for top branches
+                labelElement = `<text x="${x + w/2}" y="${y + h + 14}" fill="${color}" font-size="9" font-weight="bold" text-anchor="middle">${label}</text>`;
+            } else {
+                // Label above the box for bottom branches
+                labelElement = `<text x="${x + w/2}" y="${y - 6}" fill="${color}" font-size="9" font-weight="bold" text-anchor="middle">${label}</text>`;
+            }
+        } else {
+            // Label inside the box for main row rooms
+            labelElement = `<text x="${x + w/2}" y="${y + 18}" fill="${color}" font-size="10" font-weight="bold" text-anchor="middle">${label}</text>`;
+        }
+        
         return `
             <g class="room revealed ${highlight ? 'highlight' : ''}" data-room="${id}" style="cursor: pointer;" onclick="window.sigma7Map.zoomRoom('${id}')">
                 <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#grid)" stroke="${color}" stroke-width="${highlight ? 2 : 1}" rx="4"/>
                 ${highlight ? `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${color}" stroke-width="2" stroke-dasharray="6 3" rx="4" opacity="0.5"/>` : ''}
                 
                 <!-- Room name -->
-                <text x="${x + w/2}" y="${y + 18}" fill="${color}" font-size="10" font-weight="bold" text-anchor="middle">${data.name.toUpperCase().substring(0, 12)}</text>
+                ${labelElement}
                 
                 <!-- Icons row -->
-                <g transform="translate(${x + w/2}, ${y + h/2 + 5})">
+                <g transform="translate(${x + w/2}, ${y + h/2 + (isBranch ? 0 : 5)})">
                     ${isStart ? `<circle cx="0" cy="0" r="10" fill="#ff6b6b"/><ellipse cx="0" cy="-2" rx="4" ry="1.5" fill="#00c8ff"/>` : ''}
-                    ${hasItems && !isStart ? `<circle cx="${hasNPC ? -15 : 0}" cy="0" r="6" fill="#06d6a0"/>` : ''}
-                    ${hasNPC ? `<circle cx="${hasItems ? 0 : -8}" cy="0" r="6" fill="#ffd166"/>` : ''}
+                    ${hasItems && !isStart ? `<circle cx="${hasNPC ? -15 : (hasEnemy ? -8 : 0)}" cy="0" r="6" fill="#06d6a0"/>` : ''}
+                    ${hasNPC ? `<circle cx="${hasItems && hasEnemy ? 0 : (hasItems ? 8 : (hasEnemy ? -8 : 0))}" cy="0" r="6" fill="#ffd166"/>` : ''}
                     ${hasEnemy ? `<circle cx="${hasItems || hasNPC ? 15 : 8}" cy="0" r="6" fill="#e63946"/>` : ''}
                 </g>
                 
