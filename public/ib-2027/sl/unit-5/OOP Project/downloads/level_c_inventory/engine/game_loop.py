@@ -165,43 +165,67 @@ Welcome to Sigma-7. Good luck.
             name = "Unknown Survivor"
         
         # Import player classes (prefer student, fallback to student_reference)
+        # Import player classes (prefer student, fallback to student_reference)
+        # LEVEL A PATCH: Handle missing Brute/Scout for initial level
+        # Import player classes (prefer student, fallback to student_reference)
+        # LEVEL A PATCH: Handle missing Brute/Scout for initial level
+        Brute = None
+        Scout = None
+        
         try:
-            from student.player_types import Brute, Scout
             from student.player import Player
         except ImportError:
             try:
-                from student_reference.player_types import Brute, Scout
                 from student_reference.player import Player
             except ImportError:
-                print("Error: Could not load player classes from student/ or student_reference/")
+                print("Error: Could not load Player class from student/ or student_reference/")
                 sys.exit(1)
         
-        # Choose class
-        print(f"\nWelcome, {name}. Choose your background:")
-        print("\n  1. BRUTE")
-        print("     A heavy-combat specialist. High health and armour, ")
-        print("     but lower accuracy. When you hit, you hit hard.")
-        print("     [Health: 120 | Armour: 3 | Accuracy: 70%]")
-        print("\n  2. SCOUT")
-        print("     A reconnaissance expert. Lower health and armour,")
-        print("     but excellent accuracy. Every shot counts.")
-        print("     [Health: 80 | Armour: 1 | Accuracy: 95%]")
+        try:
+            from student.player_types import Brute, Scout
+        except ImportError:
+            pass # Accepted for Level A
         
-        while True:
-            print("\nEnter 1 or 2:")
-            choice = input("> ").strip()
-            if choice == "1":
-                self.player = Brute(name)
-                self.player_class = Brute
-                print(f"\nYou are {name}, the Brute. Built for survival.")
-                break
-            elif choice == "2":
-                self.player = Scout(name)
-                self.player_class = Scout
-                print(f"\nYou are {name}, the Scout. Precision is your weapon.")
-                break
-            else:
-                print("Please enter 1 or 2.")
+        # Choose class IF subclasses exist
+        if Brute and Scout:
+            print(f"\nWelcome, {name}. Choose your background:")
+            print("\n  1. BRUTE")
+            print("     A heavy-combat specialist. High health and armour, ")
+            print("     but lower accuracy. When you hit, you hit hard.")
+            print("     [Health: 120 | Armour: 3 | Accuracy: 70%]")
+            print("\n  2. SCOUT")
+            print("     A reconnaissance expert. Lower health and armour,")
+            print("     but excellent accuracy. Every shot counts.")
+            print("     [Health: 80 | Armour: 1 | Accuracy: 95%]")
+            
+            while True:
+                print("\nEnter 1 or 2:")
+                choice = input("> ").strip()
+                if choice == "1":
+                    self.player = Brute(name)
+                    self.player_class = Brute
+                    print(f"\nYou are {name}, the Brute. Built for survival.")
+                    break
+                elif choice == "2":
+                    self.player = Scout(name)
+                    self.player_class = Scout
+                    print(f"\nYou are {name}, the Scout. Fast and deadly.")
+                    break
+                else:
+                    print("Invalid choice.")
+        else:
+            # Level A Fallback: Just Player
+            self.player = Player(name)
+            self.player_class = Player
+            print(f"\nWelcome, {name}. (Subclasses not found - assumed Level A)")
+            print("\n" + "="*50)
+            print("  LEVEL A: PLAYER CLASS IMPLEMENTATION - COMPLETE")
+            print("  The game engine has successfully loaded your Player.")
+            print("  Since Specialisations (Level B) are not yet built,")
+            print("  we will proceed with the base Player class.")
+            print("="*50 + "\n")
+
+
         
         print("\n" + "-" * 60)
         input("Press Enter to begin...")
@@ -521,6 +545,12 @@ Welcome to Sigma-7. Good luck.
             if item_id not in self.state.taken_items:
                 item = self.world.get_item(item_id)
                 if item and matches_item(item, target):
+                    # Level A: Inventory might be missing. Guard against it.
+                    if getattr(self.player, 'inventory', None) is None:
+                         print(f"You see the {item['name']}, but you have nowhere to put it.")
+                         print("(Implement the Inventory class in Level C!)")
+                         return
+
                     if self.player.inventory.add(item_id):
                         self.state.taken_items.add(item_id)
                         item_pickup_narration(item['name'])
@@ -533,6 +563,11 @@ Welcome to Sigma-7. Good luck.
             if item_id not in self.state.taken_items:
                 item = self.world.get_item(item_id)
                 if item and matches_item(item, target):
+                    # Level A Guard
+                    if getattr(self.player, 'inventory', None) is None:
+                         print(f"You find the {item['name']}, but have no inventory!")
+                         return
+
                     if self.player.inventory.add(item_id):
                         self.state.taken_items.add(item_id)
                         print(f"You find and take the {item['name']}!")
@@ -548,6 +583,11 @@ Welcome to Sigma-7. Good luck.
                     if item_id not in self.state.taken_items:
                         item = self.world.get_item(item_id)
                         if item and matches_item(item, target):
+                            # Level A Guard
+                            if getattr(self.player, 'inventory', None) is None:
+                                 print(f"You see the {item['name']}, but have no inventory!")
+                                 return
+
                             if self.player.inventory.add(item_id):
                                 self.state.taken_items.add(item_id)
                                 print(f"You take the {item['name']} from the chest.")
