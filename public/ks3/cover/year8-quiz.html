@@ -267,6 +267,13 @@
         function selectAnswer(q, a) {
             answers[q] = a;
             render();
+            // Auto-advance to next question after a brief delay
+            if (currentQ < QUESTIONS.length - 1) {
+                setTimeout(() => {
+                    currentQ++;
+                    render();
+                }, 400);
+            }
         }
 
         function nextQ() { if (currentQ < QUESTIONS.length - 1) { currentQ++; render(); } }
