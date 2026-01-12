@@ -8,6 +8,10 @@
     <title>Level D: Making Things Happen - Item Use | OOP Project</title>
     <meta name="description" content="Implement item interactions with conditional logic and method integration.">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../../../images/Logo.png">
+    <link rel="apple-touch-icon" href="../../../../images/Logo.png">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -320,143 +324,13 @@
         <h2 class="oop-section-title">Station Map</h2>
     </div>
     
-    <div class="station-map-container hero-map">
-        <div class="map-header">
-            <div class="map-title">Sigma-7 Research Station — Level D: Using Items</div>
-            <div class="map-legend">
-                <div class="legend-item"><span class="legend-dot player"></span> You</div>
-                <div class="legend-item"><span class="legend-dot item"></span> Items</div>
-                <div class="legend-item"><span class="legend-dot" style="background: #00ff88;"></span> Unlocked</div>
-            </div>
-        </div>
-        
-        <svg viewBox="0 0 700 500" class="station-map" preserveAspectRatio="xMidYMid meet">
-            <defs>
-                <pattern id="floor-grid-d" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <rect width="20" height="20" fill="#1a1a2e"/>
-                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,200,255,0.05)" stroke-width="0.5"/>
-                </pattern>
-            </defs>
-            
-            <rect width="700" height="500" fill="#0a0a12"/>
-            
-            <!-- FOG: North (Crew Quarters & beyond) -->
-            <g class="fog-region">
-                <rect x="0" y="0" width="700" height="80" fill="#050508"/>
-                <text x="350" y="45" fill="rgba(0,200,255,0.15)" font-size="10" text-anchor="middle">??? CREW QUARTERS & BEYOND ???</text>
-            </g>
-            
-            <!-- FOG: West (Engineering) -->
-            <g class="fog-region">
-                <rect x="0" y="80" width="80" height="140" fill="#050508"/>
-                <text x="40" y="150" fill="rgba(0,200,255,0.15)" font-size="9" text-anchor="middle" transform="rotate(-90, 40, 150)">ENGINEERING</text>
-            </g>
-            
-            <!-- MAIN CORRIDOR (Revealed - dimmed) -->
-            <g class="room-revealed" opacity="0.7">
-                <rect x="80" y="100" width="420" height="100" fill="url(#floor-grid-d)" class="room-floor"/>
-                <rect x="80" y="100" width="420" height="5" class="room-wall"/>
-                <rect x="80" y="195" width="420" height="5" class="room-wall"/>
-                <rect x="80" y="100" width="5" height="100" class="room-wall"/>
-                <rect x="495" y="100" width="5" height="100" class="room-wall"/>
-                
-                <!-- Doors -->
-                <rect x="270" y="100" width="40" height="5" class="room-door"/>
-                <rect x="270" y="195" width="40" height="5" class="room-door"/>
-                <rect x="80" y="140" width="5" height="25" class="room-door"/>
-                <rect x="495" y="140" width="5" height="25" class="room-door" style="stroke: #00ff88;"/>
-                
-                <text x="290" y="220" class="room-label" font-size="10">MAIN CORRIDOR</text>
-                
-                <!-- Crowbar taken indicator -->
-                <text x="350" y="150" fill="rgba(100,100,100,0.5)" font-size="8" text-anchor="middle">✓ Crowbar taken</text>
-            </g>
-            
-            <!-- Unlocked door indicator -->
-            <g transform="translate(498, 152)">
-                <rect x="-15" y="-10" width="30" height="20" fill="rgba(0,255,136,0.2)" rx="3"/>
-                <text y="4" fill="#00ff88" font-size="8" text-anchor="middle">🔓</text>
-            </g>
-            
-            <!-- Corridor to Research Lab -->
-            <rect x="500" y="140" width="40" height="25" fill="url(#floor-grid-d)" class="corridor"/>
-            
-            <!-- RESEARCH LAB (Current - Unlocked with keycard!) -->
-            <g class="room-current room-revealed">
-                <rect x="540" y="80" width="150" height="140" fill="url(#floor-grid-d)" class="room-floor"/>
-                <rect x="540" y="80" width="150" height="5" class="room-wall"/>
-                <rect x="540" y="215" width="150" height="5" class="room-wall"/>
-                <rect x="540" y="80" width="5" height="140" class="room-wall"/>
-                <rect x="685" y="80" width="5" height="140" class="room-wall"/>
-                <rect x="540" y="140" width="5" height="25" class="room-door"/>
-                
-                <!-- Lab benches -->
-                <rect x="560" y="100" width="50" height="15" fill="#2d3748"/>
-                <rect x="560" y="180" width="50" height="15" fill="#2d3748"/>
-                <rect x="640" y="120" width="30" height="60" fill="#2d3748"/>
-                
-                <!-- Items in Research Lab -->
-                <g transform="translate(580, 140)">
-                    <circle r="8" fill="rgba(0,255,136,0.3)">
-                        <animate attributeName="r" values="8;10;8" dur="1.5s" repeatCount="indefinite"/>
-                    </circle>
-                    <rect x="-6" y="-4" width="12" height="8" fill="#e63946" rx="1"/>
-                    <rect x="-1" y="-5" width="2" height="10" fill="white"/>
-                    <rect x="-4" y="-1" width="8" height="2" fill="white"/>
-                    <text y="18" fill="#e63946" font-size="7" text-anchor="middle">Med Patch</text>
-                </g>
-                <g transform="translate(620, 140)">
-                    <circle r="8" fill="rgba(0,255,136,0.3)"/>
-                    <rect x="-7" y="-5" width="14" height="10" fill="#ffd166" rx="1"/>
-                    <text y="18" fill="#ffd166" font-size="7" text-anchor="middle">Note</text>
-                </g>
-                <g transform="translate(660, 165)">
-                    <circle r="8" fill="rgba(0,255,136,0.3)"/>
-                    <rect x="-6" y="-4" width="12" height="8" fill="#00c8ff" rx="1"/>
-                    <text y="18" fill="#00c8ff" font-size="7" text-anchor="middle">Data Chip</text>
-                </g>
-                
-                <rect x="540" y="80" width="150" height="140" fill="none" stroke="#00ff88" stroke-width="2" stroke-dasharray="6 3"/>
-                <text x="615" y="235" class="room-label" style="fill: #00ff88; font-size: 10px;">🔬 RESEARCH LAB</text>
-                
-                <!-- Player -->
-                <g class="player-sprite" transform="translate(600, 160)">
-                    <circle r="14" fill="rgba(0,255,136,0.2)"/>
-                    <circle r="10" fill="#2ec4b6"/>
-                    <ellipse rx="4" ry="2" cy="-2" fill="#00c8ff"/>
-                </g>
-            </g>
-            
-            <!-- Storage Cage (South - dimmed) -->
-            <g class="room-revealed" opacity="0.6">
-                <rect x="200" y="230" width="180" height="100" fill="url(#floor-grid-d)"/>
-                <rect x="270" y="200" width="40" height="30" fill="url(#floor-grid-d)" class="corridor"/>
-                <text x="290" y="350" class="room-label" font-size="9">STORAGE (keycard ✓)</text>
-            </g>
-            
-            <!-- Airlock (further south - dimmed) -->
-            <g class="room-revealed" opacity="0.5">
-                <rect x="230" y="360" width="120" height="70" fill="url(#floor-grid-d)"/>
-                <text x="290" y="450" class="room-label" font-size="8">AIRLOCK</text>
-            </g>
-            
-            <!-- Compass -->
-            <g transform="translate(650, 450)">
-                <circle r="22" fill="rgba(0,200,255,0.1)" stroke="rgba(0,200,255,0.3)"/>
-                <text y="-8" fill="#00c8ff" font-size="9" text-anchor="middle" font-weight="bold">N</text>
-                <text y="13" fill="#00c8ff" font-size="7" text-anchor="middle">S</text>
-                <text x="-12" y="3" fill="#00c8ff" font-size="7" text-anchor="middle">W</text>
-                <text x="12" y="3" fill="#00c8ff" font-size="7" text-anchor="middle">E</text>
-            </g>
-            
-            <!-- Action annotation -->
-            <g transform="translate(500, 50)">
-                <rect x="-80" y="-15" width="160" height="30" fill="rgba(0,255,136,0.1)" rx="5" stroke="#00ff88"/>
-                <text y="5" fill="#00ff88" font-size="10" text-anchor="middle">Use keycard → Unlock door!</text>
-            </g>
-        </svg>
-    </div>
+    <p class="section-intro">View the Sigma-7 station layout. Fog of war reveals as you progress through levels.</p>
+    
+    <button class="show-map-btn" onclick="sigma7Map.open()">
+        <i class="fa-solid fa-map"></i> Show Station Map
+    </button>
 </section>
+<script src="../../../../js/sigma7-map.js"></script>
 
 <!-- CHALLENGE -->
 <section class="oop-section">

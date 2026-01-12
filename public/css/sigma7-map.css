@@ -44,12 +44,23 @@
     overflow: hidden;
 }
 
-/* Hero-style full-width map */
+/* Hero-style full-width map - HORIZONTAL LAYOUT */
 .station-map-container.hero-map {
     max-width: 100%;
-    min-height: 550px;
+    min-height: 200px;
+    max-height: 360px;
+    height: auto;
     border-radius: 12px;
-    padding: 1.5rem 2rem 2rem;
+    padding: 1rem 1.5rem;
+    overflow: visible;
+}
+
+/* Ensure SVG scales properly - HORIZONTAL orientation */
+.station-map-container.hero-map .station-map {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    display: block;
 }
 
 /* Scanline effect overlay */
@@ -593,19 +604,36 @@
 
 /* ===== ROOM LABELS ===== */
 .room-label {
-    font-family: 'Orbitron', 'Rajdhani', 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-family: 'Inter', 'Rajdhani', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    fill: rgba(255, 255, 255, 0.7);
+    fill: rgba(255, 255, 255, 0.85);
     text-anchor: middle;
+    paint-order: stroke;
+    stroke: rgba(0, 0, 0, 0.8);
+    stroke-width: 2px;
 }
 
 .room-label.current {
     fill: var(--npc-color);
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 700;
+}
+
+/* Clickable room indicator */
+.room-clickable {
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.room-clickable:hover {
+    filter: brightness(1.3) drop-shadow(0 0 8px rgba(0, 200, 255, 0.5));
+}
+
+.room-clickable:hover .room-floor {
+    fill: #252540;
 }
 
 /* ===== CORRIDORS ===== */
@@ -817,3 +845,117 @@
     from { opacity: 1; }
     to { opacity: 0; }
 }
+
+/* ===== ROOM DETAIL MODAL ===== */
+.room-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    backdrop-filter: blur(4px);
+}
+
+.room-modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.room-modal {
+    background: var(--map-bg);
+    border-radius: 16px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 
+        0 0 0 1px rgba(0, 200, 255, 0.4),
+        0 0 60px rgba(0, 200, 255, 0.2);
+    position: relative;
+}
+
+.room-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 200, 255, 0.2);
+    background: rgba(0, 20, 40, 0.5);
+}
+
+.room-modal-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--energy-blue);
+}
+
+.room-modal-close {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.room-modal-close:hover {
+    background: rgba(255, 100, 100, 0.2);
+    border-color: rgba(255, 100, 100, 0.5);
+    color: #ff6b6b;
+}
+
+.room-modal-content {
+    padding: 1.5rem;
+}
+
+.room-modal-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    background: #0a0a12;
+}
+
+/* Room info in modal */
+.room-modal-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 200, 255, 0.15);
+}
+
+.room-info-item {
+    text-align: center;
+}
+
+.room-info-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.25rem;
+}
+
+.room-info-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--energy-blue);
+}
+
+.room-info-value.item { color: var(--item-color); }
+.room-info-value.enemy { color: var(--enemy-color); }
+.room-info-value.npc { color: var(--npc-color); }
