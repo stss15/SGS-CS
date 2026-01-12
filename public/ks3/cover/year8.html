@@ -6,10 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Control Repair | Year 8</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Prism.js Syntax Highlighting -->
+    <!-- Prism.js Syntax Highlighting (for example blocks) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
-        rel="stylesheet" />
+    <!-- CodeMirror Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* Layout */
@@ -147,17 +155,18 @@
             z-index: 10;
         }
 
-        textarea.code-input {
+        /* CodeMirror Editor Styling */
+        #code-editor-container,
+        #css-editor-container {
             flex: 1;
-            background: transparent;
-            color: #f8fafc;
-            border: none;
-            padding: 1rem;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            height: 100%;
+        }
+
+        #code-editor-container .CodeMirror,
+        #css-editor-container .CodeMirror {
+            height: 100%;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
             font-size: 14px;
-            resize: none;
-            outline: none;
-            line-height: 1.6;
         }
 
         iframe.preview-frame {
@@ -449,9 +458,8 @@
                 </div>
                 <div class="editor-body">
                     <div class="code-panel">
-                        <textarea id="code-editor" class="code-input" spellcheck="false"></textarea>
-                        <textarea id="css-editor" class="code-input" spellcheck="false"
-                            style="display:none;"></textarea>
+                        <div id="code-editor-container"></div>
+                        <div id="css-editor-container" style="display:none;"></div>
                     </div>
                     <div class="preview-panel">
                         <div class="preview-label">Live Preview</div>
@@ -880,8 +888,9 @@ justify-content</div>`,
         let htmlCode = '';
         let cssCode = '';
 
-        const editor = document.getElementById('code-editor');
-        const cssEditor = document.getElementById('css-editor');
+        // CodeMirror editor instances
+        let htmlEditor, cssEditor;
+
         const iframe = document.getElementById('preview-frame');
         const sidebarContent = document.getElementById('sidebar-content');
         const learnTab = document.getElementById('learn-tab');
@@ -896,6 +905,43 @@ justify-content</div>`,
         const cssTab = document.getElementById('css-tab');
 
         function init() {
+            // Initialize CodeMirror for HTML editor
+            htmlEditor = CodeMirror(document.getElementById('code-editor-container'), {
+                mode: 'htmlmixed',
+                theme: 'material-darker',
+                lineNumbers: true,
+                tabSize: 2,
+                indentWithTabs: false,
+                autoCloseTags: true,
+                autoCloseBrackets: true,
+                lineWrapping: true,
+                extraKeys: {
+                    'Tab': function (cm) {
+                        cm.replaceSelection('  ', 'end');
+                    }
+                }
+            });
+
+            // Initialize CodeMirror for CSS editor
+            cssEditor = CodeMirror(document.getElementById('css-editor-container'), {
+                mode: 'css',
+                theme: 'material-darker',
+                lineNumbers: true,
+                tabSize: 2,
+                indentWithTabs: false,
+                autoCloseBrackets: true,
+                lineWrapping: true,
+                extraKeys: {
+                    'Tab': function (cm) {
+                        cm.replaceSelection('  ', 'end');
+                    }
+                }
+            });
+
+            // Live preview on change
+            htmlEditor.on('change', updatePreview);
+            cssEditor.on('change', updatePreview);
+
             lucide.createIcons();
             loadLevel(0);
             document.addEventListener('keydown', (e) => {
@@ -939,7 +985,7 @@ justify-content</div>`,
             <div class="instruction-box">${level.learnContent}</div>
         `;
                 htmlCode = level.learnStarterCode;
-                editor.value = htmlCode;
+                htmlEditor.setValue(htmlCode);
                 actionBtnText.textContent = 'Run Code';
             } else {
                 sidebarContent.innerHTML = `
@@ -947,13 +993,13 @@ justify-content</div>`,
             <div class="instruction-box">${level.challengeContent}</div>
         `;
                 htmlCode = level.challengeStarterCode || '';
-                editor.value = htmlCode;
+                htmlEditor.setValue(htmlCode);
                 actionBtnText.textContent = level.isSandbox ? 'Finish' : 'Submit';
                 refModalBody.innerHTML = level.reference;
             }
 
             if (level.isSandbox) {
-                cssEditor.value = cssCode;
+                cssEditor.setValue(cssCode);
             }
 
             switchFile('html');
@@ -963,22 +1009,26 @@ justify-content</div>`,
 
         function switchFile(file) {
             currentFile = file;
+            const htmlContainer = document.getElementById('code-editor-container');
+            const cssContainer = document.getElementById('css-editor-container');
             if (file === 'html') {
-                editor.style.display = 'block';
-                cssEditor.style.display = 'none';
+                htmlContainer.style.display = 'block';
+                cssContainer.style.display = 'none';
                 htmlTab.classList.add('active');
                 cssTab.classList.remove('active');
+                htmlEditor.refresh();
             } else {
-                editor.style.display = 'none';
-                cssEditor.style.display = 'block';
+                htmlContainer.style.display = 'none';
+                cssContainer.style.display = 'block';
                 htmlTab.classList.remove('active');
                 cssTab.classList.add('active');
+                cssEditor.refresh();
             }
         }
 
         function updatePreview() {
-            htmlCode = editor.value;
-            cssCode = cssEditor.value;
+            htmlCode = htmlEditor.getValue();
+            cssCode = cssEditor.getValue();
 
             const doc = iframe.contentWindow.document;
             doc.open();
@@ -1056,9 +1106,6 @@ justify-content</div>`,
              title="Level ${level.id}: ${level.title}"></div>
     `).join('');
         }
-
-        editor.addEventListener('input', updatePreview);
-        cssEditor.addEventListener('input', updatePreview);
 
         init();
 
