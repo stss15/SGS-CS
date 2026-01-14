@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darwin's Museum | HL OOP Scenario | SGS Computer Science</title>
+    <meta name="description"
+        content="HL OOP Scenario: Build a museum exhibit system using deep inheritance chains and polymorphism.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../../../images/Logo.png">
+    <link rel="apple-touch-icon" href="../../../../images/Logo.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../../../css/style.css">
+    <link rel="stylesheet" href="../../../../css/oop-worksheet.css">
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="../../../../index.html">
+                    <img src="../../../../images/Logo.png" alt="St George's Logo" class="logo-img">
+                </a>
+                <a href="../../../../index.html" class="site-title-link">
+                    <span class="site-title">SGS Computer Science</span>
+                </a>
+            </div>
+
+            <nav class="main-nav" aria-label="Main navigation">
+                <a href="../../../../ks3/index.html" class="nav-link">KS3</a>
+                <a href="../../../../igcse/index.html" class="nav-link">IGCSE</a>
+                <a href="../../../../ib/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <div class="header-tools">
+                <button class="tools-toggle" aria-expanded="false" aria-controls="tools-menu">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                    <span class="sr-only">Tools menu</span>
+                </button>
+                <div class="tools-dropdown" id="tools-menu">
+                    <button class="tool-item" data-open-feedback="bug">
+                        <i class="fa-solid fa-bug"></i> Report a bug
+                    </button>
+                    <button class="tool-item" data-open-feedback="feature">
+                        <i class="fa-solid fa-lightbulb"></i> Request a feature
+                    </button>
+                    <a class="tool-item" href="../../../../admin.html">
+                        <i class="fa-solid fa-user-shield"></i> Admin
+                    </a>
+                </div>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
+                <i class="fa-solid fa-bars"></i>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="../../../../index.html">Home</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../../../../ib-2027/index.html">IB 2027</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../../../../ib-2027/hl/index.html">HL</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../../../../ib-2027/hl/unit-5/index.html">Unit 5</a>
+                    <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                </li>
+                <li class="breadcrumb-item current" aria-current="page">Darwin's Museum</li>
+            </ol>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- HERO SECTION -->
+        <div class="oop-hero"
+            style="background: linear-gradient(135deg, #2d5016 0%, #4a7c23 50%, #6b8e23 100%); height: 280px;">
+            <div class="oop-hero-overlay"
+                style="background: linear-gradient(to right, rgba(20, 40, 10, 0.95) 0%, rgba(20, 40, 10, 0.6) 50%, transparent 100%);">
+                <span class="oop-hero-level">HL OOP Scenario 01</span>
+                <h1 class="oop-hero-title">Darwin's Museum</h1>
+                <p class="oop-hero-subtitle">From Theropods to Birds: Deep Inheritance & Polymorphism</p>
+            </div>
+        </div>
+
+        <!-- SCENARIO OVERVIEW -->
+        <section class="oop-section">
+            <div class="oop-section-header">
+                <div class="oop-section-icon">
+                    <i class="fa-solid fa-scroll"></i>
+                </div>
+                <h2 class="oop-section-title">The Scenario</h2>
+            </div>
+
+            <div class="class-overview">
+                <p class="class-overview-desc">
+                    Darwin returns from an expedition with fossils and living specimens. The museum is opening a new
+                    exhibit called
+                    <strong>"From Theropods to Birds"</strong>. A tour guide introduces visitors to each exhibit. Your
+                    task is to
+                    implement the specimen classes so the exhibit tour can run — demonstrating the evolutionary
+                    connection between
+                    fearsome dinosaurs and modern birds.
+                </p>
+            </div>
+        </section>
+
+        <!-- LEARNING OBJECTIVES -->
+        <section class="oop-section">
+            <div class="oop-section-header">
+                <div class="oop-section-icon">
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+                <h2 class="oop-section-title">Learning Objectives</h2>
+            </div>
+
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <div class="objective-number">1</div>
+                    <div class="objective-text">Build a <strong>multi-level inheritance chain</strong> (Species →
+                        Dinosaur → Theropod → TRex)</div>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-number">2</div>
+                    <div class="objective-text">Create <strong>parallel inheritance branches</strong> (Species → Bird →
+                        Chicken)</div>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-number">3</div>
+                    <div class="objective-text">Demonstrate <strong>polymorphism</strong> by calling the same method on
+                        different object types</div>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-number">4</div>
+                    <div class="objective-text">Use <strong>@property</strong> decorator for encapsulation (read-only
+                        specimen IDs)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UML DIAGRAM -->
+        <section class="oop-section">
+            <div class="oop-section-header">
+                <div class="oop-section-icon">
+                    <i class="fa-solid fa-diagram-project"></i>
+                </div>
+                <h2 class="oop-section-title">Class Hierarchy</h2>
+            </div>
+
+            <div class="uml-svg-container" style="max-width: 1200px; margin: 0 auto;">
+                <svg viewBox="0 0 1200 950" class="uml-svg" preserveAspectRatio="xMidYMid meet"
+                    style="font-family: 'Courier New', monospace;">
+
+                    <!-- ===== SPECIES (Top Center) ===== -->
+                    <rect x="425" y="10" width="350" height="150" class="uml-svg-class" rx="6" />
+                    <text x="600" y="40" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">Species</text>
+                    <line x1="425" y1="55" x2="775" y2="55" class="uml-svg-line" />
+                    <text x="440" y="78" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#dc3545" font-weight="bold">−</tspan> _specimen_id: str
+                    </text>
+                    <text x="440" y="96" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> species_name: str
+                    </text>
+                    <text x="440" y="114" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> common_name: str
+                    </text>
+                    <line x1="425" y1="125" x2="775" y2="125" class="uml-svg-line" />
+                    <text x="440" y="145" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> describe()
+                    </text>
+                    <text x="560" y="145" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> sound()
+                    </text>
+                    <text x="660" y="145" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> move()
+                    </text>
+
+                    <!-- Species connections down -->
+                    <line x1="600" y1="160" x2="600" y2="195" stroke="#333" stroke-width="2" />
+                    <line x1="250" y1="195" x2="950" y2="195" stroke="#333" stroke-width="2" />
+                    <line x1="250" y1="195" x2="250" y2="220" stroke="#333" stroke-width="2" />
+                    <line x1="950" y1="195" x2="950" y2="220" stroke="#333" stroke-width="2" />
+                    <polygon points="250,215 244,228 256,228" fill="white" stroke="#333" stroke-width="2" />
+                    <polygon points="950,215 944,228 956,228" fill="white" stroke="#333" stroke-width="2" />
+
+                    <!-- ===== DINOSAUR ===== -->
+                    <rect x="75" y="235" width="350" height="145" class="uml-svg-class" rx="6" />
+                    <text x="250" y="265" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">Dinosaur</text>
+                    <line x1="75" y1="280" x2="425" y2="280" class="uml-svg-line" />
+                    <text x="90" y="303" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> clade: str
+                    </text>
+                    <text x="90" y="321" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> tail_length_m: float
+                    </text>
+                    <text x="90" y="339" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> has_feathers: bool
+                    </text>
+                    <line x1="75" y1="350" x2="425" y2="350" class="uml-svg-line" />
+                    <text x="90" y="373" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> get_skeletal_note()
+                    </text>
+
+                    <!-- ===== BIRD ===== -->
+                    <rect x="775" y="235" width="350" height="145" class="uml-svg-class" rx="6" />
+                    <text x="950" y="265" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">Bird</text>
+                    <line x1="775" y1="280" x2="1125" y2="280" class="uml-svg-line" />
+                    <text x="790" y="303" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> wing_span_m: float
+                    </text>
+                    <text x="790" y="321" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> beak_type: str
+                    </text>
+                    <text x="790" y="339" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> flight_capable: bool
+                    </text>
+                    <line x1="775" y1="350" x2="1125" y2="350" class="uml-svg-line" />
+                    <text x="790" y="373" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> lay_eggs()
+                    </text>
+
+                    <!-- Dinosaur to Theropod -->
+                    <line x1="250" y1="380" x2="250" y2="410" stroke="#333" stroke-width="2" />
+                    <polygon points="250,405 244,418 256,418" fill="white" stroke="#333" stroke-width="2" />
+
+                    <!-- Bird to children horizontal split -->
+                    <line x1="950" y1="380" x2="950" y2="405" stroke="#333" stroke-width="2" />
+                    <line x1="830" y1="405" x2="1070" y2="405" stroke="#333" stroke-width="2" />
+                    <line x1="830" y1="405" x2="830" y2="425" stroke="#333" stroke-width="2" />
+                    <line x1="1070" y1="405" x2="1070" y2="425" stroke="#333" stroke-width="2" />
+                    <polygon points="830,420 824,433 836,433" fill="white" stroke="#333" stroke-width="2" />
+                    <polygon points="1070,420 1064,433 1076,433" fill="white" stroke="#333" stroke-width="2" />
+
+                    <!-- ===== THEROPOD ===== -->
+                    <rect x="75" y="425" width="350" height="160" class="uml-svg-class" rx="6" />
+                    <text x="250" y="455" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">Theropod</text>
+                    <line x1="75" y1="470" x2="425" y2="470" class="uml-svg-line" />
+                    <text x="90" y="493" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> stance: str
+                    </text>
+                    <text x="90" y="511" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> hand_claws: int
+                    </text>
+                    <text x="90" y="529" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> hunting_style: str
+                    </text>
+                    <line x1="75" y1="545" x2="425" y2="545" class="uml-svg-line" />
+                    <text x="90" y="568" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> hunt()
+                    </text>
+                    <text x="180" y="568" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> get_trait_evolution()
+                    </text>
+
+                    <!-- ===== CHICKEN ===== -->
+                    <rect x="700" y="440" width="260" height="145" class="uml-svg-class" rx="6" />
+                    <text x="830" y="470" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">Chicken</text>
+                    <line x1="700" y1="485" x2="960" y2="485" class="uml-svg-line" />
+                    <text x="715" y="508" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> breed: str
+                    </text>
+                    <text x="715" y="526" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> domesticated: bool
+                    </text>
+                    <text x="715" y="544" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> egg_per_week: int
+                    </text>
+                    <line x1="700" y1="555" x2="960" y2="555" class="uml-svg-line" />
+                    <text x="715" y="578" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> forage()
+                    </text>
+
+                    <!-- ===== PENGUIN ===== -->
+                    <rect x="970" y="440" width="200" height="145" class="uml-svg-class" rx="6" />
+                    <text x="1070" y="470" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">Penguin</text>
+                    <line x1="970" y1="485" x2="1170" y2="485" class="uml-svg-line" />
+                    <text x="985" y="508" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> swim_speed_kmh: float
+                    </text>
+                    <text x="985" y="526" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> colony_size: int
+                    </text>
+                    <line x1="970" y1="555" x2="1170" y2="555" class="uml-svg-line" />
+                    <text x="985" y="578" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> swim()
+                    </text>
+                    <text x="1055" y="578" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> huddle()
+                    </text>
+
+                    <!-- Theropod to children horizontal split -->
+                    <line x1="250" y1="585" x2="250" y2="610" stroke="#333" stroke-width="2" />
+                    <line x1="130" y1="610" x2="370" y2="610" stroke="#333" stroke-width="2" />
+                    <line x1="130" y1="610" x2="130" y2="630" stroke="#333" stroke-width="2" />
+                    <line x1="370" y1="610" x2="370" y2="630" stroke="#333" stroke-width="2" />
+                    <polygon points="130,625 124,638 136,638" fill="white" stroke="#333" stroke-width="2" />
+                    <polygon points="370,625 364,638 376,638" fill="white" stroke="#333" stroke-width="2" />
+
+                    <!-- ===== TREX ===== -->
+                    <rect x="20" y="645" width="220" height="160" class="uml-svg-class" rx="6" />
+                    <text x="130" y="675" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">TRex</text>
+                    <line x1="20" y1="690" x2="240" y2="690" class="uml-svg-line" />
+                    <text x="35" y="713" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> bite_force_n: int
+                    </text>
+                    <text x="35" y="731" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> arm_length_m: float
+                    </text>
+                    <text x="35" y="749" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> top_speed_kmh: float
+                    </text>
+                    <line x1="20" y1="760" x2="240" y2="760" class="uml-svg-line" />
+                    <text x="35" y="783" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> intimidate()
+                    </text>
+                    <text x="35" y="801" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> get_museum_fact()
+                    </text>
+
+                    <!-- ===== VELOCIRAPTOR ===== -->
+                    <rect x="260" y="645" width="220" height="160" class="uml-svg-class" rx="6" />
+                    <text x="370" y="675" class="uml-svg-text title"
+                        style="font-size: 16px; font-weight: bold;">Velociraptor</text>
+                    <line x1="260" y1="690" x2="480" y2="690" class="uml-svg-line" />
+                    <text x="275" y="713" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> pack_size: int
+                    </text>
+                    <text x="275" y="731" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> claw_length_cm: float
+                    </text>
+                    <text x="275" y="749" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> feather_display: str
+                    </text>
+                    <line x1="260" y1="760" x2="480" y2="760" class="uml-svg-line" />
+                    <text x="275" y="783" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> pack_hunt()
+                    </text>
+                    <text x="275" y="801" style="font-size: 13px; fill: #333;">
+                        <tspan fill="#28a745" font-weight="bold">+</tspan> leap_attack()
+                    </text>
+
+                    <!-- ===== LEGEND ===== -->
+                    <rect x="550" y="680" width="280" height="100" fill="#f8f9fa" stroke="#dee2e6" rx="6" />
+                    <text x="690" y="710"
+                        style="font-size: 15px; font-weight: bold; fill: #333; text-anchor: middle;">Legend</text>
+                    <text x="575" y="738" style="font-size: 13px; fill: #28a745; font-weight: bold;">+</text>
+                    <text x="590" y="738" style="font-size: 13px; fill: #333;">Public</text>
+                    <text x="680" y="738" style="font-size: 13px; fill: #dc3545; font-weight: bold;">−</text>
+                    <text x="695" y="738" style="font-size: 13px; fill: #333;">Private</text>
+                    <line x1="575" y1="758" x2="605" y2="758" stroke="#333" stroke-width="2" />
+                    <polygon points="605,758 597,752 597,764" fill="white" stroke="#333" stroke-width="1.5" />
+                    <text x="615" y="762" style="font-size: 13px; fill: #333;">Inherits from</text>
+                </svg>
+            </div>
+        </section>
+
+        <!-- METHOD SPECIFICATIONS -->
+        <section class="oop-section">
+            <div class="oop-section-header">
+                <div class="oop-section-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <h2 class="oop-section-title">Method Specifications</h2>
+            </div>
+
+            <p style="margin-bottom: 1.5rem; color: #555;">
+                Each method below must be implemented. This is <strong>what</strong> each method should do —
+                <em>how</em> you implement it is up to you.
+            </p>
+
+            <!-- SPECIES METHODS -->
+            <div class="keywords-table">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">Species (base class)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>__init__(specimen_id)</code></td>
+                            <td>None</td>
+                            <td>Store the specimen_id as a private attribute. Initialize all attributes shown in the UML
+                                with sensible defaults.</td>
+                        </tr>
+                        <tr>
+                            <td><code>specimen_id</code> (property)</td>
+                            <td>str</td>
+                            <td>Return the private specimen ID. This must be <strong>read-only</strong> — use Python's
+                                <code>@property</code> decorator.</td>
+                        </tr>
+                        <tr>
+                            <td><code>describe()</code></td>
+                            <td>str</td>
+                            <td>Return a one-paragraph description of the species including its name, era, and diet.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><code>sound()</code></td>
+                            <td>str</td>
+                            <td>Return text describing the sound this species makes (e.g., "ROAR", "BAWK", "HONK").</td>
+                        </tr>
+                        <tr>
+                            <td><code>move()</code></td>
+                            <td>str</td>
+                            <td>Return text describing how this species moves (walking, flying, swimming, etc.).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DINOSAUR METHODS -->
+            <div class="keywords-table" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">Dinosaur (inherits from Species)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>__init__(specimen_id)</code></td>
+                            <td>None</td>
+                            <td>Call <code>super().__init__()</code> first, then set dinosaur-specific attributes
+                                (clade, tail_length_m, has_feathers).</td>
+                        </tr>
+                        <tr>
+                            <td><code>get_skeletal_note()</code></td>
+                            <td>str</td>
+                            <td>Return a string describing skeletal features: clade, tail length, and tooth type.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- THEROPOD METHODS -->
+            <div class="keywords-table" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">Theropod (inherits from Dinosaur)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>hunt()</code></td>
+                            <td>str</td>
+                            <td>Return text describing how this theropod hunts, mentioning its
+                                <code>hunting_style</code> attribute.</td>
+                        </tr>
+                        <tr>
+                            <td><code>get_trait_evolution()</code></td>
+                            <td>str</td>
+                            <td>Return a summary of evolved traits: number of hand claws, vision type, and intelligence
+                                level.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TREX METHODS -->
+            <div class="keywords-table" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">TRex (inherits from Theropod)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>intimidate()</code></td>
+                            <td>str</td>
+                            <td>Return text describing an intimidation display, mentioning the T-Rex's bite force.</td>
+                        </tr>
+                        <tr>
+                            <td><code>get_museum_fact()</code></td>
+                            <td>str</td>
+                            <td>Return an interesting museum-worthy fact about T-Rex (e.g., about its tiny arms or
+                                massive bite).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- VELOCIRAPTOR METHODS -->
+            <div class="keywords-table" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">Velociraptor (inherits from Theropod)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>pack_hunt()</code></td>
+                            <td>str</td>
+                            <td>Return text describing coordinated pack hunting, mentioning <code>pack_size</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>leap_attack()</code></td>
+                            <td>str</td>
+                            <td>Return text describing the signature leaping attack with its <code>claw_length_cm</code>
+                                sickle claw.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- BIRD METHODS -->
+            <div class="keywords-table" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">Bird (inherits from Species)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>lay_eggs()</code></td>
+                            <td>str</td>
+                            <td>Return text about egg-laying behavior, mentioning <code>nesting_style</code>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CHICKEN METHODS -->
+            <div class="keywords-table" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">Chicken (inherits from Bird)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>forage()</code></td>
+                            <td>str</td>
+                            <td>Return text describing foraging behavior (scratching ground for food).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PENGUIN METHODS -->
+            <div class="keywords-table" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #1e3c72;">Penguin (inherits from Bird)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Method</th>
+                            <th style="width: 15%;">Returns</th>
+                            <th>Expected Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>swim()</code></td>
+                            <td>str</td>
+                            <td>Return text describing swimming ability, mentioning <code>swim_speed_kmh</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>huddle()</code></td>
+                            <td>str</td>
+                            <td>Return text describing the huddling behavior for warmth, mentioning
+                                <code>colony_size</code>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="method-hint" style="margin-top: 2rem;">
+                <strong>💡 Overriding:</strong> Subclasses should <strong>override</strong> inherited methods like
+                <code>sound()</code> and <code>move()</code> to return behavior specific to that species. A T-Rex's
+                <code>sound()</code> should return a roar, while a Chicken's should return a cluck.
+            </div>
+        </section>
+
+        <!-- INSTRUCTIONS -->
+        <section class="oop-section">
+            <div class="oop-section-header">
+                <div class="oop-section-icon">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <h2 class="oop-section-title">Your Task</h2>
+            </div>
+
+            <div class="guide-progress">
+                <h3>What You Need to Build</h3>
+                <ol style="line-height: 2.2; margin-left: 1.5rem;">
+                    <li>Study the UML diagram above — it contains all the attributes and methods you need</li>
+                    <li>Build the <strong>Species</strong> base class first: this is the foundation everything inherits
+                        from</li>
+                    <li>Follow the <strong>Dinosaur branch</strong> down: Dinosaur → Theropod → (TRex | Velociraptor)
+                    </li>
+                    <li>Follow the <strong>Bird branch</strong> down: Bird → (Chicken | Penguin)</li>
+                    <li>In <code>main.py</code>, create one instance of each class and add them to a single list</li>
+                    <li>Loop through your list and call <code>sound()</code>, <code>move()</code>, and
+                        <code>describe()</code> on each — <strong>this is polymorphism</strong>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="method-hint">
+                <strong>💡 The Big Idea:</strong> A TRex and a Chicken both inherit from Species, so they both have
+                a <code>sound()</code> method. But when you call it, you get a roar vs a cluck. Same method name,
+                different behavior — that's polymorphism. Your museum tour should demonstrate this.
+            </div>
+
+            <div class="challenge-actions" style="justify-content: center; margin-top: 2rem;">
+                <a href="downloads/darwin_museum.zip" class="download-btn" download>
+                    <i class="fa-solid fa-download"></i>
+                    Download Starter Files
+                </a>
+            </div>
+        </section>
+
+        <!-- SUCCESS CRITERIA -->
+        <section class="oop-section">
+            <div class="oop-section-header">
+                <div class="oop-section-icon">
+                    <i class="fa-solid fa-check-circle"></i>
+                </div>
+                <h2 class="oop-section-title">Success Criteria</h2>
+            </div>
+
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <div class="objective-number">✓</div>
+                    <div class="objective-text">All 8 classes match the UML hierarchy exactly</div>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-number">✓</div>
+                    <div class="objective-text">Each subclass correctly calls <code>super().__init__()</code></div>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-number">✓</div>
+                    <div class="objective-text">Looping through a mixed list shows different outputs for the same method
+                        call</div>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-number">✓</div>
+                    <div class="objective-text"><code>specimen_id</code> uses <code>@property</code> and cannot be
+                        changed after creation</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SGSD Computer Science. All rights reserved.</p>
+    </footer>
+
+    <div class="feedback-modals" data-feedback-default-level="IB">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB" selected>IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text"
+                    placeholder="Topic 1.1 slide deck — slide 9 video freezes" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4"
+                    placeholder="Describe the issue and where it shows up" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true"
+            aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB" selected>IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5"
+                    placeholder="e.g. Add a revision game for Topic 2.1" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../../../js/nav.js"></script>
+    <script src="../../../../js/feedback.js"></script>
+</body>
+
+</html>
