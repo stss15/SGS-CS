@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1 & 2 Quiz - Year 7 Unit 2</title>
+    <link rel="icon" type="image/png" href="../../../images/Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #003366;
+            --accent: #d4af37;
+            --correct: #22c55e;
+            --incorrect: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent), #f0d060);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .question-card.answered-correct {
+            border-color: var(--correct);
+        }
+
+        .question-card.answered-incorrect {
+            border-color: var(--incorrect);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+
+        .option.correct {
+            border-color: var(--correct);
+            background: #f0fdf4;
+        }
+
+        .option.incorrect {
+            border-color: var(--incorrect);
+            background: #fef2f2;
+        }
+
+        .option.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .option.show-correct {
+            border-color: var(--correct);
+            background: #f0fdf4;
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option.correct .option-letter {
+            background: var(--correct);
+            color: white;
+        }
+
+        .option.incorrect .option-letter {
+            background: var(--incorrect);
+            color: white;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: #166534;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Name Entry Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .modal p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-btn:hover {
+            background: #004080;
+        }
+
+        /* Results Modal */
+        .results-modal .modal {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #004080);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .score-total {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .results-name {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .results-message {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .results-breakdown {
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .result-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-icon {
+            font-size: 1.1rem;
+        }
+
+        .result-icon.correct {
+            color: var(--correct);
+        }
+
+        .result-icon.incorrect {
+            color: var(--incorrect);
+        }
+
+        .close-btn {
+            background: #e2e8f0;
+            color: var(--text);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .close-btn:hover {
+            background: #cbd5e1;
+        }
+
+        @media (max-width: 640px) {
+            .quiz-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+
+            .option {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="quiz-header" style="position: relative;">
+        <a href="unit2.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <h1><i class="fa-solid fa-clipboard-check"></i> Lesson 1 & 2 Quiz</h1>
+        <p>Test your knowledge on Digital Citizenship & Data Privacy</p>
+    </header>
+
+    <div class="quiz-container">
+        <div class="progress-text">Question <span id="currentQ">0</span> of 20 answered</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="submit-section">
+            <button class="submit-btn" id="submitBtn" disabled onclick="submitQuiz()">
+                <i class="fa-solid fa-check"></i> Submit Quiz
+            </button>
+        </div>
+    </div>
+
+    <!-- Name Entry Modal -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <h2><i class="fa-solid fa-user"></i> Enter Your Name</h2>
+            <p>Type your name to see your personalised results.</p>
+            <input type="text" id="nameInput" placeholder="Your name..." maxlength="50" autofocus>
+            <button class="modal-btn" onclick="submitName()">View My Results</button>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal-overlay results-modal" id="resultsModal">
+        <div class="modal">
+            <h2><i class="fa-solid fa-trophy"></i> Quiz Complete!</h2>
+            <div class="results-name" id="resultsName"></div>
+            <div class="score-circle">
+                <span class="score-number" id="scoreNumber">0</span>
+                <span class="score-total">/ 20</span>
+            </div>
+            <div class="results-message" id="resultsMessage"></div>
+            <div class="results-breakdown" id="resultsBreakdown"></div>
+            <button class="close-btn" onclick="closeResults()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Which term describes the collection of data left behind when using the internet?",
+                options: ["Digital citizen", "Digital footprint", "Online profile", "Virtual identity"],
+                correct: 1
+            },
+            {
+                q: "What is a digital citizen?",
+                options: ["Someone who lives in a digital city", "A person who only uses social media", "Someone who participates responsibly online", "A computer programmer"],
+                correct: 2
+            },
+            {
+                q: "Which of the following is considered private data that should NOT be shared publicly?",
+                options: ["A comment under a video", "A gaming username", "Your home address", "A post you liked"],
+                correct: 2
+            },
+            {
+                q: "What happens when you delete a post online?",
+                options: ["It is removed from the internet completely", "It may still exist as copies or cached versions", "It goes into a recycle bin for 30 days", "It gets sent to your email"],
+                correct: 1
+            },
+            {
+                q: "Using private or incognito browsing mode means:",
+                options: ["You are completely anonymous online", "Websites cannot load properly", "Your browsing history isn't saved locally, but sites can still track you", "All your data is encrypted"],
+                correct: 2
+            },
+            {
+                q: "What are cookies in a digital context?",
+                options: ["Viruses that harm your computer", "Small files that websites save on your device to remember you", "Passwords stored in your browser", "Images that load on web pages"],
+                correct: 1
+            },
+            {
+                q: "Why do some apps ask for location permission?",
+                options: ["To slow down your phone", "To use features like maps or local weather", "To delete your photos", "To change your password"],
+                correct: 1
+            },
+            {
+                q: "What is a trade-off in terms of online privacy?",
+                options: ["Buying something online", "Exchanging passwords with friends", "Giving up privacy to gain convenience or features", "Trading old devices for new ones"],
+                correct: 2
+            },
+            {
+                q: "Terms and Conditions on apps and websites are:",
+                options: ["Optional suggestions you can ignore", "Only for adults to read", "Legally binding agreements you accept when using the service", "Automatically rejected by your device"],
+                correct: 2
+            },
+            {
+                q: "Which statement about app tracking is correct?",
+                options: ["Apps can only track you while they are open", "Some apps can track your location even when not in use", "Tracking is always illegal", "Turning off your phone stops all tracking permanently"],
+                correct: 1
+            },
+            {
+                q: "What is digital identity?",
+                options: ["A fingerprint scanner on your phone", "How you present yourself online", "Your email password", "A digital receipt"],
+                correct: 1
+            },
+            {
+                q: "Which of these is an example of public data?",
+                options: ["Your search history", "Your home Wi-Fi password", "A comment you posted publicly online", "Private messages to a friend"],
+                correct: 2
+            },
+            {
+                q: "Why do free apps often collect your data?",
+                options: ["To make the app run faster", "To pay for the service since you didn't pay money", "To delete your old photos", "Because the law requires it"],
+                correct: 1
+            },
+            {
+                q: "What risk comes from sharing too much personal information online?",
+                options: ["Your phone battery drains faster", "Identity theft or being targeted by scammers", "Apps stop working", "Websites load slower"],
+                correct: 1
+            },
+            {
+                q: "Denying all cookies on a website usually means:",
+                options: ["The website will crash immediately", "You cannot visit the website at all", "The site still works but may be less convenient", "Your internet will disconnect"],
+                correct: 2
+            },
+            {
+                q: "What can small details in photos reveal about you?",
+                options: ["Nothing important", "Location, routine, workplace, or personal interests", "Only your eye colour", "Your favourite colour"],
+                correct: 1
+            },
+            {
+                q: "Why might two people see different content on the same app?",
+                options: ["One has a newer phone", "The app personalises content based on user behaviour and data", "One paid more money", "The app randomly changes content"],
+                correct: 1
+            },
+            {
+                q: "What does the term 'tracking' mean online?",
+                options: ["Following someone in real life", "Monitoring your device's battery life", "Collecting data about your online behaviour across sites and apps", "Downloading music files"],
+                correct: 2
+            },
+            {
+                q: "Which is a consequence of sharing private information publicly?",
+                options: ["Getting more followers instantly", "Better Wi-Fi connection", "Reputation damage or being a target for scams", "Free app upgrades"],
+                correct: 2
+            },
+            {
+                q: "What does digital literacy help you understand?",
+                options: ["How to type faster", "How online spaces work and how to behave safely online", "How to hack into computers", "How to create video games"],
+                correct: 1
+            }
+        ];
+
+        let answers = new Array(questions.length).fill(null);
+        let userName = "";
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-card" id="qcard-${i}">
+                    <span class="question-number">Question ${i + 1}</span>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, j) => `
+                            <div class="option" id="opt-${i}-${j}" onclick="selectOption(${i}, ${j})">
+                                <span class="option-letter">${String.fromCharCode(65 + j)}</span>
+                                <span class="option-text">${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback-${i}"></div>
+                </div>
+            `).join('');
+        }
+
+        function selectOption(qIndex, optIndex) {
+            // If already answered, don't allow changes
+            if (answers[qIndex] !== null) return;
+
+            answers[qIndex] = optIndex;
+
+            // Update UI
+            const options = document.querySelectorAll(`#qcard-${qIndex} .option`);
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === optIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = answers.filter(a => a !== null).length;
+            document.getElementById('currentQ').textContent = answered;
+            document.getElementById('progressFill').style.width = `${(answered / questions.length) * 100}%`;
+
+            // Enable submit button when all answered
+            document.getElementById('submitBtn').disabled = answered < questions.length;
+        }
+
+        function submitQuiz() {
+            // Disable all options and show correct/incorrect
+            questions.forEach((q, i) => {
+                const card = document.getElementById(`qcard-${i}`);
+                const options = card.querySelectorAll('.option');
+                const feedback = document.getElementById(`feedback-${i}`);
+
+                options.forEach((opt, j) => {
+                    opt.classList.add('disabled');
+
+                    if (j === q.correct) {
+                        opt.classList.add('show-correct');
+                        if (answers[i] === j) {
+                            opt.classList.remove('show-correct');
+                            opt.classList.add('correct');
+                        }
+                    } else if (answers[i] === j) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                if (answers[i] === q.correct) {
+                    card.classList.add('answered-correct');
+                    feedback.className = 'feedback correct';
+                    feedback.innerHTML = '<i class="fa-solid fa-check"></i> Correct!';
+                } else {
+                    card.classList.add('answered-incorrect');
+                    feedback.className = 'feedback incorrect';
+                    feedback.innerHTML = `<i class="fa-solid fa-xmark"></i> Incorrect. The correct answer is: <strong>${q.options[q.correct]}</strong>`;
+                }
+            });
+
+            // Hide submit button
+            document.getElementById('submitBtn').style.display = 'none';
+
+            // Show name modal
+            document.getElementById('nameModal').classList.add('active');
+            document.getElementById('nameInput').focus();
+        }
+
+        function submitName() {
+            userName = document.getElementById('nameInput').value.trim() || "Student";
+            document.getElementById('nameModal').classList.remove('active');
+            showResults();
+        }
+
+        function showResults() {
+            const score = questions.reduce((acc, q, i) => acc + (answers[i] === q.correct ? 1 : 0), 0);
+            const percentage = Math.round((score / questions.length) * 100);
+
+            document.getElementById('resultsName').textContent = `Well done, ${userName}!`;
+            document.getElementById('scoreNumber').textContent = score;
+
+            let message = "";
+            if (percentage >= 90) message = "Outstanding! You really know your stuff! 🌟";
+            else if (percentage >= 70) message = "Great job! You've got a solid understanding. 👏";
+            else if (percentage >= 50) message = "Good effort! Review the topics you missed. 📚";
+            else message = "Keep learning! Review Lessons 1 and 2 again. 💪";
+
+            document.getElementById('resultsMessage').textContent = message;
+
+            // Build breakdown
+            const breakdown = questions.map((q, i) => {
+                const isCorrect = answers[i] === q.correct;
+                return `
+                    <div class="result-item">
+                        <span class="result-icon ${isCorrect ? 'correct' : 'incorrect'}">
+                            <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
+                        </span>
+                        <span>Q${i + 1}: ${isCorrect ? 'Correct' : 'Incorrect'}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('resultsBreakdown').innerHTML = breakdown;
+            document.getElementById('resultsModal').classList.add('active');
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').classList.remove('active');
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Handle Enter key in name input
+        document.getElementById('nameInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                submitName();
+            }
+        });
+
+        // Initialize
+        renderQuestions();
+    </script>
+</body>
+
+</html>
