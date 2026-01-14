@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1 Quiz: Digital You | Year 7 Unit 2</title>
+    <link rel="icon" type="image/png" href="../../../images/Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #003366;
+            --accent: #d4af37;
+            --correct: #22c55e;
+            --incorrect: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent), #f0d060);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .modal p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="quiz-header">
+        <a href="../unit2.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Unit</a>
+        <h1><i class="fa-solid fa-list-check"></i> Lesson 1 Quiz: Digital You</h1>
+        <p>Digital Identity & Digital Footprints</p>
+    </header>
+
+    <div class="quiz-container">
+        <div class="progress-text">Question <span id="currentQ">0</span> of 15 answered</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div id="questionsContainer"></div>
+        <div class="submit-section">
+            <button class="submit-btn" id="submitBtn" disabled onclick="askForName()">
+                <i class="fa-solid fa-paper-plane"></i> Submit & Get PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <h2>Enter Your Name</h2>
+            <p>Enter your full name to generate your results PDF.</p>
+            <input type="text" id="nameInput" placeholder="Full Name" maxlength="50">
+            <button class="modal-btn" onclick="finishAndGenerate()">Generate Report</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // All 15 questions focused on Lesson 1: Digital You / Digital Footprints
+            // Answer distribution: A=4, B=4, C=4, D=3
+            { q: "What is a 'Digital Footprint'?", options: ["The trail of data you leave behind when using the internet", "A secure password used for banking", "A scan of your fingerprint for unlocking phones", "The carbon emissions from your computer"], correct: 0 },
+            { q: "Which of these is an example of PRIVATE data?", options: ["Your username in a game", "A public comment on a video", "Your home address and postcode", "Your high score on a leaderboard"], correct: 2 },
+            { q: "What is the difference between PASSIVE and ACTIVE digital footprints?", options: ["Passive is what you post, Active is what you read", "Active is what you intentionally post, Passive is data collected about you without you knowing", "There is no difference", "Passive is only for old computers"], correct: 1 },
+            { q: "What is a 'Digital Citizen'?", options: ["Someone who knows how to hack computers", "A person who owns more than 3 digital devices", "A citizen of a virtual reality world", "Someone who uses technology safely, responsibly and respectfully"], correct: 3 },
+            { q: "Which of these is Personal Identifiable Information (PII)?", options: ["Your full name and date of birth", "Your favourite colour", "Your high score in a game", "A picture of a cat"], correct: 0 },
+            { q: "True or False: Deleting a photo from social media removes it permanently from the internet.", options: ["True, it disappears instantly from all servers", "False, it may still exist on servers or screenshotted by others", "True, but only if you delete it within 1 hour", "False, but only the police can see it"], correct: 1 },
+            { q: "How long can a digital footprint last?", options: ["24 hours", "Until you delete the app", "Potentially forever", "1 year"], correct: 2 },
+            { q: "What is a major risk of sharing your full date of birth online?", options: ["People might send you too many birthday cards", "It takes up too much storage space", "Your friends might forget it", "It can be used by criminals for identity theft"], correct: 3 },
+            { q: "Who might look at your digital footprint in the future?", options: ["Universities and employers", "Aliens", "Nobody cares", "Your future pets"], correct: 0 },
+            { q: "What should you do before posting a photo of a friend?", options: ["Edit it so they look funny", "Ask for their permission first", "Tag everyone you know", "Print it out"], correct: 1 },
+            { q: "Why is a strong password important?", options: ["It looks cool", "It is easier to remember", "It protects your personal data from being stolen", "It makes your internet faster"], correct: 2 },
+            { q: "Can you fully erase a digital footprint?", options: ["Yes, delete history and it's gone for good", "Yes, by smashing your device", "No, but you can hide it with a VPN", "No, it is extremely difficult as data is copied to servers and backups"], correct: 3 },
+            { q: "Is it safe to share your password with your best friend?", options: ["No, never share your password with anyone", "Yes, if you trust them", "Yes, just for one day", "Only if it's for a game"], correct: 0 },
+            { q: "Who can see your digital footprint?", options: ["Only your friends", "Potentially anyone (companies, employers, strangers)", "Only people you allow", "It is invisible"], correct: 1 },
+            { q: "What is 'Metadata' in a photo?", options: ["The colours in the image", "The caption you write", "Hidden data like location, time, and camera model", "The filter you use"], correct: 2 }
+        ];
+
+        let answers = new Array(questions.length).fill(null);
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-card" id="qcard-${i}">
+                    <span class="question-number">Question ${i + 1}</span>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, j) => `
+                            <div class="option" onclick="selectOption(${i}, ${j})">
+                                <span class="option-letter">${String.fromCharCode(65 + j)}</span>
+                                <span class="option-text">${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectOption(qIndex, optIndex) {
+            answers[qIndex] = optIndex;
+            const options = document.querySelectorAll(`#qcard-${qIndex} .option`);
+            options.forEach((opt, i) => { opt.classList.remove('selected'); if (i === optIndex) opt.classList.add('selected'); });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = answers.filter(a => a !== null).length;
+            document.getElementById('currentQ').textContent = answered;
+            document.getElementById('progressFill').style.width = `${(answered / questions.length) * 100}%`;
+            document.getElementById('submitBtn').disabled = answered < questions.length;
+        }
+
+        function askForName() {
+            document.getElementById('nameModal').classList.add('active');
+            document.getElementById('nameInput').focus();
+            document.getElementById('nameInput').onkeydown = (e) => { if (e.key === 'Enter') finishAndGenerate(); }
+        }
+
+        async function finishAndGenerate() {
+            const name = document.getElementById('nameInput').value.trim() || "Student";
+            document.getElementById('nameModal').classList.remove('active');
+
+            let score = 0;
+            const mistakes = [];
+            questions.forEach((q, i) => {
+                if (answers[i] === q.correct) { score++; }
+                else { mistakes.push({ q: q.q, yours: q.options[answers[i]], correct: q.options[q.correct] }); }
+            });
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            let y = 20;
+
+            doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(0, 51, 102);
+            doc.text("Lesson 1 Quiz Results: Digital You", margin, y); y += 10;
+
+            doc.setFontSize(12); doc.setTextColor(50);
+            doc.text(`Name: ${name}`, margin, y);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 80, y); y += 15;
+
+            doc.setFillColor(score > 10 ? 220 : 255, score > 10 ? 255 : 220, score > 10 ? 220 : 220);
+            doc.roundedRect(margin, y, pageWidth - (margin * 2), 25, 3, 3, 'F');
+            doc.setFontSize(14); doc.text(`Score: ${score} / ${questions.length}`, margin + 10, y + 10);
+
+            let feedback = score >= 13 ? "Excellent work! You have a strong understanding." : score >= 10 ? "Good job! Review the topics you missed." : "Keep practicing. Read through Lesson 1 again.";
+            doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.text(feedback, margin + 10, y + 18); y += 35;
+
+            if (mistakes.length > 0) {
+                doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(0);
+                doc.text("Areas for Improvement:", margin, y); y += 10;
+                mistakes.forEach((m, idx) => {
+                    if (y > 270) { doc.addPage(); y = 20; }
+                    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(50);
+                    const qLines = doc.splitTextToSize(`${idx + 1}. ${m.q}`, pageWidth - margin * 2);
+                    doc.text(qLines, margin, y); y += (qLines.length * 5) + 2;
+                    doc.setFont("helvetica", "normal"); doc.setTextColor(200, 0, 0);
+                    doc.text(`Your Answer: ${m.yours}`, margin + 5, y); y += 5;
+                    doc.setTextColor(0, 150, 0); doc.text(`Correct Answer: ${m.correct}`, margin + 5, y); y += 10;
+                });
+            } else { doc.setFont("helvetica", "italic"); doc.text("Perfect score! No incorrect answers.", margin, y); }
+
+            doc.save(`SGS_L1_Quiz_${name.replace(/ /g, '_')}.pdf`);
+
+            document.querySelector('.quiz-container').innerHTML = `
+                <div style="text-align:center; padding: 4rem 1rem;">
+                    <i class="fa-solid fa-file-circle-check" style="font-size: 4rem; color: var(--correct); margin-bottom: 2rem;"></i>
+                    <h2>Assessment Submitted!</h2>
+                    <p style="margin: 1rem 0 2rem; color: var(--text-light); font-size: 1.1rem;">Your results PDF has been downloaded.</p>
+                    <a href="../unit2.html" class="submit-btn" style="text-decoration:none; display:inline-block;">Return to Unit</a>
+                </div>
+            `;
+        }
+
+        renderQuestions();
+    </script>
+</body>
+
+</html>
