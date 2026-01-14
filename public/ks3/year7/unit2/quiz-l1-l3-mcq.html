@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lessons 1-3 Quiz | Year 7 Unit 2</title>
+    <link rel="icon" type="image/png" href="../../../images/Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #003366;
+            --accent: #d4af37;
+            --correct: #22c55e;
+            --incorrect: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent), #f0d060);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .question-card.answered-correct {
+            border-color: var(--correct);
+        }
+
+        .question-card.answered-incorrect {
+            border-color: var(--incorrect);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+
+        .option.correct {
+            border-color: var(--correct);
+            background: #f0fdf4;
+        }
+
+        .option.incorrect {
+            border-color: var(--incorrect);
+            background: #fef2f2;
+        }
+
+        .option.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .option.show-correct {
+            border-color: var(--correct);
+            background: #f0fdf4;
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option.correct .option-letter {
+            background: var(--correct);
+            color: white;
+        }
+
+        .option.incorrect .option-letter {
+            background: var(--incorrect);
+            color: white;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Name Entry Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .modal p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="quiz-header">
+        <a href="../unit2.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Unit</a>
+        <h1><i class="fa-solid fa-list-check"></i> Lessons 1-3 Quiz</h1>
+        <p>Digital You, Footprints & Online Behaviour</p>
+    </header>
+
+    <div class="quiz-container">
+        <div class="progress-text">Question <span id="currentQ">0</span> of 15 answered</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="submit-section">
+            <button class="submit-btn" id="submitBtn" disabled onclick="askForName()">
+                <i class="fa-solid fa-paper-plane"></i> Submit & Get PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- Name Entry Modal -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <h2>Enter Your Name</h2>
+            <p>Enter your full name to generate your results PDF.</p>
+            <input type="text" id="nameInput" placeholder="Full Name" maxlength="50">
+            <button class="modal-btn" onclick="finishAndGenerate()">Generate Report</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Lesson 1 content
+            { q: "What is a 'Digital Footprint'?", options: ["A secure password used for banking", "The trail of data you leave behind when using the internet", "A scan of your fingerprint for unlocking phones", "The carbon emissions from your computer"], correct: 1 },
+            { q: "Which of these is an example of PRIVATE data?", options: ["Your username in a game", "A public comment on a video", "Your home address and postcode", "Your high score on a leaderboard"], correct: 2 },
+            { q: "True or False: Deleting a photo from social media removes it permanently from the internet.", options: ["True, it disappears instantly from all servers", "False, it may still exist on servers or screenshotted by others", "True, but only if you delete it within 1 hour", "False, but only the police can see it"], correct: 1 },
+            { q: "What is a 'Digital Citizen'?", options: ["Someone who knows how to hack computers", "A person who owns more than 3 digital devices", "Someone who uses technology safely, responsibly and respectfully", "A citizen of a virtual reality world"], correct: 2 },
+            { q: "What is a major risk of sharing your full date of birth online?", options: ["People might send you too many birthday cards", "It takes up too much storage space", "It can be used by criminals for identity theft", "Your friends might forget it"], correct: 2 },
+
+            // Lesson 2 content
+            { q: "What are 'Cookies' in computing?", options: ["Small files websites save on your device to remember you", "Delicious treats you eat while browsing", "Viruses that steal your passwords", "Pop-up ads that block your screen"], correct: 0 },
+            { q: "Why might a free flashlight app ask for your 'Location' permission?", options: ["To help you find your way in the dark", "To collect and sell your location data for advertising", "To make the light brighter based on where you are", "To save battery life"], correct: 1 },
+            { q: "What is the 'Trade-off' when we use free apps?", options: ["We trade money for goods", "We often trade our personal data/privacy for convenience", "We trade our old phone for a new one", "We trade passwords with friends"], correct: 1 },
+            { q: "When you click 'I Agree' to Terms and Conditions, what are you doing?", options: ["Just removing a pop-up window", "Signing a legally binding contract", "Sending a friend request to the developer", "Giving them a 5-star review"], correct: 1 },
+            { q: "What does 'Tracking' mean?", options: ["Monitoring your steps for fitness", "Collecting data about your behaviour across different websites and apps", "Following someone on social media", "Searching for a lost phone"], correct: 1 },
+
+            // Lesson 3 content
+            { q: "What is 'Context Collapse'?", options: ["When your browser crashes", "When different groups of people (friends, family, teachers) all see the same post", "When you lose your internet connection", "When you delete your account"], correct: 1 },
+            { q: "In which situation is staying anonymous (using a nickname) usually a GOOD idea?", options: ["When bullying someone", "When asking for advice on a sensitive personal problem", "When submitting homework to your teacher", "When applying for a job"], correct: 1 },
+            { q: "Why do we behave differently on different platforms?", options: ["We don't, everyone acts the same everywhere", "Because different spaces have different audiences and norms", "Because the internet changes our personality", "Because we are all fake online"], correct: 1 },
+            { q: "Which behaviour is classified as 'Not OK Online'?", options: ["Using a nickname in a game", "Sharing a funny meme with friends", "Posting mean or threatening comments (Trolling)", "Liking a friend's photo"], correct: 2 },
+            { q: "You used your real name on LinkedIn but a nickname on Discord. This is an example of:", options: ["Lying", "Adapting your digital identity for different contexts", "Identity theft", "Hiding from the police"], correct: 1 }
+        ];
+
+        let answers = new Array(questions.length).fill(null);
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-card" id="qcard-${i}">
+                    <span class="question-number">Question ${i + 1}</span>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, j) => `
+                            <div class="option" onclick="selectOption(${i}, ${j})">
+                                <span class="option-letter">${String.fromCharCode(65 + j)}</span>
+                                <span class="option-text">${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectOption(qIndex, optIndex) {
+            answers[qIndex] = optIndex;
+            const options = document.querySelectorAll(`#qcard-${qIndex} .option`);
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === optIndex) opt.classList.add('selected');
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = answers.filter(a => a !== null).length;
+            document.getElementById('currentQ').textContent = answered;
+            document.getElementById('progressFill').style.width = `${(answered / questions.length) * 100}%`;
+            document.getElementById('submitBtn').disabled = answered < questions.length;
+        }
+
+        function askForName() {
+            document.getElementById('nameModal').classList.add('active');
+            document.getElementById('nameInput').focus();
+            // Handle enter key
+            document.getElementById('nameInput').onkeydown = (e) => {
+                if (e.key === 'Enter') finishAndGenerate();
+            }
+        }
+
+        async function finishAndGenerate() {
+            const name = document.getElementById('nameInput').value.trim() || "Student";
+            document.getElementById('nameModal').classList.remove('active');
+
+            // Calculate Score
+            let score = 0;
+            const mistakes = [];
+            questions.forEach((q, i) => {
+                if (answers[i] === q.correct) {
+                    score++;
+                } else {
+                    mistakes.push({
+                        q: q.q,
+                        yours: q.options[answers[i]],
+                        correct: q.options[q.correct]
+                    });
+                }
+            });
+
+            // Generate PDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            let y = 20;
+
+            // Header
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18);
+            doc.setTextColor(0, 51, 102);
+            doc.text("Lessons 1-3 Quiz Results", margin, y);
+            y += 10;
+
+            doc.setFontSize(12);
+            doc.setTextColor(50);
+            doc.text(`Name: ${name}`, margin, y);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 80, y);
+            y += 15;
+
+            // Score Box
+            doc.setFillColor(score > 10 ? 220 : 255, score > 10 ? 255 : 220, score > 10 ? 220 : 220); // Greenish or Reddish tint
+            doc.roundedRect(margin, y, pageWidth - (margin * 2), 25, 3, 3, 'F');
+            doc.setFontSize(14);
+            doc.text(`Score: ${score} / ${questions.length}`, margin + 10, y + 10);
+
+            let feedback = "";
+            if (score >= 13) feedback = "Excellent work! You have a strong understanding.";
+            else if (score >= 10) feedback = "Good job! Review the topics you missed.";
+            else feedback = "Keep practicing. Read through Lessons 1-3 again.";
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            doc.text(feedback, margin + 10, y + 18);
+            y += 35;
+
+            // Mistakes Breakdown
+            if (mistakes.length > 0) {
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(13);
+                doc.setTextColor(0);
+                doc.text("Areas for Improvement:", margin, y);
+                y += 10;
+
+                mistakes.forEach((m, idx) => {
+                    if (y > 270) { doc.addPage(); y = 20; }
+
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(10);
+                    doc.setTextColor(50);
+                    const qLines = doc.splitTextToSize(`${idx + 1}. ${m.q}`, pageWidth - margin * 2);
+                    doc.text(qLines, margin, y);
+                    y += (qLines.length * 5) + 2;
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(200, 0, 0); // Red for wrong
+                    doc.text(`Your Answer: ${m.yours}`, margin + 5, y);
+                    y += 5;
+
+                    doc.setTextColor(0, 150, 0); // Green for correct
+                    doc.text(`Correct Answer: ${m.correct}`, margin + 5, y);
+                    y += 10;
+                });
+            } else {
+                doc.setFont("helvetica", "italic");
+                doc.text("Perfect score! No incorrect answers.", margin, y);
+            }
+
+            // Save
+            doc.save(`SGS_L1-3_Quiz_${name.replace(/ /g, '_')}.pdf`);
+
+            // Show completion in browser
+            const container = document.querySelector('.quiz-container');
+            container.innerHTML = `
+                <div style="text-align:center; padding: 4rem 1rem;">
+                    <i class="fa-solid fa-file-circle-check" style="font-size: 4rem; color: var(--correct); margin-bottom: 2rem;"></i>
+                    <h2>Assessment Submitted!</h2>
+                    <p style="margin: 1rem 0 2rem; color: var(--text-light); font-size: 1.1rem;">Your results PDF has been downloaded.</p>
+                    <a href="../unit2.html" class="submit-btn" style="text-decoration:none; display:inline-block;">Return to Unit</a>
+                </div>
+            `;
+        }
+
+        renderQuestions();
+    </script>
+</body>
+
+</html>

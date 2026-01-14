@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mid-Unit 2 Assessment | Year 7</title>
+    <link rel="icon" type="image/png" href="../../../images/Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #003366;
+            --secondary: #005bb5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding-bottom: 4rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #002244 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: -2rem auto 0;
+            padding: 0 1rem;
+        }
+
+        .intro-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .question-block {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .q-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* MCQ Styles */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mcq-opt {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mcq-opt:hover {
+            border-color: var(--secondary);
+            background: #f0f7ff;
+        }
+
+        .mcq-opt.selected {
+            border-color: var(--primary);
+            background: #e6f0fa;
+        }
+
+        .mcq-letter {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .mcq-opt.selected .mcq-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Typed Styles */
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        /* Inputs */
+        input[type="text"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .submit-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <h1>Mid-Unit 2 Comprehensive Assessment</h1>
+        <p>Lessons 1-3: Digital Identity, Data & Behaviour</p>
+    </header>
+
+    <div class="container">
+        <div class="intro-card">
+            <h2>Instructions</h2>
+            <p>This assessment consists of <strong>30 questions</strong>.</p>
+            <ul>
+                <li><strong>Section A:</strong> 15 Multiple Choice Questions</li>
+                <li><strong>Section B:</strong> 15 Short Answer Questions</li>
+            </ul>
+            <p><strong>This is NOT self-marking.</strong> When you finish, click "Submit Assessment" to generate a PDF
+                file. You must save this PDF and send it to your teacher.</p>
+
+            <div style="margin-top: 1.5rem;">
+                <label class="q-label">Student Name:</label>
+                <input type="text" id="studentName" placeholder="Enter your full name">
+            </div>
+            <div style="margin-top: 1rem;">
+                <label class="q-label">Class / Teacher:</label>
+                <input type="text" id="className" placeholder="e.g. 7A / Mr Stewart">
+            </div>
+        </div>
+
+        <!-- Section A Container -->
+        <h3 class="section-title">Section A: Multiple Choice</h3>
+        <div id="sectionA"></div>
+
+        <!-- Section B Container -->
+        <h3 class="section-title">Section B: Short Written Answers</h3>
+        <p style="margin-bottom: 2rem; color: #64748b;">Answer the following questions in full sentences.</p>
+        <div id="sectionB"></div>
+
+    </div>
+
+    <div class="submit-bar">
+        <button class="submit-btn" onclick="generateReport()">Submit Assessment & Download PDF</button>
+    </div>
+
+    <script>
+        const mcqs = [
+            { q: "What is a 'Digital Footprint'?", opts: ["The size of your computer monitor", "The trail of data created by your online activity", "A fingerprint scanner on a laptop", "The electrical power used by the internet"] },
+            { q: "Which of these is considered Personal Data?", opts: ["Your favourite sports team", "Your full name and date of birth", "The weather in London", "A link to a public YouTube video"] },
+            { q: "What does an 'Active' digital footprint mean?", opts: ["Data you create unintentionally (like browsing history)", "Data you create on purpose (posting photos, sending emails)", "Data created while you are running", "Data created by hackers"] },
+            { q: "Why shouldn't you share your home address publicly?", opts: ["It takes up too much space on the screen", "People might send you unwanted letters", "It creates a physical safety risk (stalking/theft)", "Websites don't allow numbers"] },
+            { q: "True or False: 'Incognito Mode' hides your activity from your Internet Service Provider.", opts: ["True", "False", "True, but only on Tuesdays", "True, if you use Chrome"] },
+            { q: "What is the main purpose of an internet 'Cookie'?", opts: ["To give you a virus", "To track your activity and save your preferences", "To make websites load 10x faster", "To encrypt your password"] },
+            { q: "If an app asks for 'Microphone' permission, what can it do?", opts: ["Listen to and record audio", "Take photos of you", "Track your GPS location", "Read your text messages"] },
+            { q: "What is the 'Trade-off' of using free social media apps?", opts: ["You have to watch 1 ad per year", "You give up some privacy and data in exchange for the free service", "You have to invite 10 friends to join", "There is no trade-off, it's completely free"] },
+            { q: "Why do companies track your browsing history?", opts: ["To build a profile of you and show targeted ads", "Because they are bored", "To report you to the police", "To slow down your internet connection"] },
+            { q: "What is a 'Terms of Service' agreement?", opts: ["A list of features in the app", "A legally binding contract between you and the company", "A suggestion box for users", "A tutorial on how to use the app"] },
+            { q: "What does 'Context Collapse' mean?", opts: ["When a website crashes", "When your phone runs out of battery", "When different audiences (friends, family, teachers) all see the same content", "When you delete a post"] },
+            { q: "Why might someone choose to be anonymous online?", opts: ["To commit crimes without getting caught", "To safely ask for help with a sensitive issue", "To hide from their parents", "To pretend to be a celebrity"] },
+            { q: "How does your behaviour change online compared to offline?", opts: ["It doesn't Change", "People often feel bolder or more uninhibited online (Disinhibition Effect)", "People are always nicer online", "People stop talking completely"] },
+            { q: "What is 'Oversharing'?", opts: ["Sharing a post with 2 people", "Sharing too much personal information or inappropriate content", "Sharing a large file", "Sharing a computer with a sibling"] },
+            { q: "Who can see a public post on social media?", opts: ["Only your friends", "Only people in your country", "Anyone on the internet, potentially forever", "Only people with the same phone as you"] }
+        ];
+
+        const writtenQs = [
+            "Explain what a digital footprint is in your own words.",
+            "Give two examples of data that should always be kept private.",
+            "Explain why deleting a photo online DOES NOT mean it is gone forever.",
+            "Describe one positive way a digital footprint can help you in the future (e.g. for a job).",
+            "Why do 'free' apps collect data about you?",
+            "Explain the 'Trade-off' between privacy and convenience (e.g. using Google Maps).",
+            "What are cookies and why might someone want to block them?",
+            "What does 'Context Collapse' mean? Give an example.",
+            "Why might you act differently on a gaming chat compared to a school email?",
+            "What does it mean to be a 'Digital Citizen'?",
+            "List three tell-tale signs that a website or email might be a scam.",
+            "Why is it important to understand App Permissions?",
+            "What would you do if you realized you had accidentally posted your home address online?",
+            "How can staying anonymous online be a GOOD thing?",
+            "Write a short piece of advice for a Year 6 student about staying safe online."
+        ];
+
+        // Init MCQ
+        const sectionA = document.getElementById('sectionA');
+        mcqs.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'question-block';
+            div.innerHTML = `
+                <span class="q-label">Question ${idx + 1}</span>
+                <div class="q-text">${item.q}</div>
+                <div class="mcq-options" id="mcq-${idx}">
+                    ${item.opts.map((opt, i) => `
+                        <div class="mcq-opt" onclick="selectMcq(${idx}, ${i})">
+                            <div class="mcq-letter">${String.fromCharCode(65 + i)}</div>
+                            <div>${opt}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            sectionA.appendChild(div);
+        });
+
+        // Init Written
+        const sectionB = document.getElementById('sectionB');
+        writtenQs.forEach((q, idx) => {
+            const div = document.createElement('div');
+            div.className = 'question-block';
+            div.innerHTML = `
+                <span class="q-label">Question ${idx + 16}</span>
+                <div class="q-text">${q}</div>
+                <textarea id="written-${idx}" placeholder="Type your answer here..."></textarea>
+            `;
+            sectionB.appendChild(div);
+        });
+
+        // State
+        const mcqAnswers = new Array(mcqs.length).fill(null);
+
+        function selectMcq(qIdx, optIdx) {
+            mcqAnswers[qIdx] = optIdx;
+            const container = document.getElementById(`mcq-${qIdx}`);
+            Array.from(container.children).forEach((child, i) => {
+                if (i === optIdx) child.classList.add('selected');
+                else child.classList.remove('selected');
+            });
+        }
+
+        async function generateReport() {
+            const name = document.getElementById('studentName').value.trim();
+            const className = document.getElementById('className').value.trim();
+
+            if (!name) {
+                alert("Please enter your name at the top before submitting.");
+                document.getElementById('studentName').focus();
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            const contentWidth = pageWidth - (margin * 2);
+            let y = 20;
+
+            // Header
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.setTextColor(0, 51, 102);
+            doc.text("Mid-Unit 2 Comprehensive Assessment", margin, y);
+            y += 10;
+
+            doc.setFontSize(11);
+            doc.setTextColor(50);
+            doc.text(`Student: ${name}`, margin, y);
+            doc.text(`Class/Teacher: ${className}`, margin + 80, y);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 140, y);
+            y += 15;
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 10;
+
+            // SECTION A
+            doc.setFontSize(14);
+            doc.setTextColor(0, 51, 102);
+            doc.text("Section A: Multiple Choice", margin, y);
+            y += 10;
+
+            doc.setFontSize(10);
+            mcqs.forEach((item, idx) => {
+                if (y > 270) { doc.addPage(); y = 20; }
+
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(0);
+                const qLines = doc.splitTextToSize(`${idx + 1}. ${item.q}`, contentWidth);
+                doc.text(qLines, margin, y);
+                y += (qLines.length * 5) + 2;
+
+                const ansIdx = mcqAnswers[idx];
+                const ansText = ansIdx !== null ? item.opts[ansIdx] : "[Not Answered]";
+
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(0, 80, 0); // Greenish for their selection (neutral, just showing what they picked)
+                doc.text(`Selected: ${ansText}`, margin + 5, y);
+                y += 8;
+            });
+
+            y += 10;
+            if (y > 250) { doc.addPage(); y = 20; }
+
+            // SECTION B
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(0, 51, 102);
+            doc.text("Section B: Short Written Answers", margin, y);
+            y += 10;
+
+            writtenQs.forEach((q, idx) => {
+                if (y > 250) { doc.addPage(); y = 20; }
+
+                // Question
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(10);
+                doc.setTextColor(0);
+                const qLines = doc.splitTextToSize(`${idx + 16}. ${q}`, contentWidth);
+                doc.text(qLines, margin, y);
+                y += (qLines.length * 5) + 2;
+
+                // Answer
+                const writtenAns = document.getElementById(`written-${idx}`).value.trim() || "[No Answer Provided]";
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(50);
+
+                // Split long manual answers
+                const ansLines = doc.splitTextToSize(writtenAns, contentWidth - 5);
+                doc.text(ansLines, margin + 5, y);
+                y += (ansLines.length * 5) + 10;
+            });
+
+            doc.save(`Assessment_L1-3_${name.replace(/ /g, '_')}.pdf`);
+            alert("Assessment PDF generated! Please examine your download folder and send the file to your teacher.");
+        }
+    </script>
+</body>
+
+</html>
