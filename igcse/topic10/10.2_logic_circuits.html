@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>10.2 Logic Circuits | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic10/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">10.2 <span class="keyword"
+                                data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">Logic
+                                Circuits</span></h1>
+                        <h3 class="sub-title">Topic 10: Boolean Logic | Combining the Pieces</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (10.1)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What does an AND gate output?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">1 only when BOTH inputs are
+                            1</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What does a NOT gate do?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Reverses the input (0→1,
+                            1→0)</p>
+                    </div>
+                </div>
+                <div class="box fragment" style="margin-top:15px;">
+                    <p class="small-text"><strong>Q3:</strong> When does XOR output 1?</p>
+                    <p class="fragment small-text" style="color: var(--primary-blue);">When inputs are DIFFERENT (one
+                        is 0, one is 1)</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="r-stack">
+                        <div class="fragment fade-in-then-out">
+                            <div class="question-box">
+                                <p style="font-size:1.2em; margin:0;">Can ONE gate solve a real problem?</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="cols" style="margin-top:20px;">
+                                <div class="box-blue">
+                                    <h4><i class="fa-solid fa-lock"></i> The Problem</h4>
+                                    <p class="small-text">A safe should only open if:</p>
+                                    <p class="small-text"><em>The correct code is entered AND the timer has
+                                            expired</em></p>
+                                </div>
+                                <div class="box">
+                                    <h4><i class="fa-solid fa-question"></i> One Gate?</h4>
+                                    <p class="small-text">One AND gate could check both conditions...</p>
+                                    <p class="small-text">But what if there's an override key?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box-blue" style="padding: 30px;">
+                                <p class="small-text"><strong>✅ Key idea:</strong> real problems need <strong>multiple
+                                        gates</strong> combined into <span class="keyword"
+                                        data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">logic
+                                        circuits</span>.</p>
+                                <p class="small-text">The output is still 0 or 1 — but the decision rule can be
+                                    complex.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">What is a logic
+                            circuit?</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What is a <span class="keyword"
+                            data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">Logic
+                            Circuit</span>?</h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A <span class="keyword"
+                                data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">logic
+                                circuit</span> is a combination of <span class="keyword"
+                                data-def="an electronic circuit that relies on 'on/off' logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR">logic
+                                gates</span> connected together to solve a specific problem.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-cubes"></i> Building Blocks</h4>
+                            <p class="small-text">We connect gates like LEGO bricks.</p>
+                            <p class="small-text">Output of one gate becomes input to another.</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-bullseye"></i> Goal</h4>
+                            <p class="small-text">Create a single OUTPUT (0 or 1) based on multiple INPUTS.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-plus"></i> Binary Addition Uses Circuits</h4>
+                        <p class="small-text fragment">A <strong>half-adder</strong> adds two bits using an XOR (sum)
+                            and an AND (carry).</p>
+                        <p class="small-text fragment">A CPU adds larger numbers by chaining many adders together.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-bolt"></i> 1 and 0 Are Voltage Levels</h4>
+                        <p class="small-text fragment">In hardware, 1 usually means “high voltage” and 0 means “low
+                            voltage”.</p>
+                        <p class="small-text fragment">The exact voltages vary — it’s the <strong>difference</strong>
+                            that matters.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THREE WAYS TO BUILD A CIRCUIT
+                 ============================================ -->
+            <section>
+                <h2>Three Ways to Build</h2>
+                <div class="question-box">
+                    <p style="font-size:1.1em; margin:0;">Where do we start?</p>
+                </div>
+                <div class="cols-3 fragment" style="margin-top:20px; gap:10px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-comment"></i></h4>
+                        <p class="small-text"><strong>Problem Statement</strong></p>
+                        <p class="small-text">"The alarm sounds if..."</p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4><i class="fa-solid fa-code"></i></h4>
+                        <p class="small-text"><strong>Logic Expression</strong></p>
+                        <p class="small-text"><code>X = A AND (NOT B)</code></p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-table"></i></h4>
+                        <p class="small-text"><strong><span class="keyword"
+                                    data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">Truth
+                                    Table</span></strong></p>
+                        <p class="small-text">All inputs → outputs</p>
+                    </div>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <p class="small-text"><strong>The Process:</strong> Convert any of these into a <span
+                            class="keyword"
+                            data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">logic
+                            circuit</span> diagram.</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">
+                    <p style="margin:0;">"The alarm (X) sounds if the door is open (D) AND the code is NOT entered
+                        (C)."</p>
+                    <p style="margin-top:10px;">What is the logic expression?</p>
+                </div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p style="margin:0;"><code>X = D AND (NOT C)</code></p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 FROM PROBLEM TO CIRCUIT
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>From Problem to Circuit</h2>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-bell"></i> Real-World Example: Alarm System</h4>
+                        <p style="margin:0; font-size:0.95em;">"The alarm (X) sounds if the door is open (D) AND the
+                            code is NOT entered (C)."</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4>Step 1: Identify Keywords</h4>
+                        <p class="small-text">Door open = D, Code entered = C, Alarm = X</p>
+                        <p class="small-text">Look for: <strong>AND</strong>, <strong>OR</strong>, <strong>NOT</strong>
+                        </p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <h4>Step 2: Write the Logic Expression</h4>
+                        <p><code>X = D AND (NOT C)</code></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Draw the
+                            Circuit</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-pen-ruler"></i> Drawing the Circuit</h3>
+                    <div class="box" style="margin-bottom:15px;">
+                        <p style="margin:0;"><strong>Expression:</strong> <code>X = D AND (NOT C)</code></p>
+                    </div>
+                    <div class="cols-3">
+                        <div class="box fragment">
+                            <h4>Step 1</h4>
+                            <p class="small-text">Identify the inputs:</p>
+                            <p class="small-text"><strong>D</strong> (Door) and <strong>C</strong> (Code)</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4>Step 2</h4>
+                            <p class="small-text">Work inside brackets first:</p>
+                            <p class="small-text"><strong>NOT C</strong></p>
+                            <p class="small-text"><em>C goes into a NOT gate</em></p>
+                        </div>
+                        <div class="box fragment">
+                            <h4>Step 3</h4>
+                            <p class="small-text">Connect to the AND gate:</p>
+                            <p class="small-text">D + (NOT C output) → AND → X</p>
+                        </div>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Result:</strong> C → NOT gate → output joins D → AND gate → X</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 FROM EXPRESSION TO CIRCUIT
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>From Expression to Circuit</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">How do we read logic expressions?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4><i class="fa-solid fa-brackets-curly"></i> Golden Rule: Brackets First!</h4>
+                        <p class="small-text">Just like maths: solve what's inside brackets before anything else.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <h4>Example</h4>
+                        <p><code>(A OR B) AND C</code></p>
+                        <p class="small-text">1. First do <code>A OR B</code></p>
+                        <p class="small-text">2. Then take that result AND it with <code>C</code></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Step-by-Step
+                            Build</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-stairs"></i> Step-by-Step Build</h3>
+                    <div class="box" style="margin-bottom:15px;">
+                        <p style="margin:0;"><strong>Expression:</strong> <code>(A OR B) AND C</code></p>
+                    </div>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4>Gate 1: OR</h4>
+                            <p class="small-text">Inputs: <strong>A</strong> and <strong>B</strong></p>
+                            <p class="small-text">This handles the brackets first.</p>
+                            <p class="small-text">Call this output <strong>P</strong>.</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4>Gate 2: AND</h4>
+                            <p class="small-text">Inputs: <strong>P</strong> (from OR) and <strong>C</strong></p>
+                            <p class="small-text">This produces final output <strong>X</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Circuit Flow:</strong> A,B → OR → P → AND (with C) → X</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-route"></i> Trace the Signal</h3>
+                    <div class="box">
+                        <p style="margin:0;">Let's test with: <strong>A=1, B=0, C=1</strong></p>
+                    </div>
+                    <div class="cols-3" style="margin-top:20px;">
+                        <div class="fragment box">
+                            <h4>Step 1: OR Gate</h4>
+                            <p class="small-text">A(1) OR B(0)</p>
+                            <p class="small-text">1 OR 0 = ?</p>
+                            <p class="small-text blue"><strong>P = 1</strong></p>
+                        </div>
+                        <div class="fragment box">
+                            <h4>Step 2: AND Gate</h4>
+                            <p class="small-text">P(1) AND C(1)</p>
+                            <p class="small-text">1 AND 1 = ?</p>
+                            <p class="small-text blue"><strong>Result = 1</strong></p>
+                        </div>
+                        <div class="fragment box box-blue">
+                            <h4>Final Output</h4>
+                            <p class="small-text"><strong>X = 1</strong></p>
+                            <p class="small-text">The circuit outputs TRUE!</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">
+                    <p style="margin:0;">For <code>(A OR B) AND C</code>, which gate do we draw first?</p>
+                </div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p style="margin:0;"><strong>OR</strong> — we solve the brackets first, then AND with C.</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 INTERMEDIATE POINTS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Intermediate Points</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">What if the circuit has 3+ gates?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4><i class="fa-solid fa-tag"></i> Label the Wires!</h4>
+                        <p class="small-text">Between each gate, we label the wire with a letter: <strong>P, Q, R,
+                                S...</strong></p>
+                        <p class="small-text">These are called <strong>intermediate points</strong>.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <h4>Why Label?</h4>
+                        <ul class="small-text">
+                            <li>Makes tracing easier</li>
+                            <li>Helps find mistakes</li>
+                            <li>Essential for building <span class="keyword"
+                                    data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs">truth
+                                    tables</span></li>
+                        </ul>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Complex Example</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-diagram-project"></i> Complex Circuit Example</h3>
+                    <div class="box">
+                        <p style="margin:0;"><strong>Expression:</strong>
+                            <code>(A AND B) OR (B NOR C)</code>
+                        </p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:15px;">
+                        <div class="box">
+                            <h4>Part 1: P</h4>
+                            <p class="small-text"><code>P = A AND B</code></p>
+                            <p class="small-text">Inputs A and B → AND gate → P</p>
+                        </div>
+                        <div class="box">
+                            <h4>Part 2: Q</h4>
+                            <p class="small-text"><code>Q = B NOR C</code></p>
+                            <p class="small-text">Inputs B and C → NOR gate → Q</p>
+                        </div>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:15px;">
+                        <h4>Final: X</h4>
+                        <p class="small-text"><code>X = P OR Q</code></p>
+                        <p class="small-text">Intermediate outputs P and Q → OR gate → X</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-list-check"></i> Tracing with Intermediate Points</h3>
+                    <div class="box">
+                        <p style="margin:0;">Test: <strong>A=1, B=1, C=0</strong></p>
+                    </div>
+                    <table style="width:100%; font-size:0.85em; text-align:center; margin-top:15px;"
+                        class="fragment">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">A</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">B</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">C</th>
+                            <th style="background:var(--sg-gold); color:white; padding:8px;">P (A AND B)</th>
+                            <th style="background:var(--sg-gold); color:white; padding:8px;">Q (B NOR C)</th>
+                            <th style="background:#28a745; color:white; padding:8px;">X (P OR Q)</th>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px;">1</td>
+                            <td style="padding:8px;">1</td>
+                            <td style="padding:8px;">0</td>
+                            <td style="padding:8px;">1</td>
+                            <td style="padding:8px;">0</td>
+                            <td style="padding:8px; font-weight:bold; background:#d4edda;">1</td>
+                        </tr>
+                    </table>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Worked:</strong> P = 1 AND 1 = 1 | Q = 1 NOR 0 = 0 | X = 1 OR 0 =
+                            <strong>1</strong>
+                        </p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 WRITING EXPRESSIONS FROM CIRCUITS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Writing Expressions from Circuits</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.1em; margin:0;">What if we have the circuit but not the expression?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4><i class="fa-solid fa-shoe-prints"></i> Work Backwards!</h4>
+                        <ol class="small-text">
+                            <li>Start with gates connected to <strong>inputs</strong></li>
+                            <li>Write expressions for those gates</li>
+                            <li>Join them using the <strong>connecting gate</strong></li>
+                        </ol>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See Example</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><i class="fa-solid fa-puzzle-piece"></i> Worked Example</h3>
+                    <div class="box">
+                        <p class="small-text" style="margin:0;">Imagine a circuit with:</p>
+                        <p class="small-text">Gate 1: A AND B | Gate 2: B OR C | Gate 3: XOR connects Gates 1 & 2</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:15px;">
+                        <div class="box">
+                            <h4>Step 1</h4>
+                            <p class="small-text">Gate 1: <code>(A AND B)</code></p>
+                            <p class="small-text">Gate 2: <code>(B OR C)</code></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>Step 2</h4>
+                            <p class="small-text">Join with Gate 3 (XOR):</p>
+                            <p class="small-text"><code>(A AND B) XOR (B OR C)</code></p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Final Expression:</strong>
+                            <code>X = (A AND B) XOR (B OR C)</code>
+                        </p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COMMON MISTAKES
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-triangle-exclamation"></i> Common Mistakes</h2>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="box" style="background:#ffebee; padding: 30px;">
+                            <p class="small-text" style="margin:0;"><strong>❌ Common confusion:</strong> where does the
+                                NOT apply?</p>
+                            <p class="small-text" style="margin-top:10px;"><code>NOT C AND D</code> vs
+                                <code>NOT (C AND D)</code></p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="cols" style="margin-top:20px;">
+                            <div class="box">
+                                <h4><code>NOT C AND D</code></h4>
+                                <p class="small-text">NOT applies to <strong>C only</strong>.</p>
+                                <p class="small-text"><em>Meaning:</em> <code>(NOT C) AND D</code></p>
+                            </div>
+                            <div class="box box-blue">
+                                <h4><code>NOT (C AND D)</code></h4>
+                                <p class="small-text">First do <code>C AND D</code>, then apply NOT to the result.</p>
+                                <p class="small-text"><em>Meaning:</em> flip the final output of <code>C AND D</code>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fragment box-blue" style="margin-top:15px;">
+                            <p class="small-text" style="margin:0;"><strong>Order tip:</strong> Always work inside
+                                brackets first.</p>
+                            <p class="small-text" style="margin-top:10px;">Think: BIDMAS but for logic —
+                                <em>Brackets → NOT → AND → OR</em>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Connections</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-link"></i> Back Links</h4>
+                        <p class="small-text fragment"><strong>10.1:</strong> circuits are built from <strong>logic
+                                gates</strong> (AND, OR, NOT...).</p>
+                        <p class="small-text fragment"><strong>Topic 8:</strong> boolean conditions in code use the same
+                            operators: AND / OR / NOT.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-forward"></i> Coming Up</h4>
+                        <p class="small-text fragment"><strong>10.3:</strong> <strong><span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on">truth tables</span></strong> test every
+                            input combination systematically.</p>
+                        <p class="small-text fragment"><strong>Topic 2:</strong> XOR-style ideas appear in parity and
+                            error detection.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 PLENARY - TRUE/FALSE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.05em; line-height:1.6; margin-top: 20px;">
+                        <li>We should draw gates in any order.</li>
+                        <li>Intermediate points help us trace circuits.</li>
+                        <li>A <span class="keyword"
+                                data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">logic
+                                circuit</span> can only have 2 inputs.</li>
+                        <li><code>NOT C AND D</code> is the same as <code>NOT (C AND D)</code>.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"We should draw gates in any order."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>You must follow brackets and order of operations. Gates inside brackets come first!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"Intermediate points help us trace circuits."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Labeling wires (P, Q, R) makes it much easier to find and fix mistakes.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"A <span class="keyword" data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">logic circuit</span> can only have 2 inputs."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Circuits can have many inputs (A, B, C, D, E...). Each gate has max 2 inputs, but the whole
+                            circuit can have more.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 4</h3>
+                    <div class="question-box"><code>NOT C AND D</code> is the same as <code>NOT (C AND D)</code></div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><code>NOT C AND D</code> applies NOT only to C, then ANDs with D.</p>
+                        <p><code>NOT (C AND D)</code> applies NOT to the entire AND result.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">10.2 Summary</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🔹 A <strong><span class="keyword" data-def="these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1">logic circuit</span></strong> combines gates to solve a rule.</p>
+                        <p class="small-text">🔹 Convert problems into <strong>expressions</strong> and then diagrams.</p>
+                        <p class="small-text">🔹 Use <strong>brackets first</strong> when building circuits.</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🔹 Label <strong>intermediate points</strong> (P, Q, R) to trace signals.</p>
+                        <p class="small-text">🔹 Test circuits by substituting inputs step-by-step.</p>
+                        <p class="small-text">🔹 Small changes in NOT/brackets can change the whole circuit.</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Coming up next:</strong> 10.3 <span class="keyword" data-def="a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on">Truth Tables</span> — proving a circuit works for every input.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    
+    <script src="../../js/live-date-display.js"></script>
+
+</body>
+
+</html>

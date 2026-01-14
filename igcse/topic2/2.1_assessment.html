@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.1 Data Transmission Assessment | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <link rel="stylesheet" href="../../css/assessment-igcse-topic2-2-1.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">2.1 Data Transmission</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 2 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>2.1 Assessment</h1>
+        <p class="subtitle">Data Transmission</p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: Packet Structure (Drag & Drop) -->
+        <div class="question-block" id="q1-block" data-summary="Components of a data packet">
+            <div class="q-header">
+                <span>Q1. Packet Structure</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Drag the items into the correct part of the <span class="keyword" data-def="a small part of a message/data that is transmitted over a network; after transmission all the data packets are reassembled to form the original message/data">data packet</span>.</p>
+            <div class="draggable-source" id="q1-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-header" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Header</h4>
+                </div>
+                <div class="bucket" id="bucket-payload" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4><span class="keyword" data-def="the actual data being carried in a data packet">Payload</span></h4>
+                </div>
+                <div class="bucket" id="bucket-trailer" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Trailer</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: Transmission Modes (Matching) -->
+        <div class="question-block" id="q2-block" data-summary="Match transmission modes">
+            <div class="q-header">
+                <span>Q2. Transmission Modes</span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Click a definition on the left, then the matching term on the right. Matched pairs will turn <span
+                    style="color: #f0ad4e; font-weight: bold;">amber</span>.</p>
+
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs">
+                    <!-- Shuffled by JS -->
+                </div>
+                <div class="col-terms" id="col-terms">
+                    <!-- Shuffled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: Serial vs Parallel (Categorisation) -->
+        <div class="question-block" id="q3-block" data-summary="Serial vs Parallel Transmission">
+            <div class="q-header">
+                <span>Q3. Serial vs Parallel</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <p>Drag the statements into the correct category (Serial or Parallel).</p>
+            <div class="draggable-source" id="q3-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-serial" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Serial Transmission</h4>
+                </div>
+                <div class="bucket" id="bucket-parallel" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Parallel Transmission</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q4: USB Features (True/False Drag) -->
+        <div class="question-block" id="q4-block" data-summary="USB characteristics">
+            <div class="q-header">
+                <span>Q4. Universal Serial Bus (USB)</span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <p>Drag the statements into the correct category (True or False).</p>
+            <div class="draggable-source" id="q4-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-true" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>True Statements</h4>
+                </div>
+                <div class="bucket" id="bucket-false" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>False Statements</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q5: Packet Switching (Ordering) -->
+        <div class="question-block" id="q5-block" data-summary="Packet switching process">
+            <div class="q-header">
+                <span>Q5. <span class="keyword" data-def="a method of transmission in which a message is broken into many data packets which can then be sent along pathways independently of each other">Packet Switching</span></span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <p>Order the steps in the <span class="keyword" data-def="a method of transmission in which a message is broken into many data packets which can then be sent along pathways independently of each other">packet switching</span> process.</p>
+            <div class="order-list">
+                <div class="order-item"><span class="order-num">1.</span> <select id="q5a"
+                        data-answer="Data is broken into packets"></select></div>
+                <div class="order-item"><span class="order-num">2.</span> <select id="q5b"
+                        data-answer="Packets travel independently via routers"></select></div>
+                <div class="order-item"><span class="order-num">3.</span> <select id="q5c"
+                        data-answer="Routers decide the path for each packet"></select></div>
+                <div class="order-item"><span class="order-num">4.</span> <select id="q5d"
+                        data-answer="Packets arrive (possibly out of order)"></select></div>
+                <div class="order-item"><span class="order-num">5.</span> <select id="q5e"
+                        data-answer="Packets are reassembled using sequence numbers"></select></div>
+            </div>
+        </div>
+
+        <!-- Q6: Data Skewing (Dropdown Gap Fill) -->
+        <div class="question-block" id="q6-block" data-summary="Data skewing in parallel transmission">
+            <div class="q-header">
+                <span>Q6. Data Skewing</span>
+                <span class="q-status" id="q6-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                (a) In <select id="q6a" data-answer="parallel"></select> transmission, multiple wires are used.<br>
+                (b) Over long distances, bits may arrive at different times due to wire properties.<br>
+                (c) This causes the data to become <select id="q6b" data-answer="skewed"></select> or
+                unsynchronised.<br>
+                (d) Therefore, <select id="q6c" data-answer="serial"></select> transmission is preferred for long
+                distances.
+            </div>
+        </div>
+
+        <!-- Q7: Packet Switching Benefits (MCQ) -->
+        <div class="question-block" id="q7-block" data-summary="Benefits of packet switching">
+            <div class="q-header">
+                <span>Q7. <span class="keyword" data-def="a method of transmission in which a message is broken into many data packets which can then be sent along pathways independently of each other">Packet Switching</span> Benefits</span>
+                <span class="q-status" id="q7-status">Unanswered</span>
+            </div>
+            <p>Which is NOT a benefit of <span class="keyword" data-def="a method of transmission in which a message is broken into many data packets which can then be sent along pathways independently of each other">packet switching</span>?</p>
+            <div class="mcq-options" id="q7-options">
+                <!-- Shuffled by JS -->
+            </div>
+        </div>
+
+        <!-- Q8: Transmission Concepts (True/False Grid) -->
+        <div class="question-block" id="q8-block" data-summary="True or False about data transmission">
+            <div class="q-header">
+                <span>Q8. Transmission Concepts</span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <table class="tf-table" id="q8-table">
+                <thead>
+                    <tr>
+                        <th>Statement</th>
+                        <th>True</th>
+                        <th>False</th>
+                    </tr>
+                </thead>
+                <tbody id="q8-tbody">
+                    <!-- Rows populated by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Q9: USB Specifications (Dropdown) -->
+        <div class="question-block" id="q9-block" data-summary="USB specifications">
+            <div class="q-header">
+                <span>Q9. USB Specifications</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                (a) USB stands for Universal <select id="q9a" data-answer="Serial"></select> Bus.<br>
+                (b) Standard USB supports a maximum cable length of <select id="q9b" data-answer="5"></select> metres.<br>
+                (c) The USB cable provides <select id="q9c" data-answer="+5V"></select> power to connected devices.<br>
+                (d) USB is <select id="q9d" data-answer="backward compatible"></select> with older versions.
+            </div>
+        </div>
+
+        <!-- Q10: CRC Error Checking (Sortable List) -->
+        <div class="question-block" id="q10-block" data-summary="CRC error checking steps">
+            <div class="q-header">
+                <span>Q10. CRC Error Checking</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <p>Drag to arrange the steps of CRC error checking in the correct order.</p>
+            <ul class="sortable-list" id="q10-list">
+                <!-- Items populated by JS -->
+            </ul>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+        <script src="../../js/assessment-igcse-topic2-2-1.js"></script>
+</body>
+
+</html>

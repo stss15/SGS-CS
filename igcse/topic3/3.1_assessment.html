@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.1 Computer Architecture Assessment | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <link rel="stylesheet" href="../../css/assessment-igcse-topic3-3-1.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">3.1 Computer Architecture</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 3 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>3.1 Assessment</h1>
+        <p class="subtitle">Computer Architecture, Von Neumann & Performance</p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: CPU Components (Matching) -->
+        <div class="question-block" id="q1-block" data-summary="Match CPU components">
+            <div class="q-header">
+                <span>Q1. CPU Components</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Click a function on the left, then the matching component on the right. Matched pairs will turn <span
+                    style="color: #f0ad4e; font-weight: bold;">amber</span>.</p>
+
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs">
+                    <!-- Shuffled by JS -->
+                </div>
+                <div class="col-terms" id="col-terms">
+                    <!-- Shuffled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: Registers (Matching) -->
+        <div class="question-block" id="q2-block" data-summary="Match registers to functions">
+            <div class="q-header">
+                <span>Q2. CPU <span class="keyword" data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">Registers</span></span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Match the <span class="keyword" data-def="a temporary component in the CPU which can be general or specific in its use; it holds data or instructions as part of the Fetch–Decode–Execute cycle">register</span> to its correct function.</p>
+
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q2">
+                    <!-- Shuffled by JS -->
+                </div>
+                <div class="col-terms" id="col-terms-q2">
+                    <!-- Shuffled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: System Buses (Dropdown Gap Fill) -->
+        <div class="question-block" id="q3-block" data-summary="System buses characteristics">
+            <div class="q-header">
+                <span>Q3. <span class="keyword" data-def="a connection between major components in a computer that can carry data, addresses or control signals">System Buses</span></span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                The <select id="q3a" data-answer="Address Bus"></select> carries <span class="keyword" data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span> <span class="keyword" data-def="a label for a memory location used by the CPU to track data">addresses</span> from the CPU to
+                <span class="keyword" data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>. It is <select id="q3b" data-answer="unidirectional"></select>.<br>
+                The <select id="q3c" data-answer="Data Bus"></select> carries <span class="keyword" data-def="other examples include web cache, database cache, DNS cache">data</span> and instructions between the CPU and
+                <span class="keyword" data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">memory</span>. It is <select id="q3d" data-answer="bidirectional"></select>.<br>
+                The <select id="q3e" data-answer="Control Bus"></select> carries control signals to coordinate
+                components. It is <select id="q3f" data-answer="bidirectional"></select>.<br>
+                As bus width increases, the amount of <span class="keyword" data-def="other examples include web cache, database cache, DNS cache">data</span> that can be transferred <select id="q3g"
+                    data-answer="increases"></select>.
+            </div>
+        </div>
+
+        <!-- Q4: Fetch-Decode-Execute Cycle (Ordering) -->
+        <div class="question-block" id="q4-block" data-summary="FDE Cycle Sequence">
+            <div class="q-header">
+                <span>Q4. Fetch-Decode-Execute Cycle</span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <p>Order the steps of the Fetch-Decode-Execute cycle.</p>
+            <div class="order-list">
+                <div class="order-item"><span class="order-num">1.</span> <select id="q4a"
+                        data-answer="PC contains address of next instruction"></select></div>
+                <div class="order-item"><span class="order-num">2.</span> <select id="q4b"
+                        data-answer="Address is copied from PC to MAR"></select></div>
+                <div class="order-item"><span class="order-num">3.</span> <select id="q4c"
+                        data-answer="Instruction at address in MAR is copied to MDR"></select></div>
+                <div class="order-item"><span class="order-num">4.</span> <select id="q4d"
+                        data-answer="Instruction in MDR is copied to CIR"></select></div>
+                <div class="order-item"><span class="order-num">5.</span> <select id="q4e"
+                        data-answer="PC is incremented"></select></div>
+                <div class="order-item"><span class="order-num">6.</span> <select id="q4f"
+                        data-answer="Instruction is decoded and executed"></select></div>
+            </div>
+        </div>
+
+        <!-- Q5: CPU Performance (Categorisation) -->
+        <div class="question-block" id="q5-block" data-summary="Factors affecting performance">
+            <div class="q-header">
+                <span>Q5. CPU Performance Factors</span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <p>Drag the factors into the correct category.</p>
+            <div class="draggable-source" id="q5-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-improve" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Improves Performance</h4>
+                </div>
+                <div class="bucket" id="bucket-no-effect" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Does Not Necessarily Improve Performance</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q6: Embedded Systems (True/False Drag) -->
+        <div class="question-block" id="q6-block" data-summary="Embedded Systems Characteristics">
+            <div class="q-header">
+                <span>Q6. <span class="keyword" data-def="a combination of hardware and software designed to carry out a specific set of functions">Embedded Systems</span></span>
+                <span class="q-status" id="q6-status">Unanswered</span>
+            </div>
+            <p>Drag the statements into the correct category (True or False).</p>
+            <div class="draggable-source" id="q6-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-true" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>True Statements</h4>
+                </div>
+                <div class="bucket" id="bucket-false" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>False Statements</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q7: Von Neumann Features (MCQ) -->
+        <div class="question-block" id="q7-block" data-summary="Von Neumann architecture feature">
+            <div class="q-header">
+                <span>Q7. <span class="keyword" data-def="a type of computer architecture which introduced the concept of the stored program in the 1940s">Von Neumann Architecture</span></span>
+                <span class="q-status" id="q7-status">Unanswered</span>
+            </div>
+            <p>Which is a key feature of <span class="keyword" data-def="a type of computer architecture which introduced the concept of the stored program in the 1940s">Von Neumann architecture</span>?</p>
+            <div class="mcq-options" id="q7-options"></div>
+        </div>
+
+        <!-- Q8: CPU Facts (True/False Grid) -->
+        <div class="question-block" id="q8-block" data-summary="CPU architecture facts">
+            <div class="q-header">
+                <span>Q8. CPU Architecture Facts</span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <table class="tf-table" id="q8-table">
+                <thead><tr><th>Statement</th><th>True</th><th>False</th></tr></thead>
+                <tbody id="q8-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Q9: Cache Levels (Sortable List) -->
+        <div class="question-block" id="q9-block" data-summary="Cache memory levels">
+            <div class="q-header">
+                <span>Q9. <span class="keyword" data-def="is temporary memory using static RAM to hold frequently used data/instructions by the CPU thereby increasing CPU performance. More generally, cache means any area of storage used to quickly access frequently-used">Cache</span> <span class="keyword" data-def="the devices within the computer that are directly accessible by the CPU; there are two types of memory – RAM and ROM; memory is different to hard disk drives, for example, which are known as storage devices">Memory</span> Levels</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <p>Drag to arrange <span class="keyword" data-def="is temporary memory using static RAM to hold frequently used data/instructions by the CPU thereby increasing CPU performance. More generally, cache means any area of storage used to quickly access frequently-used">cache</span> levels from fastest (smallest) to slowest (largest).</p>
+            <ul class="sortable-list" id="q9-list"></ul>
+        </div>
+
+        <!-- Q10: ALU Operations (Dropdown) -->
+        <div class="question-block" id="q10-block" data-summary="ALU operations">
+            <div class="q-header">
+                <span>Q10. ALU Operations</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                The ALU performs <select id="q10a" data-answer="arithmetic"></select> operations like addition and subtraction.<br>
+                It also performs <select id="q10b" data-answer="logical"></select> operations like AND and OR.<br>
+                Results are typically stored in the <select id="q10c" data-answer="Accumulator"></select>.<br>
+                Multiplication is done using a series of <select id="q10d" data-answer="additions and shifts"></select>.
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+        <script src="../../js/assessment-igcse-topic3-3-1.js"></script>
+</body>
+
+</html>

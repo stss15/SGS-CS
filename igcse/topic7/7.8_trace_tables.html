@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7.8 Trace Tables | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic7/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">7.8 Trace Tables</h1>
+                        <h3 class="sub-title">Thinking Like a Computer</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (7.7)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is <span class="keyword" data-def="the largest/smallest data value that is accepted by a program">extreme data</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Data at the edges of valid range (but still valid)</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What does <span class="keyword" data-def="the largest/smallest data value that is accepted by a program and the corresponding smallest/ largest rejected data value">boundary data</span> test?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">The exact point between valid and invalid</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="r-stack">
+                        <div class="fragment fade-in-then-out">
+                            <div class="question-box">
+                                <p style="font-size:1.2em; margin:0;">How do you find a bug when the code "looks right"?</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box" style="background: #ffebee; padding: 30px;">
+                                <p class="small-text" style="margin:0;">Sometimes code seems perfect… but still gives the wrong answer.</p>
+                                <p class="small-text" style="margin-top:15px;">That usually means a <strong>logic error</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box-blue" style="padding: 30px;">
+                                <p class="small-text"><strong>✅ Think like a computer:</strong> execute it step by step.</p>
+                                <p class="small-text">This is a <strong>dry run</strong>, recorded in a <strong>trace table</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">What is a trace table?</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What is a Trace Table?</h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A table used to record the values of variables as an <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> is executed, step by step.</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-table-columns"></i> Structure</h4>
+                            <p class="small-text">One column per variable</p>
+                            <p class="small-text">Plus an <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> column</p>
+                            <p class="small-text">One row per change</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-circle-check"></i> Purpose</h4>
+                            <p class="small-text">Track how values change</p>
+                            <p class="small-text">Find logic errors</p>
+                            <p class="small-text">Understand <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> flow</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-repeat"></i> Loops Hide Lots of Mistakes</h4>
+                        <p class="small-text fragment">Loops repeat logic many times, so a small error can create a big wrong result.</p>
+                        <p class="small-text fragment">Trace tables make each repetition visible.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-magnifying-glass"></i> Great for Logic Errors</h4>
+                        <p class="small-text fragment">Trace tables won’t fix syntax errors, but they help you spot where the logic goes wrong.</p>
+                        <p class="small-text fragment">They’re a key debugging tool in exams.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 SIMPLE EXAMPLE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Let's Trace This Code</h2>
+                    <div class="box">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">A ← 5
+B ← 3
+C ← A + B
+<span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> C</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text">Simple, but let's practice the technique!</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Build the trace table</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Step-by-Step Trace</h3>
+                    <div class="cols">
+                        <div class="box" style="width:40%;">
+                            <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">A ← 5
+B ← 3
+C ← A + B
+<span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> C</code></pre>
+                        </div>
+                        <div style="width:55%;">
+                            <table style="width:100%; font-size:0.9em;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">A</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">B</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;">C</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:8px;"><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span></th>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:8px; background:#d4edda;">5</td>
+                                    <td style="padding:8px;"></td>
+                                    <td style="padding:8px;"></td>
+                                    <td style="padding:8px;"></td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:8px;">5</td>
+                                    <td style="padding:8px; background:#d4edda;">3</td>
+                                    <td style="padding:8px;"></td>
+                                    <td style="padding:8px;"></td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:8px;">5</td>
+                                    <td style="padding:8px;">3</td>
+                                    <td style="padding:8px; background:#d4edda;">8</td>
+                                    <td style="padding:8px;"></td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:8px;">5</td>
+                                    <td style="padding:8px;">3</td>
+                                    <td style="padding:8px;">8</td>
+                                    <td style="padding:8px; background:#fff3cd;">8</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Final <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Output</span>:</strong> 8</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">In the first example, what is the final <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">output</span>?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>8</strong> (because 5 + 3 = 8).</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 LOOP EXAMPLE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Tracing Loops</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">This is where trace tables really shine!</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">Total ← 0
+FOR Count ← 1 TO 3
+    Total ← Total + Count
+NEXT Count
+<span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> Total</code></pre>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Watch each iteration</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Tracing the Loop</h3>
+                    <div class="cols">
+                        <div class="box" style="width:45%;">
+                            <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">Total ← 0
+FOR Count ← 1 TO 3
+    Total ← Total + Count
+NEXT Count
+<span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> Total</code></pre>
+                        </div>
+                        <div style="width:50%;">
+                            <table style="width:100%; font-size:0.85em;">
+                                <tr>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">Count</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;">Total</th>
+                                    <th style="background:var(--primary-blue); color:white; padding:6px;"><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span></th>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:6px;"></td>
+                                    <td style="padding:6px; background:#d4edda;">0</td>
+                                    <td style="padding:6px;"></td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:6px; background:#d4edda;">1</td>
+                                    <td style="padding:6px; background:#d4edda;">1</td>
+                                    <td style="padding:6px;"></td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:6px; background:#d4edda;">2</td>
+                                    <td style="padding:6px; background:#d4edda;">3</td>
+                                    <td style="padding:6px;"></td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:6px; background:#d4edda;">3</td>
+                                    <td style="padding:6px; background:#d4edda;">6</td>
+                                    <td style="padding:6px;"></td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding:6px;">3</td>
+                                    <td style="padding:6px;">6</td>
+                                    <td style="padding:6px; background:#fff3cd;">6</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Logic:</strong> Total = 0 + 1 + 2 + 3 = <strong>6</strong></p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 GOLDEN RULES
+                 ============================================ -->
+            <section>
+                <h2>Trace Table Golden Rules</h2>
+                <div class="box" style="margin-top:20px;">
+                    <ol style="font-size:1em; line-height:1.6;">
+                        <li class="fragment"><strong>One column per variable</strong> – plus <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span></li>
+                        <li class="fragment"><strong>New row only when a value changes</strong></li>
+                        <li class="fragment"><strong>Execute in order</strong> – line by line</li>
+                        <li class="fragment"><strong>Show your working</strong> – especially in loops</li>
+                        <li class="fragment"><strong>Don't skip steps</strong> – even if it seems obvious</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">When do you add a new row in a trace table?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>When a value changes</strong> (not automatically on every line).</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 MORE COMPLEX EXAMPLE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>A Bigger Example</h2>
+                    <div class="box">
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">Max ← 0
+FOR i ← 1 TO 4
+    INPUT Num
+    IF Num > Max THEN
+        Max ← Num
+    ENDIF
+NEXT i
+<span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> Max</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>User <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">inputs</span>:</strong> 3, 7, 2, 5</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See the trace</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Trace (Finding Maximum)</h3>
+                    <div class="box" style="margin-bottom:10px;">
+                        <p class="small-text"><strong><span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span>:</strong> 3, 7, 2, 5</p>
+                    </div>
+                    <table style="width:100%; font-size:0.85em;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:6px;">i</th>
+                            <th style="background:var(--primary-blue); color:white; padding:6px;">Num</th>
+                            <th style="background:var(--primary-blue); color:white; padding:6px;">Num > Max?</th>
+                            <th style="background:var(--primary-blue); color:white; padding:6px;">Max</th>
+                            <th style="background:var(--primary-blue); color:white; padding:6px;"><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span></th>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"></td>
+                            <td style="padding:6px;"></td>
+                            <td style="padding:6px;"></td>
+                            <td style="padding:6px; background:#d4edda;">0</td>
+                            <td style="padding:6px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;">1</td>
+                            <td style="padding:6px;">3</td>
+                            <td style="padding:6px; color:green;">3 > 0? Yes</td>
+                            <td style="padding:6px; background:#d4edda;">3</td>
+                            <td style="padding:6px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;">2</td>
+                            <td style="padding:6px;">7</td>
+                            <td style="padding:6px; color:green;">7 > 3? Yes</td>
+                            <td style="padding:6px; background:#d4edda;">7</td>
+                            <td style="padding:6px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;">3</td>
+                            <td style="padding:6px;">2</td>
+                            <td style="padding:6px; color:red;">2 > 7? No</td>
+                            <td style="padding:6px;">7</td>
+                            <td style="padding:6px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;">4</td>
+                            <td style="padding:6px;">5</td>
+                            <td style="padding:6px; color:red;">5 > 7? No</td>
+                            <td style="padding:6px;">7</td>
+                            <td style="padding:6px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:6px;"></td>
+                            <td style="padding:6px;"></td>
+                            <td style="padding:6px;"></td>
+                            <td style="padding:6px;">7</td>
+                            <td style="padding:6px; background:#fff3cd;">7</td>
+                        </tr>
+                    </table>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 YOUR TURN
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Quick Check</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Trace this code:</p>
+                    </div>
+                    <div class="box" style="margin-top:20px;">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">X ← 10
+Y ← 3
+WHILE X > Y
+    X ← X - 2
+    Y ← Y + 1
+ENDWHILE
+<span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> X
+<span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> Y</code></pre>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Check answer</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Answer</h3>
+                    <table style="width:100%; font-size:0.9em;">
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">X</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Y</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">X > Y?</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;"><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span></th>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;">10</td>
+                            <td style="padding:8px;">3</td>
+                            <td style="padding:8px; color:green;">10 > 3? Yes</td>
+                            <td style="padding:8px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;">8</td>
+                            <td style="padding:8px;">4</td>
+                            <td style="padding:8px; color:green;">8 > 4? Yes</td>
+                            <td style="padding:8px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;">6</td>
+                            <td style="padding:8px;">5</td>
+                            <td style="padding:8px; color:green;">6 > 5? Yes</td>
+                            <td style="padding:8px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;">4</td>
+                            <td style="padding:8px;">6</td>
+                            <td style="padding:8px; color:red;">4 > 6? No</td>
+                            <td style="padding:8px;"></td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding:8px;"></td>
+                            <td style="padding:8px;"></td>
+                            <td style="padding:8px;"></td>
+                            <td style="padding:8px; background:#fff3cd;">4, 6</td>
+                        </tr>
+                    </table>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Final <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Output</span>:</strong> 4 and 6</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Link to 7.7:</strong></p>
+                        <p class="small-text"><span class="keyword" data-def="part of the program development life cycle; systematic checks done on a program to make sure that it works under all conditions">Testing</span> checks behaviour with different <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">inputs</span> — trace tables help you see <em>why</em> the <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> behaves that way.</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming up in 7.9:</strong></p>
+                        <p class="small-text">Identifying errors — syntax, logic, and runtime problems.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>A trace table should have one column for each variable.</li>
+                        <li>You add a new row every line of code.</li>
+                        <li>Trace tables are only useful for finding syntax errors.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">A trace table should have one column for each variable.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Each variable gets its own column, plus an <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span> column to record any <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">outputs</span>.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">You add a new row every line of code.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>You add a new row only when a <strong>value changes</strong>, not for every line of code.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">Trace tables are only useful for finding syntax errors.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>Trace tables are used to find <strong>logic errors</strong> – when code runs but produces wrong results. Syntax errors stop code from running at all!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🧾 A trace table records variable values as code runs</p>
+                        <p class="small-text">📝 A dry run = executing the <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> manually</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">📊 One column per variable (+ <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">OUTPUT</span>)</p>
+                        <p class="small-text">✅ Add a new row when a value changes</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Next:</strong> 7.9 Identifying Errors</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    
+    <script src="../../js/live-date-display.js"></script>
+
+</body>
+
+</html>

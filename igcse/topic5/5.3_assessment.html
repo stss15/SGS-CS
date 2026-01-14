@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.3 Cyber Security Assessment | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <link rel="stylesheet" href="../../css/assessment-igcse-topic5-5-3.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">5.3 Cyber <span class="keyword" data-def="an algorithm for wireless networks to protect them against data interception">Security</span></div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 5 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>5.3 Assessment</h1>
+        <p class="subtitle"><span class="keyword" data-def="programs (such as viruses, worms and Trojan horses) installed on a user’s computer with the aim of deleting, corrupting or manipulating data illegally">Malware</span>, Threats, <span class="keyword" data-def="sending out legitimate-looking emails designed to trick the recipients into giving their personal details to the sender of the email">Phishing</span> & <span class="keyword" data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span></p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: Malware Types (Matching) -->
+        <div class="question-block" id="q1-block" data-summary="Malware Types">
+            <div class="q-header">
+                <span>Q1. <span class="keyword" data-def="programs (such as viruses, worms and Trojan horses) installed on a user’s computer with the aim of deleting, corrupting or manipulating data illegally">Malware</span> Types</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Match the <span class="keyword" data-def="programs (such as viruses, worms and Trojan horses) installed on a user’s computer with the aim of deleting, corrupting or manipulating data illegally">malware</span> to its description.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q1"></div>
+                <div class="col-terms" id="col-terms-q1"></div>
+            </div>
+        </div>
+
+        <!-- Q2: Phishing vs Pharming (Categorisation) -->
+        <div class="question-block" id="q2-block" data-summary="Phishing vs Pharming">
+            <div class="q-header">
+                <span>Q2. <span class="keyword" data-def="sending out legitimate-looking emails designed to trick the recipients into giving their personal details to the sender of the email">Phishing</span> vs <span class="keyword" data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span></span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Drag the features into the correct category.</p>
+            <div class="draggable-source" id="q2-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-phishing" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4><span class="keyword" data-def="sending out legitimate-looking emails designed to trick the recipients into giving their personal details to the sender of the email">Phishing</span></h4>
+                </div>
+                <div class="bucket" id="bucket-pharming" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4><span class="keyword" data-def="redirecting a user to a fake website in order to illegally obtain personal data about the user without their knowledge; unlike phishing, pharming is initiated without needing any action by the user">Pharming</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: Cyber Threats (Dropdown Gap Fill) -->
+        <div class="question-block" id="q3-block" data-summary="Cyber Threats">
+            <div class="q-header">
+                <span>Q3. Cyber Threats</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                A <select id="q3a" data-answer="Brute Force"></select> attack tries every password combination.<br>
+                <select id="q3b" data-answer="DDoS"></select> floods a server with traffic to crash it.<br>
+                <select id="q3c" data-answer="Data Interception"></select> involves stealing data during
+                transmission.<br>
+                <select id="q3d" data-answer="Hacking"></select> is gaining illegal access to a computer system.
+            </div>
+        </div>
+
+        <!-- Q4: Social Engineering (Matching) -->
+        <div class="question-block" id="q4-block" data-summary="Social Engineering">
+            <div class="q-header">
+                <span>Q4. <span class="keyword" data-def="manipulating people into breaking normal security procedures (such as giving away their password) in order to gain illegal access to computer systems or to place malware on their computer">Social Engineering</span></span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <p>Match the <span class="keyword" data-def="manipulating people into breaking normal security procedures (such as giving away their password) in order to gain illegal access to computer systems or to place malware on their computer">social engineering</span> technique to its description.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q4"></div>
+                <div class="col-terms" id="col-terms-q4"></div>
+            </div>
+        </div>
+
+        <!-- Q5: Biometrics (True/False) -->
+        <div class="question-block" id="q5-block" data-summary="Biometrics">
+            <div class="q-header">
+                <span>Q5. <span class="keyword" data-def="type of authentication that uses a unique human characteristic, such as fingerprints, voice or retina blood vessel pattern">Biometrics</span></span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <div class="tf-grid" id="tf-grid-q5">
+                <div class="tf-header">Statement</div>
+                <div class="tf-header">True</div>
+                <div class="tf-header">False</div>
+            </div>
+        </div>
+
+        <!-- Q6: Password Security (MCQ) -->
+        <div class="question-block" id="q6-block" data-summary="Password Security">
+            <div class="q-header">
+                <span>Q6. Password <span class="keyword" data-def="an algorithm for wireless networks to protect them against data interception">Security</span></span>
+                <span class="q-status" id="q6-status">Unanswered</span>
+            </div>
+            <p>Which of the following is the strongest password?</p>
+            <div class="mcq-options" id="q6-options"></div>
+        </div>
+
+        <!-- Q7: Cyber Attack Types (Matching) -->
+        <div class="question-block" id="q7-block" data-summary="Cyber Attack Types">
+            <div class="q-header">
+                <span>Q7. Cyber Attack Types</span>
+                <span class="q-status" id="q7-status">Unanswered</span>
+            </div>
+            <p>Match the cyber attack type to its description.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q7"></div>
+                <div class="col-terms" id="col-terms-q7"></div>
+            </div>
+        </div>
+
+        <!-- Q8: Security Measures (True/False Grid) -->
+        <div class="question-block" id="q8-block" data-summary="Security Measures">
+            <div class="q-header">
+                <span>Q8. <span class="keyword" data-def="an algorithm for wireless networks to protect them against data interception">Security</span> Measures</span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <table class="tf-table" id="q8-table">
+                <thead><tr><th>Statement</th><th>True</th><th>False</th></tr></thead>
+                <tbody id="q8-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Q9: Firewall Types (Sortable List) -->
+        <div class="question-block" id="q9-block" data-summary="Firewall Types">
+            <div class="q-header">
+                <span>Q9. <span class="keyword" data-def="software or hardware that sits between a computer and an external network (for example, the internet); the firewall monitors and filters all incoming and outgoing traffic">Firewall</span> Protection Levels</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <p>Drag to arrange <span class="keyword" data-def="software or hardware that sits between a computer and an external network (for example, the internet); the firewall monitors and filters all incoming and outgoing traffic">firewall</span> types from basic to most sophisticated.</p>
+            <ul class="sortable-list" id="q9-list"></ul>
+        </div>
+
+        <!-- Q10: Authentication (Dropdown) -->
+        <div class="question-block" id="q10-block" data-summary="Authentication Methods">
+            <div class="q-header">
+                <span>Q10. <span class="keyword" data-def="the process of proving a user’s identity by using something they know, something they have or something unique to them">Authentication</span> Methods</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                <select id="q10a" data-answer="Two-factor authentication"></select> requires two forms of verification.<br>
+                <select id="q10b" data-answer="CAPTCHA"></select> helps distinguish humans from bots.<br>
+                <select id="q10c" data-answer="Single Sign-On"></select> allows one login for multiple services.<br>
+                <select id="q10d" data-answer="Biometric"></select> <span class="keyword" data-def="the process of proving a user’s identity by using something they know, something they have or something unique to them">authentication</span> uses physical characteristics.
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+        <script src="../../js/assessment-igcse-topic5-5-3.js"></script>
+</body>
+
+</html>

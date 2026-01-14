@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Admin - SGSD Computer Science</title>
+    <meta name="description" content="Review and update bug reports and feature requests from students.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body class="admin-page">
+    <header>
+        <div class="logo-container">
+            <a href="./index.html">
+                <img src="./images/Logo.png" alt="St George's Logo" class="logo-img">
+            </a>
+            <a href="./index.html" style="text-decoration: none;">
+                <div class="site-title">SGSD Computer Science</div>
+            </a>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn primary" data-open-feedback="bug">
+                <i class="fa-solid fa-bug"></i>
+                <span>Report a bug</span>
+            </button>
+            <button class="header-btn secondary" data-open-feedback="feature">
+                <i class="fa-solid fa-lightbulb"></i>
+                <span>Request a feature</span>
+            </button>
+            <a class="header-btn ghost" href="./index.html">
+                <i class="fa-solid fa-house"></i>
+                <span>Back to home</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="admin-wrapper" id="admin-board">
+            <div class="admin-header">
+                <div>
+                    <h1 class="admin-title">Teacher feedback board</h1>
+                    <p class="admin-subtitle">Review bug reports and feature requests. Status comments are required when completing an item.</p>
+                </div>
+                <div class="meta-row">
+                    <span class="tag muted"><i class="fa-solid fa-key"></i>Protected with a simple password prompt.</span>
+                    <span class="tag muted"><i class="fa-regular fa-hard-drive"></i>Stored locally in this browser.</span>
+                </div>
+            </div>
+
+            <div class="admin-grid">
+                <section>
+                    <h2 class="paper-title">Bug reports</h2>
+                    <p class="admin-subtitle">Filter prompts and clear titles help reduce vague reports.</p>
+                    <div id="open-bugs"></div>
+                </section>
+
+                <section>
+                    <h2 class="paper-title">Feature requests</h2>
+                    <p class="admin-subtitle">Set a status and add a quick comment for context.</p>
+                    <div id="open-features"></div>
+                </section>
+            </div>
+
+            <section class="archive-panel">
+                <details>
+                    <summary><strong>Completed archive</strong> — implemented or rejected items</summary>
+                    <div class="filter-row">
+                        <label for="archive-outcome">
+                            Outcome
+                            <select id="archive-outcome">
+                                <option value="all">All outcomes</option>
+                                <option value="implemented">Implemented</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </label>
+                        <label for="archive-start">
+                            Start date
+                            <input type="date" id="archive-start">
+                        </label>
+                        <label for="archive-end">
+                            End date
+                            <input type="date" id="archive-end">
+                        </label>
+                    </div>
+                    <div class="archive-list" id="archive-list"></div>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/site.js"></script>
+    <script src="./js/feedback.js"></script>
+</body>
+
+</html>

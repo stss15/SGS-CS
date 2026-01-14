@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.3 Encryption Assessment | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <link rel="stylesheet" href="../../css/assessment-igcse-topic2-2-3.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">2.3 <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span></div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 2 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>2.3 Assessment</h1>
+        <p class="subtitle">Symmetric and <span class="keyword" data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric Encryption</span></p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: Encryption Terminology (Matching) -->
+        <div class="question-block" id="q1-block" data-summary="Match encryption terms">
+            <div class="q-header">
+                <span>Q1. <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span> Terminology</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Click a definition on the left, then the matching term on the right. Matched pairs will turn <span
+                    style="color: #f0ad4e; font-weight: bold;">amber</span>.</p>
+
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs">
+                    <!-- Shuffled by JS -->
+                </div>
+                <div class="col-terms" id="col-terms">
+                    <!-- Shuffled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: Symmetric vs Asymmetric (Categorisation) -->
+        <div class="question-block" id="q2-block" data-summary="Symmetric vs Asymmetric features">
+            <div class="q-header">
+                <span>Q2. Symmetric vs <span class="keyword" data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric Encryption</span></span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Drag the statements into the correct category.</p>
+            <div class="draggable-source" id="q2-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-symmetric" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4><span class="keyword" data-def="a type of encryption in which the same encryption key is used both to encrypt and decrypt a message">Symmetric Encryption</span></h4>
+                </div>
+                <div class="bucket" id="bucket-asymmetric" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4><span class="keyword" data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric Encryption</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: Asymmetric Process (Ordering) -->
+        <div class="question-block" id="q3-block" data-summary="Asymmetric encryption process">
+            <div class="q-header">
+                <span>Q3. <span class="keyword" data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric Encryption</span> Process</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <p>Order the steps for Tom to send a secret message to Jane.</p>
+            <div class="order-list">
+                <div class="order-item"><span class="order-num">1.</span> <select id="q3a"
+                        data-answer="Jane generates a public/private key pair"></select></div>
+                <div class="order-item"><span class="order-num">2.</span> <select id="q3b"
+                        data-answer="Jane sends her public key to Tom"></select></div>
+                <div class="order-item"><span class="order-num">3.</span> <select id="q3c"
+                        data-answer="Tom encrypts the message using Jane's public key"></select></div>
+                <div class="order-item"><span class="order-num">4.</span> <select id="q3d"
+                        data-answer="Tom sends the ciphertext to Jane"></select></div>
+                <div class="order-item"><span class="order-num">5.</span> <select id="q3e"
+                        data-answer="Jane decrypts the message using her private key"></select></div>
+            </div>
+        </div>
+
+        <!-- Q4: Encryption Purpose (Dropdown Gap Fill) -->
+        <div class="question-block" id="q4-block" data-summary="Purpose of encryption">
+            <div class="q-header">
+                <span>Q4. Purpose of <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span></span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span> is used to protect data from <select id="q4a" data-answer="eavesdroppers"></select>.<br>
+                It turns <select id="q4b" data-answer="plaintext"></select> into <select id="q4c"
+                    data-answer="ciphertext"></select>.<br>
+                It does not prevent interception, but makes the data <select id="q4d"
+                    data-answer="unreadable"></select>.<br>
+                This is essential for sending sensitive info like <select id="q4e"
+                    data-answer="credit card details"></select> over the internet.<br>
+                https websites use <select id="q4f" data-answer="SSL/TLS"></select> to secure data.
+            </div>
+        </div>
+
+        <!-- Q5: Caesar Cipher Logic (Dropdown) -->
+        <div class="question-block" id="q5-block" data-summary="Simple shift cipher logic">
+            <div class="q-header">
+                <span>Q5. Simple Shift Cipher</span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                Using a shift of +3 (A -> D):<br>
+                The <span class="keyword" data-def="the original text/message before it is put through an encryption algorithm">plaintext</span> "CAT" becomes <select id="q5a" data-answer="FDW"></select>.<br>
+                The <span class="keyword" data-def="encrypted data that is the result of putting a plaintext message through an encryption algorithm">ciphertext</span> "DPH" decrypts to <select id="q5b" data-answer="AME"></select>.<br>
+                If the key is lost, the data cannot be <select id="q5c" data-answer="decrypted"></select>.<br>
+                This is a type of <select id="q5d" data-answer="symmetric"></select> <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">encryption</span>.
+            </div>
+        </div>
+
+        <!-- Q6: Public/Private Key Roles (True/False Drag) -->
+        <div class="question-block" id="q6-block" data-summary="Roles of public and private keys">
+            <div class="q-header">
+                <span>Q6. Public vs <span class="keyword" data-def="a type of encryption key which is known only to the single computer/user">Private Key</span> Roles</span>
+                <span class="q-status" id="q6-status">Unanswered</span>
+            </div>
+            <p>Drag the statements into the correct category (True or False).</p>
+            <div class="draggable-source" id="q6-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-true" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>True Statements</h4>
+                </div>
+                <div class="bucket" id="bucket-false" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>False Statements</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q7: Encryption Benefits (MCQ) -->
+        <div class="question-block" id="q7-block" data-summary="Key benefit of asymmetric encryption">
+            <div class="q-header">
+                <span>Q7. <span class="keyword" data-def="a type of encryption that uses public keys and private keys to ensure data is secure">Asymmetric Encryption</span> Benefit</span>
+                <span class="q-status" id="q7-status">Unanswered</span>
+            </div>
+            <p>What is the main advantage of <span class="keyword" data-def="a type of encryption that uses public keys and private keys to ensure data is secure">asymmetric encryption</span> over <span class="keyword" data-def="a type of encryption in which the same encryption key is used both to encrypt and decrypt a message">symmetric encryption</span>?</p>
+            <div class="mcq-options" id="q7-options"></div>
+        </div>
+
+        <!-- Q8: Encryption Facts (True/False Grid) -->
+        <div class="question-block" id="q8-block" data-summary="Facts about encryption">
+            <div class="q-header">
+                <span>Q8. <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span> Facts</span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <table class="tf-table" id="q8-table">
+                <thead><tr><th>Statement</th><th>True</th><th>False</th></tr></thead>
+                <tbody id="q8-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Q9: Symmetric Encryption Steps (Sortable List) -->
+        <div class="question-block" id="q9-block" data-summary="Symmetric encryption process">
+            <div class="q-header">
+                <span>Q9. <span class="keyword" data-def="a type of encryption in which the same encryption key is used both to encrypt and decrypt a message">Symmetric Encryption</span> Process</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <p>Drag to arrange the <span class="keyword" data-def="a type of encryption in which the same encryption key is used both to encrypt and decrypt a message">symmetric encryption</span> process in order.</p>
+            <ul class="sortable-list" id="q9-list"></ul>
+        </div>
+
+        <!-- Q10: Encryption Applications (Dropdown) -->
+        <div class="question-block" id="q10-block" data-summary="Where encryption is used">
+            <div class="q-header">
+                <span>Q10. <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">Encryption</span> Applications</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                Online banking uses <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">encryption</span> to protect <select id="q10a" data-answer="financial transactions"></select>.<br>
+                The padlock icon in a browser indicates <select id="q10b" data-answer="HTTPS"></select> is being used.<br>
+                Email can be encrypted to ensure only the <select id="q10c" data-answer="intended recipient"></select> can read it.<br>
+                VPNs use <span class="keyword" data-def="the process of making data meaningless using encryption keys; without the correct decryption key the data cannot be decoded (unscrambled)">encryption</span> to create a secure <select id="q10d" data-answer="tunnel"></select> over public networks.
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+        <script src="../../js/assessment-igcse-topic2-2-3.js"></script>
+</body>
+
+</html>

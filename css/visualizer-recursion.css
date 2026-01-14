@@ -1,0 +1,143 @@
+/* Extracted from B2.2.4 Recursion Visualisor.html on 2025-12-14 */
+/* DO NOT EDIT - Changes should match original inline styles */
+
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Code Highlighting - Light Mode */
+        .code-line {
+            padding: 0.25rem 0.5rem 0.25rem 1rem;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+            line-height: 1.6;
+        }
+
+        .code-active {
+            background-color: #DBEAFE;
+            border-left-color: #2563EB;
+            font-weight: 600;
+        }
+
+        /* Syntax Colors - Light Mode */
+        .syntax-keyword {
+            color: #DB2777;
+            font-weight: 600;
+        }
+
+        .syntax-def {
+            color: #2563EB;
+        }
+
+        .syntax-number {
+            color: #7C3AED;
+        }
+
+        .syntax-comment {
+            color: #6B7280;
+            font-style: italic;
+        }
+
+        /* Tree Visualization Styles */
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .branch-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            position: relative;
+            padding-top: 1rem;
+        }
+
+        .branch-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 3px;
+            height: 1rem;
+            background: #6366F1;
+        }
+
+        .branch-container>.tree-container::before {
+            content: '';
+            position: absolute;
+            top: -1rem;
+            left: 50%;
+            width: 3px;
+            height: 1rem;
+            background: #6366F1;
+        }
+
+        /* Animation Classes */
+        .node-enter {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .node-active {
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transform: scale(1.1);
+            z-index: 20;
+            border-color: #4F46E5 !important;
+            background: #EEF2FF !important;
+        }
+
+        .node-returned {
+            background: #D1FAE5 !important;
+            border-color: #059669 !important;
+            color: #065F46 !important;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .node-pending {
+            opacity: 0.5;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5) translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Stack Frame Styles - Light Mode */
+        .stack-frame {
+            transition: all 0.3s ease;
+            border-left-width: 5px;
+        }
+
+        .stack-frame.active {
+            border-left-color: #4F46E5;
+            background: #EEF2FF;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
+        }
+
+        .stack-frame.paused {
+            border-left-color: #9CA3AF;
+            background: #F9FAFB;
+            opacity: 0.7;
+        }
+
+        .stack-frame.returning {
+            border-left-color: #059669;
+            background: #D1FAE5;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+        }
+    

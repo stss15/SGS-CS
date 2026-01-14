@@ -1,0 +1,253 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B1.4 Algorithm Design | IB Computer Science</title>
+    <meta name="description" content="Designing algorithms from specifications: IPO thinking, stepwise refinement, and verifying correctness with trace tables and test data.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B1.4 Algorithm Design</h1>
+            <h3 class="sub-title">Topic B1: Computational Thinking | From Specification → Solution</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM B1.3) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall B1.3 (Flowcharts &amp; Pseudocode) before designing algorithms.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What does MOD return?</li>
+            <li>What is the purpose of a trace table?</li>
+            <li>Which flowchart symbol represents a decision?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+    <section>        <h3>Answer 1</h3>
+        <div class="question-box">What does MOD return?</div>
+        <div class="fragment box-blue">
+            <p>The remainder after integer division.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What is the purpose of a trace table?</div>
+        <div class="fragment box-blue">
+            <p>To track variable values step-by-step and verify algorithm logic.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">Which flowchart symbol represents a decision?</div>
+        <div class="fragment box-blue">
+            <p>Diamond.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 “Build a system that schedules rooms fairly.”</p>
+                <p style="font-size:1.1em; margin-top:0.8em;">That’s a goal — not an algorithm.</p>
+                <p style="font-size:1.1em; margin-top:0.8em;">How do we turn goals into precise steps?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> “Just start coding and it will emerge.”</p>
+                <p class="small-text">That often creates fragile solutions and hidden edge cases.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Key idea:</strong> algorithm design is a structured process.</p>
+                <p class="small-text">We move from specification → decomposition → steps → verification → refinement.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. DESIGN WORKFLOW -->
+<section>
+    <h3>A Practical Algorithm Design Workflow</h3>
+    <div class="question-box">What should you do before writing any code?</div>
+    <div class="box">
+        <p class="fragment"><strong>1) Clarify the problem:</strong> inputs, outputs, constraints, success criteria.</p>
+        <p class="fragment"><strong>2) Decompose:</strong> split into sub-problems and responsibilities.</p>
+        <p class="fragment"><strong>3) Design steps:</strong> unambiguous, ordered, finite.</p>
+        <p class="fragment"><strong>4) Represent:</strong> pseudocode/flowchart for communication.</p>
+        <p class="fragment"><strong>5) Verify:</strong> trace tables + test data (normal/boundary/erroneous).</p>
+        <p class="fragment"><strong>6) Refine:</strong> simplify, handle edge cases, consider efficiency.</p>
+    </div>
+</section>
+
+<!-- 5. IPO THINKING -->
+<section>
+    <h3><span class="keyword" data-def="IPO (Input–Process–Output): framework for describing what data enters a system, how it is transformed, and what results are produced.">IPO</span>: Input–Process–Output</h3>
+    <div class="question-box">If you can’t state the IPO, do you really know what you’re solving?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Input:</strong> what data is provided?</p>
+            <p class="fragment"><strong>Process:</strong> what transformations/decisions happen?</p>
+            <p class="fragment"><strong>Output:</strong> what result must be produced?</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-stopwatch"></i> Example</h4>
+            <p class="small-text fragment"><strong>Problem:</strong> convert total minutes into hours + minutes.</p>
+            <p class="small-text fragment"><strong>Input:</strong> totalMinutes</p>
+            <p class="small-text fragment"><strong>Process:</strong> hours = totalMinutes DIV 60; mins = totalMinutes MOD 60</p>
+            <p class="small-text fragment"><strong>Output:</strong> hours, mins</p>
+        </div>
+    </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">For “calculate the average of 5 test scores”, what is the output?</div>
+        <div class="fragment box-blue">
+            <p>The average value (a single number), often with a defined rounding rule.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 6. STEPWISE REFINEMENT -->
+<section>
+    <section>    <h3><span class="keyword" data-def="Stepwise refinement: gradually increasing detail by breaking a solution into smaller steps until it is implementable.">Stepwise Refinement</span></h3>
+    <div class="question-box">How do you go from “high-level idea” to “implementable steps”?</div>
+    <div class="box">
+        <p class="fragment"><strong>Start broad:</strong> “validate input → compute result → output result”.</p>
+        <p class="fragment"><strong>Refine:</strong> define exact checks, calculations, and decision points.</p>
+        <p class="fragment"><strong>Stop when:</strong> every step is precise enough to code without ambiguity.</p>
+    </div>
+</section>
+
+<!-- 7. VERIFYING CORRECTNESS -->
+<section>
+    <h3>Verifying Correctness</h3>
+    <div class="question-box">How do we gain confidence an algorithm works for more than one example?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Verification: checking that a solution matches its design/specification (did we build it right?).">Verification</span>: did we build it right?</p>
+            <p class="fragment"><span class="keyword" data-def="Validation: checking that a solution meets user needs (did we build the right thing?).">Validation</span>: did we build the right thing?</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-vial"></i> Test data</h4>
+            <p class="small-text fragment"><strong>Normal:</strong> typical expected inputs</p>
+            <p class="small-text fragment"><strong>Boundary:</strong> edge values (min/max)</p>
+            <p class="small-text fragment"><strong>Erroneous:</strong> invalid inputs to test robustness</p>
+        </div>
+    </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">What type of test data is “0” when the valid range is 1–100?</div>
+        <div class="fragment box-blue">
+            <p><strong>Erroneous</strong> — it is outside the valid range.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 8. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Verification and validation mean the same thing.</p>
+            <p class="fragment"><strong>B.</strong> Stepwise refinement helps manage complexity by adding detail gradually.</p>
+            <p class="fragment"><strong>C.</strong> An algorithm can be infinite and still be valid for a finite problem.</p>
+            <p class="fragment"><strong>D.</strong> Boundary test data focuses on edge values of valid input ranges.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Verification = built right; validation = built the right thing.</p>
+            <p class="fragment"><strong>B: True.</strong> It makes solutions implementable without getting lost.</p>
+            <p class="fragment"><strong>C: False.</strong> For a finite task, an algorithm must terminate.</p>
+            <p class="fragment"><strong>D: True.</strong> Boundaries test minimum/maximum and near-edge behaviour.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 9. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li>Algorithm design starts with a clear specification and decomposition.</li>
+            <li>IPO thinking and stepwise refinement turn goals into implementable steps.</li>
+            <li>Verification/validation + test data improve correctness and robustness.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Next:</strong> move from design to implementation in programming topics (B2) and apply these skills broadly.</p>
+    </div>
+</section>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>

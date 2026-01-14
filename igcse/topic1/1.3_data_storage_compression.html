@@ -1,0 +1,568 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1.3 Data Storage & Compression | St George's CS</title>
+    
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../../igcse/topic1/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">1.3 Data Storage & Compression</h1>
+                        <h3 class="sub-title">Topic 1: Data Representation | Sizes, Formulas, and Space Saving</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. THE HOOK (R-STACK MYTH BUSTING) -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">
+                            <p style="font-size:1.25em;">💾 You buy a “1 TB” drive… and your computer shows ~<strong>931 GiB</strong>.</p>
+                            <p style="font-size:1.25em;">Did you just lose 69 GiB?</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in-then-out">
+                        <div class="box" style="background:#ffebee; padding: 30px;">
+                            <p style="font-size:1.2em;">❌ Common misconception...</p>
+                            <p class="small-text">"KB and KiB mean the same thing."</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="box-blue" style="padding: 30px;">
+                            <p style="font-size:1.2em;">✅ Units and compression decide file size.</p>
+                            <p class="small-text">We need the right prefixes and formulas to calculate sizes accurately.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2b. LESSON GOALS -->
+            <section>
+                <h3>Lesson Goals</h3>
+                <div class="box">
+                    <ul style="margin:0;">
+                        <li>Use binary prefixes (KiB, MiB, GiB) and convert to bytes.</li>
+                        <li>Calculate image and sound file sizes with the right formula.</li>
+                        <li>Compare lossless vs lossy compression and when to use each.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 2c. DID YOU KNOW? -->
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-hard-drive"></i> Storage Maths</h4>
+                        <p class="small-text fragment">Drive labels often use decimal (1 GB = 1,000,000,000 bytes), but many tools show binary (GiB).</p>
+                        <p class="small-text fragment">That’s why a “1 TB” drive appears as about <strong>931 GiB</strong>.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-compress"></i> Compression Choices</h4>
+                        <p class="small-text fragment"><strong>ZIP</strong> is lossless (good for documents and code).</p>
+                        <p class="small-text fragment"><strong>JPEG/MP3</strong> are lossy (great for photos/audio, bad for files you must keep exact).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RETRIEVAL PRACTICE -->
+            
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Quick check before we build sizes and compression.</p>
+        </div>
+        
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            
+                <li>How many bits are in a byte?</li>
+            
+                <li>Which binary prefix should you use for RAM: KB or KiB?</li>
+            
+                <li>Image size formula in bits?</li>
+            
+                <li>What is one key difference between lossless and lossy compression?</li>
+            
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+        </p>
+    </section>
+
+    
+    <section>
+        <h3>Question 1</h3>
+        <div class="question-box">How many bits are in a byte?</div>
+        
+        <div class="fragment box-blue">
+            <p><strong>Answer:</strong></p>
+            <p>8 bits</p>
+        </div>
+        
+    </section>
+    
+    <section>
+        <h3>Question 2</h3>
+        <div class="question-box">Which binary prefix should you use for RAM: KB or KiB?</div>
+        
+        <div class="fragment box-blue">
+            <p><strong>Answer:</strong></p>
+            <p>KiB (binary 1,024-byte blocks)</p>
+        </div>
+        
+    </section>
+    
+    <section>
+        <h3>Question 3</h3>
+        <div class="question-box">Image size formula in bits?</div>
+        
+        <div class="fragment box-blue">
+            <p><strong>Answer:</strong></p>
+            <p>width x height x colour depth</p>
+        </div>
+        
+    </section>
+    
+    <section>
+        <h3>Question 4</h3>
+        <div class="question-box">Key difference between lossless and lossy compression?</div>
+        
+        <div class="fragment box-blue">
+            <p><strong>Answer:</strong></p>
+            <p>Lossless keeps every bit; lossy discards some detail for smaller size.</p>
+        </div>
+        
+    </section>
+    
+</section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">📏 Use <strong>KiB/MiB/GiB</strong> for binary units (powers of 2).</p>
+                        <p class="small-text">🖼️ Bitmap size = width × height × colour depth (bits).</p>
+                        <p class="small-text">🎵 Audio size = sample rate × resolution × channels × duration (bits).</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🗜️ <strong>Compression ratio</strong> = original ÷ compressed.</p>
+                        <p class="small-text">✅ <strong>Lossless</strong> keeps exact data; ⚠️ <strong>lossy</strong> discards some detail.</p>
+                        <p class="small-text">🔁 <strong>RLE</strong> is lossless and works best with repeated runs.</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Coming up next:</strong> Topic 2 — Data Transmission</p>
+                </div>
+            </section>
+
+
+            <!-- STORAGE UNITS -->
+            <section>
+                <h3>What Are Bits, Bytes, and Prefixes?</h3>
+                <div class="box-blue fragment" style="margin-bottom:20px;">
+                    <p style="margin:0;"><strong>Bit</strong> = a single <strong>0</strong> or <strong>1</strong>. <strong>Byte</strong> = <strong>8 bits</strong>. <strong>Nibble</strong> = <strong>4 bits</strong>.</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Binary Prefixes (IEC)</strong>
+                        <ul class="small-text">
+                            <li>1 KiB = 2^10 = 1,024 bytes</li>
+                            <li>1 MiB = 2^20 = 1,048,576 bytes</li>
+                            <li>1 GiB = 2^30 = 1,073,741,824 bytes</li>
+                            <li>Use for RAM/ROM and syllabus questions.</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Clarify</strong>
+                        <p class="small-text">KB/MB/GB (decimal) use powers of 10; KiB/MiB/GiB use powers of 2. Do not mix them.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Is <strong>1 MiB</strong> the same as <strong>1 MB</strong>?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>No.</strong> 1 MB = 1,000,000 bytes, but 1 MiB = 1,048,576 bytes.</p>
+                    <p class="small-text">Use KiB/MiB/GiB when the question is using binary prefixes.</p>
+                </div>
+            </section>
+
+            <!-- STORAGE EXAMPLE -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How many bytes are in 64 GiB of RAM?</strong></p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> 1 GiB = 2^30 bytes = 1,073,741,824 bytes</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> 64 GiB = 64 x 1,073,741,824 bytes</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Answer:</strong> 68,719,476,736 bytes</p>
+                        <p class="small-text">Check: multiplying a power of two just scales the bytes count.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- IMAGE SIZE -->
+            <section>
+                <h3>How Big Is a Bitmap Image?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Formula (bits):</strong> width x height x colour depth</p>
+                        <p class="small-text">Bytes = bits / 8</p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Why It Matters</strong></p>
+                        <p class="small-text">Lets you budget storage and compare formats before taking photos or downloading assets.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Example:</strong> 1024 x 1080 at 32-bit colour</p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Pixels = 1024 x 1080 = 1,105,920</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Bits = 1,105,920 x 32 = 35,389,440</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> Bytes = 35,389,440 / 8 = 4,423,680</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Result:</strong> ~4.22 MiB (before compression)</p>
+                        <p class="small-text">Clarify: increasing resolution or depth multiplies size.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Try It: Image Size</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Question:</strong> 400 x 300 at 8-bit colour. What is the raw size?</p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Answer:</strong> 400 x 300 x 8 = 960,000 bits = 120,000 bytes (~117.2 KiB)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SOUND SIZE -->
+            <section>
+                <h3>How Big Is a Sound File?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Formula (bits):</strong> sample rate x resolution x channels x duration</p>
+                        <p class="small-text">Divide by 8 for bytes; by 1,048,576 for MiB.</p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Clarify</strong></p>
+                        <p class="small-text">Doubling sample rate or bit depth doubles size (if channels and duration stay the same).</p>
+                        <p class="small-text fragment">Channels multiply size (stereo = x2).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Example:</strong> 44.1 kHz, 16-bit, stereo, 60 minutes</p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Bits (mono) = 44,100 x 16 x (60 x 60) = 2,540,160,000</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Stereo bits = 2,540,160,000 x 2 = 5,080,320,000</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> Bytes = 5,080,320,000 / 8 = 635,040,000</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Result:</strong> ~605 MiB</p>
+                        <p class="small-text">Uncompressed audio is large; compression reduces it.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Try It: Sound Size</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Question:</strong> 22.05 kHz, 8-bit, mono, 30 s</p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Answer:</strong> 22,050 x 8 x 1 x 30 = 5,292,000 bits = 661,500 bytes (~646 KB)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMPRESSION -->
+            <section>
+                <h3>What Is File Compression?</h3>
+                <div class="box-blue fragment" style="margin-bottom:20px;">
+                    <p style="margin:0;"><strong>Compression</strong> reduces file size to save storage space and transfer time.</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why Compress?</strong>
+                        <ul class="small-text">
+                            <li>Store more files on limited media.</li>
+                            <li>Speed up downloads/uploads and streaming.</li>
+                            <li>Lower costs for backups and hosting.</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Compression Ratio</strong>
+                        <p class="small-text">original size / compressed size (higher is better).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Lossless vs Lossy</h3>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="cols">
+                            <div class="box">
+                                <h4>Lossless</h4>
+                                <p style="font-size:3.2em; margin:0;">📦✅</p>
+                                <p class="small-text">Like packing efficiently — nothing is thrown away.</p>
+                            </div>
+                            <div class="box-blue">
+                                <h4>Lossy</h4>
+                                <p style="font-size:3.2em; margin:0;">🖼️🎵</p>
+                                <p class="small-text">Some detail is removed to save space.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="cols">
+                            <div class="box">
+                                <p><strong>Lossless</strong></p>
+                                <ul class="small-text">
+                                    <li>Keeps every bit; perfect reconstruction.</li>
+                                    <li>Examples: RLE, Huffman, ZIP, PNG, FLAC.</li>
+                                    <li>Use for text, code, medical images, and archival audio.</li>
+                                </ul>
+                            </div>
+                            <div class="box-blue">
+                                <p><strong>Lossy</strong></p>
+                                <ul class="small-text">
+                                    <li>Discards less noticeable data for higher compression.</li>
+                                    <li>Examples: JPEG, MP3, AAC, MP4.</li>
+                                    <li>Use for streaming media; avoid for source files you must edit.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Which type of compression should you use for a Python source file?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>Lossless</strong> — you must be able to reconstruct the exact original file.</p>
+                </div>
+            </section>
+
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How does run-length encoding (RLE) shrink data?</strong></p>
+                        <p class="small-text">Press Down to see the idea.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Find runs of repeated values (e.g., 000000).</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Store value + count instead (0 x 6).</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Result:</strong> Fewer bits if data has long repeats (simple graphics, icons).</p>
+                        <p class="small-text">Clarify: RLE is lossless; no detail is removed.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Connection to Topic 2:</strong></p>
+                        <p class="small-text">Compression reduces the amount of data sent across networks (bandwidth and time).</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming in Topic 3:</strong></p>
+                        <p class="small-text">We’ll compare storage devices (HDD, SSD, optical) and why capacity and speed differ.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MISCONCEPTION CHECK -->
+            
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+        
+        <div class="box-blue">
+            <p style="margin:0;">Misconception Check</p>
+        </div>
+        
+        <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+            
+                <li>"KB and KiB mean the same thing."</li>
+            
+                <li>"Doubling sample rate halves the audio file size."</li>
+            
+                <li>"Lossless compression keeps every bit of the original."</li>
+            
+                <li>"JPEG is a good format for compressing source code."</li>
+            
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+        </p>
+    </section>
+
+    
+    <section>
+        <h3>Question 1</h3>
+        <div class="question-box">"KB and KiB mean the same thing."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>KB is decimal (1,000 bytes); KiB is binary (1,024 bytes).</p>
+            
+        </div>
+    </section>
+    
+    <section>
+        <h3>Question 2</h3>
+        <div class="question-box">"Doubling sample rate halves the audio file size."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Size is proportional to rate; doubling rate doubles size (if other factors stay the same).</p>
+            
+        </div>
+    </section>
+    
+    <section>
+        <h3>Question 3</h3>
+        <div class="question-box">"Lossless compression keeps every bit of the original."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: True</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Lossless can reconstruct the exact original data.</p>
+            
+        </div>
+    </section>
+    
+    <section>
+        <h3>Question 4</h3>
+        <div class="question-box">"JPEG is a good format for compressing source code."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>JPEG is lossy and for images; text/code needs lossless formats (ZIP, plain text).</p>
+            
+        </div>
+    </section>
+    
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>

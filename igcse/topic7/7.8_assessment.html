@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7.8 Identifying Errors | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    
+        <link rel="stylesheet" href="../../css/assessment-igcse-topic7-7-8.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">7.8 Identifying Errors</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 7 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>7.8 Assessment</h1>
+        <p class="subtitle">Identifying Errors</p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: Error Types (Matching) -->
+        <div class="question-block" id="q1-block" data-summary="Error Types">
+            <div class="q-header">
+                <span>Q1. Error Types</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Match the error type to its definition.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q1"></div>
+                <div class="col-terms" id="col-terms-q1"></div>
+            </div>
+        </div>
+
+        <!-- Q2: Logic Error Identification (MCQ) -->
+        <div class="question-block" id="q2-block" data-summary="Logic Error Identification">
+            <div class="q-header">
+                <span>Q2. Logic Error Identification</span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <div class="code-snippet">
+                Total <- 0 FOR X <- 1 TO 5 Total <- Total * X NEXT X </div>
+                    <p>Why will Total remain 0?</p>
+                    <div class="mcq-options" id="q2-options"></div>
+            </div>
+
+            <!-- Q3: Debugging Strategies (Ordering) -->
+            <div class="question-block" id="q3-block" data-summary="Debugging Strategies">
+                <div class="q-header">
+                    <span>Q3. Debugging Strategies</span>
+                    <span class="q-status" id="q3-status">Unanswered</span>
+                </div>
+                <p>Order the steps to debug a program.</p>
+                <ul class="sortable-list" id="q3-list"></ul>
+            </div>
+
+            <!-- Q4: Correcting Logic (Drag & Drop) -->
+            <div class="question-block" id="q4-block" data-summary="Correcting Logic">
+                <div class="q-header">
+                    <span>Q4. Correcting Logic</span>
+                    <span class="q-status" id="q4-status">Unanswered</span>
+                </div>
+                <div class="code-snippet">
+                    Min <- 0 Max <- 0 INPUT Num IF Num < Min THEN Min <- Num IF Num> Max THEN Max <- Num </div>
+                            <p>Drag the initialization statements to the correct category (for finding Min/Max of any
+                                numbers).</p>
+                            <div class="draggable-source" id="q4-source" ondrop="drop(event)"
+                                ondragover="allowDrop(event)"></div>
+                            <div class="bucket-container">
+                                <div class="bucket" id="bucket-correct" ondrop="drop(event)"
+                                    ondragover="allowDrop(event)">
+                                    <h4>Correct Initialization</h4>
+                                </div>
+                                <div class="bucket" id="bucket-incorrect" ondrop="drop(event)"
+                                    ondragover="allowDrop(event)">
+                                    <h4>Incorrect Initialization</h4>
+                                </div>
+                            </div>
+                </div>
+
+                <!-- Q5: Boundary Errors (MCQ) -->
+                <div class="question-block" id="q5-block" data-summary="Boundary Errors">
+                    <div class="q-header">
+                        <span>Q5. Boundary Errors</span>
+                        <span class="q-status" id="q5-status">Unanswered</span>
+                    </div>
+                    <p>If we want a loop to run 10 times, but we write <code>FOR X <- 0 TO 10</code>, how many times
+                        will it run?</p>
+                    <div class="mcq-options" id="q5-options"></div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+                    <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+                    <div id="finalScore"></div>
+                    <div class="completion-message" id="completionMessage">
+                        <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                        <p>Your feedback PDF is downloading...</p>
+                    </div>
+                </div>
+
+    </main>
+
+    
+        <script src="../../js/assessment-igcse-topic7-7-8.js"></script>
+</body>
+
+</html>

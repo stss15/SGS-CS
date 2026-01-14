@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 6 End of Unit Test | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    
+    <link rel="stylesheet" href="../../css/end-of-unit-test-igcse-topic6.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>End of Unit Test</h2>
+            <div class="test-name">Topic 6: Automated & Emerging Tech</div>
+            <p class="instructions">
+                Answer all 10 questions. You must get all answers correct to complete the test.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Test</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 6 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>Topic 6 End of Unit Test</h1>
+        <p class="subtitle"><span class="keyword" data-def="a combination of software and hardware designed and programmed to work automatically without the need for any human intervention">Automated Systems</span>, <span class="keyword" data-def="the branch of (computer) science that encompasses the design, construction and operation of robots">Robotics</span> & AI</p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: Sensors vs Actuators (Categorisation) -->
+        <div class="question-block" id="q1-block" data-summary="Sensors vs Actuators">
+            <div class="q-header">
+                <span>Q1. Sensors vs Actuators</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Drag the devices into the correct category.</p>
+            <div class="draggable-source" id="q1-source" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-sensor" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Sensors (Input)</h4>
+                </div>
+                <div class="bucket" id="bucket-actuator" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Actuators (Output)</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: Automation Loop (Ordering) -->
+        <div class="question-block" id="q2-block" data-summary="Automation Loop">
+            <div class="q-header">
+                <span>Q2. The Automation Loop</span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Order the steps of the automation cycle.</p>
+            <ul class="sortable-list" id="q2-list"></ul>
+        </div>
+
+        <!-- Q3: Robot Characteristics (True/False) -->
+        <div class="question-block" id="q3-block" data-summary="Robot Characteristics">
+            <div class="q-header">
+                <span>Q3. <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">Robot</span> Characteristics</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <div class="tf-grid" id="tf-grid-q3">
+                <div class="tf-header">Statement</div>
+                <div class="tf-header">True</div>
+                <div class="tf-header">False</div>
+            </div>
+        </div>
+
+        <!-- Q4: Independent vs Dependent (Drag & Drop) -->
+        <div class="question-block" id="q4-block" data-summary="Independent vs Dependent">
+            <div class="q-header">
+                <span>Q4. Independent vs Dependent <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">Robots</span></span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <p>Drag the <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">robots</span> into the correct category.</p>
+            <div class="draggable-source" id="q4-source" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-independent" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Independent</h4>
+                </div>
+                <div class="bucket" id="bucket-dependent" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Dependent</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q5: Robot Components (Matching) -->
+        <div class="question-block" id="q5-block" data-summary="Robot Components">
+            <div class="q-header">
+                <span>Q5. <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">Robot</span> Components</span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <p>Match the component to its function.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q5"></div>
+                <div class="col-terms" id="col-terms-q5"></div>
+            </div>
+        </div>
+
+        <!-- Q6: AI Categories (Matching) -->
+        <div class="question-block" id="q6-block" data-summary="AI Categories">
+            <div class="q-header">
+                <span>Q6. AI Categories</span>
+                <span class="q-status" id="q6-status">Unanswered</span>
+            </div>
+            <p>Match the AI category to its description.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q6"></div>
+                <div class="col-terms" id="col-terms-q6"></div>
+            </div>
+        </div>
+
+        <!-- Q7: Expert System Components (Matching) -->
+        <div class="question-block" id="q7-block" data-summary="Expert System Components">
+            <div class="q-header">
+                <span>Q7. <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert System</span> Components</span>
+                <span class="q-status" id="q7-status">Unanswered</span>
+            </div>
+            <p>Match the component to its function.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q7"></div>
+                <div class="col-terms" id="col-terms-q7"></div>
+            </div>
+        </div>
+
+        <!-- Q8: AI vs ML (Categorisation) -->
+        <div class="question-block" id="q8-block" data-summary="AI vs ML">
+            <div class="q-header">
+                <span>Q8. AI vs <span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span></span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Drag the statements into the correct category.</p>
+            <div class="draggable-source" id="q8-source" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-ai" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Artificial Intelligence</h4>
+                </div>
+                <div class="bucket" id="bucket-ml" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4><span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q9: Expert System Process (Ordering) -->
+        <div class="question-block" id="q9-block" data-summary="Expert System Process">
+            <div class="q-header">
+                <span>Q9. <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert System</span> Process</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <p>Order the steps of an <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert System</span> process.</p>
+            <ul class="sortable-list" id="q9-list"></ul>
+        </div>
+
+        <!-- Q10: Terminology (MCQ) -->
+        <div class="question-block" id="q10-block" data-summary="Terminology">
+            <div class="q-header">
+                <span>Q10. Terminology</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <p>Which of these is NOT a characteristic of an <span class="keyword" data-def="a combination of software and hardware designed and programmed to work automatically without the need for any human intervention">automated system</span>?</p>
+            <div class="mcq-options" id="q10-options"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Test Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+    
+    <script src="../../js/end-of-unit-test-igcse-topic6.js"></script>
+</body>
+
+</html>

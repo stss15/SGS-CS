@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control Repair | Year 8</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Prism.js Syntax Highlighting (for example blocks) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- CodeMirror Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header-bar {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .main-area {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 380px;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid #334155;
+            background: #0f172a;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid #334155;
+        }
+
+        /* Phase Tabs */
+        .phase-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .phase-tab {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .phase-tab.learn {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .phase-tab.challenge {
+            background: #334155;
+            color: #94a3b8;
+        }
+
+        .phase-tab.active {
+            box-shadow: 0 0 0 2px white;
+        }
+
+        .phase-tab.completed {
+            background: #10b981 !important;
+            color: white !important;
+        }
+
+        /* Editor Area */
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0f172a;
+        }
+
+        .editor-header {
+            padding: 0.5rem 1rem;
+            background: #1e293b;
+            font-size: 0.75rem;
+            color: #64748b;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-body {
+            flex: 1;
+            display: flex;
+        }
+
+        .code-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #334155;
+        }
+
+        .preview-panel {
+            flex: 1;
+            background: white;
+            position: relative;
+        }
+
+        .preview-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #eee;
+            color: #333;
+            padding: 4px 8px;
+            font-size: 10px;
+            z-index: 10;
+        }
+
+        /* CodeMirror Editor Styling */
+        #code-editor-container,
+        #css-editor-container {
+            flex: 1;
+            height: 100%;
+        }
+
+        #code-editor-container .CodeMirror,
+        #css-editor-container .CodeMirror {
+            height: 100%;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+        }
+
+        iframe.preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Level Content Styling */
+        .level-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .level-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .instruction-box {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .instruction-box code {
+            background: #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .example-block {
+            background: #1e1e1e;
+            border-left: 3px solid #8b5cf6;
+            padding: 0;
+            margin: 0.75rem 0;
+            border-radius: 0 6px 6px 0;
+            overflow-x: auto;
+        }
+
+        .example-block pre {
+            margin: 0;
+            padding: 0.75rem 1rem;
+            background: transparent;
+        }
+
+        .example-block code {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* Override Prism theme for our dark UI */
+        .example-block pre[class*="language-"],
+        .example-block code[class*="language-"] {
+            background: transparent;
+            text-shadow: none;
+        }
+
+        /* Progress */
+        .progress-dots {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #334155;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .progress-dot:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+        }
+
+        .progress-dot.active {
+            background: #38bdf8;
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: #10b981;
+        }
+
+        /* Reference Modal */
+        .ref-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ref-modal.visible {
+            display: flex;
+        }
+
+        .ref-modal-content {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .ref-modal-header {
+            padding: 1rem;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .ref-modal-body {
+            padding: 1rem;
+        }
+
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e293b;
+            border: 2px solid #10b981;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            z-index: 1001;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: none;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .success-modal.visible {
+            display: block;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: translate(-50%, -40%) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Error Shake */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-8px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(8px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Sandbox dual editor */
+        .dual-editor {
+            display: flex;
+            flex: 1;
+        }
+
+        .dual-editor .code-panel {
+            flex: 1;
+        }
+
+        .file-tab {
+            padding: 0.5rem 1rem;
+            background: #334155;
+            color: #94a3b8;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .file-tab.active {
+            background: #0f172a;
+            color: #38bdf8;
+        }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            .main-area {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 35vh;
+            }
+
+            .editor-body {
+                flex-direction: column;
+            }
+
+            .code-panel,
+            .preview-panel {
+                flex: 1;
+                border: none;
+                min-height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header class="header-bar">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="index.html" class="btn btn-secondary" style="padding: 0.4rem;"><i
+                        data-lucide="arrow-left"></i></a>
+                <div>
+                    <h2 style="margin: 0; font-size: 1rem;">Mission Control Repair</h2>
+                    <p style="margin: 0; font-size: 0.75rem; color: #64748b;">Year 8 HTML/CSS</p>
+                </div>
+            </div>
+            <div class="progress-dots" id="progress-dots"></div>
+        </header>
+
+        <div class="main-area">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="phase-tabs">
+                        <button id="learn-tab" class="phase-tab learn active" onclick="setPhase('learn')">📚
+                            Learn</button>
+                        <button id="challenge-tab" class="phase-tab challenge" onclick="setPhase('challenge')">🎯
+                            Challenge</button>
+                    </div>
+                </div>
+                <div class="sidebar-content" id="sidebar-content"></div>
+                <div class="sidebar-footer">
+                    <button id="action-btn" class="btn btn-primary" style="width: 100%;" onclick="handleAction()">
+                        <i data-lucide="play"></i> <span id="action-btn-text">Run Code</span>
+                    </button>
+                    <p style="text-align: center; font-size: 0.65rem; color: #64748b; margin-top: 0.5rem;"><kbd
+                            style="background:#334155;padding:2px 4px;border-radius:3px;">Ctrl</kbd>+<kbd
+                            style="background:#334155;padding:2px 4px;border-radius:3px;">Enter</kbd> to run</p>
+                </div>
+            </aside>
+
+            <div class="editor-area">
+                <div class="editor-header">
+                    <div id="file-tabs">
+                        <button class="file-tab active" id="html-tab" onclick="switchFile('html')">index.html</button>
+                        <button class="file-tab" id="css-tab" onclick="switchFile('css')"
+                            style="display:none;">style.css</button>
+                    </div>
+                    <button id="ref-btn" class="btn btn-secondary"
+                        style="padding: 0.25rem 0.5rem; font-size: 0.7rem; display: none;" onclick="toggleRefModal()">
+                        <i data-lucide="book-open" style="width:12px;height:12px;"></i> Reference
+                    </button>
+                </div>
+                <div class="editor-body">
+                    <div class="code-panel">
+                        <div id="code-editor-container"></div>
+                        <div id="css-editor-container" style="display:none;"></div>
+                    </div>
+                    <div class="preview-panel">
+                        <div class="preview-label">Live Preview</div>
+                        <iframe id="preview-frame" class="preview-frame"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reference Modal -->
+    <div id="ref-modal" class="ref-modal" onclick="if(event.target===this)toggleRefModal()">
+        <div class="ref-modal-content">
+            <div class="ref-modal-header">
+                <h3 style="margin:0;">📖 HTML Reference</h3>
+                <button class="btn btn-secondary" style="padding:0.25rem;" onclick="toggleRefModal()"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <div class="ref-modal-body" id="ref-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="success-modal">
+        <div
+            style="background: #10b981; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+            <i data-lucide="check" style="color: white; width: 28px; height: 28px;"></i>
+        </div>
+        <h3 id="success-title" style="margin-bottom: 0.5rem;">Well Done!</h3>
+        <p id="success-text" style="margin-bottom: 1.5rem; color: #94a3b8;"></p>
+        <button class="btn btn-primary" onclick="handleSuccessAction()"><span id="success-btn-text">Continue</span> <i
+                data-lucide="arrow-right"></i></button>
+    </div>
+    <div id="modal-overlay"
+        style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none;"></div>
+
+    <script>
+        // --- Level Data ---
+        const LEVELS = [
+            {
+                id: 1,
+                title: "Headings",
+                subtitle: "Learn h1, h2, h3 tags",
+                learnContent: `<p><strong>Headings</strong> structure your page. <code>&lt;h1&gt;</code> is the biggest, <code>&lt;h6&gt;</code> the smallest.</p>
+            <div class="example-block">&lt;h1&gt;Main Title&lt;/h1&gt;
+&lt;h2&gt;Section&lt;/h2&gt;
+&lt;h3&gt;Sub-section&lt;/h3&gt;</div>
+            <p>Try different headings in the editor!</p>`,
+                learnStarterCode: `<h1>Hello World</h1>
+<h2>Welcome</h2>
+<h3>Getting Started</h3>
+`,
+                challengeContent: `<p>Create the ship's title screen:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li><code>&lt;h1&gt;</code> with "Mission Control"</li>
+                <li><code>&lt;h2&gt;</code> with "System Status"</li>
+                <li><code>&lt;h3&gt;</code> with "All Systems Online"</li>
+            </ol>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">&lt;h1&gt;Largest&lt;/h1&gt;
+&lt;h2&gt;Large&lt;/h2&gt;
+&lt;h3&gt;Medium&lt;/h3&gt;</div>`,
+                check: (doc) => doc.querySelector('h1')?.textContent.toLowerCase().includes('mission') && doc.querySelector('h2') && doc.querySelector('h3')
+            },
+            {
+                id: 2,
+                title: "Paragraphs",
+                subtitle: "Learn the p tag",
+                learnContent: `<p>The <code>&lt;p&gt;</code> tag creates a paragraph. Each paragraph starts on a new line.</p>
+            <div class="example-block">&lt;p&gt;First paragraph.&lt;/p&gt;
+&lt;p&gt;Second paragraph.&lt;/p&gt;</div>`,
+                learnStarterCode: `<p>This is my first paragraph.</p>
+<p>This is my second paragraph.</p>
+`,
+                challengeContent: `<p>Write the ship's log with two paragraphs:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>First: "Day 1: Launch successful."</li>
+                <li>Second: "Day 2: Systems stable."</li>
+            </ol>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">&lt;p&gt;Your text here.&lt;/p&gt;</div>`,
+                check: (doc) => doc.querySelectorAll('p').length >= 2
+            },
+            {
+                id: 3,
+                title: "Text Formatting",
+                subtitle: "Bold, italic, underline",
+                learnContent: `<p>Format text with these tags:</p>
+            <ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li><code>&lt;b&gt;</code> or <code>&lt;strong&gt;</code> = <b>Bold</b></li>
+                <li><code>&lt;i&gt;</code> or <code>&lt;em&gt;</code> = <i>Italic</i></li>
+                <li><code>&lt;u&gt;</code> = <u>Underline</u></li>
+            </ul>
+            <div class="example-block">&lt;p&gt;This is &lt;b&gt;bold&lt;/b&gt; and &lt;i&gt;italic&lt;/i&gt;.&lt;/p&gt;</div>`,
+                learnStarterCode: `<p>This is <b>bold</b> text.</p>
+<p>This is <i>italic</i> text.</p>
+<p>This is <u>underlined</u> text.</p>
+`,
+                challengeContent: `<p>Format the warning message:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Make "WARNING" bold</li>
+                <li>Make "oxygen levels" italic</li>
+            </ol>`,
+                challengeStarterCode: `<p>WARNING: Check oxygen levels immediately.</p>
+`,
+                reference: `<div class="example-block">&lt;b&gt;Bold&lt;/b&gt;
+&lt;i&gt;Italic&lt;/i&gt;
+&lt;u&gt;Underline&lt;/u&gt;</div>`,
+                check: (doc) => doc.querySelector('b, strong') && doc.querySelector('i, em')
+            },
+            {
+                id: 4,
+                title: "Lists",
+                subtitle: "Bullet points and numbered lists",
+                learnContent: `<p><code>&lt;ul&gt;</code> = Unordered (bullet) list. <code>&lt;ol&gt;</code> = Ordered (numbered) list.</p>
+            <div class="example-block">&lt;ul&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;First&lt;/li&gt;
+  &lt;li&gt;Second&lt;/li&gt;
+&lt;/ol&gt;</div>`,
+                learnStarterCode: `<h3>Shopping List</h3>
+<ul>
+  <li>Apples</li>
+  <li>Bananas</li>
+  <li>Oranges</li>
+</ul>
+`,
+                challengeContent: `<p>Create the pre-flight checklist as a numbered list:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Use <code>&lt;ol&gt;</code> for numbered list</li>
+                <li>Add 3 items: Fuel, Oxygen, Navigation</li>
+            </ol>`,
+                challengeStarterCode: `<h2>Pre-Flight Checklist</h2>
+
+`,
+                reference: `<div class="example-block">&lt;ul&gt; = bullets
+&lt;ol&gt; = numbers
+&lt;li&gt; = list item</div>`,
+                check: (doc) => doc.querySelector('ol') && doc.querySelectorAll('li').length >= 3
+            },
+            {
+                id: 5,
+                title: "Images",
+                subtitle: "Add images with src and alt",
+                learnContent: `<p>The <code>&lt;img&gt;</code> tag displays images. It needs:</p>
+            <ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li><code>src</code> = image file path</li>
+                <li><code>alt</code> = description for accessibility</li>
+            </ul>
+            <div class="example-block">&lt;img src="logo.png" alt="Logo"&gt;</div>
+            <p>Note: No closing tag needed!</p>`,
+                learnStarterCode: `<img src="hero.png" alt="Space Hero">
+<p>Our brave astronaut!</p>
+`,
+                challengeContent: `<p>Add the ship's logo:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Use <code>src="logo.png"</code></li>
+                <li>Use <code>alt="Ship Logo"</code></li>
+            </ol>`,
+                challengeStarterCode: `<h1>Welcome Aboard</h1>
+
+`,
+                reference: `<div class="example-block">&lt;img src="file.png" alt="Description"&gt;</div>`,
+                check: (doc) => {
+                    const img = doc.querySelector('img');
+                    return img && img.getAttribute('src') && img.getAttribute('alt');
+                }
+            },
+            {
+                id: 6,
+                title: "Links",
+                subtitle: "Create clickable links",
+                learnContent: `<p>The <code>&lt;a&gt;</code> tag creates hyperlinks. The <code>href</code> attribute is the destination.</p>
+            <div class="example-block">&lt;a href="https://google.com"&gt;Go to Google&lt;/a&gt;</div>`,
+                learnStarterCode: `<a href="https://example.com">Click me!</a>
+`,
+                challengeContent: `<p>Create a link to the manual:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Use <code>href="manual.html"</code></li>
+                <li>Link text: "Read the Manual"</li>
+            </ol>`,
+                challengeStarterCode: ``,
+                reference: `<div class="example-block">&lt;a href="page.html"&gt;Link Text&lt;/a&gt;</div>`,
+                check: (doc) => {
+                    const a = doc.querySelector('a');
+                    return a && a.getAttribute('href') && a.textContent.toLowerCase().includes('manual');
+                }
+            },
+            {
+                id: 7,
+                title: "CSS Basics",
+                subtitle: "Change colors and fonts",
+                learnContent: `<p>CSS controls how HTML looks. Put CSS inside <code>&lt;style&gt;</code> tags.</p>
+            <div class="example-block">&lt;style&gt;
+  h1 {
+    color: red;
+    background-color: black;
+  }
+&lt;/style&gt;</div>`,
+                learnStarterCode: `<style>
+  h1 {
+    color: blue;
+    font-size: 40px;
+  }
+  p {
+    color: green;
+  }
+</style>
+
+<h1>Styled Heading</h1>
+<p>Styled paragraph.</p>
+`,
+                challengeContent: `<p>Style the warning panel:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Set h1 <code>color</code> to <code>red</code></li>
+                <li>Set body <code>background-color</code> to <code>black</code></li>
+            </ol>`,
+                challengeStarterCode: `<style>
+  /* Add your CSS here */
+  
+</style>
+
+<h1>ALERT!</h1>
+`,
+                reference: `<div class="example-block">selector {
+  property: value;
+}
+
+color: red;
+background-color: black;
+font-size: 20px;</div>`,
+                check: (doc) => {
+                    const h1 = doc.querySelector('h1');
+                    const body = doc.body;
+                    if (!h1 || !body) return false;
+                    return getComputedStyle(h1).color === 'rgb(255, 0, 0)' && getComputedStyle(body).backgroundColor === 'rgb(0, 0, 0)';
+                }
+            },
+            {
+                id: 8,
+                title: "Centering",
+                subtitle: "Align text and content",
+                learnContent: `<p>Use <code>text-align: center;</code> to center text inside an element.</p>
+            <div class="example-block">&lt;style&gt;
+  h1 {
+    text-align: center;
+  }
+&lt;/style&gt;</div>`,
+                learnStarterCode: `<style>
+  body {
+    text-align: center;
+  }
+</style>
+
+<h1>Centered Title</h1>
+<p>This text is also centered.</p>
+`,
+                challengeContent: `<p>Center the title and subtitle:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Use <code>text-align: center;</code> on the body or h1</li>
+            </ol>`,
+                challengeStarterCode: `<style>
+  /* Center the content */
+  
+</style>
+
+<h1>Mission Control</h1>
+<p>Welcome, Commander.</p>
+`,
+                reference: `<div class="example-block">text-align: center;
+text-align: left;
+text-align: right;</div>`,
+                check: (doc) => {
+                    const h1 = doc.querySelector('h1');
+                    const body = doc.body;
+                    return h1 && (getComputedStyle(h1).textAlign === 'center' || getComputedStyle(body).textAlign === 'center');
+                }
+            },
+            {
+                id: 9,
+                title: "Flexbox Layout",
+                subtitle: "Arrange items in rows",
+                learnContent: `<p><code>display: flex;</code> turns a container into a flexbox. Children arrange in a row.</p>
+            <div class="example-block">.container {
+  display: flex;
+  justify-content: space-between;
+}</div>`,
+                learnStarterCode: `<style>
+  .row {
+    display: flex;
+    gap: 10px;
+    background: #333;
+    padding: 10px;
+  }
+  .box {
+    width: 50px;
+    height: 50px;
+    background: cyan;
+  }
+</style>
+
+<div class="row">
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+</div>
+`,
+                challengeContent: `<p>Align the power cells:</p>
+            <ol style="margin:1rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Add <code>display: flex;</code> to .grid</li>
+                <li>Add <code>justify-content: space-around;</code></li>
+            </ol>`,
+                challengeStarterCode: `<style>
+  .grid {
+    background: #222;
+    padding: 20px;
+    /* Add flexbox here */
+    
+  }
+  .cell {
+    width: 40px;
+    height: 40px;
+    background: lime;
+  }
+</style>
+
+<div class="grid">
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+</div>
+`,
+                reference: `<div class="example-block">display: flex;
+justify-content: space-around;
+align-items: center;
+gap: 10px;</div>`,
+                check: (doc) => {
+                    const grid = doc.querySelector('.grid');
+                    return grid && getComputedStyle(grid).display === 'flex';
+                }
+            },
+            {
+                id: 10,
+                title: "🚀 Free Build",
+                subtitle: "Create your own page!",
+                isSandbox: true,
+                learnContent: `<p>You've learned all the basics! Now build your own page.</p>
+            <p>Ideas:</p>
+            <ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>A profile page about yourself</li>
+                <li>A page about your favourite game</li>
+                <li>A spaceship control panel</li>
+            </ul>
+            <p>Use the <strong>style.css</strong> tab to write CSS separately!</p>`,
+                learnStarterCode: `<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>My Cool Page</h1>
+  <p>Welcome to my website!</p>
+  
+  <img src="hero.png" alt="Hero Image">
+  
+  <h2>About Me</h2>
+  <ul>
+    <li>I like coding</li>
+    <li>I like games</li>
+  </ul>
+  
+  <a href="https://example.com">Visit Example</a>
+</body>
+</html>
+`,
+                cssStarterCode: `/* Write your CSS here! */
+body {
+  font-family: sans-serif;
+  background-color: #1a1a2e;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: cyan;
+}
+
+img {
+  width: 100px;
+  border-radius: 50%;
+}
+`,
+                challengeContent: `<p>This is your sandbox! There's no right or wrong answer.</p>
+            <p>Experiment with everything you've learned. Try combining:</p>
+            <ul style="margin:0.5rem 0;padding-left:1.25rem;color:#cbd5e1;">
+                <li>Headings, paragraphs, lists</li>
+                <li>Images and links</li>
+                <li>CSS colors, centering, flexbox</li>
+            </ul>`,
+                challengeStarterCode: ``,
+                reference: `<p>All tags you've learned:</p>
+<div class="example-block">&lt;h1&gt; &lt;h2&gt; &lt;h3&gt;
+&lt;p&gt;
+&lt;b&gt; &lt;i&gt; &lt;u&gt;
+&lt;ul&gt; &lt;ol&gt; &lt;li&gt;
+&lt;img src="" alt=""&gt;
+&lt;a href=""&gt;&lt;/a&gt;</div>
+<p>CSS:</p>
+<div class="example-block">color, background-color
+text-align, font-size
+display: flex
+justify-content</div>`,
+                check: () => true // Always pass - it's a sandbox
+            }
+        ];
+
+        // --- State ---
+        let currentLevel = 0;
+        let currentPhase = 'learn';
+        let currentFile = 'html';
+        let htmlCode = '';
+        let cssCode = '';
+
+        // CodeMirror editor instances
+        let htmlEditor, cssEditor;
+
+        const iframe = document.getElementById('preview-frame');
+        const sidebarContent = document.getElementById('sidebar-content');
+        const learnTab = document.getElementById('learn-tab');
+        const challengeTab = document.getElementById('challenge-tab');
+        const refBtn = document.getElementById('ref-btn');
+        const refModal = document.getElementById('ref-modal');
+        const refModalBody = document.getElementById('ref-modal-body');
+        const successModal = document.getElementById('success-modal');
+        const overlay = document.getElementById('modal-overlay');
+        const actionBtnText = document.getElementById('action-btn-text');
+        const htmlTab = document.getElementById('html-tab');
+        const cssTab = document.getElementById('css-tab');
+
+        function init() {
+            // Initialize CodeMirror for HTML editor
+            htmlEditor = CodeMirror(document.getElementById('code-editor-container'), {
+                mode: 'htmlmixed',
+                theme: 'material-darker',
+                lineNumbers: true,
+                tabSize: 2,
+                indentWithTabs: false,
+                autoCloseTags: true,
+                autoCloseBrackets: true,
+                lineWrapping: true,
+                extraKeys: {
+                    'Tab': function (cm) {
+                        cm.replaceSelection('  ', 'end');
+                    }
+                }
+            });
+
+            // Initialize CodeMirror for CSS editor
+            cssEditor = CodeMirror(document.getElementById('css-editor-container'), {
+                mode: 'css',
+                theme: 'material-darker',
+                lineNumbers: true,
+                tabSize: 2,
+                indentWithTabs: false,
+                autoCloseBrackets: true,
+                lineWrapping: true,
+                extraKeys: {
+                    'Tab': function (cm) {
+                        cm.replaceSelection('  ', 'end');
+                    }
+                }
+            });
+
+            // Live preview on change
+            htmlEditor.on('change', updatePreview);
+            cssEditor.on('change', updatePreview);
+
+            lucide.createIcons();
+            loadLevel(0);
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAction();
+                }
+            });
+        }
+
+        function loadLevel(idx) {
+            currentLevel = idx;
+            currentPhase = 'learn';
+            currentFile = 'html';
+            updateProgressDots();
+
+            const level = LEVELS[idx];
+            cssTab.style.display = level.isSandbox ? 'inline-block' : 'none';
+
+            if (level.isSandbox && level.cssStarterCode) {
+                cssCode = level.cssStarterCode;
+            } else {
+                cssCode = '';
+            }
+
+            setPhase('learn');
+        }
+
+        function setPhase(phase) {
+            currentPhase = phase;
+            const level = LEVELS[currentLevel];
+
+            learnTab.classList.toggle('active', phase === 'learn');
+            challengeTab.classList.toggle('active', phase === 'challenge');
+            refBtn.style.display = phase === 'challenge' ? 'flex' : 'none';
+
+            if (phase === 'learn') {
+                sidebarContent.innerHTML = `
+            <h3 class="level-title">Level ${level.id}: ${level.title}</h3>
+            <p class="level-subtitle">${level.subtitle}</p>
+            <div class="instruction-box">${level.learnContent}</div>
+        `;
+                htmlCode = level.learnStarterCode;
+                htmlEditor.setValue(htmlCode);
+                actionBtnText.textContent = 'Run Code';
+            } else {
+                sidebarContent.innerHTML = `
+            <h3 class="level-title">Challenge: ${level.title}</h3>
+            <div class="instruction-box">${level.challengeContent}</div>
+        `;
+                htmlCode = level.challengeStarterCode || '';
+                htmlEditor.setValue(htmlCode);
+                actionBtnText.textContent = level.isSandbox ? 'Finish' : 'Submit';
+                refModalBody.innerHTML = level.reference;
+            }
+
+            if (level.isSandbox) {
+                cssEditor.setValue(cssCode);
+            }
+
+            switchFile('html');
+            updatePreview();
+            lucide.createIcons();
+        }
+
+        function switchFile(file) {
+            currentFile = file;
+            const htmlContainer = document.getElementById('code-editor-container');
+            const cssContainer = document.getElementById('css-editor-container');
+            if (file === 'html') {
+                htmlContainer.style.display = 'block';
+                cssContainer.style.display = 'none';
+                htmlTab.classList.add('active');
+                cssTab.classList.remove('active');
+                htmlEditor.refresh();
+            } else {
+                htmlContainer.style.display = 'none';
+                cssContainer.style.display = 'block';
+                htmlTab.classList.remove('active');
+                cssTab.classList.add('active');
+                cssEditor.refresh();
+            }
+        }
+
+        function updatePreview() {
+            htmlCode = htmlEditor.getValue();
+            cssCode = cssEditor.getValue();
+
+            const doc = iframe.contentWindow.document;
+            doc.open();
+
+            const level = LEVELS[currentLevel];
+            let cssBlock = '';
+            if (level.isSandbox) {
+                cssBlock = `<style>${cssCode}</style>`;
+            }
+
+            doc.write(`
+        <style>
+            body { font-family: sans-serif; padding: 20px; }
+            img[src="logo.png"] { content: url('logo.png'); width: 100px; }
+            img[src="hero.png"] { content: url('hero.png'); width: 100px; }
+            img[src="target.png"] { content: url('target.png'); width: 100px; }
+        </style>
+        ${cssBlock}
+        ${htmlCode}
+    `);
+            doc.close();
+        }
+
+        function handleAction() {
+            updatePreview();
+            if (currentPhase === 'learn') return;
+
+            const level = LEVELS[currentLevel];
+            const doc = iframe.contentWindow.document;
+
+            setTimeout(() => {
+                if (level.check(doc)) {
+                    showSuccess();
+                } else {
+                    document.querySelector('.code-panel').classList.add('shake');
+                    setTimeout(() => document.querySelector('.code-panel').classList.remove('shake'), 400);
+                    const btn = document.getElementById('action-btn');
+                    btn.style.background = '#ef4444';
+                    actionBtnText.textContent = 'Not quite...';
+                    setTimeout(() => {
+                        btn.style.background = '';
+                        actionBtnText.textContent = level.isSandbox ? 'Finish' : 'Submit';
+                    }, 1500);
+                }
+            }, 100);
+        }
+
+        function showSuccess() {
+            const isFinal = currentLevel === LEVELS.length - 1;
+            document.getElementById('success-title').textContent = isFinal ? "🚀 Mission Complete!" : "Level Complete!";
+            document.getElementById('success-text').textContent = isFinal ? "You've mastered HTML & CSS basics!" : `You've completed ${LEVELS[currentLevel].title}!`;
+            document.getElementById('success-btn-text').textContent = isFinal ? "Take Quiz" : "Next Level";
+            challengeTab.classList.add('completed');
+            successModal.classList.add('visible');
+            overlay.style.display = 'block';
+            lucide.createIcons();
+        }
+
+        function handleSuccessAction() {
+            successModal.classList.remove('visible');
+            overlay.style.display = 'none';
+            if (currentLevel < LEVELS.length - 1) {
+                loadLevel(currentLevel + 1);
+            } else {
+                window.location.href = "year8-quiz.html";
+            }
+        }
+
+        function toggleRefModal() { refModal.classList.toggle('visible'); }
+
+        function updateProgressDots() {
+            document.getElementById('progress-dots').innerHTML = LEVELS.map((level, i) => `
+        <div class="progress-dot ${i < currentLevel ? 'completed' : ''} ${i === currentLevel ? 'active' : ''}" 
+             onclick="loadLevel(${i})" 
+             title="Level ${level.id}: ${level.title}"></div>
+    `).join('');
+        }
+
+        init();
+
+        // Highlight code blocks with Prism.js after content loads
+        function highlightCodeBlocks() {
+            document.querySelectorAll('.example-block').forEach(block => {
+                if (block.querySelector('pre')) return; // Already processed
+                const content = block.innerHTML;
+                block.innerHTML = `<pre><code class="language-html">${content}</code></pre>`;
+            });
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAll();
+            }
+        }
+
+        // Override setPhase to add highlighting
+        const originalSetPhase = setPhase;
+        setPhase = function (phase) {
+            originalSetPhase(phase);
+            setTimeout(highlightCodeBlocks, 50);
+        };
+
+        // Initial highlight
+        setTimeout(highlightCodeBlocks, 100);
+    </script>
+    <!-- Prism.js Syntax Highlighting Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.4 Network Hardware Assessment | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <link rel="stylesheet" href="../../css/assessment-igcse-topic3-3-4.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">3.4 Network Hardware</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 3 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>3.4 Assessment</h1>
+        <p class="subtitle">NICs, MAC, IP & <span class="keyword" data-def="a device that enables data packets to be moved between different networks, for example, to join a LAN to a WAN">Routers</span></p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: MAC vs IP (Categorisation) -->
+        <div class="question-block" id="q1-block" data-summary="MAC vs IP">
+            <div class="q-header">
+                <span>Q1. MAC vs IP <span class="keyword" data-def="a label for a memory location used by the CPU to track data">Addresses</span></span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Drag the features into the correct category.</p>
+            <div class="draggable-source" id="q1-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-mac" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4><span class="keyword" data-def="a unique identifier which acts as a network address for a device; it takes the form NN-NN-NN-DDDD-DD, where NN is the manufacturer code and DD is the device code">MAC Address</span></h4>
+                </div>
+                <div class="bucket" id="bucket-ip" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>IP <span class="keyword" data-def="a label for a memory location used by the CPU to track data">Address</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: Hardware Definitions (Matching) -->
+        <div class="question-block" id="q2-block" data-summary="Hardware Definitions">
+            <div class="q-header">
+                <span>Q2. Hardware Definitions</span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Match the hardware to its function.</p>
+
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q2">
+                    <!-- Shuffled by JS -->
+                </div>
+                <div class="col-terms" id="col-terms-q2">
+                    <!-- Shuffled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: IP Versions (Dropdown Gap Fill) -->
+        <div class="question-block" id="q3-block" data-summary="IP Versions">
+            <div class="q-header">
+                <span>Q3. IP Versions</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                IPv4 <span class="keyword" data-def="a label for a memory location used by the CPU to track data">addresses</span> are <select id="q3a" data-answer="32"></select> bits long and written in <select id="q3b"
+                    data-answer="denary"></select>.<br>
+                IPv6 <span class="keyword" data-def="a label for a memory location used by the CPU to track data">addresses</span> are <select id="q3c" data-answer="128"></select> bits long and written in <select
+                    id="q3d" data-answer="hexadecimal"></select>.<br>
+                IPv6 was introduced because we ran out of <select id="q3e" data-answer="IPv4 addresses"></select>.<br>
+                IPv6 avoids IP <select id="q3f" data-answer="collisions"></select> and has built-in security.
+            </div>
+        </div>
+
+        <!-- Q4: MAC Address Format (Dropdown Gap Fill) -->
+        <div class="question-block" id="q4-block" data-summary="MAC Address Format">
+            <div class="q-header">
+                <span>Q4. <span class="keyword" data-def="a unique identifier which acts as a network address for a device; it takes the form NN-NN-NN-DDDD-DD, where NN is the manufacturer code and DD is the device code">MAC Address</span> Format</span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                A <span class="keyword" data-def="a unique identifier which acts as a network address for a device; it takes the form NN-NN-NN-DDDD-DD, where NN is the manufacturer code and DD is the device code">MAC address</span> is <select id="q4a" data-answer="48"></select> bits long.<br>
+                It is usually written as 6 pairs of <select id="q4b" data-answer="hexadecimal"></select> digits.<br>
+                The first half of the <span class="keyword" data-def="a label for a memory location used by the CPU to track data">address</span> identifies the <select id="q4c" data-answer="manufacturer"></select>.<br>
+                The second half is the device's unique <select id="q4d" data-answer="serial number"></select>.<br>
+                <span class="keyword" data-def="a unique identifier which acts as a network address for a device; it takes the form NN-NN-NN-DDDD-DD, where NN is the manufacturer code and DD is the device code">MAC addresses</span> are hard-coded onto the <select id="q4e" data-answer="NIC"></select>.
+            </div>
+        </div>
+
+        <!-- Q5: Static vs Dynamic IP (Matching) -->
+        <div class="question-block" id="q5-block" data-summary="Static vs Dynamic IP">
+            <div class="q-header">
+                <span>Q5. Static vs Dynamic IP</span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <p>Match the IP type to its description.</p>
+
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q5">
+                    <!-- Shuffled by JS -->
+                </div>
+                <div class="col-terms" id="col-terms-q5">
+                    <!-- Shuffled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Q6: Router Operation (Ordering) -->
+        <div class="question-block" id="q6-block" data-summary="Router Operation">
+            <div class="q-header">
+                <span>Q6. <span class="keyword" data-def="a device that enables data packets to be moved between different networks, for example, to join a LAN to a WAN">Router</span> Operation</span>
+                <span class="q-status" id="q6-status">Unanswered</span>
+            </div>
+            <p>Order the steps of how a <span class="keyword" data-def="a device that enables data packets to be moved between different networks, for example, to join a LAN to a WAN">router</span> handles a <span class="keyword" data-def="other examples include web cache, database cache, DNS cache">data</span> packet.</p>
+            <div class="order-list">
+                <div class="order-item"><span class="order-num">1.</span> <select id="q6a"
+                        data-answer="Data packet arrives at the router"></select></div>
+                <div class="order-item"><span class="order-num">2.</span> <select id="q6b"
+                        data-answer="Router inspects the destination IP address"></select></div>
+                <div class="order-item"><span class="order-num">3.</span> <select id="q6c"
+                        data-answer="Router checks its routing table for the best path"></select></div>
+                <div class="order-item"><span class="order-num">4.</span> <select id="q6d"
+                        data-answer="Packet is forwarded to the next network or switch"></select></div>
+                <div class="order-item"><span class="order-num">5.</span> <select id="q6e"
+                        data-answer="Packet is delivered to the destination device"></select></div>
+            </div>
+        </div>
+
+        <!-- Q7: DHCP Purpose (MCQ) -->
+        <div class="question-block" id="q7-block" data-summary="DHCP purpose">
+            <div class="q-header">
+                <span>Q7. DHCP Server</span>
+                <span class="q-status" id="q7-status">Unanswered</span>
+            </div>
+            <p>What is the main purpose of a DHCP server?</p>
+            <div class="mcq-options" id="q7-options"></div>
+        </div>
+
+        <!-- Q8: Network Facts (True/False Grid) -->
+        <div class="question-block" id="q8-block" data-summary="Network facts">
+            <div class="q-header">
+                <span>Q8. Network Facts</span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <table class="tf-table" id="q8-table">
+                <thead><tr><th>Statement</th><th>True</th><th>False</th></tr></thead>
+                <tbody id="q8-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Q9: IP Address Classes (Sortable List) -->
+        <div class="question-block" id="q9-block" data-summary="IPv4 vs IPv6">
+            <div class="q-header">
+                <span>Q9. IPv4 to IPv6 Progression</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <p>Drag to arrange by number of possible <span class="keyword" data-def="a label for a memory location used by the CPU to track data">addresses</span> (smallest to largest).</p>
+            <ul class="sortable-list" id="q9-list"></ul>
+        </div>
+
+        <!-- Q10: NIC Functions (Dropdown) -->
+        <div class="question-block" id="q10-block" data-summary="NIC functions">
+            <div class="q-header">
+                <span>Q10. NIC Functions</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                A NIC is a <select id="q10a" data-answer="hardware"></select> device that enables network connectivity.<br>
+                Each NIC has a unique <select id="q10b" data-answer="MAC address"></select> assigned by the manufacturer.<br>
+                NICs can be <select id="q10c" data-answer="wired or wireless"></select> for different connection types.<br>
+                The NIC handles <span class="keyword" data-def="other examples include web cache, database cache, DNS cache">data</span> <select id="q10d" data-answer="framing and transmission"></select> on the network.
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+        <script src="../../js/assessment-igcse-topic3-3-4.js"></script>
+</body>
+
+</html>

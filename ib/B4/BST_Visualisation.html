@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BST Visualiser</title>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/visualizer-bst.css">
+    <link rel="stylesheet" href="../../css/standalone-nav.css">
+
+</head>
+
+<body>
+    <div class="standalone-nav" aria-label="Standalone navigation">
+        <a class="standalone-nav__link" href="index.html">← Back</a>
+        <a class="standalone-nav__link standalone-nav__link--home" href="../../index.html">🏠 Home</a>
+    </div>
+
+    <header>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="index.html" class="header-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+            <h1>Binary Search <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Tree</span> Visualiser</h1>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="header-btn" onclick="toggleTheory()">
+                <span style="font-size: 1.2em;">&#128214;</span> Theory Guide
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div id="code-panel">
+            <!-- Code injected via JS -->
+        </div>
+
+        <div id="right-panel">
+            <div id="viz-area">
+                <canvas id="treeCanvas"></canvas>
+            </div>
+
+            <div id="info-panel">
+                <div class="info-row">
+                    <span class="info-label">Action:</span>
+                    <span id="step-desc" class="info-content">Ready. Select an operation or scenario.</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Python:</span>
+                    <span id="step-code" class="info-content">--</span>
+                </div>
+                <div class="info-row" id="batch-row" style="display:none;">
+                    <span class="info-label">Sequence:</span>
+                    <div id="batch-sequence" class="info-content"></div>
+                </div>
+            </div>
+
+            <!-- THEORY MODAL OVERLAY -->
+            <div id="theory-modal">
+                <div class="theory-content">
+                    <div class="theory-header">
+                        <h2>IB Computer Science: BST Theory</h2>
+                        <button onclick="toggleTheory()"
+                            style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">Close</button>
+                    </div>
+
+                    <div class="theory-nav">
+                        <button class="tab-btn active" onclick="switchTab('basics')">Basics & Complexity</button>
+                        <button class="tab-btn" onclick="switchTab('balance')">Balance vs Unbalanced</button>
+                        <button class="tab-btn" onclick="switchTab('ops')">Operations & <span class="keyword" data-def="Visiting nodes one-by-one by following pointers.">Traversals</span></button>
+                    </div>
+
+                    <!-- TAB 1: Basics -->
+                    <div id="tab-basics" class="theory-section active">
+                        <h3>What is a Binary Search <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Tree</span> (BST)?</h3>
+                        <p>A BST is a dynamic data structure consisting of <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">nodes</span>. Each <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">node</span> contains a value and
+                            references to two children (left and right). It satisfies the <strong>BST Property</strong>:
+                        </p>
+                        <ul>
+                            <li>The value of every <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">node</span> in the <strong>left</strong> <span class="keyword" data-def="A node and its descendants considered as a tree.">subtree</span> is <strong>less
+                                    than</strong> the <span class="keyword" data-def="A node that has child nodes.">parent</span>'s value.</li>
+                            <li>The value of every <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">node</span> in the <strong>right</strong> <span class="keyword" data-def="A node and its descendants considered as a tree.">subtree</span> is <strong>greater
+                                    than</strong> the <span class="keyword" data-def="A node that has child nodes.">parent</span>'s value.</li>
+                            <li>It does not contain duplicate values (usually).</li>
+                        </ul>
+
+                        <h3>Why use a BST?</h3>
+                        <p>BSTs combine the flexibility of <span class="keyword" data-def="Collection of nodes where each node points to the next node.">Linked Lists</span> (easy <span class="keyword" data-def="Adding a node to a linked structure.">insertion</span>/<span class="keyword" data-def="Removing a node from a linked structure.">deletion</span>) with the efficiency of
+                            arrays (fast search). They are fundamental for implementing Sets, Dictionaries, and Priority
+                            Queues.</p>
+
+                        <h3>Big O Complexity</h3>
+                        <p>The efficiency of a BST depends entirely on its <strong>height (h)</strong>.</p>
+                        <table style="width:100%; border-collapse:collapse; margin-top:10px; color:#fff;">
+                            <tr style="border-bottom:1px solid #555; text-align:left;">
+                                <th style="padding:8px;">Case</th>
+                                <th style="padding:8px;">Search</th>
+                                <th style="padding:8px;">Insert</th>
+                                <th style="padding:8px;">Delete</th>
+                                <th style="padding:8px;">Condition</th>
+                            </tr>
+                            <tr style="border-bottom:1px solid #333;">
+                                <td style="padding:8px;"><strong>Average / Best</strong></td>
+                                <td style="color:#22c55e;">O(log n)</td>
+                                <td style="color:#22c55e;">O(log n)</td>
+                                <td style="color:#22c55e;">O(log n)</td>
+                                <td><span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Tree</span> is Balanced</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px;"><strong>Worst</strong></td>
+                                <td style="color:#ef4444;">O(n)</td>
+                                <td style="color:#ef4444;">O(n)</td>
+                                <td style="color:#ef4444;">O(n)</td>
+                                <td><span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Tree</span> is Skewed (Unbalanced)</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- TAB 2: Balance -->
+                    <div id="tab-balance" class="theory-section">
+                        <h3>Balanced vs. Unbalanced <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Trees</span></h3>
+                        <p>The performance of a BST is tied to its "shape".</p>
+
+                        <h3>1. <span class="keyword" data-def="Tree with height kept small so operations remain efficient.">Balanced Tree</span> (Ideal)</h3>
+                        <p>A <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">tree</span> is balanced when the height of the left and right <span class="keyword" data-def="A node and its descendants considered as a tree.">subtrees</span> of any <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">node</span> differs by no
+                            more than 1. This ensures the height remains <strong>logarithmic</strong> regarding the
+                            number of <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">nodes</span> (n).</p>
+                        <div class="code-block">Height ≈ log2(n)</div>
+                        <p><strong>Advantage:</strong> Guarantees fast operations even with large datasets.</p>
+
+                        <h3>2. Unbalanced / Skewed <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Tree</span> (Worst Case)</h3>
+                        <p>This occurs when data is inserted in sorted or reverse-sorted order (e.g., inserting 10, 20,
+                            30, 40, 50). The <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">tree</span> degenerates into a <strong><span class="keyword" data-def="Collection of nodes where each node points to the next node.">Linked List</span></strong>.</p>
+                        <div class="code-block">Height ≈ n</div>
+                        <p><strong>Disadvantage:</strong> Searching becomes linear scanning, losing the advantage of the
+                            binary structure. </p>
+
+                        <h3>How to resolve Unbalancing?</h3>
+                        <p>In advanced applications, we use self-balancing <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">trees</span> (like AVL <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Trees</span> or Red-Black <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Trees</span>)
+                            which automatically rotate <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">nodes</span> during <span class="keyword" data-def="Adding a node to a linked structure.">insertion</span> to maintain O(log n) height. (Not shown in
+                            this standard BST <span class="keyword" data-def="The internal way a data structure is built (how it works).">implementation</span>).</p>
+                    </div>
+
+                    <!-- TAB 3: Operations -->
+                    <div id="tab-ops" class="theory-section">
+                        <h3><span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Tree</span> <span class="keyword" data-def="Visiting nodes one-by-one by following pointers.">Traversals</span></h3>
+                        <p>Unlike arrays, there are multiple ways to iterate through a <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">tree</span>:</p>
+
+                        <h3>1. In-Order (Left, <span class="keyword" data-def="Top node of a tree.">Root</span>, Right)</h3>
+                        <p><strong>Use Case:</strong> Returns values in <strong>sorted (ascending) order</strong>. This
+                            is the primary way to "sort" data using a BST.</p>
+
+                        <h3>2. Pre-Order (<span class="keyword" data-def="Top node of a tree.">Root</span>, Left, Right)</h3>
+                        <p><strong>Use Case:</strong> Useful for <strong>cloning/copying</strong> a <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">tree</span>. By processing
+                            the <span class="keyword" data-def="Top node of a tree.">root</span> first, you can reconstruct the exact same <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">tree</span> structure easily.</p>
+
+                        <h3>3. Post-Order (Left, Right, <span class="keyword" data-def="Top node of a tree.">Root</span>)</h3>
+                        <p><strong>Use Case:</strong> Useful for <strong>deleting</strong> a <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">tree</span>. You process (delete)
+                            the children before you delete the <span class="keyword" data-def="A node that has child nodes.">parent</span>, ensuring no references are lost prematurely.</p>
+
+                        <hr style="border:0; border-top:1px solid #444; margin:20px 0;">
+
+                        <h3><span class="keyword" data-def="Removing a node from a linked structure.">Deletion</span> Cases</h3>
+                        <p>Deleting a <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">node</span> is the most complex operation because we must maintain the BST property.
+                            There are three scenarios:</p>
+                        <ol>
+                            <li><strong><span class="keyword" data-def="A node with no children.">Leaf</span> <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">Node</span>:</strong> Simply remove it.</li>
+                            <li><strong>One <span class="keyword" data-def="A node directly below a parent node.">Child</span>:</strong> The <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">node</span> is removed, and its single <span class="keyword" data-def="A node directly below a parent node.">child</span> takes its place.
+                            </li>
+                            <li><strong>Two Children:</strong> We cannot just remove it. We find the <strong>In-Order
+                                    Successor</strong> (the smallest value in the right <span class="keyword" data-def="A node and its descendants considered as a tree.">subtree</span>), copy its value to the
+                                target <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">node</span>, and then recursively delete that successor (which is guaranteed to have at
+                                most one <span class="keyword" data-def="A node directly below a parent node.">child</span>).</li>
+                        </ol>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="controls">
+        <!-- Row 1: Operations -->
+        <div class="control-row">
+            <div class="group">
+                <label>Op</label>
+                <select id="op-select" onchange="updateCodeView()"
+                    style="background:#222; color:white; border:1px solid #555; padding:4px;">
+                    <option value="insert">Insert <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">Node</span></option>
+                    <option value="delete">Delete <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">Node</span></option>
+                    <option value="inorder">Traverse: In-Order</option>
+                    <option value="preorder">Traverse: Pre-Order</option>
+                    <option value="postorder">Traverse: Post-Order</option>
+                </select>
+            </div>
+
+            <div class="group" id="input-group">
+                <label>Val</label>
+                <input type="number" id="node-value" value="50" min="0" max="999">
+            </div>
+
+            <button class="primary" onclick="loadAction()">Load Action</button>
+
+            <div class="scenarios group">
+                <label>Scenarios</label>
+                <button onclick="playScenario('balanced')">Balanced</button>
+                <button onclick="playScenario('unbalanced')">Unbalanced</button>
+                <button onclick="resetTree()" style="color: #ef4444;">Clear</button>
+            </div>
+        </div>
+
+        <!-- Row 2: Playback -->
+        <div class="control-row" style="margin-top: 5px;">
+            <div class="group" style="flex: 1; justify-content: center; gap: 10px;">
+                <button onclick="step(-1)" title="Previous Step">&#9664; Prev</button>
+                <button onclick="step(1)" title="Next Step">Next &#9654;</button>
+                <div style="width: 20px;"></div> <!-- Spacer -->
+                <button id="btn-run" onclick="toggleRun()" style="width: 130px;">&#9658; Run Simulation</button>
+            </div>
+
+            <div class="group">
+                <label>Speed</label>
+                <span style="font-size: 0.7rem; width: 30px;">Slow</span>
+                <input type="range" id="speed-slider" min="1" max="100" step="1" value="50" style="width: 100px;">
+                <span style="font-size: 0.7rem; width: 30px; text-align:right;">Fast</span>
+            </div>
+
+            <div class="group">
+                <label>Step</label>
+                <span id="step-count">0 / 0</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/visualizer-bst.js"></script>
+</body>
+
+</html>

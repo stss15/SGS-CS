@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7.4 Standard Methods | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    
+        <link rel="stylesheet" href="../../css/assessment-igcse-topic7-7-4.css">
+</head>
+
+<body>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">7.4 Standard Methods</div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 7 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo">
+
+    <header>
+        <h1>7.4 Assessment</h1>
+        <p class="subtitle">Standard Methods of Solution</p>
+    </header>
+
+    <main style="display:none;">
+
+        <!-- Q1: Algorithm Types (Matching) -->
+        <div class="question-block" id="q1-block" data-summary="Algorithm Types">
+            <div class="q-header">
+                <span>Q1. <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span> Types</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Match the <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> type to its description.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q1"></div>
+                <div class="col-terms" id="col-terms-q1"></div>
+            </div>
+        </div>
+
+        <!-- Q2: Totalling vs Counting (Categorisation) -->
+        <div class="question-block" id="q2-block" data-summary="Totalling vs Counting">
+            <div class="q-header">
+                <span>Q2. Totalling vs Counting</span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Drag the code snippets or descriptions into the correct category.</p>
+            <div class="draggable-source" id="q2-source" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-total" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Totalling</h4>
+                </div>
+                <div class="bucket" id="bucket-count" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Counting</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: Linear Search Logic (Ordering) -->
+        <div class="question-block" id="q3-block" data-summary="Linear Search Logic">
+            <div class="q-header">
+                <span>Q3. <span class="keyword" data-def="an algorithm that inspects each item in a list in turn to see if the item matches the value searched for">Linear Search</span> Logic</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <p>Order the steps to perform a <span class="keyword" data-def="an algorithm that inspects each item in a list in turn to see if the item matches the value searched for">linear search</span>.</p>
+            <ul class="sortable-list" id="q3-list"></ul>
+        </div>
+
+        <!-- Q4: Bubble Sort Logic (MCQ) -->
+        <div class="question-block" id="q4-block" data-summary="Bubble Sort Logic">
+            <div class="q-header">
+                <span>Q4. <span class="keyword" data-def="an algorithm that makes multiple passes through a list comparing each element with the next element and swapping them. This continues until there is a pass where no more swaps are made">Bubble Sort</span> Logic</span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <p>In a <span class="keyword" data-def="an algorithm that makes multiple passes through a list comparing each element with the next element and swapping them. This continues until there is a pass where no more swaps are made">Bubble Sort</span>, what happens if two adjacent items are in the wrong order?</p>
+            <div class="mcq-options" id="q4-options"></div>
+        </div>
+
+        <!-- Q5: Algorithm Purpose (Drag & Drop) -->
+        <div class="question-block" id="q5-block" data-summary="Algorithm Purpose">
+            <div class="q-header">
+                <span>Q5. <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span> Purpose</span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <p>Drag the code snippet to the <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithm</span> it represents.</p>
+            <div class="draggable-source" id="q5-source" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-max" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Maximum</h4>
+                </div>
+                <div class="bucket" id="bucket-min" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Minimum</h4>
+                </div>
+                <div class="bucket" id="bucket-avg" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h4>Average</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+    
+        <script src="../../js/assessment-igcse-topic7-7-4.js"></script>
+</body>
+
+</html>

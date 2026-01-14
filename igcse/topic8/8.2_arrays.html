@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>8.2 Arrays | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="../../igcse/topic8/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">8.2 <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h1>
+                        <h3 class="sub-title">Storing Lists of Data</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (8.1)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is a <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">variable</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">A named storage location whose value can change</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What are the 3 programming constructs?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);"><span class="keyword" data-def="the order in which the steps in a program are executed">Sequence</span>, <span class="keyword" data-def="allowing the selection of different paths through the steps of a program">Selection</span>, <span class="keyword" data-def="a section of programming code that can be repeated under certain conditions">Iteration</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="r-stack">
+                        <div class="fragment fade-in-then-out">
+                            <div class="question-box">
+                                <p style="font-size:1.2em; margin:0;">How would you store 100 student names?</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box" style="background: #ffebee; padding: 30px;">
+                                <p class="small-text" style="margin:0;">Using individual <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">variables</span>:</p>
+                                <pre style="font-size:0.8em; margin-top:15px;"><code class="language-plaintext"><span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Name1 : <span class="keyword" data-def="a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol">STRING</span>
+<span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Name2 : <span class="keyword" data-def="a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol">STRING</span>
+<span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Name3 : <span class="keyword" data-def="a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol">STRING</span>
+... 97 more times?!</code></pre>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box-blue" style="padding: 30px;">
+                                <p class="small-text"><strong>✅ There must be a better way!</strong></p>
+                                <p class="small-text">Use an <strong><span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span></strong>: one name, many indexed slots.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue"><span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span> to the rescue</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What is an <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Array</span>?</h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A data structure containing multiple elements of the <strong>same type</strong>, accessed using a single name and an <span class="keyword" data-def="identifies the position of an element in an array">index</span>.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Think of a row of lockers.</p>
+                        <p class="small-text">Each locker has the same name ("Locker") but a different number (1, 2, 3...)</p>
+                    </div>
+                    <div class="fragment" style="margin-top:20px; text-align:center;">
+                        <div style="display:inline-flex; gap:5px;">
+                            <div style="background:#d4edda; padding:15px 25px; border:2px solid #28a745; border-radius:5px;">
+                                <p class="small-text" style="margin:0;"><strong>[1]</strong></p>
+                                <p class="small-text" style="margin:0;">Ali</p>
+                            </div>
+                            <div style="background:#d4edda; padding:15px 25px; border:2px solid #28a745; border-radius:5px;">
+                                <p class="small-text" style="margin:0;"><strong>[2]</strong></p>
+                                <p class="small-text" style="margin:0;">Sara</p>
+                            </div>
+                            <div style="background:#d4edda; padding:15px 25px; border:2px solid #28a745; border-radius:5px;">
+                                <p class="small-text" style="margin:0;"><strong>[3]</strong></p>
+                                <p class="small-text" style="margin:0;">John</p>
+                            </div>
+                            <div style="background:#d4edda; padding:15px 25px; border:2px solid #28a745; border-radius:5px;">
+                                <p class="small-text" style="margin:0;"><strong>[4]</strong></p>
+                                <p class="small-text" style="margin:0;">Mei</p>
+                            </div>
+                            <div style="background:#d4edda; padding:15px 25px; border:2px solid #28a745; border-radius:5px;">
+                                <p class="small-text" style="margin:0;"><strong>[5]</strong></p>
+                                <p class="small-text" style="margin:0;">Omar</p>
+                            </div>
+                        </div>
+                        <p class="small-text"><span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Array</span>: <strong>Names</strong></p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-list-ol"></i> Indexing Depends on the Language</h4>
+                        <p class="small-text fragment">Some languages start <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> at <span class="keyword" data-def="identifies the position of an element in an array">index</span> <strong>0</strong>.</p>
+                        <p class="small-text fragment">In exam‑style pseudocode, <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> often start at <strong>1</strong> (like <code>[1:30]</code>).</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-repeat"></i> <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span> + Loops = Best Friends</h4>
+                        <p class="small-text fragment">A loop can process every element without repeating code.</p>
+                        <p class="small-text fragment">That’s why <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> are used for marks, names, sensors, and more.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 1D ARRAYS - DECLARING
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>1D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">A single list of items</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">How to create and use them</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Declaring a 1D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Array</span></h3>
+                    <div class="box">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext"><span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Names : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:5] OF <span class="keyword" data-def="a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol">STRING</span></code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Breakdown</h4>
+                            <p class="small-text"><code>Names</code> - name of <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span></p>
+                            <p class="small-text"><code>[1:5]</code> - <span class="keyword" data-def="identifies the position of an element in an array">indexes</span> 1 to 5 (5 slots)</p>
+                            <p class="small-text"><code><span class="keyword" data-def="a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol">STRING</span></code> - type of data</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>More Examples</h4>
+                            <pre style="font-size:0.8em; margin:0;"><code class="language-plaintext"><span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Marks : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:30] OF <span class="keyword" data-def="a positive or negative whole number that can be used with mathematical operators">INTEGER</span>
+<span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Prices : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:100] OF REAL
+<span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Passed : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:10] OF BOOLEAN</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Accessing <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Array</span> Elements</h3>
+                    <div class="box">
+                        <p class="small-text">Use the <span class="keyword" data-def="identifies the position of an element in an array">index</span> (position number) in square brackets:</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Writing (Assignment)</h4>
+                            <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">Names[1] ← "Ali"
+Names[2] ← "Sara"
+Names[3] ← "John"</code></pre>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>Reading (Access)</h4>
+                            <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">OUTPUT Names[1]
+OUTPUT Names[3]</code></pre>
+                            <p class="small-text">Outputs: Ali, John</p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key:</strong> The <span class="keyword" data-def="identifies the position of an element in an array">index</span> tells you which "slot" to look at.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 LOOPING THROUGH ARRAYS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Looping Through <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">This is where <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> become powerful!</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">Use a FOR loop to process every element:</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">FOR i ← 1 TO 5
+    OUTPUT Names[i]
+NEXT i</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Magic:</strong> <code>i</code> changes from 1 to 5, so we access Names[1], Names[2], Names[3], Names[4], Names[5]!</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Example: <span class="keyword" data-def="keeping a total that values are added to">Totalling</span> Marks</h3>
+                    <div class="box">
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext"><span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Marks : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:5] OF <span class="keyword" data-def="a positive or negative whole number that can be used with mathematical operators">INTEGER</span>
+<span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Total : <span class="keyword" data-def="a positive or negative whole number that can be used with mathematical operators">INTEGER</span>
+
+Total ← 0
+FOR i ← 1 TO 5
+    Total ← Total + Marks[i]
+NEXT i
+OUTPUT "Total: ", Total</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text">This adds up all 5 marks in the <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> using a loop!</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Example: Input into <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Array</span></h3>
+                    <div class="box">
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext"><span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Names : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:30] OF <span class="keyword" data-def="a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol">STRING</span>
+
+FOR i ← 1 TO 30
+    OUTPUT "Enter name ", i
+    INPUT Names[i]
+NEXT i</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text">This fills the entire <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> with 30 names from user input!</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">If <code>Names</code> is declared as <code><span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:30]</code>, what is the last valid <span class="keyword" data-def="identifies the position of an element in an array">index</span>?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>30</strong> (<span class="keyword" data-def="identifies the position of an element in an array">index</span> 31 would be out of range).</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 2D ARRAYS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What if we need a table of data?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Think of a spreadsheet with rows and columns.</p>
+                        <p class="small-text">Or cinema seats – Row 3, Seat 5.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Two dimensions: row and column</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Visualising 2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h3>
+                    <div class="box" style="margin-bottom:15px;">
+                        <p class="small-text">Students (rows) × Subjects (columns)</p>
+                    </div>
+                    <table style="width:80%; margin:auto; font-size:0.85em; text-align:center;">
+                        <tr>
+                            <th style="background:#f0f0f0; padding:8px;"></th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Col 1</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Col 2</th>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Col 3</th>
+                        </tr>
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Row 1</th>
+                            <td style="padding:8px; background:#d4edda;">85</td>
+                            <td style="padding:8px; background:#d4edda;">72</td>
+                            <td style="padding:8px; background:#d4edda;">91</td>
+                        </tr>
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Row 2</th>
+                            <td style="padding:8px; background:#d4edda;">63</td>
+                            <td style="padding:8px; background:#d4edda; border:3px solid red;">88</td>
+                            <td style="padding:8px; background:#d4edda;">77</td>
+                        </tr>
+                        <tr>
+                            <th style="background:var(--primary-blue); color:white; padding:8px;">Row 3</th>
+                            <td style="padding:8px; background:#d4edda;">95</td>
+                            <td style="padding:8px; background:#d4edda;">81</td>
+                            <td style="padding:8px; background:#d4edda;">69</td>
+                        </tr>
+                    </table>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><code>Marks[2, 2]</code> = <strong>88</strong> (Row 2, Column 2)</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Declaring 2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h3>
+                    <div class="box">
+                        <pre style="font-size:0.95em; margin:0;"><code class="language-plaintext"><span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Marks : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:3, 1:3] OF <span class="keyword" data-def="a positive or negative whole number that can be used with mathematical operators">INTEGER</span></code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>Breakdown</h4>
+                            <p class="small-text"><code>[1:3, 1:3]</code></p>
+                            <p class="small-text">First range = rows (1 to 3)</p>
+                            <p class="small-text">Second range = columns (1 to 3)</p>
+                            <p class="small-text">Total: 3 × 3 = 9 elements</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4>Accessing</h4>
+                            <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">Marks[1, 1] ← 85
+Marks[2, 3] ← 77
+OUTPUT Marks[3, 2]</code></pre>
+                            <p class="small-text">[row, column]</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Looping Through 2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h3>
+                    <div class="box">
+                        <p class="small-text">Use <strong>nested loops</strong> – one for rows, one for columns:</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">FOR Row ← 1 TO 3
+    FOR Col ← 1 TO 3
+        OUTPUT Marks[Row, Col]
+    NEXT Col
+NEXT Row</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>How it works:</strong></p>
+                        <p class="small-text">Row 1: output [1,1], [1,2], [1,3]</p>
+                        <p class="small-text">Row 2: output [2,1], [2,2], [2,3]</p>
+                        <p class="small-text">Row 3: output [3,1], [3,2], [3,3]</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">How do you access row 2, column 3 in a 2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> called <code>Marks</code>?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><code>Marks[2, 3]</code></p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 LINEAR SEARCH WITH ARRAYS
+                 ============================================ -->
+            <section>
+                <h2>Linear Search in <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span></h2>
+                <div class="box">
+                    <pre style="font-size:0.8em; margin:0;"><code class="language-plaintext">INPUT SearchName
+Found ← FALSE
+FOR i ← 1 TO 30
+    IF Names[i] = SearchName THEN
+        Found ← TRUE
+        OUTPUT "Found at position ", i
+    ENDIF
+NEXT i
+IF Found = FALSE THEN
+    OUTPUT "Not found"
+ENDIF</code></pre>
+                </div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p class="small-text">Checks each element one by one until found (or reaches the end).</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Link to 8.1:</strong></p>
+                        <p class="small-text"><span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">Arrays</span> build on <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">variables</span> and loops — one name, many values, processed with FOR loops.</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming up in 8.3:</strong></p>
+                        <p class="small-text"><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span> handling — reading and writing data, often into <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> for processing.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>An <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> can store different data types in the same structure.</li>
+                        <li>To access an element, you use its <span class="keyword" data-def="identifies the position of an element in an array">index</span>.</li>
+                        <li>2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> need nested loops to process all elements.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">An <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> can store different data types in the same structure.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>All elements in an <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> must be the <strong>same data type</strong>. You can't mix <span class="keyword" data-def="a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol">strings</span> and <span class="keyword" data-def="a positive or negative whole number that can be used with mathematical operators">integers</span>!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">To access an element, you use its <span class="keyword" data-def="identifies the position of an element in an array">index</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>The <span class="keyword" data-def="identifies the position of an element in an array">index</span> is the position number that identifies which element you want.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> need nested loops to process all elements.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>You need one loop for rows and another (inside) for columns to visit every element.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">📦 An <strong><span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span></strong> stores many values of the <strong>same type</strong></p>
+                        <p class="small-text">🔢 Access elements with an <span class="keyword" data-def="identifies the position of an element in an array">index</span> (e.g., <code>Names[3]</code>)</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">📋 1D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> = list; 2D <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> = table (rows &amp; columns)</p>
+                        <p class="small-text">🔁 Use loops to process elements (nested loops for 2D)</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Next:</strong> 8.3 <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span> Handling</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="../../js/slide-deck.js"></script>
+
+    
+    <script src="../../js/live-date-display.js"></script>
+
+</body>
+
+</html>
