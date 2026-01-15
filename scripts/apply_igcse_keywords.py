@@ -4,8 +4,8 @@ import re
 
 # Configuration - use relative path from script location for CI compatibility
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-BASE_DIR = SCRIPT_DIR  # Script is in public/igcse/
-REPO_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))  # Go up to repo root
+REPO_ROOT = os.path.dirname(SCRIPT_DIR)  # Go up one level from scripts/ to repo root
+BASE_DIR = os.path.join(REPO_ROOT, "public", "igcse")  # Target directory for HTML files
 CHAPTER_FILES_DIR = os.path.join(REPO_ROOT, "docs", "igcse-content", "chapter-text-files")
 
 # Regex to find definition boxes (assuming they don't have nested divs for now, or simple nesting)
