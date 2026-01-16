@@ -3,194 +3,202 @@
  * DO NOT modify function logic - only moved from inline
  */
 
-        // --- FULL DATA SET ---
-        let allData = [];
+// --- FULL DATA SET ---
+let allData = [];
 
-        // --- GAME STATE ---
-        let deck = [];
-        let activeDeck = []; // Cards currently in play
-        let unknownPile = []; // Cards missed
-        let knownPile = [];   // Cards mastered
+// --- GAME STATE ---
+let deck = [];
+let activeDeck = []; // Cards currently in play
+let unknownPile = []; // Cards missed
+let knownPile = [];   // Cards mastered
 
-        let currentIndex = 0;
-        let isFlipped = false;
+let currentIndex = 0;
+let isFlipped = false;
 
-        async function init() {
-            try {
-                const response = await fetch('questions.json');
-                if (!response.ok) throw new Error('Network response was not ok');
-                allData = await response.json();
-                fullReset();
-            } catch (error) {
-                console.error('Error loading questions:', error);
-                document.getElementById('qText').innerHTML = "Error loading questions.<br><small>Please check console.</small>";
-            }
-        }
+async function init() {
+    try {
+        // Resolve questions.json relative to the HTML file's actual directory
+        // With cleanUrls, /flashcards serves flashcards.html, so we need to strip the last path segment
+        const pathParts = window.location.pathname.split('/');
+        // Remove the last segment (page name like 'flashcards')
+        pathParts.pop();
+        // If the last remaining segment is empty (root), add back
+        const basePath = pathParts.join('/') || '/';
+        const questionsUrl = basePath + (basePath.endsWith('/') ? '' : '/') + 'questions.json';
 
-        function fullReset() {
-            // Start fresh with all cards
-            activeDeck = [...allData];
-            shuffleArray(activeDeck);
+        const response = await fetch(questionsUrl);
+        if (!response.ok) throw new Error('Network response was not ok');
+        allData = await response.json();
+        fullReset();
+    } catch (error) {
+        console.error('Error loading questions:', error);
+        document.getElementById('qText').innerHTML = "Error loading questions.<br><small>Please check console.</small>";
+    }
+}
 
-            unknownPile = [];
-            knownPile = [];
-            currentIndex = 0;
-            isFlipped = false;
+function fullReset() {
+    // Start fresh with all cards
+    activeDeck = [...allData];
+    shuffleArray(activeDeck);
 
-            updateVisuals();
-            loadCard();
-        }
+    unknownPile = [];
+    knownPile = [];
+    currentIndex = 0;
+    isFlipped = false;
 
-        function startNextRound() {
-            // This is called when the deck is empty but there are unknown cards
-            // Animation logic happens here
+    updateVisuals();
+    loadCard();
+}
 
-            // Move unknown cards back to active deck
-            activeDeck = [...unknownPile];
-            shuffleArray(activeDeck);
+function startNextRound() {
+    // This is called when the deck is empty but there are unknown cards
+    // Animation logic happens here
 
-            // Reset piles for the new round
-            unknownPile = [];
-            // knownPile stays as is (visually) or could accrue. 
-            // For this logic, let's keep knownPile separate as "Banked" knowledge.
+    // Move unknown cards back to active deck
+    activeDeck = [...unknownPile];
+    shuffleArray(activeDeck);
 
-            currentIndex = 0;
-            isFlipped = false;
+    // Reset piles for the new round
+    unknownPile = [];
+    // knownPile stays as is (visually) or could accrue. 
+    // For this logic, let's keep knownPile separate as "Banked" knowledge.
 
-            // Trigger animation: Card flies from Unknown Pile to Center
-            const card = document.getElementById('flashcard');
-            card.classList.add('fly-in');
+    currentIndex = 0;
+    isFlipped = false;
 
-            setTimeout(() => {
-                card.classList.remove('fly-in');
-                updateVisuals();
-                loadCard();
-            }, 800);
-        }
+    // Trigger animation: Card flies from Unknown Pile to Center
+    const card = document.getElementById('flashcard');
+    card.classList.add('fly-in');
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+    setTimeout(() => {
+        card.classList.remove('fly-in');
+        updateVisuals();
+        loadCard();
+    }, 800);
+}
 
-        function shuffleRemaining() {
-            if (currentIndex >= activeDeck.length) return;
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
-            // Get the remaining cards
-            const remaining = activeDeck.slice(currentIndex);
+function shuffleRemaining() {
+    if (currentIndex >= activeDeck.length) return;
 
-            // Shuffle them
-            shuffleArray(remaining);
+    // Get the remaining cards
+    const remaining = activeDeck.slice(currentIndex);
 
-            // Reconstruct activeDeck: processed cards + shuffled remaining cards
-            const processed = activeDeck.slice(0, currentIndex);
-            activeDeck = processed.concat(remaining);
+    // Shuffle them
+    shuffleArray(remaining);
 
-            // Reload current card
-            loadCard();
+    // Reconstruct activeDeck: processed cards + shuffled remaining cards
+    const processed = activeDeck.slice(0, currentIndex);
+    activeDeck = processed.concat(remaining);
 
-            // Visual feedback
-            const cardEl = document.getElementById('flashcard');
-            // Reset animation
-            cardEl.classList.remove('fly-in');
-            void cardEl.offsetWidth; // Trigger reflow
-            cardEl.classList.add('fly-in');
+    // Reload current card
+    loadCard();
 
-            setTimeout(() => {
-                cardEl.classList.remove('fly-in');
-            }, 800);
-        }
+    // Visual feedback
+    const cardEl = document.getElementById('flashcard');
+    // Reset animation
+    cardEl.classList.remove('fly-in');
+    void cardEl.offsetWidth; // Trigger reflow
+    cardEl.classList.add('fly-in');
 
-        function loadCard() {
-            const cardEl = document.getElementById('flashcard');
-            const feedback = document.getElementById('feedbackBtns');
-            const progress = document.getElementById('progressText');
+    setTimeout(() => {
+        cardEl.classList.remove('fly-in');
+    }, 800);
+}
 
-            // Reset visual state
-            isFlipped = false;
-            cardEl.classList.remove('flipped');
-            feedback.classList.remove('visible');
+function loadCard() {
+    const cardEl = document.getElementById('flashcard');
+    const feedback = document.getElementById('feedbackBtns');
+    const progress = document.getElementById('progressText');
 
-            // Check if deck complete
-            if (currentIndex >= activeDeck.length) {
-                handleDeckComplete();
-                return;
-            }
+    // Reset visual state
+    isFlipped = false;
+    cardEl.classList.remove('flipped');
+    feedback.classList.remove('visible');
 
-            // Load Content
-            const item = activeDeck[currentIndex];
-            document.getElementById('qText').innerHTML = item.q;
-            document.getElementById('aText').innerHTML = item.a;
-            progress.innerText = `Card ${currentIndex + 1} of ${activeDeck.length}`;
-        }
+    // Check if deck complete
+    if (currentIndex >= activeDeck.length) {
+        handleDeckComplete();
+        return;
+    }
 
-        function handleDeckComplete() {
-            const qText = document.getElementById('qText');
-            const aText = document.getElementById('aText');
-            const feedback = document.getElementById('feedbackBtns');
+    // Load Content
+    const item = activeDeck[currentIndex];
+    document.getElementById('qText').innerHTML = item.q;
+    document.getElementById('aText').innerHTML = item.a;
+    progress.innerText = `Card ${currentIndex + 1} of ${activeDeck.length}`;
+}
 
-            if (unknownPile.length > 0) {
-                qText.innerHTML = "<i class='fa-solid fa-rotate'></i> Round Complete!";
-                aText.innerHTML = `You have ${unknownPile.length} cards to review.<br><br><button class='nav-btn' onclick='startNextRound()'>Review Now</button>`;
-            } else {
-                qText.innerHTML = "<i class='fa-solid fa-trophy'></i> All Mastered!";
-                aText.innerHTML = "Great job! You've cleared the deck.<br><br><button class='nav-btn' onclick='fullReset()'>Start Over</button>";
-            }
+function handleDeckComplete() {
+    const qText = document.getElementById('qText');
+    const aText = document.getElementById('aText');
+    const feedback = document.getElementById('feedbackBtns');
 
-            // Auto-flip to back to show the message
-            document.getElementById('flashcard').classList.add('flipped');
-            feedback.classList.remove('visible');
-        }
+    if (unknownPile.length > 0) {
+        qText.innerHTML = "<i class='fa-solid fa-rotate'></i> Round Complete!";
+        aText.innerHTML = `You have ${unknownPile.length} cards to review.<br><br><button class='nav-btn' onclick='startNextRound()'>Review Now</button>`;
+    } else {
+        qText.innerHTML = "<i class='fa-solid fa-trophy'></i> All Mastered!";
+        aText.innerHTML = "Great job! You've cleared the deck.<br><br><button class='nav-btn' onclick='fullReset()'>Start Over</button>";
+    }
 
-        function flip() {
-            // Don't flip if session is over (buttons are on the back face)
-            if (currentIndex >= activeDeck.length) return;
+    // Auto-flip to back to show the message
+    document.getElementById('flashcard').classList.add('flipped');
+    feedback.classList.remove('visible');
+}
 
-            const cardEl = document.getElementById('flashcard');
-            const feedback = document.getElementById('feedbackBtns');
+function flip() {
+    // Don't flip if session is over (buttons are on the back face)
+    if (currentIndex >= activeDeck.length) return;
 
-            isFlipped = !isFlipped;
-            if (isFlipped) {
-                cardEl.classList.add('flipped');
-                feedback.classList.add('visible');
-            } else {
-                cardEl.classList.remove('flipped');
-                feedback.classList.remove('visible');
-            }
-        }
+    const cardEl = document.getElementById('flashcard');
+    const feedback = document.getElementById('feedbackBtns');
 
-        function rateCard(rating, event) {
-            event.stopPropagation(); // Prevent card flip when clicking buttons
+    isFlipped = !isFlipped;
+    if (isFlipped) {
+        cardEl.classList.add('flipped');
+        feedback.classList.add('visible');
+    } else {
+        cardEl.classList.remove('flipped');
+        feedback.classList.remove('visible');
+    }
+}
 
-            const currentCard = activeDeck[currentIndex];
+function rateCard(rating, event) {
+    event.stopPropagation(); // Prevent card flip when clicking buttons
 
-            if (rating === 'miss') {
-                unknownPile.push(currentCard);
-            } else {
-                knownPile.push(currentCard);
-            }
+    const currentCard = activeDeck[currentIndex];
 
-            currentIndex++;
-            updateVisuals();
-            loadCard();
-        }
+    if (rating === 'miss') {
+        unknownPile.push(currentCard);
+    } else {
+        knownPile.push(currentCard);
+    }
 
-        function updateVisuals() {
-            // Update Pile Counts
-            document.getElementById('countUnknown').innerText = unknownPile.length;
-            document.getElementById('countKnown').innerText = knownPile.length;
+    currentIndex++;
+    updateVisuals();
+    loadCard();
+}
 
-            // Visual styling for empty/full piles
-            const pU = document.getElementById('pileUnknown');
-            const pK = document.getElementById('pileKnown');
+function updateVisuals() {
+    // Update Pile Counts
+    document.getElementById('countUnknown').innerText = unknownPile.length;
+    document.getElementById('countKnown').innerText = knownPile.length;
 
-            unknownPile.length > 0 ? pU.classList.add('has-cards') : pU.classList.remove('has-cards');
-            knownPile.length > 0 ? pK.classList.add('has-cards') : pK.classList.remove('has-cards');
-        }
+    // Visual styling for empty/full piles
+    const pU = document.getElementById('pileUnknown');
+    const pK = document.getElementById('pileKnown');
 
-        // Start
-        init();
+    unknownPile.length > 0 ? pU.classList.add('has-cards') : pU.classList.remove('has-cards');
+    knownPile.length > 0 ? pK.classList.add('has-cards') : pK.classList.remove('has-cards');
+}
 
-    
+// Start
+init();
+
