@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Assessment | Year 9</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .question-card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #334155;
+        }
+
+        .question-num {
+            color: #38bdf8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .question-text code {
+            background: #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            border-color: #64748b;
+        }
+
+        .option.selected {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .option.correct {
+            border-color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.1) !important;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444 !important;
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .option.selected .option-letter {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+
+        .option.correct .option-letter {
+            background: #10b981;
+            color: white;
+        }
+
+        .option.incorrect .option-letter {
+            background: #ef4444;
+            color: white;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #38bdf8;
+            transition: width 0.3s;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #10b981;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#10b981 var(--score-percent), #334155 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .score-inner {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .name-input {
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="quiz-container">
+        <header style="text-align: center; margin-bottom: 2rem;">
+            <a href="year9.html" class="btn btn-secondary no-print"
+                style="position: absolute; left: 2rem; top: 2rem;"><i data-lucide="arrow-left"></i></a>
+            <h1 style="font-size: 1.75rem; margin-bottom: 0.25rem;">SQL Assessment</h1>
+            <p style="color: #64748b;">Year 9 Databases</p>
+        </header>
+
+        <div class="progress-bar no-print">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div id="quiz-content"></div>
+    </div>
+
+    <script>
+        const QUESTIONS = [
+            { q: "What does SQL stand for?", a: ["Structured Query Language", "Simple Question Language", "System Query Logic", "Standard Query List"], c: 0 },
+            { q: "Which command retrieves data from a database?", a: ["GET", "FETCH", "SELECT", "RETRIEVE"], c: 2 },
+            { q: "What does the <code>*</code> symbol mean in <code>SELECT * FROM</code>?", a: ["Multiplication", "All columns", "Required field", "Password"], c: 1 },
+            { q: "Which keyword filters results based on a condition?", a: ["FILTER", "WHEN", "WHERE", "IF"], c: 2 },
+            { q: "Text values in SQL must be wrapped in:", a: ["Double quotes", "Single quotes", "Parentheses", "Square brackets"], c: 1 },
+            { q: "Which operator means 'greater than'?", a: [">>", "=>", ">", "!<"], c: 2 },
+            { q: "To combine two conditions where BOTH must be true, use:", a: ["OR", "PLUS", "WITH", "AND"], c: 3 },
+            { q: "To combine two conditions where EITHER can be true, use:", a: ["AND", "OR", "BOTH", "ANY"], c: 1 },
+            { q: "Which command sorts results?", a: ["SORT BY", "ARRANGE", "ORDER BY", "GROUP BY"], c: 2 },
+            { q: "To sort from largest to smallest, add:", a: ["ASC", "DESC", "REVERSE", "HIGH"], c: 1 },
+            { q: "Which function counts the number of rows?", a: ["SUM()", "TOTAL()", "COUNT(*)", "NUM()"], c: 2 },
+            { q: "What is a 'table' in a database?", a: ["A physical desk", "A collection of related data in rows and columns", "A type of chart", "A programming language"], c: 1 },
+            { q: "What are the vertical parts of a table called?", a: ["Rows", "Cells", "Columns", "Fields only"], c: 2 },
+            { q: "What are the horizontal parts of a table called?", a: ["Rows", "Columns", "Headers", "Sections"], c: 0 },
+            { q: "Which query shows only Name and Age columns?", a: ["SELECT Name Age FROM...", "SELECT Name, Age FROM...", "GET Name AND Age FROM...", "SHOW Name, Age FROM..."], c: 1 },
+            { q: "What happens if you forget the closing quote in a text value?", a: ["It works fine", "Syntax error", "Automatic correction", "Returns empty"], c: 1 },
+            { q: "The command <code>WHERE Age > 25</code> shows people who are:", a: ["25 years old", "25 or older", "Older than 25", "Younger than 25"], c: 2 },
+            { q: "The command <code>WHERE Age >= 25</code> shows people who are:", a: ["Older than 25", "Younger than 25", "25 or older", "Exactly 25"], c: 2 },
+            { q: "Which is a valid SQL query?", a: ["SELECT ALL FROM Players", "SELECT * FROM Players", "GET * FROM Players", "FETCH Players"], c: 1 },
+            { q: "What does DESC stand for in ORDER BY?", a: ["Description", "Descending", "Destination", "Decrease"], c: 1 }
+        ];
+
+        let currentQ = 0;
+        let answers = new Array(QUESTIONS.length).fill(-1);
+        let submitted = false;
+
+        function render() {
+            const container = document.getElementById('quiz-content');
+            document.getElementById('progress-fill').style.width = ((currentQ + 1) / QUESTIONS.length * 100) + '%';
+
+            if (submitted) {
+                renderResults();
+                return;
+            }
+
+            let html = '';
+            QUESTIONS.forEach((q, i) => {
+                html += `
+            <div class="question-card" id="q${i}" style="${i !== currentQ ? 'display:none' : ''}">
+                <div class="question-num">Question ${i + 1} of ${QUESTIONS.length}</div>
+                <div class="question-text">${q.q}</div>
+                <div class="options">
+                    ${q.a.map((opt, j) => `
+                        <label class="option ${answers[i] === j ? 'selected' : ''}" onclick="selectAnswer(${i}, ${j})">
+                            <input type="radio" name="q${i}" value="${j}">
+                            <span class="option-letter">${['A', 'B', 'C', 'D'][j]}</span>
+                            <span>${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+            });
+
+            html += `
+        <div style="display: flex; justify-content: space-between; margin-top: 1rem;" class="no-print">
+            <button class="btn btn-secondary" onclick="prevQ()" ${currentQ === 0 ? 'disabled style="opacity:0.5"' : ''}><i data-lucide="chevron-left"></i> Previous</button>
+            ${currentQ === QUESTIONS.length - 1
+                    ? `<button class="btn btn-primary" onclick="submitQuiz()"><i data-lucide="check"></i> Submit Quiz</button>`
+                    : `<button class="btn btn-primary" onclick="nextQ()">Next <i data-lucide="chevron-right"></i></button>`
+                }
+        </div>
+    `;
+
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function selectAnswer(q, a) {
+            answers[q] = a;
+            render();
+        }
+
+        function nextQ() { if (currentQ < QUESTIONS.length - 1) { currentQ++; render(); } }
+        function prevQ() { if (currentQ > 0) { currentQ--; render(); } }
+
+        function submitQuiz() {
+            const unanswered = answers.filter(a => a === -1).length;
+            if (unanswered > 0) {
+                if (!confirm(`You have ${unanswered} unanswered questions. Submit anyway?`)) return;
+            }
+            submitted = true;
+            render();
+        }
+
+        function renderResults() {
+            const score = answers.reduce((acc, a, i) => acc + (a === QUESTIONS[i].c ? 1 : 0), 0);
+            const percent = Math.round(score / QUESTIONS.length * 100);
+
+            let html = `
+        <div class="result-card">
+            <h2 style="margin-bottom: 1rem;">Quiz Complete!</h2>
+            <div class="score-circle" style="--score-percent: ${percent}%">
+                <div class="score-inner">${score}/${QUESTIONS.length}</div>
+            </div>
+            <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">${percent >= 80 ? '🎉 Excellent!' : percent >= 60 ? '👍 Good job!' : '📚 Keep practicing!'}</p>
+            <p style="color: #64748b; margin-bottom: 1.5rem;">You scored ${percent}%</p>
+            
+            <input type="text" id="student-name" class="name-input" placeholder="Enter your name">
+            <br>
+            <button class="btn btn-primary" onclick="downloadPDF()"><i data-lucide="download"></i> Download PDF Certificate</button>
+            <p style="font-size: 0.75rem; color: #64748b; margin-top: 1rem;">Save the PDF to your class OneNote</p>
+        </div>
+        
+        <h3 style="margin: 2rem 0 1rem;">Review Answers</h3>
+    `;
+
+            QUESTIONS.forEach((q, i) => {
+                const correct = answers[i] === q.c;
+                html += `
+            <div class="question-card">
+                <div class="question-num">Question ${i + 1} ${correct ? '✅' : '❌'}</div>
+                <div class="question-text">${q.q}</div>
+                <div class="options">
+                    ${q.a.map((opt, j) => `
+                        <div class="option ${j === q.c ? 'correct' : ''} ${answers[i] === j && j !== q.c ? 'incorrect' : ''}">
+                            <span class="option-letter">${['A', 'B', 'C', 'D'][j]}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+            });
+
+            document.getElementById('quiz-content').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const name = document.getElementById('student-name').value || 'Student';
+            const score = answers.reduce((acc, a, i) => acc + (a === QUESTIONS[i].c ? 1 : 0), 0);
+            const percent = Math.round(score / QUESTIONS.length * 100);
+            const date = new Date().toLocaleDateString();
+
+            doc.setFontSize(24);
+            doc.setTextColor(16, 185, 129);
+            doc.text('SQL Assessment Certificate', 105, 30, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0);
+            doc.text(name, 105, 50, { align: 'center' });
+
+            doc.setFontSize(12);
+            doc.text(`Score: ${score}/${QUESTIONS.length} (${percent}%)`, 105, 65, { align: 'center' });
+            doc.text(`Date: ${date}`, 105, 75, { align: 'center' });
+
+            doc.setFontSize(10);
+            doc.text('Year 9 SQL Databases - The Data Detective', 105, 90, { align: 'center' });
+
+            doc.setDrawColor(16, 185, 129);
+            doc.rect(20, 100, 170, 0.5, 'F');
+
+            doc.setFontSize(11);
+            doc.text('Question Details:', 20, 115);
+
+            let y = 125;
+            QUESTIONS.forEach((q, i) => {
+                const correct = answers[i] === q.c;
+                const status = correct ? '✓' : '✗';
+                const text = `${i + 1}. ${status} ${q.q.replace(/<[^>]*>/g, '')}`;
+                if (y > 270) { doc.addPage(); y = 20; }
+                doc.setTextColor(correct ? 16 : 239, correct ? 185 : 68, correct ? 129 : 68);
+                doc.text(text.substring(0, 80), 20, y);
+                y += 7;
+            });
+
+            doc.save(`SQL_Quiz_${name.replace(/\s/g, '_')}.pdf`);
+        }
+
+        render();
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

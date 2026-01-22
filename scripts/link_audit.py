@@ -10,8 +10,9 @@ from pathlib import Path
 from urllib.parse import unquote
 import json
 
-PUBLIC_DIR = Path("/Users/StevenStewart/SGS-CSC REMIX/public")
-OUTPUT_FILE = Path("/Users/StevenStewart/.gemini/antigravity/brain/7072a796-d349-4200-830e-b008213c058c/link_audit_report.md")
+ROOT_DIR = Path(__file__).resolve().parents[1]
+PUBLIC_DIR = ROOT_DIR / "public"
+OUTPUT_FILE = ROOT_DIR / "meta" / "link_audit_report.md"
 
 # Patterns to find links
 HREF_PATTERN = re.compile(r'href=["\']([^"\']+)["\']', re.IGNORECASE)
@@ -38,13 +39,14 @@ def check_file_exists(resolved_path):
     if resolved_path.exists():
         return True
     
-    # Try with .html extension
-    if resolved_path.with_suffix('.html').exists():
-        return True
-    
-    # Try as directory with index.html
-    if (resolved_path / 'index.html').exists():
-        return True
+    if resolved_path.suffix in ('', '.html'):
+        # Try with .html extension
+        if resolved_path.with_suffix('.html').exists():
+            return True
+        
+        # Try as directory with index.html
+        if (resolved_path / 'index.html').exists():
+            return True
     
     return False
 
@@ -186,6 +188,7 @@ if __name__ == "__main__":
     print(f"Found {len(broken)} broken links in {len(files)} HTML files")
     
     report = generate_report(broken, files)
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_FILE.write_text(report)
     print(f"Report saved to: {OUTPUT_FILE}")
     

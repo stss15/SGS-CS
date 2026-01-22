@@ -1,5 +1,7 @@
 # AI Agent Content Writing Guide
 
+> Note: This document covers content style guidance. For build/process instructions, start with `docs/agent/AGENT_GUIDE.md`.
+
 > **Purpose:** This document defines how to write educational content for students at different levels. It specifies the language, tone, complexity, vocabulary, and pedagogical approach for each curriculum: **KS3** (Years 7-9), **IGCSE** (Years 10-11), and **IB** (Years 12-13).
 
 ---
@@ -655,4 +657,3 @@ When in doubt:
 - SGS-CS Slide Deck Guide: `docs/agent/igcse-slide-deck-guide.md`
 - KS3 Build Guide: `docs/agent/templates/KS3 Templates/KS3 AI Agent Guide`
 - Year 7 Unit Plans: `docs/Year 7 Unit Plans/`
-

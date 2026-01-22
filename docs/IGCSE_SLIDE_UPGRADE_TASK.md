@@ -1,5 +1,7 @@
 # IGCSE Slide Deck Upgrade Task
 
+> Legacy task plan: For current project rules and build workflow, start with `docs/agent/AGENT_GUIDE.md`.
+
 > **Purpose:** Complete instructions for an AI agent to upgrade existing IGCSE slide decks using better Reveal.js engagement techniques.
 
 ---

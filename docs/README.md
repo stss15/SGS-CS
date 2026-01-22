@@ -1,12 +1,12 @@
 # Documentation
 
-> **For AI Agents:** Start with [`AGENT_README.md`](./AGENT_README.md)
+> **For AI Agents:** Start with [`agent/AGENT_GUIDE.md`](./agent/AGENT_GUIDE.md)
 
 ## Main Guides
 
 | Guide | Purpose |
 |-------|---------|
-| [AGENT_README.md](./AGENT_README.md) | **Entry point** — Start here |
+| [agent/AGENT_GUIDE.md](./agent/AGENT_GUIDE.md) | **Entry point** — Start here |
 | [BUILD_AND_DEPLOY.md](./BUILD_AND_DEPLOY.md) | Build system and deployment |
 | [KS3_GUIDE.md](./KS3_GUIDE.md) | Years 7-9 content |
 | [IGCSE_GUIDE.md](./IGCSE_GUIDE.md) | Years 10-11 content |

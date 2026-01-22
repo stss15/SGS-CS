@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bit Stacker: Two's Complement Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="/css/activity-igcse-topic1-negative-numbers.css">
+</head>
+
+<body>
+
+    <div class="game-container">
+        <!-- Game Area -->
+        <div class="game-area">
+            <!-- Header -->
+            <div class="header-row">
+                <div class="col-header msb">-128</div>
+                <div class="col-header">64</div>
+                <div class="col-header">32</div>
+                <div class="col-header">16</div>
+                <div class="col-header">8</div>
+                <div class="col-header">4</div>
+                <div class="col-header">2</div>
+                <div class="col-header">1</div>
+                <div class="target-header">TARGET</div>
+            </div>
+
+            <!-- Grid -->
+            <div class="grid-layer" id="gridLayer">
+                <div class="danger-line"><div class="danger-label">SYSTEM CRITICAL LIMIT</div></div>
+                <!-- Rows will be injected here -->
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-row">
+                <div class="col-header msb">-128</div>
+                <div class="col-header">64</div>
+                <div class="col-header">32</div>
+                <div class="col-header">16</div>
+                <div class="col-header">8</div>
+                <div class="col-header">4</div>
+                <div class="col-header">2</div>
+                <div class="col-header">1</div>
+                <div class="target-header">TARGET</div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="startScreen" class="overlay">
+                <div class="title"><span class="keyword" data-def="the basic computing element that is either 0 or 1, and is formed from the words Binary digit">BIT</span> <span class="neg">STACKER</span></div>
+                <h2 style="color: var(--text-muted); margin-top: 0;">Two's Complement Edition</h2>
+                <div style="background: rgba(30,41,59,0.5); padding: 20px; border-radius: 8px; margin-bottom: 30px; max-width: 500px; text-align: center;">
+                    <p>Convert between <strong>8-<span class="keyword" data-def="the basic computing element that is either 0 or 1, and is formed from the words Binary digit">bit</span> Binary</strong> and <strong>Denary</strong> using Two's Complement.</p>
+                    <p style="color: var(--orange); font-weight: bold;">⚠️ Remember: The first <span class="keyword" data-def="the basic computing element that is either 0 or 1, and is formed from the words Binary digit">bit</span> (MSB) is -128!</p>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 200px;" onclick="game.start()">
+                    <i class="fa-solid fa-play"></i> START MISSION
+                </button>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="gameOverScreen" class="overlay hidden">
+                <h1 style="color: var(--red); font-size: 4rem; margin-bottom: 10px;">SYSTEM FAILURE</h1>
+                <p style="color: var(--red); opacity: 0.7; letter-spacing: 2px; margin-bottom: 40px;">BUFFER OVERFLOW DETECTED</p>
+
+                <div style="display: flex; gap: 20px; margin-bottom: 40px;">
+                    <div class="stat-box" style="text-align: center; width: 150px;">
+                        <div class="stat-label">Final Score</div>
+                        <div class="stat-value" id="finalScore">0</div>
+                    </div>
+                    <div class="stat-box" style="text-align: center; width: 150px;">
+                        <div class="stat-label">Level</div>
+                        <div class="stat-value" id="finalLevel">1</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px;">
+                    <button class="btn btn-primary" style="width: 180px;" onclick="game.start()">
+                        <i class="fa-solid fa-rotate-right"></i> REBOOT
+                    </button>
+                    <button class="btn btn-secondary" style="width: 180px;" onclick="window.location.reload()">
+                        <i class="fa-solid fa-xmark"></i> EXIT
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="hud-sidebar">
+            <div style="flex: 1;">
+                <div class="stat-label" style="margin-bottom: 20px;">Mission Status</div>
+
+                <div class="stat-box">
+                    <div class="stat-label" style="color: var(--cyan);">Score</div>
+                    <div class="stat-value" id="scoreDisplay">000000</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label" style="color: var(--green);">Level</div>
+                    <div class="stat-value" id="levelDisplay">1</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label" style="color: #a855f7;">Spawn Rate</div>
+                    <div class="stat-value" style="font-size: 1.2rem;" id="rateDisplay">8.0s</div>
+                </div>
+                
+                <div class="stat-box" style="border-color: var(--orange);">
+                    <div class="stat-label" style="color: var(--orange);">Logic Mode</div>
+                    <div style="font-size: 0.9rem; color: #fff;">Two's Complement<br><span style="color: var(--text-muted)">Range: -128 to 127</span></div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 20px;">
+                <button class="btn btn-secondary" onclick="game.togglePause()">
+                    <i class="fa-solid fa-pause"></i> <span id="pauseText">PAUSE</span>
+                </button>
+                <button class="btn btn-secondary" onclick="game.toggleAudio()">
+                    <i class="fa-solid fa-volume-high" id="audioIcon"></i> AUDIO
+                </button>
+                <button class="btn btn-danger" onclick="game.gameOver()">
+                    <i class="fa-solid fa-power-off"></i> TERMINATE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Numpad (Dynamic) -->
+    <div id="numpad" class="numpad-overlay hidden">
+        <button class="num-btn" onclick="game.handleInput('7')">7</button>
+        <button class="num-btn" onclick="game.handleInput('8')">8</button>
+        <button class="num-btn" onclick="game.handleInput('9')">9</button>
+        <button class="num-btn" onclick="game.handleInput('4')">4</button>
+        <button class="num-btn" onclick="game.handleInput('5')">5</button>
+        <button class="num-btn" onclick="game.handleInput('6')">6</button>
+        <button class="num-btn" onclick="game.handleInput('1')">1</button>
+        <button class="num-btn" onclick="game.handleInput('2')">2</button>
+        <button class="num-btn" onclick="game.handleInput('3')">3</button>
+        <button class="num-btn neg" onclick="game.handleInput('-')">-</button>
+        <button class="num-btn" onclick="game.handleInput('0')">0</button>
+        <button class="num-btn check" onclick="game.handleInput('CHECK')"><i class="fa-solid fa-check"></i></button>
+        <button class="num-btn del" onclick="game.handleInput('DEL')">Backspace</button>
+        <button class="num-btn del" style="background: rgba(239, 68, 68, 0.2); color: var(--red); border-color: var(--red); margin-top: 5px;" onclick="game.closeNumpad()">CLOSE</button>
+    </div>
+
+    
+    <script src="/js/activity-igcse-topic1-negative-numbers.js"></script>
+</body>
+
+</html>

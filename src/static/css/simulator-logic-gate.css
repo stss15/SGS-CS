@@ -1,0 +1,315 @@
+/* Extracted from logic-gate-simulator.html on 2025-12-14 */
+/* DO NOT EDIT - Changes should match original inline styles */
+
+        :root {
+            --bg-color: #f0f2f5;
+            --panel-bg: #ffffff;
+            --grid-color: #e1e4e8;
+            --wire-grey: #a0a0a0;
+            --wire-blue: #2196F3;
+            --wire-red: #F44336;
+            --text-color: #333;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: var(--panel-bg);
+            border-right: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            z-index: 100;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        #sidebar.collapsed {
+            transform: translateX(-100%);
+            position: absolute; /* Remove from flow so playground expands */
+            height: 100%;
+        }
+
+        /* Toggle Button */
+        #sidebar-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 200;
+            font-size: 1.2rem;
+            transition: left 0.3s ease;
+            border: 1px solid #ccc;
+        }
+
+        #sidebar-toggle:hover { background: #f9f9f9; }
+
+        /* Adjust toggle position when sidebar is open */
+        body:not(.sidebar-closed) #sidebar-toggle {
+            left: 205px; /* Inside the sidebar */
+            top: 10px;
+            width: 30px;
+            height: 30px;
+            font-size: 0.9rem;
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+
+        h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-color); margin-top: 20px; }
+        h3 { font-size: 0.9rem; margin: 20px 0 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+
+        .draggable-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .draggable-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-color: #bbb;
+        }
+
+        .icon { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+        /* Playground Area */
+        #playground {
+            flex-grow: 1;
+            position: relative;
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow: hidden;
+            transition: margin-left 0.3s ease;
+        }
+
+        body.sidebar-closed #playground {
+            margin-left: 0;
+        }
+
+        /* SVG Layer for Wires */
+        #wire-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through to nodes */
+            z-index: 1;
+        }
+        
+        /* Make paths clickable */
+        #wire-layer path {
+            pointer-events: stroke;
+            cursor: pointer;
+        }
+
+        /* Static Inputs Panel */
+        #input-panel {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            z-index: 5;
+        }
+
+        .input-slot {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border: 2px dashed #bbb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+        
+        .input-slot.occupied {
+            border: 2px solid #666;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .input-slot.occupied:active {
+            transform: scale(0.95);
+        }
+
+        .input-slot .port {
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .slot-label {
+            position: absolute;
+            top: -20px;
+            font-size: 10px;
+            color: #888;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Context menu helper for slots */
+        .input-slot:hover::after {
+            content: 'Right-click to clear';
+            position: absolute;
+            bottom: -20px;
+            font-size: 9px;
+            color: #aaa;
+            width: 150%;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .input-slot.occupied:hover::after {
+            opacity: 1;
+        }
+
+
+        /* Output Panel */
+        #output-panel {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+        }
+
+        .output-bulb {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 2px solid #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 2.5rem;
+            color: #ddd;
+            transition: all 0.3s;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .output-bulb.on {
+            background: #fff9c4;
+            color: #fbc02d;
+            box-shadow: 0 0 30px #fbc02d, inset 0 0 10px #fbc02d;
+            border-color: #fbc02d;
+        }
+
+        .output-bulb .port {
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Logic Gate Nodes in Playground */
+        .gate-node {
+            position: absolute;
+            width: 80px;
+            height: 50px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            z-index: 10;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .gate-node:active { cursor: grabbing; }
+
+        /* Ports (Connection Dots) */
+        .port {
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 50%;
+            cursor: crosshair;
+            z-index: 20;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .port:hover { background: #ddd; transform: scale(1.2); }
+        .port.wiring-target { background: #4CAF50; border-color: #2E7D32; transform: scale(1.4); }
+        
+        .port.input { position: absolute; left: -8px; }
+        .port.input-1 { top: 10px; }
+        .port.input-2 { bottom: 10px; }
+        .port.input-single { top: 50%; transform: translateY(-50%); } /* For NOT gate */
+        
+        .port.output { position: absolute; right: -8px; top: 50%; transform: translateY(-50%); }
+
+        /* Drag Ghost */
+        .ghost { opacity: 0.5; position: absolute; pointer-events: none; z-index: 100; }
+
+        /* Context Menu hint */
+        #hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-size: 0.9rem;
+            pointer-events: none;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        /* Status indicators on sensors */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        .status-dot.on { background: var(--wire-blue); box-shadow: 0 0 5px var(--wire-blue); }
+
+    

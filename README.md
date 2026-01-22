@@ -11,13 +11,14 @@ Source lives under `src/` and the compiled site lives in `public/`. Run `npm run
   - `public/css`: global theme + variants (`style.css`, `resource-style.css`, `specification.css`, `unit.css`, `toolkit.css`, `slide-deck.css`, `ks3-deck.css`, `igcse-deck.css`).
   - `public/js`: shared behaviours (`slide-deck.js`, `site.js`, `toolkit.js`).
 - `public/images`: logo and thumbnails.
-- `docs/agent`: AI-facing guides and slide/lesson templates.
+- `docs/agent`: AI-facing guides, templates, and agent changelog.
 - `meta/site-manifest.json`: generated index of templated pages (paths, titles, layouts).
 
 ## AI agent references
 - `docs/agent/AGENT_GUIDE.md`: entry point for agents working in this repo.
 - `docs/agent/igcse-slide-deck-guide.md`: deck workflow and structure/pedagogy pattern.
 - `docs/agent/build-deploy-log.md`: log every build/push to main; follow the build/deploy steps inside.
+- `docs/agent/CHANGELOG.md`: append every AI-driven change for traceability.
 - Edit source templates under `src/pages/...` (not the compiled `public/`) so CI/Pages stays in sync.
 
 ## Usage

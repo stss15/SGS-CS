@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5.1 The Internet and the WWW | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/slide-deck.css">
+</head>
+
+<body>
+    <a href="/igcse/topic5/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">5.1 The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span> and the WWW</h1>
+                        <h3 class="sub-title">Topic 5: The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span> and its Uses | The Digital Highway</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL PRACTICE -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall Topic 4 (Software) before we move on.</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What is the difference between System and Application software?</li>
+                        <li>What signal stops the CPU to handle a high-priority task?</li>
+                        <li>What is a temporary storage area for data transfer?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What is the difference between System and Application software?</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong> System Software manages hardware (OS, drivers). Application Software performs user tasks (Word, games).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What signal stops the CPU to handle a high-priority task?</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong> An Interrupt</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What is a temporary storage area for data transfer?</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong> A Buffer</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK - Using R-Stack for layered reveal -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">
+                            <p style="font-size:1.3em;">🤔 Are these two things the same?</p>
+                            <p style="font-size:1.5em; margin-top:20px;"><strong>"The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span>"</strong> vs <strong>"The <span class="keyword" data-def="a massive collection of web pages and is based on hypertext transfer protocols (http and https)">World Wide Web</span>"</strong></p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in-then-out">
+                        <div class="box" style="background: #ffebee; padding: 30px;">
+                            <p style="font-size:1.2em;">❌ Most people think they're the same thing...</p>
+                            <p class="small-text">Even news reporters say "surfing the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">internet</span>" when they mean "browsing websites"</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="box-blue" style="padding: 30px;">
+                            <p style="font-size:1.2em;">✅ They're completely different!</p>
+                            <p class="small-text">One is the <strong>road</strong>. One is what's <strong>on</strong> the road.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. INTERNET VS WWW - Progressive build with analogy -->
+            <section>
+                <section>
+                    <h2>Let's Build an Analogy</h2>
+                    <div class="fragment">
+                        <p style="font-size:1.3em;">🛣️ Think of your country's road network...</p>
+                    </div>
+                    <div class="fragment">
+                        <p style="font-size:1.1em;">The <strong>roads</strong> connect every city, town, and village.</p>
+                    </div>
+                    <div class="fragment">
+                        <p style="font-size:1.1em;">But the roads themselves aren't the <strong>shops and services</strong>.</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong>The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span> = The Roads</strong> (physical infrastructure)</p>
+                        <p><strong>The WWW = The Shops</strong> (services that use the roads)</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: The Details</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-network-wired"></i> What It Is</h4>
+                            <p class="small-text fragment">A worldwide collection of <strong>INTERconnected NETworks</strong></p>
+                            <p class="small-text fragment">The <strong>physical infrastructure</strong></p>
+                            <p class="small-text fragment">Cables, routers, satellites, data centres</p>
+                        </div>
+                        <div class="box-blue">
+                            <h4><i class="fa-solid fa-lightbulb"></i> Did You Know?</h4>
+                            <p class="small-text fragment">99% of international data travels through undersea cables!</p>
+                            <p class="small-text fragment">There are over 400 submarine cables totaling 1.3 million km</p>
+                            <p class="small-text fragment">That's enough to wrap around Earth 32 times 🌍</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>The <span class="keyword" data-def="a massive collection of web pages and is based on hypertext transfer protocols (http and https)">World Wide Web</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-globe"></i> What It Is</h4>
+                            <p class="small-text fragment">A <strong>service</strong> that runs ON the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span></p>
+                            <p class="small-text fragment">A collection of <strong>web pages</strong></p>
+                            <p class="small-text fragment">Accessed via <strong>browsers</strong> using HTTP/HTTPS</p>
+                        </div>
+                        <div class="box-blue">
+                            <h4><i class="fa-solid fa-lightbulb"></i> Did You Know?</h4>
+                            <p class="small-text fragment">Tim Berners-Lee invented the WWW in 1989</p>
+                            <p class="small-text fragment">The first website is still online!</p>
+                            <p class="small-text fragment"><code>info.cern.ch</code> - try visiting it!</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Quick Check</h3>
+                    <div class="question-box">
+                        <p>Email, Video Calls, and File Transfer use the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span>.</p>
+                        <p>Are they part of the <span class="keyword" data-def="a massive collection of web pages and is based on hypertext transfer protocols (http and https)">World Wide Web</span>?</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong>No!</strong> They're separate services that also use the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span>.</p>
+                        <p class="small-text">The WWW is just ONE of many services on the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span>!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3><span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span> vs WWW</h3>
+                    <img src="5.1 images/internet vs www.png" class="r-stretch" alt="Internet vs WWW Diagram"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+            </section>
+
+            <!-- 5. URLs - Auto-animate for progressive reveal -->
+            <section>
+                <section data-auto-animate>
+                    <h2>Finding a Web Page</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em;">How do we find a specific page among billions?</p>
+                    </div>
+                </section>
+
+                <section data-auto-animate>
+                    <h2>Finding a Web Page</h2>
+                    <div class="box" style="margin-bottom:20px;">
+                        <p>Every page has a unique <strong>address</strong> — like a postal address for computers.</p>
+                    </div>
+                    <div class="box-blue">
+                        <p style="font-family: monospace; font-size: 1.5em;">https://www.example.com/page</p>
+                    </div>
+                </section>
+
+                <section data-auto-animate>
+                    <h2>Finding a Web Page</h2>
+                    <div class="box" style="margin-bottom:20px;">
+                        <p>This is called a <strong>URL</strong> — Uniform Resource Locator</p>
+                    </div>
+                    <div class="box-blue">
+                        <p style="font-family: monospace; font-size: 1.5em;">
+                            <span style="color: #ff6b6b;">https</span>://<span style="color: #4ecdc4;">www</span>.<span style="color: #ffe66d;">example</span>.<span style="color: #95e1d3;">com</span><span style="color: #f38181;">/page</span>
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: URL Parts</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Anatomy of a URL</h3>
+                    <img src="5.1 images/anatomy of a url.png" class="r-stretch" alt="URL Breakdown"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>URL Components</h3>
+                    <div style="margin-bottom:20px; padding: 20px; background: #2d2d2d; border-radius: 10px; text-align: center;">
+                        <p style="font-family: monospace; font-size: 1.1em; color: white; margin: 0; word-break: break-all;">
+                            <span style="color: #ff6b6b;">https</span>://<span style="color: #4ecdc4;">www</span>.<span style="color: #ffe66d;">hoddereducation</span>.<span style="color: #95e1d3;">co.uk</span><span style="color: #f38181;">/ict</span>
+                        </p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                        <div class="box fragment" style="border-left: 4px solid #ff6b6b; padding: 10px;">
+                            <p style="margin:0; font-size:0.8em;"><i class="fa-solid fa-lock"></i> <strong>Protocol</strong></p>
+                            <p style="margin:5px 0 0 0; font-size:0.7em; color: #ff6b6b;">https</p>
+                        </div>
+                        <div class="box fragment" style="border-left: 4px solid #4ecdc4; padding: 10px;">
+                            <p style="margin:0; font-size:0.8em;"><i class="fa-solid fa-globe"></i> <strong>Host</strong></p>
+                            <p style="margin:5px 0 0 0; font-size:0.7em; color: #4ecdc4;">www</p>
+                        </div>
+                        <div class="box fragment" style="border-left: 4px solid #ffe66d; padding: 10px;">
+                            <p style="margin:0; font-size:0.8em;"><i class="fa-solid fa-building"></i> <strong>Domain</strong></p>
+                            <p style="margin:5px 0 0 0; font-size:0.7em; color: #ffe66d;">hoddereducation</p>
+                        </div>
+                        <div class="box fragment" style="border-left: 4px solid #95e1d3; padding: 10px;">
+                            <p style="margin:0; font-size:0.8em;"><i class="fa-solid fa-flag"></i> <strong>TLD</strong></p>
+                            <p style="margin:5px 0 0 0; font-size:0.7em; color: #95e1d3;">.co.uk</p>
+                        </div>
+                        <div class="box fragment" style="border-left: 4px solid #f38181; padding: 10px;">
+                            <p style="margin:0; font-size:0.8em;"><i class="fa-solid fa-folder"></i> <strong>Path</strong></p>
+                            <p style="margin:5px 0 0 0; font-size:0.7em; color: #f38181;">/ict</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 6. HTTP VS HTTPS - R-Stack myth busting -->
+            <section>
+                <section>
+                    <h2>The Padlock Mystery</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em;">🔒 Why do some websites show a padlock in the address bar?</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: HTTP vs HTTPS</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>HTTP vs HTTPS</h3>
+                    <img src="5.1 images/http vs https.png" class="r-stretch" alt="HTTP vs HTTPS Diagram"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>The Postcard vs The Safe</h3>
+                    <div class="r-stack">
+                        <div class="fragment fade-in-then-out">
+                            <div class="cols">
+                                <div class="box">
+                                    <h4><i class="fa-solid fa-envelope-open"></i> HTTP</h4>
+                                    <p style="font-size:4em;">📬</p>
+                                    <p>Like sending a <strong>postcard</strong></p>
+                                    <p class="small-text">Anyone handling it can read your message</p>
+                                </div>
+                                <div class="box-blue">
+                                    <h4><i class="fa-solid fa-lock"></i> HTTPS</h4>
+                                    <p style="font-size:4em;">📦🔒</p>
+                                    <p>Like sending a <strong>locked box</strong></p>
+                                    <p class="small-text">Only the recipient can open it</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="cols">
+                                <div class="box" style="background: #ffebee;">
+                                    <h4><i class="fa-solid fa-envelope-open"></i> HTTP</h4>
+                                    <p class="small-text"><strong>Hypertext Transfer Protocol</strong></p>
+                                    <p class="small-text">Data sent in <strong>plain text</strong></p>
+                                    <p class="small-text">Can be intercepted and read</p>
+                                    <p class="small-text">⚠️ Never enter passwords on HTTP sites!</p>
+                                </div>
+                                <div class="box-blue">
+                                    <h4><i class="fa-solid fa-lock"></i> HTTPS</h4>
+                                    <p class="small-text"><strong>HTTP + Secure</strong></p>
+                                    <p class="small-text">Uses <strong>SSL/TLS encryption</strong></p>
+                                    <p class="small-text">Data is scrambled in transit</p>
+                                    <p class="small-text">✅ Look for the padlock!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Quick Check</h3>
+                    <div class="question-box">
+                        <p>You're about to enter your card details on a shopping site.</p>
+                        <p>The URL starts with <code>http://</code> (no 's').</p>
+                        <p>Should you proceed?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px; background: #ffebee;">
+                        <p><strong>❌ NO!</strong> Never enter sensitive data on HTTP sites.</p>
+                        <p class="small-text">Your card details would be sent in plain text.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 7. WEB BROWSERS -->
+            <section>
+                <section>
+                    <h2>The Translator</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em;">When you visit a website, what actually happens?</p>
+                    </div>
+                    <div class="fragment">
+                        <p>Servers send you <strong>code</strong> (HTML, CSS, JavaScript)</p>
+                    </div>
+                    <div class="fragment">
+                        <p>But you see beautiful, interactive <strong>pages</strong></p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong>The browser is the translator!</strong></p>
+                        <p class="small-text">It interprets code and renders what you see.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: Browser Features</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Function of a Web Browser</h3>
+                    <img src="5.1 images/function of a web browser.png" class="r-stretch" alt="Web Browser Functions"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Browser Features You Use Daily</h3>
+                    <div class="cols-3">
+                        <div class="box fragment fade-up">
+                            <h4><i class="fa-solid fa-house"></i></h4>
+                            <p><strong>Home Page</strong></p>
+                            <p class="small-text">Your starting point</p>
+                        </div>
+                        <div class="box fragment fade-up">
+                            <h4><i class="fa-solid fa-bookmark"></i></h4>
+                            <p><strong>Bookmarks</strong></p>
+                            <p class="small-text">Save favourites</p>
+                        </div>
+                        <div class="box fragment fade-up">
+                            <h4><i class="fa-solid fa-clock-rotate-left"></i></h4>
+                            <p><strong>History</strong></p>
+                            <p class="small-text">Where you've been</p>
+                        </div>
+                        <div class="box fragment fade-up">
+                            <h4><i class="fa-solid fa-window-maximize"></i></h4>
+                            <p><strong>Tabs</strong></p>
+                            <p class="small-text">Multiple pages</p>
+                        </div>
+                        <div class="box fragment fade-up">
+                            <h4><i class="fa-solid fa-database"></i></h4>
+                            <p><strong>Cache</strong></p>
+                            <p class="small-text">Speeds loading</p>
+                        </div>
+                        <div class="box fragment fade-up">
+                            <h4><i class="fa-solid fa-puzzle-piece"></i></h4>
+                            <p><strong>Extensions</strong></p>
+                            <p class="small-text">Add features</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 8. DNS - Step by step journey -->
+            <section>
+                <section>
+                    <h2>The Phone Book of the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em;">You type <code>www.google.com</code></p>
+                        <p style="font-size:1.2em;">But computers only understand numbers like <code>142.250.191.14</code></p>
+                        <p style="font-size:1.2em;">How does this translation happen?</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong>DNS = Domain Name System</strong></p>
+                        <p class="small-text">Like a phone book: converts names → numbers</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Step-by-Step: The DNS Journey</span>
+                    </div>
+                </section>
+
+                <section data-background="#e6f0fa">
+                    <h3>Step 1: You Type a URL</h3>
+                    <div class="box">
+                        <p style="font-size:1.5em;">🧑‍💻 → <code>www.google.com</code></p>
+                        <p class="small-text">Your browser doesn't know where this is!</p>
+                        <p class="small-text">It needs to find the <strong>IP address</strong></p>
+                    </div>
+                </section>
+
+                <section data-background="#e6f0fa">
+                    <h3>Step 2: Ask the DNS</h3>
+                    <div class="box-blue">
+                        <p style="font-size:1.2em;">🖥️ → 📖 "Where is google.com?"</p>
+                        <p class="small-text">Browser sends request to a <strong>DNS Server</strong></p>
+                        <p class="small-text">The DNS server is like a phone book</p>
+                    </div>
+                </section>
+
+                <section data-background="#e6f0fa">
+                    <h3>Step 3: DNS Lookup</h3>
+                    <div class="box">
+                        <p style="font-size:1.2em;">📖 Searching...</p>
+                        <p class="small-text"><code>google.com</code> → <code>142.250.191.14</code></p>
+                        <p class="small-text fragment">If it doesn't know, it asks <em>another</em> DNS server</p>
+                    </div>
+                </section>
+
+                <section data-background="#e6f0fa">
+                    <h3>Step 4: IP Returned</h3>
+                    <div class="box-blue">
+                        <p style="font-size:1.2em;">📖 → 🖥️ "It's at 142.250.191.14!"</p>
+                        <p class="small-text">DNS sends the IP address back to your browser</p>
+                    </div>
+                </section>
+
+                <section data-background="#e6f0fa">
+                    <h3>Step 5: Connect & Load</h3>
+                    <div class="box">
+                        <p style="font-size:1.2em;">🖥️ → 🌐 Request sent to IP address</p>
+                        <p class="small-text">Server sends HTML files back</p>
+                        <p class="small-text">Browser renders the page</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong>⚡ All of this happens in milliseconds!</strong></p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Quick Check</h3>
+                    <div class="question-box">
+                        <p>What does DNS convert?</p>
+                        <p>A) IP address → URL</p>
+                        <p>B) URL → IP address</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong>B) URL → IP address</strong></p>
+                        <p class="small-text">Human-readable → Machine-readable</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 9. COOKIES -->
+            <section>
+                <section>
+                    <h2>The Website's Memory</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em;">🛒 You add items to your basket and close the browser.</p>
+                        <p style="font-size:1.2em;">You come back later — they're still there!</p>
+                        <p style="font-size:1.2em;">How does the website remember?</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong><span class="keyword" data-def="a text file sent from a website to a user’s browser; it is used to remember user preferences each time they visit the website">Cookies</span>!</strong> Small text files stored on YOUR computer.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: <span class="keyword" data-def="a text file sent from a website to a user’s browser; it is used to remember user preferences each time they visit the website">Cookie</span> Types</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3><span class="keyword" data-def="a text file sent from a website to a user’s browser; it is used to remember user preferences each time they visit the website">Cookies</span> Explained</h3>
+                    <img src="5.1 images/cookies.png" class="r-stretch" alt="Cookies Diagram"
+                        style="border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Two Types of <span class="keyword" data-def="a text file sent from a website to a user’s browser; it is used to remember user preferences each time they visit the website">Cookies</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-clock"></i> <span class="keyword" data-def="a cookie that is stored temporarily on a computer; it is deleted when the browser is closed or the website session ends">Session Cookies</span></h4>
+                            <p style="font-size:3em;">📝</p>
+                            <p class="small-text fragment"><strong>Temporary</strong> — like a sticky note</p>
+                            <p class="small-text fragment">Stored in <strong>RAM</strong></p>
+                            <p class="small-text fragment">Deleted when browser closes</p>
+                            <p class="small-text fragment"><em>Example: Shopping basket</em></p>
+                        </div>
+                        <div class="box-blue">
+                            <h4><i class="fa-solid fa-floppy-disk"></i> <span class="keyword" data-def="a cookie that is stored on the user’s hard drive and only deleted when the expiry date is reached or the cookie is deleted by the user">Persistent Cookies</span></h4>
+                            <p style="font-size:3em;">📓</p>
+                            <p class="small-text fragment"><strong>Permanent</strong> — like a diary entry</p>
+                            <p class="small-text fragment">Stored on <strong>Hard Drive</strong></p>
+                            <p class="small-text fragment">Remain until expiry or deleted</p>
+                            <p class="small-text fragment"><em>Example: "Remember Me" login</em></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>What Are <span class="keyword" data-def="a text file sent from a website to a user’s browser; it is used to remember user preferences each time they visit the website">Cookies</span> Used For?</h3>
+                    <div class="cols-3">
+                        <div class="box fragment highlight-current-blue">
+                            <h4><i class="fa-solid fa-key"></i></h4>
+                            <p><strong>Logins</strong></p>
+                            <p class="small-text">Remember you</p>
+                        </div>
+                        <div class="box fragment highlight-current-blue">
+                            <h4><i class="fa-solid fa-cart-shopping"></i></h4>
+                            <p><strong>Shopping</strong></p>
+                            <p class="small-text">Track basket</p>
+                        </div>
+                        <div class="box fragment highlight-current-blue">
+                            <h4><i class="fa-solid fa-sliders"></i></h4>
+                            <p><strong>Preferences</strong></p>
+                            <p class="small-text">Language, theme</p>
+                        </div>
+                        <div class="box fragment highlight-current-blue">
+                            <h4><i class="fa-solid fa-bullseye"></i></h4>
+                            <p><strong>Tracking</strong></p>
+                            <p class="small-text">Targeted ads</p>
+                        </div>
+                        <div class="box fragment highlight-current-blue">
+                            <h4><i class="fa-solid fa-chart-line"></i></h4>
+                            <p><strong>Analytics</strong></p>
+                            <p class="small-text">Usage stats</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Connection to Topic 3</h3>
+                    <div class="box">
+                        <p><strong>Remember RAM vs Hard Drive?</strong></p>
+                        <p class="small-text fragment"><span class="keyword" data-def="a cookie that is stored temporarily on a computer; it is deleted when the browser is closed or the website session ends">Session cookies</span> = RAM (volatile, temporary)</p>
+                        <p class="small-text fragment"><span class="keyword" data-def="a cookie that is stored on the user’s hard drive and only deleted when the expiry date is reached or the cookie is deleted by the user">Persistent cookies</span> = Hard Drive (non-volatile, permanent)</p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p><strong>This is why <span class="keyword" data-def="a cookie that is stored temporarily on a computer; it is deleted when the browser is closed or the website session ends">session cookies</span> disappear when you close the browser!</strong></p>
+                        <p class="small-text">RAM loses data when power is cut.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 10. TRUE/FALSE MISCONCEPTION CHECK -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">True or False? Test your understanding!</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span> and the <span class="keyword" data-def="a massive collection of web pages and is based on hypertext transfer protocols (http and https)">World Wide Web</span> are the same thing."</li>
+                        <li>"<span class="keyword" data-def="a cookie that is stored temporarily on a computer; it is deleted when the browser is closed or the website session ends">Session cookies</span> are stored on your hard drive forever."</li>
+                        <li>"DNS converts an IP address into a URL."</li>
+                        <li>"HTTP is more secure than HTTPS."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Statement 1</h3>
+                    <div class="question-box">"The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span> and the <span class="keyword" data-def="a massive collection of web pages and is based on hypertext transfer protocols (http and https)">World Wide Web</span> are the same thing."</div>
+                    <div class="fragment box" style="background: #ffebee;">
+                        <p><strong>❌ FALSE</strong></p>
+                        <hr>
+                        <p class="small-text">The <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span> is the physical infrastructure (cables, routers).</p>
+                        <p class="small-text">The WWW is a service that runs ON the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span>.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Statement 2</h3>
+                    <div class="question-box">"<span class="keyword" data-def="a cookie that is stored temporarily on a computer; it is deleted when the browser is closed or the website session ends">Session cookies</span> are stored on your hard drive forever."</div>
+                    <div class="fragment box" style="background: #ffebee;">
+                        <p><strong>❌ FALSE</strong></p>
+                        <hr>
+                        <p class="small-text"><span class="keyword" data-def="a cookie that is stored temporarily on a computer; it is deleted when the browser is closed or the website session ends">Session cookies</span> are stored in RAM (memory).</p>
+                        <p class="small-text">They're deleted when the browser closes.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Statement 3</h3>
+                    <div class="question-box">"DNS converts an IP address into a URL."</div>
+                    <div class="fragment box" style="background: #ffebee;">
+                        <p><strong>❌ FALSE</strong></p>
+                        <hr>
+                        <p class="small-text">It's the other way around!</p>
+                        <p class="small-text">DNS converts URL (human-readable) → IP address (machine-readable)</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Statement 4</h3>
+                    <div class="question-box">"HTTP is more secure than HTTPS."</div>
+                    <div class="fragment box" style="background: #ffebee;">
+                        <p><strong>❌ FALSE</strong></p>
+                        <hr>
+                        <p class="small-text">HTTPS is secure (the 'S' stands for Secure!).</p>
+                        <p class="small-text">HTTP sends data in plain text — anyone can read it.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🌐 <strong><span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span></strong> = Physical infrastructure</p>
+                        <p class="small-text">🕸️ <strong>WWW</strong> = Service on the <span class="keyword" data-def="the world-wide interconnection of networks; the internet makes use of TCP and IP protocols">Internet</span></p>
+                        <p class="small-text">🔗 <strong>URL</strong> = Address of a web page</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🔒 <strong>HTTPS</strong> = Encrypted, secure</p>
+                        <p class="small-text">📖 <strong>DNS</strong> = URL → IP translator</p>
+                        <p class="small-text">🍪 <strong><span class="keyword" data-def="a text file sent from a website to a user’s browser; it is used to remember user preferences each time they visit the website">Cookies</span></strong> = Website memory</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Coming up in 5.2:</strong> <span class="keyword" data-def="currency (a system of money) that exists in electronic form only; it has no physical form and is essentially data on a database">Digital Currency</span> & <span class="keyword" data-def="a decentralised database where all transactions are stored; it consists of a number of interconnected computers but not a central server">Blockchain</span></p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    <script src="/js/slide-deck.js"></script>
+
+</body>
+
+</html>

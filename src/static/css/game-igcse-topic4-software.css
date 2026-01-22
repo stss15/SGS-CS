@@ -1,0 +1,344 @@
+/* Extracted from software_game.html on 2025-12-14 */
+/* DO NOT EDIT - Changes should match original inline styles */
+
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #050505;
+            font-family: 'Rajdhani', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* UI OVERLAY */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .hud-text {
+            position: absolute;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px currentColor;
+            color: white;
+        }
+
+        #score-box {
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #00f3ff;
+        }
+
+        #lives-box {
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #ff0055;
+        }
+
+        #wave-box {
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+            color: #ffe600;
+        }
+
+        #timer-box {
+            top: 50px;
+            width: 100%;
+            text-align: center;
+            font-size: 32px;
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
+        }
+
+        #progress-box {
+            top: 85px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* POWERUP NOTIFICATION */
+        #powerup-bar-container {
+            display: none;
+            position: absolute;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        #powerup-bar {
+            width: 100%;
+            height: 100%;
+            background: #0f0;
+            border-radius: 5px;
+            transition: width 0.1s linear;
+        }
+
+        #powerup-text {
+            text-align: center;
+            color: #0f0;
+            font-size: 14px;
+            margin-top: -20px;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        /* SCREENS */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 10, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #fff;
+            text-shadow: 0 0 20px #00f3ff;
+            text-transform: uppercase;
+            font-style: italic;
+        }
+
+        p {
+            color: #aaa;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid #00f3ff;
+            color: #00f3ff;
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            margin: 10px;
+            transition: 0.1s;
+            border-radius: 8px;
+        }
+
+        .btn:active {
+            background: #00f3ff;
+            color: #000;
+        }
+
+        /* REVISION LIST */
+        #revision-container {
+            max-height: 40vh;
+            overflow-y: auto;
+            width: 80%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+            display: none;
+        }
+
+        .rev-item {
+            border-bottom: 1px solid #444;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        .rev-q {
+            color: #00f3ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .rev-correct {
+            color: #0f0;
+        }
+
+        .rev-wrong {
+            color: #f05;
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+
+        /* PAUSE SCREEN */
+        #pause-screen {
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 40;
+        }
+
+        #pause-screen h1 {
+            color: #ffe600;
+            text-shadow: 0 0 20px #ffe600;
+        }
+
+        /* JOYSTICKS */
+        .joystick-zone {
+            position: absolute;
+            bottom: 40px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            pointer-events: auto;
+            display: none;
+        }
+
+        .joystick-knob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            margin-left: -25px;
+            margin-top: -25px;
+            border-radius: 50%;
+            background: rgba(0, 243, 255, 0.5);
+            border: 2px solid #fff;
+            transform: translate(0, 0);
+            pointer-events: none;
+        }
+
+        #stick-left {
+            left: 30px;
+        }
+
+        #stick-right {
+            right: 30px;
+            border-color: rgba(255, 0, 85, 0.3);
+        }
+
+        #stick-right .joystick-knob {
+            background: rgba(255, 0, 85, 0.5);
+        }
+
+        /* QUIZ */
+        #quiz-screen {
+            display: none;
+            z-index: 100;
+        }
+
+        #quiz-box {
+            background: #000;
+            border: 2px solid #00f3ff;
+            padding: 20px;
+            width: 85%;
+            max-width: 600px;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
+        }
+
+        .quiz-opt {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #111;
+            border: 1px solid #444;
+            color: #fff;
+            text-align: left;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .quiz-opt.correct {
+            background: #00ff00;
+            color: #000;
+            border-color: #00ff00;
+        }
+
+        .quiz-opt.wrong {
+            background: #ff0000;
+            border-color: #ff0000;
+        }
+
+        /* ROTATE MSG */
+        #rotate-msg {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: #00f3ff;
+            z-index: 999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        /* MOBILE CONTROLS */
+        .mobile-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+            /* Shown via JS in Mobile Mode */
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .mobile-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00f3ff;
+            color: #00f3ff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-left: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+
+        .mobile-btn:active {
+            background: #00f3ff;
+            color: #000;
+        }
+    

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipe Scenarios - Online Behaviour</title>
+    <link rel="stylesheet" href="/css/activity-online-behaviour.css">
+    <link rel="stylesheet" href="/css/standalone-nav.css">
+
+</head>
+
+<body>
+    <div class="standalone-nav" aria-label="Standalone navigation">
+        <a class="standalone-nav__link" href="activity3.html">← Back</a>
+        <a class="standalone-nav__link standalone-nav__link--home" href="/index.html">🏠 Home</a>
+    </div>
+    <!-- Key Side Panel (during game) -->
+    <div id="key-panel">
+        <div class="key-panel-inner">
+            <div class="key-panel-header">
+                <span class="icon">🎯</span>
+                <h3>Swipe Guide</h3>
+            </div>
+            <div class="key-panel-items">
+                <div class="key-panel-item left">
+                    <div class="arrow">←</div>
+                    <div class="text">
+                        <div class="title">Good & Use Your Name</div>
+                        <div class="desc">No need to hide who you are</div>
+                    </div>
+                </div>
+                <div class="key-panel-item right">
+                    <div class="arrow">→</div>
+                    <div class="text">
+                        <div class="title">Good but Stay Anonymous</div>
+                        <div class="desc">Better to use a nickname</div>
+                    </div>
+                </div>
+                <div class="key-panel-item up">
+                    <div class="arrow">↑</div>
+                    <div class="text">
+                        <div class="title">It Depends…</div>
+                        <div class="desc">This one is complicated</div>
+                    </div>
+                </div>
+                <div class="key-panel-item down">
+                    <div class="arrow">↓</div>
+                    <div class="text">
+                        <div class="title">Not OK Online</div>
+                        <div class="desc">This shouldn't happen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Modal (shown when game starts) -->
+    <div class="key-modal-overlay" id="key-modal-overlay">
+        <div class="key-modal">
+            <h2>🎯 How to Sort</h2>
+            <p class="modal-subtitle">Swipe or tap the buttons to categorise each action</p>
+
+            <div class="key-modal-items">
+                <div class="key-modal-item left">
+                    <div class="arrow-icon">←</div>
+                    <div class="item-text">
+                        <div class="item-title">Good & Use Your Name</div>
+                        <div class="item-desc">This is good — no need to hide who you are.</div>
+                    </div>
+                </div>
+                <div class="key-modal-item right">
+                    <div class="arrow-icon">→</div>
+                    <div class="item-text">
+                        <div class="item-title">Good but Stay Anonymous</div>
+                        <div class="item-desc">This is fine — but better to use a nickname.</div>
+                    </div>
+                </div>
+                <div class="key-modal-item up">
+                    <div class="arrow-icon">↑</div>
+                    <div class="item-text">
+                        <div class="item-title">It Depends…</div>
+                        <div class="item-desc">This one is complicated — you decide.</div>
+                    </div>
+                </div>
+                <div class="key-modal-item down">
+                    <div class="arrow-icon">↓</div>
+                    <div class="item-text">
+                        <div class="item-title">Not OK Online</div>
+                        <div class="item-desc">This behaviour shouldn't happen.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="start-btn" id="start-playing-btn">Start Playing →</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Instructions Screen -->
+        <div id="instructions-screen" class="screen active">
+            <div class="instructions-box">
+                <h1>🎴 Swipe Scenarios</h1>
+                <p class="subtitle">An Online Behaviour Activity</p>
+
+                <div class="step-indicator">
+                    <div class="step-dot active" data-step="0"></div>
+                    <div class="step-dot" data-step="1"></div>
+                    <div class="step-dot" data-step="2"></div>
+                    <div class="step-dot" data-step="3"></div>
+                    <div class="step-dot" data-step="4"></div>
+                </div>
+
+                <div class="step-content" id="step-content"></div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="prev-btn" style="display: none;">← Back</button>
+                    <button class="btn btn-primary" id="next-btn">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text">Card <span id="current-card-num">1</span> of <span id="total-cards">16</span>
+                </p>
+            </div>
+
+            <div class="game-area">
+                <div class="card-with-controls">
+                    <div class="control-group up">
+                        <button class="dir-btn up" id="btn-up" disabled>
+                            <span class="arrow">↑</span>
+                        </button>
+                    </div>
+
+                    <div class="control-group left">
+                        <button class="dir-btn left" id="btn-left" disabled>
+                            <span class="arrow">←</span>
+                        </button>
+                    </div>
+
+                    <div class="card-container" id="card-container">
+                        <div class="card" id="current-card-element">
+                            <div class="card-face card-front">
+                                <div class="card-header">
+                                    <span class="card-app" id="card-app">App</span>
+                                    <span class="card-type">Scenario</span>
+                                </div>
+                                <div class="card-content">
+                                    <h3>📍 The Situation</h3>
+                                    <p id="card-front-text">Loading...</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="flip-hint">👆 Tap to flip</span>
+                                </div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-header">
+                                    <span class="card-app" id="card-app-back">App</span>
+                                    <span class="card-type">Action</span>
+                                </div>
+                                <div class="card-content">
+                                    <h3>⚡ What They Did</h3>
+                                    <p id="card-back-text">Loading...</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="swipe-hint">✓ Now choose a direction!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group right">
+                        <button class="dir-btn right" id="btn-right" disabled>
+                            <span class="arrow">→</span>
+                        </button>
+                    </div>
+
+                    <div class="control-group down">
+                        <button class="dir-btn down" id="btn-down" disabled>
+                            <span class="arrow">↓</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pile-bar">
+                <div class="pile-btn left">
+                    <span class="count" id="pile-left">0</span>
+                    <span class="label">Good & Use Your Name</span>
+                </div>
+                <div class="pile-btn up">
+                    <span class="count" id="pile-up">0</span>
+                    <span class="label">It Depends…</span>
+                </div>
+                <div class="pile-btn down">
+                    <span class="count" id="pile-down">0</span>
+                    <span class="label">Not OK Online</span>
+                </div>
+                <div class="pile-btn right">
+                    <span class="count" id="pile-right">0</span>
+                    <span class="label">Good but Stay Anonymous</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-layout">
+                <div class="results-header">
+                    <h1>🎉 You've Finished!</h1>
+                    <p>Click a category below to view your sorted cards</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <div class="tab down active" data-tab="down">
+                            <span class="tab-arrow">↓</span>
+                            <span class="tab-count" id="tab-count-down">0</span>
+                            <span class="tab-label">Not OK Online</span>
+                        </div>
+                        <div class="tab left" data-tab="left">
+                            <span class="tab-arrow">←</span>
+                            <span class="tab-count" id="tab-count-left">0</span>
+                            <span class="tab-label">Good & Use Your Name</span>
+                        </div>
+                        <div class="tab right" data-tab="right">
+                            <span class="tab-arrow">→</span>
+                            <span class="tab-count" id="tab-count-right">0</span>
+                            <span class="tab-label">Good but Stay Anonymous</span>
+                        </div>
+                        <div class="tab up" data-tab="up">
+                            <span class="tab-arrow">↑</span>
+                            <span class="tab-count" id="tab-count-up">0</span>
+                            <span class="tab-label">It Depends…</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="tab-content-container">
+                    <div class="tab-content down active" id="content-down">
+                        <div class="tab-content-header">
+                            <h2>↓ Not OK Online</h2>
+                            <span class="description">This behaviour shouldn’t happen.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-down"></div>
+                    </div>
+                    <div class="tab-content left" id="content-left">
+                        <div class="tab-content-header">
+                            <h2>← Good & Use Your Name</h2>
+                            <span class="description">This is good — no need to hide who you are.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-left"></div>
+                    </div>
+                    <div class="tab-content right" id="content-right">
+                        <div class="tab-content-header">
+                            <h2>→ Good but Stay Anonymous</h2>
+                            <span class="description">This is fine — but better to use a nickname.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-right"></div>
+                    </div>
+                    <div class="tab-content up" id="content-up">
+                        <div class="tab-content-header">
+                            <h2>↑ It Depends…</h2>
+                            <span class="description">This one is complicated — you decide.</span>
+                        </div>
+                        <div class="cards-scroll" id="cards-up"></div>
+                    </div>
+                </div>
+
+                <!-- Written Work Toggle -->
+                <div class="written-work-toggle">
+                    <button class="toggle-btn" id="toggle-written-work">
+                        📝 View Written Work Instructions
+                        <span class="chevron">▼</span>
+                    </button>
+                </div>
+
+                <div class="restart-section">
+                    <button class="btn btn-secondary restart-btn" id="restart-btn">🔄 Start Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Written Work Overlay -->
+        <div class="written-work-overlay" id="written-work-overlay">
+            <div class="written-work-panel">
+                <button class="close-btn" id="close-written-work">✕</button>
+                <h2>📝 Exercise Book Tasks</h2>
+
+                <div class="task-list">
+                    <div class="task not-ok">
+                        <div class="task-header">
+                            <span class="task-number">1</span>
+                            <span class="task-title">From "Not OK Online" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>one card</strong> from your "Not OK Online" pile and
+                            explain
+                            why this behaviour is never acceptable.</p>
+                        <div class="task-prompts">
+                            <p>Write about:</p>
+                            <ul>
+                                <li>What makes this behaviour harmful or wrong?</li>
+                                <li>Who could be hurt by this action?</li>
+                                <li>Does it matter if it was done anonymously or not? Why?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="task real-you">
+                        <div class="task-header">
+                            <span class="task-number">2</span>
+                            <span class="task-title">From "Good & Use Your Name" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>one card</strong> from your "Good & Use Your Name"
+                            pile.</p>
+                        <div class="task-prompts">
+                            <p>Write about:</p>
+                            <ul>
+                                <li>Why is this behaviour OK or even positive?</li>
+                                <li>Why is it good to use your real identity here?</li>
+                                <li>What does being yourself add to this situation?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="task hidden">
+                        <div class="task-header">
+                            <span class="task-number">3</span>
+                            <span class="task-title">From "Good but Stay Anonymous" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>one card</strong> from your "Good but Stay Anonymous"
+                            pile.
+                        </p>
+                        <div class="task-prompts">
+                            <p>Write about:</p>
+                            <ul>
+                                <li>Why is this behaviour OK?</li>
+                                <li>Why does staying anonymous make sense here?</li>
+                                <li>What are you protecting by not using your real name?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="task not-sure">
+                        <div class="task-header">
+                            <span class="task-number">4</span>
+                            <span class="task-title">From "It Depends…" pile</span>
+                        </div>
+                        <p class="task-description">Choose <strong>3-4 cards</strong> from your "It Depends…" pile.
+                            These
+                            are the tricky ones!</p>
+                        <div class="task-prompts">
+                            <p>For each card, write about:</p>
+                            <ul>
+                                <li>What makes this situation complicated or hard to judge?</li>
+                                <li>What arguments are there for it being OK? What about not OK?</li>
+                                <li>Should it be done publicly, anonymously, or not at all?</li>
+                                <li>What extra information would help you decide?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/activity-online-behaviour.js"></script>
+</body>
+
+</html>

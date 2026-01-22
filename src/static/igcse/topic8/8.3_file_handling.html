@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>8.3 File Handling | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/slide-deck.css">
+
+</head>
+
+<body>
+    <a href="/igcse/topic8/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo"
+        onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">8.3 <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span> Handling</h1>
+                        <h3 class="sub-title">Saving Data Permanently</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (8.2)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What is an <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span>?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">A structure storing multiple values of the same type</p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> How do you access element 5 of <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> "Names"?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);"><code>Names[5]</code></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="r-stack">
+                        <div class="fragment fade-in-then-out">
+                            <div class="question-box">
+                                <p style="font-size:1.2em; margin:0;">What happens to your data when the program ends?</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box" style="background: #ffebee; padding: 30px;">
+                                <p class="small-text" style="margin:0;">All <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">variables</span> and <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span> are stored in <strong>RAM</strong>.</p>
+                                <p class="small-text" style="margin-top:10px;">RAM is <strong>volatile</strong> — it loses everything when power is off!</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box-blue" style="padding: 30px;">
+                                <p class="small-text"><strong>✅ Solution:</strong> Save data to <strong><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">files</span></strong> on permanent storage (hard drive, SSD).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">How <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> handling works</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">Files</span> vs <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">Variables</span></h3>
+                    <div class="cols">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-memory"></i> <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">Variables</span> (RAM)</h4>
+                            <ul class="small-text">
+                                <li>Fast access</li>
+                                <li>Temporary</li>
+                                <li>Lost when program ends</li>
+                            </ul>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-file"></i> <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">Files</span> (Storage)</h4>
+                            <ul class="small-text">
+                                <li>Slower access</li>
+                                <li>Permanent</li>
+                                <li>Kept after program ends</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Examples:</strong> High scores, user settings, saved games, documents</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-eraser"></i> WRITE Can Delete Old Data</h4>
+                        <p class="small-text fragment">Opening a <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> for <strong>WRITE</strong> usually overwrites the existing <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>.</p>
+                        <p class="small-text fragment">Use <strong>APPEND</strong> if you want to add to the end.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-door-closed"></i> Closing Saves and Unlocks</h4>
+                        <p class="small-text fragment"><strong>CLOSEFILE</strong> helps ensure data is saved properly.</p>
+                        <p class="small-text fragment">It also releases the <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> so other programs can use it.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE THREE STEPS
+                 ============================================ -->
+            <section>
+                <h2>The Three Steps</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">Working with <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">files</span> is like using a book:</p>
+                </div>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box fragment">
+                        <h4><i class="fa-solid fa-door-open"></i> 1. Open</h4>
+                        <p class="small-text">Open the book to read or write.</p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-pencil"></i> 2. Read/Write</h4>
+                        <p class="small-text">Read from or write to the pages.</p>
+                    </div>
+                    <div class="box fragment">
+                        <h4><i class="fa-solid fa-door-closed"></i> 3. Close</h4>
+                        <p class="small-text">Close the book when done.</p>
+                    </div>
+                </div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p class="small-text"><strong>Important:</strong> Always close <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">files</span> when finished to save changes properly!</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Which step should always be the last step when working with a <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>CLOSEFILE</strong></p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 OPENING FILES
+                 ============================================ -->
+            <section>
+                <h2>Opening <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">Files</span></h2>
+                <div class="box">
+                    <p class="small-text">You must specify <strong>what you want to do</strong> with the <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>:</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4>READ Mode</h4>
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">OPENFILE "data.txt" FOR READ</code></pre>
+                        <p class="small-text">Read existing data from <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span></p>
+                    </div>
+                    <div class="box box-blue">
+                        <h4>WRITE Mode</h4>
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">OPENFILE "data.txt" FOR WRITE</code></pre>
+                        <p class="small-text">Create/overwrite <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> with new data</p>
+                    </div>
+                </div>
+                <div class="fragment box" style="margin-top:20px;">
+                    <h4>APPEND Mode</h4>
+                    <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">OPENFILE "data.txt" FOR APPEND</code></pre>
+                    <p class="small-text">Add new data to end of existing <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span></p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">You want to add a new high score without deleting the old ones. Which mode do you use?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>APPEND</strong> (WRITE would overwrite the <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>).</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 WRITING TO FILES
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Writing to a <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we save data?</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Step by step</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Writing Example</h3>
+                    <div class="box">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">OPENFILE "names.txt" FOR WRITE
+WRITEFILE "names.txt", "Ali"
+WRITEFILE "names.txt", "Sara"
+WRITEFILE "names.txt", "John"
+CLOSEFILE "names.txt"</code></pre>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4>What This Does</h4>
+                            <ol class="small-text">
+                                <li>Opens (creates) names.txt</li>
+                                <li>Writes "Ali" on line 1</li>
+                                <li>Writes "Sara" on line 2</li>
+                                <li>Writes "John" on line 3</li>
+                                <li>Closes and saves the <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span></li>
+                            </ol>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span> Contents</h4>
+                            <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">Ali
+Sara
+John</code></pre>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 READING FROM FILES
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Reading from a <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we get data back?</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Step by step</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Reading One Line</h3>
+                    <div class="box">
+                        <pre style="font-size:1em; margin:0;"><code class="language-plaintext">OPENFILE "names.txt" FOR READ
+READFILE "names.txt", Name
+OUTPUT Name
+CLOSEFILE "names.txt"</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><code>READFILE</code> reads <strong>one line</strong> and stores it in the <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">variable</span> <code>Name</code>.</p>
+                        <p class="small-text">Output would be: <strong>Ali</strong> (the first line)</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Reading All Lines</h3>
+                    <div class="box">
+                        <p class="small-text">Use a loop with EOF() to read until the end:</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <pre style="font-size:0.9em; margin:0;"><code class="language-plaintext">OPENFILE "names.txt" FOR READ
+WHILE NOT EOF("names.txt")
+    READFILE "names.txt", Name
+    OUTPUT Name
+ENDWHILE
+CLOSEFILE "names.txt"</code></pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>EOF()</strong> = "End Of <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span>" – returns TRUE when there's nothing more to read.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COMPLETE EXAMPLE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Complete Example</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Saving and Loading High Scores</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">See both operations</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Saving Scores</h3>
+                    <div class="box">
+                        <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">// Save 5 scores from an <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span> to a <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>
+<span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Scores : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:5] OF <span class="keyword" data-def="a positive or negative whole number that can be used with mathematical operators">INTEGER</span>
+
+OPENFILE "highscores.txt" FOR WRITE
+FOR i ← 1 TO 5
+    WRITEFILE "highscores.txt", Scores[i]
+NEXT i
+CLOSEFILE "highscores.txt"
+
+OUTPUT "Scores saved!"</code></pre>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Loading Scores</h3>
+                    <div class="box">
+                        <pre style="font-size:0.85em; margin:0;"><code class="language-plaintext">// Load scores from <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> into an <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">array</span>
+<span class="keyword" data-def="define the value and data type of a variable or constant">DECLARE</span> Scores : <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">ARRAY</span>[1:5] OF <span class="keyword" data-def="a positive or negative whole number that can be used with mathematical operators">INTEGER</span>
+
+OPENFILE "highscores.txt" FOR READ
+FOR i ← 1 TO 5
+    READFILE "highscores.txt", Scores[i]
+NEXT i
+CLOSEFILE "highscores.txt"
+
+OUTPUT "Scores loaded!"</code></pre>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 COMMON MISTAKES
+                 ============================================ -->
+            <section>
+                <h2>Common Mistakes</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-times" style="color:red;"></i> Forgetting to Close</h4>
+                        <p class="small-text">Data may not save properly!</p>
+                        <p class="small-text"><strong>Always</strong> use CLOSEFILE</p>
+                    </div>
+                    <div class="box">
+                        <h4><i class="fa-solid fa-times" style="color:red;"></i> Wrong Mode</h4>
+                        <p class="small-text">Opening for READ when you want WRITE</p>
+                        <p class="small-text">Check your mode carefully</p>
+                    </div>
+                </div>
+                <div class="fragment box box-blue" style="margin-top:20px;">
+                    <h4><i class="fa-solid fa-times" style="color:red;"></i> Overwriting Data</h4>
+                    <p class="small-text">WRITE mode erases existing content!</p>
+                    <p class="small-text">Use APPEND to add to existing data.</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 SUMMARY TABLE
+                 ============================================ -->
+            <section>
+                <h2><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span> Commands Summary</h2>
+                <table style="width:100%; font-size:0.85em; margin-top:20px;">
+                    <tr>
+                        <th style="background:var(--primary-blue); color:white; padding:8px;">Command</th>
+                        <th style="background:var(--primary-blue); color:white; padding:8px;">Purpose</th>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>OPENFILE "<span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>" FOR READ</code></td>
+                        <td style="padding:8px;">Open <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> for reading</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>OPENFILE "<span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>" FOR WRITE</code></td>
+                        <td style="padding:8px;">Open <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> for writing (overwrites)</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>OPENFILE "<span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>" FOR APPEND</code></td>
+                        <td style="padding:8px;">Open <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> to add data at end</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>READFILE "<span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>", <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">Variable</span></code></td>
+                        <td style="padding:8px;">Read one line into <span class="keyword" data-def="a named data store that contains a value that may change during the execution of a program">variable</span></td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>WRITEFILE "<span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>", Data</code></td>
+                        <td style="padding:8px;">Write data to <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span></td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>CLOSEFILE "<span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>"</code></td>
+                        <td style="padding:8px;">Close <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> (essential!)</td>
+                    </tr>
+                    <tr class="fragment">
+                        <td style="padding:8px;"><code>EOF("<span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>")</code></td>
+                        <td style="padding:8px;">Check if end of <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> reached</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Link to 8.2:</strong></p>
+                        <p class="small-text">You often read <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> data into <span class="keyword" data-def="a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name">arrays</span>, process it with loops, then write results back out.</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming up in Topic 9:</strong></p>
+                        <p class="small-text">Databases — storing data in a structured way with tables and queries.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">Files</span> are stored in RAM.</li>
+                        <li>WRITE mode adds data to the end of a <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>.</li>
+                        <li>EOF() returns TRUE when there is no more data to read.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box"><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">Files</span> are stored in RAM.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">Files</span> are stored on <strong>permanent storage</strong> (hard drive, SSD). RAM is volatile and loses data when power is off.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">WRITE mode adds data to the end of a <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>WRITE mode <strong>overwrites</strong> the <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>. Use <strong>APPEND</strong> mode to add to the end.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">EOF() returns TRUE when there is no more data to read.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>EOF() (End Of <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">File</span>) returns TRUE when the <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> pointer reaches the end of the <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span>.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">💾 <strong><span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">Files</span></strong> store data permanently (unlike RAM)</p>
+                        <p class="small-text">📖 3 steps: <strong>Open → Read/Write → Close</strong></p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🧭 <span class="keyword" data-def="an arithmetic operator that returns the remainder of a division; different languages use different symbols for this operation">Modes</span>: <strong>READ</strong>, <strong>WRITE</strong> (overwrites), <strong>APPEND</strong> (adds)</p>
+                        <p class="small-text">🏁 Use <strong>EOF()</strong> to detect end of <span class="keyword" data-def="a collection of data stored by a computer program to be used again 336 318281_C08_CAM_IGCSE CO_SCI_299_338.indd 336 3/26/21 3:47 PM">file</span> when reading in a loop</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Next:</strong> Topic 9 — Databases</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="/js/slide-deck.js"></script>
+
+    
+    <script src="/js/live-date-display.js"></script>
+
+</body>
+
+</html>

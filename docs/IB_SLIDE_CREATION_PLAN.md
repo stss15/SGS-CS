@@ -1,5 +1,7 @@
 # IB Slide Deck Creation Plan
 
+> Legacy task plan: For current project rules and build workflow, start with `docs/agent/AGENT_GUIDE.md`.
+
 > **Purpose:** Complete instructions for creating IB Computer Science slide decks from scratch, following the same high-quality, enquiry-first style as the upgraded IGCSE decks.
 
 ---
