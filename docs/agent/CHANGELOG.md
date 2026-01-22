@@ -79,3 +79,4 @@ Use the format below and keep entries concise.
 
 - Added Firebase Hosting redirects/rewrites to preserve legacy `/hl`/`/sl` paths, normalize course entry points, and route missing curriculum links to `/coming-soon.html`.
 - Disabled `trailingSlash` in `firebase.json` to avoid mismatched trailing-slash redirects on HTML paths.
+- Added IB 2027 SL OOP Project redirects so legacy `/ib-2027/sl/oop-project` links resolve to Unit 5.
