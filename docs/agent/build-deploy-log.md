@@ -11,6 +11,11 @@ Format:
 
 ---
 
+- Date: 2026-01-22
+- Branch: main
+- Build command: npm run build (pre-merge on refactor/scale-audit)
+- Deploy command: firebase deploy --only hosting
+- Notes: Deployed merged refactor/scale-audit changes to https://sgs-science.web.app.
 - Date:
 - Branch:
 - Build command:
