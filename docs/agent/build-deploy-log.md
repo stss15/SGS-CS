@@ -21,6 +21,11 @@ Format:
 - Build command: none
 - Deploy command: firebase deploy --only hosting
 - Notes: Deployed Firebase redirect/rewrites fix for legacy `/hl`/`/sl` and course entrypoints.
+- Date: 2026-01-22
+- Branch: main
+- Build command: none
+- Deploy command: firebase deploy --only hosting
+- Notes: Deployed IB 2027 SL OOP Project legacy path redirects.
 - Date:
 - Branch:
 - Build command:
