@@ -74,3 +74,8 @@ Use the format below and keep entries concise.
 - Added `src/static/js/assessment-runtime.js` and migrated pilot assessments to JSON-driven data (`igcse/topic10/10.1_assessment.html`, `igcse/topic8/8.3_assessment.html`).
 - Migrated `igcse/topic7/7.2_assessment.html` to the shared assessment runtime with JSON data in `src/static/data/assessments/igcse-topic7-7-2.json` and removed the legacy JS file.
 - Updated assessment audit/docs to reflect the new pilot migration and current JS counts.
+
+## 2026-01-22
+
+- Added Firebase Hosting redirects/rewrites to preserve legacy `/hl`/`/sl` paths, normalize course entry points, and route missing curriculum links to `/coming-soon.html`.
+- Disabled `trailingSlash` in `firebase.json` to avoid mismatched trailing-slash redirects on HTML paths.
