@@ -102,6 +102,168 @@ const writeManifest = async () => {
     console.log(`Wrote manifest to ${path.relative(ROOT_DIR, MANIFEST_PATH)}`);
 };
 
+const buildRedirectHtml = (destination) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=${destination}">
+    <title>Redirecting...</title>
+    <link rel="canonical" href="${destination}">
+</head>
+<body>
+    <p>Redirecting to <a href="${destination}">${destination}</a></p>
+    <script>window.location.replace(${JSON.stringify(destination)});</script>
+</body>
+</html>
+`;
+
+const LEGACY_SLIDE_OVERRIDES = new Map([
+    [
+        'ib-2027/hl/slides/A4.3_machine_learning_approaches.html',
+        '/ib-2027/hl/unit-7/slides/A4.3_machine_learning_approaches.html'
+    ]
+]);
+
+const buildMissionControlPlaceholder = () => `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="0; url=/coming-soon.html" />
+    <link rel="canonical" href="/coming-soon.html" />
+    <title>Mission Control - Coming Soon</title>
+  </head>
+  <body>
+    <p>Mission Control is currently being rebuilt. <a href="/coming-soon.html">Continue</a>.</p>
+  </body>
+</html>
+`;
+
+const createLegacySlideAliases = async () => {
+    const patterns = [
+        'ib-2027/sl/unit-*/slides/*.html',
+        'ib-2027/hl/unit-*/slides/*.html'
+    ];
+    const slideFiles = (await fg(patterns, { cwd: OUTPUT_DIR })).sort();
+    if (!slideFiles.length) {
+        return;
+    }
+
+    const aliasTargets = new Map();
+    const duplicates = new Map();
+
+    slideFiles.forEach((file) => {
+        const normalized = toPosix(file);
+        const parts = normalized.split('/');
+        const level = parts[1];
+        const filename = path.posix.basename(normalized);
+        const alias = `ib-2027/${level}/slides/${filename}`;
+        const overrideTarget = LEGACY_SLIDE_OVERRIDES.get(alias);
+        const target = overrideTarget || `/${normalized}`;
+
+        if (overrideTarget) {
+            aliasTargets.set(alias, target);
+            return;
+        }
+
+        if (aliasTargets.has(alias) && aliasTargets.get(alias) !== target) {
+            const existing = duplicates.get(alias) || new Set([aliasTargets.get(alias)]);
+            existing.add(target);
+            duplicates.set(alias, existing);
+            return;
+        }
+
+        aliasTargets.set(alias, target);
+    });
+
+    for (const [alias, targets] of duplicates.entries()) {
+        console.warn(
+            `Legacy slide alias ${alias} has multiple targets; using ${aliasTargets.get(alias)}. Other targets: ${Array.from(
+                targets
+            ).join(', ')}`
+        );
+    }
+
+    await Promise.all(
+        Array.from(aliasTargets.entries()).map(async ([alias, target]) => {
+            const aliasPath = path.join(OUTPUT_DIR, alias);
+            if (await fs.pathExists(aliasPath)) return;
+            await fs.ensureDir(path.dirname(aliasPath));
+            await fs.writeFile(aliasPath, buildRedirectHtml(target));
+        })
+    );
+
+    console.log(`Created ${aliasTargets.size} legacy slide aliases.`);
+};
+
+const createLegacyScenarioAliases = async () => {
+    const patterns = [
+        'ib-2027/sl/unit-*/scenarios/*.html',
+        'ib-2027/hl/unit-*/scenarios/*.html'
+    ];
+    const scenarioFiles = (await fg(patterns, { cwd: OUTPUT_DIR })).sort();
+    if (!scenarioFiles.length) {
+        return;
+    }
+
+    const aliasTargets = new Map();
+    const duplicates = new Map();
+
+    scenarioFiles.forEach((file) => {
+        const normalized = toPosix(file);
+        const parts = normalized.split('/');
+        const level = parts[1];
+        const filename = path.posix.basename(normalized);
+        const alias = `ib-2027/${level}/scenarios/${filename}`;
+        const target = `/${normalized}`;
+
+        if (aliasTargets.has(alias) && aliasTargets.get(alias) !== target) {
+            const existing = duplicates.get(alias) || new Set([aliasTargets.get(alias)]);
+            existing.add(target);
+            duplicates.set(alias, existing);
+            return;
+        }
+
+        aliasTargets.set(alias, target);
+    });
+
+    for (const [alias, targets] of duplicates.entries()) {
+        console.warn(
+            `Legacy scenario alias ${alias} has multiple targets; using ${aliasTargets.get(alias)}. Other targets: ${Array.from(
+                targets
+            ).join(', ')}`
+        );
+    }
+
+    await Promise.all(
+        Array.from(aliasTargets.entries()).map(async ([alias, target]) => {
+            const aliasPath = path.join(OUTPUT_DIR, alias);
+            if (await fs.pathExists(aliasPath)) return;
+            await fs.ensureDir(path.dirname(aliasPath));
+            await fs.writeFile(aliasPath, buildRedirectHtml(target));
+        })
+    );
+
+    console.log(`Created ${aliasTargets.size} legacy scenario aliases.`);
+};
+
+const ensureMissionControlPlaceholder = async () => {
+    const placeholderPath = path.join(
+        OUTPUT_DIR,
+        'ib',
+        'Learn Python Map',
+        'ib-python-mission-control',
+        'dist',
+        'index.html'
+    );
+
+    if (await fs.pathExists(placeholderPath)) return;
+
+    await fs.ensureDir(path.dirname(placeholderPath));
+    await fs.writeFile(placeholderPath, buildMissionControlPlaceholder());
+    console.log('Wrote Mission Control placeholder.');
+};
+
 const buildFile = async (relativePath) => {
     const sourcePath = path.join(SRC_DIR, relativePath);
     const raw = await fs.readFile(sourcePath, 'utf8');
@@ -176,6 +338,9 @@ const buildAll = async () => {
 
     await Promise.all(files.map((file) => buildFile(file)));
     await writeManifest();
+    await createLegacySlideAliases();
+    await createLegacyScenarioAliases();
+    await ensureMissionControlPlaceholder();
 };
 
 buildAll().catch((err) => {
