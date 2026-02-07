@@ -6,6 +6,7 @@ Current site source and build pipeline for the Firebase-hosted SGS Computer Scie
 
 1. `npm run build:legacy`
 - Renders `src/pages` + `src/static` into `public/` via `scripts/build.js`.
+- Compiles LaTeX printables from `src/printables` into `public/` (PDF downloads).
 
 2. `npm run build --workspace @sgs/site`
 - Builds Astro app in `apps/site`.
@@ -32,6 +33,7 @@ npm run deploy
 - `apps/site`: Astro framework app (deploy target output in `apps/site/dist`).
 - `packages/content-schema`: Typed adapters that map legacy source/content into Astro routes.
 - `src`: Legacy source-of-truth templates/content still used in active build pipeline.
+- `src/printables`: LaTeX source for printable PDFs generated into `public/`.
 - `scripts/build.js`: Legacy render step used before Astro build.
 - `scripts/migration/alias-framework-html-routes.js`: Alias and asset sync step.
 - `scripts/migration/harden-framework-dist.js`: Dist hardening step.
@@ -47,4 +49,3 @@ Use:
 And the skills under:
 - `agents/skills/site-build-deploy/SKILL.md`
 - `agents/skills/site-content-edit/SKILL.md`
-- `agents/skills/repo-archive-cleanup/SKILL.md`

@@ -7,16 +7,18 @@
 - `src/pages`: Legacy templates/content still used by build.
 - `src/static`: Static assets copied into the legacy output (`public/`) and then synced into framework dist when needed.
 - `src/data`: Listing/topic data consumed during rendering.
+- `src/printables`: LaTeX sources for printable PDFs generated into `public/` during build.
 
 ## Generated Output
 
-- `public/`: Generated intermediate legacy output (ignored in git).
+- `public/`: Generated legacy output used as framework input (treat as build artifact; do not hand-edit).
 - `apps/site/dist`: Final static site output deployed to Firebase.
 - `meta/site-manifest.json`: Generated during legacy build (not kept as active source file).
 
 ## Build Scripts Kept Active
 
 - `scripts/build.js`
+- `scripts/build-pdfs.js`
 - `scripts/migration/alias-framework-html-routes.js`
 - `scripts/migration/harden-framework-dist.js`
 

@@ -26,7 +26,6 @@ npm run deploy
 
 - `skills/site-build-deploy/SKILL.md`
 - `skills/site-content-edit/SKILL.md`
-- `skills/repo-archive-cleanup/SKILL.md`
 
 Use these skills as the default operating procedures for this codebase.
 

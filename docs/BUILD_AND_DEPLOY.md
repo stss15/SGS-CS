@@ -16,6 +16,8 @@ npm run framework:build
 
 1. `npm run build:legacy`
 - Generates `public/` from `src/`.
+- Also compiles LaTeX printables from `src/printables` into `public/` (PDF downloads).
+  - To skip PDF compilation: `SKIP_LATEX_PDFS=1 npm run framework:build`
 
 2. Astro static build in `apps/site`.
 
