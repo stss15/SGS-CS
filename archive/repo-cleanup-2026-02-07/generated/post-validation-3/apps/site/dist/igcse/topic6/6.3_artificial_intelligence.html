@@ -1,0 +1,541 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.3 Artificial Intelligence | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/slide-deck.css">
+
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a href="/igcse/topic6/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo"
+        data-sgs-onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">6.3 Artificial Intelligence</h1>
+                        <h3 class="sub-title">Topic 6: Automated & Emerging Technologies | When Machines Learn</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. RETRIEVAL STARTER -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+                    
+                    <div class="box-blue">
+                        <p class="small-text" style="margin:0;">Recall 6.2 (<span class="keyword" data-def="the branch of (computer) science that encompasses the design, construction and operation of robots">Robotics</span>) before we move on.</p>
+                    </div>
+                    
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+                        <li>What are the three characteristics of a <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">robot</span>?</li>
+                        <li>What is the difference between an <span class="keyword" data-def="able to operate independently without any human input">autonomous</span> and a dependent <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">robot</span>?</li>
+                        <li>What technology do <span class="keyword" data-def="able to operate independently without any human input">autonomous</span> cars use to "see" the road?</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to check each answer
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">What are the three characteristics of a <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">robot</span>?</div>
+                    
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p>Sense (Sensors), Process (Programmable), Move (Actuators)</p>
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">What is the difference between an <span class="keyword" data-def="able to operate independently without any human input">autonomous</span> and a dependent <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">robot</span>?</div>
+                    
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p><span class="keyword" data-def="able to operate independently without any human input">Autonomous</span> works independently. Dependent requires human control.</p>
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">What technology do <span class="keyword" data-def="able to operate independently without any human input">autonomous</span> cars use to "see" the road?</div>
+                    
+                    <div class="fragment box-blue">
+                        <p><strong>Answer:</strong></p>
+                        <p><span class="keyword" data-def="a contraction of light detection and ranging; the use of lasers to build up a 3D image of the surroundings">LiDAR</span> (Light Detection and Ranging), Radar, and Cameras</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 3. THE HOOK (R-Stack Myth Busting) -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">
+                            <p style="font-size:1.3em;">🤖 When you hear “AI”… what do you picture?</p>
+                            <p style="font-size:1.5em; margin-top:20px;"><strong>A thinking brain</strong> or <strong>a clever pattern-finder</strong>?</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in-then-out">
+                        <div class="box" style="background: #ffebee; padding: 30px;">
+                            <p style="font-size:1.2em;">❌ Myth: AI means a computer is “conscious”.</p>
+                            <p class="small-text">Most systems don’t understand like humans — they recognise patterns and follow learned rules.</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="cols">
+                            <div class="box-blue">
+                                <h4><i class="fa-solid fa-brain"></i> The Question</h4>
+                                <p>Can a computer "think"?</p>
+                                <p class="small-text">Or is it just following instructions really well?</p>
+                            </div>
+                            <div class="box">
+                                <h4><i class="fa-solid fa-comments"></i> The Test</h4>
+                                <p>The Turing Test: Can a computer fool a human into thinking it is also human?</p>
+                                <p class="small-text">If yes, does that mean it's "thinking"?</p>
+                            </div>
+                        </div>
+                        <div class="box" style="margin-top:20px; text-align:center; background:var(--sg-gold); color:white;">
+                            <strong>Key Idea:</strong> AI is the <strong>simulation</strong> of intelligent human behaviour.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-calendar-days"></i> AI is Older Than You Think</h4>
+                        <p class="small-text fragment">The term “Artificial Intelligence” was coined in <strong>1956</strong> at the Dartmouth workshop.</p>
+                        <p class="small-text fragment">AI isn’t new — the data and computing power have just exploded.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-bullseye"></i> Most AI Is Narrow</h4>
+                        <p class="small-text fragment">Face unlock, spam filters, and recommendations are examples of <strong>narrow AI</strong>.</p>
+                        <p class="small-text fragment">They can be brilliant at one task, but fail at others a human finds easy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. CATEGORIES OF AI -->
+            <section>
+                <section>
+                    <h2>How Smart Is It?</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Are all AIs equally intelligent?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Analogy:</strong> Like comparing a calculator (amazing at math) to a human (good at many things).</p>
+                    </div>
+                    <div class="cols-3 fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-bullseye"></i> Narrow AI</h4>
+                            <p class="small-text">Good at <strong>ONE</strong> thing.</p>
+                            <p class="small-text">Chess, Spam filter, Siri</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Superior to humans in that niche.</em></p>
+                            <p class="small-text"><strong>Reality:</strong> This is what we have today.</p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-user"></i> General AI</h4>
+                            <p class="small-text">Good at <strong>EVERYTHING</strong>.</p>
+                            <p class="small-text">Like a human (can do any task)</p>
+                            <p class="small-text" style="margin-top:10px;"><em>Not yet achieved.</em></p>
+                            <p class="small-text"><strong>Goal:</strong> The holy grail of AI research.</p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-rocket"></i> Strong AI</h4>
+                            <p class="small-text"><strong>SUPERIOR</strong> to humans.</p>
+                            <p class="small-text">Sci-Fi (Terminator, Matrix)</p>
+                            <p class="small-text" style="margin-top:10px;"><em>The Singularity.</em></p>
+                            <p class="small-text"><strong>Reality:</strong> Still fiction (for now).</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Press Down: Compare &amp; check</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Narrow vs General (R-Stack)</h3>
+                    <div class="r-stack">
+                        <div class="fragment fade-in-then-out">
+                            <div class="box" style="padding: 30px;">
+                                <h4 style="margin-top:0;">🎯 Narrow AI</h4>
+                                <p class="small-text">Designed for one specific task.</p>
+                                <ul class="small-text">
+                                    <li>Beats humans at chess</li>
+                                    <li>Detects spam</li>
+                                    <li>Recognises faces</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box-blue" style="padding: 30px;">
+                                <h4 style="margin-top:0;">🧠 General AI (not achieved)</h4>
+                                <p class="small-text">Would learn and transfer skills across many tasks like a human.</p>
+                                <p class="small-text">Example: learn chess, then learn driving, then learn languages.</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box" style="padding: 30px; background: #fff8e1;">
+                                <h4 style="margin-top:0;">🚀 Strong AI (sci‑fi)</h4>
+                                <p class="small-text">Would outperform humans across tasks — still fictional today.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Quick Check</h3>
+                    <div class="question-box">Is each example Narrow AI, General AI, or Strong AI?</div>
+                    <div class="cols">
+                        <div class="box">
+                            <p class="small-text"><strong>A.</strong> A spam filter that learns from emails</p>
+                            <p class="small-text"><strong>B.</strong> A system that can do any school subject like a human</p>
+                            <p class="small-text"><strong>C.</strong> A <span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">robot</span> that becomes smarter than humans at everything</p>
+                        </div>
+                        <div class="box-blue fragment">
+                            <p class="small-text"><strong>Answers:</strong></p>
+                            <p class="small-text">A = Narrow AI</p>
+                            <p class="small-text">B = General AI</p>
+                            <p class="small-text">C = Strong AI</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 5. EXPERT SYSTEMS -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert Systems</span> (Old School AI)</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do you capture a doctor's knowledge in a computer?</p>
+                    </div>
+                    
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>Uses:</strong> Medical diagnosis, Car diagnostics, Mineral prospecting</p>
+                        <p class="small-text"><em>Like having a doctor in a box, but it never forgets.</em></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive: How it
+                            Works</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Components -->
+                <section data-background="#f4f6f8">
+                    <h3>The Four Components</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-database"></i> The Data</h4>
+                            <ul class="small-text">
+                                <li><strong><span class="keyword" data-def="a repository of facts which is a collection of objects and attributes">Knowledge Base</span>:</strong> Database of facts (e.g., "Measles causes spots").</li>
+                                <li><strong><span class="keyword" data-def="a collection of inference rules used to draw conclusions">Rules Base</span>:</strong> IF-THEN logic (e.g., "IF fever AND spots THEN Measles").</li>
+                            </ul>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a textbook and a decision tree.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-cogs"></i> The Logic</h4>
+                            <ul class="small-text">
+                                <li><strong><span class="keyword" data-def="a kind of search engine used in an expert system which examines the knowledge base for information that matches the queries">Inference Engine</span>:</strong> The "Brain" that applies rules to facts.</li>
+                                <li><strong>User Interface:</strong> The questions asked to the user.</li>
+                            </ul>
+                            <p class="small-text" style="margin-top:10px;"><em>Like a doctor asking questions and thinking.</em></p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <h4>Example in Action:</h4>
+                        <p class="small-text"><strong>User:</strong> "I have a fever and spots."</p>
+                        <p class="small-text"><strong><span class="keyword" data-def="a kind of search engine used in an expert system which examines the knowledge base for information that matches the queries">Inference Engine</span>:</strong> Checks <span class="keyword" data-def="a collection of inference rules used to draw conclusions">Rules Base</span>. "IF fever AND spots THEN Measles."</p>
+                        <p class="small-text"><strong>Output:</strong> "Diagnosis: Measles (90% probability)."</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Quick Check</h3>
+                    <div class="question-box">In an <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">expert system</span>, which component does what?</div>
+                    <div class="cols">
+                        <div class="box">
+                            <p class="small-text"><strong>1.</strong> Stores facts</p>
+                            <p class="small-text"><strong>2.</strong> Stores IF‑THEN rules</p>
+                            <p class="small-text"><strong>3.</strong> Applies rules to facts</p>
+                        </div>
+                        <div class="box-blue fragment">
+                            <p class="small-text"><strong>Answers:</strong></p>
+                            <p class="small-text">1 = <span class="keyword" data-def="a repository of facts which is a collection of objects and attributes">Knowledge Base</span></p>
+                            <p class="small-text">2 = <span class="keyword" data-def="a collection of inference rules used to draw conclusions">Rules Base</span></p>
+                            <p class="small-text">3 = <span class="keyword" data-def="a kind of search engine used in an expert system which examines the knowledge base for information that matches the queries">Inference Engine</span></p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 6. MACHINE LEARNING -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span> (New School AI)</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How does Netflix know what you like?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong>The Mystery:</strong> You watch one sci-fi movie, and suddenly Netflix suggests 10 more.</p>
+                        <p class="small-text">How does it know?</p>
+                    </div>
+                    
+                    <div class="r-stack" style="margin-top:20px;">
+                        <div class="fragment fade-in-then-out">
+                            <div class="box" style="padding:20px;">
+                                <h4><i class="fa-solid fa-user-pen"></i> <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert System</span></h4>
+                                <p class="small-text">Humans write the rules.</p>
+                                <p class="small-text"><em>Like teaching by telling.</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box box-blue" style="padding:20px;">
+                                <h4><i class="fa-solid fa-graduation-cap"></i> <span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span></h4>
+                                <p class="small-text">Computer finds the rules from data.</p>
+                                <p class="small-text"><em>Like learning by example.</em></p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="cols">
+                                <div class="box">
+                                    <h4><i class="fa-solid fa-user-pen"></i> <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert System</span></h4>
+                                    <p class="small-text">Humans write the rules.</p>
+                                </div>
+                                <div class="box box-blue">
+                                    <h4><i class="fa-solid fa-graduation-cap"></i> <span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span></h4>
+                                    <p class="small-text">Computer finds the rules from data.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Deep Dive:
+                            Examples</span>
+                    </div>
+                </section>
+
+                <!-- VERTICAL: Examples -->
+	                <section data-background="#f4f6f8">
+	                    <h3><span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span> in Action</h3>
+                    <div class="cols-3">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-envelope"></i> Spam Filters</h4>
+                            <p class="small-text">Feed it 10,000 spam emails and 10,000 good emails.</p>
+                            <p class="small-text" style="margin-top:10px;">It learns patterns: "Winner!" usually = Spam.</p>
+                            <p class="small-text"><em>Like learning to spot junk mail by seeing lots of examples.</em></p>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-image"></i> Image Recognition</h4>
+                            <p class="small-text">Feed it 1 million cat photos.</p>
+                            <p class="small-text" style="margin-top:10px;">It learns: ears, whiskers, tail shape = Cat.</p>
+                            <p class="small-text"><em>Like a child learning what a cat looks like by seeing many cats.</em></p>
+                        </div>
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-thumbs-up"></i> Recommendations</h4>
+                            <p class="small-text">"People who bought X also bought Y."</p>
+                            <p class="small-text" style="margin-top:10px;">Collaborative filtering - finds patterns in behavior.</p>
+                            <p class="small-text"><em>Like a friend recommending a movie you might like.</em></p>
+                        </div>
+	                    </div>
+	                </section>
+
+	                <section>
+	                    <h3>Quick Check</h3>
+	                    <div class="question-box">What do we give the computer so it can improve in <span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">machine learning</span>?</div>
+	                    <div class="fragment box-blue" style="margin-top:20px;">
+	                        <p><strong>Training data</strong> (lots of examples).</p>
+	                        <p class="small-text">The algorithm finds patterns and builds a model.</p>
+	                    </div>
+	                    <div class="fragment box" style="margin-top:20px;">
+	                        <p class="small-text"><strong>Watch out:</strong> If the training data is biased, the model can be biased too.</p>
+	                    </div>
+	                </section>
+
+	                <section data-background="#f4f6f8">
+	                    <h3>Deep Learning (Neural Networks)</h3>
+	                    <div class="cols">
+	                        <div class="box">
+	                            <p class="small-text"><strong>Idea:</strong> Many layers of “neurons” combine simple patterns into complex ones.</p>
+	                            <p class="small-text fragment">Edges → shapes → <span class="keyword" data-def="an item stored in the knowledge base">objects</span> (like cat vs dog).</p>
+	                        </div>
+	                        <div class="box-blue">
+	                            <p class="small-text"><strong>Why it matters:</strong> Works well for images, speech, and language — but often needs lots of data.</p>
+	                        </div>
+	                    </div>
+	                </section>
+	            </section>
+
+            <!-- 7. REAL WORLD -->
+            <section>
+                <h2>AI in the Real World</h2>
+                <div class="question-box">
+                    <p style="font-size:1.2em; margin:0;">Where do we encounter AI every day?</p>
+                </div>
+                <div class="cols fragment" style="margin-top:20px;">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-car"></i> Transport</h4>
+                        <p class="small-text">Self-driving cars (Pattern recognition - recognizing stop signs, pedestrians).</p>
+                        <p class="small-text" style="margin-top:10px;"><em>AI that sees and reacts like a human driver.</em></p>
+                    </div>
+                    <div class="box box-blue fragment">
+                        <h4><i class="fa-solid fa-credit-card"></i> Finance</h4>
+                        <p class="small-text">Fraud detection (Spotting unusual spending patterns).</p>
+                        <p class="small-text" style="margin-top:10px;"><em>AI that notices "This doesn't look right."</em></p>
+                    </div>
+                    <div class="box fragment">
+                        <h4><i class="fa-solid fa-home"></i> Smart Homes</h4>
+                        <p class="small-text">Voice assistants (Natural Language Processing - understanding speech).</p>
+                        <p class="small-text" style="margin-top:10px;"><em>AI that understands what you're saying.</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Back to 6.2 <span class="keyword" data-def="the branch of (computer) science that encompasses the design, construction and operation of robots">Robotics</span>:</strong></p>
+                        <p class="small-text"><span class="keyword" data-def="a mechanical device that can carry out tasks normally done by humans">Robots</span> become “smarter” when AI helps them <strong>sense</strong>, <strong>decide</strong>, and <strong>act</strong> (e.g., recognising obstacles).</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming up in Topic 7:</strong></p>
+                        <p class="small-text">Algorithm design and testing help us describe steps clearly — and check systems behave as expected.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. PLENARY -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Misconception Check</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li>"Narrow AI can perform any task a human can do."</li>
+                        <li>"In an <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert System</span>, the <span class="keyword" data-def="a kind of search engine used in an expert system which examines the knowledge base for information that matches the queries">Inference Engine</span> stores the facts."</li>
+                        <li>"<span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span> requires a human to write every single rule."</li>
+                        <li>"Deep Learning is a type of <span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span>."</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box">"Narrow AI can perform any task a human can do."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It is only good at <strong>one</strong> specific task.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">"In an <span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert System</span>, the <span class="keyword" data-def="a kind of search engine used in an expert system which examines the knowledge base for information that matches the queries">Inference Engine</span> stores the facts."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>The <strong><span class="keyword" data-def="a repository of facts which is a collection of objects and attributes">Knowledge Base</span></strong> stores facts. The <span class="keyword" data-def="a kind of search engine used in an expert system which examines the knowledge base for information that matches the queries">Inference Engine</span> does the reasoning.
+                        </p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box">"<span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span> requires a human to write every single rule."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: False</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>That's traditional programming. ML learns rules from <strong>data</strong>.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 4</h3>
+                    <div class="question-box">"Deep Learning is a type of <span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span>."</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: True</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p>It uses neural networks to mimic the brain.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🧠 <strong>AI</strong> simulates intelligent behaviour</p>
+                        <p class="small-text">🎯 <strong>Narrow AI</strong> does one task well (today’s AI)</p>
+                        <p class="small-text">💬 <strong>Turing Test</strong> checks if it can imitate a human in conversation</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🩺 <strong><span class="keyword" data-def="a form of AI that has been developed to mimic a human’s knowledge and expertise">Expert Systems</span></strong> use facts + rules + an <span class="keyword" data-def="a kind of search engine used in an expert system which examines the knowledge base for information that matches the queries">inference engine</span></p>
+                        <p class="small-text">📊 <strong><span class="keyword" data-def="a sub-set of AI in which algorithms are trained and learn from past experiences and examples">Machine Learning</span></strong> learns patterns from data</p>
+                        <p class="small-text">🧩 <strong>Deep learning</strong> uses layered neural networks</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Next:</strong> Topic 7 — Algorithm Design (decomposition, pseudocode, testing)</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="/js/slide-deck.js"></script>
+
+    
+    <script src="/js/live-date-display.js"></script>
+
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body></html>

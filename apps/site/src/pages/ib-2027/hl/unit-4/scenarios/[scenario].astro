@@ -1,0 +1,40 @@
+---
+import LegacyHtmlDocument from '../../../../../components/LegacyHtmlDocument.astro';
+import { getIb2027AliasRouteHtml, getIb2027ScenarioAliasRoutes } from '@sgs/content-schema';
+
+interface ScenarioAliasPageProps {
+  html: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getIb2027ScenarioAliasRoutes();
+
+  return Promise.all(
+    routes
+      .map((route) => {
+        const match = route.routePath.match(/^\/ib-2027\/hl\/unit-4\/scenarios\/([^/]+)\.html$/);
+        if (!match) {
+          return null;
+        }
+
+        return {
+          routePath: route.routePath,
+          scenario: match[1]
+        };
+      })
+      .filter((route): route is { routePath: string; scenario: string } => route !== null)
+      .map(async (route) => ({
+        params: {
+          scenario: route.scenario
+        },
+        props: {
+          html: await getIb2027AliasRouteHtml(route.routePath)
+        }
+      }))
+  );
+}
+
+const { html } = Astro.props as ScenarioAliasPageProps;
+---
+
+<LegacyHtmlDocument html={html} />

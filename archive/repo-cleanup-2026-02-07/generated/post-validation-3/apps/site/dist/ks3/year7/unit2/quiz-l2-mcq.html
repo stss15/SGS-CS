@@ -1,0 +1,432 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2 Quiz: The Trail You Leave Behind | Year 7 Unit 2</title>
+    <link rel="icon" type="image/png" href="../../../images/Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #003366;
+            --accent: #d4af37;
+            --correct: #22c55e;
+            --incorrect: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent), #f0d060);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #004080 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .modal p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="quiz-header">
+        <a href="../unit2.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Unit</a>
+        <h1><i class="fa-solid fa-list-check"></i> Lesson 2 Quiz: The Trail You Leave Behind</h1>
+        <p>Cookies, Tracking & Data Collection</p>
+    </header>
+
+    <div class="quiz-container">
+        <div class="progress-text">Question <span id="currentQ">0</span> of 15 answered</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div id="questionsContainer"></div>
+        <div class="submit-section">
+            <button type="button" class="submit-btn" id="submitBtn" disabled data-sgs-onclick="askForName()">
+                <i class="fa-solid fa-paper-plane"></i> Submit & Get PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <h2>Enter Your Name</h2>
+            <p>Enter your full name to generate your results PDF.</p>
+            <input type="text" id="nameInput" placeholder="Full Name" maxlength="50">
+            <button type="button" class="modal-btn" data-sgs-onclick="finishAndGenerate()">Generate Report</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // All 15 questions focused on Lesson 2: The Trail You Leave Behind / Cookies & Tracking
+            // Answer distribution: A=4, B=4, C=4, D=3
+            { q: "What are 'Cookies' in computing?", options: ["Small files websites save on your device to remember you", "Delicious treats you eat while browsing", "Viruses that steal your passwords", "Pop-up ads that block your screen"], correct: 0 },
+            { q: "What is 'Targeted Advertising'?", options: ["Ads for bow and arrows", "Ads shown to you based on your browsing history and interests", "Ads that appear randomly", "Ads that only show up on targets"], correct: 1 },
+            { q: "Why do companies track your browsing history?", options: ["Because they are bored", "To slow down your internet", "To build a profile of you and show targeted ads", "To report you to the police"], correct: 2 },
+            { q: "What is the 'Trade-off' when we use free apps?", options: ["We trade money for goods", "We trade our old phone for a new one", "We trade passwords with friends", "We often trade our personal data/privacy for convenience"], correct: 3 },
+            { q: "How do many 'free' apps make money?", options: ["By selling your user data to advertisers", "Donations from rich people", "They print money", "The government pays them"], correct: 0 },
+            { q: "When you click 'I Agree' to Terms and Conditions, what are you doing?", options: ["Just removing a pop-up window", "Signing a legally binding contract", "Sending a friend request to the developer", "Giving them a 5-star review"], correct: 1 },
+            { q: "What does 'Tracking' mean in the context of the internet?", options: ["Monitoring your steps for fitness", "Following someone on social media", "Collecting data about your behaviour across different websites and apps", "Searching for a lost phone"], correct: 2 },
+            { q: "Why might a free flashlight app ask for your 'Location' permission?", options: ["To help you find your way", "To make the light brighter", "To save battery life", "To collect and sell your location data for advertising"], correct: 3 },
+            { q: "What is a 'Data Broker'?", options: ["A company that collects and sells your personal information", "Someone who fixes broken data", "A stock market trader", "A type of computer virus"], correct: 0 },
+            { q: "What does it mean to 'Accept All Cookies'?", options: ["You get physical cookies sent to your house", "You allow the website to track your activity and store data on your device", "You agree to wash the dishes", "You block all ads"], correct: 1 },
+            { q: "Why should you read privacy policies?", options: ["To improve your reading speed", "To find hidden cheat codes", "To know how your data will be used and shared", "To see the company logo"], correct: 2 },
+            { q: "What is the saying about free online services?", options: ["If it's free, take two", "Free things are always the best", "Nothing in life is free except air", "If you are not paying for the product, YOU are the product"], correct: 3 },
+            { q: "Does 'Incognito Mode' hide your activity from your Internet Service Provider?", options: ["No, they can still see which sites you visit", "Yes, nobody can see anything", "Yes, it makes you invisible", "Only on weekends"], correct: 0 },
+            { q: "Can device location be tracked even without GPS?", options: ["No, impossible", "Yes, roughly via Wi-Fi networks and cell towers", "Only if you are on a phone call", "Yes, by satellites looking through your window"], correct: 1 },
+            { q: "What usually happens if you don't agree to an app's permissions?", options: ["The police are called", "You get a fine", "The app might not work or let you install it", "The app works better"], correct: 2 }
+        ];
+
+        let answers = new Array(questions.length).fill(null);
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-card" id="qcard-${i}">
+                    <span class="question-number">Question ${i + 1}</span>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, j) => `
+                            <div class="option" data-sgs-onclick="selectOption(${i}, ${j})">
+                                <span class="option-letter">${String.fromCharCode(65 + j)}</span>
+                                <span class="option-text">${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectOption(qIndex, optIndex) {
+            answers[qIndex] = optIndex;
+            const options = document.querySelectorAll(`#qcard-${qIndex} .option`);
+            options.forEach((opt, i) => { opt.classList.remove('selected'); if (i === optIndex) opt.classList.add('selected'); });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = answers.filter(a => a !== null).length;
+            document.getElementById('currentQ').textContent = answered;
+            document.getElementById('progressFill').style.width = `${(answered / questions.length) * 100}%`;
+            document.getElementById('submitBtn').disabled = answered < questions.length;
+        }
+
+        function askForName() {
+            document.getElementById('nameModal').classList.add('active');
+            document.getElementById('nameInput').focus();
+            document.getElementById('nameInput').onkeydown = (e) => { if (e.key === 'Enter') finishAndGenerate(); }
+        }
+
+        async function finishAndGenerate() {
+            const name = document.getElementById('nameInput').value.trim() || "Student";
+            document.getElementById('nameModal').classList.remove('active');
+
+            let score = 0;
+            const mistakes = [];
+            questions.forEach((q, i) => {
+                if (answers[i] === q.correct) { score++; }
+                else { mistakes.push({ q: q.q, yours: q.options[answers[i]], correct: q.options[q.correct] }); }
+            });
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            let y = 20;
+
+            doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(0, 51, 102);
+            doc.text("Lesson 2 Quiz Results: The Trail You Leave Behind", margin, y); y += 10;
+
+            doc.setFontSize(12); doc.setTextColor(50);
+            doc.text(`Name: ${name}`, margin, y);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + 80, y); y += 15;
+
+            doc.setFillColor(score > 10 ? 220 : 255, score > 10 ? 255 : 220, score > 10 ? 220 : 220);
+            doc.roundedRect(margin, y, pageWidth - (margin * 2), 25, 3, 3, 'F');
+            doc.setFontSize(14); doc.text(`Score: ${score} / ${questions.length}`, margin + 10, y + 10);
+
+            let feedback = score >= 13 ? "Excellent work! You have a strong understanding." : score >= 10 ? "Good job! Review the topics you missed." : "Keep practicing. Read through Lesson 2 again.";
+            doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.text(feedback, margin + 10, y + 18); y += 35;
+
+            if (mistakes.length > 0) {
+                doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(0);
+                doc.text("Areas for Improvement:", margin, y); y += 10;
+                mistakes.forEach((m, idx) => {
+                    if (y > 270) { doc.addPage(); y = 20; }
+                    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(50);
+                    const qLines = doc.splitTextToSize(`${idx + 1}. ${m.q}`, pageWidth - margin * 2);
+                    doc.text(qLines, margin, y); y += (qLines.length * 5) + 2;
+                    doc.setFont("helvetica", "normal"); doc.setTextColor(200, 0, 0);
+                    doc.text(`Your Answer: ${m.yours}`, margin + 5, y); y += 5;
+                    doc.setTextColor(0, 150, 0); doc.text(`Correct Answer: ${m.correct}`, margin + 5, y); y += 10;
+                });
+            } else { doc.setFont("helvetica", "italic"); doc.text("Perfect score! No incorrect answers.", margin, y); }
+
+            doc.save(`SGS_L2_Quiz_${name.replace(/ /g, '_')}.pdf`);
+
+            document.querySelector('.quiz-container').innerHTML = `
+                <div style="text-align:center; padding: 4rem 1rem;">
+                    <i class="fa-solid fa-file-circle-check" style="font-size: 4rem; color: var(--correct); margin-bottom: 2rem;"></i>
+                    <h2>Assessment Submitted!</h2>
+                    <p style="margin: 1rem 0 2rem; color: var(--text-light); font-size: 1.1rem;">Your results PDF has been downloaded.</p>
+                    <a href="../unit2.html" class="submit-btn" style="text-decoration:none; display:inline-block;">Return to Unit</a>
+                </div>
+            `;
+        }
+
+        renderQuestions();
+    </script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body></html>

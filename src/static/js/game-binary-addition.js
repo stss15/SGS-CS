@@ -209,13 +209,13 @@
             // Output row (Q) - click buttons default 0
             const outputRow = document.getElementById('output-row');
             outputRow.innerHTML = Array.from({ length: 8 }, (_, i) =>
-                `<div class="interaction-bit" id="q${i}" onclick="toggleBit(this)">0</div>`
+                `<div class="interaction-bit" id="q${i}" data-toggle-bit="true">0</div>`
             ).join('');
 
             // Carry row (C) - click buttons default 0 + fixed 0
             const carryRow = document.getElementById('carry-row');
             carryRow.innerHTML = Array.from({ length: 7 }, (_, i) =>
-                `<div class="interaction-bit" id="c${i}" onclick="toggleBit(this)">0</div>`
+                `<div class="interaction-bit" id="c${i}" data-toggle-bit="true">0</div>`
             ).join('') + '<div class="fixed-carry">0</div>';
 
             document.getElementById('message').textContent = '';
@@ -439,7 +439,23 @@
             msgEl.className = `message ${type}`;
         }
 
+        function bindBitInteractionHandlers() {
+            const outputRow = document.getElementById('output-row');
+            const carryRow = document.getElementById('carry-row');
+            const handleBitToggle = (event) => {
+                const target = event.target;
+                if (!(target instanceof Element)) return;
+                const bit = target.closest('.interaction-bit[data-toggle-bit]');
+                if (!bit) return;
+                toggleBit(bit);
+            };
+
+            outputRow.addEventListener('click', handleBitToggle);
+            carryRow.addEventListener('click', handleBitToggle);
+        }
+
         // Initialize game
+        bindBitInteractionHandlers();
         updateUI();
         startGlobalTimer();
         generateProblem();

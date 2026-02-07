@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="/css/game-binary-stacker.css">
     <link rel="stylesheet" href="/css/standalone-nav.css">
 
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
 </head>
 
 <body>
@@ -61,10 +66,10 @@
             <div id="startScreen" class="overlay">
                 <div class="title"><span class="keyword" data-def="the basic computing element that is either 0 or 1, and is formed from the words Binary digit">BIT</span> <span>STACKER</span></div>
                 <p style="color: var(--text-muted); margin-bottom: 40px;">Binary Conversion Challenge</p>
-                <button class="btn btn-primary" style="width: 200px;" onclick="game.start()">
+                <button class="btn btn-primary" style="width: 200px;" data-sgs-onclick="game.start()">
                     <i class="fa-solid fa-play"></i> START MISSION
                 </button>
-                <button class="btn btn-secondary" style="width: 200px;" onclick="window.location.href='index.html'">
+                <button class="btn btn-secondary" style="width: 200px;" data-sgs-onclick="window.location.href='index.html'">
                     <i class="fa-solid fa-arrow-left"></i> RETURN
                 </button>
             </div>
@@ -87,10 +92,10 @@
                 </div>
 
                 <div style="display: flex; gap: 20px;">
-                    <button class="btn btn-primary" style="width: 180px;" onclick="game.start()">
+                    <button class="btn btn-primary" style="width: 180px;" data-sgs-onclick="game.start()">
                         <i class="fa-solid fa-rotate-right"></i> REBOOT
                     </button>
-                    <button class="btn btn-secondary" style="width: 180px;" onclick="window.location.href='index.html'">
+                    <button class="btn btn-secondary" style="width: 180px;" data-sgs-onclick="window.location.href='index.html'">
                         <i class="fa-solid fa-xmark"></i> ABORT
                     </button>
                 </div>
@@ -119,13 +124,13 @@
             </div>
 
             <div style="border-top: 1px solid var(--border); padding-top: 20px;">
-                <button class="btn btn-secondary" onclick="game.togglePause()">
+                <button class="btn btn-secondary" data-sgs-onclick="game.togglePause()">
                     <i class="fa-solid fa-pause"></i> <span id="pauseText">PAUSE</span>
                 </button>
-                <button class="btn btn-secondary" onclick="game.toggleAudio()">
+                <button class="btn btn-secondary" data-sgs-onclick="game.toggleAudio()">
                     <i class="fa-solid fa-volume-high" id="audioIcon"></i> AUDIO
                 </button>
-                <button class="btn btn-danger" onclick="game.gameOver()">
+                <button class="btn btn-danger" data-sgs-onclick="game.gameOver()">
                     <i class="fa-solid fa-power-off"></i> TERMINATE
                 </button>
             </div>
@@ -134,23 +139,32 @@
 
     <!-- Numpad (Dynamic) -->
     <div id="numpad" class="numpad-overlay hidden">
-        <button class="num-btn" onclick="game.handleInput('7')">7</button>
-        <button class="num-btn" onclick="game.handleInput('8')">8</button>
-        <button class="num-btn" onclick="game.handleInput('9')">9</button>
-        <button class="num-btn" onclick="game.handleInput('4')">4</button>
-        <button class="num-btn" onclick="game.handleInput('5')">5</button>
-        <button class="num-btn" onclick="game.handleInput('6')">6</button>
-        <button class="num-btn" onclick="game.handleInput('1')">1</button>
-        <button class="num-btn" onclick="game.handleInput('2')">2</button>
-        <button class="num-btn" onclick="game.handleInput('3')">3</button>
-        <button class="num-btn" style="color: var(--red);" onclick="game.closeNumpad()"><i
+        <button class="num-btn" data-sgs-onclick="game.handleInput('7')">7</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('8')">8</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('9')">9</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('4')">4</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('5')">5</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('6')">6</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('1')">1</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('2')">2</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('3')">3</button>
+        <button class="num-btn" style="color: var(--red);" data-sgs-onclick="game.closeNumpad()"><i
                 class="fa-solid fa-xmark"></i></button>
-        <button class="num-btn" onclick="game.handleInput('0')">0</button>
-        <button class="num-btn check" onclick="game.handleInput('CHECK')"><i class="fa-solid fa-check"></i></button>
-        <button class="num-btn del" onclick="game.handleInput('DEL')">Backspace</button>
+        <button class="num-btn" data-sgs-onclick="game.handleInput('0')">0</button>
+        <button class="num-btn check" data-sgs-onclick="game.handleInput('CHECK')"><i class="fa-solid fa-check"></i></button>
+        <button class="num-btn del" data-sgs-onclick="game.handleInput('DEL')">Backspace</button>
     </div>
 
     <script src="/js/game-binary-stacker.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
 </body>
 
 </html>

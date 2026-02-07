@@ -1,0 +1,51 @@
+---
+interface Props {
+  html: string;
+  fallbackLang?: string;
+}
+
+const { html, fallbackLang = 'en' } = Astro.props as Props;
+
+const htmlMatch = html.match(/<html([^>]*)>/i);
+const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+const bodyMatch = html.match(/<body([^>]*)>([\s\S]*?)<\/body>/i);
+
+const parseAttributes = (rawAttributes = ''): Record<string, string> => {
+  const attributes: Record<string, string> = {};
+
+  rawAttributes.replace(
+    /([^\s=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g,
+    (_match, name: string, doubleQuoted?: string, singleQuoted?: string, bareValue?: string) => {
+      attributes[name] = doubleQuoted ?? singleQuoted ?? bareValue ?? '';
+      return '';
+    }
+  );
+
+  return attributes;
+};
+
+const htmlAttributes = parseAttributes(htmlMatch?.[1] || '');
+if (!htmlAttributes.lang) {
+  htmlAttributes.lang = fallbackLang;
+}
+
+const bodyAttributes = parseAttributes(bodyMatch?.[1] || '');
+const headInner = headMatch?.[1] || '';
+const bodyInner = bodyMatch?.[2] || html;
+const isFullHtmlDocument = Boolean(headMatch && bodyMatch);
+---
+
+{
+  isFullHtmlDocument ? (
+    <html {...htmlAttributes}>
+      <head>
+        <Fragment set:html={headInner} />
+      </head>
+      <body {...bodyAttributes}>
+        <Fragment set:html={bodyInner} />
+      </body>
+    </html>
+  ) : (
+    <Fragment set:html={html} />
+  )
+}

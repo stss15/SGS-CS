@@ -1,0 +1,42 @@
+---
+import LegacyHtmlDocument from '../../../components/LegacyHtmlDocument.astro';
+import { getIbLegacyNunjucksRoutes, getIbLegacyRouteHtml } from '@sgs/content-schema';
+
+interface IbLegacyPageProps {
+  html: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getIbLegacyNunjucksRoutes();
+
+  return Promise.all(
+    routes
+      .map((route) => {
+        const match = route.routePath.match(/^\/ib\/([^/]+)\/([^/]+)\.html$/);
+        if (!match) {
+          return null;
+        }
+
+        return {
+          routePath: route.routePath,
+          section: match[1],
+          page: match[2]
+        };
+      })
+      .filter((route): route is { routePath: string; section: string; page: string } => route !== null)
+      .map(async (route) => ({
+        params: {
+          section: route.section,
+          page: route.page
+        },
+        props: {
+          html: await getIbLegacyRouteHtml(route.routePath)
+        }
+      }))
+  );
+}
+
+const { html } = Astro.props as IbLegacyPageProps;
+---
+
+<LegacyHtmlDocument html={html} />

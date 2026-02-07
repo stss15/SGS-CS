@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A3.1 Database Fundamentals | IB Computer Science</title>
+    <meta name="description" content="Databases vs files, the relational model, keys, referential integrity, relationship types, and pros/cons of relational databases.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/slide-deck.css">
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a href="/ib/A3/index.html" id="back-btn" title="Back" class="back-nav" aria-label="Go back">
+        <i class="fa-solid fa-circle-arrow-left" aria-hidden="true"></i>
+    </a>
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A3.1 Database Fundamentals</h1>
+            <h3 class="sub-title">Topic A3: Databases | From “Data” → Trusted Information</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 A school stores attendance in <strong>10 spreadsheets</strong>.</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">What happens when a student changes their surname?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Common misconception:</strong> “Spreadsheets are basically databases.”</p>
+                <p class="small-text">They store data, but they don’t enforce relationships or integrity across files.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> a <span class="keyword" data-def="Software that creates, maintains, secures and provides access to a database.">DBMS</span> can enforce rules so your data stays <strong>consistent</strong> and <strong>linked</strong>.</p>
+                <p class="small-text">That’s what turns “data” into information you can trust.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. WHAT IS A DATABASE? -->
+<section>
+    <h3>What is a <span class="keyword" data-def="An organized collection of related data stored so it can be accessed, managed and updated efficiently.">database</span>?</h3>
+    <div class="question-box">What makes a database different from “a folder of files”?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A database stores <strong>related</strong> data in a structured way.</p>
+            <p class="fragment">It supports <strong>efficient searching</strong>, <strong>updates</strong>, and <strong>multi-user access</strong>.</p>
+            <p class="fragment">It aims to reduce <span class="keyword" data-def="Unnecessary duplication of data that increases storage and can cause inconsistencies.">redundancy</span> and prevent inconsistencies.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-lightbulb"></i> Key idea</h4>
+            <p class="small-text fragment">A database is the <strong>data</strong>.<br>A <span class="keyword" data-def="Software that creates, maintains, secures and provides access to a database.">DBMS</span> is the <strong>software</strong> that manages it.</p>
+            <p class="small-text fragment">In exams, you often describe how rules/constraints in the DBMS keep data valid.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 4. RELATIONAL DATABASES -->
+<section>
+    <h3>Relational Databases: tables that connect</h3>
+    <div class="question-box">How can we store different things (students, classes, teachers) without repeating everything?</div>
+    <div class="box">
+        <p class="fragment">A <span class="keyword" data-def="Database model that stores data in related tables (relations) connected by keys.">relational database</span> stores data in <span class="keyword" data-def="A structured set of data stored in rows and columns.">tables</span>.</p>
+        <p class="fragment">Each table contains <span class="keyword" data-def="One complete set of fields describing a single entity instance in a table.">records</span> (rows) made of <span class="keyword" data-def="A single category of data stored for each record in a table.">fields</span> (columns).</p>
+    </div>
+    <div class="cols">
+        <div class="box-blue fragment">
+            <h4>STUDENT</h4>
+            <table class="small-table" style="width:100%; font-size:0.85em;">
+                <tr><th>StudentID</th><th>Name</th><th>TutorGroup</th></tr>
+                <tr><td>1024</td><td>Amir Khan</td><td>9A</td></tr>
+                <tr><td>1025</td><td>Leah Chen</td><td>9B</td></tr>
+            </table>
+        </div>
+        <div class="box fragment">
+            <h4>ATTENDANCE</h4>
+            <table class="small-table" style="width:100%; font-size:0.85em;">
+                <tr><th>Date</th><th>StudentID</th><th>Present</th></tr>
+                <tr><td>2025-09-01</td><td>1024</td><td>True</td></tr>
+                <tr><td>2025-09-01</td><td>1025</td><td>False</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A3.2:</strong> database design tools (schemas + ERDs) help you decide <em>which</em> tables you need and <em>how</em> they connect.</p>
+    </div>
+</section>
+
+<!-- 5. KEYS -->
+<section>
+    <h3>Keys: how tables stay connected</h3>
+    <div class="question-box">How can we refer to a student without copying their name into every table?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Field (or set of fields) that uniquely identifies a record in a table.">Primary key</span> → uniquely identifies a record.</p>
+            <p class="fragment"><span class="keyword" data-def="Field (or set of fields) in one table that references a primary key in another table.">Foreign key</span> → points to a primary key in another table.</p>
+            <p class="fragment"><span class="keyword" data-def="Primary key made from two or more fields combined to create uniqueness.">Composite key</span> → uses multiple fields to be unique.</p>
+        </div>
+        <div class="box-blue">
+            <h4>In our example</h4>
+            <p class="small-text fragment"><strong>STUDENT.StudentID</strong> is a primary key.</p>
+            <p class="small-text fragment"><strong>ATTENDANCE.StudentID</strong> is a foreign key.</p>
+            <p class="small-text fragment">If we stored <code>(Date, StudentID)</code> as a unique pair, that can form a composite key.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 6. REFERENTIAL INTEGRITY -->
+<section>
+    <h3><span class="keyword" data-def="Constraint ensuring every foreign key value matches an existing primary key (or is null where allowed).">Referential integrity</span></h3>
+    <div class="question-box">What should happen if ATTENDANCE references a StudentID that doesn’t exist?</div>
+    <div class="box">
+        <p class="fragment">Referential integrity prevents “broken links” between tables.</p>
+        <p class="fragment">A foreign key value must match an existing primary key (or be null if allowed).</p>
+    </div>
+    <div class="cols">
+        <div class="box-red fragment">
+            <h4><i class="fa-solid fa-link-slash"></i> Broken link</h4>
+            <p class="small-text">ATTENDANCE.StudentID = <code>9999</code></p>
+            <p class="small-text">…but there is no STUDENT with StudentID <code>9999</code>.</p>
+        </div>
+        <div class="box-green fragment">
+            <h4><i class="fa-solid fa-shield"></i> DBMS rule</h4>
+            <p class="small-text">The DBMS rejects the insert/update (or requires you to create the student first).</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A3.3:</strong> <span class="keyword" data-def="A sequence of database operations treated as one unit of work.">transactions</span> help keep integrity when multiple changes must succeed together.</p>
+    </div>
+</section>
+
+<!-- 7. RELATIONSHIP TYPES -->
+<section>
+    <h3>Common relationship types</h3>
+    <div class="question-box">If one student can join many clubs, what kind of relationship is that?</div>
+    <div class="box">
+        <p class="fragment"><span class="keyword" data-def="Relationship where each record in one table matches at most one record in another.">1:1</span> — rare (e.g., Person ↔ Passport)</p>
+        <p class="fragment"><span class="keyword" data-def="Relationship where one record relates to many records in another table.">1:m</span> — common (e.g., Teacher → Students)</p>
+        <p class="fragment"><span class="keyword" data-def="Relationship where many records relate to many records (implemented with a junction table).">m:m</span> — needs a <span class="keyword" data-def="Table used to represent a many-to-many relationship by storing pairs of foreign keys.">junction table</span> (e.g., Students ↔ Clubs)</p>
+    </div>
+    <div class="cols">
+        <div class="box-blue fragment">
+            <h4>m:m becomes two 1:m</h4>
+            <p class="small-text"><code>STUDENT</code> —1:m→ <code>MEMBERSHIP</code> ←m:1— <code>CLUB</code></p>
+            <p class="small-text">MEMBERSHIP stores <code>(StudentID, ClubID)</code>.</p>
+        </div>
+        <div class="box fragment">
+            <h4>Why it matters</h4>
+            <p class="small-text">Relationship types decide where foreign keys go (and whether you need an extra table).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 8. QUICK CHECK 1 -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check</h3>
+    <p><strong>Identify</strong> the best key choice and relationship type.</p>
+    <div class="box">
+        <p class="fragment"><strong>Q1:</strong> A library table has: <code>BookTitle</code>, <code>ISBN</code>, <code>AuthorName</code>. Which is the best <em>primary key</em>?</p>
+        <p class="fragment"><strong>Q2:</strong> Borrowers can borrow many books, and books can be borrowed many times. What relationship is Borrower ↔ Book?</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>A1:</strong> <strong>ISBN</strong> (it’s designed to uniquely identify a book edition).</p>
+        <p><strong>A2:</strong> <strong>many-to-many</strong> (use a junction table like <code>LOAN(BorrowerID, BookID, DateOut...)</code>).</p>
+    </div>
+</section>
+
+<!-- 9. BENEFITS -->
+<section>
+    <h3>Benefits of relational databases</h3>
+    <div class="question-box">Why do organisations invest in databases instead of “just files”?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Integrity:</strong> constraints prevent invalid data.</p>
+            <p class="fragment"><strong>Reduced duplication:</strong> data is stored once, linked by keys.</p>
+            <p class="fragment"><strong>Concurrency control:</strong> many users can work safely at the same time.</p>
+            <p class="fragment"><strong>Security:</strong> permissions restrict who can see/change data.</p>
+            <p class="fragment"><strong>Powerful querying:</strong> <span class="keyword" data-def="Language used to define, query and modify relational data.">SQL</span> retrieves exactly what you need.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-lightbulb"></i> Did you know?</h4>
+            <p class="small-text fragment">A relational database can answer questions across tables using <span class="keyword" data-def="SQL operation combining rows from two tables based on a related field.">JOIN</span> — like “Which students were absent last week?”</p>
+            <p class="small-text fragment">Design decisions here affect performance later (normalization vs denormalization).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 10. LIMITATIONS -->
+<section>
+    <h3>Limitations of relational databases</h3>
+    <div class="question-box">When might a relational database be a poor fit?</div>
+    <div class="cols">
+        <div class="box-red">
+            <p class="fragment"><strong>Rigid structure:</strong> changing a schema can be slow and risky.</p>
+            <p class="fragment"><strong>Complex design:</strong> good table design requires planning.</p>
+            <p class="fragment"><strong>Big-data scaling:</strong> joins + indexing can become expensive at huge scale.</p>
+            <p class="fragment"><strong>Unstructured data:</strong> data with different shapes doesn’t fit tables easily.</p>
+        </div>
+        <div class="box">
+            <h4><i class="fa-solid fa-compass"></i> Choosing the right tool</h4>
+            <p class="small-text fragment">Relational databases excel when you need <strong>consistency</strong> and <strong>relationships</strong>.</p>
+            <p class="small-text fragment">Later (A3.4 HL), you’ll compare with <span class="keyword" data-def="Family of non-relational databases designed for scalability and flexible data models.">NoSQL</span> approaches.</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A4:</strong> machine learning projects often start by extracting clean, consistent training data from databases.</p>
+    </div>
+</section>
+
+<!-- 11. QUICK CHECK 2 -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check</h3>
+    <p><strong>Decide</strong> which storage approach fits best.</p>
+    <div class="box">
+        <p class="fragment">A social-media app stores posts where each post can have different fields (polls, images, links, location, reactions).</p>
+        <p class="fragment"><strong>Explain</strong> why a relational database might be harder to use here, and what type of database could be more flexible.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p>Relational databases prefer a <strong>fixed schema</strong>; rapidly changing post formats can cause frequent schema changes.</p>
+        <p>A <span class="keyword" data-def="NoSQL database storing data as documents (e.g., JSON-like objects).">document database</span> can store each post as a document with only the fields it needs.</p>
+    </div>
+</section>
+
+<!-- 12. MISCONCEPTION CHECK (VERTICAL) -->
+<section>
+    <section>
+        <h3>Misconception Check</h3>
+        <div class="question-box">True or False? (Press Down)</div>
+        <div class="box">
+            <p>A. “A foreign key must be unique.”</p>
+            <p>B. “Referential integrity prevents broken links between tables.”</p>
+            <p>C. “Many-to-many relationships usually need a junction table.”</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> A foreign key often repeats (e.g., many ATTENDANCE rows for one StudentID).</p>
+            <p class="fragment"><strong>B: True.</strong> It ensures foreign keys refer to existing primary keys.</p>
+            <p class="fragment"><strong>C: True.</strong> The junction table stores pairs of keys to represent the m:m relationship.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 13. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color:white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color:white;">
+        <ul style="line-height:1.5;">
+            <li>A <strong>database</strong> stores related data; a <strong>DBMS</strong> enforces rules and access.</li>
+            <li>Relational databases use <strong>tables</strong> connected by <strong>keys</strong> (primary/foreign/composite).</li>
+            <li><strong>Referential integrity</strong> prevents broken links between tables.</li>
+            <li>Relationship types (1:1, 1:m, m:m) determine how you design tables.</li>
+            <li>Relational databases are great for <strong>consistency</strong>, but less ideal for highly <strong>unstructured</strong> data.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color:white;">
+        <p><strong>Coming up:</strong> A3.2 Database Design — schemas, ERDs, and normalization.</p>
+    </div>
+</section>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="/js/slide-deck.js"></script>
+    
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body></html>

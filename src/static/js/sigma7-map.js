@@ -105,6 +105,7 @@
         overlay.querySelector('.map-modal-backdrop').addEventListener('click', closeModal);
         overlay.querySelector('.map-modal-close').addEventListener('click', closeModal);
         overlay.querySelector('.room-panel-close').addEventListener('click', closeRoomPanel);
+        overlay.querySelector('#map-svg-container').addEventListener('click', handleMapClick);
         document.addEventListener('keydown', handleKeydown);
         
         return overlay;
@@ -234,7 +235,7 @@
         }
         
         return `
-            <g class="room revealed ${highlight ? 'highlight' : ''}" data-room="${id}" style="cursor: pointer;" onclick="window.sigma7Map.zoomRoom('${id}')">
+            <g class="room revealed ${highlight ? 'highlight' : ''}" data-room="${id}" style="cursor: pointer;">
                 <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#grid)" stroke="${color}" stroke-width="${highlight ? 2 : 1}" rx="4"/>
                 ${highlight ? `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${color}" stroke-width="2" stroke-dasharray="6 3" rx="4" opacity="0.5"/>` : ''}
                 
@@ -310,6 +311,17 @@
         document.getElementById('room-panel-contents').innerHTML = contents;
         panel.classList.add('active');
         currentZoom = roomId;
+    }
+
+    function handleMapClick(event) {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const room = target.closest('.room.revealed[data-room]');
+        if (!room) return;
+        const roomId = room.getAttribute('data-room');
+        if (roomId) {
+            zoomRoom(roomId);
+        }
     }
 
     // Close room panel
@@ -567,7 +579,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Connect any existing show-map-btn buttons
         document.querySelectorAll('.show-map-btn').forEach(btn => {
-            btn.onclick = openModal;
+            btn.addEventListener('click', openModal);
         });
         
         // Also handle old placeholder divs (backwards compatibility)
@@ -576,7 +588,7 @@
             const btn = document.createElement('button');
             btn.className = 'show-map-btn';
             btn.innerHTML = '<i class="fa-solid fa-map"></i> Show Station Map';
-            btn.onclick = openModal;
+            btn.addEventListener('click', openModal);
             placeholder.parentNode.insertBefore(btn, placeholder);
             placeholder.remove();
         }

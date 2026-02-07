@@ -12,6 +12,22 @@ const TOPICS_DATA_PATH = path.join(ROOT_DIR, 'src/data/topics.json');
 const STATIC_DIR = path.join(ROOT_DIR, 'src/static');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public');
 const MANIFEST_PATH = path.join(ROOT_DIR, 'meta/site-manifest.json');
+const AUTH_GATE_MARKER = 'data-sgs-auth-gate';
+const LEGACY_INLINE_EVENTS_MARKER = 'data-sgs-inline-events';
+const LEGACY_INLINE_EVENTS_SCRIPT = '/js/legacy-inline-events.js';
+const DEFAULT_META_DESCRIPTION =
+    "SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.";
+const DEFAULT_VIEWPORT_META = '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+const AUTH_HEAD_SNIPPET = `
+    <!-- ${AUTH_GATE_MARKER} -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>`;
+const AUTH_BODY_SNIPPET = `
+    <!-- ${AUTH_GATE_MARKER} -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>`;
 
 const toPosix = (filePath) => filePath.split(path.sep).join('/');
 const buildTimestamp = new Date().toISOString();
@@ -264,6 +280,185 @@ const ensureMissionControlPlaceholder = async () => {
     console.log('Wrote Mission Control placeholder.');
 };
 
+const injectAuthGate = (html) => {
+    if (html.includes(AUTH_GATE_MARKER)) return html;
+
+    let updated = html;
+    if (/<\/head>/i.test(updated)) {
+        updated = updated.replace(/<\/head>/i, `${AUTH_HEAD_SNIPPET}\n</head>`);
+    } else {
+        updated = `${AUTH_HEAD_SNIPPET}\n${updated}`;
+    }
+
+    if (/<\/body>/i.test(updated)) {
+        updated = updated.replace(/<\/body>/i, `${AUTH_BODY_SNIPPET}\n</body>`);
+    } else {
+        updated = `${updated}\n${AUTH_BODY_SNIPPET}`;
+    }
+
+    return updated;
+};
+
+const injectHeadMeta = (html, metaTag) => {
+    if (/<\/head>/i.test(html)) {
+        return html.replace(/<\/head>/i, `    ${metaTag}\n</head>`);
+    }
+
+    return `${metaTag}\n${html}`;
+};
+
+const escapeHtmlAttribute = (value) =>
+    value
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+const transformInlineEventsInFragment = (fragment) => {
+    let replacements = 0;
+    const transformed = fragment.replace(
+        /\s(on[a-z]+)\s*=\s*("([^"]*)"|'([^']*)')/gi,
+        (_, eventName, _quoted, doubleQuotedValue, singleQuotedValue) => {
+            const expression = doubleQuotedValue !== undefined ? doubleQuotedValue : singleQuotedValue || '';
+            replacements += 1;
+            return ` data-sgs-${eventName.toLowerCase()}="${escapeHtmlAttribute(expression)}"`;
+        }
+    );
+
+    return { transformed, replacements };
+};
+
+const convertLegacyInlineHandlers = (html) => {
+    const nonTransformBlocks = /<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>/gi;
+
+    let output = '';
+    let lastIndex = 0;
+    let totalReplacements = 0;
+
+    let match = nonTransformBlocks.exec(html);
+    while (match) {
+        const before = html.slice(lastIndex, match.index);
+        const converted = transformInlineEventsInFragment(before);
+        output += converted.transformed;
+        totalReplacements += converted.replacements;
+
+        output += match[0];
+        lastIndex = match.index + match[0].length;
+        match = nonTransformBlocks.exec(html);
+    }
+
+    const tail = html.slice(lastIndex);
+    const convertedTail = transformInlineEventsInFragment(tail);
+    output += convertedTail.transformed;
+    totalReplacements += convertedTail.replacements;
+
+    return { html: output, replacements: totalReplacements };
+};
+
+const injectLegacyInlineEventsRuntime = (html) => {
+    if (html.includes(LEGACY_INLINE_EVENTS_MARKER) || html.includes(LEGACY_INLINE_EVENTS_SCRIPT)) {
+        return html;
+    }
+
+    const snippet = `
+    <!-- ${LEGACY_INLINE_EVENTS_MARKER} -->
+    <script src="${LEGACY_INLINE_EVENTS_SCRIPT}"></script>`;
+
+    if (/<\/body>/i.test(html)) {
+        return html.replace(/<\/body>/i, `${snippet}\n</body>`);
+    }
+
+    return `${html}${snippet}`;
+};
+
+const hasLegacyDataEventAttributes = (html) => /\sdata-sgs-on[a-z]+\s*=\s*["'][^"']*["']/i.test(html);
+
+const ensureBlankTargetRelSecurity = (html) =>
+    html.replace(/<a\b[^>]*\btarget\s*=\s*["']_blank["'][^>]*>/gi, (tag) => {
+        const relMatch = tag.match(/\brel\s*=\s*["']([^"']*)["']/i);
+        const secureTokens = ['noopener', 'noreferrer'];
+
+        if (!relMatch) {
+            return tag.replace(/>$/, ' rel="noopener noreferrer">');
+        }
+
+        const existingTokens = relMatch[1]
+            .split(/\s+/)
+            .map((token) => token.trim().toLowerCase())
+            .filter(Boolean);
+        const mergedTokens = Array.from(new Set([...existingTokens, ...secureTokens]));
+        const mergedRel = `rel="${mergedTokens.join(' ')}"`;
+
+        return tag.replace(/\brel\s*=\s*["'][^"']*["']/i, mergedRel);
+    });
+
+const ensureImageDecoding = (html) => {
+    const nonTransformBlocks = /<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>/gi;
+    let output = '';
+    let lastIndex = 0;
+    let match = nonTransformBlocks.exec(html);
+
+    const transformFragment = (fragment) =>
+        fragment.replace(/<img\b[^>]*>/gi, (tag) => {
+            if (/\bdecoding\s*=\s*["'][^"']*["']/i.test(tag)) return tag;
+            return tag.replace(/>$/, ' decoding="async">');
+        });
+
+    while (match) {
+        output += transformFragment(html.slice(lastIndex, match.index));
+        output += match[0];
+        lastIndex = match.index + match[0].length;
+        match = nonTransformBlocks.exec(html);
+    }
+
+    output += transformFragment(html.slice(lastIndex));
+    return output;
+};
+
+const ensureCoreMetaTags = (html) => {
+    let updated = html;
+    if (!/<meta[^>]+name=["']viewport["']/i.test(updated)) {
+        updated = injectHeadMeta(updated, DEFAULT_VIEWPORT_META);
+    }
+
+    if (!/<meta[^>]+name=["']description["']/i.test(updated)) {
+        updated = injectHeadMeta(
+            updated,
+            `<meta name="description" content="${DEFAULT_META_DESCRIPTION}">`
+        );
+    }
+
+    return updated;
+};
+
+const applyAuthGateToOutput = async () => {
+    const htmlFiles = await fg('**/*.html', { cwd: OUTPUT_DIR });
+    let inlineHandlerReplacements = 0;
+
+    await Promise.all(
+        htmlFiles.map(async (relativePath) => {
+            const filePath = path.join(OUTPUT_DIR, relativePath);
+            const source = await fs.readFile(filePath, 'utf8');
+            let updated = injectAuthGate(source);
+            updated = ensureCoreMetaTags(updated);
+            updated = ensureBlankTargetRelSecurity(updated);
+            updated = ensureImageDecoding(updated);
+            const converted = convertLegacyInlineHandlers(updated);
+            updated = converted.html;
+            if (converted.replacements > 0 || hasLegacyDataEventAttributes(updated)) {
+                inlineHandlerReplacements += converted.replacements;
+                updated = injectLegacyInlineEventsRuntime(updated);
+            }
+            if (updated !== source) {
+                await fs.writeFile(filePath, updated);
+            }
+        })
+    );
+    console.log(
+        `Injected auth gate and quality upgrades into ${htmlFiles.length} HTML files (${inlineHandlerReplacements} inline handlers migrated).`
+    );
+};
+
 const buildFile = async (relativePath) => {
     const sourcePath = path.join(SRC_DIR, relativePath);
     const raw = await fs.readFile(sourcePath, 'utf8');
@@ -341,6 +536,7 @@ const buildAll = async () => {
     await createLegacySlideAliases();
     await createLegacyScenarioAliases();
     await ensureMissionControlPlaceholder();
+    await applyAuthGateToOutput();
 };
 
 buildAll().catch((err) => {

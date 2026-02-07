@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1.3 Flowcharts & Pseudocode | IB Computer Science</title>
+    <meta name="description" content="Representing algorithms clearly: flowchart symbols, tracing with trace tables, MOD/DIV, and language-agnostic pseudocode.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/slide-deck.css">
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a href="/ib/B1/index.html" id="back-btn" title="Back" class="back-nav" aria-label="Go back">
+        <i class="fa-solid fa-circle-arrow-left" aria-hidden="true"></i>
+    </a>
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B1.3 Flowcharts &amp; Pseudocode</h1>
+            <h3 class="sub-title">Topic B1: Computational Thinking | Communicating Algorithms Clearly</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM B1.2) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall B1.2 before expressing algorithms formally.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>Which pillar focuses on removing irrelevant detail?</li>
+            <li>Which pillar happens before coding by breaking the problem into parts?</li>
+            <li>What makes an algorithm a valid algorithm?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">Which pillar focuses on removing irrelevant detail?</div>
+        <div class="fragment box-blue">
+            <p><strong>Abstraction</strong></p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">Which pillar happens before coding by breaking the problem into parts?</div>
+        <div class="fragment box-blue">
+            <p><strong>Decomposition</strong></p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What makes an algorithm a valid algorithm?</div>
+        <div class="fragment box-blue">
+            <p>It is finite, ordered, and unambiguous, producing a predictable outcome for valid inputs.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 How do you explain an algorithm… without choosing a programming language?</p>
+                <p style="font-size:1.1em; margin-top:0.8em;">You want clarity, not syntax arguments.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> “If it’s not code, it’s not precise.”</p>
+                <p class="small-text">We can be precise using standard representations.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Key idea:</strong> flowcharts and pseudocode communicate algorithms clearly and consistently.</p>
+                <p class="small-text">They support design, verification, and exam communication.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. FLOWCHART SYMBOLS -->
+<section>
+    <h3><span class="keyword" data-def="Flowchart: diagram that represents an algorithm using standard symbols and flow lines.">Flowcharts</span>: Standard Symbols</h3>
+    <div class="question-box">If every diagram uses different shapes, how can anyone mark it fairly?</div>
+    <div class="box">
+        <p class="fragment"><strong>Terminator (oval):</strong> Start/End</p>
+        <p class="fragment"><strong>I/O (parallelogram):</strong> Input or Output</p>
+        <p class="fragment"><strong>Process (rectangle):</strong> Calculation / assignment</p>
+        <p class="fragment"><strong>Decision (diamond):</strong> Branching (Yes/No or True/False)</p>
+        <p class="fragment"><strong>Connector (small circle):</strong> Continue flow elsewhere</p>
+    </div>
+    <div class="box-blue fragment">
+        <p class="small-text"><strong>Marking tip:</strong> decision branches must be labelled and flowlines must connect clearly.</p>
+    </div>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">Which flowchart symbol represents a decision?</div>
+        <div class="fragment box-blue">
+            <p><strong>Diamond</strong></p>
+        </div>
+    </section>
+</section>
+
+<!-- 5. TRACE TABLES -->
+<section>
+    <h3><span class="keyword" data-def="Trace table: table used to track variable values and outputs step-by-step through an algorithm.">Trace Tables</span></h3>
+    <div class="question-box">How do you prove your algorithm does what you think it does?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A trace table records variable values after each step.</p>
+            <p class="fragment">It helps verify logic and spot incorrect branches.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-pen-to-square"></i> Top tip</h4>
+            <p class="small-text fragment">Write the value after <em>every</em> assignment, even if it didn’t change.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 6. MOD + DIV -->
+<section>
+    <h3>MOD &amp; DIV</h3>
+    <div class="question-box">How do we express remainder and integer division clearly in algorithms?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="MOD: returns the remainder after integer division.">MOD</span> returns the remainder.</p>
+            <p class="fragment"><span class="keyword" data-def="DIV: integer division returning the quotient without remainder.">DIV</span> returns the integer quotient.</p>
+        </div>
+        <div class="box-blue">
+            <p class="small-text fragment">Example: <code>17 MOD 5 = 2</code></p>
+            <p class="small-text fragment">Example: <code>17 DIV 5 = 3</code></p>
+        </div>
+    </div>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">What does <code>10 MOD 3</code> evaluate to?</div>
+        <div class="fragment box-blue">
+            <p><strong>1</strong> — remainder after dividing 10 by 3.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 7. PSEUDOCODE BASICS -->
+<section>
+    <h3><span class="keyword" data-def="Pseudocode: language-agnostic description of an algorithm using structured, readable statements.">Pseudocode</span> Basics</h3>
+    <div class="question-box">How can we write algorithms so humans understand them, regardless of language?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Assignment:</strong> <code>x ← 5</code></p>
+            <p class="fragment"><strong>Selection:</strong> IF / ELSE</p>
+            <p class="fragment"><strong>Iteration:</strong> FOR / WHILE</p>
+            <p class="fragment"><strong>I/O:</strong> INPUT / OUTPUT</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-code"></i> Example</h4>
+            <pre class="fragment"><code>INPUT n\nIF n MOD 2 = 0 THEN\n    OUTPUT \"even\"\nELSE\n    OUTPUT \"odd\"\nEND IF</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 8. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Unlabelled decision branches are acceptable if the meaning is “obvious”.</p>
+            <p class="fragment"><strong>B.</strong> Trace tables can help verify an algorithm’s logic.</p>
+            <p class="fragment"><strong>C.</strong> MOD returns an integer quotient.</p>
+            <p class="fragment"><strong>D.</strong> Pseudocode is intended to be readable and language-agnostic.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Labels reduce ambiguity and are required for clear marking.</p>
+            <p class="fragment"><strong>B: True.</strong> They track variable states step-by-step.</p>
+            <p class="fragment"><strong>C: False.</strong> MOD returns the remainder; DIV returns the quotient.</p>
+            <p class="fragment"><strong>D: True.</strong> It focuses on logic, not language syntax.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 9. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li>Flowcharts and pseudocode communicate algorithm logic without language-specific code.</li>
+            <li>Use standard symbols and labelled decision branches in flowcharts.</li>
+            <li>Trace tables verify logic by tracking variable values step-by-step.</li>
+            <li>MOD and DIV express remainder and integer division clearly.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> B1.4 Algorithm Design — building efficient, testable solutions from a specification.</p>
+    </div>
+</section>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="/js/slide-deck.js"></script>
+    
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body></html>

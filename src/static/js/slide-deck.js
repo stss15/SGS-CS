@@ -1,6 +1,23 @@
 (function () {
     if (typeof Reveal === 'undefined') return;
 
+    const initImageFallbacks = () => {
+        const images = document.querySelectorAll('img[data-fallback-src]');
+        images.forEach((image) => {
+            const applyFallback = () => {
+                const fallbackSrc = image.getAttribute('data-fallback-src');
+                if (!fallbackSrc || image.dataset.fallbackApplied === 'true') return;
+                image.dataset.fallbackApplied = 'true';
+                image.src = fallbackSrc;
+            };
+
+            image.addEventListener('error', applyFallback);
+            if (image.complete && image.naturalWidth === 0) {
+                applyFallback();
+            }
+        });
+    };
+
     const AutoFit = {
         id: 'auto-fit',
         init: function (deck) {
@@ -87,13 +104,11 @@
         controls: true,
         progress: true,
         center: true,
-        // Increased margin to create space for fixed header/footer elements
-        // This tells Reveal to leave space around slides
-        margin: 0.08,
-        width: 1600,
-        height: 900,
-        minScale: 0.15,
-        maxScale: 1.2,
+        margin: 0.05,
+        width: 1920,
+        height: 1080,
+        minScale: 0.2,
+        maxScale: 1,
         transition: 'slide',
         backgroundTransition: 'fade',
         autoAnimate: true,
@@ -116,6 +131,7 @@
 
     const config = { ...defaultOptions, ...supplied, plugins };
 
+    initImageFallbacks();
     ensureAutoFitWrappers(document.querySelector('.reveal'));
     Reveal.initialize(config);
 

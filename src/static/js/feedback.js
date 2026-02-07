@@ -167,25 +167,55 @@
             feature: featureModal,
         };
 
-        const openModal = (type) => {
+        let activeModal = null;
+        let lastTrigger = null;
+
+        Object.values(modals).forEach((modal) => {
+            modal.setAttribute('aria-hidden', 'true');
+        });
+
+        const getFocusableElements = (modal) =>
+            Array.from(
+                modal.querySelectorAll(
+                    'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                )
+            );
+
+        const openModal = (type, trigger = null) => {
             const modal = modals[type];
             if (!modal) return;
+            Object.values(modals).forEach((candidate) => {
+                if (candidate === modal) return;
+                candidate.classList.remove('active');
+                candidate.setAttribute('aria-hidden', 'true');
+            });
+            lastTrigger = trigger;
+            activeModal = modal;
             overlay.classList.add('active');
             modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
             document.body.classList.add('modal-open');
-            const focusTarget = modal.querySelector('input, select, textarea');
+            const focusTarget = modal.querySelector('input, select, textarea, button');
             focusTarget?.focus();
         };
 
         const closeModal = () => {
             overlay.classList.remove('active');
-            Object.values(modals).forEach((modal) => modal.classList.remove('active'));
+            Object.values(modals).forEach((modal) => {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+            });
             document.body.classList.remove('modal-open');
+            activeModal = null;
+            if (lastTrigger instanceof HTMLElement) {
+                lastTrigger.focus();
+            }
+            lastTrigger = null;
         };
 
         document.querySelectorAll('[data-open-feedback]').forEach((btn) => {
             const type = btn.getAttribute('data-open-feedback');
-            btn.addEventListener('click', () => openModal(type));
+            btn.addEventListener('click', () => openModal(type, btn));
         });
 
         document.querySelectorAll('[data-close-modal]').forEach((btn) => {
@@ -195,7 +225,29 @@
         overlay.addEventListener('click', closeModal);
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') closeModal();
+            if (event.key === 'Escape') {
+                closeModal();
+                return;
+            }
+
+            if (event.key !== 'Tab' || !activeModal) {
+                return;
+            }
+
+            const focusable = getFocusableElements(activeModal);
+            if (!focusable.length) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            const active = document.activeElement;
+
+            if (event.shiftKey && active === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && active === last) {
+                event.preventDefault();
+                first.focus();
+            }
         });
 
         bugForm?.addEventListener('submit', (event) => {

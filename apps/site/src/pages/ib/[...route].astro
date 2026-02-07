@@ -1,0 +1,30 @@
+---
+import LegacyHtmlDocument from '../../components/LegacyHtmlDocument.astro';
+import { getIbLegacyAllRoutes, getIbLegacyNunjucksRoutes, getIbLegacyRouteHtml } from '@sgs/content-schema';
+
+interface IbLegacyExtraPageProps {
+  html: string;
+}
+
+export async function getStaticPaths() {
+  const [allRoutes, njkRoutes] = await Promise.all([getIbLegacyAllRoutes(), getIbLegacyNunjucksRoutes()]);
+  const njkRouteSet = new Set(njkRoutes.map((route) => route.routePath));
+
+  return Promise.all(
+    allRoutes
+      .filter((route) => route.routePath !== '/ib/index.html' && !njkRouteSet.has(route.routePath))
+      .map(async (route) => ({
+        params: {
+          route: route.routePath.replace(/^\/ib\//, '').replace(/\.html$/, '')
+        },
+        props: {
+          html: await getIbLegacyRouteHtml(route.routePath)
+        }
+      }))
+  );
+}
+
+const { html } = Astro.props as IbLegacyExtraPageProps;
+---
+
+<LegacyHtmlDocument html={html} />

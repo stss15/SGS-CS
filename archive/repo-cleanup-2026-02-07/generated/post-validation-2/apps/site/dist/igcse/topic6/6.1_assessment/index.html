@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.1 Automated Systems Assessment | St George's CS</title>
+    <!-- version: retryable-assessment v4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    
+        <link rel="stylesheet" href="/css/assessment-base.css">
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
+</head><body data-assessment-json="/data/assessments/igcse-topic6-6-1.json">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <!-- Start Modal -->
+    <div id="startOverlay">
+        <div id="startCard">
+            <h2>Assessment</h2>
+            <div class="test-name">6.1 <span class="keyword" data-def="a combination of software and hardware designed and programmed to work automatically without the need for any human intervention">Automated Systems</span></div>
+            <p class="instructions">
+                Answer all questions by selecting from dropdowns, dragging items, or matching pairs.
+                You must get all answers correct to complete the assessment.
+                Your attempts are tracked and a feedback PDF will be generated upon completion.
+            </p>
+            <label for="teacherSelect">Select Your Teacher</label>
+            <select id="teacherSelect">
+                <option value="" disabled selected>Choose teacher...</option>
+                <option value="Mr Stewart">Mr Stewart</option>
+                <option value="Mr Watling">Mr Watling</option>
+            </select>
+            <button data-sgs-onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <div id="timerDisplay" style="display:none;"><i class="fa-solid fa-clock"></i> <span id="timer">00:00</span></div>
+
+    <!-- Back Button -->
+    <a href="assessments.html" id="back-btn" title="Back to Topic 6 Assessments"><i
+            class="fa-solid fa-circle-arrow-left"></i></a>
+
+    <!-- Logo -->
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo" decoding="async">
+
+    <header>
+        <h1>6.1 Assessment</h1>
+        <p class="subtitle">Sensors, Actuators & Automation</p>
+    </header>
+
+    <main id="main-content" style="display:none;">
+
+        <!-- Q1: Sensors vs Actuators (Categorisation) -->
+        <div class="question-block" id="q1-block" data-summary="Sensors vs Actuators">
+            <div class="q-header">
+                <span>Q1. Sensors vs Actuators</span>
+                <span class="q-status" id="q1-status">Unanswered</span>
+            </div>
+            <p>Drag the devices into the correct category.</p>
+            <div class="draggable-source" id="q1-source" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
+                <!-- Items will be shuffled by JS -->
+            </div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-sensor" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
+                    <h4>Sensors (Input)</h4>
+                </div>
+                <div class="bucket" id="bucket-actuator" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
+                    <h4>Actuators (Output)</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: The Automation Loop (Ordering) -->
+        <div class="question-block" id="q2-block" data-summary="Automation Loop">
+            <div class="q-header">
+                <span>Q2. The Automation Loop</span>
+                <span class="q-status" id="q2-status">Unanswered</span>
+            </div>
+            <p>Order the steps of an <span class="keyword" data-def="a combination of software and hardware designed and programmed to work automatically without the need for any human intervention">automated system</span>.</p>
+            <div class="order-list">
+                <div class="order-item"><span class="order-num">1.</span> <select id="q2a"
+                        data-answer="Sensors take readings from environment"></select></div>
+                <div class="order-item"><span class="order-num">2.</span> <select id="q2b"
+                        data-answer="Data converted from Analogue to Digital (ADC)"></select></div>
+                <div class="order-item"><span class="order-num">3.</span> <select id="q2c"
+                        data-answer="Microprocessor compares data to pre-set values"></select></div>
+                <div class="order-item"><span class="order-num">4.</span> <select id="q2d"
+                        data-answer="Signal sent to Actuators if action needed"></select></div>
+                <div class="order-item"><span class="order-num">5.</span> <select id="q2e"
+                        data-answer="Actuators perform the physical task"></select></div>
+            </div>
+        </div>
+
+        <!-- Q3: Advantages vs Disadvantages (Categorisation) -->
+        <div class="question-block" id="q3-block" data-summary="Pros and Cons">
+            <div class="q-header">
+                <span>Q3. Advantages vs Disadvantages</span>
+                <span class="q-status" id="q3-status">Unanswered</span>
+            </div>
+            <p>Drag the statements into the correct category.</p>
+            <div class="draggable-source" id="q3-source" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)"></div>
+            <div class="bucket-container">
+                <div class="bucket" id="bucket-advantage" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
+                    <h4>Advantages</h4>
+                </div>
+                <div class="bucket" id="bucket-disadvantage" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
+                    <h4>Disadvantages</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q4: Application Scenarios (Matching) -->
+        <div class="question-block" id="q4-block" data-summary="Applications">
+            <div class="q-header">
+                <span>Q4. Application Scenarios</span>
+                <span class="q-status" id="q4-status">Unanswered</span>
+            </div>
+            <p>Match the system to its key benefit.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q4"></div>
+                <div class="col-terms" id="col-terms-q4"></div>
+            </div>
+        </div>
+
+        <!-- Q5: Sensor Selection (Dropdown Gap Fill) -->
+        <div class="question-block" id="q5-block" data-summary="Sensor Selection">
+            <div class="q-header">
+                <span>Q5. Sensor Selection</span>
+                <span class="q-status" id="q5-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                A <select id="q5a" data-answer="Thermometer"></select> measures temperature.<br>
+                An <select id="q5b" data-answer="Anemometer"></select> measures wind speed.<br>
+                A <select id="q5c" data-answer="Hygrometer"></select> measures humidity.<br>
+                A <select id="q5d" data-answer="Barometer"></select> measures air pressure.<br>
+                An <select id="q5e" data-answer="Accelerometer"></select> detects motion/tilt in gaming.
+            </div>
+        </div>
+
+        <!-- Q6: ADC/DAC (MCQ) -->
+        <div class="question-block" id="q6-block" data-summary="ADC DAC Conversion">
+            <div class="q-header">
+                <span>Q6. Signal Conversion</span>
+                <span class="q-status" id="q6-status">Unanswered</span>
+            </div>
+            <p>Why does a computer need an ADC when reading sensor data?</p>
+            <div class="mcq-options" id="q6-options"></div>
+        </div>
+
+        <!-- Q7: Control Systems Facts (True/False Grid) -->
+        <div class="question-block" id="q7-block" data-summary="Control System Facts">
+            <div class="q-header">
+                <span>Q7. Control System Facts</span>
+                <span class="q-status" id="q7-status">Unanswered</span>
+            </div>
+            <p>Select True or False for each statement.</p>
+            <table class="tf-table" id="q7-table">
+                <thead><tr><th>Statement</th><th>True</th><th>False</th></tr></thead>
+                <tbody id="q7-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Q8: Feedback Loop (Sortable List) -->
+        <div class="question-block" id="q8-block" data-summary="Feedback Loop Steps">
+            <div class="q-header">
+                <span>Q8. Feedback Loop Process</span>
+                <span class="q-status" id="q8-status">Unanswered</span>
+            </div>
+            <p>Drag to arrange the steps of a feedback control loop.</p>
+            <ul class="sortable-list" id="q8-list"></ul>
+        </div>
+
+        <!-- Q9: Actuators (Matching) -->
+        <div class="question-block" id="q9-block" data-summary="Actuator Types">
+            <div class="q-header">
+                <span>Q9. Actuator Types</span>
+                <span class="q-status" id="q9-status">Unanswered</span>
+            </div>
+            <p>Match the actuator to its function.</p>
+            <div class="match-grid">
+                <div class="col-defs" id="col-defs-q9"></div>
+                <div class="col-terms" id="col-terms-q9"></div>
+            </div>
+        </div>
+
+        <!-- Q10: Applications (Dropdown) -->
+        <div class="question-block" id="q10-block" data-summary="Control Applications">
+            <div class="q-header">
+                <span>Q10. Control System Applications</span>
+                <span class="q-status" id="q10-status">Unanswered</span>
+            </div>
+            <div class="cloze-text">
+                A <select id="q10a" data-answer="closed-loop"></select> system uses feedback to adjust output.<br>
+                Traffic lights are controlled by <select id="q10b" data-answer="microprocessors"></select>.<br>
+                <select id="q10c" data-answer="PLCs"></select> are commonly used in industrial automation.<br>
+                An <select id="q10d" data-answer="actuator"></select> converts electrical signals to physical action.
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-submit" id="btnSubmit" data-sgs-onclick="checkAnswers()">Submit Answers</button>
+            <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
+            <div id="finalScore"></div>
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fa-solid fa-trophy"></i> Assessment Complete!</h3>
+                <p>Your feedback PDF is downloading...</p>
+            </div>
+        </div>
+
+    </main>
+
+    
+        <script src="/js/assessment-runtime.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body></html>

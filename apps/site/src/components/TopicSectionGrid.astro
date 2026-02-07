@@ -1,0 +1,31 @@
+---
+import type { TopicSection } from '@sgs/content-schema';
+
+interface Props {
+  sections: TopicSection[];
+}
+
+const { sections } = Astro.props;
+---
+
+<div class="papers-wrapper">
+  {sections.map((section) => (
+    <section class="paper-section">
+      <div class="paper-header">
+        <h2 class="paper-title">{section.title}</h2>
+        {section.subtitle && <p class="paper-subtitle">{section.subtitle}</p>}
+      </div>
+      <ul class="topic-list">
+        {section.items.map((topic) => (
+          <li>
+            <a href={topic.href} class="topic-item">
+              <span class="topic-number">{topic.number}</span>
+              <span class="topic-name">{topic.name}</span>
+              <i class="fa-solid fa-chevron-right topic-arrow" aria-hidden="true"></i>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</div>

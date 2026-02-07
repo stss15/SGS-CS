@@ -15,8 +15,34 @@ let knownPile = [];   // Cards mastered
 let currentIndex = 0;
 let isFlipped = false;
 
+function bindCompletionActions() {
+    const answerContainer = document.getElementById('aText');
+    if (!answerContainer || answerContainer.dataset.completionActionsBound === 'true') {
+        return;
+    }
+
+    answerContainer.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const actionButton = target.closest('button[data-flashcard-action]');
+        if (!actionButton) return;
+
+        event.stopPropagation();
+        const action = actionButton.getAttribute('data-flashcard-action');
+        if (action === 'next-round') {
+            startNextRound();
+        } else if (action === 'full-reset') {
+            fullReset();
+        }
+    });
+
+    answerContainer.dataset.completionActionsBound = 'true';
+}
+
 async function init() {
     try {
+        bindCompletionActions();
+
         // Resolve questions.json relative to the HTML file's actual directory
         // With cleanUrls, /flashcards serves flashcards.html, so we need to strip the last path segment
         const pathParts = window.location.pathname.split('/');
@@ -142,10 +168,10 @@ function handleDeckComplete() {
 
     if (unknownPile.length > 0) {
         qText.innerHTML = "<i class='fa-solid fa-rotate'></i> Round Complete!";
-        aText.innerHTML = `You have ${unknownPile.length} cards to review.<br><br><button class='nav-btn' onclick='startNextRound()'>Review Now</button>`;
+        aText.innerHTML = `You have ${unknownPile.length} cards to review.<br><br><button class='nav-btn' data-flashcard-action='next-round'>Review Now</button>`;
     } else {
         qText.innerHTML = "<i class='fa-solid fa-trophy'></i> All Mastered!";
-        aText.innerHTML = "Great job! You've cleared the deck.<br><br><button class='nav-btn' onclick='fullReset()'>Start Over</button>";
+        aText.innerHTML = "Great job! You've cleared the deck.<br><br><button class='nav-btn' data-flashcard-action='full-reset'>Start Over</button>";
     }
 
     // Auto-flip to back to show the message
@@ -201,4 +227,3 @@ function updateVisuals() {
 
 // Start
 init();
-

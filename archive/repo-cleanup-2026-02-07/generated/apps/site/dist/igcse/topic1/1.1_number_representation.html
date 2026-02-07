@@ -1,0 +1,693 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.1 Number Representation | St George's CS</title>
+    
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/slide-deck.css">
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a href="/igcse/topic1/index.html" id="back-btn" title="Back" class="back-nav" aria-label="Go back">
+        <i class="fa-solid fa-circle-arrow-left" aria-hidden="true"></i>
+    </a>
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">1.1 Number Representation</h1>
+                        <h3 class="sub-title">Topic 1: Data Representation | Binary, Hex & Two's Complement</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- 2. THE HOOK (R-STACK MYTH BUSTING) -->
+            <section>
+                <h2>The Big Question</h2>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">
+                            <p style="font-size:1.25em;">🤔 Your CPU only understands <strong>0</strong> and <strong>1</strong>.</p>
+                            <p style="font-size:1.25em;">So how can it represent <strong>2025</strong>, <strong>-25</strong>, or <code>0x9F</code>?</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in-then-out">
+                        <div class="box" style="background:#ffebee; padding: 30px;">
+                            <p style="font-size:1.2em;">❌ Common misconception...</p>
+                            <p class="small-text">"Computers store numbers in decimal like we do."</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="box-blue" style="padding: 30px;">
+                            <p style="font-size:1.2em;">✅ Computers store <strong>patterns of bits</strong>.</p>
+                            <p class="small-text">We use <strong>number systems</strong> and <strong>rules</strong> to interpret those patterns.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2b. LESSON GOALS -->
+            <section>
+                <h3>Lesson Goals</h3>
+                <div class="cols">
+                    <div class="box">
+                        <ul>
+                            <li>Explain why binary underpins all digital data.</li>
+                            <li>Convert between denary, binary, and hex with place values.</li>
+                            <li>Add 8-bit numbers and spot overflow.</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue">
+                        <ul>
+                            <li>Use logical shifts to scale unsigned values.</li>
+                            <li>Form negative numbers with two's complement.</li>
+                            <li>Challenge common mistakes (hex digits, shift meaning).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2c. DID YOU KNOW? -->
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-layer-group"></i> Why So Many Bases?</h4>
+                        <p class="small-text">Binary is for hardware, denary is for humans, and hex is compact for writing binary.</p>
+                        <p class="small-text fragment"><strong>Key link:</strong> 1 hex digit maps exactly to <strong>4 bits</strong>.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-palette"></i> Hidden in Plain Sight</h4>
+                        <p class="small-text fragment">Web colours are hex: <code>#FF0000</code> means 255 red, 0 green, 0 blue.</p>
+                        <p class="small-text fragment">Memory addresses and error codes often start with <code>0x</code> to show “this number is hex”.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. BINARY: DEFINE & WHY -->
+            <section>
+                <h3>What Is Binary?</h3>
+                <div class="box-blue fragment" style="margin-bottom:20px;">
+                    <p style="margin:0;"><strong>Binary</strong> is a <strong>base-2</strong> number system using only <strong>0</strong> and <strong>1</strong>.</p>
+                    <p class="small-text" style="margin:0.4rem 0 0;">Each binary digit is called a <strong>bit</strong> (binary digit).</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why Hardware Loves It</strong>
+                        <ul class="small-text">
+                            <li>Transistors are stable in two states (low/high voltage).</li>
+                            <li>Noise-tolerant and easy to store as charges or magnetic domains.</li>
+                            <li>Unsigned range doubles with each extra bit (n bits -> 0 to 2^n - 1).</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Clarify</strong>
+                        <p class="small-text">Binary is chosen for <em>reliability</em>, not because it is the easiest for humans to read.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. BINARY: HOW IT WORKS & DECODING -->
+            <section>
+                <h3>How Do Bits Make Numbers?</h3>
+                <p class="small-text">Start at the largest place value that fits; add the positions where the bit is 1.</p>
+                <div class="box">
+                    <table style="width:100%; text-align:center; font-size:0.9em;">
+                        <tr>
+                            <th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th>
+                        </tr>
+                        <tr>
+                            <td class="fragment">1</td><td class="fragment">0</td><td class="fragment">1</td><td class="fragment">1</td><td class="fragment">0</td><td class="fragment">1</td><td class="fragment">0</td><td class="fragment">1</td>
+                        </tr>
+                        <tr>
+                            <td class="fragment gold">128</td><td class="fragment gold">0</td><td class="fragment gold">32</td><td class="fragment gold">16</td><td class="fragment gold">0</td><td class="fragment gold">4</td><td class="fragment gold">0</td><td class="fragment gold">1</td>
+                        </tr>
+                    </table>
+                </div>
+                <p class="fragment"><strong>Sum:</strong> 181<sub>10</sub></p>
+                <div class="fragment box-blue">
+                    <p><strong>Try:</strong> What value is <code>01101001</code>?</p>
+                    <p class="small-text fragment">64 + 32 + 8 + 1 = <strong>105</strong></p>
+                </div>
+            </section>
+
+            <!-- 5. BINARY: HOW TO CONVERT DENARY -> BINARY (VERTICAL STEPS) -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do we convert 156<sub>10</sub> to binary using place values?</strong></p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Write 8-bit place values: 128 64 32 16 8 4 2 1 (target = 156)</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> 156 >= 128? Yes -> bit = 1, remainder 28</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> 28 >= 64? No -> bit = 0</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 4:</strong> 28 >= 32? No -> bit = 0</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 5:</strong> 28 >= 16? Yes -> bit = 1, remainder 12</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 6:</strong> 12 >= 8? Yes -> bit = 1, remainder 4</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 7:</strong> 4 >= 4? Yes -> bit = 1, remainder 0</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 8:</strong> Remaining bits (2,1) = 0 0 -> <strong>10011100<sub>2</sub></strong></p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> 128 + 16 + 8 + 4 = 156</p>
+                        <p class="small-text">8 bits hold 0-255 (unsigned). More bits = more range.</p>
+                    </div>
+                    <div class="fragment box">
+                        <p><strong>Try now:</strong> Convert 47<sub>10</sub> to binary.</p>
+                        <p class="small-text fragment">32 fits -> remainder 15 -> 8 + 4 + 2 + 1 -> <strong>00101111</strong></p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 6. QUICK CHECK -->
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Why does adding more bits increase the maximum value?</div>
+                <div class="fragment box-blue">
+                    <p><strong>Because</strong> each new bit adds the next power-of-two place value, doubling the unsigned range (n bits -> 0 to 2^n - 1).</p>
+                    <p class="small-text">Example: 8 bits max 255, 9 bits max 511.</p>
+                </div>
+            </section>
+
+            <!-- 7. HEX: DEFINE & WHY -->
+            <section>
+                <h3>What Is Hexadecimal?</h3>
+                <div class="box-blue fragment" style="margin-bottom:20px;">
+                    <p style="margin:0;"><strong>Hexadecimal</strong> is a <strong>base-16</strong> number system using digits <strong>0–9</strong> and <strong>A–F</strong> (10–15).</p>
+                    <p class="small-text" style="margin:0.4rem 0 0;">It’s a compact way to write binary (1 hex digit = 4 bits).</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Human-friendly shorthand for long binary strings</li>
+                            <li>Maps neatly to 4-bit nibbles (1 hex digit = 4 bits)</li>
+                            <li>Reduces copying mistakes in addresses, colour codes, and error IDs</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Where You'll See It</strong>
+                        <p class="small-text">MAC addresses, memory/register dumps, error codes (0x8007...), and colour values (#3FA7D6).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7b. COMPARISON (R-STACK) -->
+            <section>
+                <h3>Binary vs Hex</h3>
+                <div class="r-stack">
+                    <div class="fragment fade-in-then-out">
+                        <div class="question-box">
+                            <p style="font-size:1.2em;">Which is easier to read and copy accurately?</p>
+                            <p style="font-family: monospace; font-size:1.3em;">1100101011110001</p>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <div class="cols">
+                            <div class="box">
+                                <h4>Binary</h4>
+                                <p class="small-text" style="font-family: monospace;">1100 1010 1111 0001</p>
+                                <p class="small-text fragment">Great for machines; long for humans.</p>
+                            </div>
+                            <div class="box-blue">
+                                <h4>Hex</h4>
+                                <p style="font-family: monospace; font-size: 1.7em; margin: 0.2rem 0;">CAF1</p>
+                                <p class="small-text fragment">Group into 4-bit chunks and convert fast.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7c. CONNECTIONS -->
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Connection to 1.2:</strong></p>
+                        <p class="small-text">Text, images, and sound are stored as <strong>bit patterns</strong> too — the same number-system ideas apply.</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming in Topic 2:</strong></p>
+                        <p class="small-text">When we transmit data, it’s still just bits — but we add extra bits for checking and security.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. HEX TABLE (BINARY <-> HEX) -->
+            <section>
+                <h3>Denary -> Binary -> Hex (0-15)</h3>
+                <div class="box">
+                    <table style="width:100%; text-align:center; font-size:0.95em;">
+                        <tr>
+                            <th>Denary</th><th>Binary</th><th>Hex</th>
+                            <th>Denary</th><th>Binary</th><th>Hex</th>
+                        </tr>
+                        <tr>
+                            <td>0</td><td>0000</td><td>0</td>
+                            <td>8</td><td>1000</td><td>8</td>
+                        </tr>
+                        <tr>
+                            <td>1</td><td>0001</td><td>1</td>
+                            <td>9</td><td>1001</td><td>9</td>
+                        </tr>
+                        <tr>
+                            <td>2</td><td>0010</td><td>2</td>
+                            <td>10</td><td>1010</td><td>A</td>
+                        </tr>
+                        <tr>
+                            <td>3</td><td>0011</td><td>3</td>
+                            <td>11</td><td>1011</td><td>B</td>
+                        </tr>
+                        <tr>
+                            <td>4</td><td>0100</td><td>4</td>
+                            <td>12</td><td>1100</td><td>C</td>
+                        </tr>
+                        <tr>
+                            <td>5</td><td>0101</td><td>5</td>
+                            <td>13</td><td>1101</td><td>D</td>
+                        </tr>
+                        <tr>
+                            <td>6</td><td>0110</td><td>6</td>
+                            <td>14</td><td>1110</td><td>E</td>
+                        </tr>
+                        <tr>
+                            <td>7</td><td>0111</td><td>7</td>
+                            <td>15</td><td>1111</td><td>F</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 8b. HEX/BINARY BRIDGE -->
+            <section>
+                <h3>Binary <-> Hex Bridge</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Binary to hex:</strong> Group bits into nibbles from the right.</p>
+                        <p class="small-text">Example: 110101101001 -> 1101 0110 1001 -> <strong>D69<sub>16</sub></strong></p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Hex to binary:</strong> Expand each hex digit to 4 bits.</p>
+                        <p class="small-text fragment">7A<sub>16</sub> -> 0111 1010<sub>2</sub></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. HEX: DENARY -> HEX (VERTICAL STEPS) -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do we convert 94<sub>10</sub> to hex?</strong></p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Divide by 16 -> 94 / 16 = 5 remainder 14</p>
+                        <p class="small-text">Map the remainder: 14 -> E in hex.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Write quotient then remainder -> <strong>5E<sub>16</sub></strong></p>
+                        <p class="small-text">If the quotient >= 16, divide again for an extra hex digit.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> (5 x 16) + 14 = 80 + 14 = 94</p>
+                        <p class="small-text">Write hex digits in order of quotients -> remainders from top to bottom.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 10. HEX: HEX -> DENARY -->
+            <section>
+                <h3>Hex -> Denary</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Question:</strong> What is <code>3C</code><sub>16</sub> in denary?</p>
+                        <p class="small-text">Use place values: 16^1 and 16^0.</p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Answer:</strong></p>
+                        <p>(3 x 16) + (12 x 1) = 48 + 12 = <strong>60</strong></p>
+                        <p class="small-text">C=12, D=13, E=14, F=15.</p>
+                        <p class="small-text fragment">Try: A9<sub>16</sub> = (10 x 16) + 9 = <strong>169</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 11. QUICK CHECK -->
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Why is hex preferred over binary for humans?</div>
+                <div class="fragment box-blue">
+                    <p><strong>Because</strong> it is shorter to read/write and maps cleanly to 4-bit groups, reducing mistakes.</p>
+                </div>
+            </section>
+
+            <!-- 12. BINARY ADDITION -->
+            <section>
+                <section>
+                    <h2>Binary Addition (8-bit)</h2>
+                    <p class="small-text">Add column by column; 1+1 = 0 carry 1.</p>
+                    <div class="question-box">How do we add 01010101 and 00111001?</div>
+                </section>
+
+                <section>
+                    <div class="box">
+<pre style="font-size:1.05em; line-height:1.4; margin:0;">
+   carry: 0110011
+    01010101
+  + 00111001
+  ----------
+    10001110
+</pre>
+                        <p class="small-text">Carry into bit 9? 0 -> no overflow for 8-bit here.</p>
+                    </div>
+                    <div class="fragment box-blue">
+                        <p><strong>Check:</strong> 85 + 57 = 142<sub>10</sub> -> 10001110<sub>2</sub></p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Overflow</h3>
+                    <div class="box">
+                        <p><strong>Example:</strong> 11110000 + 11110000</p>
+                        <p class="fragment"><strong>Work:</strong> result bits = <code>11100000</code> with a carry out of the 8th bit</p>
+                        <p class="fragment"><strong>Meaning:</strong> Needs 9 bits -> <span class="gold">overflow</span> (too big for 8-bit register)</p>
+                    </div>
+                    <div class="fragment box-blue">
+                        <p><strong>Range reminder:</strong> 8-bit unsigned max = 255; any sum above that overflows.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 13. LOGICAL SHIFTS -->
+            <section>
+                <h3>What Are Logical Shifts?</h3>
+                <div class="box-blue fragment" style="margin-bottom:20px;">
+                    <p style="margin:0;"><strong>Logical shift</strong> means moving all bits left or right, filling with <strong>0</strong>s.</p>
+                    <p class="small-text" style="margin:0.4rem 0 0;">Any bits that fall off the end are <strong>lost</strong>.</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Fast multiply/divide by 2 for unsigned values</li>
+                            <li>Prep values before masking/combining bits</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Clarify</strong>
+                        <p class="small-text">Left shift multiplies by 2 per shift; right shift divides by 2 and truncates.</p>
+                        <p class="small-text">Shifted-out bits are lost; sign is not preserved (use arithmetic shift for signed values).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do logical shifts change a number?</strong></p>
+                        <p class="small-text">Press Down to see examples.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Left Shift by 1:</strong> 00110101 -> 01101010 (x2)</p>
+                        <p class="small-text">53 -> 106</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Right Shift by 2:</strong> 10110000 -> 00101100 (/4)</p>
+                        <p class="small-text">176 -> 44</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Try it:</strong> Shift <code>00101110</code> left by 2.</p>
+                        <p class="small-text fragment">10111000 (x4) — the two leftmost bits fall off.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> What happens to bits that fall off the edge?</p>
+                        <p class="small-text">They are lost forever; zeros fill the gaps.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 14. TWO'S COMPLEMENT INTRO -->
+            <section>
+                <h3>What Is Two's Complement?</h3>
+                <div class="box-blue fragment" style="margin-bottom:20px;">
+                    <p style="margin:0;"><strong>Two's complement</strong> is a signed binary system for representing negative numbers.</p>
+                    <p class="small-text" style="margin:0.4rem 0 0;">To make a negative: <strong>invert</strong> the bits and <strong>add 1</strong>.</p>
+                </div>
+                <div class="cols">
+                    <div class="box fragment">
+                        <strong>Why It Exists</strong>
+                        <ul class="small-text">
+                            <li>Enables addition/subtraction with the same adder hardware</li>
+                            <li>Only one representation of zero (no +0/-0 duplicate)</li>
+                        </ul>
+                    </div>
+                    <div class="box-blue fragment">
+                        <strong>Range</strong>
+                        <p class="small-text">8-bit: -128 to +127. MSB = 1 means negative; magnitude is found by converting back.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 15. TWO'S COMPLEMENT: HOW (VERTICAL STEPS) -->
+            <section>
+                <section data-background="#e6f0fa">
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>How do we represent -25 in two's complement (8-bit)?</strong></p>
+                        <p class="small-text">Press Down to see each step.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 1:</strong> Write +25 in 8 bits (pad with leading zeros) -> 00011001</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 2:</strong> Invert bits -> 11100110</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;"><strong>Step 3:</strong> Add 1 -> <strong>11100111</strong></p>
+                    </div>
+                </section>
+                <section>
+                    <div class="box-blue">
+                        <p><strong>Check:</strong> Convert back: invert (00011000) +1 -> 00011001 = 25 -> sign bit 1 -> -25</p>
+                        <p class="small-text">To read a negative: invert + add 1 again.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Try It: Two's Complement</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>Question:</strong> What is -58 in 8-bit two's complement?</p>
+                    </div>
+                    <div class="box-blue fragment">
+                        <p><strong>Answer:</strong> 00111010 -> invert 11000101 -> +1 = <strong>11000110</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 16. QUICK CHECK -->
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Why is there only one zero in two's complement?</div>
+                <div class="fragment box-blue">
+                    <p><strong>Because</strong> the inversion+1 method makes the all-zeros pattern unique; no negative zero.</p>
+                </div>
+            </section>
+
+            <!-- 17. MISCONCEPTION CHECK (TRUE/FALSE) -->
+            
+<section>
+	    <section>
+	        <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+	        
+	        <div class="box-blue">
+	            <p style="margin:0;">Misconception Check</p>
+	        </div>
+        
+        <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+            
+                <li>"After 9 in hex the next digit is 10."</li>
+            
+                <li>"Overflow happens when a sum needs more bits than the register size."</li>
+            
+                <li>"A logical right shift keeps the remainder when dividing by 2."</li>
+            
+                <li>"Two's complement negatives are made by inverting bits then adding 1."</li>
+            
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+        </p>
+    </section>
+
+    
+    <section>
+        <h3>Question 1</h3>
+        <div class="question-box">"After 9 in hex the next digit is 10."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Hex continues with A, B, C, D, E, F before rolling over.</p>
+            
+        </div>
+    </section>
+    
+    <section>
+        <h3>Question 2</h3>
+        <div class="question-box">"Overflow happens when a sum needs more bits than the register size."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: True</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Carry out of the most significant bit indicates overflow in fixed-width arithmetic.</p>
+            
+        </div>
+    </section>
+    
+    <section>
+        <h3>Question 3</h3>
+        <div class="question-box">"A logical right shift keeps the remainder when dividing by 2."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: False</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>Logical right shifts truncate; shifted-out bits vanish and zeros fill on the left.</p>
+            
+        </div>
+    </section>
+    
+    <section>
+        <h3>Question 4</h3>
+        <div class="question-box">"Two's complement negatives are made by inverting bits then adding 1."</div>
+        <div class="fragment box-blue">
+            <p><strong>Answer: True</strong></p>
+            
+            <hr style="border-color: rgba(255,255,255,0.3);">
+            <p>That exact invert + 1 algorithm creates the negative; subtracting 1 would be incorrect.</p>
+            
+        </div>
+    </section>
+    
+</section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🔢 <strong>Binary</strong> uses <strong>0</strong> and <strong>1</strong> because hardware is on/off.</p>
+                        <p class="small-text">🧱 <strong>Place values</strong> let you convert between denary and binary.</p>
+                        <p class="small-text">🧮 <strong>Overflow</strong> happens when a result needs more bits than you have.</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🟣 <strong>Hex</strong> is compact: 1 hex digit = <strong>4</strong> bits.</p>
+                        <p class="small-text">↔️ <strong>Logical shifts</strong> multiply/divide by 2 for unsigned values.</p>
+                        <p class="small-text">➖ <strong>Two's complement</strong> represents negatives using invert + 1.</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Coming up next:</strong> 1.2 Text, Sound & Images</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="/js/slide-deck.js"></script>
+    
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body></html>

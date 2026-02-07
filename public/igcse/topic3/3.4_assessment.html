@@ -11,6 +11,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
         <link rel="stylesheet" href="/css/assessment-base.css">
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
 </head>
 
 <body data-assessment-json="/data/assessments/igcse-topic3-3-4.json">
@@ -30,7 +35,7 @@
                 <option value="Mr Stewart">Mr Stewart</option>
                 <option value="Mr Watling">Mr Watling</option>
             </select>
-            <button onclick="startAssessment()">Start Assessment</button>
+            <button data-sgs-onclick="startAssessment()">Start Assessment</button>
         </div>
     </div>
 
@@ -41,7 +46,7 @@
             class="fa-solid fa-circle-arrow-left"></i></a>
 
     <!-- Logo -->
-    <img src="/images/Logo.png" id="sg-logo" alt="Logo">
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo" decoding="async">
 
     <header>
         <h1>3.4 Assessment</h1>
@@ -57,14 +62,14 @@
                 <span class="q-status" id="q1-status">Unanswered</span>
             </div>
             <p>Drag the features into the correct category.</p>
-            <div class="draggable-source" id="q1-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="draggable-source" id="q1-source" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                 <!-- Items will be shuffled by JS -->
             </div>
             <div class="bucket-container">
-                <div class="bucket" id="bucket-mac" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="bucket" id="bucket-mac" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                     <h4><span class="keyword" data-def="a unique identifier which acts as a network address for a device; it takes the form NN-NN-NN-DDDD-DD, where NN is the manufacturer code and DD is the device code">MAC Address</span></h4>
                 </div>
-                <div class="bucket" id="bucket-ip" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="bucket" id="bucket-ip" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                     <h4>IP <span class="keyword" data-def="a label for a memory location used by the CPU to track data">Address</span></h4>
                 </div>
             </div>
@@ -206,7 +211,7 @@
         </div>
 
         <div class="controls">
-            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <button class="btn-submit" id="btnSubmit" data-sgs-onclick="checkAnswers()">Submit Answers</button>
             <a href="assessments.html" class="btn-return" id="btnReturn">Return to Menu</a>
             <div id="finalScore"></div>
             <div class="completion-message" id="completionMessage">
@@ -218,6 +223,15 @@
     </main>
 
         <script src="/js/assessment-runtime.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
 </body>
 
 </html>

@@ -1,48 +1,51 @@
-## Overview
+# SGS-CSC Remix
 
-Source lives under `src/` and the compiled site lives in `public/`. Run `npm run build` to render the Nunjucks templates into `public/` (standalone games/simulations are left as-is). The build script also writes a machine-readable page manifest to `meta/site-manifest.json`.
+Current site source and build pipeline for the Firebase-hosted SGS Computer Science site.
 
-## Project structure
+## Active Build Path
 
-- `scripts/build.js`: Nunjucks build pipeline that outputs to `public/`.
-- `src/templates/layouts`: shared layouts (`base`, `listing`, `arcade`, `slide-deck`, `ks3-slide`) plus `components.njk` macros.
-- `src/pages`: templated pages (subject/topic landing pages, specifications, teacher toolkits, unit pages, slide decks).
-- `public/`: compiled site root and legacy static content.
-  - `public/css`: global theme + variants (`style.css`, `resource-style.css`, `specification.css`, `unit.css`, `toolkit.css`, `slide-deck.css`, `ks3-deck.css`, `igcse-deck.css`).
-  - `public/js`: shared behaviours (`slide-deck.js`, `site.js`, `toolkit.js`).
-- `public/images`: logo and thumbnails.
-- `docs/agent`: AI-facing guides, templates, and agent changelog.
-- `meta/site-manifest.json`: generated index of templated pages (paths, titles, layouts).
+1. `npm run build:legacy`
+- Renders `src/pages` + `src/static` into `public/` via `scripts/build.js`.
 
-## AI agent references
-- `docs/agent/AGENT_GUIDE.md`: entry point for agents working in this repo.
-- `docs/agent/igcse-slide-deck-guide.md`: deck workflow and structure/pedagogy pattern.
-- `docs/agent/build-deploy-log.md`: log every build/push to main; follow the build/deploy steps inside.
-- `docs/agent/CHANGELOG.md`: append every AI-driven change for traceability.
-- Edit source templates under `src/pages/...` (not the compiled `public/`) so CI/Pages stays in sync.
+2. `npm run build --workspace @sgs/site`
+- Builds Astro app in `apps/site`.
 
-## Usage
+3. `npm run framework:postbuild-routes`
+- Adds legacy-compatible route aliases and copies required non-HTML assets into `apps/site/dist`.
+
+4. `npm run framework:harden-dist`
+- Applies auth/meta/header hardening to generated HTML in `apps/site/dist`.
+
+Firebase deploys from `apps/site/dist` (`firebase.json`).
+
+## Primary Commands
 
 ```bash
-npm install
-npm run build   # regenerates templated HTML into public/ and refreshes the manifest
+npm ci
+npm run framework:dev
+npm run framework:build
+npm run deploy
 ```
 
-Serve `public/` locally (e.g. `npx serve public`) to preview the site.
+## Repository Layout
 
-### Adding/editing pages
+- `apps/site`: Astro framework app (deploy target output in `apps/site/dist`).
+- `packages/content-schema`: Typed adapters that map legacy source/content into Astro routes.
+- `packages/ui`: Shared React UI primitives.
+- `src`: Legacy source-of-truth templates/content still used in active build pipeline.
+- `scripts/build.js`: Legacy render step used before Astro build.
+- `scripts/migration/alias-framework-html-routes.js`: Alias and asset sync step.
+- `scripts/migration/harden-framework-dist.js`: Dist hardening step.
+- `docs/content`: Curriculum source materials (`.txt`, `.pdf`, `.docx`).
+- `agents`: Agent operating guide and repo-specific skills.
+- `archive/repo-cleanup-2026-02-07`: Archived legacy/bloat content removed from active path.
 
-- Create/edit a `.njk` under `src/pages/...` mirroring the desired output path under `public/`.
-- Front matter drives rendering:
-  - `layout`: `layouts/base.njk` (default), `layouts/listing.njk`, `layouts/arcade.njk`, or `layouts/slide-deck.njk`.
-  - `hero`, `breadcrumbs`, `extraStyles`, `scripts` for base/arcade/listing pages.
-  - `cards`/`resources` arrays for arcade pages (images are prefixed with the computed `basePath` automatically).
-  - Slide decks: set `backHref`, `courseFooter`, optional `extraStyles`, and `deckScripts` for deck-specific JS. Only include `<section>` slides in the template; Reveal init/date are handled centrally.
-- Run `npm run build` to regenerate pages.
+## Agent Entry Point
 
-## Notes
+Use:
+- `agents/README.md`
 
-- `scripts/build.js` auto-computes `basePath`, so asset links stay correct regardless of nesting.
-- Password-protected resources use `data-protected-password` + `public/js/site.js` (see `public/igcse/topic4/assessments.html`).
-- Standalone games/sims remain raw HTML under `public/` (e.g. `public/igcse/topic1/binary_game.html`).
-- `.gitignore` excludes `node_modules/`; install dependencies before building on a new machine.
+And the skills under:
+- `agents/skills/site-build-deploy/SKILL.md`
+- `agents/skills/site-content-edit/SKILL.md`
+- `agents/skills/repo-archive-cleanup/SKILL.md`

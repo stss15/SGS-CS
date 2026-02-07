@@ -11,11 +11,11 @@
     <link rel="icon" type="image/png" href="/images/Logo.png">
     <link rel="apple-touch-icon" href="/images/Logo.png">
 
-    <!-- Fonts -->
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Icons -->
@@ -37,6 +37,8 @@
 </head>
 
 <body class="{{ bodyClass | default('') }}">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
     <header class="main-header">
         <div class="header-primary">
             <div class="logo-container">
@@ -48,73 +50,17 @@
                 </a>
             </div>
 
-            <nav class="main-nav" aria-label="Main navigation">
-                <div class="nav-dropdown">
-                    <button class="nav-link {% if activeSection == 'ks3' %}active{% endif %}" aria-expanded="false">KS3 <i class="fa-solid fa-chevron-down"></i></button>
-                    <div class="nav-dropdown-menu">
-                        <a href="/coming-soon.html" class="nav-dropdown-item"><i class="fa-solid fa-flask"></i> Science</a>
-                        <a href="/ks3/index.html" class="nav-dropdown-item"><i class="fa-solid fa-laptop-code"></i> Computer Science</a>
-                    </div>
-                </div>
-                <div class="nav-dropdown">
-                    <button class="nav-link {% if activeSection == 'igcse' %}active{% endif %}" aria-expanded="false">IGCSE <i class="fa-solid fa-chevron-down"></i></button>
-                    <div class="nav-dropdown-menu">
-                        <a href="/coming-soon.html" class="nav-dropdown-item"><i class="fa-solid fa-flask"></i> Science</a>
-                        <a href="/igcse/index.html" class="nav-dropdown-item"><i class="fa-solid fa-laptop-code"></i> Computer Science</a>
-                    </div>
-                </div>
-                <div class="nav-dropdown">
-                    <button class="nav-link {% if activeSection == 'ib' %}active{% endif %}" aria-expanded="false">IB <i class="fa-solid fa-chevron-down"></i></button>
-                    <div class="nav-dropdown-menu">
-                        <a href="/coming-soon.html" class="nav-dropdown-item"><i class="fa-solid fa-flask"></i> Science</a>
-                        <a href="/ib-2027/index.html" class="nav-dropdown-item"><i class="fa-solid fa-laptop-code"></i> Computer Science</a>
-                    </div>
-                </div>
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/index.html" class="nav-link {% if activeSection == 'ks3' %}active{% endif %}">KS3</a>
+                <a href="/igcse/index.html" class="nav-link {% if activeSection == 'igcse' %}active{% endif %}">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link {% if activeSection == 'ib' %}active{% endif %}">IB</a>
             </nav>
 
-            <div class="header-tools">
-                <button class="tools-toggle" aria-expanded="false" aria-controls="tools-menu">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                    <span class="sr-only">Tools menu</span>
-                </button>
-                <div class="tools-dropdown" id="tools-menu">
-                    <button class="tool-item" data-open-feedback="bug">
-                        <i class="fa-solid fa-bug"></i> Report a bug
-                    </button>
-                    <button class="tool-item" data-open-feedback="feature">
-                        <i class="fa-solid fa-lightbulb"></i> Request a feature
-                    </button>
-                    <a class="tool-item" href="/admin.html">
-                        <i class="fa-solid fa-user-shield"></i> Admin
-                    </a>
-                </div>
-            </div>
-
-            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
-                <i class="fa-solid fa-bars"></i>
-                <span class="sr-only">Menu</span>
-            </button>
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
         </div>
-
-        {% if breadcrumbs and breadcrumbs | length > 1 %}
-        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-            <ol class="breadcrumb-list">
-                {% for crumb in breadcrumbs %}
-                    {% if loop.last %}
-                        <li class="breadcrumb-item current" aria-current="page">{{ crumb.label }}</li>
-                    {% else %}
-                        <li class="breadcrumb-item">
-                            <a href="/{{ crumb.href }}">{{ crumb.label }}</a>
-                            <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ol>
-        </nav>
-        {% endif %}
     </header>
 
-    <main class="{{ mainClass | default('') }}">
+    <main id="main-content" class="{{ mainClass | default('') }}">
         {% if hero %}
             <div class="hero-text">
                 <h1 class="hero-title">{{ hero.title }}</h1>
@@ -175,14 +121,14 @@
                 </select>
 
                 <label for="bug-title">Title (be specific)</label>
-                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes" required>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
 
                 <label for="bug-details">What happened?</label>
-                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up" required></textarea>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
                 <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
 
                 <button type="submit" class="submit-btn">Submit bug report</button>
-                <p class="form-feedback" data-feedback-message="bug"></p>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
             </form>
         </div>
 
@@ -205,16 +151,15 @@
                 </select>
 
                 <label for="feature-details">What should we add?</label>
-                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1" required></textarea>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
                 <p class="form-note">Share enough detail so teachers can understand the request.</p>
 
                 <button type="submit" class="submit-btn">Submit feature request</button>
-                <p class="form-feedback" data-feedback-message="feature"></p>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
             </form>
         </div>
     </div>
 
-    <script src="/js/nav.js"></script>
     <script src="/js/feedback.js"></script>
 </body>
 

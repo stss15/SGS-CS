@@ -83,6 +83,8 @@
                 this.audio = new RetroSound();
                 this.gridEl = document.getElementById('gridLayer');
                 this.numpadEl = document.getElementById('numpad');
+                this.handleGridClick = this.handleGridClick.bind(this);
+                this.gridEl.addEventListener('click', this.handleGridClick);
 
                 // Keyboard Listener
                 this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -164,15 +166,16 @@
                 COLUMNS.forEach(val => {
                     const isSet = (row.currentBits & val) !== 0;
                     const activeClass = isSet ? 'active' : '';
-                    const clickHandler = row.type === 'BINARY' ? `onclick="game.toggleBit('${row.id}', ${val})"` : '';
+                    const interactionAttrs =
+                        row.type === 'BINARY' ? `data-row-id="${row.id}" data-bit-value="${val}"` : '';
                     const cursorStyle = row.type === 'DECIMAL' ? 'cursor: default; opacity: 0.8;' : '';
 
-                    bitsHtml += `<div class="bit-btn ${activeClass}" style="${cursorStyle}" ${clickHandler}>${isSet ? 1 : 0}</div>`;
+                    bitsHtml += `<div class="bit-btn ${activeClass}" style="${cursorStyle}" ${interactionAttrs}>${isSet ? 1 : 0}</div>`;
                 });
 
                 let targetHtml = '';
                 if (row.type === 'DECIMAL') {
-                    targetHtml = `<div class="input-display" onclick="game.openNumpad('${row.id}')" id="input-${row.id}">?</div>`;
+                    targetHtml = `<div class="input-display" data-row-id="${row.id}" id="input-${row.id}">?</div>`;
                 } else {
                     targetHtml = `<div style="font-family: 'JetBrains Mono'; font-size: 1.5rem; font-weight: bold;">${row.target}</div>`;
                 }
@@ -220,6 +223,29 @@
                         else content.style.border = '1px solid var(--border)';
                     }
                 });
+            }
+
+            handleGridClick(event) {
+                const target = event.target;
+                if (!(target instanceof Element)) return;
+
+                const bitButton = target.closest('.bit-btn[data-row-id][data-bit-value]');
+                if (bitButton && this.gridEl.contains(bitButton)) {
+                    const rowId = bitButton.getAttribute('data-row-id');
+                    const bitValue = Number(bitButton.getAttribute('data-bit-value'));
+                    if (rowId && Number.isFinite(bitValue)) {
+                        this.toggleBit(rowId, bitValue);
+                    }
+                    return;
+                }
+
+                const inputDisplay = target.closest('.input-display[data-row-id]');
+                if (inputDisplay && this.gridEl.contains(inputDisplay)) {
+                    const rowId = inputDisplay.getAttribute('data-row-id');
+                    if (rowId) {
+                        this.openNumpad(rowId);
+                    }
+                }
             }
 
             toggleBit(rowId, val) {

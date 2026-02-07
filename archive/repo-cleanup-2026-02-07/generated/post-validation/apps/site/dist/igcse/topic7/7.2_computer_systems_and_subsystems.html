@@ -1,0 +1,514 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7.2 Computer Systems and Sub-Systems | St George's CS</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/slide-deck.css">
+
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a href="/igcse/topic7/index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo"
+        data-sgs-onerror="this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IGCSE Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class="title-container">
+                    <div class="title-line-top"></div>
+                    <div>
+                        <h1 class="main-title">7.2 Computer Systems & Sub-systems</h1>
+                        <h3 class="sub-title">Topic 7: <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithm</span> <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">Design</span> and Problem Solving</h3>
+                    </div>
+                    <div class="title-line-bottom"></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class="fa-solid fa-brain"></i> Quick Recall (7.1)</h2>
+                <div class="cols" style="margin-top:20px;">
+                    <div class="box">
+                        <p class="small-text"><strong>Q1:</strong> What are the 4 stages of the PDLC?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);"><span class="keyword" data-def="part of the program development life cycle; a process of investigation, leading to the specification of what a program is required to do">Analysis</span>, <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">Design</span>, <span class="keyword" data-def="part of the program development life cycle; the writing of the program or suite of programs">Coding</span>, <span class="keyword" data-def="part of the program development life cycle; systematic checks done on a program to make sure that it works under all conditions">Testing</span></p>
+                    </div>
+                    <div class="box">
+                        <p class="small-text"><strong>Q2:</strong> What does <span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be sub divided into even smaller parts that can be solved more easily">decomposition</span> mean?</p>
+                        <p class="fragment small-text" style="color: var(--primary-blue);">Breaking a big problem into smaller parts</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class="r-stack">
+                        <div class="fragment fade-in-then-out">
+                            <div class="question-box">
+                                <p style="font-size:1.2em; margin:0;">How do you build something too big to understand?</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in-then-out">
+                            <div class="box" style="background: #ffebee; padding: 30px;">
+                                <p style="font-size:1.2em; margin:0;">❌ You can’t hold the whole system in your head.</p>
+                                <p class="small-text" style="margin-top:15px;">A car has thousands of parts — no single person knows every detail.</p>
+                            </div>
+                        </div>
+                        <div class="fragment fade-in">
+                            <div class="box-blue" style="padding: 30px;">
+                                <p><strong>✅ Break it into systems.</strong></p>
+                                <div class="cols" style="margin-top:15px;">
+                                    <div class="box" style="margin:0; background: rgba(255,255,255,0.12);">
+                                        <p class="small-text" style="margin:0;"><i class="fa-solid fa-car-side"></i> Engine System</p>
+                                    </div>
+                                    <div class="box" style="margin:0; background: rgba(255,255,255,0.12);">
+                                        <p class="small-text" style="margin:0;"><i class="fa-solid fa-gauge-high"></i> Dashboard System</p>
+                                    </div>
+                                    <div class="box" style="margin:0; background: rgba(255,255,255,0.12);">
+                                        <p class="small-text" style="margin:0;"><i class="fa-solid fa-gears"></i> Braking System</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">This is <span class="keyword" data-def="the breaking down of a computer system into a set of sub-systems, then breaking each subsystem down into a set of smaller sub-systems, until each sub-system just performs a single action">Top-Down Design</span></span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3><span class="keyword" data-def="the breaking down of a computer system into a set of sub-systems, then breaking each subsystem down into a set of smaller sub-systems, until each sub-system just performs a single action">Top-Down Design</span></h3>
+                    <div class="box">
+                        <p><strong>Definition:</strong> A method where we break a large system into smaller sub-systems, and keep breaking down until each part is simple enough to understand.</p>
+                    </div>
+                    <div class="fragment box box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Key Idea:</strong> Work from the <em>top</em> (the whole problem) <em>down</em> to the small details.</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">But how do we <strong>show</strong> this breakdown visually?</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3><i class="fa-solid fa-lightbulb"></i> Did You Know?</h3>
+                <div class="cols">
+                    <div class="box">
+                        <h4><i class="fa-solid fa-people-group"></i> Teams Need Shared Diagrams</h4>
+                        <p class="small-text fragment">Large systems are built by teams. A clear <span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">structure diagram</span> helps everyone agree on what each part does.</p>
+                        <p class="small-text fragment">It’s like an “organisation chart” for the system.</p>
+                    </div>
+                    <div class="box-blue">
+                        <h4><i class="fa-solid fa-puzzle-piece"></i> Modularity Makes Work Faster</h4>
+                        <p class="small-text fragment">If subsystems have clear boundaries, different developers can work in parallel.</p>
+                        <p class="small-text fragment">That’s why top‑down <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">design</span> is common in real projects.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 STRUCTURE DIAGRAMS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">Structure Diagrams</span></h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">How do we visualise a system and its sub-systems?</p>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text">A <span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">Structure Diagram</span> is a <strong>hierarchical chart</strong> showing:</p>
+                        <ul class="small-text">
+                            <li>The main system at the <strong>top</strong></li>
+                            <li>Each sub-system branching below</li>
+                            <li>More detail as you go <strong>down</strong></li>
+                        </ul>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Let's build one step-by-step</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Example: School System</h3>
+                    <div class="box">
+                        <p class="small-text">Let's <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">design</span> a <span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">structure diagram</span> for a <strong>School Management System</strong>.</p>
+                    </div>
+                    <div class="fragment" style="margin-top:20px;">
+                        <pre style="text-align:center; font-family:monospace; font-size:0.85em; background:#fff; padding:15px; border-radius:8px;">
+          SCHOOL MANAGEMENT SYSTEM
+                    │
+     ┌──────────────┼──────────────┐
+     │              │              │
+ Attendance     Timetable      Results
+   System        System        System</pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Level 1:</strong> Three main sub-systems identified.</p>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Going Deeper...</h3>
+                    <div class="box">
+                        <p class="small-text">Now let's break down the <strong>Attendance System</strong>:</p>
+                    </div>
+                    <div class="fragment" style="margin-top:20px;">
+                        <pre style="text-align:center; font-family:monospace; font-size:0.8em; background:#fff; padding:15px; border-radius:8px;">
+          SCHOOL MANAGEMENT SYSTEM
+                    │
+     ┌──────────────┼──────────────┐
+     │              │              │
+ Attendance     Timetable      Results
+   System        System        System
+     │
+  ┌──┴──┐
+  │     │
+Take   View
+Register Reports</pre>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <p class="small-text"><strong>Level 2:</strong> Attendance System has its own sub-systems.</p>
+                        <p class="small-text">We keep going until each part is simple enough to code!</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">In a <span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">structure diagram</span>, where is the most detail?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>At the bottom.</strong> You keep breaking down until each part is small enough to code.</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 INPUT / PROCESS / OUTPUT
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Every Sub-System Has Three Parts</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">What goes <strong>in</strong>? What happens? What comes <strong>out</strong>?</p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><i class="fa-solid fa-right-to-bracket"></i> <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span></h4>
+                            <p class="small-text">Data that goes <strong>into</strong> the system</p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><i class="fa-solid fa-gears"></i> <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span></h4>
+                            <p class="small-text">What the system <strong>does</strong> with the data</p>
+                        </div>
+                        <div class="box">
+                            <h4><i class="fa-solid fa-right-from-bracket"></i> <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span></h4>
+                            <p class="small-text">Results that come <strong>out</strong></p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Plus one more...</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Don't Forget: <span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span></h3>
+                    <div class="box">
+                        <p class="small-text">Most systems also need to <strong>remember</strong> things:</p>
+                    </div>
+                    <div class="cols-4 fragment" style="margin-top:20px;">
+                        <div class="box">
+                            <h4><span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span></h4>
+                            <p class="small-text"><i class="fa-solid fa-keyboard"></i></p>
+                        </div>
+                        <div class="box">
+                            <h4><span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span></h4>
+                            <p class="small-text"><i class="fa-solid fa-microchip"></i></p>
+                        </div>
+                        <div class="box">
+                            <h4><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span></h4>
+                            <p class="small-text"><i class="fa-solid fa-desktop"></i></p>
+                        </div>
+                        <div class="box box-blue">
+                            <h4><span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span></h4>
+                            <p class="small-text"><i class="fa-solid fa-database"></i></p>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top:20px;">
+                        <p class="small-text"><strong><span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span></strong> = data that's <strong>kept</strong> between runs of the program (saved to files, databases, etc.)</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class="question-box">Is a PIN in an ATM an input, process, <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">output</span>, or <span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">storage</span>?</div>
+                <div class="fragment box-blue" style="margin-top:20px;">
+                    <p><strong>Input.</strong> The PIN is entered while the system is active.</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 REAL EXAMPLE: ATM
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Real Example: ATM Machine</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Let's analyse an ATM using <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span>, <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span>, <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span>, <span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span></p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Break it down</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>ATM: <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>What data goes INTO the ATM?</strong></p>
+                    </div>
+                    <div class="cols fragment" style="margin-top:20px;">
+                        <div class="box-blue">
+                            <p><i class="fa-solid fa-credit-card" style="font-size:2em;"></i></p>
+                            <p class="small-text">Card inserted</p>
+                        </div>
+                        <div class="box-blue">
+                            <p><i class="fa-solid fa-keyboard" style="font-size:2em;"></i></p>
+                            <p class="small-text">PIN entered</p>
+                        </div>
+                        <div class="box-blue">
+                            <p><i class="fa-solid fa-money-bill" style="font-size:2em;"></i></p>
+                            <p class="small-text">Amount requested</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>ATM: <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span></h3>
+                    <div class="box">
+                        <p class="small-text"><strong>What does the ATM DO with that data?</strong></p>
+                    </div>
+                    <div class="fragment box-blue" style="margin-top:20px;">
+                        <ul class="small-text">
+                            <li>Validate the PIN against stored data</li>
+                            <li>Check if sufficient balance exists</li>
+                            <li>Calculate new balance after withdrawal</li>
+                            <li>Count the cash to dispense</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>ATM: <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span> & <span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span></h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><i class="fa-solid fa-right-from-bracket"></i> <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span></h4>
+                            <ul class="small-text">
+                                <li>Cash dispensed</li>
+                                <li>Receipt printed</li>
+                                <li>Messages on screen</li>
+                                <li>Card returned</li>
+                            </ul>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><i class="fa-solid fa-database"></i> <span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span></h4>
+                            <ul class="small-text">
+                                <li>Account balances</li>
+                                <li>PIN numbers</li>
+                                <li>Transaction history</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 YOUR TURN - VENDING MACHINE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-lightbulb"></i> Your Turn</h2>
+                    <div class="question-box">
+                        <p style="font-size:1.2em; margin:0;">Analyse a Vending Machine</p>
+                    </div>
+                    <div class="box" style="margin-top:20px;">
+                        <p class="small-text">Think about the <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span>, <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span>, <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span>, and <span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span> for a drinks vending machine.</p>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <i class="fa-solid fa-arrow-down blue"></i> <span class="small-text blue">Check your answers</span>
+                    </div>
+                </section>
+
+                <section data-background="#f4f6f8">
+                    <h3>Vending Machine Solution</h3>
+                    <div class="cols">
+                        <div class="box fragment">
+                            <h4><span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">Inputs</span></h4>
+                            <ul class="small-text">
+                                <li>Coins inserted</li>
+                                <li>Button pressed (selection)</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment">
+                            <h4><span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">Processes</span></h4>
+                            <ul class="small-text">
+                                <li>Calculate total money</li>
+                                <li>Check if enough paid</li>
+                                <li>Calculate change</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="cols" style="margin-top:10px;">
+                        <div class="box box-blue fragment">
+                            <h4><span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">Outputs</span></h4>
+                            <ul class="small-text">
+                                <li>Drink dispensed</li>
+                                <li>Change returned</li>
+                                <li>Display messages</li>
+                            </ul>
+                        </div>
+                        <div class="box box-blue fragment">
+                            <h4><span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span></h4>
+                            <ul class="small-text">
+                                <li>Prices of items</li>
+                                <li>Stock levels</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h3>Connections</h3>
+                <div class="cols">
+                    <div class="box">
+                        <p><strong>🔗 Link to 7.1 (PDLC):</strong></p>
+                        <p class="small-text">Top‑down <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">design</span> happens in the <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">design</span> stage — it helps you plan the system before you code.</p>
+                    </div>
+                    <div class="box-blue">
+                        <p><strong>🔮 Coming up in 7.3:</strong></p>
+                        <p class="small-text"><span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be sub divided into even smaller parts that can be solved more easily">Decomposition</span> and <span class="keyword" data-def="an ordered set of steps to solve a problem">algorithms</span> — turning each sub-system into clear step‑by‑step logic.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class="fa-solid fa-check-double"></i> True or False?</h2>
+                    <div class="box-blue">
+                        <p style="margin:0;">Check Your Understanding</p>
+                    </div>
+                    <ol style="font-size:1.1em; line-height:1.6; margin-top: 20px;">
+                        <li><span class="keyword" data-def="the breaking down of a computer system into a set of sub-systems, then breaking each subsystem down into a set of smaller sub-systems, until each sub-system just performs a single action">Top-Down Design</span> starts with the small details first.</li>
+                        <li>A <span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">Structure Diagram</span> shows the hierarchy of a system.</li>
+                        <li><span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span> refers to data that is only used temporarily.</li>
+                    </ol>
+                    <p class="small-text" style="margin-top: 20px; color: #666;">
+                        <i class="fa-solid fa-arrow-down"></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class="question-box"><span class="keyword" data-def="the breaking down of a computer system into a set of sub-systems, then breaking each subsystem down into a set of smaller sub-systems, until each sub-system just performs a single action">Top-Down Design</span> starts with the small details first.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="the breaking down of a computer system into a set of sub-systems, then breaking each subsystem down into a set of smaller sub-systems, until each sub-system just performs a single action">Top-Down Design</span> starts at the <strong>top</strong> (the whole problem) and works <strong>down</strong> to the details.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class="question-box">A <span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">Structure Diagram</span> shows the hierarchy of a system.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">Structure Diagrams</span> visually show the main system at the top with sub-systems branching below.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class="question-box"><span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span> refers to data that is only used temporarily.</div>
+                    <div class="fragment box-blue">
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <p><span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">Storage</span> refers to data that is <strong>kept</strong> between runs – persistent data like files or databases.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+                <h2 style="color: white;">Key Takeaways</h2>
+                <div class="cols" style="color: white;">
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🧠 <strong>Top‑Down <span class="keyword" data-def="part of the program development life cycle; uses the program specification from the analysis stage to show to how the program should be developed">Design</span></strong> breaks big problems into sub-systems</p>
+                        <p class="small-text">🗂️ <strong><span class="keyword" data-def="a diagram that shows the design of a computer system in a hierarchical way, with each level giving a more detailed breakdown of the system into subsystems">Structure diagrams</span></strong> visualise the hierarchy</p>
+                    </div>
+                    <div class="box" style="background: rgba(255,255,255,0.1);">
+                        <p class="small-text">🔄 Every sub-system has <span class="keyword" data-def="the data used by the system that needs to be entered while the system is active">inputs</span>, <span class="keyword" data-def="the tasks that need to be performed by a program using the input data and any other previously stored data">processes</span>, <span class="keyword" data-def="information that needs to be displayed or printed for the users of the system">outputs</span>, and often <span class="keyword" data-def="data that needs to be stored in files on an appropriate media for use in the future">storage</span></p>
+                        <p class="small-text">✅ Keep breaking down until each part is simple enough to code</p>
+                    </div>
+                </div>
+                <div class="box" style="margin-top:20px; background: rgba(255,255,255,0.1); color: white;">
+                    <p><strong>Next:</strong> 7.3 <span class="keyword" data-def="a method used in the analysis stage of the program development life cycle; a complex problem is broken down into smaller parts, which can then be sub divided into even smaller parts that can be solved more easily">Decomposition</span> &amp; <span class="keyword" data-def="an ordered set of steps to solve a problem">Algorithms</span></p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+
+    <script src="/js/slide-deck.js"></script>
+
+    
+    <script src="/js/live-date-display.js"></script>
+
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body></html>

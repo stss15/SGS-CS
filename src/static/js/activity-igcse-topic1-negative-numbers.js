@@ -100,6 +100,8 @@
                 this.audio = new RetroSound();
                 this.gridEl = document.getElementById('gridLayer');
                 this.numpadEl = document.getElementById('numpad');
+                this.handleGridClick = this.handleGridClick.bind(this);
+                this.gridEl.addEventListener('click', this.handleGridClick);
 
                 // Keyboard Listener
                 this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -194,10 +196,11 @@
                     const isSet = (row.bitMask & maskVal) !== 0;
                     const activeClass = isSet ? 'active' : '';
                     const msbClass = idx === 0 ? 'msb-btn' : ''; // Special style for first bit
-                    const clickHandler = row.type === 'BINARY' ? `onclick="game.toggleBit('${row.id}', ${maskVal})"` : '';
+                    const interactionAttrs =
+                        row.type === 'BINARY' ? `data-row-id="${row.id}" data-mask="${maskVal}"` : '';
                     const cursorStyle = row.type === 'DECIMAL' ? 'cursor: default; opacity: 0.8;' : '';
 
-                    bitsHtml += `<div class="bit-btn ${activeClass} ${msbClass}" style="${cursorStyle}" ${clickHandler}>${isSet ? 1 : 0}</div>`;
+                    bitsHtml += `<div class="bit-btn ${activeClass} ${msbClass}" style="${cursorStyle}" ${interactionAttrs}>${isSet ? 1 : 0}</div>`;
                 });
 
                 let targetHtml = '';
@@ -225,7 +228,7 @@
                         bitsHtml += `<div class="bit-btn ${activeClass} ${msbClass}" style="cursor: default;">${isSet ? 1 : 0}</div>`;
                     });
 
-                    targetHtml = `<div class="input-display" onclick="game.openNumpad('${row.id}')" id="input-${row.id}">?</div>`;
+                    targetHtml = `<div class="input-display" data-row-id="${row.id}" id="input-${row.id}">?</div>`;
                 } else {
                     // Binary Mode: User toggles bits to match decimal target
                     targetHtml = `<div style="font-family: 'JetBrains Mono'; font-size: 1.5rem; font-weight: bold;">${row.target}</div>`;
@@ -275,6 +278,29 @@
                         else content.style.border = '1px solid var(--border)';
                     }
                 });
+            }
+
+            handleGridClick(event) {
+                const target = event.target;
+                if (!(target instanceof Element)) return;
+
+                const bitButton = target.closest('.bit-btn[data-row-id][data-mask]');
+                if (bitButton && this.gridEl.contains(bitButton)) {
+                    const rowId = bitButton.getAttribute('data-row-id');
+                    const maskValue = Number(bitButton.getAttribute('data-mask'));
+                    if (rowId && Number.isFinite(maskValue)) {
+                        this.toggleBit(rowId, maskValue);
+                    }
+                    return;
+                }
+
+                const inputDisplay = target.closest('.input-display[data-row-id]');
+                if (inputDisplay && this.gridEl.contains(inputDisplay)) {
+                    const rowId = inputDisplay.getAttribute('data-row-id');
+                    if (rowId) {
+                        this.openNumpad(rowId);
+                    }
+                }
             }
 
             toggleBit(rowId, val) {

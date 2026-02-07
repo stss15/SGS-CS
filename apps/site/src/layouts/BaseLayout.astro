@@ -1,0 +1,78 @@
+---
+import SiteNav from '../components/SiteNav.astro';
+
+type NavSection = 'ks3' | 'igcse' | 'ib';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  activeSection?: NavSection;
+  breadcrumbs?: BreadcrumbItem[];
+  extraStyles?: string[];
+}
+
+const {
+  title = 'SGS Science',
+  description = "St George's Science Hub for KS3, IGCSE, and IB students.",
+  activeSection,
+  extraStyles = []
+} = Astro.props;
+
+const inferredActiveSection: NavSection | undefined = Astro.url.pathname.startsWith('/ib')
+  ? 'ib'
+  : Astro.url.pathname.startsWith('/igcse')
+  ? 'igcse'
+  : Astro.url.pathname.startsWith('/ks3')
+  ? 'ks3'
+  : undefined;
+
+const resolvedActiveSection = activeSection || inferredActiveSection;
+const currentYear = new Date().getFullYear();
+
+const normalizeStyleHref = (stylePath: string): string => {
+  if (stylePath.startsWith('http://') || stylePath.startsWith('https://') || stylePath.startsWith('//')) {
+    return stylePath;
+  }
+
+  return stylePath.startsWith('/') ? stylePath : `/${stylePath}`;
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0E214B" />
+    <link rel="icon" type="image/png" href="/images/Logo.png" />
+    <link rel="apple-touch-icon" href="/images/Logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    {extraStyles.map((stylePath) => (
+      <link rel="stylesheet" href={normalizeStyleHref(stylePath)} />
+    ))}
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <SiteNav activeSection={resolvedActiveSection} />
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer>
+      <p>&copy; {currentYear} SGS Science. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A2.1 Network Fundamentals | IB Computer Science</title>
+    <meta name="description" content="Network types (PAN/LAN/WAN/VPN), bandwidth vs latency, and modern infrastructure (distributed systems, edge computing, 5G).">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A2.1 Network Fundamentals</h1>
+            <h3 class="sub-title">Topic A2: Networks | Connecting Devices at Scale</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A1) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Quick recall from A1 before we start networks.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What does the operating system manage when several apps run at once?</li>
+            <li>What is the difference between bandwidth and latency?</li>
+            <li>What is the key trade-off between interpretation and compilation?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What does the operating system manage when several apps run at once?</div>
+        <div class="fragment box-blue">
+            <p>It allocates resources (CPU time, memory, devices/files) and enforces protection between processes.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What is the difference between bandwidth and latency?</div>
+        <div class="fragment box-blue">
+            <p><strong>Bandwidth</strong> is how much data per second; <strong>latency</strong> is the delay before data arrives.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What is the key trade-off between interpretation and compilation?</div>
+        <div class="fragment box-blue">
+            <p>Interpreters give fast feedback but often slower runtime; compilers take longer upfront but often run faster.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 You send a message from one phone to another…</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">and it arrives across the world in seconds.</p>
+                <p style="font-size:1.1em; margin-top:0.8em;">What infrastructure makes that possible?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> “The internet is just Wi‑Fi.”</p>
+                <p class="small-text">Wi‑Fi is only one local technology; global connectivity is much bigger.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> networks are layered systems of devices, links, and protocols.</p>
+                <p class="small-text">We classify networks by scale, and we measure them by speed and delay.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. WHAT IS A NETWORK? -->
+<section>
+    <h3>What is a Network?</h3>
+    <div class="question-box">Why connect computers instead of keeping everything on one machine?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Network: a set of connected devices that can communicate and share resources.">network</span> connects devices so they can exchange data and share resources.</p>
+            <p class="fragment">Benefits: communication, shared storage, shared hardware, distributed processing.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-scale-balanced"></i> Core trade-off</h4>
+            <p class="small-text fragment">Networks add capability, but also add complexity and security risk.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. NETWORK TYPES (TABLE) -->
+<section>
+    <section>
+        <h3>Network Types (By Range)</h3>
+        <div class="question-box">How far does your connection need to reach?</div>
+        <div class="box">
+            <table style="width:100%; font-size:0.9em;">
+                <thead>
+                    <tr><th>Type</th><th>Typical Range</th><th>Key Idea</th></tr>
+                </thead>
+                <tbody>
+                    <tr class="fragment"><td><strong><span class="keyword" data-def="Personal Area Network: very short-range network centred on an individual (e.g., Bluetooth).">PAN</span></strong></td><td>~10 m</td><td>Personal devices (Bluetooth, USB tethering)</td></tr>
+                    <tr class="fragment"><td><strong><span class="keyword" data-def="Local Area Network: network over a small geographic area (building/campus) with low latency and high bandwidth.">LAN</span></strong></td><td>Building/site</td><td>High bandwidth, low latency, shared local resources</td></tr>
+                    <tr class="fragment"><td><strong><span class="keyword" data-def="Wide Area Network: network spanning large geographic areas, connecting multiple LANs (often via third-party infrastructure).">WAN</span></strong></td><td>City → global</td><td>Connects LANs across distance</td></tr>
+                    <tr class="fragment"><td><strong><span class="keyword" data-def="Virtual Private Network: encrypted tunnel over a public network to create a secure private connection.">VPN</span></strong></td><td>Any</td><td>Secure tunnel over public infrastructure</td></tr>
+                </tbody>
+            </table>
+        </div>
+    
+    </section>
+<section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">Bluetooth headphones connected to a phone are an example of which network type?</div>
+        <div class="fragment box-blue">
+            <p><strong>PAN</strong> — short-range personal network around one user.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 6. BANDWIDTH VS LATENCY -->
+<section>
+    <section>
+        <h3>Bandwidth vs Latency</h3>
+        <div class="question-box">Why can a connection download fast but still feel “laggy” in games?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><span class="keyword" data-def="Bandwidth: maximum amount of data that can be transmitted per second over a link (e.g., Mbps).">Bandwidth</span> is capacity (data per second).</p>
+                <p class="fragment"><span class="keyword" data-def="Latency: the delay between sending data and it arriving (often measured in ms).">Latency</span> is delay (time to arrive).</p>
+                <p class="fragment">Interactive tasks (gaming, calls) are sensitive to latency.</p>
+            </div>
+            <div class="box-blue">
+                <h4><i class="fa-solid fa-gauge-high"></i> Intuition</h4>
+                <p class="small-text fragment">Bandwidth is like “lane width”.</p>
+                <p class="small-text fragment">Latency is like “distance + traffic lights”.</p>
+            </div>
+        </div>
+    
+    </section>
+<section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">For a real-time video call, which matters more: bandwidth or latency?</div>
+        <div class="fragment box-blue">
+            <p><strong>Latency</strong> (and jitter) largely determines how “responsive” the conversation feels.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 7. DISTRIBUTED SYSTEMS -->
+<section>
+    <h3>Modern Infrastructure: Distributed Systems</h3>
+    <div class="question-box">What if we don’t want one “central computer” to be a single point of failure?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Distributed system: multiple networked computers (nodes) working together to provide a service.">Distributed systems</span> use many nodes working toward a shared goal.</p>
+            <p class="fragment">They improve <span class="keyword" data-def="Fault tolerance: ability to keep working even when some components fail.">fault tolerance</span> (no single point of failure).</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> The challenge</h4>
+            <p class="small-text fragment">Maintaining <span class="keyword" data-def="Consistency: all nodes see the same data/state, or changes are coordinated to avoid conflicts.">consistency</span> across many machines is difficult.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 8. EDGE COMPUTING -->
+<section>
+    <h3>Edge Computing</h3>
+    <div class="question-box">Why process data near where it’s produced instead of sending everything to the cloud?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Edge computing: processing data near the source to reduce latency and bandwidth usage.">Edge computing</span> moves compute closer to users/devices.</p>
+            <p class="fragment">It reduces latency and reduces bandwidth load on core networks.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-play"></i> Example</h4>
+            <p class="small-text fragment">Content providers (e.g., streaming) use local caching servers near users.</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p><strong>🔗 Connection to A4:</strong> many ML applications run at the edge (phones, cars) because decisions must be made with low latency.</p>
+    </div>
+</section>
+
+<!-- 9. MOBILE NETWORKS (5G) -->
+<section>
+    <h3>Mobile Networks (5G)</h3>
+    <div class="question-box">What makes modern mobile networks suitable for “always-on” devices?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">5G targets higher speeds and lower latency than earlier generations.</p>
+            <p class="fragment">It supports the growth of <span class="keyword" data-def="Internet of Things (IoT): networks of physical devices with sensors/actuators connected to the internet.">IoT</span> devices at large scale.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-satellite-dish"></i> Why it matters</h4>
+            <p class="small-text fragment">Low latency enables time-sensitive systems (industrial control, autonomous features).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 10. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> A VPN automatically makes you anonymous online.</p>
+            <p class="fragment"><strong>B.</strong> LANs typically have lower latency than WANs.</p>
+            <p class="fragment"><strong>C.</strong> Edge computing can reduce latency for users.</p>
+            <p class="fragment"><strong>D.</strong> Distributed systems remove all reliability problems.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> A VPN encrypts traffic to a VPN server; it does not guarantee anonymity.</p>
+            <p class="fragment"><strong>B: True.</strong> WAN distance and routing usually increases delay.</p>
+            <p class="fragment"><strong>C: True.</strong> Processing closer to the user reduces travel time.</p>
+            <p class="fragment"><strong>D: False.</strong> They improve fault tolerance but introduce consistency/coordination challenges.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 11. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li>Networks connect devices to share resources and communicate.</li>
+            <li>We classify networks by scale: <strong>PAN</strong>, <strong>LAN</strong>, <strong>WAN</strong>, and <strong>VPN</strong>.</li>
+            <li><strong>Bandwidth</strong> is capacity; <strong>latency</strong> is delay.</li>
+            <li>Modern services often use <strong>distributed systems</strong> and <strong>edge computing</strong>.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> A2.2 Network Architecture — routers, switches, gateways, and network models.</p>
+    </div>
+</section>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body></html>

@@ -1,0 +1,27 @@
+---
+import LegacyHtmlDocument from '../../components/LegacyHtmlDocument.astro';
+import { getKs3LegacyRouteHtml, getKs3LegacyRoutes } from '@sgs/content-schema';
+
+interface Ks3LegacyPageProps {
+  html: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getKs3LegacyRoutes();
+
+  return Promise.all(
+    routes.map(async (route) => ({
+      params: {
+        route: route.routePath.replace(/^\/ks3\//, '')
+      },
+      props: {
+        html: await getKs3LegacyRouteHtml(route.routePath)
+      }
+    }))
+  );
+}
+
+const { html } = Astro.props as Ks3LegacyPageProps;
+---
+
+<LegacyHtmlDocument html={html} />

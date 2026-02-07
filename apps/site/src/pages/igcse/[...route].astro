@@ -1,0 +1,29 @@
+---
+import LegacyHtmlDocument from '../../components/LegacyHtmlDocument.astro';
+import { getIgcseLegacyRouteHtml, getIgcseLegacyRoutes } from '@sgs/content-schema';
+
+interface IgcseLegacyPageProps {
+  html: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getIgcseLegacyRoutes();
+
+  return Promise.all(
+    routes
+      .filter((route) => route.routePath !== '/igcse/index.html')
+      .map(async (route) => ({
+        params: {
+          route: route.routePath.replace(/^\/igcse\//, '').replace(/\.html$/, '')
+        },
+        props: {
+          html: await getIgcseLegacyRouteHtml(route.routePath)
+        }
+      }))
+  );
+}
+
+const { html } = Astro.props as IgcseLegacyPageProps;
+---
+
+<LegacyHtmlDocument html={html} />

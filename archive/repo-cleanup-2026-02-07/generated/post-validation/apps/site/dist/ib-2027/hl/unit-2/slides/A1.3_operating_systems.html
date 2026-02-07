@@ -1,0 +1,447 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A1.3 Operating Systems & Control Systems | IB Computer Science</title>
+    <meta name="description" content="The OS as resource manager: scheduling, memory, files, devices, interrupts — plus HL control systems and deadlock.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head><body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A1.3 Operating Systems &amp; Control Systems</h1>
+            <h3 class="sub-title">Topic A1: Computer Fundamentals | Managing Resources &amp; Feedback</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A1.2) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall A1.2 (Data Representation) before we move on.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>Why is hexadecimal convenient when reading binary?</li>
+            <li>What two factors determine an uncompressed image size?</li>
+            <li>What is the purpose of a truth table?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">Why is hexadecimal convenient when reading binary?</div>
+        <div class="fragment box-blue">
+            <p>Because <strong>1 hex digit = 4 bits</strong>, so long binary strings become readable groups.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What two factors determine an uncompressed image size?</div>
+        <div class="fragment box-blue">
+            <p><strong>Resolution</strong> (number of pixels) and <strong>colour depth</strong> (bits per pixel).</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What is the purpose of a truth table?</div>
+        <div class="fragment box-blue">
+            <p>To list all possible inputs and the output(s), so we can verify a Boolean expression or circuit.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 Your phone can stream music, download updates,</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">and respond to your touch… <strong>all at once</strong>.</p>
+                <p style="font-size:1.1em; margin-top:0.8em;">How does one machine share limited resources fairly and safely?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> "Apps talk to hardware directly."</p>
+                <p class="small-text">If that were true, any app could overwrite memory, lock devices, or crash the system.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> the <span class="keyword" data-def="Operating System: system software that manages hardware resources and provides services for applications.">operating system (OS)</span> is a <strong>resource manager</strong>.</p>
+                <p class="small-text">It schedules CPU time, allocates memory, manages files/devices, and reacts to events via interrupts.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. ROLE OF THE OS -->
+<section>
+    <h3>The Role of an Operating System</h3>
+    <div class="question-box">What does the OS do that individual programs cannot safely do alone?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Acts as an <strong>intermediary</strong> between applications/users and hardware.</p>
+            <p class="fragment">Provides <strong>abstraction</strong>: apps don't need to know device details.</p>
+            <p class="fragment">Enforces <strong>protection</strong>: processes are isolated from each other.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-list-check"></i> Core responsibilities</h4>
+            <p class="small-text fragment">CPU/process management</p>
+            <p class="small-text fragment">Memory management (including virtual memory)</p>
+            <p class="small-text fragment">File + storage management</p>
+            <p class="small-text fragment">Device/I/O management via drivers</p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. OS FUNCTIONS OVERVIEW -->
+<section>
+    <h3>OS Functions (What gets managed?)</h3>
+    <div class="question-box">If resources are limited, what must the OS control?</div>
+    <div class="box">
+        <p class="fragment"><strong>CPU time</strong> (which process runs now?)</p>
+        <p class="fragment"><strong>Memory</strong> (where does each process live?)</p>
+        <p class="fragment"><strong>Storage + files</strong> (how is data organised and protected?)</p>
+        <p class="fragment"><strong>Devices</strong> (printers, disks, network interfaces…)</p>
+    </div>
+    <div class="fragment box-blue">
+        <p class="small-text"><strong>Exam skill:</strong> link an OS feature to the problem it solves (e.g., virtual memory → running larger programs than RAM alone).</p>
+    </div>
+</section>
+
+<!-- 6. MEMORY MANAGEMENT (VERTICAL) -->
+<section>
+    <section>
+        <h2>Memory Management</h2>
+        <div class="question-box">How can multiple programs run without overwriting each other's data?</div>
+        <div class="box">
+            <p class="fragment">Each process is given its own protected memory space.</p>
+            <p class="fragment">The OS allocates and de-allocates RAM as programs start/stop.</p>
+            <p class="fragment"><span class="keyword" data-def="Virtual memory: a technique that uses disk storage to extend usable memory beyond physical RAM.">Virtual memory</span> extends available memory by using disk storage.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for a deeper look
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Virtual Memory (What it is)</h3>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment">When RAM is full, some data is moved to disk (swap).</p>
+                <p class="fragment">This allows larger programs / more programs to run.</p>
+            </div>
+            <div class="box-blue">
+                <p class="fragment"><strong>Trade-off:</strong> disk is far slower than RAM.</p>
+                <p class="small-text fragment">So virtual memory increases <em>capacity</em>, but can reduce <em>performance</em>.</p>
+            </div>
+        </div>
+    </section>
+
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">Why can heavy virtual memory use make a computer feel "slow"?</div>
+        <div class="fragment box-blue">
+            <p>Because the system starts swapping data between RAM and disk; disk access has much higher latency, so processes stall.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 7. FILE + STORAGE MANAGEMENT -->
+<section>
+    <h3>File &amp; Storage Management</h3>
+    <div class="question-box">How does an OS stop your files becoming an unsearchable "pile of bytes"?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Organises data using a <strong>hierarchical file system</strong> (folders/directories).</p>
+            <p class="fragment">Provides operations: create, read, write, delete, rename, move.</p>
+            <p class="fragment"><span class="keyword" data-def="Defragmentation: reorganising data on an HDD so file blocks are stored contiguously, improving access speed.">Defragmentation</span> can improve HDD performance by reducing fragmentation.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-hard-drive"></i> Note</h4>
+            <p class="small-text fragment">Defragmentation mainly benefits HDDs (not SSDs in the same way).</p>
+            <p class="small-text fragment">SSDs have different performance characteristics and wear concerns.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 8. DEVICE MANAGEMENT -->
+<section>
+    <h3>Device &amp; I/O Management</h3>
+    <div class="question-box">How can one OS support thousands of different hardware devices?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">The OS uses <span class="keyword" data-def="Device driver: software that allows the OS to communicate with and control a specific hardware device.">device drivers</span> to communicate with hardware.</p>
+            <p class="fragment">It manages I/O using <span class="keyword" data-def="Buffering: temporarily storing data during transfer to handle speed differences between devices.">buffering</span>, caching, and <span class="keyword" data-def="Spooling: queuing data for a device (e.g., printer) so multiple jobs can be handled in order.">spooling</span>.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-plug-circle-bolt"></i> Plug and Play</h4>
+            <p class="small-text fragment">The OS detects devices and loads/configures the correct driver automatically.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 9. SCHEDULING (VERTICAL) -->
+<section>
+    <section>
+        <h2>CPU Scheduling</h2>
+        <div class="question-box">If many processes want the CPU, who goes next?</div>
+        <div class="box">
+            <p class="fragment">Scheduling chooses which process runs at each moment.</p>
+            <p class="fragment">Different algorithms trade off <strong>fairness</strong>, <strong>throughput</strong>, and <strong>responsiveness</strong>.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for the main algorithms
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>First-Come, First-Served (FCFS)</h3>
+        <div class="box">
+            <p class="fragment"><strong>Idea:</strong> run processes in arrival order.</p>
+            <p class="fragment"><strong>Strength:</strong> simple, low overhead.</p>
+            <p class="fragment"><strong>Weakness:</strong> long jobs can delay short interactive tasks (poor responsiveness).</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Round Robin</h3>
+        <div class="box">
+            <p class="fragment"><strong>Idea:</strong> each process gets a fixed <span class="keyword" data-def="Time slice (quantum): a fixed amount of CPU time a process may use before being pre-empted.">time slice</span> (quantum).</p>
+            <p class="fragment"><strong>Strength:</strong> good for interactive systems (fair sharing).</p>
+            <p class="fragment"><strong>Weakness:</strong> too small a quantum increases context-switch overhead.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Priority Scheduling</h3>
+        <div class="box">
+            <p class="fragment"><strong>Idea:</strong> higher-priority processes run first.</p>
+            <p class="fragment"><strong>Risk:</strong> <span class="keyword" data-def="Starvation: when a process waits indefinitely because higher-priority processes keep being scheduled.">starvation</span> — low-priority tasks may never run.</p>
+            <p class="fragment"><strong>Fix:</strong> ageing (gradually increase waiting processes' priority).</p>
+        </div>
+    </section>
+
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">Which scheduling approach typically gives better responsiveness for many users?</div>
+        <div class="fragment box-blue">
+            <p><strong>Round Robin</strong> — because each process gets a fair time slice, preventing one task from monopolising the CPU.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 10. INTERRUPTS VS POLLING (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3>Interrupts vs Polling</h3>
+        <div class="question-box">How does the CPU react instantly to a keypress or network packet?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><span class="keyword" data-def="Interrupt: a signal that causes the CPU to temporarily stop its current task to handle an event.">Interrupts</span> notify the CPU when an event happens.</p>
+                <p class="fragment">The CPU pauses current work, runs an interrupt handler, then resumes.</p>
+            </div>
+            <div class="box-blue">
+                <p class="fragment"><span class="keyword" data-def="Polling: repeatedly checking a device/status at intervals to see if an event has occurred.">Polling</span> means checking repeatedly: "Has anything happened yet?"</p>
+                <p class="small-text fragment">This can waste CPU time if events are rare.</p>
+            </div>
+        </div>
+        <div class="box fragment">
+            <h4>Evaluating the trade-off</h4>
+            <p class="small-text fragment"><strong>Interrupts:</strong> efficient for rare/unpredictable events; low wasted CPU cycles.</p>
+            <p class="small-text fragment"><strong>Polling:</strong> can be simpler and predictable, but may miss events between checks or waste cycles with frequent checks.</p>
+        </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">If a sensor updates once per hour, which approach is usually more efficient?</div>
+        <div class="fragment box-blue">
+            <p><strong>Interrupt-driven</strong> — polling would waste CPU time checking unnecessarily.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 11. HL: MULTITASKING + DEADLOCK -->
+<section>
+    <h3><span class="hl-badge">HL</span> Multitasking, Resource Allocation &amp; Deadlock</h3>
+    <div class="question-box">What happens when processes compete for resources that can't be shared?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Multitasking requires allocating CPU time, memory, files, and devices across processes.</p>
+            <p class="fragment">A <span class="keyword" data-def="Deadlock: a state where processes are stuck waiting for each other's resources, so none can proceed.">deadlock</span> occurs when processes wait indefinitely for resources held by others.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> Four conditions (classic)</h4>
+            <p class="small-text fragment"><strong>Mutual exclusion</strong></p>
+            <p class="small-text fragment"><strong>Hold and wait</strong></p>
+            <p class="small-text fragment"><strong>No pre-emption</strong></p>
+            <p class="small-text fragment"><strong>Circular wait</strong></p>
+        </div>
+    </div>
+    <div class="box fragment">
+        <p><strong>Prevention idea:</strong> break at least one condition (e.g., enforce resource ordering to prevent circular wait).</p>
+    </div>
+</section>
+
+<!-- 12. HL: CONTROL SYSTEMS (VERTICAL) -->
+<section>
+    <section>
+        <h2><span class="hl-badge">HL</span> Control Systems</h2>
+        <div class="question-box">How can a system keep a variable "near a target" despite disturbances?</div>
+        <div class="box">
+            <p class="fragment">A control system uses feedback to reduce the gap between <strong>actual state</strong> and a <strong>target state</strong> (<span class="keyword" data-def="Setpoint: the desired target value a control system aims to maintain.">setpoint</span>).</p>
+            <p class="fragment">This is the same core idea behind thermostats, autopilot, robotics, and industrial automation.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for the loop components
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>1) Sensors → Actual State</h3>
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Sensor: an input device that measures a physical quantity and converts it into a signal.">Sensors</span> measure the environment (temperature, moisture, distance…).</p>
+            <p class="fragment">They provide a signal representing the <strong>actual state</strong>.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>2) Controller → Decision</h3>
+        <div class="box">
+            <p class="fragment">The controller compares <strong>actual</strong> vs <strong>setpoint</strong> to compute an <span class="keyword" data-def="Error signal: the difference between target state (setpoint) and actual state in a control system.">error signal</span>.</p>
+            <p class="fragment">It applies logic/algorithm (e.g., threshold logic or PID) to decide an action.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>3) Actuators → Change the World</h3>
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Actuator: an output device that converts a control signal into physical action (movement, heat, flow).">Actuators</span> turn decisions into physical work (open a valve, apply brakes, move a motor).</p>
+            <p class="fragment"><span class="keyword" data-def="Transducer: a device that converts energy from one form to another; sensors and actuators are types of transducers.">Transducers</span> is the broader category: devices converting energy forms.</p>
+        </div>
+    </section>
+
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">In a thermostat system, which component measures the actual room temperature?</div>
+        <div class="fragment box-blue">
+            <p><strong>The sensor</strong> — it converts temperature into an electrical signal the controller can compare to the setpoint.</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Real-World Examples (Closed Loop)</h3>
+        <div class="box">
+            <table style="width:100%; font-size:0.9em;">
+                <thead>
+                    <tr><th>System</th><th>Sensor</th><th>Actuator</th><th>Loop Logic</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Smart irrigation</strong></td><td>Moisture (hygrometer)</td><td>Solenoid valve</td><td>Stop watering once threshold reached</td></tr>
+                    <tr><td><strong>Autonomous braking</strong></td><td>Radar/LiDAR</td><td>Hydraulics/ABS</td><td>High-frequency feedback to reduce latency</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+
+<!-- 13. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Virtual memory makes programs run faster because there is "more memory".</p>
+            <p class="fragment"><strong>B.</strong> Priority scheduling can cause starvation.</p>
+            <p class="fragment"><strong>C.</strong> Polling is always more efficient than interrupts.</p>
+            <p class="fragment"><strong>D.</strong> A control system uses feedback to reduce error against a setpoint.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Virtual memory increases capacity but disk access is slower than RAM.</p>
+            <p class="fragment"><strong>B: True.</strong> Low-priority tasks may wait indefinitely without mitigation.</p>
+            <p class="fragment"><strong>C: False.</strong> Polling can waste CPU cycles when events are rare.</p>
+            <p class="fragment"><strong>D: True.</strong> Feedback aims to minimise the error signal.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 14. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li>The <strong>OS</strong> manages resources and provides safe abstractions for applications.</li>
+            <li>Key functions include <strong>memory</strong>, <strong>files</strong>, and <strong>devices</strong> (via drivers).</li>
+            <li>Scheduling algorithms trade off fairness, throughput, and responsiveness.</li>
+            <li><strong>Interrupts</strong> react to events efficiently; <strong>polling</strong> repeatedly checks.</li>
+            <li><span class="hl-badge">HL</span> Deadlock and control systems extend resource and feedback thinking.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> A1.4 Translation (HL) — interpreters, compilers, bytecode, and JIT.</p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body></html>

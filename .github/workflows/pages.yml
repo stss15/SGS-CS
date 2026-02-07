@@ -30,21 +30,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build site
-        run: npm run build
+      - name: Validate framework workspace
+        run: npm run framework:check
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Apply keyword highlighting
-        run: python3 scripts/apply_igcse_keywords.py
+      - name: Build deployable site
+        run: npm run framework:build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./apps/site/dist
 
   deploy:
     needs: build

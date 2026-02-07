@@ -1,0 +1,29 @@
+---
+import LegacyHtmlDocument from '../../../../../components/LegacyHtmlDocument.astro';
+import { getIb2027UnitSlideHtml, getIb2027UnitSlideRoutes } from '@sgs/content-schema';
+
+interface SlidePageProps {
+  html: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getIb2027UnitSlideRoutes();
+
+  return Promise.all(
+    routes.map(async (route) => ({
+      params: {
+        level: route.level,
+        unit: route.unitSegment,
+        slide: route.slideSlug
+      },
+      props: {
+        html: await getIb2027UnitSlideHtml(route.level, route.unitSegment, route.slideSlug)
+      }
+    }))
+  );
+}
+
+const { html } = Astro.props as SlidePageProps;
+---
+
+<LegacyHtmlDocument html={html} />

@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import HeroPanel from '../../../../components/HeroPanel.astro';
+import { getIbSlUnit2Index } from '@sgs/content-schema';
+
+const page = await getIbSlUnit2Index();
+
+const normalizeAssetPath = (assetPath: string): string =>
+  assetPath.startsWith('/') ? assetPath : `/${assetPath}`;
+---
+
+<BaseLayout title={page.title} description={page.description || 'IB unit resources.'} extraStyles={['css/resource-style.css']}>
+  <HeroPanel
+    title={page.hero.title}
+    subtitle={page.hero.subtitle}
+  />
+
+  {(page.cards || []).length > 0 && (
+    <div class="arcade-grid">
+      {(page.cards || []).map((card) => (
+        <a href={card.href} class="game-card">
+          {card.image && (
+            <img
+              src={normalizeAssetPath(card.image)}
+              alt={card.title}
+              class="game-thumb"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          <div class="game-info">
+            <h3 class="game-title">{card.title}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+
+  {(page.resources || []).length > 0 && (
+    <section class="resource-section">
+      <div class="resource-header">
+        <h2 class="resource-title">{page.resourcesTitle || 'Content Slides'}</h2>
+        <div class="resource-line"></div>
+      </div>
+      <div class="resource-grid">
+        {(page.resources || []).map((resource) => (
+          <a
+            href={resource.href}
+            class="resource-btn"
+            target={resource.target}
+            rel={resource.target === '_blank' ? 'noopener noreferrer' : undefined}
+          >
+            <span class="resource-number">
+              {resource.icon ? <i class={resource.icon} aria-hidden="true"></i> : (resource.number || '')}
+            </span>
+            <span class="resource-info">
+              <span class="resource-name">{resource.name}</span>
+              {resource.type && <span class="resource-type">{resource.type}</span>}
+            </span>
+            <i class={`fa-solid ${resource.target === '_blank' ? 'fa-arrow-up-right-from-square' : 'fa-arrow-right'} resource-arrow`} aria-hidden="true"></i>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {(page.resourcesSecondary || []).length > 0 && (
+    <section class="resource-section">
+      <div class="resource-header">
+        <h2 class="resource-title">{page.resourcesSecondaryTitle || 'Teacher Resources'}</h2>
+        <div class="resource-line"></div>
+      </div>
+      <div class="resource-grid">
+        {(page.resourcesSecondary || []).map((resource) => (
+          <a
+            href={resource.href}
+            class="resource-btn"
+            target={resource.target}
+            rel={resource.target === '_blank' ? 'noopener noreferrer' : undefined}
+          >
+            <span class="resource-number">
+              {resource.icon ? <i class={resource.icon} aria-hidden="true"></i> : (resource.number || '')}
+            </span>
+            <span class="resource-info">
+              <span class="resource-name">{resource.name}</span>
+              {resource.type && <span class="resource-type">{resource.type}</span>}
+            </span>
+            <i class={`fa-solid ${resource.target === '_blank' ? 'fa-arrow-up-right-from-square' : 'fa-arrow-right'} resource-arrow`} aria-hidden="true"></i>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</BaseLayout>

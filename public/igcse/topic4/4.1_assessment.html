@@ -11,6 +11,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
         <link rel="stylesheet" href="/css/assessment-base.css">
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
 </head>
 
 <body data-assessment-json="/data/assessments/igcse-topic4-4-1.json">
@@ -30,7 +35,7 @@
                 <option value="Mr Stewart">Mr Stewart</option>
                 <option value="Mr Watling">Mr Watling</option>
             </select>
-            <button onclick="startAssessment()">Start Assessment</button>
+            <button data-sgs-onclick="startAssessment()">Start Assessment</button>
         </div>
     </div>
 
@@ -40,7 +45,7 @@
     <a href="index.html" id="back-btn" title="Back to Topic 4"><i class="fa-solid fa-circle-arrow-left"></i></a>
 
     <!-- Logo -->
-    <img src="/images/Logo.png" id="sg-logo" alt="Logo">
+    <img src="/images/Logo.png" id="sg-logo" alt="Logo" decoding="async">
 
     <header>
         <h1>4.1 Assessment</h1>
@@ -57,15 +62,15 @@
             </div>
             <p>Drag each software item into the correct category below.</p>
 
-            <div class="draggable-source" id="q1-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="draggable-source" id="q1-source" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                 <!-- Items will be shuffled by JS -->
             </div>
 
             <div class="bucket-container">
-                <div class="bucket" id="bucket-system" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="bucket" id="bucket-system" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                     <h4>System Software</h4>
                 </div>
-                <div class="bucket" id="bucket-app" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="bucket" id="bucket-app" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                     <h4>Application Software</h4>
                 </div>
             </div>
@@ -180,14 +185,14 @@
                 <span class="q-status" id="q8-status">Unanswered</span>
             </div>
             <p>Drag the <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">interrupt</span> causes to the correct type.</p>
-            <div class="draggable-source" id="q8-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="draggable-source" id="q8-source" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                 <!-- Items will be shuffled by JS -->
             </div>
             <div class="bucket-container">
-                <div class="bucket" id="bucket-hw" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="bucket" id="bucket-hw" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                     <h4>Hardware <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupts</span></h4>
                 </div>
-                <div class="bucket" id="bucket-sw" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="bucket" id="bucket-sw" data-sgs-ondrop="drop(event)" data-sgs-ondragover="allowDrop(event)">
                     <h4>Software <span class="keyword" data-def="a signal sent from a device or software to a microprocessor requesting its attention; the microprocessor suspends all operations until the interrupt has been serviced 175 318281_C04_CAM_IGCSE CO_SCI_147_179.indd 175 2/18/21 2:10 PM 4 Software">Interrupts</span></h4>
                 </div>
             </div>
@@ -217,7 +222,7 @@
         </div>
 
         <div class="controls">
-            <button class="btn-submit" id="btnSubmit" onclick="checkAnswers()">Submit Answers</button>
+            <button class="btn-submit" id="btnSubmit" data-sgs-onclick="checkAnswers()">Submit Answers</button>
             <a href="index.html" class="btn-return" id="btnReturn">Return to Menu</a>
             <div id="finalScore"></div>
             <div class="completion-message" id="completionMessage">
@@ -229,6 +234,15 @@
     </main>
 
         <script src="/js/assessment-runtime.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
 </body>
 
 </html>

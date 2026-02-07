@@ -1,0 +1,23 @@
+---
+import type { FeatureCard } from '@sgs/content-schema';
+
+interface Props {
+  cards: FeatureCard[];
+}
+
+const { cards } = Astro.props;
+---
+
+<div class="cards-container">
+  {cards.map((card) => (
+    <a href={card.href} class="card">
+      {card.icon && (
+        <div class="card-icon">
+          <i class={card.icon} aria-hidden="true"></i>
+        </div>
+      )}
+      <h2 class="card-title">{card.title}</h2>
+      {card.desc && <p class="card-desc">{card.desc}</p>}
+    </a>
+  ))}
+</div>

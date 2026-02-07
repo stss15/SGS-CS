@@ -1,0 +1,42 @@
+---
+import LegacyHtmlDocument from '../../../../components/LegacyHtmlDocument.astro';
+import { getIb2027AliasRouteHtml, getIb2027SlideAliasRoutes } from '@sgs/content-schema';
+
+interface SlideAliasPageProps {
+  html: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getIb2027SlideAliasRoutes();
+
+  return Promise.all(
+    routes
+      .map((route) => {
+        const match = route.routePath.match(/^\/ib-2027\/(sl|hl)\/slides\/([^/]+)\.html$/);
+        if (!match) {
+          return null;
+        }
+
+        return {
+          routePath: route.routePath,
+          level: match[1],
+          slide: match[2]
+        };
+      })
+      .filter((route): route is { routePath: string; level: string; slide: string } => route !== null)
+      .map(async (route) => ({
+        params: {
+          level: route.level,
+          slide: route.slide
+        },
+        props: {
+          html: await getIb2027AliasRouteHtml(route.routePath)
+        }
+      }))
+  );
+}
+
+const { html } = Astro.props as SlideAliasPageProps;
+---
+
+<LegacyHtmlDocument html={html} />

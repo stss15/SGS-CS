@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="/css/visualizer-bst.css">
     <link rel="stylesheet" href="/css/standalone-nav.css">
 
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.">
 </head>
 
 <body>
@@ -26,7 +31,7 @@
             <h1>Binary Search <span class="keyword" data-def="Hierarchical structure made of nodes connected by edges.">Tree</span> Visualiser</h1>
         </div>
         <div style="display: flex; gap: 10px;">
-            <button class="header-btn" onclick="toggleTheory()">
+            <button class="header-btn" data-sgs-onclick="toggleTheory()">
                 <span style="font-size: 1.2em;">&#128214;</span> Theory Guide
             </button>
         </div>
@@ -62,14 +67,14 @@
                 <div class="theory-content">
                     <div class="theory-header">
                         <h2>IB Computer Science: BST Theory</h2>
-                        <button onclick="toggleTheory()"
+                        <button data-sgs-onclick="toggleTheory()"
                             style="background:#ef4444; border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">Close</button>
                     </div>
 
                     <div class="theory-nav">
-                        <button class="tab-btn active" onclick="switchTab('basics')">Basics & Complexity</button>
-                        <button class="tab-btn" onclick="switchTab('balance')">Balance vs Unbalanced</button>
-                        <button class="tab-btn" onclick="switchTab('ops')">Operations & <span class="keyword" data-def="Visiting nodes one-by-one by following pointers.">Traversals</span></button>
+                        <button class="tab-btn active" data-sgs-onclick="switchTab('basics')">Basics & Complexity</button>
+                        <button class="tab-btn" data-sgs-onclick="switchTab('balance')">Balance vs Unbalanced</button>
+                        <button class="tab-btn" data-sgs-onclick="switchTab('ops')">Operations & <span class="keyword" data-def="Visiting nodes one-by-one by following pointers.">Traversals</span></button>
                     </div>
 
                     <!-- TAB 1: Basics -->
@@ -187,7 +192,7 @@
         <div class="control-row">
             <div class="group">
                 <label>Op</label>
-                <select id="op-select" onchange="updateCodeView()"
+                <select id="op-select" data-sgs-onchange="updateCodeView()"
                     style="background:#222; color:white; border:1px solid #555; padding:4px;">
                     <option value="insert">Insert <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">Node</span></option>
                     <option value="delete">Delete <span class="keyword" data-def="A unit in a linked structure that stores data and one or more pointers.">Node</span></option>
@@ -202,23 +207,23 @@
                 <input type="number" id="node-value" value="50" min="0" max="999">
             </div>
 
-            <button class="primary" onclick="loadAction()">Load Action</button>
+            <button class="primary" data-sgs-onclick="loadAction()">Load Action</button>
 
             <div class="scenarios group">
                 <label>Scenarios</label>
-                <button onclick="playScenario('balanced')">Balanced</button>
-                <button onclick="playScenario('unbalanced')">Unbalanced</button>
-                <button onclick="resetTree()" style="color: #ef4444;">Clear</button>
+                <button data-sgs-onclick="playScenario('balanced')">Balanced</button>
+                <button data-sgs-onclick="playScenario('unbalanced')">Unbalanced</button>
+                <button data-sgs-onclick="resetTree()" style="color: #ef4444;">Clear</button>
             </div>
         </div>
 
         <!-- Row 2: Playback -->
         <div class="control-row" style="margin-top: 5px;">
             <div class="group" style="flex: 1; justify-content: center; gap: 10px;">
-                <button onclick="step(-1)" title="Previous Step">&#9664; Prev</button>
-                <button onclick="step(1)" title="Next Step">Next &#9654;</button>
+                <button data-sgs-onclick="step(-1)" title="Previous Step">&#9664; Prev</button>
+                <button data-sgs-onclick="step(1)" title="Next Step">Next &#9654;</button>
                 <div style="width: 20px;"></div> <!-- Spacer -->
-                <button id="btn-run" onclick="toggleRun()" style="width: 130px;">&#9658; Run Simulation</button>
+                <button id="btn-run" data-sgs-onclick="toggleRun()" style="width: 130px;">&#9658; Run Simulation</button>
             </div>
 
             <div class="group">
@@ -236,6 +241,15 @@
     </div>
 
     <script src="/js/visualizer-bst.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
 </body>
 
 </html>

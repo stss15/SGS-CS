@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import DetailSection from '../../../../components/DetailSection.astro';
+import HeroPanel from '../../../../components/HeroPanel.astro';
+import SideCard from '../../../../components/SideCard.astro';
+import { getIbHlUnitPlan } from '@sgs/content-schema';
+
+const unitPlan = await getIbHlUnitPlan(4);
+---
+
+<BaseLayout
+  title={unitPlan.title}
+  description={unitPlan.description || 'IB Computer Science unit plan.'}
+>
+  <HeroPanel
+    title={`Unit ${unitPlan.unitNumber}: ${unitPlan.unitName}`}
+    subtitle={`${unitPlan.level} curriculum overview and structured learning plan.`}
+  />
+
+  <section class="unit-grid">
+    <article class="unit-main">
+      <DetailSection title="Introduction" open>
+        {unitPlan.introduction?.bigQuestion && <p><strong>{unitPlan.introduction.bigQuestion}</strong></p>}
+        {unitPlan.introduction?.overview && <p set:html={unitPlan.introduction.overview} />}
+        {unitPlan.introduction?.journey && <p set:html={unitPlan.introduction.journey} />}
+      </DetailSection>
+
+      {(unitPlan.concepts || []).map((concept) => (
+        <DetailSection title={concept.title}>
+          <div set:html={concept.content} />
+        </DetailSection>
+      ))}
+
+      {(unitPlan.terminology || []).length > 0 && (
+        <DetailSection title="Key Terminology">
+          <table class="term-table">
+            <thead>
+              <tr><th>Term</th><th>Definition</th></tr>
+            </thead>
+            <tbody>
+              {(unitPlan.terminology || []).map((item) => (
+                <tr>
+                  <td>{item.term}</td>
+                  <td>{item.definition}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </DetailSection>
+      )}
+    </article>
+
+    <aside class="unit-side">
+      {(unitPlan.viewSlidesButtons || []).length > 0 && (
+        <SideCard title="View Slides">
+          <ul class="link-list">
+            {(unitPlan.viewSlidesButtons || []).map((button) => (
+              <li><a href={button.href}>{button.label}</a></li>
+            ))}
+          </ul>
+        </SideCard>
+      )}
+
+      {(unitPlan.syllabusPoints || []).length > 0 && (
+        <SideCard title="Syllabus Coverage">
+          <ul class="link-list">
+            {(unitPlan.syllabusPoints || []).map((point) => (
+              <li><strong>{point.code}</strong> {point.topic}</li>
+            ))}
+          </ul>
+        </SideCard>
+      )}
+
+      {(unitPlan.applications || []).length > 0 && (
+        <SideCard title="Applications">
+          <ul class="link-list">
+            {(unitPlan.applications || []).map((application) => (
+              <li>{application}</li>
+            ))}
+          </ul>
+        </SideCard>
+      )}
+    </aside>
+  </section>
+</BaseLayout>

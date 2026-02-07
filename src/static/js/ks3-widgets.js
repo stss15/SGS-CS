@@ -9,6 +9,23 @@
         const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('live-date-display').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
 
+        const initImageFallbacks = () => {
+            const images = document.querySelectorAll('img[data-fallback-src]');
+            images.forEach((image) => {
+                const applyFallback = () => {
+                    const fallbackSrc = image.getAttribute('data-fallback-src');
+                    if (!fallbackSrc || image.dataset.fallbackApplied === 'true') return;
+                    image.dataset.fallbackApplied = 'true';
+                    image.src = fallbackSrc;
+                };
+
+                image.addEventListener('error', applyFallback);
+                if (image.complete && image.naturalWidth === 0) {
+                    applyFallback();
+                }
+            });
+        };
+
         /* --- WIDGET FUNCTIONS --- */
         // (Including all the widget functions from L5)
         
@@ -155,7 +172,7 @@
                                 osc.frequency.value = 880;
                                 osc.start();
                                 setTimeout(() => osc.stop(), 500);
-                            } catch (e) { console.log('Audio error', e); }
+                            } catch (e) { /* Audio API not available in this environment. */ }
                         }
                         updateFTDisplay();
                     }, 1000);
@@ -180,5 +197,8 @@
             document.getElementById('ft-sec').value = s;
         }
 
-        window.addEventListener('load', initFloatingTimer);
+        window.addEventListener('load', () => {
+            initImageFallbacks();
+            initFloatingTimer();
+        });
     

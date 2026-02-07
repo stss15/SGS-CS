@@ -1,0 +1,29 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  pills?: string[];
+}
+
+const {
+  eyebrow,
+  title,
+  subtitle,
+  pills = []
+} = Astro.props;
+---
+
+<div class="hero-text">
+  {eyebrow && <p class="hero-kicker">{eyebrow}</p>}
+  <h1 class="hero-title">{title}</h1>
+  {subtitle && <p class="hero-subtitle">{subtitle}</p>}
+  {pills.length > 0 && (
+    <div class="hero-chip-row">
+      {pills.map((pill) => (
+        <span class="hero-chip">{pill}</span>
+      ))}
+    </div>
+  )}
+</div>
+<slot />
