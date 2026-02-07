@@ -3,6 +3,7 @@ const fs = require('fs-extra');
 const fg = require('fast-glob');
 const matter = require('gray-matter');
 const nunjucks = require('nunjucks');
+const { buildPdfs } = require('./build-pdfs');
 
 const ROOT_DIR = path.join(__dirname, '..');
 const SRC_DIR = path.join(ROOT_DIR, 'src/pages');
@@ -532,6 +533,7 @@ const buildAll = async () => {
     }
 
     await Promise.all(files.map((file) => buildFile(file)));
+    await buildPdfs();
     await writeManifest();
     await createLegacySlideAliases();
     await createLegacyScenarioAliases();
