@@ -31,7 +31,6 @@ npm run deploy
 
 - `apps/site`: Astro framework app (deploy target output in `apps/site/dist`).
 - `packages/content-schema`: Typed adapters that map legacy source/content into Astro routes.
-- `packages/ui`: Shared React UI primitives.
 - `src`: Legacy source-of-truth templates/content still used in active build pipeline.
 - `scripts/build.js`: Legacy render step used before Astro build.
 - `scripts/migration/alias-framework-html-routes.js`: Alias and asset sync step.
