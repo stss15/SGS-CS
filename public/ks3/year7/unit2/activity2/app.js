@@ -31,18 +31,22 @@ const DEFAULT_STATE = {
   },
   connectify: {
     found: [],
-    choice: null // 'agree' | 'decline'
+    choice: null, // 'agree' | 'decline'
+    tab: 'home' // 'home' | 'explore' | 'profile' (only used after agreeing)
   },
   mapme: {
     location: null, // 'precise' | 'approx' | 'none'
     triedPrecise: false,
-    triedApprox: false
+    triedApprox: false,
+    selectedPlace: 'school'
   },
   freegame: {
     terms: null, // true/false
     tracking: null, // 'all' | 'essential'
     camera: null, // true/false
-    contacts: null // true/false
+    contacts: null, // true/false
+    coins: 120,
+    watchedAds: 0
   },
   footprint: [],
   discoveries: []
@@ -125,6 +129,10 @@ let state = loadState();
 
 const $ = (selector, root = document) => root.querySelector(selector);
 
+const ui = {
+  activeApp: 'home'
+};
+
 const els = {
   statusTime: null,
   toastContainer: null,
@@ -139,6 +147,8 @@ const els = {
   freegameBody: null,
   casefileBody: null,
   settingsBody: null,
+  missionPanel: null,
+  missionPanelInner: null,
   permissionOverlay: null,
   permissionIcon: null,
   permissionTitle: null,
@@ -149,6 +159,11 @@ const els = {
 const getActiveMission = () => {
   if (state.missionIndex >= MISSIONS.length) return null;
   return MISSIONS[clampNumber(state.missionIndex, 0, MISSIONS.length - 1)];
+};
+
+const recomputeMissionIndex = () => {
+  const nextIndex = MISSIONS.findIndex((m) => !state.completedMissions.includes(m.id));
+  state.missionIndex = nextIndex === -1 ? MISSIONS.length : nextIndex;
 };
 
 const isUnlocked = (app) => state.unlockedApps.includes(app);
@@ -174,6 +189,7 @@ const addFootprint = (item, icon, source) => {
   markCasefileNew();
   saveState();
   showToast('bad', 'Data collected', `${item}`);
+  renderSidePanel();
 };
 
 const addDiscovery = (id, title, desc) => {
@@ -182,6 +198,7 @@ const addDiscovery = (id, title, desc) => {
   markCasefileNew();
   saveState();
   showToast('info', 'Discovery', title);
+  renderSidePanel();
 };
 
 const updateClock = () => {
@@ -222,6 +239,10 @@ const showScreen = (screenId) => {
   els.screens.forEach((screen) => screen.classList.remove('active'));
   const next = document.getElementById(screenId);
   if (next) next.classList.add('active');
+
+  if (screenId === 'home-screen') ui.activeApp = 'home';
+  else if (screenId.startsWith('screen-')) ui.activeApp = screenId.replace('screen-', '');
+  renderSidePanel();
 };
 
 const goHome = () => {
@@ -308,6 +329,245 @@ const openApp = (app) => {
   }
 };
 
+const MISSION_PANEL_CONFIG = {
+  browser: {
+    kickerIcon: 'fa-cookie-bite',
+    tips: [
+      { title: 'Essential cookies', desc: 'Keep a website working.' },
+      { title: 'Tracking cookies', desc: 'Follow what you view for ads.' }
+    ]
+  },
+  connectify: {
+    kickerIcon: 'fa-file-contract',
+    tips: [
+      { title: 'Terms', desc: 'Rules you agree to.' },
+      { title: 'Data sharing', desc: 'Your data can go to other companies.' }
+    ]
+  },
+  mapme: {
+    kickerIcon: 'fa-location-dot',
+    tips: [
+      { title: 'Precise', desc: 'Exact address-level.' },
+      { title: 'Approximate', desc: 'Rough area-level.' }
+    ]
+  },
+  freegame: {
+    kickerIcon: 'fa-gamepad',
+    tips: [
+      { title: 'If it is free…', desc: 'Sometimes you pay with your data.' },
+      { title: 'Permissions', desc: 'Only allow what is needed.' }
+    ]
+  }
+};
+
+const getPanelContext = () => {
+  const app = ui.activeApp;
+  const missionForApp = MISSIONS.find((m) => m.app === app) || null;
+  const mission = missionForApp || getActiveMission() || null;
+  return { app, mission, missionForApp: Boolean(missionForApp) };
+};
+
+const panelChecklistItems = (missionId) => {
+  if (missionId === 'browser') {
+    return [
+      {
+        id: 'browser-all',
+        label: 'Accept all cookies',
+        help: 'Notice personalised recommendations.',
+        done: state.browser.triedAll
+      },
+      {
+        id: 'browser-essential',
+        label: 'Try essential only',
+        help: 'Notice generic content.',
+        done: state.browser.triedEssential
+      }
+    ];
+  }
+
+  if (missionId === 'connectify') {
+    return [
+      {
+        id: 'connectify-spot',
+        label: 'Spot 2 suspicious clauses',
+        help: 'Tap highlighted parts of the terms.',
+        done: state.connectify.found.length >= 2
+      },
+      {
+        id: 'connectify-choice',
+        label: 'Make a choice',
+        help: 'Agree or decline.',
+        done: state.connectify.choice !== null
+      }
+    ];
+  }
+
+  if (missionId === 'mapme') {
+    return [
+      {
+        id: 'mapme-precise',
+        label: 'Try precise location',
+        help: 'See what changes on the map.',
+        done: state.mapme.triedPrecise
+      },
+      {
+        id: 'mapme-approx',
+        label: 'Try approximate location',
+        help: 'Compare with precise.',
+        done: state.mapme.triedApprox
+      }
+    ];
+  }
+
+  if (missionId === 'freegame') {
+    return [
+      { id: 'fg-terms', label: 'Terms choice', help: 'Agree or decline.', done: state.freegame.terms !== null },
+      { id: 'fg-tracking', label: 'Tracking choice', help: 'Allow tracking or not.', done: state.freegame.tracking !== null },
+      { id: 'fg-camera', label: 'Camera permission', help: 'Allow or deny.', done: state.freegame.camera !== null },
+      { id: 'fg-contacts', label: 'Contacts permission', help: 'Allow or deny.', done: state.freegame.contacts !== null }
+    ];
+  }
+
+  return [];
+};
+
+const SOURCE_BY_APP = {
+  browser: 'Browser',
+  connectify: 'Connectify',
+  mapme: 'MapMe',
+  freegame: 'Super Puzzle Quest'
+};
+
+const DISCOVERY_PREFIX_BY_APP = {
+  browser: 'browser-',
+  connectify: 'connectify-',
+  mapme: 'mapme-',
+  freegame: 'freegame-'
+};
+
+const renderImpactList = (items) => {
+  if (items.length === 0) {
+    return `<div class="impact-item"><div class="impact-icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></div><div class="impact-text"><div class="impact-title">Nothing yet</div><div class="impact-subtitle">Make choices in the app to see the impact.</div></div></div>`;
+  }
+
+  return items
+    .map(
+      (it) => `
+      <div class="impact-item">
+        <div class="impact-icon"><i class="fa-solid ${escapeHtml(it.icon)}" aria-hidden="true"></i></div>
+        <div class="impact-text">
+          <div class="impact-title">${escapeHtml(it.title)}</div>
+          <div class="impact-subtitle">${escapeHtml(it.subtitle)}</div>
+        </div>
+      </div>
+    `
+    )
+    .join('');
+};
+
+const renderSidePanel = () => {
+  if (!els.missionPanelInner) return;
+
+  const { app, mission } = getPanelContext();
+  const missionIndex = mission ? MISSIONS.findIndex((m) => m.id === mission.id) + 1 : MISSIONS.length;
+  const missionId = mission ? mission.id : null;
+  const missionTitle = mission ? mission.title : 'All missions complete';
+  const missionNote = mission ? mission.note : 'Open Case File to review what was collected.';
+
+  const checklist = missionId ? panelChecklistItems(missionId) : [];
+  const checklistHtml =
+    checklist.length === 0
+      ? `<p class="panel-subtitle">No checklist.</p>`
+      : `<div class="checklist">
+          ${checklist
+            .map(
+              (c) => `
+            <div class="check-item" data-done="${c.done ? 'true' : 'false'}">
+              <div class="check-box"><i class="fa-solid ${c.done ? 'fa-check' : 'fa-minus'}" aria-hidden="true"></i></div>
+              <div>
+                <div class="check-label">${escapeHtml(c.label)}</div>
+                <div class="check-help">${escapeHtml(c.help)}</div>
+              </div>
+            </div>
+          `
+            )
+            .join('')}
+        </div>`;
+
+  const appSource = app && SOURCE_BY_APP[app] ? SOURCE_BY_APP[app] : null;
+  const appFootprint = appSource ? state.footprint.filter((f) => f.source === appSource) : state.footprint.slice();
+  const appPrefix = app && DISCOVERY_PREFIX_BY_APP[app] ? DISCOVERY_PREFIX_BY_APP[app] : null;
+  const appDiscoveries = appPrefix ? state.discoveries.filter((d) => d.id.startsWith(appPrefix)) : state.discoveries.slice();
+
+  const impactItems = [
+    ...appFootprint
+      .slice(-5)
+      .reverse()
+      .map((f) => ({ icon: f.icon, title: f.item, subtitle: `Collected by ${f.source}` })),
+    ...appDiscoveries
+      .slice(-3)
+      .reverse()
+      .map((d) => ({ icon: 'fa-lightbulb', title: d.title, subtitle: d.desc }))
+  ].slice(0, 7);
+
+  const config = mission ? MISSION_PANEL_CONFIG[mission.app] : null;
+  const tips = config?.tips || [];
+  const tipsHtml =
+    tips.length === 0
+      ? ''
+      : `<div class="panel-card">
+          <h4 class="panel-card-title"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Key ideas</h4>
+          <div class="impact-list">
+            ${renderImpactList(
+              tips.map((t) => ({ icon: 'fa-circle-check', title: t.title, subtitle: t.desc }))
+            )}
+          </div>
+        </div>`;
+
+  const resetTarget = ['browser', 'connectify', 'mapme', 'freegame'].includes(app) ? app : mission?.app || null;
+  const canReset = resetTarget && isUnlocked(resetTarget);
+
+  els.missionPanelInner.innerHTML = `
+    <div class="panel-head">
+      <div class="panel-kicker">
+        <i class="fa-solid ${escapeHtml(config?.kickerIcon || 'fa-bullseye')}" aria-hidden="true"></i>
+        Mission ${missionIndex}/${MISSIONS.length} • ${escapeHtml(labelForApp(app === 'home' ? (mission?.app || 'messages') : app))}
+      </div>
+      <h2 class="panel-title">${escapeHtml(missionTitle)}</h2>
+      <p class="panel-subtitle">${escapeHtml(missionNote)}</p>
+    </div>
+
+    <div class="panel-card">
+      <h4 class="panel-card-title"><i class="fa-solid fa-list-check" aria-hidden="true"></i> Checklist</h4>
+      ${checklistHtml}
+    </div>
+
+    ${tipsHtml}
+
+    <div class="panel-card">
+      <h4 class="panel-card-title"><i class="fa-solid fa-clipboard" aria-hidden="true"></i> Impact</h4>
+      <div class="impact-list">
+        ${renderImpactList(impactItems)}
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h4 class="panel-card-title"><i class="fa-solid fa-gear" aria-hidden="true"></i> Controls</h4>
+      <div class="panel-actions">
+        <button class="btn" type="button" data-action="reset-app" ${canReset ? '' : 'disabled'} ${resetTarget ? `data-reset-app="${escapeHtml(resetTarget)}"` : ''}>
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset
+        </button>
+        <button class="btn btn-primary" type="button" data-open-app="casefile">
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Case File
+        </button>
+      </div>
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn" type="button" data-reset="all"><i class="fa-solid fa-trash-arrow-up" aria-hidden="true"></i> Reset everything</button>
+      </div>
+    </div>
+  `;
+};
+
 const renderMessages = () => {
   const mission = getActiveMission();
 
@@ -349,6 +609,8 @@ const renderMessages = () => {
       ? `<div class="bubble from-hq"><strong>All missions complete.</strong> Open Case File to review what was collected.</div>`
       : `<div class="bubble from-hq"><strong>Current:</strong> ${mission ? escapeHtml(mission.title) : 'Open the active mission above.'}</div>`}
   `;
+
+  renderSidePanel();
 };
 
 const labelForApp = (app) => {
@@ -588,9 +850,11 @@ const handleCookieChoice = (choice) => {
     addFootprint('Browsing history', 'fa-clock-rotate-left', 'Browser');
     addFootprint('Shopping interests', 'fa-cart-shopping', 'Browser');
     addFootprint('Ad profile', 'fa-bullhorn', 'Browser');
+    addDiscovery('browser-tracking', 'Tracking cookies personalise ads', 'Tracking cookies can remember what you view to target ads.');
     showToast('warn', 'Cookies', 'Tracking cookies enabled.');
   } else {
     state.browser.triedEssential = true;
+    addDiscovery('browser-essential', 'Essential cookies keep sites working', 'Essential cookies help a site run without tracking you.');
     showToast('good', 'Cookies', 'Essential cookies only.');
   }
 
@@ -603,34 +867,73 @@ const handleCookieChoice = (choice) => {
 const renderConnectify = () => {
   const foundCount = state.connectify.found.length;
   const choice = state.connectify.choice;
+  const trackingOn = state.browser.lastChoice === 'all';
+  const interestId = state.browser.interest || 'gaming';
+  const interest = BROWSER_INTERESTS.find((i) => i.id === interestId) || BROWSER_INTERESTS[0];
+
+  const renderTermHighlight = (id, text) => {
+    const found = state.connectify.found.includes(id);
+    return `
+      <button class="term-highlight ${found ? 'is-found' : ''}" type="button" data-connectify-clause="${escapeHtml(id)}">
+        ${escapeHtml(text)}
+        ${found ? '<i class="fa-solid fa-check" aria-hidden="true"></i>' : ''}
+      </button>
+    `;
+  };
 
   if (!choice) {
     const choiceDisabled = foundCount < 2;
     els.connectifyBody.innerHTML = `
-      <div class="card">
-        <h4 class="card-title">Before you start</h4>
-        <p class="card-subtitle">Tap the suspicious clauses. Then decide if you agree.</p>
-        <div class="pill-row">
-          <span class="pill"><i class="fa-solid fa-magnifying-glass"></i> Found: ${foundCount}/3</span>
+      <div class="connectify-shell">
+        <div class="connectify-top">
+          <div class="connectify-mark" aria-hidden="true"><i class="fa-solid fa-heart"></i></div>
+          <div class="connectify-brand">
+            <div class="connectify-name">Connectify</div>
+            <div class="connectify-tag">Social • Chat • Share</div>
+          </div>
+          <button class="connectify-top-btn" type="button" data-open-app="casefile" aria-label="Open Case File">
+            <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+          </button>
         </div>
-      </div>
 
-      <div class="card">
-        <h4 class="card-title">Terms &amp; Conditions</h4>
-        <p class="card-subtitle">Tap any highlighted clause.</p>
-        <div class="btn-row">
-          ${renderClauseButton('data-retention', 'We keep your data forever')}
-          ${renderClauseButton('background-location', 'We track your location often')}
-          ${renderClauseButton('data-sharing', 'We share data with many companies')}
-        </div>
-      </div>
+        <div class="connectify-scroll">
+          <div class="connectify-onboard">
+            <div class="connectify-onboard-title">Before you join</div>
+            <div class="connectify-onboard-sub">Tap any highlighted part you think is risky.</div>
+            <div class="connectify-pill-row">
+              <span class="connectify-pill"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Found ${foundCount}/3</span>
+              <span class="connectify-pill"><i class="fa-solid fa-user-shield" aria-hidden="true"></i> You decide</span>
+            </div>
+          </div>
 
-      <div class="card">
-        <h4 class="card-title">Your choice</h4>
-        <p class="card-subtitle">${choiceDisabled ? 'Find 2 clauses to unlock the buttons.' : 'Agree to use the app, or decline to protect privacy.'}</p>
-        <div class="btn-row">
-          <button class="btn btn-primary" type="button" data-connectify-choice="agree" ${choiceDisabled ? 'disabled' : ''}><i class="fa-solid fa-check"></i> I agree</button>
-          <button class="btn" type="button" data-connectify-choice="decline" ${choiceDisabled ? 'disabled' : ''}><i class="fa-solid fa-xmark"></i> Decline</button>
+          <div class="connectify-sheet">
+            <div class="connectify-sheet-head">
+              <div>
+                <div class="connectify-sheet-title">Terms &amp; privacy</div>
+                <div class="connectify-sheet-sub">Short version (still important).</div>
+              </div>
+              <div class="connectify-sheet-badge" data-tone="${choiceDisabled ? 'warn' : 'good'}">
+                <i class="fa-solid ${choiceDisabled ? 'fa-lock' : 'fa-unlock'}" aria-hidden="true"></i>
+                ${choiceDisabled ? 'Find 2' : 'Unlocked'}
+              </div>
+            </div>
+
+            <div class="connectify-terms">
+              <p>By using Connectify you agree that we can ${renderTermHighlight('data-retention', 'keep your data forever')}.</p>
+              <p>We may ${renderTermHighlight('background-location', 'track your location often')} even when you are not using the app.</p>
+              <p>We may ${renderTermHighlight('data-sharing', 'share data with partner companies')} to improve ads and recommendations.</p>
+              <p class="connectify-terms-small">Tip: If you do not understand a clause, do not tap “Agree” yet.</p>
+            </div>
+
+            <div class="connectify-actions">
+              <button class="btn btn-primary" type="button" data-connectify-choice="agree" ${choiceDisabled ? 'disabled' : ''}>
+                <i class="fa-solid fa-check" aria-hidden="true"></i> Agree
+              </button>
+              <button class="btn" type="button" data-connectify-choice="decline" ${choiceDisabled ? 'disabled' : ''}>
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i> Decline
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -639,12 +942,15 @@ const renderConnectify = () => {
 
   if (choice === 'decline') {
     els.connectifyBody.innerHTML = `
-      <div class="card">
-        <h4 class="card-title">You declined the terms</h4>
-        <p class="card-subtitle">Connectify will not open. You protected your data.</p>
-        <div class="btn-row">
-          <button class="btn" type="button" data-connectify-reset><i class="fa-solid fa-rotate-left"></i> Try again</button>
-          <button class="btn" type="button" data-open-app="casefile"><i class="fa-solid fa-folder-open"></i> Open Case File</button>
+      <div class="connectify-shell connectify-shell--blocked">
+        <div class="connectify-blocked">
+          <div class="connectify-blocked-icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="connectify-blocked-title">You declined</div>
+          <div class="connectify-blocked-sub">Connectify stays locked. Your data is safer.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button" data-connectify-reset><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Try again</button>
+            <button class="btn" type="button" data-open-app="casefile"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Case File</button>
+          </div>
         </div>
       </div>
     `;
@@ -652,38 +958,139 @@ const renderConnectify = () => {
   }
 
   // choice === 'agree'
-  els.connectifyBody.innerHTML = `
-    <div class="card">
-      <h4 class="card-title">Welcome to Connectify</h4>
-      <p class="card-subtitle">You agreed to the terms. The app can now collect data you allowed.</p>
-      <div class="pill-row">
-        <span class="pill"><i class="fa-solid fa-check-circle"></i> Terms accepted</span>
+  const tab = state.connectify.tab || 'home';
+
+  const sponsor = trackingOn
+    ? { title: `Ad: ${interest.label} deal`, subtitle: 'Personalised using shared data.', tone: 'bad' }
+    : { title: 'Ad: Weekend deal', subtitle: 'Generic ad (limited tracking).', tone: 'good' };
+
+  const suggestedTitle = trackingOn ? `Suggested for you: ${interest.label}` : 'Trending right now';
+  const suggestedSubtitle = trackingOn ? 'This can happen when apps share data.' : 'No personal data needed.';
+
+  const feedHome = `
+    <div class="connectify-stories" aria-label="Stories">
+      ${['Aisha', 'Ben', 'Chloe', 'Diego', 'Fatima', 'Jay'].map((name) => `
+        <button class="story" type="button" aria-label="Story: ${escapeHtml(name)}">
+          <span class="story-avatar" aria-hidden="true">${escapeHtml(name[0])}</span>
+          <span class="story-name">${escapeHtml(name)}</span>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="post">
+      <div class="post-head">
+        <span class="post-avatar" aria-hidden="true">T</span>
+        <div class="post-meta">
+          <div class="post-user">Taylor</div>
+          <div class="post-time">Just now</div>
+        </div>
       </div>
-      <div class="btn-row">
-        <button class="btn" type="button" data-open-app="casefile"><i class="fa-solid fa-folder-open"></i> Open Case File</button>
-        <button class="btn" type="button" data-connectify-reset><i class="fa-solid fa-rotate-left"></i> Restart</button>
+      <div class="post-body">
+        <div class="post-text">New profile pic. Thoughts?</div>
+        <div class="post-media" aria-hidden="true"><i class="fa-solid fa-camera"></i></div>
+      </div>
+      <div class="post-actions" aria-label="Post actions">
+        <button class="post-action" type="button"><i class="fa-solid fa-heart" aria-hidden="true"></i> Like</button>
+        <button class="post-action" type="button"><i class="fa-solid fa-comment" aria-hidden="true"></i> Comment</button>
+        <button class="post-action" type="button"><i class="fa-solid fa-share" aria-hidden="true"></i> Share</button>
       </div>
     </div>
 
-    <div class="card">
-      <h4 class="card-title">Feed</h4>
-      <p class="card-subtitle">Your friends are posting.</p>
-      <div class="pill-row">
-        <span class="pill"><i class="fa-solid fa-user"></i> Taylor</span>
-        <span class="pill"><i class="fa-solid fa-camera"></i> Photo</span>
+    <div class="connectify-sponsor" data-tone="${escapeHtml(sponsor.tone)}">
+      <div class="connectify-sponsor-kicker">Sponsored</div>
+      <div class="connectify-sponsor-title">${escapeHtml(sponsor.title)}</div>
+      <div class="connectify-sponsor-sub">${escapeHtml(sponsor.subtitle)}</div>
+    </div>
+
+    <div class="connectify-suggest">
+      <div class="connectify-suggest-title">${escapeHtml(suggestedTitle)}</div>
+      <div class="connectify-suggest-sub">${escapeHtml(suggestedSubtitle)}</div>
+      <div class="connectify-pill-row" style="margin-top:10px;">
+        <span class="connectify-pill"><i class="fa-solid fa-users" aria-hidden="true"></i> ${trackingOn ? escapeHtml(`${interest.label} Club`) : 'Study club'}</span>
+        <span class="connectify-pill"><i class="fa-solid fa-star" aria-hidden="true"></i> ${trackingOn ? '“Just for you”' : 'Popular'}</span>
       </div>
     </div>
   `;
-};
 
-const renderClauseButton = (id, label) => {
-  const found = state.connectify.found.includes(id);
-  const icon = found ? 'fa-circle-check' : 'fa-triangle-exclamation';
-  const tone = found ? 'btn-primary' : '';
-  return `
-    <button class="btn ${tone}" type="button" data-connectify-clause="${escapeHtml(id)}">
-      <i class="fa-solid ${icon}"></i> ${escapeHtml(label)}
-    </button>
+  const feedExplore = `
+    <div class="connectify-explore">
+      <div class="connectify-explore-title">Explore</div>
+      <div class="connectify-explore-sub">Tap a topic.</div>
+      <div class="connectify-explore-grid">
+        ${[
+          { icon: 'fa-face-smile', label: 'Memes' },
+          { icon: 'fa-futbol', label: 'Sports' },
+          { icon: 'fa-music', label: 'Music' },
+          { icon: 'fa-gamepad', label: 'Games' },
+          { icon: 'fa-palette', label: 'Art' },
+          { icon: 'fa-book', label: 'School' }
+        ].map((t) => `
+          <button class="explore-chip" type="button">
+            <i class="fa-solid ${escapeHtml(t.icon)}" aria-hidden="true"></i>
+            <span>${escapeHtml(t.label)}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="connectify-note">Notice: apps can learn what you tap.</div>
+    </div>
+  `;
+
+  const profile = `
+    <div class="connectify-profile">
+      <div class="profile-card">
+        <div class="profile-avatar" aria-hidden="true">JD</div>
+        <div>
+          <div class="profile-name">John Doe</div>
+          <div class="profile-sub">Joined today</div>
+        </div>
+      </div>
+
+      <div class="profile-sheet">
+        <div class="profile-sheet-title">Privacy snapshot</div>
+        <div class="profile-rows">
+          <div class="profile-row"><span>Terms</span><strong>Accepted</strong></div>
+          <div class="profile-row"><span>Partner sharing</span><strong>Allowed</strong></div>
+          <div class="profile-row"><span>Data retention</span><strong>Forever</strong></div>
+        </div>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn" type="button" data-open-app="casefile"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Case File</button>
+          <button class="btn btn-primary" type="button" data-connectify-reset><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Restart</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const content = tab === 'explore' ? feedExplore : tab === 'profile' ? profile : feedHome;
+
+  els.connectifyBody.innerHTML = `
+    <div class="connectify-shell connectify-shell--feed">
+      <div class="connectify-feed-top">
+        <div class="connectify-mini-avatar" aria-hidden="true">JD</div>
+        <div class="connectify-search" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i> Search</div>
+        <button class="connectify-top-btn" type="button" data-open-app="casefile" aria-label="Open Case File">
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="connectify-scroll">
+        ${content}
+      </div>
+
+      <nav class="connectify-nav" aria-label="Connectify navigation">
+        <button class="nav-btn ${tab === 'home' ? 'is-active' : ''}" type="button" data-connectify-tab="home">
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+          <span>Home</span>
+        </button>
+        <button class="nav-btn ${tab === 'explore' ? 'is-active' : ''}" type="button" data-connectify-tab="explore">
+          <i class="fa-solid fa-compass" aria-hidden="true"></i>
+          <span>Explore</span>
+        </button>
+        <button class="nav-btn ${tab === 'profile' ? 'is-active' : ''}" type="button" data-connectify-tab="profile">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+          <span>You</span>
+        </button>
+      </nav>
+    </div>
   `;
 };
 
@@ -704,11 +1111,14 @@ const handleConnectifyClause = (id) => {
 const handleConnectifyChoice = (choice) => {
   state.connectify.choice = choice;
   if (choice === 'agree') {
+    state.connectify.tab = 'home';
     addFootprint('Profile info', 'fa-user', 'Connectify');
     addFootprint('Interests', 'fa-heart', 'Connectify');
-    if (state.connectify.found.includes('data-retention')) addFootprint('Data kept forever', 'fa-infinity', 'Connectify');
-    if (state.connectify.found.includes('background-location')) addFootprint('Background location pings', 'fa-location-dot', 'Connectify');
-    if (state.connectify.found.includes('data-sharing')) addFootprint('Shared with partners', 'fa-share-nodes', 'Connectify');
+    // Even if you did not spot them, agreeing means you accepted them.
+    addFootprint('Data kept forever', 'fa-infinity', 'Connectify');
+    addFootprint('Background location pings', 'fa-location-dot', 'Connectify');
+    addFootprint('Shared with partners', 'fa-share-nodes', 'Connectify');
+    addDiscovery('connectify-accepted', 'You accepted the terms', 'Once you tap “Agree”, the app can use the terms you accepted.');
   } else {
     showToast('good', 'Choice', 'You declined. App blocked.');
   }
@@ -749,34 +1159,98 @@ const renderMapMe = () => {
 
   const loc = state.mapme.location;
   const triedCount = (state.mapme.triedPrecise ? 1 : 0) + (state.mapme.triedApprox ? 1 : 0);
+
   const status =
     loc === 'precise'
-      ? { title: 'Precise location', detail: 'Exact address level', tone: 'bad' }
+      ? { title: 'Precise', detail: 'Exact spot', tone: 'bad' }
       : loc === 'approx'
-      ? { title: 'Approximate location', detail: 'Area level', tone: 'good' }
-      : { title: 'Location off', detail: 'No location shared', tone: 'info' };
+      ? { title: 'Approx', detail: 'Rough area', tone: 'good' }
+      : { title: 'Off', detail: 'No location', tone: 'info' };
+
+  const PLACES = [
+    { id: 'school', name: 'School', icon: 'fa-school', x: 22, y: 46, address: 'St George\'s School' },
+    { id: 'park', name: 'Park', icon: 'fa-tree', x: 62, y: 28, address: 'Riverside Park' },
+    { id: 'shops', name: 'Shops', icon: 'fa-store', x: 56, y: 72, address: 'City Shops' }
+  ];
+
+  const you = { x: 74, y: 54 };
+  const selected = PLACES.find((p) => p.id === state.mapme.selectedPlace) || PLACES[0];
+
+  const distanceLabelFor = (place) => {
+    const dx = place.x - you.x;
+    const dy = place.y - you.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const miles = Math.max(0.2, dist / 22).toFixed(1);
+    if (loc === 'precise') return `${miles} mi`;
+    if (loc === 'approx') return `~${miles} mi`;
+    return '—';
+  };
+
+  const placeButton = (place) => `
+    <button class="place-btn ${place.id === selected.id ? 'is-active' : ''}" type="button" data-mapme-place="${escapeHtml(place.id)}">
+      <span class="place-icon" aria-hidden="true"><i class="fa-solid ${escapeHtml(place.icon)}"></i></span>
+      <span class="place-name">${escapeHtml(place.name)}</span>
+      <span class="place-dist">${escapeHtml(distanceLabelFor(place))}</span>
+    </button>
+  `;
 
   els.mapmeBody.innerHTML = `
-    <div class="card">
-      <h4 class="card-title">Map</h4>
-      <p class="card-subtitle">Location setting changes what the app can know.</p>
-      <div class="pill-row">
-        <span class="pill"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(status.title)}</span>
-        <span class="pill"><i class="fa-solid fa-list-check"></i> Tried: ${triedCount}/2</span>
-      </div>
-      <div class="btn-row">
-        <button class="btn" type="button" data-action="mapme-change">
-          <i class="fa-solid fa-gear"></i> Change location
+    <div class="mapme-shell">
+      <div class="mapme-top">
+        <div class="mapme-search" role="search" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <span>Search places</span>
+        </div>
+        <button class="mapme-top-btn" type="button" data-action="mapme-change" aria-label="Change location">
+          <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
         </button>
-        <button class="btn" type="button" data-open-app="casefile">
-          <i class="fa-solid fa-folder-open"></i> Open Case File
+        <button class="mapme-top-btn" type="button" data-open-app="casefile" aria-label="Open Case File">
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
         </button>
       </div>
-    </div>
 
-    <div class="card">
-      <h4 class="card-title">${escapeHtml(status.detail)}</h4>
-      <p class="card-subtitle">${loc === 'precise' ? 'The app can locate you very accurately.' : loc === 'approx' ? 'The app still works without your exact address.' : 'You can still search places manually.'}</p>
+      <div class="mapme-map" aria-label="Map">
+        ${PLACES.map((p) => `
+          <button class="map-pin ${p.id === selected.id ? 'is-active' : ''}" type="button" data-mapme-place="${escapeHtml(p.id)}" style="left:${p.x}%; top:${p.y}%;">
+            <i class="fa-solid ${escapeHtml(p.icon)}" aria-hidden="true"></i>
+            <span class="sr-only">${escapeHtml(p.name)}</span>
+          </button>
+        `).join('')}
+
+        ${loc === 'none'
+          ? `<div class="mapme-hint"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> Location is off</div>`
+          : `
+            <div class="you-wrap" style="left:${you.x}%; top:${you.y}%;">
+              <div class="you-dot" data-mode="${escapeHtml(loc)}" aria-hidden="true"></div>
+              ${loc === 'approx' ? `<div class="you-radius" aria-hidden="true"></div>` : ''}
+            </div>
+          `}
+      </div>
+
+      <div class="mapme-sheet" aria-label="Nearby places">
+        <div class="mapme-sheet-head">
+          <div class="mapme-sheet-title"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> MapMe</div>
+          <div class="mapme-sheet-badges">
+            <span class="mapme-badge" data-tone="${escapeHtml(status.tone)}">${escapeHtml(status.title)}</span>
+            <span class="mapme-badge" data-tone="neutral">Tried ${triedCount}/2</span>
+          </div>
+        </div>
+
+        <div class="place-list">
+          ${PLACES.map(placeButton).join('')}
+        </div>
+
+        <div class="place-detail">
+          <div class="place-detail-title">${escapeHtml(selected.address)}</div>
+          <div class="place-detail-sub">
+            ${loc === 'precise'
+              ? 'Precise mode can reveal your exact routine.'
+              : loc === 'approx'
+              ? 'Approx mode still works without your exact address.'
+              : 'You can still browse places without sharing location.'}
+          </div>
+        </div>
+      </div>
     </div>
   `;
 };
@@ -787,10 +1261,12 @@ const setMapLocation = (value) => {
   if (value === 'precise') {
     state.mapme.triedPrecise = true;
     addFootprint('Exact location', 'fa-location-crosshairs', 'MapMe');
+    addDiscovery('mapme-precise', 'Precise location is very specific', 'With precise location, an app can learn your exact address and routine.');
     showToast('warn', 'Location', 'Precise location shared.');
   } else if (value === 'approx') {
     state.mapme.triedApprox = true;
     addFootprint('General area', 'fa-map', 'MapMe');
+    addDiscovery('mapme-approx', 'Approximate location is safer', 'Approximate location shares a rough area instead of your exact address.');
     showToast('good', 'Location', 'Approximate location shared.');
   } else {
     showToast('info', 'Location', 'Location not shared.');
@@ -803,28 +1279,30 @@ const setMapLocation = (value) => {
 
 const renderFreeGame = () => {
   const fg = state.freegame;
+  const trackingOn = fg.tracking === 'all';
+  const interestId = state.browser.interest || 'gaming';
+  const interest = BROWSER_INTERESTS.find((i) => i.id === interestId) || BROWSER_INTERESTS[0];
 
   if (fg.terms === null) {
     els.freegameBody.innerHTML = `
-      <div class="card">
-        <h4 class="card-title">Super Puzzle Quest</h4>
-        <p class="card-subtitle">Free to play. Before you start, choose.</p>
-        <div class="pill-row">
-          <span class="pill"><i class="fa-solid fa-tag"></i> FREE</span>
-          <span class="pill"><i class="fa-solid fa-triangle-exclamation"></i> May use your data</span>
+      <div class="game-shell game-shell--splash">
+        <div class="game-hero">
+          <div class="game-logo" aria-hidden="true"><i class="fa-solid fa-puzzle-piece"></i></div>
+          <div class="game-title">Super Puzzle Quest</div>
+          <div class="game-sub">FREE to play</div>
+          <div class="game-badges">
+            <span class="game-badge"><i class="fa-solid fa-cookie-bite" aria-hidden="true"></i> Ads</span>
+            <span class="game-badge"><i class="fa-solid fa-user-shield" aria-hidden="true"></i> Permissions</span>
+          </div>
         </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" type="button" data-freegame-terms="agree"><i class="fa-solid fa-check"></i> Agree &amp; play</button>
-          <button class="btn" type="button" data-freegame-terms="decline"><i class="fa-solid fa-xmark"></i> No thanks</button>
-        </div>
-      </div>
 
-      <div class="card">
-        <h4 class="card-title">What you might be asked for</h4>
-        <div class="pill-row">
-          <span class="pill"><i class="fa-solid fa-camera"></i> Camera</span>
-          <span class="pill"><i class="fa-solid fa-address-book"></i> Contacts</span>
-          <span class="pill"><i class="fa-solid fa-cookie-bite"></i> Tracking</span>
+        <div class="game-card">
+          <div class="game-card-title">Before you play</div>
+          <div class="game-card-sub">Some free apps ask for data.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button" data-freegame-terms="agree"><i class="fa-solid fa-play" aria-hidden="true"></i> Play</button>
+            <button class="btn" type="button" data-freegame-terms="decline"><i class="fa-solid fa-xmark" aria-hidden="true"></i> No thanks</button>
+          </div>
         </div>
       </div>
     `;
@@ -833,11 +1311,14 @@ const renderFreeGame = () => {
 
   if (fg.terms === false) {
     els.freegameBody.innerHTML = `
-      <div class="card">
-        <h4 class="card-title">You declined</h4>
-        <p class="card-subtitle">The game will not open. (Some apps work like this.)</p>
-        <div class="btn-row">
-          <button class="btn" type="button" data-freegame-reset><i class="fa-solid fa-rotate-left"></i> Try again</button>
+      <div class="game-shell game-shell--blocked">
+        <div class="game-blocked">
+          <div class="game-blocked-icon" aria-hidden="true"><i class="fa-solid fa-hand"></i></div>
+          <div class="game-blocked-title">You declined</div>
+          <div class="game-blocked-sub">Some apps block you unless you agree.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button" data-freegame-reset><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Try again</button>
+          </div>
         </div>
       </div>
     `;
@@ -847,12 +1328,22 @@ const renderFreeGame = () => {
   // Terms agreed; next: tracking choice
   if (fg.tracking === null) {
     els.freegameBody.innerHTML = `
-      <div class="card">
-        <h4 class="card-title">Tracking cookies</h4>
-        <p class="card-subtitle">Choose one option.</p>
-        <div class="btn-row">
-          <button class="btn btn-danger" type="button" data-freegame-tracking="all"><i class="fa-solid fa-cookie-bite"></i> Allow tracking</button>
-          <button class="btn btn-primary" type="button" data-freegame-tracking="essential"><i class="fa-solid fa-shield-halved"></i> Essential only</button>
+      <div class="game-shell">
+        <div class="game-card">
+          <div class="game-card-title">Ad tracking</div>
+          <div class="game-card-sub">Choose one option.</div>
+          <div class="game-choice-grid">
+            <button class="choice-tile choice-tile--danger" type="button" data-freegame-tracking="all">
+              <i class="fa-solid fa-cookie-bite" aria-hidden="true"></i>
+              <div class="choice-title">Allow tracking</div>
+              <div class="choice-sub">More personalised ads</div>
+            </button>
+            <button class="choice-tile choice-tile--good" type="button" data-freegame-tracking="essential">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <div class="choice-title">Essential only</div>
+              <div class="choice-sub">Less tracking</div>
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -873,9 +1364,11 @@ const renderFreeGame = () => {
     });
 
     els.freegameBody.innerHTML = `
-      <div class="card">
-        <h4 class="card-title">Camera permission</h4>
-        <p class="card-subtitle">Choose an option in the pop-up to continue.</p>
+      <div class="game-shell">
+        <div class="game-card">
+          <div class="game-card-title">Camera permission</div>
+          <div class="game-card-sub">Choose in the pop-up.</div>
+        </div>
       </div>
     `;
     return;
@@ -894,9 +1387,11 @@ const renderFreeGame = () => {
     });
 
     els.freegameBody.innerHTML = `
-      <div class="card">
-        <h4 class="card-title">Contacts permission</h4>
-        <p class="card-subtitle">Choose an option in the pop-up to continue.</p>
+      <div class="game-shell">
+        <div class="game-card">
+          <div class="game-card-title">Contacts permission</div>
+          <div class="game-card-sub">Choose in the pop-up.</div>
+        </div>
       </div>
     `;
     return;
@@ -908,42 +1403,92 @@ const renderFreeGame = () => {
   if (fg.camera === true) shared.push('Camera');
   if (fg.contacts === true) shared.push('Contacts');
 
+  const adTitle = trackingOn ? `Deal for ${interest.label} fans` : 'Deal of the day';
+  const adSubtitle = trackingOn ? 'Personalised ad (tracking ON).' : 'Generic ad (limited tracking).';
+  const adTone = trackingOn ? 'bad' : 'good';
+
+  const coins = typeof fg.coins === 'number' ? fg.coins : 0;
+  const watched = typeof fg.watchedAds === 'number' ? fg.watchedAds : 0;
+
   els.freegameBody.innerHTML = `
-    <div class="card">
-      <h4 class="card-title">Game home</h4>
-      <p class="card-subtitle">You can play now. Some choices may collect data.</p>
-      <div class="pill-row">
-        <span class="pill"><i class="fa-solid fa-database"></i> Shared: ${shared.length ? escapeHtml(shared.join(', ')) : 'very little'}</span>
+    <div class="game-shell">
+      <div class="game-hud">
+        <div class="hud-left">
+          <div class="hud-avatar ${fg.camera ? 'is-live' : ''}" aria-hidden="true">${fg.camera ? 'JD' : '<i class="fa-solid fa-user"></i>'}</div>
+          <div>
+            <div class="hud-name">Player</div>
+            <div class="hud-sub">${fg.camera ? 'Avatar set' : 'Avatar locked'}</div>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div class="hud-chip"><i class="fa-solid fa-coins" aria-hidden="true"></i> ${coins}</div>
+          <div class="hud-chip"><i class="fa-solid fa-eye" aria-hidden="true"></i> Ads: ${watched}</div>
+        </div>
       </div>
-      <div class="btn-row">
-        <button class="btn" type="button" data-open-app="casefile"><i class="fa-solid fa-folder-open"></i> Open Case File</button>
+
+      <div class="game-scroll">
+        <div class="game-ad" data-tone="${escapeHtml(adTone)}">
+          <div class="game-ad-kicker">Ad</div>
+          <div class="game-ad-title">${escapeHtml(adTitle)}</div>
+          <div class="game-ad-sub">${escapeHtml(adSubtitle)}</div>
+          <button class="game-ad-btn" type="button" data-freegame-action="watch-ad">
+            <i class="fa-solid fa-circle-play" aria-hidden="true"></i> Watch for coins
+          </button>
+        </div>
+
+        <div class="game-card">
+          <div class="game-card-title">Levels</div>
+          <div class="level-grid" aria-label="Level grid">
+            ${Array.from({ length: 9 }).map((_, idx) => `
+              <button class="level-btn" type="button" data-freegame-level="${idx + 1}">
+                <span class="level-num">${idx + 1}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="game-card">
+          <div class="game-card-title">Features</div>
+          <div class="feature-grid">
+            <button class="feature-btn" type="button" data-freegame-action="photo" ${fg.camera ? '' : 'disabled'}>
+              <i class="fa-solid fa-camera" aria-hidden="true"></i>
+              <span>Avatar photo</span>
+            </button>
+            <button class="feature-btn" type="button" data-freegame-action="invite" ${fg.contacts ? '' : 'disabled'}>
+              <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+              <span>Invite friends</span>
+            </button>
+            <button class="feature-btn" type="button" data-freegame-action="tracking">
+              <i class="fa-solid fa-cookie-bite" aria-hidden="true"></i>
+              <span>Tracking</span>
+            </button>
+            <button class="feature-btn" type="button" data-freegame-reset>
+              <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+              <span>Restart</span>
+            </button>
+          </div>
+          <div class="game-note">Shared: ${shared.length ? escapeHtml(shared.join(', ')) : 'very little'}.</div>
+        </div>
+
+        ${
+          fg.contacts
+            ? `<div class="game-card">
+                <div class="game-card-title">Friends leaderboard</div>
+                <div class="leader-row"><span>Aisha</span><strong>120</strong></div>
+                <div class="leader-row"><span>Ben</span><strong>90</strong></div>
+                <div class="leader-row"><span>Chloe</span><strong>70</strong></div>
+              </div>`
+            : `<div class="game-card">
+                <div class="game-card-title">Friends leaderboard</div>
+                <div class="game-card-sub">Locked (no contacts permission).</div>
+              </div>`
+        }
+
+        <div class="btn-row">
+          <button class="btn" type="button" data-open-app="casefile"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Case File</button>
+        </div>
       </div>
     </div>
-
-    <div class="card">
-      <h4 class="card-title">Try features</h4>
-      <p class="card-subtitle">See what changes when you say yes or no.</p>
-      <div class="btn-row">
-        <button class="btn" type="button" data-freegame-action="photo" ${fg.camera ? '' : 'disabled'}>
-          <i class="fa-solid fa-camera"></i> Take profile photo
-        </button>
-        <button class="btn" type="button" data-freegame-action="invite" ${fg.contacts ? '' : 'disabled'}>
-          <i class="fa-solid fa-user-plus"></i> Invite friends
-        </button>
-        <button class="btn" type="button" data-freegame-action="tracking">
-          <i class="fa-solid fa-cookie-bite"></i> Change tracking choice
-        </button>
-        <button class="btn" type="button" data-freegame-reset>
-          <i class="fa-solid fa-rotate-left"></i> Restart this app
-        </button>
-      </div>
-    </div>
-
-    ${
-      fg.tracking === 'all'
-        ? `<div class="card"><h4 class="card-title">Ad</h4><p class="card-subtitle">This ad is personalised because tracking is on.</p></div>`
-        : `<div class="card"><h4 class="card-title">Ad</h4><p class="card-subtitle">Generic ad (tracking limited).</p></div>`
-    }
   `;
 
   checkMissionCompletion();
@@ -952,8 +1497,12 @@ const renderFreeGame = () => {
 const setFreeGamePermission = (key, value) => {
   hidePermissionDialog();
   state.freegame[key] = value;
-  if (key === 'camera' && value === true) addFootprint('Camera access', 'fa-camera', 'Super Puzzle Quest');
+  if (key === 'camera' && value === true) {
+    addFootprint('Camera access', 'fa-camera', 'Super Puzzle Quest');
+    addDiscovery('freegame-camera', 'Camera permission', 'If you allow it, an app can access your camera.');
+  }
   if (key === 'contacts' && value === true) addFootprint('Contacts list', 'fa-address-book', 'Super Puzzle Quest');
+  if (key === 'contacts' && value === true) addDiscovery('freegame-contacts', 'Contacts permission', 'Apps can read your contacts list if you allow it.');
   if (key === 'contacts' && value === true) showToast('warn', 'Contacts', 'Invites sent to your contacts.');
   if (key === 'contacts' && value === false) showToast('good', 'Contacts', 'Contacts not shared.');
   saveState();
@@ -965,6 +1514,35 @@ const resetFreeGame = () => {
   saveState();
   showToast('info', 'Restarted', 'Super Puzzle restarted.');
   renderFreeGame();
+};
+
+const resetAppState = (app) => {
+  if (!['browser', 'connectify', 'mapme', 'freegame'].includes(app)) return;
+
+  if (app === 'browser') state.browser = clone(DEFAULT_STATE.browser);
+  if (app === 'connectify') state.connectify = clone(DEFAULT_STATE.connectify);
+  if (app === 'mapme') state.mapme = clone(DEFAULT_STATE.mapme);
+  if (app === 'freegame') state.freegame = clone(DEFAULT_STATE.freegame);
+
+  const source = SOURCE_BY_APP[app];
+  if (source) state.footprint = state.footprint.filter((f) => f.source !== source);
+
+  const prefix = DISCOVERY_PREFIX_BY_APP[app];
+  if (prefix) state.discoveries = state.discoveries.filter((d) => !String(d.id).startsWith(prefix));
+
+  const mission = MISSIONS.find((m) => m.app === app);
+  if (mission) state.completedMissions = state.completedMissions.filter((id) => id !== mission.id);
+  recomputeMissionIndex();
+
+  state.casefileHasNew = true;
+  state.unreadMessages = Math.max(state.unreadMessages, 1);
+  saveState();
+  updateBadges();
+  updateHomeIcons();
+  showToast('info', 'Reset', `${labelForApp(app)} reset.`);
+
+  if (ui.activeApp === app) openApp(app);
+  else renderSidePanel();
 };
 
 const renderCasefile = () => {
@@ -1024,6 +1602,8 @@ const renderCasefile = () => {
       ${discoveries}
     </div>
   `;
+
+  renderSidePanel();
 };
 
 const renderSettings = () => {
@@ -1045,6 +1625,8 @@ const renderSettings = () => {
       </div>
     </div>
   `;
+
+  renderSidePanel();
 };
 
 const resetAll = () => {
@@ -1113,15 +1695,24 @@ const checkMissionCompletion = () => {
 
   state.completedMissions.push(missionId);
   state.unreadMessages = 1;
-  state.missionIndex = clampNumber(state.missionIndex + 1, 0, MISSIONS.length);
+  recomputeMissionIndex();
   saveState();
   updateBadges();
   updateHomeIcons();
   showToast('good', 'Mission complete', 'Check Messages for the next mission.');
+  renderSidePanel();
 };
 
 const wireEvents = () => {
   document.addEventListener('click', (event) => {
+    const notesToggle = event.target.closest('[data-action="toggle-notes"]');
+    if (notesToggle && els.missionPanel) {
+      const isOpen = els.missionPanel.classList.toggle('is-open');
+      notesToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (isOpen) els.missionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
     const appBtn = event.target.closest('[data-app]');
     if (appBtn) {
       const app = appBtn.getAttribute('data-app');
@@ -1222,6 +1813,28 @@ const wireEvents = () => {
       return;
     }
 
+    const connectifyTab = event.target.closest('[data-connectify-tab]');
+    if (connectifyTab) {
+      const tab = connectifyTab.getAttribute('data-connectify-tab');
+      if (tab && ['home', 'explore', 'profile'].includes(tab)) {
+        state.connectify.tab = tab;
+        saveState();
+        renderConnectify();
+      }
+      return;
+    }
+
+    const mapPlace = event.target.closest('[data-mapme-place]');
+    if (mapPlace) {
+      const placeId = mapPlace.getAttribute('data-mapme-place');
+      if (placeId) {
+        state.mapme.selectedPlace = placeId;
+        saveState();
+        renderMapMe();
+      }
+      return;
+    }
+
     const mapChange = event.target.closest('[data-action="mapme-change"]');
     if (mapChange) {
       state.mapme.location = null;
@@ -1235,7 +1848,10 @@ const wireEvents = () => {
       const t = fgTerms.getAttribute('data-freegame-terms');
       state.freegame.terms = t === 'agree';
       saveState();
-      if (state.freegame.terms) addFootprint('Device ID', 'fa-fingerprint', 'Super Puzzle Quest');
+      if (state.freegame.terms) {
+        addFootprint('Device ID', 'fa-fingerprint', 'Super Puzzle Quest');
+        addDiscovery('freegame-free', 'Free apps can make money from data', 'Some free apps earn money from ads and tracking instead of charging you.');
+      }
       renderFreeGame();
       checkMissionCompletion();
       return;
@@ -1245,10 +1861,25 @@ const wireEvents = () => {
     if (fgTracking) {
       const v = fgTracking.getAttribute('data-freegame-tracking');
       state.freegame.tracking = v === 'all' ? 'all' : 'essential';
-      if (state.freegame.tracking === 'all') addFootprint('Ad tracking', 'fa-link', 'Super Puzzle Quest');
+      if (state.freegame.tracking === 'all') {
+        addFootprint('Ad tracking', 'fa-link', 'Super Puzzle Quest');
+        addDiscovery('freegame-tracking', 'Tracking makes ads personalised', 'Tracking can change what ads and offers you see.');
+      } else {
+        addDiscovery('freegame-essential', 'Less tracking means more generic ads', 'The app can still show ads, but with less personalisation.');
+      }
       saveState();
       renderFreeGame();
       checkMissionCompletion();
+      return;
+    }
+
+    const fgLevel = event.target.closest('[data-freegame-level]');
+    if (fgLevel) {
+      const levelStr = fgLevel.getAttribute('data-freegame-level');
+      const level = Number(levelStr);
+      if (Number.isFinite(level)) {
+        showToast('info', 'Level', `Level ${level} started.`);
+      }
       return;
     }
 
@@ -1257,6 +1888,17 @@ const wireEvents = () => {
       const action = fgAction.getAttribute('data-freegame-action');
       if (action === 'photo') showToast('good', 'Profile', 'Profile photo updated.');
       if (action === 'invite') showToast('warn', 'Invites', 'Invites sent to your contacts.');
+      if (action === 'watch-ad') {
+        const tracking = state.freegame.tracking === 'all';
+        const gain = tracking ? 50 : 15;
+        state.freegame.coins = (typeof state.freegame.coins === 'number' ? state.freegame.coins : 0) + gain;
+        state.freegame.watchedAds = (typeof state.freegame.watchedAds === 'number' ? state.freegame.watchedAds : 0) + 1;
+        if (tracking) addFootprint('Ad engagement', 'fa-eye', 'Super Puzzle Quest');
+        saveState();
+        renderFreeGame();
+        showToast(tracking ? 'bad' : 'good', 'Coins', `+${gain} coins from an ad.`);
+        return;
+      }
       if (action === 'tracking') {
         state.freegame.tracking = null;
         saveState();
@@ -1275,6 +1917,13 @@ const wireEvents = () => {
     const resetBtn = event.target.closest('[data-reset="all"]');
     if (resetBtn) {
       resetAll();
+      return;
+    }
+
+    const resetAppBtn = event.target.closest('[data-reset-app]');
+    if (resetAppBtn) {
+      const app = resetAppBtn.getAttribute('data-reset-app');
+      if (app) resetAppState(app);
     }
   });
 
@@ -1295,6 +1944,8 @@ const initialize = () => {
   els.freegameBody = $('#freegame-body');
   els.casefileBody = $('#casefile-body');
   els.settingsBody = $('#settings-body');
+  els.missionPanel = $('#mission-panel');
+  els.missionPanelInner = $('#mission-panel-inner');
 
   els.permissionOverlay = $('#permission-overlay');
   els.permissionIcon = $('#permission-icon');
@@ -1302,6 +1953,7 @@ const initialize = () => {
   els.permissionDesc = $('#permission-desc');
   els.permissionButtons = $('#permission-buttons');
 
+  recomputeMissionIndex();
   updateClock();
   window.setInterval(updateClock, 1000);
 
@@ -1309,6 +1961,7 @@ const initialize = () => {
   updateHomeIcons();
   updateBadges();
   renderMessages();
+  renderSidePanel();
 };
 
 document.addEventListener('DOMContentLoaded', initialize);
