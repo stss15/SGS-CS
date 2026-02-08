@@ -1168,7 +1168,7 @@ const renderMapMe = () => {
       : { title: 'Off', detail: 'No location', tone: 'info' };
 
   const PLACES = [
-    { id: 'school', name: 'School', icon: 'fa-school', x: 22, y: 46, address: 'St George\'s School' },
+    { id: 'school', name: 'School', icon: 'fa-school', x: 22, y: 46, address: 'SGS School' },
     { id: 'park', name: 'Park', icon: 'fa-tree', x: 62, y: 28, address: 'Riverside Park' },
     { id: 'shops', name: 'Shops', icon: 'fa-store', x: 56, y: 72, address: 'City Shops' }
   ];

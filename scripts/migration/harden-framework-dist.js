@@ -10,10 +10,10 @@ const AUTH_GATE_MARKER = 'data-sgs-auth-gate';
 const LEGACY_INLINE_EVENTS_MARKER = 'data-sgs-inline-events';
 const LEGACY_INLINE_EVENTS_SCRIPT = '/js/legacy-inline-events.js';
 const DEFAULT_META_DESCRIPTION =
-  'SGS Science resources for KS3, IGCSE, and IB Computer Science students and teachers.';
+  'SGS Education resources for KS3, IGCSE, and IB students and teachers.';
 const DEFAULT_VIEWPORT_META = '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 const STANDARD_SKIP_LINK = '    <a class="skip-link" href="#main-content">Skip to main content</a>';
-const DEFAULT_SITE_TITLE = 'SGS Science';
+const DEFAULT_SITE_TITLE = 'SGS Education';
 const AUTH_HEAD_SNIPPET = `
     <!-- ${AUTH_GATE_MARKER} -->
     <link rel="stylesheet" href="/css/auth-gate.css">
@@ -87,7 +87,7 @@ const buildUnifiedHeader = (activeSection) => {
         <div class="header-primary">
             <div class="logo-container">
                 <a href="/index.html">
-                    <img src="/images/Logo.png" alt="St George's Logo" class="logo-img" decoding="async">
+                    <img src="/images/Logo.png" alt="SGS Education logo" class="logo-img" decoding="async">
                 </a>
                 <a href="/index.html" class="site-title-link">
                     <span class="site-title">${DEFAULT_SITE_TITLE}</span>

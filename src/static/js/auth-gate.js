@@ -106,7 +106,7 @@
             <div class="sgs-auth-modal" role="dialog" aria-modal="true" aria-labelledby="sgs-auth-title">
                 <div class="sgs-auth-modal-header">
                     <img class="sgs-auth-logo" src="/images/Logo.png" alt="SGS Logo">
-                    <h2 class="sgs-auth-title" id="sgs-auth-title">SGS Science Login</h2>
+                    <h2 class="sgs-auth-title" id="sgs-auth-title">SGS Education Login</h2>
                     <p class="sgs-auth-subtitle">Sign in to continue</p>
                 </div>
                 <form class="sgs-auth-body" id="sgs-auth-form">
