@@ -25,7 +25,9 @@ const DEFAULT_STATE = {
   browser: {
     lastChoice: null, // 'all' | 'essential'
     triedAll: false,
-    triedEssential: false
+    triedEssential: false,
+    interest: 'gaming', // used for personalisation when tracking cookies are ON
+    lastViewed: null // product id (only saved when tracking cookies are ON)
   },
   connectify: {
     found: [],
@@ -362,59 +364,195 @@ const labelForApp = (app) => {
   return map[app] || app;
 };
 
+const BROWSER_INTERESTS = [
+  { id: 'gaming', label: 'Gaming', icon: 'fa-gamepad' },
+  { id: 'sports', label: 'Sports', icon: 'fa-futbol' },
+  { id: 'music', label: 'Music', icon: 'fa-music' },
+  { id: 'fashion', label: 'Fashion', icon: 'fa-shirt' }
+];
+
+const BROWSER_CATALOG = {
+  generic: [
+    { id: 'gen-water', name: 'Water bottle', price: '£6.99', icon: 'fa-droplet', tone: 'cool' },
+    { id: 'gen-notes', name: 'Notebook pack', price: '£3.49', icon: 'fa-book', tone: 'sun' },
+    { id: 'gen-backpack', name: 'Backpack', price: '£24.99', icon: 'fa-bag-shopping', tone: 'ink' },
+    { id: 'gen-earbuds', name: 'Wireless earbuds', price: '£19.99', icon: 'fa-headphones', tone: 'cool' },
+    { id: 'gen-hoodie', name: 'Comfy hoodie', price: '£22.00', icon: 'fa-shirt', tone: 'rose' }
+  ],
+  gaming: [
+    { id: 'gm-headset', name: 'Pro gaming headset', price: '£59.99', icon: 'fa-headphones', tone: 'ink' },
+    { id: 'gm-keyboard', name: 'RGB keyboard', price: '£29.99', icon: 'fa-keyboard', tone: 'cool' },
+    { id: 'gm-mouse', name: 'Gaming mouse', price: '£19.99', icon: 'fa-computer-mouse', tone: 'sun' },
+    { id: 'gm-led', name: 'LED strip lights', price: '£14.99', icon: 'fa-lightbulb', tone: 'rose' },
+    { id: 'gm-chair', name: 'Desk chair', price: '£79.00', icon: 'fa-chair', tone: 'ink' }
+  ],
+  sports: [
+    { id: 'sp-bottle', name: 'Sports bottle', price: '£8.99', icon: 'fa-bottle-water', tone: 'cool' },
+    { id: 'sp-trainers', name: 'Trainers', price: '£39.99', icon: 'fa-shoe-prints', tone: 'ink' },
+    { id: 'sp-ball', name: 'Football', price: '£12.50', icon: 'fa-futbol', tone: 'sun' },
+    { id: 'sp-watch', name: 'Fitness watch', price: '£29.00', icon: 'fa-stopwatch', tone: 'rose' },
+    { id: 'sp-bag', name: 'Gym bag', price: '£18.00', icon: 'fa-dumbbell', tone: 'ink' }
+  ],
+  music: [
+    { id: 'mu-speaker', name: 'Bluetooth speaker', price: '£24.99', icon: 'fa-volume-high', tone: 'cool' },
+    { id: 'mu-phones', name: 'Headphones', price: '£34.99', icon: 'fa-headphones-simple', tone: 'ink' },
+    { id: 'mu-mic', name: 'Mini microphone', price: '£12.99', icon: 'fa-microphone', tone: 'rose' },
+    { id: 'mu-light', name: 'Mood light', price: '£9.99', icon: 'fa-lightbulb', tone: 'sun' },
+    { id: 'mu-case', name: 'Phone case', price: '£6.00', icon: 'fa-mobile-screen', tone: 'cool' }
+  ],
+  fashion: [
+    { id: 'fa-hoodie', name: 'Hoodie', price: '£22.00', icon: 'fa-shirt', tone: 'rose' },
+    { id: 'fa-shoes', name: 'Trendy trainers', price: '£44.00', icon: 'fa-shoe-prints', tone: 'ink' },
+    { id: 'fa-cap', name: 'Cap', price: '£9.50', icon: 'fa-hat-cowboy', tone: 'sun' },
+    { id: 'fa-bag', name: 'Mini bag', price: '£15.00', icon: 'fa-bag-shopping', tone: 'cool' },
+    { id: 'fa-jacket', name: 'Jacket', price: '£39.00', icon: 'fa-user-tie', tone: 'ink' }
+  ]
+};
+
+const BROWSER_DEALS = [
+  { id: 'dl-pens', name: 'Colour pens (12)', price: '£2.99', icon: 'fa-pen-fancy', tone: 'sun' },
+  { id: 'dl-socks', name: 'Cosy socks', price: '£4.50', icon: 'fa-socks', tone: 'rose' },
+  { id: 'dl-charger', name: 'USB charger', price: '£6.99', icon: 'fa-bolt', tone: 'cool' },
+  { id: 'dl-snack', name: 'Snack box', price: '£5.99', icon: 'fa-cookie-bite', tone: 'sun' }
+];
+
+const getBrowserProductById = (id) => {
+  const all = [
+    ...BROWSER_CATALOG.generic,
+    ...BROWSER_CATALOG.gaming,
+    ...BROWSER_CATALOG.sports,
+    ...BROWSER_CATALOG.music,
+    ...BROWSER_CATALOG.fashion,
+    ...BROWSER_DEALS
+  ];
+  return all.find((p) => p.id === id) || null;
+};
+
+const renderBrowserProductCard = (product, { compact = false } = {}) => `
+  <button class="product-card ${compact ? 'product-card--compact' : ''}" type="button" data-browser-product="${escapeHtml(product.id)}">
+    <div class="product-art" data-tone="${escapeHtml(product.tone || 'ink')}">
+      <i class="fa-solid ${escapeHtml(product.icon)}" aria-hidden="true"></i>
+    </div>
+    <div class="product-meta">
+      <div class="product-name">${escapeHtml(product.name)}</div>
+      <div class="product-price">${escapeHtml(product.price)}</div>
+    </div>
+  </button>
+`;
+
 const renderBrowser = () => {
   const cookieState = state.browser.lastChoice;
-  const tried = `${state.browser.triedAll ? 1 : 0}${state.browser.triedEssential ? 1 : 0}`;
   const triedCount = (state.browser.triedAll ? 1 : 0) + (state.browser.triedEssential ? 1 : 0);
+  const interestId = state.browser.interest || 'gaming';
+  const interest = BROWSER_INTERESTS.find((i) => i.id === interestId) || BROWSER_INTERESTS[0];
+  const trackingOn = cookieState === 'all';
 
-  const ad = cookieState === 'all'
-    ? {
-        title: 'Personalised ad',
-        body: 'We noticed you were looking at gaming gear...',
-        tone: 'bad',
-        detail: 'This ad used tracking cookies.'
-      }
-    : cookieState === 'essential'
-    ? {
-        title: 'Generic ad',
-        body: 'Big sale this weekend. Visit our store.',
-        tone: 'good',
-        detail: 'No tracking cookies were used.'
-      }
-    : {
-        title: 'Ad loading',
-        body: 'Choose cookie settings to continue.',
-        tone: 'info',
-        detail: 'Cookie choice not set yet.'
-      };
+  const recommended = trackingOn
+    ? BROWSER_CATALOG[interestId] || BROWSER_CATALOG.gaming
+    : BROWSER_CATALOG.generic;
+
+  const viewed = trackingOn && state.browser.lastViewed ? getBrowserProductById(state.browser.lastViewed) : null;
+
+  const sponsor =
+    cookieState === 'all'
+      ? viewed
+        ? {
+            title: `Still thinking about ${viewed.name}?`,
+            subtitle: 'This is personalised using tracking cookies.',
+            tone: 'bad'
+          }
+        : {
+            title: `Top picks for ${interest.label}`,
+            subtitle: 'This is personalised using tracking cookies.',
+            tone: 'bad'
+          }
+      : cookieState === 'essential'
+      ? {
+          title: 'Weekend sale: up to 30% off',
+          subtitle: 'Generic ad (no tracking cookies).',
+          tone: 'good'
+        }
+      : {
+          title: 'Ads will appear here',
+          subtitle: 'Choose cookie settings to continue.',
+          tone: 'info'
+        };
+
+  const trackingChip =
+    cookieState === 'all'
+      ? { label: 'Tracking: ON', tone: 'danger', icon: 'fa-cookie-bite' }
+      : cookieState === 'essential'
+      ? { label: 'Tracking: OFF', tone: 'good', icon: 'fa-shield-halved' }
+      : { label: 'Cookies: choose', tone: 'neutral', icon: 'fa-cookie-bite' };
 
   els.browserBody.innerHTML = `
-    <div class="card">
-      <p class="card-subtitle"><i class="fa-solid fa-lock"></i> www.shop-everything.com</p>
+    <div class="browser-toolbar">
+      <div class="url-pill" aria-label="Address bar">
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        <span>shop-everything.com</span>
+      </div>
+      <button class="icon-btn" type="button" data-action="cookies-open" aria-label="Cookie settings">
+        <i class="fa-solid fa-cookie-bite" aria-hidden="true"></i>
+      </button>
+      <button class="icon-btn" type="button" data-open-app="casefile" aria-label="Open Case File">
+        <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+      </button>
     </div>
 
-    <div class="card">
-      <h4 class="card-title">ShopEverything</h4>
-      <p class="card-subtitle">A website that shows ads.</p>
-      <div class="pill-row">
-        <span class="pill"><i class="fa-solid fa-cookie-bite"></i> Cookies: ${cookieState ? escapeHtml(cookieState) : 'not set'}</span>
-        <span class="pill"><i class="fa-solid fa-list-check"></i> Tried: ${triedCount}/2</span>
+    <div class="store-hero">
+      <div class="store-brand">
+        <div class="brand-mark" aria-hidden="true">SE</div>
+        <div>
+          <div class="store-title">ShopEverything</div>
+          <div class="store-tagline">Deals today</div>
+        </div>
+      </div>
+
+      <div class="status-row" aria-label="Status">
+        <span class="status-chip" data-tone="${escapeHtml(trackingChip.tone)}"><i class="fa-solid ${escapeHtml(trackingChip.icon)}" aria-hidden="true"></i> ${escapeHtml(trackingChip.label)}</span>
+        <span class="status-chip" data-tone="neutral"><i class="fa-solid fa-list-check" aria-hidden="true"></i> Mission: ${triedCount}/2</span>
+      </div>
+
+      <div class="search-bar" role="search" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <span class="search-placeholder">Search</span>
+        <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+      </div>
+
+      <div class="category-row" aria-label="Categories">
+        ${BROWSER_INTERESTS.map((item) => `
+          <button class="chip-btn ${item.id === interestId ? 'is-active' : ''}" type="button" data-browser-interest="${escapeHtml(item.id)}">
+            <i class="fa-solid ${escapeHtml(item.icon)}" aria-hidden="true"></i> ${escapeHtml(item.label)}
+          </button>
+        `).join('')}
       </div>
     </div>
 
-    <div class="card">
-      <h4 class="card-title">${escapeHtml(ad.title)}</h4>
-      <p class="card-subtitle">${escapeHtml(ad.body)}</p>
-      <div class="pill-row">
-        <span class="pill"><i class="fa-solid fa-shield-halved"></i> ${escapeHtml(ad.detail)}</span>
+    <div class="store-section">
+      <div class="section-head">
+        <h4>${trackingOn ? 'Recommended for you' : 'Popular right now'}</h4>
+        <span class="section-tag" data-tone="${trackingOn ? 'danger' : 'neutral'}">${trackingOn ? 'Personalised' : 'Generic'}</span>
       </div>
-      <div class="btn-row">
-        <button class="btn" type="button" data-action="cookies-open">
-          <i class="fa-solid fa-cookie-bite"></i> Change cookie settings
-        </button>
-        <button class="btn" type="button" data-open-app="casefile">
-          <i class="fa-solid fa-folder-open"></i> Open Case File
-        </button>
+      <div class="product-strip" aria-label="Recommended products">
+        ${recommended.map((p) => renderBrowserProductCard(p)).join('')}
+      </div>
+    </div>
+
+    <div class="store-section">
+      <div class="sponsor-banner" data-tone="${escapeHtml(sponsor.tone)}">
+        <div class="sponsor-kicker">Sponsored</div>
+        <div class="sponsor-title">${escapeHtml(sponsor.title)}</div>
+        <div class="sponsor-subtitle">${escapeHtml(sponsor.subtitle)}</div>
+      </div>
+    </div>
+
+    <div class="store-section">
+      <div class="section-head">
+        <h4>Deals</h4>
+        <span class="section-tag" data-tone="neutral">Today</span>
+      </div>
+      <div class="deal-grid" aria-label="Deals grid">
+        ${BROWSER_DEALS.map((p) => renderBrowserProductCard(p, { compact: true })).join('')}
       </div>
     </div>
   `;
@@ -1027,6 +1165,40 @@ const wireEvents = () => {
     if (cookieChoice) {
       const choice = cookieChoice.getAttribute('data-cookie-choice');
       if (choice === 'all' || choice === 'essential') handleCookieChoice(choice);
+      return;
+    }
+
+    const browserInterest = event.target.closest('[data-browser-interest]');
+    if (browserInterest) {
+      const interestId = browserInterest.getAttribute('data-browser-interest');
+      if (!interestId) return;
+      state.browser.interest = interestId;
+      saveState();
+      renderBrowser();
+      const picked = BROWSER_INTERESTS.find((i) => i.id === interestId);
+      if (state.browser.lastChoice === 'all') {
+        showToast('warn', 'For you', `Now showing: ${picked ? picked.label : 'recommendations'}.`);
+      } else {
+        showToast('info', 'Popular', 'Tracking is OFF.');
+      }
+      return;
+    }
+
+    const browserProduct = event.target.closest('[data-browser-product]');
+    if (browserProduct) {
+      const productId = browserProduct.getAttribute('data-browser-product');
+      if (!productId) return;
+      const product = getBrowserProductById(productId);
+      if (!product) return;
+
+      if (state.browser.lastChoice === 'all') {
+        state.browser.lastViewed = productId;
+        saveState();
+        renderBrowser();
+        showToast('bad', 'Viewed', `${product.name} (saved)`);
+      } else {
+        showToast('good', 'Viewed', product.name);
+      }
       return;
     }
 
