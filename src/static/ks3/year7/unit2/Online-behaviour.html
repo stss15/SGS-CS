@@ -122,12 +122,16 @@
 
         <!-- Game Screen -->
         <div id="game-screen" class="screen">
+            <button class="floating-guide-btn" id="open-guide-btn" type="button" aria-label="Open swipe guide">
+                🎯 Guide
+            </button>
             <div class="game-header">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
                 <p class="progress-text">Card <span id="current-card-num">1</span> of <span id="total-cards">16</span>
                 </p>
+                <div class="game-guidance" id="game-guidance" aria-live="polite"></div>
             </div>
 
             <div class="game-area">
@@ -214,7 +218,17 @@
             <div class="results-layout">
                 <div class="results-header">
                     <h1>🎉 You've Finished!</h1>
-                    <p>Click a category below to view your sorted cards</p>
+                    <p>Tap a category to review your cards. Tip: tap <strong>Pick</strong> on cards you want to write about.</p>
+                </div>
+
+                <div class="results-tools">
+                    <div class="picked-summary" id="picked-summary" aria-live="polite"></div>
+                    <div class="results-actions">
+                        <button class="mini-btn" id="clear-picks-btn" type="button">Clear picks</button>
+                        <button class="mini-btn mini-btn--primary" id="toggle-written-work" type="button">
+                            📝 Exercise book tasks
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Tabs -->
@@ -275,14 +289,6 @@
                     </div>
                 </div>
 
-                <!-- Written Work Toggle -->
-                <div class="written-work-toggle">
-                    <button class="toggle-btn" id="toggle-written-work">
-                        📝 View Written Work Instructions
-                        <span class="chevron">▼</span>
-                    </button>
-                </div>
-
                 <div class="restart-section">
                     <button class="btn btn-secondary restart-btn" id="restart-btn">🔄 Start Again</button>
                 </div>
@@ -293,7 +299,31 @@
         <div class="written-work-overlay" id="written-work-overlay">
             <div class="written-work-panel">
                 <button class="close-btn" id="close-written-work">✕</button>
-                <h2>📝 Exercise Book Tasks</h2>
+                <h2>📝 Exercise book tasks</h2>
+
+                <p class="written-work-intro">
+                    Pick cards in the results screen (tap <strong>Pick</strong>), then answer these prompts in your
+                    exercise book.
+                </p>
+
+                <div class="picked-cards" id="picked-cards">
+                    <div class="picked-row">
+                        <span class="picked-label">↓ Not OK:</span>
+                        <span class="picked-value" id="picked-down">None yet</span>
+                    </div>
+                    <div class="picked-row">
+                        <span class="picked-label">← Use your name:</span>
+                        <span class="picked-value" id="picked-left">None yet</span>
+                    </div>
+                    <div class="picked-row">
+                        <span class="picked-label">→ Stay anonymous:</span>
+                        <span class="picked-value" id="picked-right">None yet</span>
+                    </div>
+                    <div class="picked-row">
+                        <span class="picked-label">↑ It depends:</span>
+                        <span class="picked-value" id="picked-up">None yet</span>
+                    </div>
+                </div>
 
                 <div class="task-list">
                     <div class="task not-ok">
@@ -301,15 +331,12 @@
                             <span class="task-number">1</span>
                             <span class="task-title">From "Not OK Online" pile</span>
                         </div>
-                        <p class="task-description">Choose <strong>one card</strong> from your "Not OK Online" pile and
-                            explain
-                            why this behaviour is never acceptable.</p>
+                        <p class="task-description">Choose <strong>1 card</strong>. Write 3 short sentences:</p>
                         <div class="task-prompts">
-                            <p>Write about:</p>
                             <ul>
-                                <li>What makes this behaviour harmful or wrong?</li>
-                                <li>Who could be hurt by this action?</li>
-                                <li>Does it matter if it was done anonymously or not? Why?</li>
+                                <li>What's the harm?</li>
+                                <li>Who could get hurt?</li>
+                                <li>What should the person do instead?</li>
                             </ul>
                         </div>
                     </div>
@@ -319,14 +346,12 @@
                             <span class="task-number">2</span>
                             <span class="task-title">From "Good & Use Your Name" pile</span>
                         </div>
-                        <p class="task-description">Choose <strong>one card</strong> from your "Good & Use Your Name"
-                            pile.</p>
+                        <p class="task-description">Choose <strong>1 card</strong>. Write 3 short sentences:</p>
                         <div class="task-prompts">
-                            <p>Write about:</p>
                             <ul>
-                                <li>Why is this behaviour OK or even positive?</li>
-                                <li>Why is it good to use your real identity here?</li>
-                                <li>What does being yourself add to this situation?</li>
+                                <li>Why is this positive?</li>
+                                <li>Why is it OK to use your name here?</li>
+                                <li>How does being yourself help the situation?</li>
                             </ul>
                         </div>
                     </div>
@@ -336,15 +361,12 @@
                             <span class="task-number">3</span>
                             <span class="task-title">From "Good but Stay Anonymous" pile</span>
                         </div>
-                        <p class="task-description">Choose <strong>one card</strong> from your "Good but Stay Anonymous"
-                            pile.
-                        </p>
+                        <p class="task-description">Choose <strong>1 card</strong>. Write 3 short sentences:</p>
                         <div class="task-prompts">
-                            <p>Write about:</p>
                             <ul>
-                                <li>Why is this behaviour OK?</li>
-                                <li>Why does staying anonymous make sense here?</li>
-                                <li>What are you protecting by not using your real name?</li>
+                                <li>Why is this OK?</li>
+                                <li>What could go wrong if you used your real name?</li>
+                                <li>What does anonymity protect (privacy, safety, feelings)?</li>
                             </ul>
                         </div>
                     </div>
@@ -354,16 +376,12 @@
                             <span class="task-number">4</span>
                             <span class="task-title">From "It Depends…" pile</span>
                         </div>
-                        <p class="task-description">Choose <strong>3-4 cards</strong> from your "It Depends…" pile.
-                            These
-                            are the tricky ones!</p>
+                        <p class="task-description">Choose <strong>3 cards</strong>. For each card, write:</p>
                         <div class="task-prompts">
-                            <p>For each card, write about:</p>
                             <ul>
-                                <li>What makes this situation complicated or hard to judge?</li>
-                                <li>What arguments are there for it being OK? What about not OK?</li>
-                                <li>Should it be done publicly, anonymously, or not at all?</li>
-                                <li>What extra information would help you decide?</li>
+                                <li>What makes it tricky?</li>
+                                <li>One reason it might be OK, and one reason it might not.</li>
+                                <li>What rule would you follow to stay safe and respectful?</li>
                             </ul>
                         </div>
                     </div>

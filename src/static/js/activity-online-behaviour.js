@@ -199,6 +199,7 @@
         let currentCardIndex = 0;
         let isFlipped = false;
         let results = { left: [], right: [], up: [], down: [] };
+        let picked = { left: new Set(), right: new Set(), up: new Set(), down: new Set() };
         let isDragging = false;
         let startX = 0, startY = 0, currentX = 0, currentY = 0;
 
@@ -217,6 +218,20 @@
         const progressFill = document.getElementById('progress-fill');
         const currentCardSpan = document.getElementById('current-card-num');
         const totalCardsSpan = document.getElementById('total-cards');
+        const gameGuidance = document.getElementById('game-guidance');
+        const openGuideBtn = document.getElementById('open-guide-btn');
+        const startPlayingBtn = document.getElementById('start-playing-btn');
+        const keyModalOverlay = document.getElementById('key-modal-overlay');
+        const keyPanel = document.getElementById('key-panel');
+
+        const pickedSummary = document.getElementById('picked-summary');
+        const clearPicksBtn = document.getElementById('clear-picks-btn');
+        const pickedValues = {
+            left: document.getElementById('picked-left'),
+            right: document.getElementById('picked-right'),
+            up: document.getElementById('picked-up'),
+            down: document.getElementById('picked-down')
+        };
 
         const controlBtns = {
             left: document.getElementById('btn-left'),
@@ -261,22 +276,30 @@
         function startGame() {
             instructionsScreen.classList.remove('active');
             // Show the key modal instead of the game screen
-            document.getElementById('key-modal-overlay').classList.add('active');
+            startPlayingBtn.textContent = 'Start Playing →';
+            keyModalOverlay.classList.add('active');
         }
 
         // Key modal start button
-        document.getElementById('start-playing-btn').addEventListener('click', () => {
+        startPlayingBtn.addEventListener('click', () => {
             // Hide the modal
-            document.getElementById('key-modal-overlay').classList.remove('active');
+            keyModalOverlay.classList.remove('active');
             // Show the game screen
             gameScreen.classList.add('active');
             // Show the side panel
-            document.getElementById('key-panel').classList.add('active');
+            keyPanel.classList.add('active');
             // Initialize the game
             totalCardsSpan.textContent = cards.length;
             updatePileCounts();
             loadCard();
         });
+
+        function updateGuidance() {
+            if (!gameGuidance) return;
+            gameGuidance.textContent = isFlipped
+                ? 'Now choose a direction (arrow buttons or swipe).'
+                : 'Read the situation, then tap the card to flip it.';
+        }
 
         function loadCard() {
             if (currentCardIndex >= cards.length) { showResults(); return; }
@@ -295,6 +318,7 @@
             currentCardSpan.textContent = currentCardIndex + 1;
             progressFill.style.width = `${(currentCardIndex / cards.length) * 100}%`;
             updateButtonStates();
+            updateGuidance();
         }
 
         function updateButtonStates() {
@@ -312,6 +336,7 @@
             isFlipped = !isFlipped;
             cardElement.classList.toggle('flipped');
             updateButtonStates();
+            updateGuidance();
         }
 
         function swipeCard(direction) {
@@ -374,12 +399,75 @@
         document.addEventListener('touchmove', handleDragMove, { passive: false });
         document.addEventListener('touchend', handleDragEnd);
 
+        // Keyboard controls (helpful for laptops / accessibility)
+        document.addEventListener('keydown', (e) => {
+            if (!gameScreen.classList.contains('active')) return;
+            if (keyModalOverlay.classList.contains('active')) return;
+            if (overlay.classList.contains('active')) return;
+
+            const key = e.key;
+            if (key === ' ' || key === 'Enter') {
+                e.preventDefault();
+                flipCard();
+                return;
+            }
+
+            if (!isFlipped) return;
+
+            if (key === 'ArrowLeft') { e.preventDefault(); swipeCard('left'); }
+            else if (key === 'ArrowRight') { e.preventDefault(); swipeCard('right'); }
+            else if (key === 'ArrowUp') { e.preventDefault(); swipeCard('up'); }
+            else if (key === 'ArrowDown') { e.preventDefault(); swipeCard('down'); }
+        });
+
+        // Re-open the swipe guide during the game (useful on small screens)
+        openGuideBtn.addEventListener('click', () => {
+            startPlayingBtn.textContent = 'Back to game';
+            keyModalOverlay.classList.add('active');
+        });
+
         // ============================================
         // RESULTS
         // ============================================
+        function formatPickedList(dir) {
+            const ids = Array.from(picked[dir]).sort((a, b) => a - b);
+            if (!ids.length) return 'None yet';
+            return ids.length === 1 ? `Card ${ids[0]}` : `Cards ${ids.join(', ')}`;
+        }
+
+        function updatePickedUi() {
+            if (pickedSummary) {
+                pickedSummary.innerHTML =
+                    `<strong>Picked cards:</strong> ↓ ${formatPickedList('down')} | ← ${formatPickedList('left')} | → ${formatPickedList('right')} | ↑ ${formatPickedList('up')}`;
+            }
+
+            Object.entries(pickedValues).forEach(([dir, el]) => {
+                if (!el) return;
+                el.textContent = formatPickedList(dir);
+            });
+        }
+
+        function setPickButtonState(btn, isPicked) {
+            if (!btn) return;
+            btn.setAttribute('aria-pressed', isPicked ? 'true' : 'false');
+            btn.textContent = isPicked ? 'Picked ✓' : 'Pick';
+        }
+
+        function togglePicked(dir, cardId, cardEl, btnEl) {
+            const dirSet = picked[dir];
+            const nowPicked = !dirSet.has(cardId);
+            if (nowPicked) dirSet.add(cardId);
+            else dirSet.delete(cardId);
+
+            if (cardEl) cardEl.classList.toggle('picked', nowPicked);
+            setPickButtonState(btnEl, nowPicked);
+            updatePickedUi();
+        }
+
         function showResults() {
             gameScreen.classList.remove('active');
             resultsScreen.classList.add('active');
+            keyPanel.classList.remove('active');
 
             // Update tab counts
             document.getElementById('tab-count-left').textContent = results.left.length;
@@ -399,10 +487,15 @@
                     `;
                 } else {
                     container.innerHTML = results[dir].map(card => `
-                        <div class="result-card">
+                        <div class="result-card ${picked[dir].has(card.id) ? 'picked' : ''}" data-dir="${dir}" data-card-id="${card.id}">
                             <div class="result-card-header">
                                 <h4>Card ${card.id}</h4>
-                                <span class="app-tag">${card.app}</span>
+                                <div class="result-card-actions">
+                                    <span class="app-tag">${card.app}</span>
+                                    <button class="pick-btn" type="button" data-pick="${dir}" data-card-id="${card.id}" aria-pressed="${picked[dir].has(card.id) ? 'true' : 'false'}">
+                                        ${picked[dir].has(card.id) ? 'Picked ✓' : 'Pick'}
+                                    </button>
+                                </div>
                             </div>
                             <div class="result-card-body">
                                 <div class="scenario">
@@ -418,6 +511,8 @@
                     `).join('');
                 }
             });
+
+            updatePickedUi();
         }
 
         // Tab switching
@@ -440,19 +535,42 @@
 
         toggleBtn.addEventListener('click', () => {
             overlay.classList.add('active');
-            toggleBtn.classList.add('open');
         });
 
         closeBtn.addEventListener('click', () => {
             overlay.classList.remove('active');
-            toggleBtn.classList.remove('open');
         });
 
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
                 overlay.classList.remove('active');
-                toggleBtn.classList.remove('open');
             }
+        });
+
+        // Picking cards for written work
+        resultsScreen.addEventListener('click', (e) => {
+            const pickBtn = e.target.closest('.pick-btn');
+            if (!pickBtn) return;
+
+            const dir = pickBtn.dataset.pick;
+            const cardId = Number(pickBtn.dataset.cardId);
+            if (!dir || !Number.isFinite(cardId)) return;
+
+            const cardEl = pickBtn.closest('.result-card');
+            togglePicked(dir, cardId, cardEl, pickBtn);
+        });
+
+        clearPicksBtn.addEventListener('click', () => {
+            picked = { left: new Set(), right: new Set(), up: new Set(), down: new Set() };
+
+            document.querySelectorAll('.result-card.picked').forEach(cardEl => {
+                cardEl.classList.remove('picked');
+            });
+            document.querySelectorAll('.pick-btn').forEach(btn => {
+                setPickButtonState(btn, false);
+            });
+
+            updatePickedUi();
         });
 
         // Restart
@@ -460,12 +578,13 @@
             currentCardIndex = 0;
             isFlipped = false;
             results = { left: [], right: [], up: [], down: [] };
+            picked = { left: new Set(), right: new Set(), up: new Set(), down: new Set() };
             currentStep = 0;
             resultsScreen.classList.remove('active');
             instructionsScreen.classList.add('active');
 
             // Hide the key panel when restarting
-            document.getElementById('key-panel').classList.remove('active');
+            keyPanel.classList.remove('active');
 
             // Reset tabs to default
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
