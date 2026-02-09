@@ -44,6 +44,29 @@ const env = new nunjucks.Environment(
 env.addGlobal('buildTime', buildTimestamp);
 env.addFilter('json', (value, spaces = 0) => JSON.stringify(value, null, spaces));
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const emptyDirWithRetries = async (dirPath, attempts = 6) => {
+    // fs-extra's emptyDir is usually reliable, but on some systems it can
+    // occasionally fail with ENOTEMPTY/EBUSY while the OS is still finishing
+    // file operations. Retry with a small backoff to avoid flaky builds.
+    for (let i = 0; i < attempts; i++) {
+        try {
+            await fs.emptyDir(dirPath);
+            return;
+        } catch (err) {
+            const code = err && err.code;
+            const shouldRetry = code === 'ENOTEMPTY' || code === 'EBUSY' || code === 'EPERM';
+            if (!shouldRetry || i === attempts - 1) {
+                throw err;
+            }
+
+            // Linear backoff (fast) is sufficient here; keep it under ~500ms.
+            await sleep(75 * (i + 1));
+        }
+    }
+};
+
 const loadSiteData = async () => {
     siteData = {};
     const dataFiles = [SITE_DATA_PATH, TOPICS_DATA_PATH];
@@ -519,7 +542,7 @@ const buildFile = async (relativePath) => {
 };
 
 const buildAll = async () => {
-    await fs.emptyDir(OUTPUT_DIR);
+    await emptyDirWithRetries(OUTPUT_DIR);
     if (await fs.pathExists(STATIC_DIR)) {
         await fs.copy(STATIC_DIR, OUTPUT_DIR, { overwrite: true });
         console.log(`Copied static assets from ${path.relative(ROOT_DIR, STATIC_DIR)}`);
