@@ -53,6 +53,8 @@ And the skills under:
 ## IGCSE Topic Index Pattern (2026-02)
 
 - `src/pages/igcse/topic1` to `src/pages/igcse/topic10` now use sectioned index pages rendered by `layouts/arcade.njk`.
-- Each topic index follows the same section order: `Specification Overview`, `Textbook`, `Student Activities`, `Assessments`, `Homework`, `Independent Tasks`, `Revision`.
+- Each topic index now starts with a boxed specification write-up (`Unit Summary`, `Unit Objectives`, `Learning Outcomes`, `Subtopic Focus`).
+- Each topic index follows the same section order: `Textbook`, `Slide Decks`, `Student Activities`, `Assessments`, `Homework`, `Independent Tasks`, `Revision`.
 - Blank textbook reader templates now exist at `src/pages/igcse/topic*/textbook.njk`.
+- Revision visuals now open in an in-page modal carousel (no standalone image-page navigation).
 - Intermediate menu pages were removed from `src/static/igcse/topic*/assessments.html` and `src/static/igcse/topic*/teaching-and-revision.html`; index pages now link directly to assessment files and revision artifacts.

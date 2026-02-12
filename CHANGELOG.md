@@ -1,5 +1,40 @@
 # Changelog
 
+## 2026-02-12 - IGCSE Index Follow-up: Specification Write-up + Carousel Revision UX
+
+### IGCSE Index Structure
+- Updated `src/templates/layouts/arcade.njk` so IGCSE topic pages render section order as:
+  `Textbook`, `Slide Decks`, `Student Activities`, `Assessments`, `Homework`, `Independent Tasks`, `Revision`.
+- Replaced the old `Specification Sections` render path with explicit `Slide Decks` rendering from new `slideDeckResources` front matter.
+- Added boxed specification summary rendering in index pages:
+  `Unit Summary`, `Unit Objectives`, `Learning Outcomes`, and `Subtopic Focus`.
+
+### Front Matter Migration (Topics 1-10)
+- Migrated `src/pages/igcse/topic1/index.njk` through `src/pages/igcse/topic10/index.njk`:
+  - `specification.sections` -> `slideDeckResources`
+  - Added structured `specification.unitSummary`, `specification.objectives`, `specification.outcomes`, `specification.subtopics`
+  - Added `css/toolkit.css` and `js/toolkit.js` to support in-page revision image carousels.
+- Expanded revision entries to carousel groups where image sets exist (Topics 1-6), and kept placeholders where assets are still pending (Topics 7-10).
+
+### Revision Carousel Integration
+- Extended `src/templates/components.njk` resource buttons with `data-carousel-images` support.
+- Updated `src/static/js/toolkit.js` to open carousel content directly from inline image arrays.
+- Added carousel modal markup to `src/templates/layouts/arcade.njk` so revision visuals open in-page and return cleanly to the topic index.
+
+### Cleanup
+- Disabled standalone IGCSE specification route generation by setting `permalink: false` on:
+  - `src/pages/igcse/topic1/specification.njk`
+  - `src/pages/igcse/topic2/specification.njk`
+  - `src/pages/igcse/topic3/specification.njk`
+  - `src/pages/igcse/topic4/specification.njk`
+  - `src/pages/igcse/topic7/specification.njk`
+  - `src/pages/igcse/topic8/specification.njk`
+  - `src/pages/igcse/topic9/specification.njk`
+  - `src/pages/igcse/topic10/specification.njk`
+- Removed obsolete static page:
+  - `src/static/igcse/topic6/specification.html`
+- Updated `scripts/build.js` to correctly skip page generation when `permalink: false` is set in front matter.
+
 ## 2026-02-12 - IGCSE Topic Index Refactor (Topics 1-10)
 
 ### IGCSE Index UX

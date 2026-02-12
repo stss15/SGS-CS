@@ -488,6 +488,11 @@ const buildFile = async (relativePath) => {
     const raw = await fs.readFile(sourcePath, 'utf8');
     const { content, data } = matter(raw);
 
+    if (data.permalink === false) {
+        console.log(`Skipped ${relativePath} (permalink: false)`);
+        return;
+    }
+
     const permalink = toPosix(data.permalink || relativePath.replace(/\.njk$/, '.html'));
     const outPath = path.join(OUTPUT_DIR, permalink);
     const basePath = data.basePath !== undefined ? data.basePath : computeBasePath(permalink);

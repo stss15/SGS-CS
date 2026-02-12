@@ -163,13 +163,18 @@
         }
     };
 
-    const openCarousel = (key) => {
-        const set = carouselSets[key];
-        if (!set || !set.length || !carousel) return;
-        carouselItems = set;
+    const openCarouselItems = (items) => {
+        if (!items || !items.length || !carousel) return;
+        carouselItems = items;
         carouselIndex = 0;
         renderCarousel();
         carousel.classList.add('active');
+    };
+
+    const openCarousel = (key) => {
+        const set = carouselSets[key];
+        if (!set || !set.length) return;
+        openCarouselItems(set);
     };
 
     const closeCarousel = () => {
@@ -204,6 +209,17 @@
     document.querySelectorAll('[data-carousel]').forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
+            const inlineImages = item.getAttribute('data-carousel-images');
+            if (inlineImages) {
+                const images = inlineImages
+                    .split('||')
+                    .map((src) => src.trim())
+                    .filter(Boolean);
+                if (images.length) {
+                    openCarouselItems(images);
+                    return;
+                }
+            }
             const key = item.getAttribute('data-carousel');
             openCarousel(key);
         });

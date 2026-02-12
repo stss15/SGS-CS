@@ -18,9 +18,11 @@
 <div class="resource-grid">
     {% for item in items %}
         {% set isProtected = item.password %}
-        <a href="{{ item.href }}" class="resource-btn"
+        <a href="{{ item.href | default('#') }}" class="resource-btn"
             {% if item.target %}target="{{ item.target }}"{% if item.target == '_blank' %} rel="noopener"{% endif %}{% endif %}
             {% if item.onclick %}data-sgs-onclick="{{ item.onclick }}"{% endif %}
+            {% if item.carouselKey %}data-carousel="{{ item.carouselKey }}"{% endif %}
+            {% if item.carouselImages %}data-carousel-images="{{ item.carouselImages | join('||') }}"{% endif %}
             {% if isProtected %}data-protected-password="{{ item.password }}"{% endif %}
             {% if item.protectedMessage %}data-protected-message="{{ item.protectedMessage }}"{% endif %}>
             <span class="resource-number">

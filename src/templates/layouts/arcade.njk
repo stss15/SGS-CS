@@ -1,7 +1,8 @@
 {% extends "layouts/base.njk" %}
 {% import "../components.njk" as ui %}
 
-{% set hasStructuredSections = specification or (textbookResources and textbookResources.length) or (studentActivitiesResources and studentActivitiesResources.length) or (assessmentResources and assessmentResources.length) or (homeworkResources and homeworkResources.length) or (independentTasks and independentTasks.length) or (revisionResources and revisionResources.length) %}
+{% set resolvedSlideDeckResources = slideDeckResources or (specification and specification.sections) %}
+{% set hasStructuredSections = specification or (textbookResources and textbookResources.length) or (resolvedSlideDeckResources and resolvedSlideDeckResources.length) or (studentActivitiesResources and studentActivitiesResources.length) or (assessmentResources and assessmentResources.length) or (homeworkResources and homeworkResources.length) or (independentTasks and independentTasks.length) or (revisionResources and revisionResources.length) %}
 
 {% macro resourceSection(title, items, sectionId='') %}
     {% if items and items.length %}
@@ -18,24 +19,59 @@
 {% block content %}
     {% if hasStructuredSections %}
         {% if specification %}
-            <div class="unit-details igcse-specification">
+            <div class="unit-details igcse-specification" id="specification">
                 <div class="content-box">
                     <h2 class="content-title"><i class="fa-solid fa-book-open"></i> Specification Overview</h2>
                     {% if specification.examCode %}
                         <p class="igcse-specification-meta">{{ specification.examCode }}</p>
                     {% endif %}
-                    {% if specification.intro %}
+                    {% if specification.unitSummary %}
+                        <p class="igcse-specification-intro">{{ specification.unitSummary }}</p>
+                    {% elif specification.intro %}
                         <p class="igcse-specification-intro">{{ specification.intro }}</p>
                     {% endif %}
                 </div>
-            </div>
 
-            {% if specification.sections %}
-                {{ resourceSection('Specification Sections', specification.sections, 'specification') }}
-            {% endif %}
+                {% if (specification.objectives and specification.objectives.length) or (specification.outcomes and specification.outcomes.length) %}
+                    <div class="grid-2-col igcse-spec-grid">
+                        {% if specification.objectives and specification.objectives.length %}
+                            <div class="content-box">
+                                <h3 class="content-title"><i class="fa-solid fa-bullseye"></i> Unit Objectives</h3>
+                                <ul class="custom-list igcse-spec-list">
+                                    {% for objective in specification.objectives %}
+                                        <li>{{ objective }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        {% if specification.outcomes and specification.outcomes.length %}
+                            <div class="content-box">
+                                <h3 class="content-title"><i class="fa-solid fa-check-double"></i> Learning Outcomes</h3>
+                                <ul class="custom-list igcse-spec-list">
+                                    {% for outcome in specification.outcomes %}
+                                        <li>{{ outcome }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if specification.subtopics and specification.subtopics.length %}
+                    <div class="content-box igcse-spec-subtopics">
+                        <h3 class="content-title"><i class="fa-solid fa-list-check"></i> Subtopic Focus</h3>
+                        <div class="igcse-spec-pills">
+                            {% for subtopic in specification.subtopics %}
+                                <span class="igcse-spec-pill">{{ subtopic }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         {% endif %}
 
         {{ resourceSection('Textbook', textbookResources, 'textbook') }}
+        {{ resourceSection('Slide Decks', resolvedSlideDeckResources, 'slide-decks') }}
         {{ resourceSection('Student Activities', studentActivitiesResources, 'student-activities') }}
         {{ resourceSection('Assessments', assessmentResources, 'assessments') }}
         {{ resourceSection('Homework', homeworkResources, 'homework') }}
@@ -51,6 +87,24 @@
         {% endif %}
 
         {{ resourceSection('Revision', revisionResources, 'revision') }}
+
+        {% if revisionResources and revisionResources.length %}
+            <div class="carousel-overlay" id="carousel" role="dialog" aria-modal="true" aria-label="Revision image carousel">
+                <div class="carousel-content">
+                    <button class="carousel-nav" id="carousel-prev" aria-label="Previous image">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <img src="" alt="Revision visual" class="carousel-img" id="carousel-img">
+                    <button class="carousel-nav" id="carousel-next" aria-label="Next image">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button class="carousel-close" id="carousel-close" aria-label="Close carousel">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <div class="carousel-caption" id="carousel-caption"></div>
+                </div>
+            </div>
+        {% endif %}
     {% else %}
         {% if cards %}{{ ui.cardGrid(cards, basePath) }}{% endif %}
 
