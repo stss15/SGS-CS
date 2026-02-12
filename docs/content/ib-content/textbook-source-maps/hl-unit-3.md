@@ -182,3 +182,15 @@ Comparing recursion vs iteration. Identifying "Stack Overflow" triggers. Unit Re
 Final Prep: Complete the HL Recursion practice paper.
 End-Unit Assessment: Mixed theory paper on tracing and sorting
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: B2.4.4, B2.4.5, B2.5.
+- Command-term alignment retained: Explain; Construct/Trace.
+- Quicksort treatment constrained to recursive partition/pivot tracing and not expanded into non-mapped algorithm sets.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded B2.4.1-B2.4.3 (SL-aligned algorithm foundations not mapped here).
+- Excluded B3.* OOP content.
+
+## Ambiguities and Bounded Interpretation
+- `B2.5` lacked direct coded extraction in selected HL extension table; bounded interpretation mapped to unit-plan "Standard Algorithms (Quicksort)" and structure evidence for B2.4.5 quicksort tracing only.

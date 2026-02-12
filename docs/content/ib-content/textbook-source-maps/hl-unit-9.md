@@ -188,3 +188,15 @@ Diagram Check: Tracing a 3x3 filter across a simple pixel grid.
 8
 Evalua
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: A4.3.8, A4.3.9, A4.3.10, A4.3.11.
+- Command-term alignment used from HL evidence where present: Outline (A4.3.8), Describe (A4.3.9), Explain (A4.3.10).
+- CNN vision section kept bounded to spatial-feature extraction and deployment-readiness interpretation.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded A4.3.4-A4.3.7 (clustering/association/RL/GA).
+- Excluded non-mapped deep-learning subtopics not referenced in provided source set.
+
+## Ambiguities and Bounded Interpretation
+- Official HL extension extraction ended at `A4.3.10`, while mapped unit plan includes `A4.3.11`. Bounded interpretation used unit-plan wording and adjacent CNN evidence to treat A4.3.11 as CNN vision-application extension without introducing unrelated content.

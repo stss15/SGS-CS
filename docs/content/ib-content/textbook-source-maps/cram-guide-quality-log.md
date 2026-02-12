@@ -240,3 +240,31 @@ In the `.njk` file, use raw HTML throughout:
 - [ ] Keep command terms explicit and action-oriented (describe/explain/construct/compare/discuss) without generic filler phrasing.
 - [ ] Keep topic labels consistent with code definitions in IB source documents; if legacy naming differs, document the adjustment in source maps.
 - [ ] Include explicit out-of-scope exclusions in each source map before sign-off.
+
+## Revision 8 Findings (HL Full Rewrite Standardization)
+- Date: 2026-02-12
+- Trigger: Full rewrite of HL textbook units 1-11 to match approved cram-guide quality and UX contract.
+
+### HL Rewrite Corrections Applied
+1. Replaced generic template prose across all HL units with code-specific, command-term-specific explanations.
+2. Enforced required section architecture in every mapped section:
+   - `### Overview` + `reader-section-body--concept`
+   - one application section + `reader-section-body--apply`
+   - one worked section + `reader-section-body--example`
+3. Added concrete, data-bearing worked examples in every unit (tables, traces, model outputs, routing outcomes, SQL results, or code runs).
+4. Rebuilt HL source maps and appended explicit out-of-scope and ambiguity-resolution notes for all units.
+5. Corrected multiple code-label drift cases by prioritizing code semantics from IB HL extension sources over legacy topic labels.
+
+### Cross-Unit Ambiguity Rules Locked
+1. If mapped code label and source text disagree, keep mapped code heading but bind content to authoritative code meaning.
+2. If mapped code is missing from extracted IB content, document bounded interpretation explicitly in that unit source map and avoid adjacent-code expansion.
+3. If unit-plan narrative bundles adjacent codes, split textbook coverage so each section stays strictly within mapped code boundary.
+
+### Anti-Regression Checks (v8 - HL)
+- [ ] Every HL mapped code appears as one `h2` section with exact code prefix.
+- [ ] Every HL mapped section includes explicit `**Command term:**` text.
+- [ ] Every HL mapped section contains all three wrappers: concept, apply, example.
+- [ ] No HL unit reintroduces command-map sections, unit-focus callouts, or generic top intro filler.
+- [ ] Each HL unit includes at least one concrete worked example with real values.
+- [ ] Source-map file for each HL unit includes explicit out-of-scope exclusions and ambiguity notes where needed.
+- [ ] Code-semantics precedence is preserved when legacy unit-plan topic labels drift.

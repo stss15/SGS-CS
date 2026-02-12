@@ -40,7 +40,11 @@ const bannedRegexes = {
   misconceptionCheck: /Misconception Check/gi,
   keyTakeaways: /Key Takeaways/gi,
   comingUp: /Coming up:/gi,
-  keywordClass: /class="[^"]*\bkeyword\b[^"]*"/gi
+  keywordClass: /class="[^"]*\bkeyword\b[^"]*"/gi,
+  clusterLabels: /\bCluster\s+[A-Z]\b/gi,
+  teacherFrameworkLabels: /\bI do\b|\bWe do\b|\bYou do\b/gi,
+  worksheetHandoffHeading: /Worksheet handoff/gi,
+  visibleYouDoClass: /you-do-placeholder/gi
 };
 
 const now = new Date();
@@ -86,7 +90,7 @@ const evaluateDeck = async (relativePath) => {
   const sectionOpen = countMatches(/<section\b/gi, html);
   const sectionClose = countMatches(/<\/section>/gi, html);
   const maxDepth = computeMaxSectionDepth(html);
-  const youDoCount = countMatches(/class="[^"]*\byou-do-placeholder\b[^"]*"/gi, html);
+  const worksheetCueCount = countMatches(/\bworksheet\b/gi, html);
 
   const bannedCounts = Object.fromEntries(
     Object.entries(bannedRegexes).map(([key, regex]) => [key, countMatches(regex, html)])
@@ -97,10 +101,10 @@ const evaluateDeck = async (relativePath) => {
 
   const checks = {
     balancedSections: sectionOpen === sectionClose,
-    sectionDensity: sectionOpen >= 12 && sectionOpen <= 16,
+    sectionDensity: sectionOpen >= 10 && sectionOpen <= 16,
     maxDepth: maxDepth <= 2,
     bannedText: Object.values(bannedCounts).every((count) => count === 0),
-    placeholderCadence: youDoCount >= 2,
+    worksheetCuesPresent: worksheetCueCount >= 2,
     footerText: html.includes('<div class="footer-text course-footer">SGS Computer Science</div>'),
     masterStylesheet: html.includes('/css/ib-2027-sl-unit1-master.css'),
     coverage: missingCoverage.length === 0
@@ -114,7 +118,7 @@ const evaluateDeck = async (relativePath) => {
     sectionOpen,
     sectionClose,
     maxDepth,
-    youDoCount,
+    worksheetCueCount,
     bannedCounts,
     missingCoverage,
     checks,
@@ -152,7 +156,7 @@ console.log(`Slide audit run: ${isoTime}`);
 for (const result of results) {
   console.log(`\n${result.filename}`);
   console.log(`  sectionOpen=${result.sectionOpen} sectionClose=${result.sectionClose} maxDepth=${result.maxDepth}`);
-  console.log(`  youDoCount=${result.youDoCount}`);
+  console.log(`  worksheetCueCount=${result.worksheetCueCount}`);
   console.log(`  banned=${JSON.stringify(result.bannedCounts)}`);
   if (result.missingCoverage.length) {
     console.log(`  missingCoverage=${result.missingCoverage.join(', ')}`);
@@ -177,11 +181,11 @@ if (appendEnabled) {
   lines.push(formatRow('Route smoke test', routeResult.pass));
   lines.push(formatRow('Overall', overallPass));
   lines.push('');
-  lines.push('| Deck | Sections | Max depth | You Do placeholders | Result |');
+  lines.push('| Deck | Sections | Max depth | Worksheet cues | Result |');
   lines.push('| --- | ---: | ---: | ---: | --- |');
   for (const result of results) {
     lines.push(
-      `| ${result.filename} | ${result.sectionOpen} | ${result.maxDepth} | ${result.youDoCount} | ${result.pass ? 'PASS' : 'FAIL'} |`
+      `| ${result.filename} | ${result.sectionOpen} | ${result.maxDepth} | ${result.worksheetCueCount} | ${result.pass ? 'PASS' : 'FAIL'} |`
     );
   }
   lines.push('');

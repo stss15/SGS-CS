@@ -246,3 +246,15 @@ HW 3 (Final Prep): Complete the HL Systems Control practice paper.
 End-Unit Assessment: Mixed theory paper on Multitasking, Deadlock, and Loop design.
 1
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: A1.3.5, A1.3.6, A1.3.7.
+- Command-term alignment retained from HL structure evidence: Explain, Describe, Explain.
+- Control-system chain constrained to Sensor -> ADC -> Controller -> DAC -> Actuator and open/closed-loop use.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded A1.1.3, A1.1.6, A1.4.1 (other A1 units).
+- Excluded A2.* networking content.
+
+## Ambiguities and Bounded Interpretation
+- No unresolved code ambiguity. Unit-plan duplicates around A1.3.6/A1.3.7 were interpreted as combined control-systems scope split cleanly into component description and loop explanation.

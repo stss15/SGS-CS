@@ -43,6 +43,8 @@ sourcePolicy: ib_content_md_first
 
 ## B2.1.1 Variables & Data Types
 
+**Command term:** Construct
+
 ### Overview
 
 <div class="reader-section-body reader-section-body--concept">
@@ -136,6 +138,8 @@ Notice that `score` only exists during each function call — it is local and ge
 
 ## B2.1.2 String Manipulation
 
+**Command term:** Construct
+
 ### Overview
 
 <div class="reader-section-body reader-section-body--concept">
@@ -220,6 +224,8 @@ YEAR_GROUP = STUDENT_ID.substring(4, 7)
 
 ## B2.1.3 Exception Handling
 
+**Command term:** Describe
+
 ### Overview
 
 <div class="reader-section-body reader-section-body--concept">
@@ -291,6 +297,8 @@ Exception handling is not a substitute for proper validation. Use it for **unpre
 
 
 ## B2.1.4 Debugging Techniques
+
+**Command term:** Construct
 
 ### Overview
 
@@ -385,6 +393,8 @@ Design test inputs that specifically target boundaries and edge cases:
 
 
 ## B2.3.3 Looping Constructs (for and while loops)
+
+**Command term:** Construct
 
 ### Overview
 

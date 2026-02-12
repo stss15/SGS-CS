@@ -207,3 +207,15 @@ Calculating the line of best fit ($y = mx + c$). Predicting continuous values.
 HW 4: Solve 5 manual linear regression prediction problems.
 Blackboard Trace: Ca
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: A4.2.1, A4.2.4, A4.3.1, A4.3.3.
+- Command-term alignment retained from evidence where available: Describe, Explain.
+- Scaling/encoding section bounded to normalization, standardization, and one-hot encoding without adding non-mapped algorithm families.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded A4.2.2 and A4.2.3 (feature selection/dimensionality reduction).
+- Excluded A4.3.2 classification details beyond minimal context for tuning examples.
+
+## Ambiguities and Bounded Interpretation
+- `A4.2.4` was not directly extracted in selected HL extension snippets. Bounded interpretation used mapped unit-plan scope and adjacent A4 preprocessing structure language to cover scaling and encoding only.

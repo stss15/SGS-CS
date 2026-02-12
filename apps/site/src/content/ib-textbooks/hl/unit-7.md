@@ -2,12 +2,12 @@
 level: hl
 unitNumber: 7
 unitName: ML Preprocessing & Math
-summary: Revise ML Preprocessing & Math with exam-focused coverage of A4.2.1, A4.2.4, A4.3.1, A4.3.3, including exact command-term expectations and applied examples.
+summary: Revise ML Preprocessing & Math with source-bounded coverage of A4.2.1, A4.2.4, A4.3.1, and A4.3.3, emphasizing data quality, feature preparation, regression mechanics, and tuning trade-offs.
 subtopics:
   - code: A4.2.1
     title: Data Cleaning
   - code: A4.2.4
-    title: Scaling and encoding
+    title: Scaling and Encoding
   - code: A4.3.1
     title: Linear Regression
   - code: A4.3.3
@@ -19,107 +19,231 @@ sourcePolicy: ib_content_md_first
 
 | Term | Definition |
 | --- | --- |
-| machine learning | Methods that learn patterns from data to make predictions or decisions. |
-| feature | An input variable used by a model. |
-| data cleaning | Preparing data by fixing errors, inconsistencies, or missing values. |
-| classification | Predicting a category label from input data. |
-| clustering | Grouping similar data points without predefined labels. |
-| hyperparameter | A model setting chosen before training that influences behavior. |
-| neural network | A layered model that learns weighted transformations from data. |
-| bias | Systematic skew that can affect data, models, or decisions. |
+| imputation | Replacing missing values with estimated values (for example mean/median). |
+| outlier | Data point that is far from the rest of the distribution. |
+| normalization | Scaling values to a fixed range, commonly 0 to 1. |
+| standardization | Rescaling values to zero mean and unit variance. |
+| one-hot encoding | Representing categories as binary indicator columns. |
+| linear regression | Model predicting a continuous value with a linear function of inputs. |
+| residual | Difference between actual value and predicted value. |
+| mean squared error (MSE) | Average squared residual used as a regression error metric. |
+| hyperparameter | Model configuration chosen before training (for example `k`, max depth, learning rate). |
+| overfitting | Model captures noise and performs poorly on unseen data. |
 
 ## A4.2.1 Data Cleaning
 
-### Required response
+### Overview
 
-> **Command term:** Describe
->
-> Describe the significance of data cleaning.
+<div class="reader-section-body reader-section-body--concept">
 
-### What this means
+**Command term:** Describe
 
-For this syllabus point, focus on using data cleaning accurately in context. Connect it to machine-learning workflow, model behavior, and practical implications. Preprocessing determines whether model input is informative, comparable, and robust to noise.
+Data cleaning description should cover why quality defects directly affect model behavior.
 
-### System context
+| Data issue | Typical handling approach |
+| --- | --- |
+| Missing values | Imputation or row removal |
+| Duplicates | Deduplicate repeated records |
+| Outliers | Investigate, cap, transform, or remove if invalid |
+| Inconsistent formats | Normalize units/date formats before modeling |
 
-- Distinguish training, inference, and evaluation decisions clearly.
-- Connect preprocessing choices to model quality and bias risk.
-- Use technical evidence when comparing model approaches.
+Dirty inputs produce unstable patterns, regardless of algorithm sophistication.
 
-### Compact example
+</div>
 
-In a real deployment, data cleaning should be justified against at least one clear trade-off (for example speed vs accuracy, throughput vs latency, or security vs usability).
+### Common misconceptions
 
-## A4.2.4 Scaling and encoding
+<div class="reader-section-body reader-section-body--apply">
 
-### Required response
+| Misconception | Accurate view |
+| --- | --- |
+| "More rows always helps." | Low-quality rows can reduce model reliability. |
+| "Imputation is always neutral." | Imputation changes distribution and can introduce bias. |
+| "Cleaning is one step at the start." | Cleaning is iterative across data updates and validation cycles. |
 
-> **Command term:** Apply
->
-> Apply normalization, standardization, and one-hot encoding to prepare data for machine learning.
+</div>
 
-### What this means
+### Worked example: cleaning a small housing dataset
 
-For this syllabus point, focus on using scaling and encoding accurately in context. Connect it to machine-learning workflow, model behavior, and practical implications. Scaling and encoding transform raw data into model-ready numerical representations without changing target meaning.
+<div class="reader-section-body reader-section-body--example">
 
-### System context
+Raw rows (`size_m2`, `price_k`):
 
-- Distinguish training, inference, and evaluation decisions clearly.
-- Connect preprocessing choices to model quality and bias risk.
-- Use technical evidence when comparing model approaches.
+| row | size_m2 | price_k |
+| --- | --- | --- |
+| 1 | 60 | 220 |
+| 2 | 75 | 260 |
+| 3 | 75 | 260 |
+| 4 | 90 |  |
+| 5 | 4000 | 950 |
 
-### Compact example
+Cleaning decisions:
 
-```text
-Normalization: scale values to [0,1]
-One-hot encoding: convert categories to binary indicator columns
+- Row 3 removed as duplicate of row 2.
+- Row 4 `price_k` imputed with median (`260`).
+- Row 5 flagged as likely outlier for typical urban apartment scope.
+
+Result: model training sees more consistent signal and lower variance from erroneous extremes.
+
+</div>
+
+## A4.2.4 Scaling and Encoding
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Apply
+
+Applying scaling/encoding means performing concrete transformations that make features numerically compatible for model training.
+
+| Transformation | When useful |
+| --- | --- |
+| Normalization (`0..1`) | Features with bounded interpretation |
+| Standardization (z-score) | Features with different units/scales |
+| One-hot encoding | Categorical fields such as city/type |
+
+These steps change representation, not the real-world meaning of the data.
+
+</div>
+
+### Applied in context
+
+<div class="reader-section-body reader-section-body--apply">
+
+Suppose a model uses features `age` (years), `salary` (USD), and `department` (category).
+
+- Without scaling, large salary values dominate distance-based algorithms.
+- Without encoding, category labels cannot be interpreted numerically in a meaningful way.
+
+Correct application keeps each feature usable without distorting relationships.
+
+</div>
+
+### Worked example: concrete feature transformation
+
+<div class="reader-section-body reader-section-body--example">
+
+```python
+# Raw values
+age = [20, 40, 60]
+salary = [30000, 80000, 130000]
+team = ["sales", "engineering", "sales"]
+
+# Simple normalization example for age
+age_norm = [(x - 20) / (60 - 20) for x in age]  # [0.0, 0.5, 1.0]
 ```
-Both steps convert heterogeneous raw data into model-compatible numeric features.
+
+One-hot encoding for `team`:
+
+| team | sales | engineering |
+| --- | --- | --- |
+| sales | 1 | 0 |
+| engineering | 0 | 1 |
+| sales | 1 | 0 |
+
+</div>
 
 ## A4.3.1 Linear Regression
 
-### Exam requirement
+### Overview
 
-> **Command term:** Explain
->
-> Explain how linear regression predicts continuous outcomes.
+<div class="reader-section-body reader-section-body--concept">
 
-### Core understanding
+**Command term:** Explain
 
-In this part of the unit, you need secure understanding of linear regression. Connect it to machine-learning workflow, model behavior, and practical implications. Regression maps features to continuous outcomes and depends on fit quality and residual behavior.
+Linear regression explains continuous prediction using a line (or hyperplane) fitted to data.
+
+For one feature:
+
+`prediction = b0 + b1 * x`
+
+| Component | Meaning |
+| --- | --- |
+| `b0` | Intercept |
+| `b1` | Slope (effect of one-unit increase in `x`) |
+| residual | `actual - predicted` |
+
+Explain not only formula but also fit quality and residual behavior.
+
+</div>
 
 ### In real systems
 
-- Distinguish training, inference, and evaluation decisions clearly.
-- Connect preprocessing choices to model quality and bias risk.
-- Use technical evidence when comparing model approaches.
+<div class="reader-section-body reader-section-body--apply">
 
-### Worked snapshot
+Linear regression is suitable when relationship is approximately linear and prediction target is numeric (for example energy demand, price estimate, temperature).
 
-```text
-prediction = b0 + b1 * x
-```
-Linear regression estimates a continuous value by fitting a line to observed data.
+It is less suitable when relationships are strongly nonlinear unless feature engineering transforms the input space.
+
+</div>
+
+### Worked example: predict rent from floor area
+
+<div class="reader-section-body reader-section-body--example">
+
+Given fitted model:
+
+`rent = 350 + 12 * area_m2`
+
+| area_m2 | predicted rent |
+| --- | --- |
+| 40 | 830 |
+| 55 | 1010 |
+| 70 | 1190 |
+
+If actual rent for `55 m2` is `980`, residual is `980 - 1010 = -30`.
+
+A large pattern of residuals can indicate model mismatch or missing features.
+
+</div>
 
 ## A4.3.3 Hyperparameter Tuning
 
-### Required response
+### Overview
 
-> **Command term:** Explain
->
-> Explain role of hyperparameter tuning in evaluation.
+<div class="reader-section-body reader-section-body--concept">
 
-### What this means
+**Command term:** Explain
 
-For this syllabus point, focus on using hyperparameter tuning accurately in context. Connect it to machine-learning workflow, model behavior, and practical implications.
+Hyperparameter tuning explains how pre-training settings influence generalization.
 
-### System context
+| Hyperparameter example | Effect |
+| --- | --- |
+| `k` in K-NN | Small `k` can overfit; large `k` can oversmooth boundaries |
+| tree depth | Deep trees can memorize noise |
+| learning rate | Too high may diverge; too low may converge too slowly |
 
-- Distinguish training, inference, and evaluation decisions clearly.
-- Connect preprocessing choices to model quality and bias risk.
-- Use technical evidence when comparing model approaches.
+Good tuning balances bias and variance rather than maximizing one metric blindly.
 
-### Compact example
+</div>
 
-In a real deployment, hyperparameter tuning should be justified against at least one clear trade-off (for example speed vs accuracy, throughput vs latency, or security vs usability).
+### Applied in context
 
+<div class="reader-section-body reader-section-body--apply">
+
+Use validation data to compare settings with multiple metrics:
+
+- Accuracy alone can hide minority-class failure.
+- Precision and recall expose different error costs.
+- F1 balances precision and recall for asymmetric problems.
+
+Explanation quality improves when metric choice is justified by problem risk.
+
+</div>
+
+### Worked example: selecting `k` for K-NN
+
+<div class="reader-section-body reader-section-body--example">
+
+Validation results on the same dataset:
+
+| k | accuracy | precision | recall | F1 |
+| --- | --- | --- | --- | --- |
+| 1 | 0.94 | 0.90 | 0.71 | 0.79 |
+| 5 | 0.92 | 0.86 | 0.83 | 0.84 |
+| 15 | 0.88 | 0.81 | 0.76 | 0.78 |
+
+Even though `k=1` has the highest accuracy, `k=5` gives stronger balance by improving recall and F1.
+
+</div>

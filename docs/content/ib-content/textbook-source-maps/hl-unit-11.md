@@ -274,3 +274,15 @@ Final Prep: Complete the HL A2 Networking practice paper.
 End-Unit Assessment: Paper-based exam on HL Networking and Defense.
 2
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: A2.1.5, A2.2.2, A2.3.4, A2.4.2.
+- Command-term alignment retained: Describe, Describe, Explain, Describe.
+- Vulnerability coverage kept concrete (DDoS, MitM, phishing, SQL injection, XSS, zero-day) per HL structure evidence.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded A2.4.3 countermeasure deep dive as a standalone section.
+- Excluded non-mapped A1/A3/A4 extensions.
+
+## Ambiguities and Bounded Interpretation
+- Unit-plan narrative linked A2.4.2 with IDS/IPS language typically associated with A2.4.3 countermeasures. Bounded interpretation kept A2.4.2 section vulnerability-centered, with only minimal contextual mention of defense tooling.

@@ -39,6 +39,8 @@ sourcePolicy: ib_content_md_first
 
 ## B2.2.1 Static vs Dynamic Structures
 
+**Command term:** Compare
+
 ### Overview
 
 <div class="reader-section-body reader-section-body--concept">
@@ -74,6 +76,8 @@ The exam often presents a scenario and asks you to justify a choice. Here is how
 
 
 ## B2.2.2 Arrays & Lists
+
+**Command term:** Construct
 
 ### Overview
 
@@ -155,6 +159,8 @@ print(f"Highest mark: {highest}")  # Output: 91
 
 ## B2.2.3 The Stack (LIFO)
 
+**Command term:** Explain
+
 ### Overview
 
 <div class="reader-section-body reader-section-body--concept">
@@ -216,6 +222,8 @@ stack.pop()           # returns "B"
 
 
 ## B2.2.4 The Queue (FIFO)
+
+**Command term:** Explain
 
 ### Overview
 

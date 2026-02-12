@@ -284,3 +284,15 @@ HW 4: Complete the "MediaLibrary" multi-class challenge from the B3.pdf review.
 End-Unit Assessment: Full Paper-style multi-class design and trace task.
 1
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: B3.2.1, B3.2.2, B3.2.3, B3.2.4.
+- Command-term alignment retained: Explain/Apply, Construct, Explain, Explain.
+- Section labels in rewritten textbook were corrected to match source-code meaning (inheritance, polymorphism, abstraction, composition/aggregation).
+
+## Explicit Out-of-Scope Exclusions
+- Excluded B3.2.5 design patterns.
+- Excluded B4.* ADT content.
+
+## Ambiguities and Bounded Interpretation
+- Legacy unit-plan/map text incorrectly labeled B3.2.4. Bounded correction applied using HL extension evidence: B3.2.4 treated strictly as composition vs aggregation relationships.

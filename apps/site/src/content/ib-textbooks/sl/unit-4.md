@@ -40,6 +40,8 @@ sourcePolicy: ib_content_md_first
 
 ## B2.3.1 Control Structures
 
+**Command term:** Construct
+
 ### Overview
 
 <div class="reader-section-body reader-section-body--concept">
@@ -115,6 +117,8 @@ Total `print` calls = 3 × 4 = **12**. This multiplication effect is why nested 
 
 
 ## B2.4.1 Algorithm Efficiency (Big O)
+
+**Command term:** Describe
 
 ### Overview
 
@@ -196,6 +200,8 @@ At n = 1,000,000, an O(n²) algorithm requires **one trillion** operations — i
 
 
 ## B2.4.2 Linear & Binary Search
+
+**Command term:** Construct and trace
 
 ### Overview
 
@@ -300,6 +306,8 @@ Only 1 comparison! If the target were 7:
 
 ## B2.4.3 Bubble & Selection Sort
 
+**Command term:** Construct and trace
+
 ### Overview
 
 <div class="reader-section-body reader-section-body--concept">
@@ -384,6 +392,8 @@ Key difference from bubble sort: selection sort makes **exactly one swap per pas
 
 
 ## B2.5.1 File Processing
+
+**Command term:** Construct
 
 ### Overview
 

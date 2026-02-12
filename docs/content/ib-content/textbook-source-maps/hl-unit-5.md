@@ -250,3 +250,15 @@ Group Challenge: Designing a replication strategy for a global app.
 Warehousing & Mining
 The ETL process. Data mining techniques: Association, Clustering, and Classificati
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: A3.3.4, A3.4.1, A3.4.2, A3.4.3.
+- Command-term alignment retained: Construct, Outline, Explain, Explain.
+- A3.3.4 implemented as SQL aggregate/grouping construction (`SUM/AVG/COUNT`, `GROUP BY`, `HAVING`) per HL structure evidence.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded A3.3.5 views and A3.3.6 transactions/ACID (not mapped in this unit's syllabusPoints).
+- Excluded A3.4.4 distributed databases.
+
+## Ambiguities and Bounded Interpretation
+- Unit-plan narrative blended A3.3.4-A3.3.6 language. Bounded interpretation prioritized code-level meaning from IB HL extension: A3.3.4 treated as aggregate SQL only; ACID kept out to avoid scope creep.

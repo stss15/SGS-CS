@@ -2,16 +2,16 @@
 level: hl
 unitNumber: 4
 unitName: Professional OOP Design
-summary: Revise Professional OOP Design with exam-focused coverage of B3.2.1, B3.2.2, B3.2.3, B3.2.4, including exact command-term expectations and applied examples.
+summary: Revise Professional OOP Design with source-bounded coverage of B3.2.1, B3.2.2, B3.2.3, and B3.2.4, focusing on class relationships, code construction, and maintainable OOP architecture.
 subtopics:
   - code: B3.2.1
-    title: Inheritance
+    title: Inheritance and IS-A Relationships
   - code: B3.2.2
-    title: Polymorphism
+    title: Polymorphism Through Overriding
   - code: B3.2.3
-    title: Abstraction
+    title: Abstraction with Abstract Classes
   - code: B3.2.4
-    title: Composition/Aggregation
+    title: Composition vs Aggregation
 sourcePolicy: ib_content_md_first
 ---
 
@@ -19,122 +19,235 @@ sourcePolicy: ib_content_md_first
 
 | Term | Definition |
 | --- | --- |
-| class | A blueprint defining object attributes and behavior. |
-| object | An instance of a class with its own state. |
-| encapsulation | Restricting direct access to internal state through controlled interfaces. |
-| inheritance | Defining a new class by extending an existing class. |
-| polymorphism | Using a shared interface with type-specific behavior. |
-| abstraction | Focusing on essential detail while ignoring irrelevant complexity. |
-| composition | Building complex objects from simpler component objects. |
-| design pattern | A reusable software design solution to a recurring problem. |
+| inheritance | Reusing parent class attributes/methods in child classes through an IS-A relationship. |
+| superclass | Parent class from which child classes derive behavior. |
+| subclass | Child class that extends or specializes parent behavior. |
+| polymorphism | Calling a shared interface while runtime type determines behavior. |
+| overriding | Replacing an inherited method implementation in a child class. |
+| abstraction | Exposing required behavior while hiding implementation details. |
+| abstract class | Non-instantiable class defining methods that subclasses must implement. |
+| composition | Strong HAS-A relationship where part lifecycle depends on whole lifecycle. |
+| aggregation | Weaker HAS-A relationship where part can exist independently. |
+| interface contract | Agreed method signatures and behavior expected across implementations. |
 
-## B3.2.1 Inheritance
+## B3.2.1 Inheritance and IS-A Relationships
 
-### Required response
+### Overview
 
-> **Command term:** Explain
->
-> Explain and apply inheritance to promote code reusability.
+<div class="reader-section-body reader-section-body--concept">
 
-### What this means
+**Command term:** Explain and apply
 
-For this syllabus point, focus on using inheritance accurately in context. Use it in object-oriented design to build reusable and maintainable software. Inheritance models shared behavior across related classes while reducing duplicated logic.
+Inheritance is appropriate when a child class is a true specialization of a parent type.
 
-### System context
+| Relationship test | Example |
+| --- | --- |
+| IS-A | `Car` is a `Vehicle` |
+| NOT IS-A | `Car` is not an `Engine` |
 
-- Model responsibilities and relationships before coding.
-- Use abstraction boundaries to reduce coupling.
-- Ensure behavior is consistent with class design intent.
+Explain why inheritance helps: shared attributes/methods live in one place, reducing duplication and keeping behavior consistent across subclasses.
 
-### Compact example
-
-```python
-class Vehicle: pass
-class Bus(Vehicle): pass
-```
-Inheritance expresses an is-a relationship and supports behavior reuse.
-
-## B3.2.2 Polymorphism
-
-### Exam requirement
-
-> **Command term:** Construct
->
-> Construct code to model polymorphism (e.g., overriding).
-
-### Core understanding
-
-In this part of the unit, you need secure understanding of polymorphism. Use it in object-oriented design to build reusable and maintainable software. Polymorphism allows common interfaces with type-specific behavior at runtime.
-
-### In real systems
-
-- Model responsibilities and relationships before coding.
-- Use abstraction boundaries to reduce coupling.
-- Ensure behavior is consistent with class design intent.
-
-### Worked snapshot
-
-```python
-class User:
-    def __init__(self, name):
-        self.name = name
-
-student = User('Mia')
-```
-Class definition creates a template; instantiation creates an object with state.
-
-## B3.2.3 Abstraction
-
-### What the command expects
-
-> **Command term:** Explain
->
-> Explain the concept of abstraction in OOP.
-
-### Key idea
-
-Abstraction is treated as applied reasoning, not only a definition. Use it in object-oriented design to build reusable and maintainable software.
+</div>
 
 ### Applied in context
 
-- Model responsibilities and relationships before coding.
-- Use abstraction boundaries to reduce coupling.
-- Ensure behavior is consistent with class design intent.
+<div class="reader-section-body reader-section-body--apply">
 
-### Quick worked example
+A transport system can centralize common logic (`id`, `max_speed`, `status`) in `Vehicle`, then specialize subclasses (`Car`, `Bus`, `Bike`) with additional fields.
+
+Use inheritance only when semantic hierarchy is real. Reusing code alone is not enough reason to create a parent-child tree.
+
+</div>
+
+### Worked example: parent-child construction with `super()`
+
+<div class="reader-section-body reader-section-body--example">
 
 ```python
-class Shape:
-    def area(self):
-        raise NotImplementedError
+class Vehicle:
+    def __init__(self, name, max_speed):
+        self.name = name
+        self.max_speed = max_speed
+
+class Car(Vehicle):
+    def __init__(self, name, max_speed, doors):
+        super().__init__(name, max_speed)
+        self.doors = doors
+
+city_taxi = Car("CityTaxi", 160, 4)
 ```
-Abstraction exposes required behavior without fixing one concrete implementation.
 
-## B3.2.4 Composition/Aggregation
+| Object | Inherited fields | Child-specific field |
+| --- | --- | --- |
+| `city_taxi` | `name`, `max_speed` | `doors` |
 
-### Required response
+`super()` ensures parent initialization happens correctly before subclass-specific setup.
 
-> **Command term:** Explain
->
-> Explain role of composition and aggregation in class relationships.
+</div>
 
-### What this means
+## B3.2.2 Polymorphism Through Overriding
 
-For this syllabus point, focus on using composition/aggregation accurately in context. Use it in object-oriented design to build reusable and maintainable software. Composition and aggregation model has-a relationships with different ownership and lifecycle constraints.
+### Overview
 
-### System context
+<div class="reader-section-body reader-section-body--concept">
 
-- Model responsibilities and relationships before coding.
-- Use abstraction boundaries to reduce coupling.
-- Ensure behavior is consistent with class design intent.
+**Command term:** Construct
 
-### Compact example
+Polymorphism construction means writing code where different objects respond to the same method name with type-specific behavior.
+
+| Class | Shared method | Output behavior |
+| --- | --- | --- |
+| `Dog` | `speak()` | "woof" |
+| `Cat` | `speak()` | "meow" |
+
+The caller uses one interface (`obj.speak()`), while runtime dispatch selects the correct implementation.
+
+</div>
+
+### Common misconceptions
+
+<div class="reader-section-body reader-section-body--apply">
+
+- Overriding is not overloading. Overriding keeps same method signature and changes behavior in subclass.
+- Polymorphism is not random behavior; it is predictable runtime method selection based on object type.
+- You can still write type-agnostic loops that call shared methods across mixed object lists.
+
+</div>
+
+### Worked trace: mixed-object method dispatch
+
+<div class="reader-section-body reader-section-body--example">
 
 ```python
-class Engine: pass
-class Car:
+class Animal:
+    def speak(self):
+        return "..."
+
+class Dog(Animal):
+    def speak(self):
+        return "woof"
+
+class Cat(Animal):
+    def speak(self):
+        return "meow"
+
+animals = [Dog(), Cat(), Dog()]
+outputs = [a.speak() for a in animals]
+```
+
+| Iteration | Runtime object type | `speak()` result |
+| --- | --- | --- |
+| 1 | `Dog` | `woof` |
+| 2 | `Cat` | `meow` |
+| 3 | `Dog` | `woof` |
+
+Final `outputs`: `['woof', 'meow', 'woof']`
+
+</div>
+
+## B3.2.3 Abstraction with Abstract Classes
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Explain
+
+Abstraction defines what subclasses must provide without forcing one concrete implementation in the parent class.
+
+| Abstract design benefit | Why it matters |
+| --- | --- |
+| Consistent interface | Team members can code against one contract |
+| Reduced misuse | Prevents incomplete object creation |
+| Clear extension points | New subclasses must implement required methods |
+
+This supports maintainability in larger systems where multiple developers add new classes.
+
+</div>
+
+### In real systems
+
+<div class="reader-section-body reader-section-body--apply">
+
+If every payment type must support `authorize()` and `capture()`, an abstract parent class enforces those requirements.
+
+That contract prevents partial implementations from silently entering production.
+
+</div>
+
+### Worked example: abstract contract in Python
+
+<div class="reader-section-body reader-section-body--example">
+
+```python
+from abc import ABC, abstractmethod
+
+class PaymentMethod(ABC):
+    @abstractmethod
+    def authorize(self, amount):
+        pass
+
+class CardPayment(PaymentMethod):
+    def authorize(self, amount):
+        return amount <= 5000
+```
+
+`PaymentMethod` cannot be instantiated directly. `CardPayment` is valid because it implements the required abstract method.
+
+</div>
+
+## B3.2.4 Composition vs Aggregation
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Explain
+
+Both are HAS-A relationships, but lifecycle dependency differs.
+
+| Relationship type | Lifecycle dependency | Example |
+| --- | --- | --- |
+| Composition | Part depends on whole | `House` and its `Room` objects |
+| Aggregation | Part independent of whole | `Library` and `Book` objects |
+
+Explanation quality depends on the lifecycle argument, not just the phrase "has-a."
+
+</div>
+
+### The domain matrix
+
+<div class="reader-section-body reader-section-body--apply">
+
+| Scenario | Composition or aggregation? | Reason |
+| --- | --- | --- |
+| Course has enrolled Student objects stored by reference | Aggregation | Students exist independently of one course instance |
+| Playlist owns internal play-history records deleted with playlist | Composition | Records are tied to playlist lifecycle |
+| Car object creates and owns a temporary onboard Session object | Composition | Session has no independent persistence |
+
+</div>
+
+### Worked example: contrasting implementation style
+
+<div class="reader-section-body reader-section-body--example">
+
+```python
+class Engine:
+    pass
+
+class Car:  # composition: Car creates and owns Engine
     def __init__(self):
         self.engine = Engine()
-```
-Composition models a has-a relationship where one object owns another component.
 
+class Student:
+    def __init__(self, name):
+        self.name = name
+
+class Classroom:  # aggregation: Student exists independently
+    def __init__(self, students):
+        self.students = students
+```
+
+`Car` controls `Engine` lifecycle directly. `Classroom` only references pre-existing `Student` instances.
+
+</div>

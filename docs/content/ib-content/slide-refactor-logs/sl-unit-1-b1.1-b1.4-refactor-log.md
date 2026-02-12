@@ -10,8 +10,8 @@
 
 ## Pedagogical decisions
 - Question-first progression as default entry into each conceptual cluster.
-- Slide decks limited to I do + We do modeling and reasoning.
-- You Do appears as worksheet handoff placeholders at natural conceptual breaks.
+- Slide decks use modeled reasoning plus guided challenge, with teacher scaffold kept invisible to students.
+- Worksheet direction appears as compact `small-text` cues inside challenge slides at natural conceptual breaks.
 - No retrieval starter blocks, recap bullets, or keyword popup dependency.
 
 ## Template rules
@@ -23,13 +23,13 @@
   - `.slide-question`
   - `.i-do-panel`
   - `.we-do-panel`
-  - `.you-do-placeholder`
   - `.natural-break`
+  - `.small-text`
 
 ## Deck-by-deck change log
 ### B1.1 Problem Specification
 - Reframed around problem ambiguity, stakeholder conflict, and measurable success criteria.
-- Introduced explicit I do / We do discussion sequence and worksheet handoff points.
+- Uses modeled reasoning followed by guided challenge flow with embedded worksheet cues.
 
 ### B1.2 Computational Thinking
 - Reframed around the four pillars as decision tools, not recall definitions.
@@ -56,9 +56,15 @@
 - Confirm source-of-truth files for the target unit before editing.
 - Reuse `ib-2027-sl-b1-master-template.html` structure and class contract.
 - Keep deck density between 12 and 16 sections unless a different limit is explicitly set.
-- Enforce question-first, I do/We do, and worksheet handoff placeholders.
+- Enforce question-first progression with invisible scaffold (no explicit teacher-framework labels on slides).
 - Run audit script and append results to this log (or a unit-specific sibling log).
 - Run `npm run framework:build` to validate route integrity before sign-off.
+
+## Feedback pass - visible scaffolding removed (2026-02-12)
+- Student-facing labels `Cluster A/B/C`, `I do`, `We do`, and `You do` were removed from deck content.
+- Standalone worksheet-handoff slides were removed; worksheet direction now appears as compact `small-text` cues inside challenge slides.
+- Slide rhythm was varied to avoid rigid repeated patterns while retaining the same pedagogical progression under the hood.
+- Master template was updated so the default pattern is scenario -> modeled reasoning -> guided challenge -> synthesis, without exposing planning framework language.
 
 ### QA Snapshot - 2026-02-12T09:35:34.806Z
 
@@ -77,3 +83,37 @@
 
 - Route smoke found: B1.1_problem_specification, B1.2_computational_thinking, B1.3_flowcharts_pseudocode, B1.4_algorithm_design
 
+### QA Snapshot - 2026-02-12T11:25:00.386Z
+
+| Check | Result |
+| --- | --- |
+| All deck checks | PASS |
+| Route smoke test | PASS |
+| Overall | PASS |
+
+| Deck | Sections | Max depth | Worksheet cues | Result |
+| --- | ---: | ---: | ---: | --- |
+| B1.1_problem_specification.html | 14 | 2 | 2 | PASS |
+| B1.2_computational_thinking.html | 13 | 2 | 2 | PASS |
+| B1.3_flowcharts_pseudocode.html | 13 | 2 | 2 | PASS |
+| B1.4_algorithm_design.html | 14 | 2 | 2 | PASS |
+
+- Route smoke found: B1.1_problem_specification, B1.2_computational_thinking, B1.3_flowcharts_pseudocode, B1.4_algorithm_design
+
+
+### QA Snapshot - 2026-02-12T11:27:06.505Z
+
+| Check | Result |
+| --- | --- |
+| All deck checks | PASS |
+| Route smoke test | PASS |
+| Overall | PASS |
+
+| Deck | Sections | Max depth | Worksheet cues | Result |
+| --- | ---: | ---: | ---: | --- |
+| B1.1_problem_specification.html | 14 | 2 | 2 | PASS |
+| B1.2_computational_thinking.html | 13 | 2 | 2 | PASS |
+| B1.3_flowcharts_pseudocode.html | 13 | 2 | 2 | PASS |
+| B1.4_algorithm_design.html | 14 | 2 | 2 | PASS |
+
+- Route smoke found: B1.1_problem_specification, B1.2_computational_thinking, B1.3_flowcharts_pseudocode, B1.4_algorithm_design

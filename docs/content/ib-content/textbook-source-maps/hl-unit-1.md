@@ -235,3 +235,15 @@ HW 4: Research JIT compilation in web browsers (V8 engine). Why does it matter f
 End-Unit Assessment: Paper-based test on HL Architecture and Translation.
 2
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: A1.1.3, A1.1.6, A1.4.1, A1.4.2.
+- Command-term alignment used from HL structure text: Explain, Describe, Evaluate.
+- A1.4.2 is treated as VM/bytecode/JIT execution scope using mapped unit-plan context plus A1.4.1 evidence references.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded A1.3.5, A1.3.6, A1.3.7 (Unit 2 scope).
+- Excluded A2.* networking content.
+
+## Ambiguities and Bounded Interpretation
+- `A1.4.2` did not appear as a direct code in extracted HL extension table; bounded interpretation used: virtual machine and bytecode/JIT execution mechanics only, without introducing extra translation syllabus points beyond mapped unit scope.

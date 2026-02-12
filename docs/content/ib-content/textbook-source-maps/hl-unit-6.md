@@ -249,3 +249,15 @@ Final Prep: Complete the HL B4 Practice Paper.
 End-Unit Assessment: Mixed theory paper on ADTs, Trees, and Hashing.
 1
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: B4.1.2, B4.1.4, B4.1.7, B4.1.5.
+- Command-term alignment retained for linked lists, BSTs, and sets from HL structure evidence.
+- Hash-table content constrained to hashing, collisions, chaining/probing, and load-factor context.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded B4.1.1 ADT fundamentals and B4.1.3 linked-list implementation coding.
+- Excluded non-mapped B4.1.6 in textbook headings to preserve mapped route contract.
+
+## Ambiguities and Bounded Interpretation
+- Source documents index hash-table mechanics under `B4.1.6`, while mapped unit plan uses `B4.1.7`. Bounded interpretation: keep textbook section heading at mapped code `B4.1.7` but content mirrors documented hash-table mechanics only.

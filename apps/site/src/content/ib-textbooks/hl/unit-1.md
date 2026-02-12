@@ -2,16 +2,16 @@
 level: hl
 unitNumber: 1
 unitName: Advanced Architecture
-summary: Revise Advanced Architecture with exam-focused coverage of A1.1.3, A1.1.6, A1.4.1, A1.4.2, including exact command-term expectations and applied examples.
+summary: Revise Advanced Architecture with source-bounded coverage of A1.1.3, A1.1.6, A1.4.1, and A1.4.2 through clear comparisons, throughput reasoning, and translation-model evaluation.
 subtopics:
   - code: A1.1.3
     title: CPU vs GPU
   - code: A1.1.6
     title: Pipelining
   - code: A1.4.1
-    title: Translation (Compilers/Interpreters)
+    title: Translation (Compilers, Interpreters, JIT)
   - code: A1.4.2
-    title: Advanced translation (JIT, bytecode, virtual machines)
+    title: Virtual Machines and Bytecode Execution
 sourcePolicy: ib_content_md_first
 ---
 
@@ -19,106 +19,219 @@ sourcePolicy: ib_content_md_first
 
 | Term | Definition |
 | --- | --- |
-| CPU | The processor that executes instructions and controls most system operations. |
-| ALU | The arithmetic logic unit in the CPU that performs calculations and logical comparisons. |
-| control unit | The CPU component that decodes instructions and coordinates data movement. |
-| register | Very fast, very small CPU storage used during instruction execution. |
-| cache | Fast memory that stores frequently used data to reduce access time. |
-| fetch-decode-execute cycle | The repeated process of fetching an instruction, decoding it, then executing it. |
-| pipelining | Overlapping instruction stages to increase throughput. |
-| translator | Software that converts source code into another form for execution. |
+| latency | Time taken to complete one operation from start to finish. |
+| throughput | Amount of work completed per unit time. |
+| parallel processing | Running many operations at the same time, usually across many cores. |
+| pipelining | Overlapping instruction stages so different instructions are in different stages at once. |
+| compiler | Translator that converts source code to machine code ahead of execution. |
+| interpreter | Translator that reads and executes source statements during runtime. |
+| bytecode | Intermediate code executed by a virtual machine rather than directly by hardware CPU instructions. |
+| virtual machine (VM) | Software runtime that provides a consistent execution environment across different hardware/OS platforms. |
+| JIT compilation | Runtime compilation of frequently used bytecode into native machine code. |
+| SIMD | Single Instruction, Multiple Data; one instruction applied across many data elements in parallel. |
 
-## A1.1.3 CPU vs GPU
+## A1.1.3 CPU vs GPU Architecture
 
-### Exam requirement
+### Overview
 
-> **Command term:** Explain
->
-> Explain differences between CPU and GPU.
+<div class="reader-section-body reader-section-body--concept">
 
-### Core understanding
+**Command term:** Explain
 
-In this part of the unit, you need secure understanding of cpu vs gpu. Link it to hardware/system behavior, execution flow, performance, or translation. Component interaction and execution flow determine throughput, latency, and practical workload suitability.
+A strong explanation compares architecture and workload fit, not just "CPU is general" and "GPU is fast."
+
+| Aspect | CPU | GPU |
+| --- | --- | --- |
+| Core design | Few complex cores | Many simpler cores |
+| Best workload type | Branch-heavy, sequential logic | Highly parallel numeric work |
+| Strength | Low-latency control flow | High-throughput data processing |
+| Typical examples | Operating systems, browser tabs, transaction logic | 3D rendering, matrix operations, image processing |
+
+The core difference is coordination style: CPUs optimize decision-heavy execution, while GPUs optimize repeated operations over large datasets.
+
+</div>
 
 ### In real systems
 
-- Connect each concept to system performance, reliability, or compatibility.
-- Use precise technical language when describing cpu vs gpu.
-- Distinguish role, function, and trade-off rather than memorizing labels.
+<div class="reader-section-body reader-section-body--apply">
 
-### Worked snapshot
+A video-editing workstation usually uses both processors together:
 
-| Workload | Better fit | Why |
+- CPU handles timeline controls, file I/O, plugin coordination, and export orchestration.
+- GPU applies pixel-level effects to millions of values in parallel.
+- Final performance depends on matching task type to processor architecture.
+
+Misclassification causes bottlenecks. Sending branch-heavy logic to a GPU or large vector math to a CPU typically wastes hardware capacity.
+
+</div>
+
+### Worked example: workload split for a 4K frame pipeline
+
+<div class="reader-section-body reader-section-body--example">
+
+A 4K frame has roughly 8.3 million pixels. Applying the same color transform to each pixel is data-parallel, while choosing export presets is control-heavy.
+
+| Task | Better processor | Reason |
 | --- | --- | --- |
-| Word processing and system control | CPU | Low-latency branching and control logic |
-| Real-time image rendering | GPU | Thousands of parallel operations on similar data |
+| Choose codec and bitrate rules | CPU | Many branches and configuration checks |
+| Apply the same filter to 8.3M pixels | GPU | Same arithmetic repeated massively |
+| Merge render outputs into final file | CPU | File-system and process coordination |
+
+This is the kind of explanation expected: architecture differences linked to concrete workload behavior.
+
+</div>
 
 ## A1.1.6 Pipelining
 
-### Exam requirement
+### Overview
 
-> **Command term:** Describe
->
-> Describe pipelining in multi-core architectures.
+<div class="reader-section-body reader-section-body--concept">
 
-### Core understanding
+**Command term:** Describe
 
-In this part of the unit, you need secure understanding of pipelining. Link it to hardware/system behavior, execution flow, performance, or translation.
+Pipelining means instruction stages overlap. One instruction may be executing while another is decoding and a third is being fetched.
 
-### In real systems
+A simple pipeline view:
 
-- Connect each concept to system performance, reliability, or compatibility.
-- Use precise technical language when describing pipelining.
-- Distinguish role, function, and trade-off rather than memorizing labels.
+| Stage | Main action |
+| --- | --- |
+| Fetch | Read instruction from memory |
+| Decode | Interpret opcode and operands |
+| Execute | Perform ALU/control action |
+| Write-back | Store result |
 
-### Worked snapshot
+Description quality improves when you explicitly separate throughput and latency: pipelining increases completed instructions per time interval, but one instruction still passes through all stages.
 
-In a real deployment, pipelining should be justified against at least one clear trade-off (for example speed vs accuracy, throughput vs latency, or security vs usability).
+</div>
 
-## A1.4.1 Translation (Compilers/Interpreters)
+### Common misconceptions
 
-### What the command expects
+<div class="reader-section-body reader-section-body--apply">
 
-> **Command term:** Evaluate
->
-> Evaluate translation processes of interpreters and compilers.
+| Misconception | Accurate statement |
+| --- | --- |
+| "Pipelining makes each instruction faster." | It mainly improves total instructions completed over time. |
+| "More cores means no need for pipelining." | Core count and pipelining solve different performance limits. |
+| "Any instruction mix pipelines perfectly." | Data and control dependencies can create stalls. |
 
-### Key idea
+Pipeline design is an overlap strategy, not a guarantee of perfect parallel execution.
 
-Translation (Compilers/Interpreters) is treated as applied reasoning, not only a definition. Link it to hardware/system behavior, execution flow, performance, or translation.
+</div>
+
+### Worked trace: five instructions on a four-stage pipeline
+
+<div class="reader-section-body reader-section-body--example">
+
+Assume 4 stages (F, D, E, W) and 5 instructions with no hazards.
+
+| Cycle | I1 | I2 | I3 | I4 | I5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | F |  |  |  |  |
+| 2 | D | F |  |  |  |
+| 3 | E | D | F |  |  |
+| 4 | W | E | D | F |  |
+| 5 |  | W | E | D | F |
+| 6 |  |  | W | E | D |
+| 7 |  |  |  | W | E |
+| 8 |  |  |  |  | W |
+
+Sequential execution would take 20 stage steps; pipelining finishes in 8 cycles under these assumptions.
+
+</div>
+
+## A1.4.1 Translation (Compilers, Interpreters, JIT)
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Evaluate
+
+Evaluation requires a justified decision using criteria. For translators, the core criteria are runtime speed, portability, startup behavior, debugging flow, and distribution/security constraints.
+
+| Translator model | Strengths | Limitations |
+| --- | --- | --- |
+| Compiler | Fast execution, distributable binary | Compile step required, platform-specific outputs |
+| Interpreter | Fast iteration, easy step-by-step debugging | Slower repeated execution |
+| JIT-enabled runtime | Improves speed on hot paths while retaining portability | Warm-up cost, runtime complexity |
+
+A valid evaluation always ties criteria to a specific deployment context.
+
+</div>
 
 ### Applied in context
 
-- Connect each concept to system performance, reliability, or compatibility.
-- Use precise technical language when describing translation (compilers/interpreters).
-- Distinguish role, function, and trade-off rather than memorizing labels.
+<div class="reader-section-body reader-section-body--apply">
 
-### Quick worked example
+For a closed-source game engine shipped to one known platform, ahead-of-time compilation usually wins: strong runtime performance and binary-only distribution.
 
-| Translator type | Typical behavior | Trade-off |
-| --- | --- | --- |
-| Compiler | Translates full program before execution | Slower build, faster runtime |
-| Interpreter | Translates and runs line by line | Faster iteration, slower runtime |
+For data analysis scripts changed daily across mixed operating systems, interpreted execution often wins: rapid iteration and portability of source.
 
-## A1.4.2 Advanced translation (JIT, bytecode, virtual machines)
+For long-running cross-platform services, bytecode + VM + JIT is often a balanced choice: portable distribution with runtime optimization once execution hotspots are identified.
 
-### Required response
+</div>
 
-> **Command term:** Explain
->
-> Explain how JIT, bytecode interpreters, and virtual machines support cross-platform software.
+### Worked example: translator choice matrix
 
-### What this means
+<div class="reader-section-body reader-section-body--example">
 
-For this syllabus point, focus on using advanced translation (jit, bytecode, virtual machines) accurately in context. Link it to hardware/system behavior, execution flow, performance, or translation. This includes bytecode execution models and runtime optimization pathways such as JIT, in line with mapped curriculum coverage.
+Scenario: a school analytics tool must run on macOS and Windows, starts every morning, and processes 2 million log rows.
 
-### System context
+| Criterion | Compiler | Interpreter | VM + JIT |
+| --- | --- | --- | --- |
+| Cross-platform deployment | Low (per-target binaries) | High | High |
+| Startup speed | High | High | Medium (JIT warm-up) |
+| Long-run throughput | High | Medium | High after warm-up |
+| Ease of rapid updates | Medium | High | High |
 
-- Connect each concept to system performance, reliability, or compatibility.
-- Use precise technical language when describing advanced translation (jit, bytecode, virtual machines).
-- Distinguish role, function, and trade-off rather than memorizing labels.
+Bounded judgement: VM + JIT is strongest if runtime workload is large enough to benefit from optimization; interpreter-first may still be preferable for small daily workloads.
 
-### Compact example
+</div>
 
-A cross-platform language can compile to **bytecode**, run on a **virtual machine**, then apply **JIT** to frequently used sections so runtime speed improves while portability is preserved.
+## A1.4.2 Virtual Machines and Bytecode Execution
 
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Explain
+
+Virtual-machine execution inserts an abstraction layer between source code and hardware. Source is translated to bytecode, and the VM executes that bytecode consistently on different devices.
+
+Typical flow:
+
+1. Source code is translated to bytecode.
+2. VM reads bytecode instructions.
+3. Frequently used bytecode paths may be JIT-compiled to native machine code.
+
+This explains why one codebase can run across platforms while still improving speed at runtime.
+
+</div>
+
+### Applied in context
+
+<div class="reader-section-body reader-section-body--apply">
+
+| Deployment need | Why VM/bytecode helps |
+| --- | --- |
+| Same application on multiple OS targets | Runtime abstraction hides hardware/OS differences |
+| Frequent updates without rebuilding per architecture | Bytecode package can remain platform-independent |
+| Long-running services | JIT can optimize repeated execution paths |
+
+The trade-off is extra runtime overhead versus pure native code, especially during startup or before JIT optimization stabilizes.
+
+</div>
+
+### Worked example: portable release with runtime optimization
+
+<div class="reader-section-body reader-section-body--example">
+
+A classroom simulator is distributed once as bytecode and run on 120 devices across two operating systems.
+
+- Day 1 startup: VM interpretation dominates, so initial runs are moderate in speed.
+- Repeated use: hot methods (physics update and path checks) are JIT-compiled.
+- By week 2: average frame update time drops from 18 ms to 11 ms on identical inputs.
+
+The mechanism is not magical speed gain; it is portability first, then runtime specialization for repeatedly executed code.
+
+</div>

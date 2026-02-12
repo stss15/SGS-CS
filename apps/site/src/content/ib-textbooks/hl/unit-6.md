@@ -2,16 +2,16 @@
 level: hl
 unitNumber: 6
 unitName: Abstract Data Types
-summary: Revise Abstract Data Types with exam-focused coverage of B4.1.2, B4.1.4, B4.1.7, B4.1.5, including exact command-term expectations and applied examples.
+summary: Revise Abstract Data Types with source-bounded coverage of B4.1.2, B4.1.4, B4.1.7, and B4.1.5, focusing on structural trade-offs, traversal logic, hashing behavior, and set operations.
 subtopics:
   - code: B4.1.2
-    title: Linked Lists (Theory)
+    title: Evaluating Linked Lists
   - code: B4.1.4
-    title: BSTs (Binary Search Trees)
+    title: Binary Search Trees
   - code: B4.1.7
     title: Hash Tables
   - code: B4.1.5
-    title: Sets
+    title: Sets as an ADT
 sourcePolicy: ib_content_md_first
 ---
 
@@ -19,118 +19,222 @@ sourcePolicy: ib_content_md_first
 
 | Term | Definition |
 | --- | --- |
-| abstract data type | A data model defined by behavior, not by one concrete implementation. |
-| linked list | A node-based sequence where each node points to the next. |
-| binary search tree | A tree where left descendants are smaller and right descendants are larger than the parent. |
-| set | A collection of unique elements. |
-| hashing | Mapping a key to an index using a hash function. |
-| collision | When different keys map to the same hash index. |
-| rehashing | Rebuilding a hash structure, usually with larger capacity, to reduce collisions. |
-| interface | A contract specifying available operations without fixing implementation details. |
+| abstract data type (ADT) | Type defined by operations/behavior rather than one concrete implementation. |
+| linked list | Sequence of nodes connected by references, not contiguous indexes. |
+| node | Structure containing data and one or more references to other nodes. |
+| traversal | Systematic visit of every element/node in a structure. |
+| binary search tree (BST) | Tree where left descendants are smaller and right descendants are larger than parent. |
+| in-order traversal | Left, Node, Right visit order; yields sorted output for a valid BST. |
+| hash function | Function mapping a key to an index location. |
+| collision | Two different keys map to the same hash index. |
+| chaining | Collision strategy where each table slot stores a list of entries. |
+| load factor | Ratio of stored elements to table capacity, used to decide rehashing. |
 
-## B4.1.2 Linked Lists (Theory)
+## B4.1.2 Evaluating Linked Lists
 
-### Exam requirement
+### Overview
 
-> **Command term:** Evaluate
->
-> Evaluate linked lists.
+<div class="reader-section-body reader-section-body--concept">
 
-### Core understanding
+**Command term:** Evaluate
 
-In this part of the unit, you need secure understanding of linked lists (theory). Use it to explain data-structure behavior, operations, and implementation trade-offs.
+Evaluation requires trade-off judgement, not one-sided praise.
 
-### In real systems
+| Criterion | Linked list | Array |
+| --- | --- | --- |
+| Indexed access | Slow (`O(n)`) | Fast (`O(1)`) |
+| Insert near head | Fast (`O(1)` after pointer access) | Often slow due to shifting |
+| Memory layout | Dynamic node allocation | Contiguous block |
+| Cache locality | Usually weaker | Usually stronger |
 
-- Compare structures using operation cost and access pattern.
-- Separate interface behavior from implementation details.
-- Explain storage and update trade-offs in context.
+Linked lists are preferable when frequent insertion/deletion is more important than random index access.
 
-### Worked snapshot
+</div>
+
+### Applied in context
+
+<div class="reader-section-body reader-section-body--apply">
+
+For a music queue with frequent insertions at start and middle, linked representation can reduce data shifting.
+
+For a marks table that needs rapid `marks[500]` style access, array/list indexing is usually a better fit.
+
+An evaluation is complete only after matching structure behavior to use case behavior.
+
+</div>
+
+### Worked example: insertion cost comparison
+
+<div class="reader-section-body reader-section-body--example">
+
+Insert new element at position 2 in a 100,000-element collection.
+
+| Structure | Main work required |
+| --- | --- |
+| Linked list | Repoint two references after reaching insertion position |
+| Array | Shift nearly all subsequent elements one position |
+
+When insertion frequency is high and indexed lookup is low, linked lists can be more suitable despite slower random access.
+
+</div>
+
+## B4.1.4 Binary Search Trees
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Explain
+
+A BST explanation should include ordering rule and traversal outcomes.
+
+BST rule: `left < node < right`
+
+| Traversal | Order | Common use |
+| --- | --- | --- |
+| In-order | Left, Node, Right | Sorted output |
+| Pre-order | Node, Left, Right | Prefix tree serialization |
+| Post-order | Left, Right, Node | Safe delete-style processing |
+
+Balanced trees enable efficient search paths; skewed trees can degrade toward linear behavior.
+
+</div>
+
+### Common misconceptions
+
+<div class="reader-section-body reader-section-body--apply">
+
+- A BST is not automatically balanced.
+- In-order output is sorted only if BST property is maintained.
+- Insertion order directly affects tree shape and search depth.
+
+</div>
+
+### Worked trace: build and traverse a BST
+
+<div class="reader-section-body reader-section-body--example">
+
+Insert values: `[10, 5, 15, 3, 7]`
+
+Tree shape:
 
 ```text
-head -> [12|next] -> [25|next] -> [41|null]
+      10
+     /  \
+    5    15
+   / \
+  3   7
 ```
-Linked lists store nodes through references rather than contiguous array positions.
 
-## B4.1.4 BSTs (Binary Search Trees)
+| Traversal type | Sequence |
+| --- | --- |
+| In-order | `3, 5, 7, 10, 15` |
+| Pre-order | `10, 5, 3, 7, 15` |
+| Post-order | `3, 7, 5, 15, 10` |
 
-### Required response
-
-> **Command term:** Explain
->
-> Explain structures and properties of BSTs.
-
-### What this means
-
-For this syllabus point, focus on using bsts (binary search trees) accurately in context. Use it to explain data-structure behavior, operations, and implementation trade-offs. Search behavior depends on data ordering and structure, which affects both correctness and efficiency.
-
-### System context
-
-- Compare structures using operation cost and access pattern.
-- Separate interface behavior from implementation details.
-- Explain storage and update trade-offs in context.
-
-### Compact example
-
-```python
-# Minimal check for BSTs (Binary Search Trees)
-for item in sample_data:
-    process(item)
-```
-Use a short trace to confirm expected output for both normal and edge-case inputs.
+</div>
 
 ## B4.1.7 Hash Tables
 
-### Required response
+### Overview
 
-> **Command term:** Apply
->
-> Apply hash tables accurately in this unit context.
+<div class="reader-section-body reader-section-body--concept">
 
-### What this means
+**Command term:** Explain
 
-For this syllabus point, focus on using hash tables accurately in context. Use it to explain data-structure behavior, operations, and implementation trade-offs. Hashing maps keys to storage positions; collision handling and rehashing maintain correctness when clashes occur.
+Hash tables map keys to indexes for fast average lookup.
 
-### System context
+| Mechanism | Explanation |
+| --- | --- |
+| Hashing | Compute index from key |
+| Collision handling | Resolve same-index conflicts (for example chaining or probing) |
+| Rehashing | Resize and redistribute entries when load factor grows too high |
 
-- Compare structures using operation cost and access pattern.
-- Separate interface behavior from implementation details.
-- Explain storage and update trade-offs in context.
+Performance depends on distribution quality of hash function and collision strategy.
 
-### Compact example
+</div>
 
-```python
-# Minimal check for Hash Tables
-for item in sample_data:
-    process(item)
-```
-Use a short trace to confirm expected output for both normal and edge-case inputs.
+### Applied in context
 
-## B4.1.5 Sets
+<div class="reader-section-body reader-section-body--apply">
 
-### Exam requirement
+A user-session store may require near-constant-time lookup by session ID.
 
-> **Command term:** Construct
->
-> Construct and apply sets as an ADT.
+Hashing supports this pattern well, but with heavy collisions performance drops. Monitoring load factor and resizing at thresholds keeps lookup times stable.
 
-### Core understanding
+</div>
 
-In this part of the unit, you need secure understanding of sets. Use it to explain data-structure behavior, operations, and implementation trade-offs.
+### Worked example: modulo hashing with collisions
 
-### In real systems
+<div class="reader-section-body reader-section-body--example">
 
-- Compare structures using operation cost and access pattern.
-- Separate interface behavior from implementation details.
-- Explain storage and update trade-offs in context.
+Use table size `10` and hash `index = key % 10` for keys `42, 32, 52, 17`.
 
-### Worked snapshot
+| Key | Index | Result |
+| --- | --- | --- |
+| 42 | 2 | slot 2 |
+| 32 | 2 | collision at slot 2 |
+| 52 | 2 | collision at slot 2 |
+| 17 | 7 | slot 7 |
+
+With chaining, slot `2` stores linked entries `[42, 32, 52]`.
 
 ```python
-# Minimal check for Sets
-for item in sample_data:
-    process(item)
+keys = [42, 32, 52, 17]
+indices = [k % 10 for k in keys]  # [2, 2, 2, 7]
 ```
-Use a short trace to confirm expected output for both normal and edge-case inputs.
 
+</div>
+
+## B4.1.5 Sets as an ADT
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Construct and apply
+
+Set construction requires unique-element collections and correct operation use.
+
+| Operation | Meaning |
+| --- | --- |
+| Union | Elements in either set |
+| Intersection | Elements in both sets |
+| Difference | Elements in first set but not second |
+
+Sets are useful when uniqueness and membership checks are more important than order.
+
+</div>
+
+### The domain matrix
+
+<div class="reader-section-body reader-section-body--apply">
+
+| Scenario | Useful set operation |
+| --- | --- |
+| Students in either robotics or coding club | Union |
+| Students in both clubs | Intersection |
+| Students in robotics but not coding | Difference |
+
+</div>
+
+### Worked example: concrete set operations in Python
+
+<div class="reader-section-body reader-section-body--example">
+
+```python
+robotics = {"Ava", "Noah", "Liam", "Mia"}
+coding = {"Mia", "Liam", "Zoe"}
+
+both = robotics.intersection(coding)
+either = robotics.union(coding)
+only_robotics = robotics.difference(coding)
+```
+
+| Expression | Result |
+| --- | --- |
+| `both` | `{ 'Liam', 'Mia' }` |
+| `either` | `{ 'Ava', 'Noah', 'Liam', 'Mia', 'Zoe' }` |
+| `only_robotics` | `{ 'Ava', 'Noah' }` |
+
+</div>

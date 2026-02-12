@@ -233,3 +233,15 @@ Final Prep: Complete the HL A4 Supervised/Unsupervised practice paper.
 End-Unit Assessment: Paper-based exam on HL ML models and metrics.
 1
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped codes only: A4.3.4, A4.3.5, A4.3.6, A4.3.7.
+- Command-term alignment retained: Describe across all four mapped codes.
+- Content follows official code semantics: clustering, association rules, reinforcement learning, and genetic algorithms.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded A4.3.1-A4.3.3 (linear regression, classification, tuning).
+- Excluded A4.3.8+ neural-network topics.
+
+## Ambiguities and Bounded Interpretation
+- Legacy unit-plan wording referenced K-NN/decision trees and tuning labels under A4.3.4/A4.3.5. Bounded interpretation prioritized official HL code definitions from IB HL extension documents.

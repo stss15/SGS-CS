@@ -35,6 +35,8 @@ sourcePolicy: ib_content_md_first
 
 ## B1.1.1 Building a Problem Specification
 
+**Command term:** Construct
+
 ### Overview
 
 The IB expects you to **construct** a problem specification — meaning you must actually produce one, not just describe what one contains. A full specification defines what must be solved, under which constraints, with explicit inputs, outputs, and measurable success criteria.
@@ -77,6 +79,8 @@ Imagine your school canteen wants to move from a paper ordering system to a digi
 
 
 ## B1.1.2 The Four Pillars of Computational Thinking
+
+**Command term:** Describe
 
 ### Overview
 
@@ -122,6 +126,8 @@ Read each scenario and decide which pillar is being applied.
 
 ## B1.1.3 Applying Computational Thinking Across Domains
 
+**Command term:** Explain
+
 ### Overview
 
 The IB expects you to **explain** how computational thinking is used to solve problems across different areas of computer science. *Explain* is a higher-order command: you must connect each pillar to a concrete domain and show **why** it applies, not just **that** it does.
@@ -164,6 +170,8 @@ This table maps each pillar to four major CS domains. In the exam, you may be gi
 
 
 ## B1.1.4 Flowcharts and Tracing
+
+**Command term:** Trace
 
 ### Overview
 

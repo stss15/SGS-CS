@@ -2,16 +2,16 @@
 level: hl
 unitNumber: 11
 unitName: Advanced Networking
-summary: Revise Advanced Networking with exam-focused coverage of A2.1.5, A2.2.2, A2.3.4, A2.4.2, including exact command-term expectations and applied examples.
+summary: Revise Advanced Networking with source-bounded coverage of A2.1.5, A2.2.2, A2.3.4, and A2.4.2, focusing on layered communication, server roles, routing behavior, and network vulnerability analysis.
 subtopics:
   - code: A2.1.5
     title: TCP/IP Model
   - code: A2.2.2
-    title: Servers
+    title: Server Functions
   - code: A2.3.4
-    title: Routing (Static/Dynamic)
+    title: Static vs Dynamic Routing
   - code: A2.4.2
-    title: Network vulnerabilities
+    title: Network Vulnerabilities
 sourcePolicy: ib_content_md_first
 ---
 
@@ -19,104 +19,212 @@ sourcePolicy: ib_content_md_first
 
 | Term | Definition |
 | --- | --- |
-| protocol | A defined set of rules for communication between devices. |
-| topology | The structure or layout of a network. |
-| routing | Selecting and forwarding data along paths through a network. |
-| segmentation | Dividing a network into smaller sections to improve performance or security. |
-| firewall | A security control that filters network traffic based on rules. |
-| vulnerability | A weakness that could be exploited to compromise a system. |
-| countermeasure | A technical or procedural control used to reduce risk. |
-| TCP/IP | The protocol suite used for communication across the internet and many private networks. |
+| TCP/IP model | Four-layer networking model: Application, Transport, Internet, Network Interface. |
+| encapsulation | Process of adding protocol headers as data moves down network layers. |
+| DNS server | Resolves domain names to IP addresses. |
+| DHCP server | Dynamically assigns network configuration values such as IP address and gateway. |
+| proxy server | Intermediary server handling requests on behalf of clients. |
+| reverse proxy | Server in front of origin servers for load distribution, shielding, and TLS handling. |
+| static routing | Manually configured routes that do not adapt automatically. |
+| dynamic routing | Routes updated through router exchanges and protocol calculations. |
+| DDoS | Distributed denial-of-service traffic flood intended to exhaust target resources. |
+| man-in-the-middle (MitM) | Attack where adversary intercepts or alters communication between parties. |
 
 ## A2.1.5 TCP/IP Model
 
-### Exam requirement
+### Overview
 
-> **Command term:** Describe
->
-> Describe the function of the TCP/IP model.
+<div class="reader-section-body reader-section-body--concept">
 
-### Core understanding
+**Command term:** Describe
 
-In this part of the unit, you need secure understanding of tcp/ip model. Connect it to communication flow, data movement, reliability, and security controls.
+A complete description identifies each layer and its communication role.
 
-### In real systems
+| Layer | Core responsibility |
+| --- | --- |
+| Application | User-facing protocols and message formats |
+| Transport | End-to-end delivery behavior (segmentation, ports, reliability options) |
+| Internet | Logical addressing and packet routing across networks |
+| Network Interface | Local link transmission over physical/network media |
 
-- Relate design choices to latency, reliability, and security impact.
-- Differentiate architecture, addressing, and transmission concerns.
-- Explain why a chosen approach fits a specific network context.
+Description quality improves when you map one concrete protocol to each layer.
 
-### Worked snapshot
-
-In a real deployment, tcp/ip model should be justified against at least one clear trade-off (for example speed vs accuracy, throughput vs latency, or security vs usability).
-
-## A2.2.2 Servers
-
-### What the command expects
-
-> **Command term:** Describe
->
-> Describe the function of servers.
-
-### Key idea
-
-Servers is treated as applied reasoning, not only a definition. Connect it to communication flow, data movement, reliability, and security controls.
+</div>
 
 ### Applied in context
 
-- Relate design choices to latency, reliability, and security impact.
-- Differentiate architecture, addressing, and transmission concerns.
-- Explain why a chosen approach fits a specific network context.
+<div class="reader-section-body reader-section-body--apply">
 
-### Quick worked example
+For a web request:
 
-In a real deployment, servers should be justified against at least one clear trade-off (for example speed vs accuracy, throughput vs latency, or security vs usability).
+- Application: HTTP request formed.
+- Transport: TCP segments data.
+- Internet: IP addresses packet destination.
+- Network Interface: Ethernet/Wi-Fi frame carries bits over local medium.
 
-## A2.3.4 Routing (Static/Dynamic)
+The same payload changes wrapper at each layer through encapsulation.
 
-### What the command expects
+</div>
 
-> **Command term:** Explain
->
-> Explain how static and dynamic routing move data across LANs.
+### Worked example: protocol-to-layer mapping
 
-### Key idea
+<div class="reader-section-body reader-section-body--example">
 
-Routing (Static/Dynamic) is treated as applied reasoning, not only a definition. Connect it to communication flow, data movement, reliability, and security controls. Routing choices determine path efficiency, resilience, and adaptability to topology changes.
+| Protocol/identifier | Layer |
+| --- | --- |
+| HTTP, DNS, SMTP | Application |
+| TCP, UDP | Transport |
+| IP | Internet |
+| Ethernet, Wi-Fi MAC framing | Network Interface |
 
-### Applied in context
+If DNS fails, the fault is typically diagnosed at Application layer service level, not at physical transmission level.
 
-- Relate design choices to latency, reliability, and security impact.
-- Differentiate architecture, addressing, and transmission concerns.
-- Explain why a chosen approach fits a specific network context.
+</div>
 
-### Quick worked example
+## A2.2.2 Server Functions
 
-```text
-Static route: fixed path configured manually
-Dynamic route: path updated by routing protocol
-```
-Dynamic routing adapts to topology change; static routing prioritizes predictability.
+### Overview
 
-## A2.4.2 Network vulnerabilities
+<div class="reader-section-body reader-section-body--concept">
 
-### Exam requirement
+**Command term:** Describe
 
-> **Command term:** Describe
->
-> Describe common network vulnerabilities.
+Describing server function means linking server type to specific network role.
 
-### Core understanding
+| Server type | Function |
+| --- | --- |
+| DNS | Name resolution |
+| DHCP | Address configuration lease management |
+| File | Shared file storage and access control |
+| Mail | Send/receive/store email workflows |
+| Proxy | Intermediary request handling/caching/filtering |
+| Web | Host HTTP(S) content/services |
 
-In this part of the unit, you need secure understanding of network vulnerabilities. Connect it to communication flow, data movement, reliability, and security controls. Network behavior should be explained across structure, addressing, transport, and security layers.
+Descriptions should include purpose and operational effect.
+
+</div>
 
 ### In real systems
 
-- Relate design choices to latency, reliability, and security impact.
-- Differentiate architecture, addressing, and transmission concerns.
-- Explain why a chosen approach fits a specific network context.
+<div class="reader-section-body reader-section-body--apply">
 
-### Worked snapshot
+A corporate network often chains services:
 
-In a real deployment, network vulnerabilities should be justified against at least one clear trade-off (for example speed vs accuracy, throughput vs latency, or security vs usability).
+- DHCP assigns device address on join.
+- DNS resolves internal services.
+- Proxy enforces filtering/caching policy.
+- Web and file servers deliver applications and documents.
 
+Each server role contributes to availability, manageability, or security posture.
+
+</div>
+
+### Worked example: startup sequence for one client device
+
+<div class="reader-section-body reader-section-body--example">
+
+| Step | Service involved | Outcome |
+| --- | --- | --- |
+| 1 | DHCP | Device receives IP and gateway |
+| 2 | DNS | `portal.school.local` resolved to internal IP |
+| 3 | Proxy | Request routed through policy filter |
+| 4 | Web server | Portal page returned to client |
+
+This sequence illustrates distinct server responsibilities in one ordinary workflow.
+
+</div>
+
+## A2.3.4 Static vs Dynamic Routing
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Explain
+
+Explanation should compare route update behavior and fault response.
+
+| Routing type | Strength | Limitation |
+| --- | --- | --- |
+| Static | Predictable, low protocol overhead | No automatic adaptation to failures |
+| Dynamic | Automatic path recalculation and fault tolerance | Extra CPU/bandwidth and convergence complexity |
+
+The key difference is adaptation under topology change.
+
+</div>
+
+### Applied in context
+
+<div class="reader-section-body reader-section-body--apply">
+
+Small office with one internet link can use static routes safely.
+
+A multi-site enterprise with frequent path changes usually needs dynamic routing so routers exchange updates and select new paths when links fail.
+
+Explanation quality improves when scale and resilience needs are explicit.
+
+</div>
+
+### Worked trace: link failure behavior
+
+<div class="reader-section-body reader-section-body--example">
+
+Initial path from A to D: `A -> B -> C -> D`
+
+At `t0`, link `B-C` fails.
+
+| Routing mode | Next behavior |
+| --- | --- |
+| Static | Traffic remains pointed to broken path until admin edits route table |
+| Dynamic | Routers recompute and switch to `A -> E -> D` after update convergence |
+
+Dynamic routing reduces outage duration in changing networks.
+
+</div>
+
+## A2.4.2 Network Vulnerabilities
+
+### Overview
+
+<div class="reader-section-body reader-section-body--concept">
+
+**Command term:** Describe
+
+Describe vulnerabilities by attack mechanism and system impact.
+
+| Vulnerability type | Typical impact |
+| --- | --- |
+| DDoS | Service unavailable due to resource exhaustion |
+| MitM | Data interception or tampering in transit |
+| Phishing | Credential theft through deception |
+| SQL injection | Unauthorized database actions via unsanitized input |
+| XSS | Client-side script injection in trusted pages |
+| Zero-day exploit | Attack before vendor patch is available |
+
+Descriptions should remain concrete and technically specific.
+
+</div>
+
+### Common misconceptions
+
+<div class="reader-section-body reader-section-body--apply">
+
+- Different attacks can target different layers and trust boundaries.
+- High traffic volume is not the only risk; low-volume credential theft can be equally severe.
+- A vulnerability description is stronger when it includes how compromise occurs, not only attack name.
+
+</div>
+
+### Worked example: vulnerability impact table for one web platform
+
+<div class="reader-section-body reader-section-body--example">
+
+| Incident | Entry point | Immediate effect |
+| --- | --- | --- |
+| SQL injection on login form | Unsanitized query parameters | Unauthorized data read/write |
+| Phishing email to staff | Deceptive credential capture | Account takeover |
+| Botnet DDoS against public API | Massive distributed traffic flood | API outage for legitimate users |
+
+These cases show how vulnerability type determines both technical impact and response priority.
+
+</div>

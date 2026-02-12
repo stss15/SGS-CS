@@ -114,3 +114,15 @@ The HL Essay Masterclass
 Planning and writing 12-mark responses. Focus on the "Balanced Account" and referencing real-world examples.
 Final HW: Complete the "Master Evidence S
 ```
+
+## Coverage Decisions (2026-02-12 Rewrite)
+- Rewritten textbook coverage follows mapped route codes only: Paper 1, Internal Assessment, HL.
+- Content bounded to technical synthesis, research evidence handling, and strategic evaluation language from unit-plan context.
+- No additional syllabus-code sections were added in this unit.
+
+## Explicit Out-of-Scope Exclusions
+- Excluded unmapped subtopic expansion into specific A/B code teaching beyond case-study synthesis context.
+- Excluded prescriptive exam-question drills and revision-strategy coaching.
+
+## Ambiguities and Bounded Interpretation
+- `Paper 1`, `Internal Assessment`, and `HL` are local mapped labels rather than standard numeric syllabus codes in extracted IB_Content_MD files. Bounded interpretation followed mapped unit-plan contract and kept content student-facing and technically scoped.
