@@ -1,0 +1,210 @@
+---
+import type { UnitIndexFrontmatter, UnitPlanFrontmatter } from '@sgs/content-schema';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroPanel from './HeroPanel.astro';
+import { buildSyllabusRows, getFlashcardsHref } from '../lib/ib2027-unit-index';
+
+interface Props {
+  page: UnitIndexFrontmatter;
+  unitPlan: UnitPlanFrontmatter;
+}
+
+const { page, unitPlan } = Astro.props;
+
+const syllabusRows = buildSyllabusRows(unitPlan);
+const flashcardsHref = getFlashcardsHref(page.cards);
+const slides = page.resources || [];
+
+const formatList = (items: string[]): string => {
+  if (items.length === 0) {
+    return '';
+  }
+
+  if (items.length === 1) {
+    return items[0];
+  }
+
+  if (items.length === 2) {
+    return `${items[0]} and ${items[1]}`;
+  }
+
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+};
+
+const subTopicCodes = syllabusRows.map((row) => row.code);
+const subTopicNames = syllabusRows.map((row) => row.topic);
+const unitOverviewQuestion = unitPlan.introduction?.bigQuestion || `What will you learn in ${unitPlan.unitName}?`;
+const unitOverviewLead =
+  subTopicCodes.length > 0
+    ? `This unit covers ${subTopicCodes.length} IB Computer Science sub-topics: ${formatList(subTopicCodes)}.`
+    : 'This unit covers IB Computer Science syllabus content for this part of the course.';
+const unitOverviewFocus =
+  subTopicNames.length > 0
+    ? `The focus areas are ${formatList(subTopicNames)}.`
+    : 'You will build understanding and confidence with the key ideas in this unit.';
+
+const placeholderSections = [
+  {
+    id: 'student-activities',
+    title: 'Student Activities',
+    message: 'Student activities for this unit will be added here.'
+  },
+  {
+    id: 'assessment',
+    title: 'Assessment',
+    message: 'Assessment tasks for this unit will be added here.'
+  },
+  {
+    id: 'homework',
+    title: 'Homework',
+    message: 'Homework tasks for this unit will be added here.'
+  },
+  {
+    id: 'independent-tasks',
+    title: 'Independent Tasks',
+    message: 'Independent study tasks for this unit will be added here.'
+  }
+];
+---
+
+<BaseLayout
+  title={page.title}
+  description={page.description || 'IB unit resources.'}
+  extraStyles={['css/resource-style.css', 'css/unit.css', 'css/ib-unit-index.css']}
+>
+  <HeroPanel title={page.hero.title} />
+
+  <section class="unit-details ib-unit-plan-top">
+    <div class="ib-overview-shell">
+      <article class="content-box ib-overview-card">
+        <h2 class="content-title">
+          <i class="fa-solid fa-binoculars" aria-hidden="true"></i>
+          Unit Overview
+        </h2>
+        <p class="ib-big-question"><strong>{unitOverviewQuestion}</strong></p>
+        <p class="ib-overview-copy">{unitOverviewLead}</p>
+        <p class="ib-overview-copy">{unitOverviewFocus}</p>
+        <p class="ib-overview-copy ib-overview-note">
+          Use the table below to track exactly what you should know and what you should be able to do for each sub-topic.
+        </p>
+        {subTopicCodes.length > 0 && (
+          <ul class="ib-code-pills" aria-label="Sub-topic codes">
+            {subTopicCodes.map((code) => (
+              <li>{code}</li>
+            ))}
+          </ul>
+        )}
+      </article>
+    </div>
+
+    <article class="content-box">
+      <h2 class="content-title">
+        <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
+        Learning Objectives and Outcomes
+      </h2>
+      <p class="ib-table-intro">Use this table to track what you are learning and what you should be able to do by the end of each sub-topic.</p>
+
+      <div class="ib-table-wrap">
+        <table class="ib-spec-table">
+          <thead>
+            <tr>
+              <th scope="col">Code</th>
+              <th scope="col">What You Will Learn</th>
+              <th scope="col">What You Should Be Able To Do</th>
+            </tr>
+          </thead>
+          <tbody>
+            {syllabusRows.map((row) => (
+              <tr>
+                <td><strong>{row.code}</strong></td>
+                <td>{row.topic}</td>
+                <td>{row.expectedOutcome}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+
+  <section class="resource-section" id="textbook-reader">
+    <div class="resource-header">
+      <h2 class="resource-title">Textbook Reader</h2>
+      <div class="resource-line"></div>
+    </div>
+
+    <div class="resource-grid">
+      <a href="textbook/index.html" class="resource-btn">
+        <span class="resource-number"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
+        <span class="resource-info">
+          <span class="resource-name">Open Unit Textbook</span>
+          <span class="resource-type">Reader Template</span>
+        </span>
+        <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
+      </a>
+    </div>
+  </section>
+
+  <section class="resource-section" id="slide-decks">
+    <div class="resource-header">
+      <h2 class="resource-title">Slide Decks</h2>
+      <div class="resource-line"></div>
+    </div>
+
+    {slides.length > 0 ? (
+      <div class="resource-grid">
+        {slides.map((resource) => (
+          <a
+            href={resource.href}
+            class="resource-btn"
+            target={resource.target}
+            rel={resource.target === '_blank' ? 'noopener noreferrer' : undefined}
+          >
+            <span class="resource-number">
+              {resource.icon ? <i class={resource.icon} aria-hidden="true"></i> : (resource.number || '')}
+            </span>
+            <span class="resource-info">
+              <span class="resource-name">{resource.name}</span>
+              {resource.type && <span class="resource-type">{resource.type}</span>}
+            </span>
+            <i class={`fa-solid ${resource.target === '_blank' ? 'fa-arrow-up-right-from-square' : 'fa-arrow-right'} resource-arrow`} aria-hidden="true"></i>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="content-box ib-empty-box">
+        <p>Slide decks for this unit will be added here.</p>
+      </div>
+    )}
+  </section>
+
+  {placeholderSections.map((section) => (
+    <section class="resource-section" id={section.id}>
+      <div class="resource-header">
+        <h2 class="resource-title">{section.title}</h2>
+        <div class="resource-line"></div>
+      </div>
+      <div class="content-box ib-empty-box">
+        <p>{section.message}</p>
+      </div>
+    </section>
+  ))}
+
+  <section class="resource-section" id="revision">
+    <div class="resource-header">
+      <h2 class="resource-title">Revision</h2>
+      <div class="resource-line"></div>
+    </div>
+
+    <div class="resource-grid">
+      <a href={flashcardsHref} class="resource-btn">
+        <span class="resource-number"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+        <span class="resource-info">
+          <span class="resource-name">Flashcards</span>
+          <span class="resource-type">Quick retrieval practice</span>
+        </span>
+        <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
