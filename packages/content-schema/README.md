@@ -65,6 +65,7 @@ Typed content adapters and schema contracts for framework migration routes.
 - IGCSE legacy pages (`/igcse/**/*.html`):
   - route discovery via `getIgcseLegacyRoutes()` from `public/igcse/**/*.html`
   - source HTML passthrough via `getIgcseLegacyRouteHtml(routePath)` from `public/igcse/*`
+  - note: textbook routes (`/igcse/topic*/textbook`) are now Astro content-collection routes and are explicitly excluded from the legacy catch-all passthrough in `apps/site/src/pages/igcse/[...route].astro`
 - KS3 legacy pages (`/ks3/**/*.html`):
   - route discovery via `getKs3LegacyRoutes()` from `public/ks3/**/*.html`
   - source HTML passthrough via `getKs3LegacyRouteHtml(routePath)` from `public/ks3/*`

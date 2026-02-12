@@ -1,5 +1,50 @@
 # Changelog
 
+## 2026-02-12 - IGCSE Textbooks Astro Migration (Topics 1-10)
+
+### Route and Content Migration
+- Added Astro content collection schema for IGCSE textbooks in `apps/site/src/content/config.ts`:
+  - `topicNumber`, `topicName`, `summary`, `subtopics`, `sourcePolicy`
+- Added Astro route `apps/site/src/pages/igcse/[topic]/textbook.astro` for `/igcse/topicX/textbook`.
+- Updated `apps/site/src/pages/igcse/[...route].astro` to exclude `/igcse/topic*/textbook.html` from legacy passthrough and avoid route collisions.
+- Added generated textbook entries:
+  - `apps/site/src/content/igcse-textbooks/topic-1.md` ... `topic-10.md`
+
+### Pseudocode Highlighting
+- Added syllabus-aligned custom highlighter runtime:
+  - `src/static/js/igcse-pseudocode-highlighter.js`
+- Added reader styling support for non-Shiki pseudocode token classes and language chip:
+  - `src/static/css/reader.css`
+- Added `language-igcse-pseudocode` rendering contract on generated worked examples.
+- Applied assignment normalization rule for OCR variants (`¨`, `<-`) to `←`.
+
+### Toolchain
+- Added script suite in `scripts/igcse-textbook/`:
+  - `topic-map.mjs` (authoritative topic/subtopic/source mapping)
+  - `helpers.mjs` (canonical labels, extraction, normalization utilities)
+  - `build-source-map.mjs`
+  - `generate-topic-textbooks.mjs`
+  - `validate-textbook-coverage.mjs`
+  - `README.md` (usage, QA rules, source policy)
+- Added npm scripts in `package.json`:
+  - `igcse:textbook:source-map`
+  - `igcse:textbook:generate`
+  - `igcse:textbook:validate`
+
+### Source Maps and Coverage Logging
+- Added per-topic source map outputs:
+  - `docs/content/igcse/textbook-source-maps/topic-1.md` ... `topic-10.md`
+- Added migration QA log:
+  - `docs/content/igcse/textbook-source-maps/quality-log.md`
+
+### Route Alias Compatibility
+- Added `.html` alias targets for all new textbook routes in `meta/migration/wave2-routes.json`:
+  - `/igcse/topic1/textbook.html` ... `/igcse/topic10/textbook.html`
+
+### Coverage Notes
+- Topic heading labels and subtopic titles are aligned to existing website labels from `src/pages/igcse/topic*/index.njk`.
+- Topic 9 includes explicit mapping notes for 9.1/9.2/9.3 coverage under source hierarchy constraints.
+
 ## 2026-02-12 - IGCSE Index Follow-up: Specification Write-up + Carousel Revision UX
 
 ### IGCSE Index Structure
@@ -109,3 +154,101 @@
 - Standardised slide layouts: flex-centred sections, automatic `.slide-inner js-autofit` wrappers, and optional `.scrollable` escape hatch across KS3/IGCSE themes.
 - Updated KS3 and IGCSE slide decks (Year 7 Unit 2 L1-L8, Topic 4.1/4.2) and authoring templates to consume the shared config instead of inline initialisers.
 - Documented the sizing approach for AI agents (`docs/agent/reveal-slide-deck-sizing-guide.md`) to keep future decks consistent.
+
+## 2026-02-12 - IGCSE Topic 1 Textbook Style Reset
+
+### Content Rewrite
+- Rewrote `apps/site/src/content/igcse-textbooks/topic-1.md` from Chapter 1 subfiles and keyword source to match IB SL prose quality style (mixed prose, tables, worked calculations, misconception handling).
+- Removed legacy textbook template sections (`Unit Summary`, `Objectives and Outcomes`) from Topic 1 content body.
+- Kept canonical subtopic headings (`1.1`, `1.2`, `1.3`) while replacing rigid repeated section cadence with varied section architecture.
+- Removed Topic 1 pseudocode blocks and replaced with topic-appropriate arithmetic/representation worked examples.
+
+### Validation Rules Update
+- Updated `scripts/igcse-textbook/validate-textbook-coverage.mjs` to support the new writing model:
+  - requires pseudocode only for Topics 7 and 8
+  - removes mandatory `Overview / Applied Understanding / Worked Example` triad checks
+  - enforces at least one level-3 section per subtopic
+  - enforces no legacy `Unit Summary`/`Objectives and Outcomes` sections for migrated modern-style topics (currently Topic 1).
+
+### Deployment Notes
+- `npm run igcse:textbook:validate` passed after validator alignment.
+- `npm run framework:build` passed.
+- `firebase deploy --only hosting` completed successfully using current built output after `npm run deploy` failed due local ENOSPC during rebuild.
+
+## 2026-02-12 - IGCSE Topic 1 Pedagogical Depth Rewrite
+
+### Content Improvements
+- Reworked `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-1.md` to function as a revision bridge (between full textbook and short-form revision notes), not a compact cheat sheet.
+- Expanded 1.1 with full instructional flow:
+  - explicit 8-bit place-value table
+  - conversion method table
+  - dedicated coverage for binary addition, overflow, logical shifts
+  - two's-complement process in both directions (constructing and interpreting negatives).
+- Expanded 1.2/1.3 explanatory prose and method steps, including:
+  - character set vs encoding distinction
+  - variable-impact tables for sound/image quality vs file size
+  - formula-driven worked calculations with unit discipline
+  - compression-choice reasoning plus RLE worked example.
+
+### Verification and Release
+- `npm run igcse:textbook:validate` passed.
+- `npm run framework:build` passed.
+- `firebase deploy --only hosting` passed.
+
+## 2026-02-12 - IGCSE Topic 1 Interactive Delivery Pass
+
+### Interactive Textbook UX
+- Replaced static binary-operation rendering in `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-1.md` with embedded interactive widgets for:
+  - 8-bit binary addition + carry + overflow
+  - logical shifts with lost-bit feedback
+  - two's-complement conversion in both directions.
+- Added topic-specific runtime script:
+  - `/Users/StevenStewart/SGS-CSC REMIX/src/static/js/igcse-topic1-interactive.js`
+- Added reader-integrated widget styling:
+  - `/Users/StevenStewart/SGS-CSC REMIX/src/static/css/reader.css`
+- Loaded interactive runtime on Topic 1 textbook route only:
+  - `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/pages/igcse/[topic]/textbook.astro`
+
+### Verification and Release
+- `npm run igcse:textbook:validate` passed.
+- `npm run framework:build` passed.
+- `firebase deploy --only hosting` passed.
+
+## 2026-02-12 - IGCSE Topic 1 1.2/1.3 Coverage and Pedagogy Pass
+
+### Content and Delivery Updates
+- Reworked `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-1.md` section `1.2` and `1.3` to reduce repetitive section cadence and improve revision-bridge pedagogy.
+- Added fuller text coverage:
+  - character-set vs encoding clarity
+  - ASCII anchor-range strategy
+  - encode/decode worked examples.
+- Added fuller sound coverage:
+  - Nyquist explanation
+  - two-level worked size calculations (simple and exam scale)
+  - clearer variable-impact framing (rate, resolution, channels, duration).
+- Added fuller image coverage:
+  - 1/2/4/8/24-bit depth ladder
+  - RGB to hex linkage
+  - 4x4 bitmap walkthrough with explicit depth-size contrast.
+- Added fuller compression coverage:
+  - context-based rationale table
+  - lossless/lossy decision framing
+  - explicit RLE method walkthrough before interactive tool.
+
+### Interactive Enhancements
+- Extended `/Users/StevenStewart/SGS-CSC REMIX/src/static/js/igcse-topic1-interactive.js` with:
+  - `data-igcse-encoding-compare` (ASCII/UTF-8/UTF-16/UTF-32 size comparison)
+  - `data-igcse-sampling-demo` (waveform sampling visualiser with Nyquist status)
+  - richer 24-bit RGB/hex callout in bitmap widget.
+- Extended `/Users/StevenStewart/SGS-CSC REMIX/src/static/css/reader.css`:
+  - cleaner inline code styling for readability
+  - sampling visual component styles (`.igcse-wave*`).
+- Added Topic 2 handoff playbook for repeatable authoring:
+  - `/Users/StevenStewart/SGS-CSC REMIX/docs/content/igcse/textbook-source-maps/topic-2-authoring-playbook.md`
+
+### Verification and Deployment Status
+- `npm run igcse:textbook:validate` passed.
+- `npm run framework:build` passed.
+- `firebase deploy --only hosting` initially failed due Hosting storage quota (HTTP 429: exceeded quota).
+- Reduced live channel retained release count from 5 to 2.
+- `firebase deploy --only hosting` then passed.

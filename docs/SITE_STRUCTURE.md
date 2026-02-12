@@ -15,6 +15,17 @@
 - Shared styling for the new IGCSE index layout lives in `src/static/css/igcse-index.css` (with `resource-style.css` + `unit.css`).
 - Topic textbook placeholders live in `src/pages/igcse/topic*/textbook.njk` and use `src/templates/layouts/reader.njk`.
 
+## IGCSE Textbook Source Of Truth
+
+- Astro route (authoritative): `apps/site/src/pages/igcse/[topic]/textbook.astro`
+- Astro content collection entries: `apps/site/src/content/igcse-textbooks/topic-1.md` ... `topic-10.md`
+- Collection schema: `apps/site/src/content/config.ts` (`igcse-textbooks`)
+- Generation and QA scripts: `scripts/igcse-textbook/`
+- Source evidence maps: `docs/content/igcse/textbook-source-maps/topic-<n>.md`
+
+Legacy note:
+- `src/pages/igcse/topic*/textbook.njk` remains in place as non-authoritative legacy artifacts during migration.
+
 ## Generated Output
 
 - `public/`: Generated legacy output used as framework input (treat as build artifact; do not hand-edit).

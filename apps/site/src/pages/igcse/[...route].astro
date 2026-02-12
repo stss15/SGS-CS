@@ -8,10 +8,12 @@ interface IgcseLegacyPageProps {
 
 export async function getStaticPaths() {
   const routes = await getIgcseLegacyRoutes();
+  const textbookRoutePattern = /^\/igcse\/topic\d+\/textbook\.html$/i;
 
   return Promise.all(
     routes
       .filter((route) => route.routePath !== '/igcse/index.html')
+      .filter((route) => !textbookRoutePattern.test(route.routePath))
       .map(async (route) => ({
         params: {
           route: route.routePath.replace(/^\/igcse\//, '').replace(/\.html$/, '')

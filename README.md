@@ -58,3 +58,19 @@ And the skills under:
 - Blank textbook reader templates now exist at `src/pages/igcse/topic*/textbook.njk`.
 - Revision visuals now open in an in-page modal carousel (no standalone image-page navigation).
 - Intermediate menu pages were removed from `src/static/igcse/topic*/assessments.html` and `src/static/igcse/topic*/teaching-and-revision.html`; index pages now link directly to assessment files and revision artifacts.
+
+## IGCSE Textbooks (Astro Content Collection)
+
+- IGCSE textbook pages are now Astro-first and content-collection driven:
+  - Route: `apps/site/src/pages/igcse/[topic]/textbook.astro`
+  - Content: `apps/site/src/content/igcse-textbooks/topic-1.md` ... `topic-10.md`
+  - Collection schema: `apps/site/src/content/config.ts` (`igcse-textbooks`)
+- Legacy IGCSE catch-all route excludes textbook aliases so Astro is authoritative:
+  - `apps/site/src/pages/igcse/[...route].astro`
+- Legacy `.html` compatibility for textbook links is preserved through migration alias routes:
+  - `meta/migration/wave2-routes.json` includes `/igcse/topic1/textbook.html` ... `/igcse/topic10/textbook.html`
+- Textbook authoring/QA scripts:
+  - `npm run igcse:textbook:source-map -- --topic <1-10>`
+  - `npm run igcse:textbook:generate -- --overwrite true`
+  - `npm run igcse:textbook:validate`
+  - scripts live in `scripts/igcse-textbook/`

@@ -650,8 +650,9 @@ main.reader-main>* {
 .reader-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.95em;
-  background: color-mix(in srgb, var(--primary-color) 7%, white 93%);
-  border: 1px solid color-mix(in srgb, var(--primary-color) 14%, transparent);
+  background: color-mix(in srgb, var(--reader-accent) 10%, white 90%);
+  border: 1px solid color-mix(in srgb, var(--reader-accent) 28%, transparent);
+  color: color-mix(in srgb, var(--primary-color) 86%, black 14%);
   padding: 0.1em 0.35em;
   border-radius: 8px;
 }
@@ -689,6 +690,19 @@ main.reader-main>* {
   color: #8ba6d8;
 }
 
+.reader-content pre[data-language]:not(.astro-code)::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.42rem;
+  right: 0.55rem;
+  font-family: var(--reader-font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8ba6d8;
+}
+
 .reader-content pre.astro-code .line {
   display: block;
   line-height: 1.42;
@@ -704,6 +718,33 @@ main.reader-main>* {
   font-size: 0.92em;
   line-height: 1.42;
   white-space: pre;
+}
+
+.reader-content pre code .psc-keyword {
+  color: #6cb6ff;
+  font-weight: 700;
+}
+
+.reader-content pre code .psc-builtin {
+  color: #f2cc60;
+  font-weight: 700;
+}
+
+.reader-content pre code .psc-string {
+  color: #9be9a8;
+}
+
+.reader-content pre code .psc-number {
+  color: #ffb86c;
+}
+
+.reader-content pre code .psc-comment {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.reader-content pre code .psc-operator {
+  color: #c4b5fd;
 }
 
 .reader-content table {
@@ -822,6 +863,242 @@ main.reader-main>* {
 
 .reader-content .reader-callout strong {
   color: var(--primary-color);
+}
+
+/* Interactive topic widgets (IGCSE textbook) */
+.reader-content .igcse-widget {
+  margin: 1rem 0 1.2rem;
+  padding: 0.95rem 1rem 1rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 70%, transparent);
+  background: linear-gradient(140deg,
+      color-mix(in srgb, var(--primary-color) 4%, #ffffff 96%),
+      #ffffff 45%,
+      color-mix(in srgb, var(--reader-accent) 7%, #ffffff 93%));
+  box-shadow: 0 8px 18px rgba(12, 28, 52, 0.05);
+}
+
+.reader-content .igcse-widget__title {
+  margin: 0;
+  font-family: var(--reader-font-display);
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+.reader-content .igcse-widget__hint {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.94em;
+  color: var(--reader-muted);
+}
+
+.reader-content .igcse-widget__controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.reader-content .igcse-widget__controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 0.88em;
+}
+
+.reader-content .igcse-widget__controls :is(input, select) {
+  width: 100%;
+  min-height: 2.35rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 72%, transparent);
+  background: #ffffff;
+  color: var(--reader-ink);
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.reader-content .igcse-widget__controls :is(input, select):focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.reader-content .igcse-widget__board {
+  overflow-x: auto;
+}
+
+.reader-content .igcse-bit-matrix {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.15rem 0 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 68%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.reader-content .igcse-bit-matrix th,
+.reader-content .igcse-bit-matrix td {
+  padding: 0.42rem 0.36rem;
+  text-align: center;
+  border-bottom: 1px solid color-mix(in srgb, var(--reader-border) 42%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--reader-border) 28%, transparent);
+}
+
+.reader-content .igcse-bit-matrix th:first-child,
+.reader-content .igcse-bit-matrix td:first-child {
+  text-align: left;
+  padding-left: 0.58rem;
+  min-width: 138px;
+  font-family: var(--reader-font-display);
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.reader-content .igcse-bit-matrix tr:last-child td {
+  border-bottom: 0;
+}
+
+.reader-content .igcse-bit-matrix th:last-child,
+.reader-content .igcse-bit-matrix td:last-child {
+  border-right: 0;
+}
+
+.reader-content .igcse-bit-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.7rem;
+  min-height: 1.7rem;
+  padding: 0 0.25rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--primary-color) 24%, transparent);
+  background: color-mix(in srgb, var(--primary-color) 6%, #ffffff 94%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 700;
+}
+
+.reader-content .igcse-widget__result {
+  margin: 0.55rem 0 0;
+  padding: 0.52rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 60%, transparent);
+  background: color-mix(in srgb, var(--reader-tone-concept) 60%, #ffffff 40%);
+  font-size: 0.95em;
+}
+
+.reader-content .igcse-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0.52rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.reader-content .igcse-status--ok {
+  background: color-mix(in srgb, #1f9d65 12%, #ffffff 88%);
+  border: 1px solid color-mix(in srgb, #1f9d65 34%, transparent);
+  color: #186748;
+}
+
+.reader-content .igcse-status--warn {
+  background: color-mix(in srgb, #c24646 12%, #ffffff 88%);
+  border: 1px solid color-mix(in srgb, #c24646 35%, transparent);
+  color: #8f2c2c;
+}
+
+.reader-content .igcse-widget__mini-label {
+  margin: 0 0 0.4rem;
+  font-family: var(--reader-font-display);
+  font-size: 0.88em;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.reader-content .igcse-widget__split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.35rem;
+}
+
+.reader-content .igcse-pixel-grid {
+  --igcse-grid-cols: 8;
+  display: grid;
+  grid-template-columns: repeat(var(--igcse-grid-cols), 1fr);
+  gap: 2px;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 68%, transparent);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0f172a;
+  max-width: 360px;
+}
+
+.reader-content .igcse-pixel-cell {
+  aspect-ratio: 1 / 1;
+  min-width: 20px;
+}
+
+.reader-content .igcse-wave {
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 68%, transparent);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f9fcff 0%, #f2f7ff 100%);
+}
+
+.reader-content .igcse-wave__axis {
+  stroke: color-mix(in srgb, var(--reader-border) 85%, transparent);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 4;
+}
+
+.reader-content .igcse-wave__analogue {
+  stroke: #1f9d65;
+  stroke-width: 2.4;
+  fill: none;
+}
+
+.reader-content .igcse-wave__sampled {
+  stroke: #2f5fc3;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.reader-content .igcse-wave__dot {
+  fill: #2f5fc3;
+  stroke: #ffffff;
+  stroke-width: 1;
+}
+
+.reader-content .igcse-step-card {
+  border: 1px solid color-mix(in srgb, var(--reader-border) 62%, transparent);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 0.62rem 0.72rem;
+}
+
+.reader-content .igcse-step-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.96em;
+  color: var(--primary-color);
+}
+
+.reader-content .igcse-step-card ol,
+.reader-content .igcse-step-card ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.05rem;
+  font-size: 0.95em;
+}
+
+.reader-content .igcse-step-card li {
+  margin-bottom: 0.22rem;
 }
 
 /* ── Pages ──────────────────────────────────────────────────── */
@@ -1407,6 +1684,15 @@ body.reader-modal-open {
     width: min(560px, calc(100vw - 1.5rem));
     max-height: min(80vh, 760px);
     animation: reader-modal-in 0.2s var(--reader-ease) forwards;
+  }
+
+  .reader-content .igcse-widget__split {
+    grid-template-columns: 1fr;
+  }
+
+  .reader-content .igcse-bit-matrix th:first-child,
+  .reader-content .igcse-bit-matrix td:first-child {
+    min-width: 124px;
   }
 }
 
