@@ -1,5 +1,44 @@
 # Changelog
 
+## 2026-02-12 - IGCSE Topic Index Refactor (Topics 1-10)
+
+### IGCSE Index UX
+- Refactored `src/pages/igcse/topic1/index.njk` to `src/pages/igcse/topic10/index.njk` into a sectioned structure aligned with recent IB/Year 7 index patterns.
+- Removed "Arcade" naming from topic index titles/subtitles and standardized hero headings to topic names (for example, `1. Data Representation`).
+- Added consistent index sections across all 10 topics: `Specification Overview`, `Textbook`, `Student Activities`, `Assessments`, `Homework`, `Independent Tasks`, `Revision`.
+
+### Content Relocation
+- Moved assessment menu behavior onto topic indexes by linking directly to sub-topic assessments and end-of-unit tests, with explicit placeholders where assessments are not yet available.
+- Moved simulations/games/tools into `Independent Tasks`, preserving existing assets and thumbnail usage.
+- Moved teaching/revision visual links into each topic `Revision` section alongside flashcards.
+- Updated assessment page return links from `assessments.html` to `index.html#assessments`.
+
+### Templates and Styles
+- Extended `src/templates/layouts/arcade.njk` to support structured section rendering while preserving legacy card/resource rendering for non-refactored pages.
+- Added `independentTaskGrid` macro in `src/templates/components.njk` for image-based independent task cards.
+- Added `src/static/css/igcse-index.css` to style specification metadata and smaller 1x1 independent task cards.
+
+### New Topic Textbook Placeholders
+- Added blank textbook reader pages for topics 1-10:
+  - `src/pages/igcse/topic1/textbook.njk`
+  - `src/pages/igcse/topic2/textbook.njk`
+  - `src/pages/igcse/topic3/textbook.njk`
+  - `src/pages/igcse/topic4/textbook.njk`
+  - `src/pages/igcse/topic5/textbook.njk`
+  - `src/pages/igcse/topic6/textbook.njk`
+  - `src/pages/igcse/topic7/textbook.njk`
+  - `src/pages/igcse/topic8/textbook.njk`
+  - `src/pages/igcse/topic9/textbook.njk`
+  - `src/pages/igcse/topic10/textbook.njk`
+
+### Cleanup
+- Removed obsolete intermediate pages no longer needed by the sectioned index flow:
+  - `src/static/igcse/topic*/assessments.html`
+  - `src/static/igcse/topic*/teaching-and-revision.html`
+  - `src/pages/igcse/topic4/assessments.njk`
+  - `src/pages/igcse/topic4/teacher_toolkit.njk`
+  - `src/pages/igcse/topic8/teacher_toolkit.njk`
+
 ## 2026-01-15 - Major Refactor & Firebase Migration
 
 ### File Organization

@@ -49,3 +49,10 @@ Use:
 And the skills under:
 - `agents/skills/site-build-deploy/SKILL.md`
 - `agents/skills/site-content-edit/SKILL.md`
+
+## IGCSE Topic Index Pattern (2026-02)
+
+- `src/pages/igcse/topic1` to `src/pages/igcse/topic10` now use sectioned index pages rendered by `layouts/arcade.njk`.
+- Each topic index follows the same section order: `Specification Overview`, `Textbook`, `Student Activities`, `Assessments`, `Homework`, `Independent Tasks`, `Revision`.
+- Blank textbook reader templates now exist at `src/pages/igcse/topic*/textbook.njk`.
+- Intermediate menu pages were removed from `src/static/igcse/topic*/assessments.html` and `src/static/igcse/topic*/teaching-and-revision.html`; index pages now link directly to assessment files and revision artifacts.

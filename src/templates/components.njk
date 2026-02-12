@@ -73,3 +73,28 @@
     {% endfor %}
 </div>
 {% endmacro %}
+
+{% macro independentTaskGrid(items=[], basePath='./') %}
+<div class="activity-grid independent-grid">
+    {% for item in items %}
+        <a href="{{ item.href }}" class="activity-card independent-card {% if not item.image %}no-image{% endif %}"
+            {% if item.target %}target="{{ item.target }}"{% if item.target == '_blank' %} rel="noopener"{% endif %}{% endif %}>
+            {% if item.image %}
+                {% set imageSrc = item.image %}
+                {% if item.image.indexOf('/') != 0 and item.image.indexOf('http') != 0 and item.image.indexOf('//') != 0 %}
+                    {% set imageSrc = basePath ~ item.image %}
+                {% endif %}
+                <img src="{{ imageSrc }}" alt="{{ item.alt | default(item.title) }}" class="activity-thumb">
+                <div class="activity-info-overlay">
+                    <span class="activity-label">{{ item.title }}</span>
+                    {% if item.subtitle %}<span class="igcse-task-type">{{ item.subtitle }}</span>{% endif %}
+                </div>
+            {% else %}
+                <span class="activity-number"><i class="{{ item.icon | default('fa-solid fa-cube') }}"></i></span>
+                <span class="activity-label">{{ item.title }}</span>
+                {% if item.subtitle %}<span class="igcse-task-type">{{ item.subtitle }}</span>{% endif %}
+            {% endif %}
+        </a>
+    {% endfor %}
+</div>
+{% endmacro %}

@@ -9,6 +9,12 @@
 - `src/data`: Listing/topic data consumed during rendering.
 - `src/printables`: LaTeX sources for printable PDFs generated into `public/` during build.
 
+## IGCSE Index Source
+
+- Sectioned topic indexes live in `src/pages/igcse/topic*/index.njk` and render via `src/templates/layouts/arcade.njk`.
+- Shared styling for the new IGCSE index layout lives in `src/static/css/igcse-index.css` (with `resource-style.css` + `unit.css`).
+- Topic textbook placeholders live in `src/pages/igcse/topic*/textbook.njk` and use `src/templates/layouts/reader.njk`.
+
 ## Generated Output
 
 - `public/`: Generated legacy output used as framework input (treat as build artifact; do not hand-edit).

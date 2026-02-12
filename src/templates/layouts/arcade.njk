@@ -1,27 +1,78 @@
 {% extends "layouts/base.njk" %}
 {% import "../components.njk" as ui %}
 
-{% block content %}
-    {% if cards %}{{ ui.cardGrid(cards, basePath) }}{% endif %}
+{% set hasStructuredSections = specification or (textbookResources and textbookResources.length) or (studentActivitiesResources and studentActivitiesResources.length) or (assessmentResources and assessmentResources.length) or (homeworkResources and homeworkResources.length) or (independentTasks and independentTasks.length) or (revisionResources and revisionResources.length) %}
 
-    {% if resources %}
-        <div class="resource-section">
+{% macro resourceSection(title, items, sectionId='') %}
+    {% if items and items.length %}
+        <div class="resource-section" {% if sectionId %}id="{{ sectionId }}"{% endif %}>
             <div class="resource-header">
-                <h2 class="resource-title">{{ resourcesTitle | default('Teacher Resources') }}</h2>
+                <h2 class="resource-title">{{ title }}</h2>
                 <div class="resource-line"></div>
             </div>
-            {{ ui.resourceGrid(resources, basePath) }}
+            {{ ui.resourceGrid(items, basePath) }}
         </div>
     {% endif %}
+{% endmacro %}
 
-    {% if resourcesSecondary %}
-        <div class="resource-section">
-            <div class="resource-header">
-                <h2 class="resource-title">{{ resourcesSecondaryTitle | default('Teacher Resources') }}</h2>
-                <div class="resource-line"></div>
+{% block content %}
+    {% if hasStructuredSections %}
+        {% if specification %}
+            <div class="unit-details igcse-specification">
+                <div class="content-box">
+                    <h2 class="content-title"><i class="fa-solid fa-book-open"></i> Specification Overview</h2>
+                    {% if specification.examCode %}
+                        <p class="igcse-specification-meta">{{ specification.examCode }}</p>
+                    {% endif %}
+                    {% if specification.intro %}
+                        <p class="igcse-specification-intro">{{ specification.intro }}</p>
+                    {% endif %}
+                </div>
             </div>
-            {{ ui.resourceGrid(resourcesSecondary, basePath) }}
-        </div>
+
+            {% if specification.sections %}
+                {{ resourceSection('Specification Sections', specification.sections, 'specification') }}
+            {% endif %}
+        {% endif %}
+
+        {{ resourceSection('Textbook', textbookResources, 'textbook') }}
+        {{ resourceSection('Student Activities', studentActivitiesResources, 'student-activities') }}
+        {{ resourceSection('Assessments', assessmentResources, 'assessments') }}
+        {{ resourceSection('Homework', homeworkResources, 'homework') }}
+
+        {% if independentTasks %}
+            <div class="resource-section" id="independent-tasks">
+                <div class="resource-header">
+                    <h2 class="resource-title">Independent Tasks</h2>
+                    <div class="resource-line"></div>
+                </div>
+                {{ ui.independentTaskGrid(independentTasks, basePath) }}
+            </div>
+        {% endif %}
+
+        {{ resourceSection('Revision', revisionResources, 'revision') }}
+    {% else %}
+        {% if cards %}{{ ui.cardGrid(cards, basePath) }}{% endif %}
+
+        {% if resources %}
+            <div class="resource-section">
+                <div class="resource-header">
+                    <h2 class="resource-title">{{ resourcesTitle | default('Teacher Resources') }}</h2>
+                    <div class="resource-line"></div>
+                </div>
+                {{ ui.resourceGrid(resources, basePath) }}
+            </div>
+        {% endif %}
+
+        {% if resourcesSecondary %}
+            <div class="resource-section">
+                <div class="resource-header">
+                    <h2 class="resource-title">{{ resourcesSecondaryTitle | default('Teacher Resources') }}</h2>
+                    <div class="resource-line"></div>
+                </div>
+                {{ ui.resourceGrid(resourcesSecondary, basePath) }}
+            </div>
+        {% endif %}
     {% endif %}
 
     {{ content | safe }}
