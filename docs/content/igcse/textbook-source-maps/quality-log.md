@@ -261,3 +261,37 @@
    - `src/pages/igcse/topic3/index.njk`
 9. Extended validator modern-style enforcement to include Topic 3:
    - `scripts/igcse-textbook/validate-textbook-coverage.mjs`
+
+## Revision 10 Findings (Topic 3.1 Scope Correction Pass)
+
+- Date: 2026-02-13
+- Trigger: feedback that Topic 3 textbook should currently include authored content for `3.1` only, with chapter links shown for `3.1` to `3.4`.
+
+### Changes Applied
+
+1. Replaced Topic 3 textbook body with a `3.1`-only authoring pass in:
+   - `apps/site/src/content/igcse-textbooks/topic-3.md`
+2. Removed early draft content for `3.2`, `3.3`, `3.4`, and `3.5` from the Topic 3 textbook body.
+3. Removed pseudocode blocks from Topic 3 textbook content to keep scope faithful to 3.1 architecture learning goals.
+4. Re-grounded 3.1 delivery to chapter/syllabus skills with:
+   - register and bus tracing language
+   - fetch-decode-execute sequencing
+   - performance trade-off framing
+   - embedded-system classification guidance.
+5. Added an inline SVG abstraction for FDE flow to improve visual explanation without introducing extra runtime complexity.
+6. Updated Topic 3 index textbook resources to chapter links `3.1` to `3.4` in:
+   - `src/pages/igcse/topic3/index.njk`
+7. Updated chapter-route generation and fallback handling in:
+   - `apps/site/src/pages/igcse/[topic]/textbook/[chapter].astro`
+   to ensure Topic 3 chapter paths exist and un-authored chapters show fallback content cleanly.
+8. Added `.html` alias coverage for Topic 3 chapter routes in:
+   - `meta/migration/wave2-routes.json`
+
+### Verification Snapshot
+
+- `npm run framework:build` passed.
+- Generated chapter routes include:
+  - `/igcse/topic3/textbook/3-1/index.html`
+  - `/igcse/topic3/textbook/3-2/index.html`
+  - `/igcse/topic3/textbook/3-3/index.html`
+  - `/igcse/topic3/textbook/3-4/index.html`

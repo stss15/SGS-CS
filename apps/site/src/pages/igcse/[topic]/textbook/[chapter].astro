@@ -23,7 +23,6 @@ interface MarkdownSection {
 }
 
 const KEY_TERMS_HEADING = 'Key Terms and Definitions';
-
 async function renderMarkdownToHtml(markdown: string) {
   const rendered = await unified()
     .use(remarkParse)
@@ -62,16 +61,24 @@ function findChapterSection(sections: MarkdownSection[], chapterCode: string) {
 }
 
 export async function getStaticPaths() {
-  const textbookEntries = await getCollection(
-    'igcse-textbooks',
-    ({ data }) => data.topicNumber === 1 || data.topicNumber === 2
+  const allowedChapterCodesByTopic: Record<number, string[]> = {
+    1: ['1.1', '1.2', '1.3'],
+    2: ['2.1', '2.2', '2.3'],
+    3: ['3.1', '3.2', '3.3', '3.4']
+  };
+
+  const textbookEntries = await getCollection('igcse-textbooks', ({ data }) =>
+    [1, 2, 3].includes(data.topicNumber)
   );
 
   return textbookEntries.flatMap((entry) => {
     const topicNumber = entry.data.topicNumber;
     const topic = `topic${topicNumber}`;
+    const allowedChapterCodes = allowedChapterCodesByTopic[topicNumber] || [];
 
-    return entry.data.subtopics.map((subtopic) => {
+    return entry.data.subtopics
+      .filter((subtopic) => allowedChapterCodes.includes(subtopic.code))
+      .map((subtopic) => {
       const chapterCode = subtopic.code;
       const chapterSlug = chapterCode.replace('.', '-');
 
@@ -101,9 +108,11 @@ const keyTermsSection = textbookSections.find(
   (section) => section.heading.toLowerCase() === KEY_TERMS_HEADING.toLowerCase()
 );
 const chapterSection = findChapterSection(textbookSections, chapterCode);
-const chapterMarkdown = [keyTermsSection?.markdown, chapterSection?.markdown]
-  .filter((section): section is string => Boolean(section))
-  .join('\n\n');
+const chapterMarkdown = chapterSection
+  ? [keyTermsSection?.markdown, chapterSection.markdown]
+      .filter((section): section is string => Boolean(section))
+      .join('\n\n')
+  : '';
 const chapterHtml = chapterMarkdown ? await renderMarkdownToHtml(chapterMarkdown) : '';
 const availableChapters = textbookEntry?.data.subtopics || [];
 ---

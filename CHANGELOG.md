@@ -346,3 +346,23 @@
 - `firebase deploy --only hosting` initially failed due Hosting storage quota (HTTP 429: exceeded quota).
 - Reduced live channel retained release count from 5 to 2.
 - `firebase deploy --only hosting` then passed.
+
+## 2026-02-13 - IGCSE Topic 3.1 Scope Correction and Chapter Routing
+
+### Content Scope Fix
+- Reworked `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-3.md` to keep only `## 3.1 Computer Architecture` textbook content in this pass.
+- Removed Topic 3 textbook body sections for `3.2`, `3.3`, `3.4`, and `3.5` pending later authoring passes.
+- Removed topic-inappropriate pseudocode usage from Topic 3 textbook content and retained source-grounded architecture coverage only.
+- Added a syllabus/chapter-aligned 3.1 rewrite with mixed delivery (prose, process tables, memory read/write sequence cards, and an inline SVG abstraction of FDE flow).
+
+### Navigation and Route Updates
+- Updated Topic 3 textbook cards in `/Users/StevenStewart/SGS-CSC REMIX/src/pages/igcse/topic3/index.njk` to chapter links:
+  - `/igcse/topic3/textbook/3-1.html`
+  - `/igcse/topic3/textbook/3-2.html`
+  - `/igcse/topic3/textbook/3-3.html`
+  - `/igcse/topic3/textbook/3-4.html`
+- Updated chapter route generation in `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/pages/igcse/[topic]/textbook/[chapter].astro` to include Topic 3 chapter paths and prevent key-terms-only rendering when a chapter section is missing.
+- Added Topic 3 chapter aliases to `/Users/StevenStewart/SGS-CSC REMIX/meta/migration/wave2-routes.json` for `.html` compatibility.
+
+### Verification
+- `npm run framework:build` passed after route-scope fix in `getStaticPaths`.
