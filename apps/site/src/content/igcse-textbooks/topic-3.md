@@ -58,6 +58,43 @@ sourcePolicy: igcse_textbook_then_syllabus_then_slides
 | organic LED (OLED) | Display technology where organic layers emit light directly. |
 | inkjet printer | Printer that sprays liquid ink droplets to form output. |
 | laser printer | Printer using charged toner and drum-based electrostatic process. |
+| primary memory | Memory directly addressable by the CPU (RAM and ROM). |
+| secondary storage | Non-volatile storage not directly addressable by the CPU, used for long-term data retention. |
+| random access memory (RAM) | Volatile primary memory used for active programs and data currently in use. |
+| read-only memory (ROM) | Non-volatile primary memory storing fixed start-up instructions such as BIOS/firmware data. |
+| dynamic RAM (DRAM) | RAM built from transistors and capacitors that must be refreshed frequently. |
+| static RAM (SRAM) | RAM built with flip-flop circuits; faster than DRAM and commonly used for cache. |
+| volatile | Describes memory that loses contents when power is removed. |
+| non-volatile | Describes memory/storage that keeps contents when power is removed. |
+| hard disk drive (HDD) | Magnetic storage using spinning platters and moving read-write heads. |
+| solid state drive (SSD) | Storage using flash cells with no moving parts, offering faster access and lower latency. |
+| optical storage | Storage using laser technology to read/write pits and lands on disc media. |
+| latency | Delay before requested data can be accessed, such as rotational delay on HDD. |
+| fragmentation | File data split across non-adjacent sectors, increasing access time on HDD. |
+| virtual memory | Technique that uses swap space on HDD/SSD to extend usable memory beyond physical RAM. |
+| paging | Moving fixed-size blocks (pages) of data between RAM and secondary storage. |
+| disk thrashing | Excessive swapping that causes heavy disk activity and very poor system performance. |
+| thrash point | Stage where the system spends so much time swapping that normal execution nearly stops. |
+| cloud storage | Remote data storage on off-site servers accessed through a network/Internet connection. |
+| data redundancy | Storing copies of data across multiple locations/servers to reduce single-point failure risk. |
+| public cloud | Cloud environment where customer and provider are separate organisations. |
+| private cloud | Cloud environment operated within an organisation's own controlled infrastructure. |
+| hybrid cloud | Mixed model where some data is held privately and some is stored in public cloud services. |
+| network interface card (NIC) | Hardware component required for a device to connect to a network. |
+| wireless NIC (WNIC) | Network interface that connects wirelessly, typically using an antenna and radio transmission. |
+| media access control (MAC) address | 48-bit hexadecimal hardware identifier linked to a NIC. |
+| universally administered address (UAA) | Manufacturer-assigned MAC address set at production time. |
+| locally administered address (LAA) | MAC address value modified locally by software/administrator. |
+| internet protocol (IP) address | Logical address used for identification and routing across networks. |
+| IPv4 | 32-bit IP format written as four denary octets (dot-decimal notation). |
+| IPv6 | 128-bit IP format written in hexadecimal groups separated by colons. |
+| private IP address | Address used inside a local network, not globally unique on the public Internet. |
+| public IP address | Internet-facing address assigned by an ISP and globally unique at that moment. |
+| static IP address | IP address that stays fixed for a device/service. |
+| dynamic IP address | IP address that can change when the device reconnects. |
+| dynamic host configuration protocol (DHCP) | Service/protocol that automatically assigns IP configuration. |
+| router | Device that forwards packets between different networks and directs traffic by IP rules. |
+| switch | Device that forwards data within a network using destination MAC addresses. |
 
 ## 3.1 Computer Architecture
 
@@ -168,6 +205,11 @@ That is exactly why fetch-decode-execute sits at the heart of this subtopic.
 
 That sequence is short enough to memorise and detailed enough for high-mark "describe" questions.
 
+<figure>
+  <img src="/igcse/topic3/3.1 images/fde cycle.png" alt="Fetch-decode-execute cycle flow showing instruction movement through registers and control stages." loading="lazy" decoding="async" />
+  <figcaption>FDE cycle visual: one instruction moving through fetch, decode, and execute stages.</figcaption>
+</figure>
+
 </div>
 
 ### Performance factors: avoid the "clock speed only" mistake
@@ -182,6 +224,11 @@ That sequence is short enough to memorise and detailed enough for high-mark "des
 | Bus width | More bits moved each cycle | Needs matching architecture to benefit fully |
 
 A strong exam answer compares at least two factors and includes a limitation, not just a benefit.
+
+<figure>
+  <img src="/igcse/topic3/3.1 images/clock, multi-core cahce.png" alt="CPU performance factors including clock speed, core count, and cache effects." loading="lazy" decoding="async" />
+  <figcaption>Performance factors often examined together: clock speed, cores, and cache.</figcaption>
+</figure>
 
 </div>
 
@@ -366,6 +413,11 @@ Output devices either show information or create physical effects.
 | physical action | actuator, speaker | movement or sound output |
 
 <figure>
+  <img src="/igcse/topic3/3.2 images/3d printing.png" alt="3D printing process building objects layer by layer from digital design data." loading="lazy" decoding="async" />
+  <figcaption>3D printing as an output workflow: digital model to physical object.</figcaption>
+</figure>
+
+<figure>
   <img src="/igcse/topic3/3.2 images/inkjet vs laser.png" alt="Comparison between inkjet and laser printing methods." loading="lazy" decoding="async" />
   <figcaption>Inkjet vs laser: mechanism and best-fit use case.</figcaption>
 </figure>
@@ -464,5 +516,322 @@ Before finalising an answer, check four things:
 - you explained a mechanism (not only a label)
 - you gave a context-based reason for suitability
 - where relevant, you distinguished monitoring from control.
+
+</div>
+
+## 3.3 Data Storage
+
+### Read the command word first: memory or storage?
+
+<div class="reader-section-body reader-section-body--concept">
+
+Many 3.3 errors come from mixing up two ideas that sound similar but are examined differently.
+
+| If the question says... | Your answer should focus on... | Typical language examiners expect |
+| --- | --- | --- |
+| memory | CPU-accessible working area | RAM, ROM, volatile, start-up, cache |
+| storage | long-term data retention | HDD, SSD, optical, cloud, backup |
+
+This one distinction instantly improves answer precision and prevents vague responses.
+
+<figure>
+  <img src="/igcse/topic3/3.3 images/cpu to secondary storage.png" alt="Relationship between CPU, primary memory, and secondary storage devices." loading="lazy" decoding="async" />
+  <figcaption>CPU access path: primary memory is direct, secondary storage is indirect via system management.</figcaption>
+</figure>
+
+</div>
+
+### Primary memory in context: why systems need both RAM and ROM
+
+<div class="reader-section-body reader-section-body--apply">
+
+Primary memory is directly addressable by the CPU. In syllabus terms, that means <strong>RAM</strong> and <strong>ROM</strong> each have a distinct job.
+
+| Feature | RAM | ROM |
+| --- | --- | --- |
+| Volatility | volatile | non-volatile |
+| Mutability | read/write | read-only in normal use |
+| Typical purpose | active programs and working data | boot/start-up instructions and fixed firmware |
+| What happens at power off? | contents lost | contents retained |
+
+<p class="reader-callout"><strong>Exam framing:</strong> when asked "why both are needed," explain that ROM enables start-up, while RAM provides editable workspace during execution.</p>
+
+<figure>
+  <img src="/igcse/topic3/3.3 images/ram vs rom.png" alt="Visual comparison between RAM and ROM characteristics." loading="lazy" decoding="async" />
+  <figcaption>RAM vs ROM: startup reliability plus runtime flexibility.</figcaption>
+</figure>
+
+</div>
+
+### DRAM and SRAM: same purpose, different trade-offs
+
+<div class="reader-section-body reader-section-body--example">
+
+The chapter treats DRAM and SRAM as a performance trade-off question rather than a memorisation list.
+
+| Aspect | DRAM | SRAM |
+| --- | --- | --- |
+| Bit storage method | transistor + capacitor | flip-flop circuit |
+| Refresh required | yes | no |
+| Typical speed (chapter values) | about 60 ns access | about 25 ns access |
+| Cost per capacity | lower cost, higher capacity | higher cost, lower capacity |
+| Typical use | main memory | CPU cache |
+
+That is why cache uses SRAM (speed), while large system RAM is usually DRAM (capacity and cost).
+
+</div>
+
+### Secondary storage technologies: magnetic, solid-state, optical
+
+<div class="reader-section-body reader-section-body--concept">
+
+3.3 expects you to identify each technology family, explain how it stores data, and give valid examples.
+
+| Technology family | How data is represented | Typical media/examples | Strength | Limitation |
+| --- | --- | --- | --- | --- |
+| magnetic | magnetic patterns on tracks/sectors | HDD, removable HDD | large capacity, cost-effective | mechanical latency and wear |
+| solid state | electrical charge states in flash cells | SSD, USB flash drive | fast access, no moving parts | endurance/write-cycle limits |
+| optical | laser reads pits and lands | CD, DVD, Blu-ray | useful for distribution/backup | lower write speed and lower convenience than SSD |
+
+<figure>
+  <img src="/igcse/topic3/3.3 images/hdd vs sdd.png" alt="Comparison of hard disk drive and solid state drive." loading="lazy" decoding="async" />
+  <figcaption>HDD vs SSD: mechanical access versus flash-cell access.</figcaption>
+</figure>
+
+<figure>
+  <img src="/igcse/topic3/3.3 images/cd dvd blu ray.png" alt="CD, DVD, and Blu-ray optical storage comparison." loading="lazy" decoding="async" />
+  <figcaption>Optical media progression: CD to DVD to Blu-ray.</figcaption>
+</figure>
+
+</div>
+
+### HDD performance language you should be able to write precisely
+
+<div class="reader-section-body reader-section-body--apply">
+
+For magnetic storage questions, this wording is high value:
+
+- data is organised into <strong>tracks</strong> and <strong>sectors</strong>
+- sector-level targeting is <strong>direct access</strong>
+- data inside a sector is read <strong>sequentially</strong>
+- <strong>latency</strong> is rotational/positioning delay before data reaches the read-write head.
+
+The chapter also links long-term performance loss to <strong>fragmentation</strong> (file sectors becoming non-adjacent), with <strong>defragmentation</strong> as the corrective maintenance approach.
+
+<div class="igcse-widget">
+  <p class="igcse-widget__title">Latency vs fragmentation: avoid mixing them</p>
+  <div class="igcse-widget__split">
+    <div class="igcse-step-card">
+      <h4>Latency question</h4>
+      <ul>
+        <li>Focus on time delay while disk rotates/head moves.</li>
+        <li>Usually visible as waiting before read/write begins.</li>
+      </ul>
+    </div>
+    <div class="igcse-step-card">
+      <h4>Fragmentation question</h4>
+      <ul>
+        <li>Focus on file pieces spread across non-adjacent sectors.</li>
+        <li>Usually causes extra head movement over many accesses.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+
+### Virtual memory: extending RAM with managed swap space
+
+<div class="reader-section-body reader-section-body--example">
+
+Virtual memory is not a new RAM chip. It is a memory-management strategy:
+
+1. RAM fills as multiple programs run.
+2. Less-recent pages are moved to swap space on HDD/SSD.
+3. Needed pages are brought back into RAM when required.
+4. Mapping/paging keeps track of where each program block currently resides.
+
+This gives the <em>illusion</em> of larger memory, but access to swapped pages is slower than physical RAM access.
+
+<figure>
+  <img src="/igcse/topic3/3.3 images/virtual memory system.png" alt="Virtual memory process showing pages moved between RAM and secondary storage." loading="lazy" decoding="async" />
+  <figcaption>Virtual memory in action: page movement between RAM and swap space.</figcaption>
+</figure>
+
+<p><span class="igcse-status igcse-status--warn">Important limitation</span> If swapping becomes excessive on HDD, the system can enter <strong>disk thrashing</strong>; at the <strong>thrash point</strong>, useful processing almost stops.</p>
+
+</div>
+
+### Cloud storage: accessibility, redundancy, and risk
+
+<div class="reader-section-body reader-section-body--apply">
+
+Cloud storage means data is held on remote servers rather than only on local devices. The chapter emphasises <strong>data redundancy</strong> (copies across servers) and also security/control questions.
+
+| Cloud model | Who controls it? | Typical use case |
+| --- | --- | --- |
+| public cloud | external provider | scalable storage for broad user access |
+| private cloud | single organisation | sensitive/internal data under tighter control |
+| hybrid cloud | split between private and public | sensitive data kept private, less-sensitive services outsourced |
+
+| Benefit to mention | Linked drawback to mention |
+| --- | --- |
+| access from many devices/locations | depends on stable internet access |
+| remote backup/disaster recovery | provider failure risk and service dependency |
+| scalable storage | cost can rise with capacity and transfer limits |
+
+<figure>
+  <img src="/igcse/topic3/3.3 images/cloud storage.png" alt="Cloud storage concept with distributed remote servers." loading="lazy" decoding="async" />
+  <figcaption>Cloud storage trade-off: flexibility and redundancy versus control and dependency concerns.</figcaption>
+</figure>
+
+</div>
+
+### Quick 3.3 exam filter
+
+<div class="reader-section-body reader-section-body--command">
+
+Before you submit a 3.3 response, check each line against this list:
+
+- did you clearly separate <strong>primary memory</strong> from <strong>secondary storage</strong>?
+- if RAM/ROM appeared, did you state volatile/non-volatile correctly?
+- if storage media appeared, did you name the technology family (magnetic/solid-state/optical)?
+- if virtual memory appeared, did you explain both benefit and slowdown risk?
+- if cloud storage appeared, did you give at least one advantage and one limitation?
+
+</div>
+
+## 3.4 Network Hardware
+
+### Start with identity versus location
+
+<div class="reader-section-body reader-section-body--concept">
+
+The core of 3.4 is distinguishing <strong>who a device is</strong> from <strong>where it is on a network</strong>.
+
+- MAC address identifies the network interface hardware.
+- IP address identifies the current network location for routing.
+
+If those two roles are mixed in an answer, marks are usually lost even when terminology looks correct.
+
+</div>
+
+### NIC and WNIC: how devices gain network access
+
+<div class="reader-section-body reader-section-body--apply">
+
+A device needs a <strong>network interface card (NIC)</strong> to connect to a network at all. Wired NICs use cable interfaces; wireless NICs (WNICs) use radio transmission and antenna hardware.
+
+| Hardware | Main role | Typical context |
+| --- | --- | --- |
+| NIC (wired) | physical connection + data transmission interface | desktop, servers, fixed infrastructure |
+| WNIC (wireless) | wireless connection + data transmission interface | laptops, tablets, mobile devices |
+
+The NIC is also where the MAC identity is anchored.
+
+<figure>
+  <img src="/igcse/topic3/3.4 images/NIC and MAC address.png" alt="Network interface card relationship with MAC addressing at device level." loading="lazy" decoding="async" />
+  <figcaption>NIC role: provides network access and carries hardware identity.</figcaption>
+</figure>
+
+</div>
+
+### MAC address: hardware identity on a local network
+
+<div class="reader-section-body reader-section-body--example">
+
+MAC addresses are 48-bit values shown as hexadecimal groups, commonly in six pairs. The chapter framing is:
+
+- first part identifies manufacturer allocation
+- second part identifies the individual device interface.
+
+| MAC concept | Exam-ready explanation |
+| --- | --- |
+| UAA | factory/manufacturer-assigned MAC (normal default) |
+| LAA | locally changed MAC value (administrative override) |
+| when it is used | local delivery stages on LAN/switch-level forwarding |
+
+<figure>
+  <img src="/igcse/topic3/3.4 images/MAC vs IP address.png" alt="Comparison diagram showing MAC as hardware identity and IP as network location identity." loading="lazy" decoding="async" />
+  <figcaption>MAC versus IP: identity at interface level versus routable network location.</figcaption>
+</figure>
+
+</div>
+
+### IP addressing: routable location and Internet scale
+
+<div class="reader-section-body reader-section-body--apply">
+
+IP addresses are used for routing packets across networks.
+
+| IP format | Structure | Example style |
+| --- | --- | --- |
+| IPv4 | 32 bits, dot-decimal groups | `198.51.100.27` |
+| IPv6 | 128 bits, hexadecimal groups separated by `:` | `2001:0db8:85a3:0000:0000:8a2e:0370:7334` |
+
+Why IPv6 matters in 3.4 answers:
+
+- far larger address space
+- lower collision pressure at global scale
+- improved design for modern traffic growth.
+
+<figure>
+  <img src="/igcse/topic3/3.4 images/IPv4 vs IPv6.png" alt="IPv4 and IPv6 address format and scale comparison." loading="lazy" decoding="async" />
+  <figcaption>IPv4 to IPv6 shift: format change and large expansion in address capacity.</figcaption>
+</figure>
+
+</div>
+
+### Static and dynamic IP addresses: when each is chosen
+
+<div class="reader-section-body reader-section-body--example">
+
+Dynamic and static IP are not "better versus worse"; they solve different operational needs.
+
+| Type | How assigned | Why it is used |
+| --- | --- | --- |
+| dynamic IP | assigned automatically (typically by DHCP) | efficient reuse for client devices, easier large-scale management |
+| static IP | fixed assignment | stable location for services like web/database/FTP hosting |
+
+<p class="reader-callout"><strong>Exam language:</strong> mention both stability (static) and automatic allocation/reuse (dynamic + DHCP).</p>
+
+<figure>
+  <img src="/igcse/topic3/3.4 images/dynamic vs static ip.png" alt="Dynamic versus static IP workflow including DHCP assignment and stable addressing." loading="lazy" decoding="async" />
+  <figcaption>Dynamic versus static IP: allocation behaviour and service impact.</figcaption>
+</figure>
+
+</div>
+
+### Router role: linking networks and directing packets
+
+<div class="reader-section-body reader-section-body--apply">
+
+Routers connect different networks (for example LAN to WAN/Internet) and decide where packets go next using routing rules and addressing data.
+
+| Router job | What to say in exam responses |
+| --- | --- |
+| inter-network forwarding | moves packets between different networks |
+| traffic direction | uses IP information to select appropriate path |
+| local delivery path | works with switches that deliver frames by destination MAC on local segments |
+| gateway function | enables private LAN devices to access external network resources |
+
+<figure>
+  <img src="/igcse/topic3/3.4 images/Role of a router.png" alt="Router connecting local network devices to wider internet services and directing packet flow." loading="lazy" decoding="async" />
+  <figcaption>Router in context: the bridge between local network and external networks.</figcaption>
+</figure>
+
+</div>
+
+### Quick 3.4 exam filter
+
+<div class="reader-section-body reader-section-body--command">
+
+Before you submit a 3.4 answer:
+
+- did you separate NIC/MAC hardware identity from IP routing identity?
+- if comparing MAC and IP, did you include format and purpose differences?
+- if discussing dynamic IP, did you mention DHCP?
+- if discussing static IP, did you state why constant addressing is useful?
+- if asked about routers, did you state "between networks" rather than only "connects devices"?
 
 </div>

@@ -52,6 +52,11 @@ If you send a large file as one uninterrupted stream, a single route fault can s
 | Payload | The user data | Core content being transmitted |
 | Trailer | End marker + error-check information (for example CRC value) | Helps detect corruption and packet boundaries |
 
+<figure>
+  <img src="/igcse/topic2/2.1 images/data packet structure.png" alt="Data packet structure showing header, payload, and trailer fields." loading="lazy" decoding="async" />
+  <figcaption>Packet anatomy used in exam explanations: header, payload, trailer.</figcaption>
+</figure>
+
 </div>
 
 ### Route selection and reassembly
@@ -68,6 +73,11 @@ This flexibility is a major strength, but it also creates two practical issues:
 
 1. Delay while packets are reordered at destination.
 2. Real-time streams (live audio/video) may stutter if late packets arrive out of sequence.
+
+<figure>
+  <img src="/igcse/topic2/2.1 images/packet switching.png" alt="Packet switching route diagram showing packets taking different network paths before reassembly." loading="lazy" decoding="async" />
+  <figcaption>Packet switching in practice: independent routes, reassembled at destination.</figcaption>
+</figure>
 
 </div>
 
@@ -86,6 +96,21 @@ Students often mix these up. Mode is about direction. Method is about how bits t
 | Bit method | Parallel | Internal circuits and short distances where speed is critical |
 
 Parallel is faster, but over longer runs its bits can become skewed (arriving out of sync). Serial is slower, but more reliable across distance.
+
+<figure>
+  <img src="/igcse/topic2/2.1 images/simplex, half and full duplex.png" alt="Simplex, half-duplex, and full-duplex data direction comparison." loading="lazy" decoding="async" />
+  <figcaption>Direction modes: simplex, half-duplex, and full-duplex.</figcaption>
+</figure>
+
+<figure>
+  <img src="/igcse/topic2/2.1 images/serial vs parallel.png" alt="Serial and parallel data transmission comparison over different channels and distances." loading="lazy" decoding="async" />
+  <figcaption>Transmission methods: serial reliability over distance versus parallel short-range speed.</figcaption>
+</figure>
+
+<figure>
+  <img src="/igcse/topic2/2.1 images/usb.png" alt="USB connection as a serial data transmission example in common computing devices." loading="lazy" decoding="async" />
+  <figcaption>USB as a familiar real-world serial transmission interface.</figcaption>
+</figure>
 
 </div>
 
@@ -132,6 +157,16 @@ Error-check methods are therefore not optional extras; they are how systems deci
 | Echo check | Receiver sends data back; sender compares | Direct comparison against original | Extra network traffic and delay |
 | ARQ | Uses acknowledgement + timeout to trigger retransmission | Practical recovery workflow | Adds retransmission overhead |
 | Check digit | Validates typed code number | Useful for data entry errors | Not a packet transmission check |
+
+<figure>
+  <img src="/igcse/topic2/2.2 images/check digit.png" alt="Check digit example used for validating entered code sequences." loading="lazy" decoding="async" />
+  <figcaption>Check digit is a data-entry validation method, not a full transmission recovery method.</figcaption>
+</figure>
+
+<figure>
+  <img src="/igcse/topic2/2.2 images/echo check.png" alt="Echo check process where received data is sent back for sender comparison." loading="lazy" decoding="async" />
+  <figcaption>Echo check workflow: return and compare against original transmission.</figcaption>
+</figure>
 
 </div>
 
@@ -212,6 +247,11 @@ The parity bit is usually placed as the most significant bit (`P`).
     </tr>
   </tbody>
 </table>
+
+<figure>
+  <img src="/igcse/topic2/2.2 images/parity check.png" alt="Parity check illustration showing odd and even parity setup on binary data." loading="lazy" decoding="async" />
+  <figcaption>Parity check concept: parity bit chosen to satisfy odd or even rule.</figcaption>
+</figure>
 
 </div>
 
@@ -333,6 +373,11 @@ Suppose received Byte 3 changes from `11100100` to `11100110` (bit `b6` flips `0
 
 This is the key teaching point: parity block can locate a single-bit error, not just report that "something is wrong."
 
+<figure>
+  <img src="/igcse/topic2/2.2 images/parity block.png" alt="Parity block grid showing row and column parity checks to locate a bit error." loading="lazy" decoding="async" />
+  <figcaption>Parity block method: intersect failing row and column to find the corrupted bit.</figcaption>
+</figure>
+
 </div>
 
 ### ARQ sequence you should be able to explain
@@ -346,6 +391,11 @@ This is the key teaching point: parity block can locate a single-bit error, not 
 5. Repeat until acknowledgement confirms successful receipt.
 
 In exam responses, explicitly mention both `acknowledgement` and `timeout`; those two terms are the core of ARQ marks.
+
+<figure>
+  <img src="/igcse/topic2/2.2 images/arq.png" alt="ARQ sequence diagram using acknowledgement and retransmission after timeout." loading="lazy" decoding="async" />
+  <figcaption>ARQ sequence: send, wait for ACK, retransmit on timeout.</figcaption>
+</figure>
 
 </div>
 

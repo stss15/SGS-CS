@@ -79,6 +79,11 @@ Example reading:
 
 This same place-value idea scales to 12-bit, 16-bit, or larger values; only the headings change.
 
+<figure>
+  <img src="/igcse/topic1/1.1 images/8-bit-binary-place-values--t3chat--1.jpg" alt="8-bit binary place value chart from 128 to 1." loading="lazy" decoding="async" />
+  <figcaption>8-bit place values: keep this grid visible while converting.</figcaption>
+</figure>
+
 </div>
 
 ### Converting between denary, binary, and hexadecimal
@@ -101,6 +106,21 @@ Hex is heavily used because it is compact and maps exactly to binary nibbles:
 - MAC addresses
 - HTML/RGB colour codes
 - system and error codes
+
+<figure>
+  <img src="/igcse/topic1/1.1 images/binary to denary.png" alt="Binary to denary conversion example using positional values." loading="lazy" decoding="async" />
+  <figcaption>Binary to denary conversion by weighted column addition.</figcaption>
+</figure>
+
+<figure>
+  <img src="/igcse/topic1/1.1 images/binary hex conversion.png" alt="Binary and hexadecimal conversion table using nibble grouping." loading="lazy" decoding="async" />
+  <figcaption>Binary to hexadecimal conversion using 4-bit nibbles.</figcaption>
+</figure>
+
+<figure>
+  <img src="/igcse/topic1/1.1 images/real world hex.png" alt="Real-world hexadecimal use cases such as memory addresses and colour values." loading="lazy" decoding="async" />
+  <figcaption>Hex in context: where students will actually see it outside class.</figcaption>
+</figure>
 
 </div>
 
@@ -130,6 +150,11 @@ For binary addition, add column by column from right to left:
   <div class="igcse-widget__board" data-adder-board></div>
   <p class="igcse-widget__result" data-adder-result></p>
 </div>
+
+<figure>
+  <img src="/igcse/topic1/1.1 images/addition and overflow.jpg" alt="Binary addition example showing carry values and overflow in fixed 8-bit storage." loading="lazy" decoding="async" />
+  <figcaption>Binary addition and overflow: result can exceed what 8 bits can store.</figcaption>
+</figure>
 
 Logical shifts for positive unsigned values:
 
@@ -161,6 +186,11 @@ Logical shifts for positive unsigned values:
   <p class="igcse-widget__result" data-shift-result></p>
 </div>
 
+<figure>
+  <img src="/igcse/topic1/1.1 images/right shift.png" alt="Logical right shift example showing dropped bits and inserted zeros." loading="lazy" decoding="async" />
+  <figcaption>Logical shift visual: bits move, edge bits are lost, and zeros fill.</figcaption>
+</figure>
+
 </div>
 
 ### Two's complement: full process for negative numbers
@@ -186,6 +216,11 @@ To decode a negative two's-complement value (for example `11100111`):
 
 Students often remember only the "invert and add 1" direction.  
 You need both directions for exam questions: building a negative value and interpreting one.
+
+<figure>
+  <img src="/igcse/topic1/1.1 images/2s compliment.png" alt="Two's complement conversion process for positive and negative 8-bit numbers." loading="lazy" decoding="async" />
+  <figcaption>Two's complement workflow: invert bits, then add one.</figcaption>
+</figure>
 
 <div class="igcse-widget" data-igcse-twos-complement>
   <p class="igcse-widget__title">Interactive two's complement helper</p>
@@ -256,6 +291,11 @@ Unicode is what modern systems use because text must work across many languages 
 The key distinction students often forget:
 - character set answers "which number means this character?"
 - encoding answers "how many bytes are used to store that number?"
+
+<figure>
+  <img src="/igcse/topic1/1.2 images/ascii unicode.png" alt="ASCII and Unicode comparison chart with character coverage differences." loading="lazy" decoding="async" />
+  <figcaption>ASCII versus Unicode: range and modern usage difference.</figcaption>
+</figure>
 
 </div>
 
@@ -362,6 +402,11 @@ Nyquist reminder: sampling rate should be at least twice the highest frequency y
 Uncompressed sound bits:
 
 - sample rate x sampling resolution x channels x duration
+
+<figure>
+  <img src="/igcse/topic1/1.2 images/alanogue to digital sound.png" alt="Analogue sound to digital conversion showing waveform sampling." loading="lazy" decoding="async" />
+  <figcaption>Analogue to digital sound conversion through regular sampling.</figcaption>
+</figure>
 
 </div>
 
@@ -485,6 +530,11 @@ Notice the method is identical. Only the values and units change.
 
 A bitmap image is a grid of pixels. Every pixel stores a colour value using bits.
 
+<figure>
+  <img src="/igcse/topic1/1.2 images/bitmap.png" alt="Bitmap grid representation showing image formed from individual pixels." loading="lazy" decoding="async" />
+  <figcaption>Bitmap model: images are stored as pixel grids.</figcaption>
+</figure>
+
 | Colour depth | Colour count | Typical use |
 | --- | --- | --- |
 | 1-bit | 2 colours | black/white masks |
@@ -507,6 +557,11 @@ Bitmap size method:
 
 - bits = width x height x colour depth
 - bytes = bits / 8
+
+<figure>
+  <img src="/igcse/topic1/1.2 images/resolution.png" alt="Image resolution comparison demonstrating pixel count and quality differences." loading="lazy" decoding="async" />
+  <figcaption>Resolution controls pixel count and therefore image detail and size.</figcaption>
+</figure>
 
 </div>
 
@@ -596,6 +651,16 @@ Method habit that avoids dropped marks:
 2. convert one step at a time
 3. round only at the final step, if the question asks
 
+<figure>
+  <img src="/igcse/topic1/1.3 images/Data units 1024.png" alt="Binary data unit ladder using powers of 1024 between bytes and larger units." loading="lazy" decoding="async" />
+  <figcaption>Binary-prefix unit ladder used in IGCSE file-size questions.</figcaption>
+</figure>
+
+<figure>
+  <img src="/igcse/topic1/1.3 images/data units decimal.png" alt="Decimal data unit ladder using powers of 1000 for KB MB and GB." loading="lazy" decoding="async" />
+  <figcaption>Decimal-prefix ladder for contrast: do not confuse with KiB/MiB/GiB.</figcaption>
+</figure>
+
 </div>
 
 ### File-size workflow: image and sound questions
@@ -623,6 +688,11 @@ Audio example: 44,100 Hz, 16-bit, stereo, 60 minutes
 4. MiB = 635,040,000 / 1,048,576 = 605 MiB (approx)
 
 Common exam error to avoid: forgetting to multiply by channels for stereo.
+
+<figure>
+  <img src="/igcse/topic1/1.3 images/file size formula.png" alt="File-size formula reference for image and sound calculations." loading="lazy" decoding="async" />
+  <figcaption>File-size formula sheet: keep method constant, substitute question values carefully.</figcaption>
+</figure>
 
 </div>
 
@@ -656,6 +726,11 @@ Choose compression based on whether exact restoration is required.
 Compression ratio = original size / compressed size.
 A ratio of 5:1 means the compressed file is one fifth of the original size.
 
+<figure>
+  <img src="/igcse/topic1/1.3 images/lossy vs lossless.png" alt="Comparison of lossy and lossless compression approaches and outcomes." loading="lazy" decoding="async" />
+  <figcaption>Lossy versus lossless: trade-off between exact recovery and file-size reduction.</figcaption>
+</figure>
+
 </div>
 
 ### Run Length Encoding (RLE) method walkthrough
@@ -678,6 +753,11 @@ Encoded result: **4A3B2C1D2A**
 
 Exam note: RLE is not always efficient.
 If data has little repetition, encoded form can be similar size or even larger.
+
+<figure>
+  <img src="/igcse/topic1/1.3 images/RLE.png" alt="Run Length Encoding example converting repeated symbols into count-value pairs." loading="lazy" decoding="async" />
+  <figcaption>RLE visual: repeated runs become shorter count-symbol tokens.</figcaption>
+</figure>
 
 </div>
 
