@@ -18,6 +18,7 @@
 ## IGCSE Textbook Source Of Truth
 
 - Astro route (authoritative): `apps/site/src/pages/igcse/[topic]/textbook.astro`
+- Astro chapter route (Topic 1-2 split): `apps/site/src/pages/igcse/[topic]/textbook/[chapter].astro`
 - Astro content collection entries: `apps/site/src/content/igcse-textbooks/topic-1.md` ... `topic-10.md`
 - Collection schema: `apps/site/src/content/config.ts` (`igcse-textbooks`)
 - Generation and QA scripts: `scripts/igcse-textbook/`

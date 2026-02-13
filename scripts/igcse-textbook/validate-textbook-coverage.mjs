@@ -6,7 +6,7 @@ import { ROOT, allTopics, resolveCanonicalTopic, sourcePolicy } from './helpers.
 
 const BOOK_ROOT = path.join(ROOT, 'apps/site/src/content/igcse-textbooks');
 const PSEUDOCODE_REQUIRED_TOPICS = new Set([7, 8]);
-const MODERN_STYLE_TOPICS = new Set([1]);
+const MODERN_STYLE_TOPICS = new Set([1, 2, 3]);
 
 const failures = [];
 let checkedTopics = 0;

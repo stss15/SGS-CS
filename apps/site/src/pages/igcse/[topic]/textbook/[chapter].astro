@@ -1,52 +1,116 @@
 ---
-import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { getIgcseListing } from '@sgs/content-schema';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeRaw from 'rehype-raw';
+import rehypeStringify from 'rehype-stringify';
 
-interface IgcseTopicTextbookPathProps {
+interface IgcseTopicTextbookChapterPathProps {
   topic: string;
   topicNumber: number;
   topicName: string;
+  chapterCode: string;
+  chapterTitle: string;
+  chapterSlug: string;
+}
+
+interface MarkdownSection {
+  heading: string;
+  markdown: string;
+}
+
+const KEY_TERMS_HEADING = 'Key Terms and Definitions';
+
+async function renderMarkdownToHtml(markdown: string) {
+  const rendered = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(rehypeStringify, { allowDangerousHtml: true })
+    .process(markdown);
+
+  return String(rendered);
+}
+
+function splitTopLevelSections(markdown: string): MarkdownSection[] {
+  const headingRegex = /^##\s+(.+)$/gm;
+  const matches = Array.from(markdown.matchAll(headingRegex));
+  if (!matches.length) return [];
+
+  return matches.map((match, index) => {
+    const heading = match[1].trim();
+    const start = match.index ?? 0;
+    const nextStart = index + 1 < matches.length ? (matches[index + 1].index ?? markdown.length) : markdown.length;
+    const sectionMarkdown = markdown.slice(start, nextStart).trim();
+    return {
+      heading,
+      markdown: sectionMarkdown
+    };
+  });
+}
+
+function findChapterSection(sections: MarkdownSection[], chapterCode: string) {
+  const chapterCodeLc = chapterCode.toLowerCase();
+  return sections.find((section) => {
+    const heading = section.heading.toLowerCase();
+    return heading === chapterCodeLc || heading.startsWith(`${chapterCodeLc} `);
+  });
 }
 
 export async function getStaticPaths() {
-  const topicSegmentRe = /^topic(\d+)$/i;
-  const listing = await getIgcseListing();
-  const topicItems = (listing.sections || []).flatMap((section) => section.items || []);
+  const textbookEntries = await getCollection(
+    'igcse-textbooks',
+    ({ data }) => data.topicNumber === 1 || data.topicNumber === 2
+  );
 
-  return topicItems
-    .map((item) => {
-      const href = String(item.href || '');
-      const match = href.match(/\/igcse\/(topic\d+)\/index\.html$/i);
-      if (!match) return null;
+  return textbookEntries.flatMap((entry) => {
+    const topicNumber = entry.data.topicNumber;
+    const topic = `topic${topicNumber}`;
 
-      const topic = match[1].toLowerCase();
-      const numMatch = topic.match(topicSegmentRe);
-      if (!numMatch) return null;
+    return entry.data.subtopics.map((subtopic) => {
+      const chapterCode = subtopic.code;
+      const chapterSlug = chapterCode.replace('.', '-');
 
       return {
         params: {
-          topic
+          topic,
+          chapter: chapterSlug
         },
         props: {
           topic,
-          topicNumber: Number(numMatch[1]),
-          topicName: String(item.name || `Topic ${numMatch[1]}`)
+          topicNumber,
+          topicName: entry.data.topicName,
+          chapterCode,
+          chapterTitle: subtopic.title,
+          chapterSlug
         }
       };
-    })
-    .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+    });
+  });
 }
 
-const { topic, topicNumber, topicName } = Astro.props as IgcseTopicTextbookPathProps;
+const { topic, topicNumber, topicName, chapterCode, chapterTitle, chapterSlug } =
+  Astro.props as IgcseTopicTextbookChapterPathProps;
 const textbookEntry = (await getCollection('igcse-textbooks', ({ data }) => data.topicNumber === topicNumber))[0];
-const textbookRendered = textbookEntry ? await render(textbookEntry) : null;
-const TextbookContent = textbookRendered?.Content;
+const textbookSections = textbookEntry ? splitTopLevelSections(textbookEntry.body) : [];
+const keyTermsSection = textbookSections.find(
+  (section) => section.heading.toLowerCase() === KEY_TERMS_HEADING.toLowerCase()
+);
+const chapterSection = findChapterSection(textbookSections, chapterCode);
+const chapterMarkdown = [keyTermsSection?.markdown, chapterSection?.markdown]
+  .filter((section): section is string => Boolean(section))
+  .join('\n\n');
+const chapterHtml = chapterMarkdown ? await renderMarkdownToHtml(chapterMarkdown) : '';
+const availableChapters = textbookEntry?.data.subtopics || [];
 ---
 
 <BaseLayout
-  title={`IGCSE Topic ${topicNumber}: ${topicName} Textbook Reader`}
-  description={`IGCSE Computer Science Topic ${topicNumber} (${topicName}) textbook reader.`}
+  title={`IGCSE Topic ${topicNumber} ${chapterCode}: ${chapterTitle} Textbook Reader`}
+  description={`IGCSE Computer Science Topic ${topicNumber} ${chapterCode} (${chapterTitle}) textbook chapter.`}
   extraStyles={['css/reader.css']}
 >
   <script is:inline>
@@ -73,7 +137,7 @@ const TextbookContent = textbookRendered?.Content;
     class="reader-shell reader-shell--textbook"
     data-sgs-reader
     data-reader-default-paged="true"
-    data-reader-storage-key="sgs-reader-igcse-textbook-settings-v1"
+    data-reader-storage-key={`sgs-reader-igcse-${topic}-${chapterSlug}-settings-v1`}
   >
     <div class="sr-only" aria-live="polite" data-reader-announcer></div>
     <div class="reader-drawer-overlay" data-reader-drawer-overlay aria-hidden="true"></div>
@@ -124,28 +188,40 @@ const TextbookContent = textbookRendered?.Content;
     <section class="reader-stage">
       <div class="reader-paper">
         <div class="reader-dochead">
-          <p class="reader-kicker">IGCSE 0478 · Topic {topicNumber}</p>
-          <h1 class="reader-title">Topic {topicNumber}: {topicName}</h1>
-          <p class="reader-subtitle">Textbook Reader</p>
+          <p class="reader-kicker">IGCSE 0478 · Topic {topicNumber} · {chapterCode}</p>
+          <h1 class="reader-title">
+            {chapterCode} {chapterTitle}
+          </h1>
+          <p class="reader-subtitle">{topicName} Textbook Chapter</p>
         </div>
 
         <article class="reader-article">
           <div class="reader-content">
             <div class="reader-prose" data-reader-content>
               {
-                TextbookContent ? (
+                chapterHtml ? (
                   <>
-                    <TextbookContent />
+                    <div set:html={chapterHtml}></div>
                   </>
                 ) : (
                   <>
                     <p class="reader-callout">
-                      <strong>This textbook space is ready.</strong> Full chapter content for this topic will be published here.
+                      <strong>Chapter content not found.</strong> We could not locate content for {chapterCode} in Topic {topicNumber}.
                     </p>
 
-                    <h2>Mapped Subtopics</h2>
+                    <h2>Available chapter links</h2>
                     <ul>
-                      {topicName ? <li>{topicName}</li> : <li>Topic subtopics will be listed here.</li>}
+                      {availableChapters.length ? (
+                        availableChapters.map((subtopic) => (
+                          <li>
+                            <a href={`/igcse/topic${topicNumber}/textbook/${subtopic.code.replace('.', '-')}.html`}>
+                              {subtopic.code} {subtopic.title}
+                            </a>
+                          </li>
+                        ))
+                      ) : (
+                        <li>No mapped chapters yet.</li>
+                      )}
                     </ul>
                   </>
                 )
@@ -279,5 +355,4 @@ const TextbookContent = textbookRendered?.Content;
   <script is:inline src="/js/reader.js"></script>
   <script is:inline src="/js/igcse-pseudocode-highlighter.js"></script>
   {topicNumber === 1 && <script is:inline src="/js/igcse-topic1-interactive.js"></script>}
-  {topicNumber === 3 && <script is:inline src="/js/igcse-topic3-architecture.js"></script>}
 </BaseLayout>

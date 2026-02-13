@@ -163,3 +163,101 @@
 - `firebase deploy --only hosting` initially blocked by Firebase Hosting quota (HTTP 429, storage limit exceeded).
 - Resolved by reducing live channel retained releases from 5 to 2.
 - `firebase deploy --only hosting` then passed successfully.
+
+## Revision 6 Findings (Topic 2 Rewrite Replication)
+
+- Date: 2026-02-13
+- Trigger: user request to replicate the Topic 1 prose-first quality model onto Topic 2.
+
+### Issues Fixed
+
+1. Removed legacy template sections (`Unit Summary`, `Objectives and Outcomes`) from Topic 2 textbook body.
+2. Replaced scripted repeated section cadence with mixed delivery:
+   - explanatory prose blocks
+   - comparison tables
+   - scenario walkthroughs
+   - worked parity/encryption process explanations.
+3. Removed non-essential pseudocode blocks from Topic 2 and kept coverage aligned to chapter source content and exam language.
+4. Re-grounded Topic 2 content directly in:
+   - `docs/content/igcse/chapter-text-files/Chapter 2 Subfiles/2.1.txt`
+   - `docs/content/igcse/chapter-text-files/Chapter 2 Subfiles/2.2.txt`
+   - `docs/content/igcse/chapter-text-files/Chapter 2 Subfiles/2.3.txt`
+   - `docs/content/igcse/chapter-text-files/Chapter 2 key words.txt`
+5. Expanded validator modern-style enforcement set to include Topic 2:
+   - `scripts/igcse-textbook/validate-textbook-coverage.mjs` now enforces no legacy summary/objectives sections for Topics 1 and 2.
+
+### Replication Notes for Topic 3
+
+1. Keep canonical subtopic `##` headings unchanged from website labels.
+2. Keep `## Key Terms and Definitions` as first content section.
+3. Avoid rigid triad headings; vary the internal pedagogy by subtopic.
+4. Use worked process sections with real values and interpretation, not pseudocode by default.
+5. Keep method vocabulary explicit where marks are tied to command words and protocol terms.
+
+## Revision 7 Findings (Topic 2 Pedagogy Visuals Pass)
+
+- Date: 2026-02-13
+- Trigger: follow-up feedback requesting clearer "showing" for parity and encryption processes.
+
+### Changes Applied
+
+1. Added explicit parity-bit worked visuals for both even and odd parity outcomes using bit-grid formatting.
+2. Added a parity-block + parity-byte visual matrix and a single-bit error localisation walkthrough (row + column intersection method).
+3. Added lightweight encryption flow visuals:
+   - symmetric key flow
+   - asymmetric key flow
+   - Tom/Jane step-sequence table showing public-key transit and private-key decryption.
+4. Kept implementation intentionally low-complexity (no heavy runtime tooling) while improving conceptual visibility.
+
+## Revision 8 Findings (Topic 2 Parity Block Pass/Fail Visualisation)
+
+- Date: 2026-02-13
+- Trigger: feedback requesting a clearer two-state parity block teaching view.
+
+### Changes Applied
+
+1. Reworked parity block section into explicit:
+   - green pass-state matrix
+   - red fail-state matrix.
+2. Added visual error-location cues in fail-state matrix:
+   - failed row highlight
+   - failed column highlight
+   - stronger highlight at row/column intersection bit.
+3. Added step text that maps directly to the matrix colours ("row fails", "column fails", "intersection bit").
+4. Added lightweight reader CSS classes for parity row/column/intersection highlighting in `src/static/css/reader.css`.
+
+## Revision 9 Findings (Topic 3.1 Architecture Rewrite)
+
+- Date: 2026-02-13
+- Trigger: user request to build Topic 3.1 with the same prose-first quality, source grounding, and dynamic delivery used in Topics 1 and 2.
+
+### Changes Applied
+
+1. Rewrote Topic 3 textbook intro and 3.1 section in:
+   - `apps/site/src/content/igcse-textbooks/topic-3.md`
+2. Removed legacy top sections from Topic 3 textbook body:
+   - `## Unit Summary`
+   - `## Objectives and Outcomes`
+3. Re-grounded Topic 3.1 content directly in:
+   - `docs/content/igcse/chapter-text-files/chapter 3 Subfiles/3.1.txt`
+   - `docs/content/igcse/chapter-text-files/Chapter 3 key words.txt`
+4. Replaced scripted pseudocode-first delivery in 3.1 with:
+   - explanatory prose
+   - role-and-process tables
+   - sequenced read/write and FDE walkthrough language
+   - instruction-set framing using opcode/operand examples
+   - embedded-system classification reasoning.
+5. Added Topic 3.1 interactive runtime:
+   - `src/static/js/igcse-topic3-architecture.js`
+   with widgets for:
+   - register-level FDE stepper
+   - CPU performance sandbox (clock, bus, cache, cores, overclock)
+   - embedded-system classifier scenarios.
+6. Added supporting reader styles in:
+   - `src/static/css/reader.css`
+7. Loaded Topic 3 runtime only on Topic 3 textbook route:
+   - `apps/site/src/pages/igcse/[topic]/textbook.astro`
+8. Updated Topic 3 index textbook card wording to remove coming-soon phrasing:
+   - `src/pages/igcse/topic3/index.njk`
+9. Extended validator modern-style enforcement to include Topic 3:
+   - `scripts/igcse-textbook/validate-textbook-coverage.mjs`

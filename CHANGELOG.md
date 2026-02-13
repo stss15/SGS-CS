@@ -1,5 +1,71 @@
 # Changelog
 
+## 2026-02-13 - IGCSE Topic 1-2 Textbook Chapter Split
+
+### Textbook Routing
+- Added chapter route at `apps/site/src/pages/igcse/[topic]/textbook/[chapter].astro`.
+- Route now generates chapter pages for Topics 1-2 only:
+  - Topic 1: `1-1`, `1-2`, `1-3`
+  - Topic 2: `2-1`, `2-2`, `2-3`
+- Each chapter page renders:
+  - `## Key Terms and Definitions`
+  - the selected subtopic section (`## 1.1` / `## 1.2` / `## 1.3`, etc.)
+  from the existing topic markdown source, so no textbook content was duplicated or rewritten.
+
+### IGCSE Topic Index Updates
+- Updated `src/pages/igcse/topic1/index.njk` textbook section to three subtopic chapter links.
+- Updated `src/pages/igcse/topic2/index.njk` textbook section to three subtopic chapter links.
+- Removed the old textbook placeholder wording (`Reader template (coming soon)`) from Topic 1 and Topic 2 textbook cards.
+
+### Route Alias Compatibility
+- Added chapter `.html` aliases in `meta/migration/wave2-routes.json`:
+  - `/igcse/topic1/textbook/1-1.html`
+  - `/igcse/topic1/textbook/1-2.html`
+  - `/igcse/topic1/textbook/1-3.html`
+  - `/igcse/topic2/textbook/2-1.html`
+  - `/igcse/topic2/textbook/2-2.html`
+  - `/igcse/topic2/textbook/2-3.html`
+- Updated `meta/migration/wave2-routes.json` `updatedAt` to `2026-02-13`.
+
+### Documentation
+- Updated `README.md` IGCSE textbook section with the new chapter route and alias notes.
+- Updated `docs/SITE_STRUCTURE.md` to include the chapter route path.
+
+## 2026-02-13 - IGCSE Topic 3.1 Textbook Rewrite (Computer Architecture)
+
+### Content Rewrite
+- Reworked `apps/site/src/content/igcse-textbooks/topic-3.md` so Topic 3 now begins at `Key Terms and Definitions`, removing legacy:
+  - `## Unit Summary`
+  - `## Objectives and Outcomes`
+- Fully rewrote section `## 3.1 Computer Architecture` in prose-first style with varied delivery:
+  - architecture and component explanation
+  - register and bus role tables
+  - FDE step-based teaching flow
+  - instruction set (`opcode`/`operand`) framing
+  - embedded-system comparison and exam checklist.
+- Source grounding for 3.1 rewrite:
+  - `docs/content/igcse/chapter-text-files/chapter 3 Subfiles/3.1.txt`
+  - `docs/content/igcse/chapter-text-files/Chapter 3 key words.txt`
+
+### Interactive Delivery
+- Added Topic 3.1 interactive runtime:
+  - `src/static/js/igcse-topic3-architecture.js`
+- Added widgets for:
+  - fetch-decode-execute register stepper
+  - CPU performance sandbox (clock, bus, cache, cores, overclock trade-offs)
+  - embedded-system classifier.
+- Added supporting reader widget styles in:
+  - `src/static/css/reader.css`
+- Loaded Topic 3 runtime on textbook route:
+  - `apps/site/src/pages/igcse/[topic]/textbook.astro`
+
+### Index and Validation
+- Updated Topic 3 textbook card copy in:
+  - `src/pages/igcse/topic3/index.njk`
+  removing `Reader template (coming soon)` in favour of active reader wording.
+- Updated validator modern-style scope to include Topic 3:
+  - `scripts/igcse-textbook/validate-textbook-coverage.mjs`
+
 ## 2026-02-12 - IGCSE Textbooks Astro Migration (Topics 1-10)
 
 ### Route and Content Migration
@@ -218,6 +284,34 @@
 
 ### Content and Delivery Updates
 - Reworked `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-1.md` section `1.2` and `1.3` to reduce repetitive section cadence and improve revision-bridge pedagogy.
+
+## 2026-02-13 - IGCSE Topic 2 Style + Content Rewrite
+
+### Content Rewrite
+- Rewrote `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-2.md` using Chapter 2 subfiles and key words to match the Topic 1 prose-first quality model.
+- Removed legacy template blocks (`Unit Summary`, `Objectives and Outcomes`) and replaced rigid section cadence with varied delivery (prose, comparison tables, scenario flow, worked method breakdowns).
+- Removed topic-inappropriate pseudocode usage from Topic 2 and kept explanations focused on packet switching, transmission modes/methods, error checking, and symmetric/asymmetric encryption.
+
+### Validation and Standards
+- Updated `/Users/StevenStewart/SGS-CSC REMIX/scripts/igcse-textbook/validate-textbook-coverage.mjs` modern-style enforcement set from Topic 1 only to Topics 1 and 2.
+- Continued pseudocode policy enforcement for algorithm-focused topics only (Topics 7 and 8).
+
+## 2026-02-13 - IGCSE Topic 2 Pedagogy Visual Improvements
+
+### Content Teaching Aids
+- Extended `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-2.md` with additional visual pedagogy elements:
+  - parity-bit visual grid for even and odd parity outcomes
+  - parity-block/parity-byte matrix plus bit-error localisation explanation
+  - symmetric vs asymmetric key-flow visual cards
+  - Tom/Jane asymmetric sequence table to show key movement and decryption ownership.
+- Kept visuals lightweight and reader-native (no additional JS runtime required for these additions).
+
+### Parity Block Enhancement
+- Updated parity-block teaching section in `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-2.md` to show two explicit states:
+  - PASS matrix (all parity checks matching)
+  - FAIL matrix (single-bit error case).
+- Added row/column/intersection highlighting for parity failure localisation and corresponding status badges.
+- Added supporting parity highlight styling in `/Users/StevenStewart/SGS-CSC REMIX/src/static/css/reader.css`.
 - Added fuller text coverage:
   - character-set vs encoding clarity
   - ASCII anchor-range strategy

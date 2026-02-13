@@ -63,12 +63,14 @@ And the skills under:
 
 - IGCSE textbook pages are now Astro-first and content-collection driven:
   - Route: `apps/site/src/pages/igcse/[topic]/textbook.astro`
+  - Chapter route (Topic 1-2 split): `apps/site/src/pages/igcse/[topic]/textbook/[chapter].astro`
   - Content: `apps/site/src/content/igcse-textbooks/topic-1.md` ... `topic-10.md`
   - Collection schema: `apps/site/src/content/config.ts` (`igcse-textbooks`)
 - Legacy IGCSE catch-all route excludes textbook aliases so Astro is authoritative:
   - `apps/site/src/pages/igcse/[...route].astro`
 - Legacy `.html` compatibility for textbook links is preserved through migration alias routes:
   - `meta/migration/wave2-routes.json` includes `/igcse/topic1/textbook.html` ... `/igcse/topic10/textbook.html`
+  - Topic 1-2 chapter aliases are included (`/igcse/topic1/textbook/1-1.html` ... `/igcse/topic2/textbook/2-3.html`)
 - Textbook authoring/QA scripts:
   - `npm run igcse:textbook:source-map -- --topic <1-10>`
   - `npm run igcse:textbook:generate -- --overwrite true`
