@@ -327,3 +327,33 @@
 - Confirmed:
   - 3.1 no longer renders escaped SVG source as code.
   - 3.1 and 3.2 chapter pages both render authored content in the chapter route.
+
+## Revision 12 Findings (Topic 3.1 SVG Removal + Topic 2.3 Rewrite)
+
+- Date: 2026-02-13
+- Trigger: feedback that the SVG itself should be removed from Topic 3.1 and request to rebuild Topic 2.3 textbook entry following prior style logs.
+
+### Changes Applied
+
+1. Removed the `Abstract FDE map (SVG)` section from:
+   - `apps/site/src/content/igcse-textbooks/topic-3.md`
+2. Removed deprecated static SVG asset:
+   - `src/static/igcse/topic3/3.1 images/fde-abstract.svg`
+3. Rebuilt `## 2.3 Encryption` in:
+   - `apps/site/src/content/igcse-textbooks/topic-2.md`
+4. Re-grounded 2.3 content against:
+   - `docs/content/igcse/chapter-text-files/Chapter 2 Subfiles/2.3.txt`
+   - `docs/content/curriculum-guides/IGCSE CS Syllabus.pdf`
+5. Added mixed-delivery 2.3 structure with:
+   - concise terminology scaffold
+   - symmetric process and key-distribution risk framing
+   - asymmetric key-pair explanation with Tom-Jane sequence table
+   - comparison table plus exam-command guidance and error traps.
+6. Added selective figures from existing chapter assets to support explanation flow without adding extra runtime complexity.
+
+### Verification Snapshot
+
+- `npm run framework:build` passed.
+- Confirmed:
+  - Topic 3.1 chapter has no SVG section.
+  - Topic 2.3 chapter route renders rebuilt prose/table/visual content.

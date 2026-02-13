@@ -111,17 +111,6 @@ That is exactly why fetch-decode-execute sits at the heart of this subtopic.
 
 </div>
 
-### Abstract FDE map (SVG)
-
-<div class="reader-section-body reader-section-body--example">
-
-<figure>
-  <img src="/igcse/topic3/3.1 images/fde-abstract.svg" alt="Abstract fetch-decode-execute flow showing memory, control unit, ALU, and registers." loading="lazy" decoding="async" />
-  <figcaption>A simplified memory-to-register-to-ALU flow for one instruction cycle.</figcaption>
-</figure>
-
-</div>
-
 ### Registers and buses: trace one instruction cleanly
 
 <div class="reader-section-body reader-section-body--example">

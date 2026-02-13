@@ -393,3 +393,32 @@
 - Confirmed chapter outputs render as expected:
   - `/igcse/topic3/textbook/3-1` (SVG and images render, no escaped SVG code block)
   - `/igcse/topic3/textbook/3-2` (full authored chapter content, no fallback state).
+
+## 2026-02-13 - IGCSE Topic 3.1 SVG Removal and Topic 2.3 Rebuild
+
+### Topic 3.1 Cleanup
+- Removed the FDE SVG section from `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-3.md` per requested UX change.
+- Removed obsolete SVG asset:
+  - `/Users/StevenStewart/SGS-CSC REMIX/src/static/igcse/topic3/3.1 images/fde-abstract.svg`
+
+### Topic 2.3 Textbook Rebuild
+- Reworked `## 2.3 Encryption` in `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-2.md` to align with the prose-first, mixed-format style used in quality logs.
+- Grounded the rewrite in:
+  - `docs/content/igcse/chapter-text-files/Chapter 2 Subfiles/2.3.txt`
+  - `docs/content/curriculum-guides/IGCSE CS Syllabus.pdf` (2.3 expectations).
+- Added stronger 2.3 pedagogy:
+  - explicit plaintext/ciphertext/key language scaffold
+  - symmetric flow with key-distribution risk framing
+  - asymmetric public/private key model with Tom-Jane step table
+  - comparative decision table and common-mark-loss checks.
+- Added selective chapter-aligned visuals from existing assets:
+  - `encryption terminology.png`
+  - `symmetric encryption.png`
+  - `asymetric encryption.png`
+  - `how encryption works.png`
+
+### Verification
+- `npm run framework:build` passed.
+- Verified outputs:
+  - `/igcse/topic3/textbook/3-1` no longer includes SVG section.
+  - `/igcse/topic2/textbook/2-3` renders the rebuilt 2.3 chapter content.

@@ -351,90 +351,131 @@ In exam responses, explicitly mention both `acknowledgement` and `timeout`; thos
 
 ## 2.3 Encryption
 
-### What encryption solves and what it does not
+### Start with the purpose statement examiners look for
 
 <div class="reader-section-body reader-section-body--concept">
 
-On public networks, interception risk is always present. Encryption converts plaintext into ciphertext so intercepted data is unreadable without the correct key. It protects confidentiality, but it does not stop interception itself.
+Encryption is needed because transmitted data can be intercepted on public networks. It does not stop interception, but it transforms readable data into unreadable data for anyone without the correct key.
+
+If you are writing a 2.3 answer, use this language:
+
+- plaintext: original readable message
+- ciphertext: encrypted unreadable output
+- encryption algorithm: process that transforms plaintext
+- key: value used to lock and unlock the message.
+
+<figure>
+  <img src="/igcse/topic2/2.3 images/encryption terminology.png" alt="Encryption terminology showing plaintext, ciphertext, encryption, and decryption." loading="lazy" decoding="async" />
+  <figcaption>Core encryption terminology used in exam questions.</figcaption>
+</figure>
 
 </div>
 
-### Symmetric and asymmetric compared directly
+### Symmetric encryption: efficient, but key sharing is the weak point
+
+<div class="reader-section-body reader-section-body--apply">
+
+Symmetric encryption uses one shared key for both encryption and decryption.
+
+Chapter 2.3 models this with a repeated numeric key pattern, where letters are shifted by different amounts in sequence.
+
+<div class="igcse-widget__split">
+  <div class="igcse-step-card">
+    <h4>Symmetric flow</h4>
+    <ol>
+      <li>Sender and receiver agree the same secret key.</li>
+      <li>Sender encrypts plaintext using that key.</li>
+      <li>Ciphertext is transmitted.</li>
+      <li>Receiver decrypts using the same key.</li>
+    </ol>
+  </div>
+  <div class="igcse-step-card">
+    <h4>Risk to mention</h4>
+    <ul>
+      <li>The key has to be shared somehow.</li>
+      <li>If the key exchange is intercepted, confidentiality fails.</li>
+      <li>This is called the key distribution problem.</li>
+    </ul>
+  </div>
+</div>
+
+<figure>
+  <img src="/igcse/topic2/2.3 images/symmetric encryption.png" alt="Symmetric encryption process using one shared key for both locking and unlocking." loading="lazy" decoding="async" />
+  <figcaption>Symmetric encryption: one key, both directions.</figcaption>
+</figure>
+
+</div>
+
+### Asymmetric encryption: public to lock, private to unlock
+
+<div class="reader-section-body reader-section-body--example">
+
+Asymmetric encryption was designed to reduce key-sharing risk. It uses a mathematically linked pair:
+
+- public key: can be shared openly
+- private key: kept secret by the owner.
+
+<figure>
+  <img src="/igcse/topic2/2.3 images/asymetric encryption.png" alt="Asymmetric encryption using public key for encryption and private key for decryption." loading="lazy" decoding="async" />
+  <figcaption>Asymmetric encryption key pair model.</figcaption>
+</figure>
+
+</div>
+
+### Worked communication sequence: Tom sends an encrypted file to Jane
+
+<div class="reader-section-body reader-section-body--example">
+
+| Step | Tom (sender) | Jane (receiver) | Security point |
+| --- | --- | --- | --- |
+| 1 | Requests Jane's public key | Generates and shares public key | Public key is shareable |
+| 2 | Encrypts file with Jane's public key | - | Only matching private key can decrypt |
+| 3 | Sends ciphertext over network | Receives ciphertext | Interception gives unreadable text |
+| 4 | - | Decrypts with Jane's private key | Private key never leaves Jane |
+
+Important clarification: Jane cannot decrypt with her own public key. Decryption requires the matching private key.
+
+<figure>
+  <img src="/igcse/topic2/2.3 images/how encryption works.png" alt="End-to-end encryption journey from plaintext to ciphertext and back to plaintext." loading="lazy" decoding="async" />
+  <figcaption>Encryption workflow from sender to receiver.</figcaption>
+</figure>
+
+</div>
+
+### Symmetric vs asymmetric: direct decision table
 
 <div class="reader-section-body reader-section-body--apply">
 
 | Feature | Symmetric encryption | Asymmetric encryption |
 | --- | --- | --- |
-| Keys used | One shared key for both encrypt and decrypt | Public key encrypts, matching private key decrypts |
-| Main advantage | Fast for large volumes of data | Solves shared-secret distribution problem |
-| Main risk | Shared key must be exchanged securely | More complex key infrastructure |
-| Typical classroom explanation | "Same key both sides" | "Public to lock, private to unlock" |
+| Keys used | One shared key | Public + private key pair |
+| Speed | Usually faster for large data | Usually slower |
+| Key distribution | Harder to secure | Easier public-key sharing |
+| Main weakness | Shared key exposure risk | More complex infrastructure |
+| Best one-line explanation | Same key both sides | Public key encrypts, private key decrypts |
 
 </div>
 
-### Visual key flow: symmetric vs asymmetric
+### What to write for full marks in 2.3
 
-<div class="reader-section-body reader-section-body--example">
+<div class="reader-section-body reader-section-body--command">
 
-<div class="igcse-widget__split">
-  <div class="igcse-step-card">
-    <h4>Symmetric flow</h4>
-    <p><code>Plaintext -> Encrypt(shared key K) -> Ciphertext -> Decrypt(shared key K) -> Plaintext</code></p>
-    <ul>
-      <li>Same key on both sides.</li>
-      <li>Main risk is secure key sharing.</li>
-    </ul>
-  </div>
-  <div class="igcse-step-card">
-    <h4>Asymmetric flow</h4>
-    <p><code>Plaintext -> Encrypt(receiver public key) -> Ciphertext -> Decrypt(receiver private key) -> Plaintext</code></p>
-    <ul>
-      <li>Public key can be shared openly.</li>
-      <li>Private key stays with one user.</li>
-    </ul>
-  </div>
-</div>
+- State clearly that encryption protects confidentiality during transmission.
+- Distinguish plaintext and ciphertext accurately.
+- Explain symmetric and asymmetric using key ownership, not just names.
+- Include public/private key roles explicitly when describing asymmetric encryption.
+- Mention that asymmetric encryption addresses key distribution problems found in symmetric methods.
 
 </div>
 
-### Worked communication flow: Tom sends a confidential file to Jane
-
-<div class="reader-section-body reader-section-body--example">
-
-1. Jane generates a matched public/private key pair.
-2. Jane shares only her public key with Tom.
-3. Tom encrypts the file using Jane's public key.
-4. Tom sends ciphertext over the network.
-5. Jane decrypts using her private key.
-
-Why this is secure in transit: knowing Jane's public key is not enough to derive her private key in practical time.
-
-This is the critical distinction from symmetric encryption, where both sides need the same secret key and that key exchange becomes the weak point.
-
-</div>
-
-### Asymmetric sequence visual (Tom -> Jane)
+### Common errors to avoid
 
 <div class="reader-section-body reader-section-body--apply">
 
-| Step | Tom (sender) | Network | Jane (receiver) |
-| --- | --- | --- | --- |
-| 1 | Requests Jane's public key | Public key can travel openly | Sends public key |
-| 2 | Encrypts message using Jane's public key | Ciphertext transmitted | Receives ciphertext |
-| 3 | Cannot decrypt with public key | Intercepted text still unreadable | Decrypts with Jane's private key |
-| 4 | - | - | Recovers original plaintext |
-
-</div>
-
-### Vocabulary checkpoints that often lose marks
-
-<div class="reader-section-body reader-section-body--apply">
-
-- `plaintext` is the original readable message.
-- `ciphertext` is the encrypted output.
-- `encryption algorithm` is the process, not the key.
-- `public key` can be shared.
-- `private key` must never be shared.
-- `check digit` is data-entry validation, not encryption and not packet integrity.
+- saying encryption prevents interception (it does not)
+- confusing `algorithm` with `key`
+- claiming public and private keys are the same thing
+- saying public key decrypts received ciphertext in the receiver model
+- mixing encryption terms with error-checking terms like parity or checksum.
 
 </div>
