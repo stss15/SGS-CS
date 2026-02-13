@@ -366,3 +366,30 @@
 
 ### Verification
 - `npm run framework:build` passed after route-scope fix in `getStaticPaths`.
+
+## 2026-02-13 - IGCSE Topic 3.1 SVG Fix and Topic 3.2 Authoring
+
+### Topic 3.1 Rendering Fix
+- Replaced brittle inline SVG markup in `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-3.md` with a static SVG asset reference to prevent markdown parser block-splitting issues.
+- Added new SVG asset:
+  - `/Users/StevenStewart/SGS-CSC REMIX/src/static/igcse/topic3/3.1 images/fde-abstract.svg`
+- Converted 3.1 visual references to explicit `<figure><img ... /></figure>` blocks so images render reliably inside reader section containers.
+
+### Topic 3.2 Textbook Chapter (Full Pass)
+- Authored full `## 3.2 Input & Output Devices` section in `/Users/StevenStewart/SGS-CSC REMIX/apps/site/src/content/igcse-textbooks/topic-3.md`, grounded in:
+  - chapter source `docs/content/igcse/chapter-text-files/chapter 3 Subfiles/3.2.txt`
+  - syllabus scope for section 3.2 from `docs/content/curriculum-guides/IGCSE CS Syllabus.pdf`.
+- Covered:
+  - input/output purpose and context matching
+  - barcode and QR processing and trade-offs
+  - digital camera and microphone capture flow (analogue to digital)
+  - mouse/scanner/touchscreen technologies
+  - output families (actuators, projectors, displays, printers, speakers)
+  - sensor selection and monitoring vs control distinctions.
+- Expanded key-term coverage in Topic 3 textbook to include 3.2-specific terminology.
+
+### Verification
+- `npm run framework:build` passed.
+- Confirmed chapter outputs render as expected:
+  - `/igcse/topic3/textbook/3-1` (SVG and images render, no escaped SVG code block)
+  - `/igcse/topic3/textbook/3-2` (full authored chapter content, no fallback state).

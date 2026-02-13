@@ -295,3 +295,35 @@
   - `/igcse/topic3/textbook/3-2/index.html`
   - `/igcse/topic3/textbook/3-3/index.html`
   - `/igcse/topic3/textbook/3-4/index.html`
+
+## Revision 11 Findings (Topic 3.1 SVG Repair + Topic 3.2 Build)
+
+- Date: 2026-02-13
+- Trigger: feedback that 3.1 content quality was strong but the SVG visual failed to render; request to proceed with full 3.2 chapter next.
+
+### Changes Applied
+
+1. Replaced inline SVG block in Topic 3.1 with a dedicated static SVG asset to avoid markdown raw-HTML boundary issues.
+2. Added:
+   - `src/static/igcse/topic3/3.1 images/fde-abstract.svg`
+3. Updated 3.1 visual blocks in:
+   - `apps/site/src/content/igcse-textbooks/topic-3.md`
+   from markdown image syntax inside raw HTML wrappers to explicit `<figure><img>` structures.
+4. Authored full `## 3.2 Input & Output Devices` section in:
+   - `apps/site/src/content/igcse-textbooks/topic-3.md`
+5. Grounded Topic 3.2 content against:
+   - `docs/content/igcse/chapter-text-files/chapter 3 Subfiles/3.2.txt`
+   - `docs/content/curriculum-guides/IGCSE CS Syllabus.pdf` (3.2 scope and notes guidance).
+6. Added mixed pedagogy structure for 3.2:
+   - context-first prose
+   - process sequences
+   - decision/comparison tables
+   - selective high-value figures.
+7. Expanded key-term set in Topic 3 to include device/sensor/display/printing terms needed for chapter 3.2 reading.
+
+### Verification Snapshot
+
+- `npm run framework:build` passed.
+- Confirmed:
+  - 3.1 no longer renders escaped SVG source as code.
+  - 3.1 and 3.2 chapter pages both render authored content in the chapter route.
