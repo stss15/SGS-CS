@@ -15,138 +15,200 @@ interface JourneyStage {
 }
 
 interface Props {
+  backHref?: string;
+  backLabel?: string;
   introTitle: string;
   introSummary: string;
   policyNote: string;
   stages: JourneyStage[];
 }
 
-const { introTitle, introSummary, policyNote, stages } = Astro.props;
+const { backHref, backLabel, introTitle, introSummary, policyNote, stages } = Astro.props;
+const totalParts = stages.reduce((count, stage) => count + stage.parts.length, 0);
 ---
 
 <section class="ib-project-journey" data-ib-journey>
   <header class="ib-journey-header">
-    <p class="ib-journey-kicker">Project Journey</p>
-    <h2>{introTitle}</h2>
-    <p class="ib-journey-summary">{introSummary}</p>
+    {backHref && backLabel && (
+      <a class="ib-journey-back" href={backHref}>
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        <span>{backLabel}</span>
+      </a>
+    )}
+
+    <div class="ib-journey-header-grid">
+      <div class="ib-journey-header-copy">
+        <p class="ib-journey-kicker">Project Journey</p>
+        <h2>{introTitle}</h2>
+        <p class="ib-journey-summary">{introSummary}</p>
+      </div>
+
+      <div class="ib-journey-header-stats" aria-label="Journey overview">
+        <article class="ib-journey-stat">
+          <span class="ib-journey-stat-value">{stages.length}</span>
+          <span class="ib-journey-stat-label">Stages</span>
+        </article>
+        <article class="ib-journey-stat">
+          <span class="ib-journey-stat-value">{totalParts}</span>
+          <span class="ib-journey-stat-label">Guided Parts</span>
+        </article>
+      </div>
+    </div>
+
     <div class="ib-journey-policy">
       <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
       <p>{policyNote}</p>
     </div>
   </header>
 
-  <nav class="ib-journey-stage-tabs" aria-label="Project stages" role="tablist">
-    {stages.map((stage, stageIndex) => {
-      const index = stageIndex + 1;
-      const isActive = stageIndex === 0;
-      return (
-        <button
-          type="button"
-          class:list={{ 'ib-journey-stage-btn': true, 'is-active': isActive }}
-          data-stage-target
-          data-stage-index={index}
-          role="tab"
-          aria-selected={isActive ? 'true' : 'false'}
-          aria-controls={`journey-stage-${index}`}
-          id={`journey-stage-tab-${index}`}
-        >
-          <span class="ib-journey-stage-badge">{stage.label}</span>
-          <span class="ib-journey-stage-title">{stage.title}</span>
+  <div class="ib-journey-shell">
+    <aside class="ib-journey-sidebar" aria-label="Journey navigation">
+      <section class="ib-journey-sidebar-card">
+        <p class="ib-journey-sidebar-label">Roadmap</p>
+        <nav class="ib-journey-stage-tabs" aria-label="Project stages" role="tablist">
+          {stages.map((stage, stageIndex) => {
+            const index = stageIndex + 1;
+            const isActive = stageIndex === 0;
+            return (
+              <button
+                type="button"
+                class:list={{ 'ib-journey-stage-btn': true, 'is-active': isActive }}
+                data-stage-target
+                data-stage-index={index}
+                role="tab"
+                aria-selected={isActive ? 'true' : 'false'}
+                aria-controls={`journey-stage-${index}`}
+                id={`journey-stage-tab-${index}`}
+              >
+                <span class="ib-journey-stage-number">{index}</span>
+                <span class="ib-journey-stage-copy">
+                  <span class="ib-journey-stage-badge">{stage.label}</span>
+                  <span class="ib-journey-stage-title">{stage.title}</span>
+                  <span class="ib-journey-stage-summary">{stage.overview}</span>
+                </span>
+                <span class="ib-journey-stage-meta">{stage.parts.length} parts</span>
+              </button>
+            );
+          })}
+        </nav>
+      </section>
+
+      <section class="ib-journey-sidebar-card ib-journey-sidebar-card--progress">
+        <p class="ib-journey-sidebar-label">Current Focus</p>
+        <p class="ib-journey-current" data-journey-current></p>
+        <p class="ib-journey-progress" data-journey-progress></p>
+        <p class="ib-journey-block-progress" data-journey-block-progress hidden></p>
+      </section>
+
+      <footer class="ib-journey-controls">
+        <button type="button" class="ib-journey-nav-btn" data-journey-action="prev">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+          Previous Focus
         </button>
-      );
-    })}
-  </nav>
+        <button type="button" class="ib-journey-nav-btn" data-journey-action="next">
+          Next Focus
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </footer>
+    </aside>
 
-  <div class="ib-journey-meta">
-    <p class="ib-journey-current" data-journey-current></p>
-    <p class="ib-journey-progress" data-journey-progress></p>
+    <div class="ib-journey-main">
+      <div class="ib-journey-stage-wrap">
+        {stages.map((stage, stageIndex) => {
+          const stagePosition = stageIndex + 1;
+          const stageActive = stageIndex === 0;
+          return (
+            <section
+              class="ib-journey-stage"
+              id={`journey-stage-${stagePosition}`}
+              data-stage-panel
+              data-stage-index={stagePosition}
+              data-stage-label={stage.label}
+              data-stage-title={stage.title}
+              data-part-count={stage.parts.length}
+              role="tabpanel"
+              aria-labelledby={`journey-stage-tab-${stagePosition}`}
+              hidden={!stageActive}
+            >
+              <article class="ib-journey-stage-overview">
+                <div class="ib-journey-stage-overview-copy">
+                  <p class="ib-journey-stage-eyebrow">{stage.label}</p>
+                  <h3>{stage.title}</h3>
+                  <p>{stage.overview}</p>
+                </div>
+                <div class="ib-journey-stage-overview-meta">
+                  <span>{stage.parts.length} guided parts</span>
+                  <span>One focus card at a time</span>
+                </div>
+              </article>
+
+              <div class="ib-journey-part-tabs" role="tablist" aria-label={`${stage.title} parts`}>
+                {stage.parts.map((part, partIndex) => {
+                  const partPosition = partIndex + 1;
+                  const partActive = partIndex === 0;
+                  return (
+                    <button
+                      type="button"
+                      class:list={{ 'ib-journey-part-btn': true, 'is-active': partActive }}
+                      data-part-target
+                      data-stage-index={stagePosition}
+                      data-part-index={partPosition}
+                      role="tab"
+                      aria-selected={partActive ? 'true' : 'false'}
+                      aria-controls={`journey-panel-${stagePosition}-${partPosition}`}
+                      id={`journey-part-tab-${stagePosition}-${partPosition}`}
+                    >
+                      <span class="ib-journey-part-index">Part {partPosition}</span>
+                      <span class="ib-journey-part-copy">
+                        <strong>{part.title}</strong>
+                        <small>{part.summary}</small>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div class="ib-journey-part-content">
+                {stage.parts.map((part, partIndex) => {
+                  const partPosition = partIndex + 1;
+                  const partActive = partIndex === 0;
+                  return (
+                    <article
+                      class="ib-journey-part"
+                      id={`journey-panel-${stagePosition}-${partPosition}`}
+                      data-part-panel
+                      data-stage-index={stagePosition}
+                      data-part-index={partPosition}
+                      data-part-title={part.title}
+                      data-part-summary={part.summary}
+                      role="tabpanel"
+                      aria-labelledby={`journey-part-tab-${stagePosition}-${partPosition}`}
+                      hidden={!partActive}
+                    >
+                      <header class="ib-journey-part-header">
+                        <div class="ib-journey-part-header-copy">
+                          <p class="ib-journey-part-kicker">{stage.label} / Part {partPosition}</p>
+                          <h4>{part.title}</h4>
+                          <p>{part.summary}</p>
+                        </div>
+                        <div class="ib-journey-part-badges">
+                          <span class="ib-journey-focus-chip">Guided Focus</span>
+                          <span class="ib-journey-focus-chip ib-journey-focus-chip--soft" data-part-focus-status>
+                            Preparing focus cards
+                          </span>
+                        </div>
+                      </header>
+                      <div class="ib-journey-part-body" set:html={part.contentHtml} />
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </div>
   </div>
-
-  <div class="ib-journey-stage-wrap">
-    {stages.map((stage, stageIndex) => {
-      const stagePosition = stageIndex + 1;
-      const stageActive = stageIndex === 0;
-      return (
-        <section
-          class="ib-journey-stage"
-          id={`journey-stage-${stagePosition}`}
-          data-stage-panel
-          data-stage-index={stagePosition}
-          data-stage-label={stage.label}
-          data-stage-title={stage.title}
-          data-part-count={stage.parts.length}
-          role="tabpanel"
-          aria-labelledby={`journey-stage-tab-${stagePosition}`}
-          hidden={!stageActive}
-        >
-          <article class="ib-journey-stage-overview">
-            <h3>{stage.label} - {stage.title}</h3>
-            <p>{stage.overview}</p>
-          </article>
-
-          <div class="ib-journey-part-tabs" role="tablist" aria-label={`${stage.title} parts`}>
-            {stage.parts.map((part, partIndex) => {
-              const partPosition = partIndex + 1;
-              const partActive = partIndex === 0;
-              return (
-                <button
-                  type="button"
-                  class:list={{ 'ib-journey-part-btn': true, 'is-active': partActive }}
-                  data-part-target
-                  data-stage-index={stagePosition}
-                  data-part-index={partPosition}
-                  role="tab"
-                  aria-selected={partActive ? 'true' : 'false'}
-                  aria-controls={`journey-panel-${stagePosition}-${partPosition}`}
-                  id={`journey-part-tab-${stagePosition}-${partPosition}`}
-                >
-                  <span class="ib-journey-part-pill">Part {partPosition}</span>
-                  <span>{part.title}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div class="ib-journey-part-content">
-            {stage.parts.map((part, partIndex) => {
-              const partPosition = partIndex + 1;
-              const partActive = partIndex === 0;
-              return (
-                <article
-                  class="ib-journey-part"
-                  id={`journey-panel-${stagePosition}-${partPosition}`}
-                  data-part-panel
-                  data-stage-index={stagePosition}
-                  data-part-index={partPosition}
-                  data-part-title={part.title}
-                  role="tabpanel"
-                  aria-labelledby={`journey-part-tab-${stagePosition}-${partPosition}`}
-                  hidden={!partActive}
-                >
-                  <header class="ib-journey-part-header">
-                    <h4>{part.title}</h4>
-                    <p>{part.summary}</p>
-                  </header>
-                  <div class="ib-journey-part-body" set:html={part.contentHtml} />
-                </article>
-              );
-            })}
-          </div>
-        </section>
-      );
-    })}
-  </div>
-
-  <footer class="ib-journey-controls">
-    <button type="button" class="ib-journey-nav-btn" data-journey-action="prev">
-      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-      Previous Step
-    </button>
-    <button type="button" class="ib-journey-nav-btn" data-journey-action="next">
-      Next Step
-      <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-    </button>
-  </footer>
 </section>
 
 <script is:inline src="/js/ib-project-journey.js"></script>
