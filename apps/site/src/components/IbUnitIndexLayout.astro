@@ -14,6 +14,7 @@ const { page, unitPlan } = Astro.props;
 const syllabusRows = buildSyllabusRows(unitPlan);
 const flashcardsHref = getFlashcardsHref(page.cards);
 const slides = page.resources || [];
+const studentActivities = page.studentActivitiesResources || [];
 
 const formatList = (items: string[]): string => {
   if (items.length === 0) {
@@ -44,11 +45,6 @@ const unitOverviewFocus =
     : 'You will build understanding and confidence with the key ideas in this unit.';
 
 const placeholderSections = [
-  {
-    id: 'student-activities',
-    title: 'Student Activities',
-    message: 'Student activities for this unit will be added here.'
-  },
   {
     id: 'assessment',
     title: 'Assessment',
@@ -174,6 +170,39 @@ const placeholderSections = [
     ) : (
       <div class="content-box ib-empty-box">
         <p>Slide decks for this unit will be added here.</p>
+      </div>
+    )}
+  </section>
+
+  <section class="resource-section" id="student-activities">
+    <div class="resource-header">
+      <h2 class="resource-title">Student Activities</h2>
+      <div class="resource-line"></div>
+    </div>
+
+    {studentActivities.length > 0 ? (
+      <div class="resource-grid">
+        {studentActivities.map((resource) => (
+          <a
+            href={resource.href}
+            class="resource-btn"
+            target={resource.target}
+            rel={resource.target === '_blank' ? 'noopener noreferrer' : undefined}
+          >
+            <span class="resource-number">
+              {resource.icon ? <i class={resource.icon} aria-hidden="true"></i> : (resource.number || '')}
+            </span>
+            <span class="resource-info">
+              <span class="resource-name">{resource.name}</span>
+              {resource.type && <span class="resource-type">{resource.type}</span>}
+            </span>
+            <i class={`fa-solid ${resource.target === '_blank' ? 'fa-arrow-up-right-from-square' : 'fa-arrow-right'} resource-arrow`} aria-hidden="true"></i>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="content-box ib-empty-box">
+        <p>Student activities for this unit will be added here.</p>
       </div>
     )}
   </section>

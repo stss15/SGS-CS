@@ -1,0 +1,652 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
+import HeroPanel from '../../../../../components/HeroPanel.astro';
+import IbProjectJourney from '../../../../../components/IbProjectJourney.astro';
+
+interface JourneyPart {
+  id: string;
+  title: string;
+  summary: string;
+  contentHtml: string;
+}
+
+interface JourneyStage {
+  id: string;
+  label: string;
+  title: string;
+  overview: string;
+  parts: JourneyPart[];
+}
+
+const flowLine = 'UI -> JavaScript -> HTTP -> Flask -> Database -> Response -> UI';
+
+const listMarkup = (items: string[]) => '<ul>' + items.map((item) => '<li>' + item + '</li>').join('') + '</ul>';
+
+const featurePart = (
+  featureNumber: number,
+  title: string,
+  purpose: string,
+  concept: string,
+  files: string[],
+  criteria: string[],
+  studentTask: string[]
+): JourneyPart => ({
+  id: `feature-${featureNumber}`,
+  title: `Feature ${featureNumber} - ${title}`,
+  summary: purpose,
+  contentHtml: `
+    <section class="journey-block">
+      <h5>Feature Description</h5>
+      <p>${purpose}</p>
+    </section>
+    <section class="journey-block">
+      <h5>System Flow Context</h5>
+      <pre>${flowLine}</pre>
+      <p>Focus concept for this step: ${concept}</p>
+    </section>
+    <section class="journey-block">
+      <h5>Technology Reference (Generic)</h5>
+      <p>Study the relevant docs for this step using small, unrelated syntax examples only. Do not mirror this project's real implementation.</p>
+    </section>
+    <section class="journey-block">
+      <h5>Code Files Involved (Conceptual)</h5>
+      ${listMarkup(files)}
+    </section>
+    <section class="journey-block">
+      <h5>Implementation Criteria</h5>
+      ${listMarkup(criteria)}
+    </section>
+    <section class="journey-block">
+      <h5>Student Task</h5>
+      ${listMarkup(studentTask)}
+    </section>
+  `
+});
+
+const featureParts: JourneyPart[] = [
+  featurePart(
+    1,
+    'Project Directory Structure',
+    'Set up a clear folder layout so each technology has a defined responsibility.',
+    'Separation of concerns and naming conventions.',
+    ['app.py', 'templates/', 'static/', 'schema.sql', 'init_db.py'],
+    ['Project folders are created consistently across the class.', 'Each file has one clear responsibility.', 'Students can explain why frontend and backend files are separated.'],
+    ['Create the agreed folder and file skeleton.', 'Label each file with its role in the full stack.', 'Keep the structure minimal and readable.']
+  ),
+  featurePart(
+    2,
+    'Base HTML Page',
+    'Create the main interface shell so the project has a stable UI foundation.',
+    'Semantic HTML structure and layout containers.',
+    ['templates/index.html'],
+    ['Main page loads successfully.', 'Core layout regions are visible.', 'Structure supports later dynamic content.'],
+    ['Build the core page shell.', 'Add logical sections for controls and output.', 'Confirm page renders before adding behavior.']
+  ),
+  featurePart(
+    3,
+    'Task List Display Area',
+    'Reserve a dedicated container where tasks will be rendered dynamically.',
+    'DOM targeting with stable HTML identifiers.',
+    ['templates/index.html', 'static/js/app.js'],
+    ['Display container has a clear identifier.', 'Container can be cleared and repopulated.', 'Empty-state behavior is defined.'],
+    ['Add the list container in HTML.', 'Plan how render logic targets this container.', 'Document what appears when there are no tasks.']
+  ),
+  featurePart(
+    4,
+    'Add Task Button and Modal',
+    'Introduce the task creation UI entry point with a modal interaction pattern.',
+    'Modal workflows and event-driven UI states.',
+    ['templates/index.html'],
+    ['Add Task trigger opens correctly.', 'Modal can close safely without side effects.', 'Modal structure supports required form inputs.'],
+    ['Create the modal skeleton.', 'Define modal open/close interactions.', 'Prepare modal body for form fields.']
+  ),
+  featurePart(
+    5,
+    'Form Inputs',
+    'Collect the required task fields in a consistent and validated format.',
+    'Input validation basics and data-field mapping.',
+    ['templates/index.html'],
+    ['Inputs exist for title, assigned user, due date, and priority.', 'Required fields are clear to users.', 'Input names align with backend data expectations.'],
+    ['Add all required form controls.', 'Identify which fields are required vs optional.', 'Map each input to a data meaning in the model.']
+  ),
+  featurePart(
+    6,
+    'Fetch and Display Tasks',
+    'Read task data from storage and render it in the list area.',
+    'Request/response pipeline and JSON handling.',
+    ['static/js/app.js', 'app.py'],
+    ['GET pipeline returns data in a predictable shape.', 'Rendered list updates without full page reload.', 'Students can trace data movement from storage to UI.'],
+    ['Implement the read workflow with teacher guidance.', 'Render each returned item into the list container.', 'Handle empty results clearly.']
+  ),
+  featurePart(
+    7,
+    'Create Task',
+    'Submit new task data and persist it in storage.',
+    'POST requests and record insertion flow.',
+    ['static/js/app.js', 'app.py'],
+    ['Submission sends structured request data.', 'New record persists successfully.', 'List refresh shows the newly created task.'],
+    ['Wire form submission to the create endpoint.', 'Validate required fields before submit.', 'Refresh the view after successful creation.']
+  ),
+  featurePart(
+    8,
+    'Delete Task',
+    'Allow users to remove records using stable identifiers.',
+    'Identifier-driven deletion and route parameters.',
+    ['static/js/app.js', 'app.py'],
+    ['Delete action targets the correct record id.', 'Storage and UI both update after delete.', 'Duplicate titles do not cause ambiguous deletion.'],
+    ['Attach delete controls to each rendered item.', 'Call delete workflow using record id.', 'Re-render the list after deletion.']
+  ),
+  featurePart(
+    9,
+    'Mark Task Complete',
+    'Update task status and reflect completion feedback in the interface.',
+    'Record update operations and user feedback loops.',
+    ['static/js/app.js', 'app.py'],
+    ['Completion action updates persisted status.', 'UI communicates completed state clearly.', 'Updated task appears correctly after refresh.'],
+    ['Add a completion action per task item.', 'Trigger status update via backend workflow.', 'Refresh or re-render to show new state.']
+  ),
+  featurePart(
+    10,
+    'Filtering and Sorting',
+    'Improve retrieval by applying conditional filters and ordering logic.',
+    'Conditional query thinking and ordered outputs.',
+    ['static/js/app.js', 'app.py'],
+    ['Tasks can be filtered by user, priority, and due date.', 'Sorting behavior is predictable and testable.', 'Applied filters are visible and reversible.'],
+    ['Design filter controls in UI.', 'Define filtering and sorting expectations before implementation.', 'Validate that returned results match selected criteria.']
+  ),
+  featurePart(
+    11,
+    'Testing Against Evaluation Criteria',
+    'Validate the finished system against the original measurable criteria.',
+    'Traceability from specification to test evidence.',
+    ['Project test table', 'UI behavior checks', 'Storage verification evidence'],
+    ['Each criterion maps to at least one explicit test.', 'Expected and actual results are recorded.', 'Pass/fail outcomes are justified with evidence.'],
+    ['Complete the test table.', 'Capture evidence for each major workflow.', 'Identify any unresolved gaps before extension stages.']
+  )
+];
+
+const stages: JourneyStage[] = [
+  {
+    id: 'stage-1',
+    label: 'Stage 1',
+    title: 'Problem Specification',
+    overview: 'Start from the client perspective so the project solves a real operational problem before any coding decisions are made.',
+    parts: [
+      {
+        id: 'stage-1-part-1',
+        title: 'Client Voice Problem Brief',
+        summary: 'Read the brief as a real client request, not as a technical design document.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Client Problem Statement</h5>
+            <p>"Our team tracks work in spreadsheets and messages. We lose visibility on ownership, deadlines, and completion status. We need one clear system to track tasks and progress."</p>
+          </section>
+          <section class="journey-block">
+            <h5>Constraints and Limitations</h5>
+            ${listMarkup([
+              'The system must be usable by non-technical staff.',
+              'Task records must remain consistent when edited by different users.',
+              'The project should stay small enough to understand end-to-end in class.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>Objectives, Inputs, Outputs, Evaluation</h5>
+            ${listMarkup([
+              'Objectives: reduce missed tasks, improve accountability, and support quick progress checks.',
+              'Inputs: title, assigned user, due date, priority, status actions.',
+              'Outputs: task list views, filtered views, completion status feedback.',
+              'Evaluation criteria: measurable checks that can be marked pass/fail later.'
+            ])}
+          </section>
+        `
+      },
+      {
+        id: 'stage-1-part-2',
+        title: 'Requirements Map',
+        summary: 'Translate the brief into testable system requirements and criteria.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Requirement Categories</h5>
+            ${listMarkup([
+              'Functional requirements: what the system must do.',
+              'Constraints: what the system must respect.',
+              'Success criteria: how correctness will be judged.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>Output From This Part</h5>
+            ${listMarkup([
+              'A concise requirement list linked to user needs.',
+              'A measurable criterion list that feeds testing later.',
+              'A clear boundary between required behavior and optional extensions.'
+            ])}
+          </section>
+        `
+      }
+    ]
+  },
+  {
+    id: 'stage-2',
+    label: 'Stage 2',
+    title: 'Planning the System',
+    overview: 'Convert the specification into a visual plan: wireframes, field mapping, and a test table structure.',
+    parts: [
+      {
+        id: 'stage-2-part-1',
+        title: 'Wireframes',
+        summary: 'Use planning diagrams to define the interface before implementation.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Task List Interface Wireframe</h5>
+            <svg class="ib-journey-svg" viewBox="0 0 720 220" role="img" aria-label="Task list wireframe">
+              <rect x="16" y="16" width="688" height="188" fill="#ffffff" stroke="#bcc9e6" stroke-width="2" rx="8" />
+              <rect x="34" y="34" width="180" height="32" fill="#eef3ff" stroke="#b7c6e8" rx="6" />
+              <text x="44" y="55" fill="#1a3066" font-size="14" font-family="Arial">Filter: User</text>
+              <rect x="224" y="34" width="180" height="32" fill="#eef3ff" stroke="#b7c6e8" rx="6" />
+              <text x="234" y="55" fill="#1a3066" font-size="14" font-family="Arial">Filter: Priority</text>
+              <rect x="414" y="34" width="180" height="32" fill="#eef3ff" stroke="#b7c6e8" rx="6" />
+              <text x="424" y="55" fill="#1a3066" font-size="14" font-family="Arial">Sort: Due Date</text>
+              <rect x="604" y="34" width="82" height="32" fill="#0E214B" rx="6" />
+              <text x="621" y="55" fill="#ffffff" font-size="13" font-family="Arial">Add</text>
+              <rect x="34" y="78" width="652" height="34" fill="#f8faff" stroke="#d6deef" rx="6" />
+              <rect x="34" y="118" width="652" height="34" fill="#f8faff" stroke="#d6deef" rx="6" />
+              <rect x="34" y="158" width="652" height="34" fill="#f8faff" stroke="#d6deef" rx="6" />
+            </svg>
+          </section>
+          <section class="journey-block">
+            <h5>Add Task Modal Wireframe</h5>
+            <svg class="ib-journey-svg" viewBox="0 0 720 260" role="img" aria-label="Add task modal wireframe">
+              <rect x="160" y="16" width="400" height="228" fill="#ffffff" stroke="#bcc9e6" stroke-width="2" rx="8" />
+              <rect x="176" y="34" width="368" height="28" fill="#f3f6ff" stroke="#d1dbef" rx="6" />
+              <text x="188" y="53" fill="#1a3066" font-size="14" font-family="Arial">Task Title</text>
+              <rect x="176" y="72" width="368" height="28" fill="#f3f6ff" stroke="#d1dbef" rx="6" />
+              <text x="188" y="91" fill="#1a3066" font-size="14" font-family="Arial">Assigned User</text>
+              <rect x="176" y="110" width="368" height="28" fill="#f3f6ff" stroke="#d1dbef" rx="6" />
+              <text x="188" y="129" fill="#1a3066" font-size="14" font-family="Arial">Priority</text>
+              <rect x="176" y="148" width="368" height="28" fill="#f3f6ff" stroke="#d1dbef" rx="6" />
+              <text x="188" y="167" fill="#1a3066" font-size="14" font-family="Arial">Due Date</text>
+              <rect x="360" y="196" width="82" height="32" fill="#d9dfef" rx="6" />
+              <text x="384" y="216" fill="#1a3066" font-size="13" font-family="Arial">Cancel</text>
+              <rect x="452" y="196" width="92" height="32" fill="#0E214B" rx="6" />
+              <text x="475" y="216" fill="#ffffff" font-size="13" font-family="Arial">Save Task</text>
+            </svg>
+          </section>
+        `
+      },
+      {
+        id: 'stage-2-part-2',
+        title: 'Input-to-Data Mapping',
+        summary: 'Map every visible input to data requirements before writing schema or code.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Mapping Approach</h5>
+            ${listMarkup([
+              'List each interface input from the wireframe.',
+              'Define what data type each input represents conceptually.',
+              'Flag required vs optional values.',
+              'Identify where each value appears in outputs.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>Why This Matters</h5>
+            <p>This mapping reduces schema mistakes, keeps field names consistent, and makes testing straightforward later.</p>
+          </section>
+        `
+      },
+      {
+        id: 'stage-2-part-3',
+        title: 'Testing Table Template',
+        summary: 'Create the structure now, then fill actual outcomes after implementation.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Template</h5>
+            <table>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th>Input</th>
+                  <th>Expected Output</th>
+                  <th>Actual Output</th>
+                  <th>Pass/Fail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Example: Add valid task</td>
+                  <td>Title + User + Priority</td>
+                  <td>Task appears in list</td>
+                  <td>Pending</td>
+                  <td>Pending</td>
+                </tr>
+                <tr>
+                  <td>Example: Empty title</td>
+                  <td>No title entered</td>
+                  <td>Submission blocked</td>
+                  <td>Pending</td>
+                  <td>Pending</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        `
+      }
+    ]
+  },
+  {
+    id: 'stage-3',
+    label: 'Stage 3',
+    title: 'SQL Database Design',
+    overview: 'Design the relational model before implementation, introducing keys, relationships, integrity, and normalization.',
+    parts: [
+      {
+        id: 'stage-3-part-1',
+        title: 'Relational Concepts',
+        summary: 'Use precise terminology to design clearly and discuss decisions accurately.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Core Terms</h5>
+            <table>
+              <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>Table</td><td>A set of records about one entity type.</td></tr>
+                <tr><td>Record</td><td>One row in a table.</td></tr>
+                <tr><td>Field</td><td>One column representing one attribute.</td></tr>
+                <tr><td>Primary Key</td><td>Unique identifier for records in a table.</td></tr>
+                <tr><td>Foreign Key</td><td>Reference to a primary key in another table.</td></tr>
+                <tr><td>Referential Integrity</td><td>Prevents broken references between related tables.</td></tr>
+              </tbody>
+            </table>
+          </section>
+        `
+      },
+      {
+        id: 'stage-3-part-2',
+        title: 'Normalization Focus (1NF, 2NF, 3NF)',
+        summary: 'Apply normal forms to prevent duplication and improve consistency.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Normalization Checklist</h5>
+            ${listMarkup([
+              '1NF: each field stores atomic values only.',
+              '2NF: non-key fields depend on the whole key.',
+              '3NF: remove transitive dependencies between non-key fields.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>Decision Rule</h5>
+            <p>If repeating or dependent data appears in the wrong place, redesign before coding. Do not rely on later patches for structure errors.</p>
+          </section>
+        `
+      },
+      {
+        id: 'stage-3-part-3',
+        title: 'ER Diagram Drafting',
+        summary: 'Model the core entities and relationships now; tagging appears later.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Current Scope</h5>
+            ${listMarkup([
+              'Model only core entities at this stage.',
+              'Mark primary and foreign keys explicitly.',
+              'Label cardinality (one-to-many) clearly.',
+              'Leave tagging entities for Stage 6 extension.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>ERD Quality Checks</h5>
+            ${listMarkup([
+              'Every relationship has a defined direction and meaning.',
+              'Every foreign key points to one clear primary key target.',
+              'Optional vs required relationships are explicit.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>Interactive Table + ERD Builder</h5>
+            <p>Use this tool to draft your own table structure, field list, and relationships before writing your final schema and ER diagram.</p>
+            <div class="ib-erd-builder" data-erd-builder>
+              <div class="ib-erd-grid">
+                <article class="ib-erd-card">
+                  <h6>Add Table</h6>
+                  <form data-erd-add-table class="ib-erd-form">
+                    <label>
+                      Table name
+                      <input type="text" name="tableName" placeholder="Example: tasks" required />
+                    </label>
+                    <button type="submit">Add table</button>
+                  </form>
+                </article>
+                <article class="ib-erd-card">
+                  <h6>Link Relationship</h6>
+                  <form data-erd-add-relationship class="ib-erd-form">
+                    <label>
+                      From table
+                      <select name="fromTable" data-erd-from-table required></select>
+                    </label>
+                    <label>
+                      From field
+                      <select name="fromField" data-erd-from-field required></select>
+                    </label>
+                    <label>
+                      Relationship type
+                      <select name="relationshipType" required>
+                        <option value="1:1">1:1</option>
+                        <option value="1:many">1:many</option>
+                        <option value="many:many">many:many</option>
+                      </select>
+                    </label>
+                    <label>
+                      To table
+                      <select name="toTable" data-erd-to-table required></select>
+                    </label>
+                    <label>
+                      To field
+                      <select name="toField" data-erd-to-field required></select>
+                    </label>
+                    <button type="submit">Add relationship</button>
+                  </form>
+                </article>
+              </div>
+
+              <div class="ib-erd-builder-body">
+                <article class="ib-erd-card ib-erd-entities-card">
+                  <h6>Tables and Fields</h6>
+                  <p class="ib-erd-note">For each table, add fields and mark keys as PK/FK where needed.</p>
+                  <div class="ib-erd-entities" data-erd-entities></div>
+                </article>
+
+                <article class="ib-erd-card ib-erd-graph-card">
+                  <h6>Relationship Map</h6>
+                  <svg class="ib-erd-graph" data-erd-graph viewBox="0 0 900 460" role="img" aria-label="ER relationship map"></svg>
+                </article>
+              </div>
+
+              <div class="ib-erd-grid ib-erd-grid-bottom">
+                <article class="ib-erd-card">
+                  <h6>Schema Draft Output</h6>
+                  <pre data-erd-schema></pre>
+                </article>
+                <article class="ib-erd-card">
+                  <h6>Relationship List</h6>
+                  <ul data-erd-rel-list class="ib-erd-rel-list"></ul>
+                  <button type="button" class="ib-erd-reset" data-erd-reset>Reset builder</button>
+                </article>
+              </div>
+            </div>
+          </section>
+        `
+      }
+    ]
+  },
+  {
+    id: 'stage-4',
+    label: 'Stage 4',
+    title: 'Feature-by-Feature Application Build',
+    overview: 'Implement in strict sequence, one concept at a time, so each feature can be understood, tested, and explained.',
+    parts: featureParts
+  },
+  {
+    id: 'stage-5',
+    label: 'Stage 5',
+    title: 'Non-Standard Algorithm (Tagging)',
+    overview: 'Introduce a custom algorithm only after the core system is stable and testable.',
+    parts: [
+      {
+        id: 'stage-5-part-1',
+        title: 'Algorithm Purpose and Scope',
+        summary: 'Define why tagging exists and what problem it solves in this project.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Purpose</h5>
+            <p>Tagging improves retrieval and organization by extracting meaningful keywords from task text.</p>
+          </section>
+          <section class="journey-block">
+            <h5>Design Constraints</h5>
+            ${listMarkup([
+              'Algorithm must be explainable in plain English.',
+              'Output should be short, relevant, and consistent.',
+              'Integration must not break existing CRUD workflows.'
+            ])}
+          </section>
+        `
+      },
+      {
+        id: 'stage-5-part-2',
+        title: 'Plain-English Algorithm Steps',
+        summary: 'Write the algorithm as ordered logic before coding any implementation.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Ordered Steps</h5>
+            <ol>
+              <li>Read the task text input.</li>
+              <li>Convert text to lower case and split into words.</li>
+              <li>Remove common stop words.</li>
+              <li>Remove duplicate words.</li>
+              <li>Keep a limited number of keywords for tags.</li>
+              <li>Return the final tag candidates for storage linking.</li>
+            </ol>
+          </section>
+        `
+      },
+      {
+        id: 'stage-5-part-3',
+        title: 'Flowchart and Integration Point',
+        summary: 'Visualize algorithm flow and identify where it joins the storage process.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Flowchart</h5>
+            <svg class="ib-journey-svg" viewBox="0 0 760 220" role="img" aria-label="Tagging algorithm flowchart">
+              <rect x="20" y="84" width="120" height="52" rx="10" fill="#ffffff" stroke="#b8c6e3" stroke-width="2" />
+              <text x="54" y="114" font-family="Arial" font-size="13" fill="#1a3066">Start</text>
+              <rect x="170" y="84" width="145" height="52" rx="8" fill="#f7f9ff" stroke="#b8c6e3" stroke-width="2" />
+              <text x="182" y="107" font-family="Arial" font-size="12" fill="#1a3066">Read task text</text>
+              <text x="182" y="123" font-family="Arial" font-size="12" fill="#1a3066">and split words</text>
+              <rect x="345" y="84" width="150" height="52" rx="8" fill="#f7f9ff" stroke="#b8c6e3" stroke-width="2" />
+              <text x="357" y="107" font-family="Arial" font-size="12" fill="#1a3066">Remove stop words</text>
+              <text x="357" y="123" font-family="Arial" font-size="12" fill="#1a3066">and duplicates</text>
+              <rect x="525" y="84" width="130" height="52" rx="8" fill="#f7f9ff" stroke="#b8c6e3" stroke-width="2" />
+              <text x="537" y="107" font-family="Arial" font-size="12" fill="#1a3066">Limit to top</text>
+              <text x="537" y="123" font-family="Arial" font-size="12" fill="#1a3066">keyword set</text>
+              <rect x="675" y="84" width="70" height="52" rx="10" fill="#0E214B" />
+              <text x="692" y="114" font-family="Arial" font-size="12" fill="#ffffff">End</text>
+              <line x1="140" y1="110" x2="170" y2="110" stroke="#7f8fb8" stroke-width="2" />
+              <line x1="315" y1="110" x2="345" y2="110" stroke="#7f8fb8" stroke-width="2" />
+              <line x1="495" y1="110" x2="525" y2="110" stroke="#7f8fb8" stroke-width="2" />
+              <line x1="655" y1="110" x2="675" y2="110" stroke="#7f8fb8" stroke-width="2" />
+            </svg>
+          </section>
+          <section class="journey-block">
+            <h5>Integration Point</h5>
+            <p>The algorithm runs during task creation after the core record is accepted, then connects through tag-link storage logic.</p>
+          </section>
+        `
+      }
+    ]
+  },
+  {
+    id: 'stage-6',
+    label: 'Stage 6',
+    title: 'Database Extension',
+    overview: 'Extend the relational model for tagging with many-to-many relationships and composite keys.',
+    parts: [
+      {
+        id: 'stage-6-part-1',
+        title: 'Why the Database Must Change',
+        summary: 'Tagging introduces relationship complexity that cannot fit in one table cleanly.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>Extension Rationale</h5>
+            ${listMarkup([
+              'One task can have many tags.',
+              'One tag can be used by many tasks.',
+              'This is a many-to-many relationship and needs a junction table.'
+            ])}
+          </section>
+        `
+      },
+      {
+        id: 'stage-6-part-2',
+        title: 'Tags + Task_Tags Model',
+        summary: 'Introduce new entities and composite-key integrity rules.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>New Entities</h5>
+            ${listMarkup([
+              'Tag entity: stores each unique tag value once.',
+              'Task-Tag junction entity: stores task-tag links.',
+              'Composite key in the junction prevents duplicate links for the same pair.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>Integrity Outcome</h5>
+            <p>The storage model enforces uniqueness of each task-tag relationship even if application logic attempts duplicate linking.</p>
+          </section>
+        `
+      },
+      {
+        id: 'stage-6-part-3',
+        title: 'Updated ERD and Verification',
+        summary: 'Update the ERD and verify relationship accuracy before final evaluation.',
+        contentHtml: `
+          <section class="journey-block">
+            <h5>ERD Update Checklist</h5>
+            ${listMarkup([
+              'Add Tag and Task-Tag entities.',
+              'Mark both foreign keys in the junction entity.',
+              'Mark composite key for the link pair.',
+              'Confirm cardinality from Task to Tag via junction.'
+            ])}
+          </section>
+          <section class="journey-block">
+            <h5>Readiness for Final Testing</h5>
+            ${listMarkup([
+              'Core features still pass original evaluation criteria.',
+              'Tagging feature has dedicated test cases.',
+              'Database design aligns with relationship rules and normalization goals.'
+            ])}
+          </section>
+        `
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="SL Unit 6 SQL Project Journey - SGS Education"
+  description="Stage-based SQL project journey for IB 2027 SL Unit 6."
+  extraStyles={['css/ib-project-journey.css']}
+>
+  <HeroPanel
+    title="SQL Project"
+    subtitle="SL Unit 6 - Stage-based build journey"
+  />
+
+  <IbProjectJourney
+    introTitle="Full-Stack SQL Project (SL Unit 6)"
+    introSummary="Move through six stages in order. Each part isolates one concept so the class can build deliberately and explain every decision."
+    policyNote="This page is a guided build map, not a solution dump. You will not find copy-paste project code, full schemas, or working route implementations here."
+    stages={stages}
+  />
+
+  <script is:inline src="/js/ib-erd-builder.js"></script>
+</BaseLayout>

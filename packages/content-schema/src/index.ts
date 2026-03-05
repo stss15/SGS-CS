@@ -126,6 +126,7 @@ export interface UnitIndexFrontmatter {
   cards?: UnitCard[];
   resourcesTitle?: string;
   resources?: UnitResource[];
+  studentActivitiesResources?: UnitResource[];
   resourcesSecondaryTitle?: string;
   resourcesSecondary?: UnitResource[];
 }
