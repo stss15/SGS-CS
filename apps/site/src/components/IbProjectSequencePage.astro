@@ -1,0 +1,162 @@
+---
+import type { ProjectSequence, ProjectStage, ProjectStep } from '../lib/ib-project-content';
+
+interface Props {
+  sequence: ProjectSequence;
+  currentSlug: string;
+}
+
+const { sequence, currentSlug } = Astro.props;
+
+const steps = sequence.steps;
+const currentStep = steps.find((step) => step.slug === currentSlug) || steps[0];
+const currentIndex = Math.max(0, steps.findIndex((step) => step.slug === currentStep.slug));
+const previousStep = currentIndex > 0 ? steps[currentIndex - 1] : null;
+const nextStep = currentIndex < steps.length - 1 ? steps[currentIndex + 1] : null;
+const currentStage = sequence.stages.find((stage) => stage.id === currentStep.stageId) || sequence.stages[0];
+const stageSteps = steps.filter((step) => step.stageId === currentStep.stageId);
+const stageStepIndex = Math.max(0, stageSteps.findIndex((step) => step.slug === currentStep.slug));
+
+const stepHref = (step: ProjectStep): string =>
+  step.slug ? `${sequence.rootPath}/${step.slug}/index.html` : `${sequence.rootPath}/index.html`;
+
+const stageStepCount = (stage: ProjectStage): number =>
+  steps.filter((step) => step.stageId === stage.id).length;
+---
+
+<section class="ib-project-sequence">
+  <header class="ib-project-sequence-header">
+    <a class="ib-project-sequence-back" href={sequence.unitHref}>
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span>{sequence.unitLabel}</span>
+    </a>
+
+    <div class="ib-project-sequence-headline">
+      <div class="ib-project-sequence-copy">
+        <p class="ib-project-sequence-kicker">{sequence.kicker}</p>
+        <h1>{currentStep.title}</h1>
+        <p class="ib-project-sequence-intro">{currentStep.intro}</p>
+      </div>
+
+      <div class="ib-project-sequence-stats">
+        <article class="ib-project-sequence-stat">
+          <span class="ib-project-sequence-stat-value">{currentIndex + 1}</span>
+          <span class="ib-project-sequence-stat-label">of {steps.length} pages</span>
+        </article>
+        <article class="ib-project-sequence-stat">
+          <span class="ib-project-sequence-stat-value">{currentStage.label}</span>
+          <span class="ib-project-sequence-stat-label">{currentStage.title}</span>
+        </article>
+      </div>
+    </div>
+
+    <div class="ib-project-sequence-progress">
+      <span>{currentStage.label}</span>
+      <span>Page {stageStepIndex + 1} of {stageSteps.length} in this stage</span>
+      {currentStep.paceLabel && <span>{currentStep.paceLabel}</span>}
+    </div>
+  </header>
+
+  <div class="ib-project-sequence-shell">
+    <aside class="ib-project-sequence-sidebar" aria-label="Project roadmap">
+      <section class="ib-project-sequence-sidebar-card">
+        <p class="ib-project-sequence-sidebar-label">Roadmap</p>
+        <p class="ib-project-sequence-sidebar-title">{sequence.projectTitle}</p>
+        <p class="ib-project-sequence-sidebar-summary">{sequence.projectSummary}</p>
+      </section>
+
+      <nav class="ib-project-sequence-roadmap" aria-label="Stage roadmap">
+        {sequence.stages.map((stage) => {
+          const isCurrentStage = stage.id === currentStage.id;
+          const stageItems = steps.filter((step) => step.stageId === stage.id);
+          return (
+            <details class="ib-project-stage-group" open={isCurrentStage}>
+              <summary class:list={{ 'is-current': isCurrentStage }}>
+                <span class="ib-project-stage-pill">{stage.label}</span>
+                <span class="ib-project-stage-summary">
+                  <strong>{stage.title}</strong>
+                  <small>{stage.summary}</small>
+                </span>
+                <span class="ib-project-stage-count">{stageStepCount(stage)} pages</span>
+              </summary>
+              <div class="ib-project-stage-links">
+                {stageItems.map((step, stepIndex) => {
+                  const isCurrentStep = step.slug === currentStep.slug;
+                  return (
+                    <a
+                      class:list={{ 'ib-project-stage-link': true, 'is-current': isCurrentStep }}
+                      href={stepHref(step)}
+                      aria-current={isCurrentStep ? 'page' : undefined}
+                    >
+                      <span class="ib-project-stage-link-index">{stepIndex + 1}</span>
+                      <span class="ib-project-stage-link-copy">
+                        <strong>{step.navLabel}</strong>
+                        <small>{step.sidebarSummary || step.intro}</small>
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </details>
+          );
+        })}
+      </nav>
+    </aside>
+
+    <article class="ib-project-sequence-article">
+      <header class="ib-project-step-header">
+        <div class="ib-project-step-header-copy">
+          <p class="ib-project-step-kicker">{currentStage.label} · {currentStage.title}</p>
+          <h2>{currentStep.navLabel}</h2>
+          <p>{currentStep.headerNote || currentStep.intro}</p>
+        </div>
+        <div class="ib-project-step-badges">
+          <span class="ib-project-step-badge">Current page</span>
+          {currentStep.deliverable && <span class="ib-project-step-badge is-soft">{currentStep.deliverable}</span>}
+        </div>
+      </header>
+
+      {currentStep.learningGoals && currentStep.learningGoals.length > 0 && (
+        <section class="ib-project-lesson-strip" aria-label="Learning focus">
+          <h3>Learning Focus</h3>
+          <ul>
+            {currentStep.learningGoals.map((goal) => (
+              <li>{goal}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div class="ib-project-lesson-body" set:html={currentStep.contentHtml} />
+
+      <footer class="ib-project-sequence-footer">
+        {previousStep ? (
+          <a class="ib-project-nav-link" href={stepHref(previousStep)}>
+            <span class="ib-project-nav-label">Previous</span>
+            <strong>{previousStep.navLabel}</strong>
+          </a>
+        ) : (
+          <div class="ib-project-nav-link is-disabled">
+            <span class="ib-project-nav-label">Previous</span>
+            <strong>Start of project</strong>
+          </div>
+        )}
+
+        {nextStep ? (
+          <a class="ib-project-nav-link is-next" href={stepHref(nextStep)}>
+            <span class="ib-project-nav-label">Next</span>
+            <strong>{nextStep.navLabel}</strong>
+          </a>
+        ) : (
+          <div class="ib-project-nav-link is-disabled is-next">
+            <span class="ib-project-nav-label">Next</span>
+            <strong>Final page</strong>
+          </div>
+        )}
+      </footer>
+    </article>
+  </div>
+
+  {currentStep.scripts &&
+    currentStep.scripts.map((scriptPath) => <script is:inline src={scriptPath} defer></script>)}
+</section>

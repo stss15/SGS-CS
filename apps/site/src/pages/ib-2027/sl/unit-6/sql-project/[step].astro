@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
+import IbProjectSequencePage from '../../../../../components/IbProjectSequencePage.astro';
+import { getProjectStaticSlugs, getProjectStep, sqlProjectSequence } from '../../../../../lib/ib-project-content';
+
+export function getStaticPaths() {
+  return getProjectStaticSlugs(sqlProjectSequence).map((step) => ({
+    params: { step },
+    props: { currentSlug: step }
+  }));
+}
+
+const { currentSlug } = Astro.props;
+const currentStep = getProjectStep(sqlProjectSequence, currentSlug);
+---
+
+<BaseLayout
+  title={`${currentStep.title} | ${sqlProjectSequence.projectTitle}`}
+  description={currentStep.intro}
+  activeSection="ib"
+  extraStyles={['css/ib-project-sequence.css']}
+>
+  <IbProjectSequencePage sequence={sqlProjectSequence} currentSlug={currentSlug} />
+</BaseLayout>

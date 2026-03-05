@@ -1,5 +1,5 @@
 (function () {
-  const STORAGE_KEY = 'ib-erd-builder-v1';
+  const DEFAULT_STORAGE_KEY = 'ib-erd-builder-v2';
 
   function slugify(value) {
     return String(value || '')
@@ -19,41 +19,21 @@
       .replace(/'/g, '&#39;');
   }
 
+  function getStorageKey(root) {
+    return root.getAttribute('data-erd-storage-key') || DEFAULT_STORAGE_KEY + ':' + window.location.pathname;
+  }
+
   function buildSelectOptions(items, selectedValue) {
     if (!items.length) {
       return '<option value="">No options</option>';
     }
 
     return items
-      .map((item) => {
+      .map(function (item) {
         const isSelected = String(item.value) === String(selectedValue) ? ' selected' : '';
         return '<option value="' + escapeHtml(item.value) + '"' + isSelected + '>' + escapeHtml(item.label) + '</option>';
       })
       .join('');
-  }
-
-  function loadState() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return null;
-      }
-      const parsed = JSON.parse(raw);
-      if (!parsed || !Array.isArray(parsed.tables) || !Array.isArray(parsed.relationships)) {
-        return null;
-      }
-      return parsed;
-    } catch (_error) {
-      return null;
-    }
-  }
-
-  function saveState(state) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (_error) {
-      // ignore storage errors
-    }
   }
 
   function createDefaultState() {
@@ -66,7 +46,91 @@
     };
   }
 
+  function loadState(storageKey) {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) {
+        return createDefaultState();
+      }
+
+      const parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.tables) || !Array.isArray(parsed.relationships)) {
+        return createDefaultState();
+      }
+
+      return parsed;
+    } catch (_error) {
+      return createDefaultState();
+    }
+  }
+
+  function sanitizeState(state) {
+    state.tables = (Array.isArray(state.tables) ? state.tables : [])
+      .map(function (table) {
+        return {
+          id: Number(table.id),
+          name: String(table.name || '').trim(),
+          fields: (Array.isArray(table.fields) ? table.fields : [])
+            .map(function (field) {
+              return {
+                id: Number(field.id),
+                name: String(field.name || '').trim(),
+                type: String(field.type || 'TEXT').toUpperCase(),
+                key: String(field.key || 'none'),
+                example: String(field.example || '').trim()
+              };
+            })
+            .filter(function (field) {
+              return field.name.length > 0;
+            })
+        };
+      })
+      .filter(function (table) {
+        return table.name.length > 0;
+      });
+
+    state.relationships = (Array.isArray(state.relationships) ? state.relationships : []).map(function (relationship) {
+      return {
+        id: Number(relationship.id),
+        fromTableId: Number(relationship.fromTableId),
+        fromFieldId: Number(relationship.fromFieldId),
+        toTableId: Number(relationship.toTableId),
+        toFieldId: Number(relationship.toFieldId),
+        relationshipType: String(relationship.relationshipType || '1:many')
+      };
+    });
+
+    const maxTableId = state.tables.reduce(function (highest, table) {
+      return Math.max(highest, Number(table.id) || 0);
+    }, 0);
+    const maxFieldId = state.tables.reduce(function (highest, table) {
+      return Math.max(
+        highest,
+        table.fields.reduce(function (fieldHighest, field) {
+          return Math.max(fieldHighest, Number(field.id) || 0);
+        }, 0)
+      );
+    }, 0);
+    const maxRelationshipId = state.relationships.reduce(function (highest, relationship) {
+      return Math.max(highest, Number(relationship.id) || 0);
+    }, 0);
+
+    state.nextTableId = Math.max(1, Number(state.nextTableId) || 1, maxTableId + 1);
+    state.nextFieldId = Math.max(1, Number(state.nextFieldId) || 1, maxFieldId + 1);
+    state.nextRelationshipId = Math.max(1, Number(state.nextRelationshipId) || 1, maxRelationshipId + 1);
+  }
+
+  function saveState(storageKey, state) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    } catch (_error) {
+      // Ignore storage failures.
+    }
+  }
+
   function initBuilder(root) {
+    const storageKey = getStorageKey(root);
+    const mode = root.getAttribute('data-erd-mode') === 'tables' ? 'tables' : 'erd';
     const addTableForm = root.querySelector('[data-erd-add-table]');
     const addRelationshipForm = root.querySelector('[data-erd-add-relationship]');
     const fromTableSelect = root.querySelector('[data-erd-from-table]');
@@ -79,170 +143,166 @@
     const graphSvg = root.querySelector('[data-erd-graph]');
     const resetButton = root.querySelector('[data-erd-reset]');
 
-    if (
-      !addTableForm ||
-      !addRelationshipForm ||
-      !fromTableSelect ||
-      !toTableSelect ||
-      !fromFieldSelect ||
-      !toFieldSelect ||
-      !entitiesWrap ||
-      !schemaOutput ||
-      !relationshipsList ||
-      !graphSvg ||
-      !resetButton
-    ) {
+    if (!addTableForm || !entitiesWrap || !schemaOutput || !resetButton) {
       return;
     }
 
-    const loadedState = loadState();
-    const state = loadedState || createDefaultState();
+    const state = loadState(storageKey);
+    sanitizeState(state);
 
     function findTable(tableId) {
-      return state.tables.find((table) => table.id === Number(tableId));
+      return state.tables.find(function (table) {
+        return table.id === Number(tableId);
+      });
     }
 
     function findField(table, fieldId) {
       if (!table) {
         return null;
       }
-      return table.fields.find((field) => field.id === Number(fieldId));
+
+      return table.fields.find(function (field) {
+        return field.id === Number(fieldId);
+      }) || null;
     }
 
-    function ensureCounters() {
-      const tableIds = state.tables.map((table) => table.id);
-      const fieldIds = state.tables.flatMap((table) => table.fields.map((field) => field.id));
-      const relationshipIds = state.relationships.map((relationship) => relationship.id);
+    function removeInvalidRelationships() {
+      state.relationships = state.relationships.filter(function (relationship) {
+        const fromTable = findTable(relationship.fromTableId);
+        const toTable = findTable(relationship.toTableId);
+        const fromField = findField(fromTable, relationship.fromFieldId);
+        const toField = findField(toTable, relationship.toFieldId);
 
-      state.nextTableId = Math.max(1, (Math.max.apply(null, tableIds.concat([0])) || 0) + 1);
-      state.nextFieldId = Math.max(1, (Math.max.apply(null, fieldIds.concat([0])) || 0) + 1);
-      state.nextRelationshipId = Math.max(1, (Math.max.apply(null, relationshipIds.concat([0])) || 0) + 1);
-    }
-
-    ensureCounters();
-
-    function sanitizeState() {
-      state.tables = state.tables.map((table) => ({
-        id: Number(table.id),
-        name: String(table.name || '').trim(),
-        fields: (Array.isArray(table.fields) ? table.fields : []).map((field) => ({
-          id: Number(field.id),
-          name: String(field.name || '').trim(),
-          type: String(field.type || 'TEXT').toUpperCase(),
-          key: String(field.key || 'none')
-        }))
-      })).filter((table) => table.name.length > 0);
-
-      state.relationships = state.relationships
-        .map((relationship) => ({
-          id: Number(relationship.id),
-          fromTableId: Number(relationship.fromTableId),
-          fromFieldId: Number(relationship.fromFieldId),
-          toTableId: Number(relationship.toTableId),
-          toFieldId: Number(relationship.toFieldId),
-          relationshipType: String(relationship.relationshipType || '1:many')
-        }))
-        .filter((relationship) => {
-          const fromTable = findTable(relationship.fromTableId);
-          const toTable = findTable(relationship.toTableId);
-          return !!fromTable && !!toTable;
-        });
-    }
-
-    function renderRelationshipSelectors() {
-      const tableOptions = state.tables.map((table) => ({
-        value: table.id,
-        label: table.name
-      }));
-
-      const previousFromTable = fromTableSelect.value;
-      const previousToTable = toTableSelect.value;
-
-      fromTableSelect.innerHTML = buildSelectOptions(tableOptions, previousFromTable || (tableOptions[0] && tableOptions[0].value));
-      toTableSelect.innerHTML = buildSelectOptions(tableOptions, previousToTable || (tableOptions[1] && tableOptions[1].value) || (tableOptions[0] && tableOptions[0].value));
-
-      function setFieldOptions(tableSelect, fieldSelect, fallbackValue) {
-        const selectedTable = findTable(tableSelect.value);
-        const fields = selectedTable
-          ? selectedTable.fields.map((field) => ({ value: field.id, label: field.name + ' (' + field.type + ')' }))
-          : [];
-        fieldSelect.innerHTML = buildSelectOptions(fields, fallbackValue || (fields[0] && fields[0].value));
-      }
-
-      setFieldOptions(fromTableSelect, fromFieldSelect, fromFieldSelect.value);
-      setFieldOptions(toTableSelect, toFieldSelect, toFieldSelect.value);
-
-      const canLink = state.tables.length >= 2;
-      [fromTableSelect, toTableSelect, fromFieldSelect, toFieldSelect].forEach((select) => {
-        select.disabled = !canLink;
+        return !!fromTable && !!toTable && !!fromField && !!toField;
       });
-      const submitButton = addRelationshipForm.querySelector('button[type="submit"]');
-      if (submitButton) {
-        submitButton.disabled = !canLink;
-      }
     }
 
     function buildReferenceMap() {
       const refMap = {};
-      state.relationships.forEach((relationship) => {
+
+      state.relationships.forEach(function (relationship) {
         refMap[relationship.fromTableId + ':' + relationship.fromFieldId] = {
           toTableId: relationship.toTableId,
           toFieldId: relationship.toFieldId,
           relationshipType: relationship.relationshipType
         };
       });
+
       return refMap;
+    }
+
+    function renderRelationshipSelectors() {
+      if (!addRelationshipForm || !fromTableSelect || !toTableSelect || !fromFieldSelect || !toFieldSelect) {
+        return;
+      }
+
+      const tableOptions = state.tables.map(function (table) {
+        return {
+          value: table.id,
+          label: table.name
+        };
+      });
+
+      const previousFromTable = fromTableSelect.value;
+      const previousToTable = toTableSelect.value;
+      const defaultFromTable = previousFromTable || (tableOptions[0] && tableOptions[0].value) || '';
+      const defaultToTable = previousToTable || (tableOptions[1] && tableOptions[1].value) || defaultFromTable;
+
+      fromTableSelect.innerHTML = buildSelectOptions(tableOptions, defaultFromTable);
+      toTableSelect.innerHTML = buildSelectOptions(tableOptions, defaultToTable);
+
+      function renderFieldOptions(tableSelect, fieldSelect) {
+        const selectedTable = findTable(tableSelect.value);
+        const fieldOptions = selectedTable
+          ? selectedTable.fields.map(function (field) {
+              return {
+                value: field.id,
+                label: field.name + ' (' + field.type + ')'
+              };
+            })
+          : [];
+
+        fieldSelect.innerHTML = buildSelectOptions(fieldOptions, fieldSelect.value || (fieldOptions[0] && fieldOptions[0].value));
+        fieldSelect.disabled = fieldOptions.length === 0;
+      }
+
+      renderFieldOptions(fromTableSelect, fromFieldSelect);
+      renderFieldOptions(toTableSelect, toFieldSelect);
+
+      const canLink =
+        state.tables.length >= 2 &&
+        fromFieldSelect.options.length > 0 &&
+        toFieldSelect.options.length > 0 &&
+        fromFieldSelect.value &&
+        toFieldSelect.value;
+
+      [fromTableSelect, toTableSelect].forEach(function (select) {
+        select.disabled = state.tables.length < 2;
+      });
+
+      const submitButton = addRelationshipForm.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = !canLink;
+      }
     }
 
     function renderSchemaDraft() {
       const referenceMap = buildReferenceMap();
 
       if (!state.tables.length) {
-        schemaOutput.textContent = '-- Add tables and fields to generate a schema draft.';
+        schemaOutput.textContent = mode === 'tables'
+          ? 'Add tables and fields to build your data dictionary.'
+          : 'Add tables, fields, and links to build your ERD draft.';
         return;
       }
 
-      const statements = state.tables.map((table) => {
-        const header = '-- Table: ' + table.name + '\nTABLE ' + table.name + ' (';
-        if (!table.fields.length) {
-          return header + '\n  -- add fields here\n);';
-        }
-
-        const lines = table.fields.map((field) => {
-          const chunks = [field.name, field.type];
-
-          if (field.key === 'pk') {
-            chunks.push('PRIMARY KEY');
-          }
-
-          if (field.key === 'fk') {
-            const reference = referenceMap[table.id + ':' + field.id];
-            if (reference) {
-              const targetTable = findTable(reference.toTableId);
-              const targetField = findField(targetTable, reference.toFieldId);
-              if (targetTable && targetField) {
-                chunks.push('REFERENCES ' + targetTable.name + '(' + targetField.name + ')');
+      const blocks = state.tables.map(function (table) {
+        const lines = table.fields.length
+          ? table.fields.map(function (field) {
+              const labels = [];
+              if (field.key === 'pk') {
+                labels.push('PK');
               }
-            }
-          }
+              if (field.key === 'fk') {
+                labels.push('FK');
+              }
 
-          return '  ' + chunks.join(' ');
-        });
+              const reference = referenceMap[table.id + ':' + field.id];
+              const referenceText = reference
+                ? (function () {
+                    const targetTable = findTable(reference.toTableId);
+                    const targetField = findField(targetTable, reference.toFieldId);
+                    if (!targetTable || !targetField) {
+                      return '';
+                    }
+                    return ' -> ' + targetTable.name + '.' + targetField.name + ' (' + reference.relationshipType + ')';
+                  })()
+                : '';
 
-        return header + '\n' + lines.join(',\n') + '\n);';
+              const exampleText = field.example ? ' | example: ' + field.example : '';
+
+              return '- ' + field.name + ' | ' + field.type + (labels.length ? ' | ' + labels.join(', ') : '') + exampleText + referenceText;
+            })
+          : ['- add fields here'];
+
+        return 'TABLE ' + table.name + '\n' + lines.join('\n');
       });
 
-      schemaOutput.textContent = statements.join('\n\n');
+      schemaOutput.textContent = blocks.join('\n\n');
     }
 
     function renderRelationshipList() {
+      if (!relationshipsList) {
+        return;
+      }
+
       if (!state.relationships.length) {
         relationshipsList.innerHTML = '<li class="ib-erd-empty">No relationships linked yet.</li>';
         return;
       }
 
-      const html = state.relationships
-        .map((relationship) => {
+      relationshipsList.innerHTML = state.relationships
+        .map(function (relationship) {
           const fromTable = findTable(relationship.fromTableId);
           const toTable = findTable(relationship.toTableId);
           const fromField = findField(fromTable, relationship.fromFieldId);
@@ -266,76 +326,114 @@
           );
         })
         .join('');
-
-      relationshipsList.innerHTML = html;
     }
 
     function renderGraph() {
-      const width = 900;
-      const height = 460;
-      graphSvg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-
-      if (!state.tables.length) {
-        graphSvg.innerHTML = '<text x="24" y="40" fill="#5a5a5a" font-size="15" font-family="Arial">Add tables to draw your ER map.</text>';
+      if (!graphSvg) {
         return;
       }
 
-      const cols = Math.max(1, Math.ceil(Math.sqrt(state.tables.length)));
-      const cellWidth = width / cols;
-      const rows = Math.ceil(state.tables.length / cols);
-      const cellHeight = height / rows;
-      const boxWidth = 190;
-      const boxHeight = 90;
+      const width = 1080;
+      const columns = Math.max(1, Math.min(3, Math.ceil(Math.sqrt(state.tables.length || 1))));
+      const cellWidth = width / columns;
+      const rowGap = 46;
+      const boxWidth = 250;
+      const baseHeight = 74;
+      const rowHeight = 20;
+      let totalHeight = 200;
+      const positions = {};
+      let currentHeight = 32;
 
-      const tablePositions = {};
-      state.tables.forEach((table, index) => {
-        const row = Math.floor(index / cols);
-        const col = index % cols;
-        const x = col * cellWidth + (cellWidth - boxWidth) / 2;
-        const y = row * cellHeight + (cellHeight - boxHeight) / 2;
-        tablePositions[table.id] = {
+      if (!state.tables.length) {
+        graphSvg.setAttribute('viewBox', '0 0 1080 260');
+        graphSvg.innerHTML =
+          '<text x="28" y="44" fill="#5a6687" font-size="16" font-family="Arial">Add tables to begin drawing the ER diagram.</text>';
+        return;
+      }
+
+      state.tables.forEach(function (table, index) {
+        const column = index % columns;
+        const row = Math.floor(index / columns);
+        const fieldCount = Math.max(1, table.fields.length);
+        const boxHeight = baseHeight + fieldCount * rowHeight;
+        const rowStart = row * (boxHeight + rowGap);
+        const x = column * cellWidth + (cellWidth - boxWidth) / 2;
+        const y = 30 + rowStart;
+
+        positions[table.id] = {
           x: x,
           y: y,
+          boxHeight: boxHeight,
           centerX: x + boxWidth / 2,
           centerY: y + boxHeight / 2
         };
+
+        currentHeight = Math.max(currentHeight, y + boxHeight + 40);
       });
 
-      const markers = '<defs><marker id="erdArrow" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#7f8fb8"></polygon></marker></defs>';
+      totalHeight = currentHeight;
+      graphSvg.setAttribute('viewBox', '0 0 ' + width + ' ' + totalHeight);
+
+      const markers =
+        '<defs>' +
+        '<marker id="erdArrow" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">' +
+        '<polygon points="0 0, 10 3.5, 0 7" fill="#7f8fb8"></polygon>' +
+        '</marker>' +
+        '</defs>';
 
       const edges = state.relationships
-        .map((relationship) => {
-          const fromPos = tablePositions[relationship.fromTableId];
-          const toPos = tablePositions[relationship.toTableId];
+        .map(function (relationship) {
+          const fromPos = positions[relationship.fromTableId];
+          const toPos = positions[relationship.toTableId];
+
           if (!fromPos || !toPos) {
             return '';
           }
 
           const labelX = (fromPos.centerX + toPos.centerX) / 2;
-          const labelY = (fromPos.centerY + toPos.centerY) / 2 - 6;
+          const labelY = (fromPos.centerY + toPos.centerY) / 2 - 10;
 
           return (
             '<g>' +
-            '<line x1="' + fromPos.centerX + '" y1="' + fromPos.centerY + '" x2="' + toPos.centerX + '" y2="' + toPos.centerY + '" stroke="#8d9bc2" stroke-width="2" marker-end="url(#erdArrow)"></line>' +
-            '<rect x="' + (labelX - 28) + '" y="' + (labelY - 12) + '" width="56" height="18" rx="6" fill="#ffffff" stroke="#d7dff0"></rect>' +
-            '<text x="' + labelX + '" y="' + (labelY + 1) + '" text-anchor="middle" fill="#1a3066" font-size="11" font-family="Arial">' + escapeHtml(relationship.relationshipType) + '</text>' +
+            '<line x1="' + fromPos.centerX + '" y1="' + fromPos.centerY + '" x2="' + toPos.centerX + '" y2="' + toPos.centerY + '" stroke="#8d9bc2" stroke-width="2.4" marker-end="url(#erdArrow)"></line>' +
+            '<rect x="' + (labelX - 34) + '" y="' + (labelY - 12) + '" width="68" height="20" rx="7" fill="#ffffff" stroke="#d7dff0"></rect>' +
+            '<text x="' + labelX + '" y="' + (labelY + 2) + '" text-anchor="middle" fill="#1a3066" font-size="11" font-family="Arial">' +
+            escapeHtml(relationship.relationshipType) +
+            '</text>' +
             '</g>'
           );
         })
         .join('');
 
       const nodes = state.tables
-        .map((table) => {
-          const position = tablePositions[table.id];
+        .map(function (table) {
+          const position = positions[table.id];
+
           if (!position) {
             return '';
           }
 
+          const fieldMarkup = (table.fields.length ? table.fields : [{ name: 'add_field', type: 'TYPE', key: 'none', example: '' }])
+            .map(function (field, index) {
+              const y = position.y + 58 + index * rowHeight;
+              const keyLabel = field.key !== 'none' ? ' [' + field.key.toUpperCase() + ']' : '';
+
+              return (
+                '<text x="' + (position.x + 16) + '" y="' + y + '" fill="#415377" font-size="12" font-family="Arial">' +
+                escapeHtml(field.name + ' : ' + field.type + keyLabel) +
+                '</text>'
+              );
+            })
+            .join('');
+
           return (
             '<g>' +
-            '<rect x="' + position.x + '" y="' + position.y + '" width="' + boxWidth + '" height="' + boxHeight + '" rx="10" fill="#f9fbff" stroke="#bcc9e6" stroke-width="2"></rect>' +
-            '<text x="' + (position.x + 12) + '" y="' + (position.y + 24) + '" fill="#1a3066" font-size="13" font-weight="700" font-family="Arial">' + escapeHtml(table.name) + '</text>' +
-            '<text x="' + (position.x + 12) + '" y="' + (position.y + 44) + '" fill="#5a5a5a" font-size="11" font-family="Arial">Fields: ' + table.fields.length + '</text>' +
+            '<rect x="' + position.x + '" y="' + position.y + '" width="' + boxWidth + '" height="' + position.boxHeight + '" rx="14" fill="#ffffff" stroke="#bcc9e6" stroke-width="2"></rect>' +
+            '<rect x="' + position.x + '" y="' + position.y + '" width="' + boxWidth + '" height="38" rx="14" fill="#0E214B"></rect>' +
+            '<text x="' + (position.x + 16) + '" y="' + (position.y + 24) + '" fill="#ffffff" font-size="13" font-weight="700" font-family="Arial">' +
+            escapeHtml(table.name) +
+            '</text>' +
+            fieldMarkup +
             '</g>'
           );
         })
@@ -351,25 +449,28 @@
       }
 
       entitiesWrap.innerHTML = state.tables
-        .map((table) => {
+        .map(function (table) {
           const fieldRows = table.fields.length
             ? table.fields
-                .map(
-                  (field) =>
+                .map(function (field) {
+                  return (
                     '<li>' +
-                    '<span><strong>' + escapeHtml(field.name) + '</strong> <em>' + escapeHtml(field.type) + '</em>' +
-                    (field.key !== 'none' ? ' <b>' + escapeHtml(field.key.toUpperCase()) + '</b>' : '') +
+                    '<span>' +
+                    '<strong>' + escapeHtml(field.name) + '</strong>' +
+                    '<em>' + escapeHtml(field.type) + (field.key !== 'none' ? ' · ' + escapeHtml(field.key.toUpperCase()) : '') + '</em>' +
+                    (field.example ? '<small class="ib-erd-field-example">Example: ' + escapeHtml(field.example) + '</small>' : '') +
                     '</span>' +
-                    '<button type="button" data-erd-remove-field="' + table.id + ':' + field.id + '">x</button>' +
+                    '<button type="button" data-erd-remove-field="' + table.id + ':' + field.id + '">Remove</button>' +
                     '</li>'
-                )
+                  );
+                })
                 .join('')
             : '<li class="ib-erd-empty">No fields added yet.</li>';
 
           return (
             '<article class="ib-erd-table" data-erd-table-id="' + table.id + '">' +
             '<header>' +
-            '<input type="text" value="' + escapeHtml(table.name) + '" data-erd-table-name="' + table.id + '" />' +
+            '<input type="text" value="' + escapeHtml(table.name) + '" data-erd-table-name="' + table.id + '" aria-label="Table name" />' +
             '<button type="button" data-erd-remove-table="' + table.id + '">Remove</button>' +
             '</header>' +
             '<form class="ib-erd-field-form" data-erd-add-field="' + table.id + '">' +
@@ -379,13 +480,14 @@
             '<option value="TEXT">TEXT</option>' +
             '<option value="DATE">DATE</option>' +
             '<option value="BOOLEAN">BOOLEAN</option>' +
-            '<option value="FLOAT">FLOAT</option>' +
+            '<option value="REAL">REAL</option>' +
             '</select>' +
             '<select name="fieldKey">' +
             '<option value="none">No key</option>' +
             '<option value="pk">PK</option>' +
             '<option value="fk">FK</option>' +
             '</select>' +
+            '<input type="text" name="fieldExample" placeholder="Example value" />' +
             '<button type="submit">Add field</button>' +
             '</form>' +
             '<ul class="ib-erd-field-list">' + fieldRows + '</ul>' +
@@ -396,21 +498,23 @@
     }
 
     function renderAll() {
-      sanitizeState();
-      ensureCounters();
+      sanitizeState(state);
+      removeInvalidRelationships();
       renderTables();
       renderRelationshipSelectors();
       renderRelationshipList();
       renderSchemaDraft();
       renderGraph();
-      saveState(state);
+      saveState(storageKey, state);
     }
 
     addTableForm.addEventListener('submit', function (event) {
       event.preventDefault();
+
       const formData = new FormData(addTableForm);
       const rawName = String(formData.get('tableName') || '').trim();
       const normalized = slugify(rawName);
+
       if (!normalized) {
         return;
       }
@@ -430,6 +534,7 @@
       if (!form) {
         return;
       }
+
       event.preventDefault();
 
       const tableId = Number(form.getAttribute('data-erd-add-field'));
@@ -438,13 +543,11 @@
         return;
       }
 
-      const fieldNameInput = form.querySelector('input[name="fieldName"]');
-      const fieldTypeSelect = form.querySelector('select[name="fieldType"]');
-      const fieldKeySelect = form.querySelector('select[name="fieldKey"]');
-
-      const fieldName = slugify(fieldNameInput && fieldNameInput.value ? fieldNameInput.value : '');
-      const fieldType = fieldTypeSelect && fieldTypeSelect.value ? fieldTypeSelect.value : 'TEXT';
-      const fieldKey = fieldKeySelect && fieldKeySelect.value ? fieldKeySelect.value : 'none';
+      const formData = new FormData(form);
+      const fieldName = slugify(formData.get('fieldName'));
+      const fieldType = String(formData.get('fieldType') || 'TEXT').toUpperCase();
+      const fieldKey = String(formData.get('fieldKey') || 'none');
+      const fieldExample = String(formData.get('fieldExample') || '').trim();
 
       if (!fieldName) {
         return;
@@ -453,8 +556,9 @@
       table.fields.push({
         id: state.nextFieldId++,
         name: fieldName,
-        type: String(fieldType).toUpperCase(),
-        key: fieldKey
+        type: fieldType,
+        key: fieldKey,
+        example: fieldExample
       });
 
       form.reset();
@@ -465,30 +569,40 @@
       const removeTableButton = event.target.closest('[data-erd-remove-table]');
       if (removeTableButton) {
         const tableId = Number(removeTableButton.getAttribute('data-erd-remove-table'));
-        state.tables = state.tables.filter((table) => table.id !== tableId);
-        state.relationships = state.relationships.filter(
-          (relationship) => relationship.fromTableId !== tableId && relationship.toTableId !== tableId
-        );
+        state.tables = state.tables.filter(function (table) {
+          return table.id !== tableId;
+        });
+        state.relationships = state.relationships.filter(function (relationship) {
+          return relationship.fromTableId !== tableId && relationship.toTableId !== tableId;
+        });
         renderAll();
         return;
       }
 
       const removeFieldButton = event.target.closest('[data-erd-remove-field]');
-      if (removeFieldButton) {
-        const pair = String(removeFieldButton.getAttribute('data-erd-remove-field') || '').split(':');
-        const tableId = Number(pair[0]);
-        const fieldId = Number(pair[1]);
-        const table = findTable(tableId);
-        if (table) {
-          table.fields = table.fields.filter((field) => field.id !== fieldId);
-          state.relationships = state.relationships.filter(
-            (relationship) =>
-              !(relationship.fromTableId === tableId && relationship.fromFieldId === fieldId) &&
-              !(relationship.toTableId === tableId && relationship.toFieldId === fieldId)
-          );
-          renderAll();
-        }
+      if (!removeFieldButton) {
+        return;
       }
+
+      const pair = String(removeFieldButton.getAttribute('data-erd-remove-field') || '').split(':');
+      const tableId = Number(pair[0]);
+      const fieldId = Number(pair[1]);
+      const table = findTable(tableId);
+
+      if (!table) {
+        return;
+      }
+
+      table.fields = table.fields.filter(function (field) {
+        return field.id !== fieldId;
+      });
+      state.relationships = state.relationships.filter(function (relationship) {
+        return !(
+          (relationship.fromTableId === tableId && relationship.fromFieldId === fieldId) ||
+          (relationship.toTableId === tableId && relationship.toFieldId === fieldId)
+        );
+      });
+      renderAll();
     });
 
     entitiesWrap.addEventListener('change', function (event) {
@@ -513,53 +627,64 @@
       renderAll();
     });
 
-    addRelationshipForm.addEventListener('submit', function (event) {
-      event.preventDefault();
+    if (addRelationshipForm) {
+      addRelationshipForm.addEventListener('submit', function (event) {
+        event.preventDefault();
 
-      const formData = new FormData(addRelationshipForm);
-      const fromTableId = Number(formData.get('fromTable'));
-      const fromFieldId = Number(formData.get('fromField'));
-      const toTableId = Number(formData.get('toTable'));
-      const toFieldId = Number(formData.get('toField'));
-      const relationshipType = String(formData.get('relationshipType') || '1:many');
+        const formData = new FormData(addRelationshipForm);
+        const fromTableId = Number(formData.get('fromTable'));
+        const fromFieldId = Number(formData.get('fromField'));
+        const toTableId = Number(formData.get('toTable'));
+        const toFieldId = Number(formData.get('toField'));
+        const relationshipType = String(formData.get('relationshipType') || '1:many');
 
-      if (!fromTableId || !fromFieldId || !toTableId || !toFieldId) {
-        return;
-      }
+        if (!fromTableId || !fromFieldId || !toTableId || !toFieldId) {
+          return;
+        }
 
-      if (fromTableId === toTableId && fromFieldId === toFieldId) {
-        return;
-      }
+        if (fromTableId === toTableId && fromFieldId === toFieldId) {
+          return;
+        }
 
-      state.relationships.push({
-        id: state.nextRelationshipId++,
-        fromTableId: fromTableId,
-        fromFieldId: fromFieldId,
-        toTableId: toTableId,
-        toFieldId: toFieldId,
-        relationshipType: relationshipType
+        state.relationships.push({
+          id: state.nextRelationshipId++,
+          fromTableId: fromTableId,
+          fromFieldId: fromFieldId,
+          toTableId: toTableId,
+          toFieldId: toFieldId,
+          relationshipType: relationshipType
+        });
+
+        renderAll();
       });
+    }
 
-      renderAll();
-    });
+    if (relationshipsList) {
+      relationshipsList.addEventListener('click', function (event) {
+        const button = event.target.closest('[data-erd-remove-relationship]');
+        if (!button) {
+          return;
+        }
 
-    relationshipsList.addEventListener('click', function (event) {
-      const button = event.target.closest('[data-erd-remove-relationship]');
-      if (!button) {
-        return;
-      }
-      const relationshipId = Number(button.getAttribute('data-erd-remove-relationship'));
-      state.relationships = state.relationships.filter((relationship) => relationship.id !== relationshipId);
-      renderAll();
-    });
+        const relationshipId = Number(button.getAttribute('data-erd-remove-relationship'));
+        state.relationships = state.relationships.filter(function (relationship) {
+          return relationship.id !== relationshipId;
+        });
+        renderAll();
+      });
+    }
 
-    fromTableSelect.addEventListener('change', function () {
-      renderRelationshipSelectors();
-    });
+    if (fromTableSelect) {
+      fromTableSelect.addEventListener('change', function () {
+        renderRelationshipSelectors();
+      });
+    }
 
-    toTableSelect.addEventListener('change', function () {
-      renderRelationshipSelectors();
-    });
+    if (toTableSelect) {
+      toTableSelect.addEventListener('change', function () {
+        renderRelationshipSelectors();
+      });
+    }
 
     resetButton.addEventListener('click', function () {
       state.tables = [];
@@ -567,6 +692,13 @@
       state.nextTableId = 1;
       state.nextFieldId = 1;
       state.nextRelationshipId = 1;
+
+      try {
+        localStorage.removeItem(storageKey);
+      } catch (_error) {
+        // Ignore storage failures.
+      }
+
       renderAll();
     });
 
