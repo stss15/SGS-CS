@@ -3,887 +3,433 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IB 2027 SQL / NoSQL Project Teacher Reference</title>
+  <title>Teacher guide home | IB 2027 Teacher Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark-reasonable.min.css">
-  <style>
-    :root {
-      --navy: #0e214b;
-      --navy-soft: #152d65;
-      --gold: #be9a5e;
-      --ink: #1f2430;
-      --muted: #5b6578;
-      --line: rgba(14, 33, 75, 0.12);
-      --panel: rgba(255, 255, 255, 0.96);
-      --panel-soft: rgba(247, 250, 255, 0.96);
-      --bg: linear-gradient(180deg, #f6f2ec 0%, #f7f9fd 100%);
-      --shadow: 0 20px 40px rgba(14, 33, 75, 0.08);
-      --radius: 24px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: 'Source Sans 3', sans-serif;
-      color: var(--ink);
-      background: var(--bg);
-    }
-
-    a { color: var(--navy); }
-
-    .page {
-      width: min(1600px, calc(100% - 48px));
-      margin: 32px auto 56px;
-      display: grid;
-      gap: 20px;
-    }
-
-    .hero,
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero {
-      padding: 28px 30px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .kicker {
-      margin: 0;
-      color: var(--gold);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    h1, h2, h3, h4 {
-      margin: 0;
-      color: var(--navy);
-      font-family: 'Outfit', sans-serif;
-      line-height: 1.1;
-    }
-
-    h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); }
-    h2 { font-size: 1.7rem; }
-    h3 { font-size: 1.3rem; }
-    h4 { font-size: 1.05rem; }
-
-    p, li, td, th {
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-
-    .hero p { margin: 0; max-width: 88ch; }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 34px;
-      padding: 0 14px;
-      border-radius: 999px;
-      background: rgba(14, 33, 75, 0.06);
-      color: var(--navy);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      text-decoration: none;
-    }
-
-    .grid-2,
-    .grid-3,
-    .cards {
-      display: grid;
-      gap: 16px;
-    }
-
-    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-
-    .panel {
-      padding: 24px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .panel-soft {
-      background: var(--panel-soft);
-    }
-
-    .card {
-      display: grid;
-      gap: 10px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(248, 250, 255, 0.92);
-    }
-
-    .card ul,
-    .panel ul,
-    .panel ol {
-      margin: 0;
-      padding-left: 1.25rem;
-      display: grid;
-      gap: 8px;
-    }
-
-    .pill-label {
-      color: var(--gold);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 760px;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: #fff;
-    }
-
-    th,
-    td {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(14, 33, 75, 0.08);
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      background: rgba(14, 33, 75, 0.05);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    tbody tr:last-child td { border-bottom: none; }
-
-    pre {
-      margin: 0;
-      overflow-x: auto;
-      border-radius: 18px;
-      border: 1px solid rgba(14, 33, 75, 0.16);
-      background: #0f1835;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
-
-    code,
-    pre code {
-      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
-    }
-
-    pre code {
-      display: block;
-      min-width: max-content;
-      padding: 16px 18px;
-      font-size: 0.92rem;
-      line-height: 1.6;
-    }
-
-    p code,
-    li code,
-    td code {
-      padding: 0.12rem 0.38rem;
-      border-radius: 0.45rem;
-      background: rgba(14, 33, 75, 0.08);
-      color: var(--navy);
-    }
-
-    .toc {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .toc a {
-      text-decoration: none;
-    }
-
-    .state-links {
-      display: grid;
-      gap: 8px;
-    }
-
-    .state-links a {
-      text-decoration: none;
-    }
-
-    .two-col-note {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 16px;
-    }
-
-    .stage-banner {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .erd {
-      width: 100%;
-      min-height: 260px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: #fff;
-    }
-
-    .callout {
-      padding: 16px 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(190, 154, 94, 0.24);
-      background: linear-gradient(135deg, rgba(255, 248, 236, 0.92), rgba(255, 255, 255, 0.96));
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    details {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(248, 250, 255, 0.88);
-      overflow: hidden;
-    }
-
-    summary {
-      cursor: pointer;
-      padding: 14px 18px;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      color: var(--navy);
-    }
-
-    details > div {
-      padding: 0 18px 18px;
-    }
-
-    @media (max-width: 1180px) {
-      .grid-2,
-      .grid-3,
-      .cards,
-      .two-col-note {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .page {
-        width: calc(100% - 24px);
-        margin: 16px auto 40px;
-      }
-
-      .hero,
-      .panel {
-        padding: 18px;
-        border-radius: 20px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./teacher-guide/assets/teacher-guide.css">
 </head>
 <body>
   <div class="page">
-    <header class="hero">
-      <p class="kicker">Teacher Only Reference</p>
-      <h1>IB 2027 SQL / NoSQL Project Expected Outputs</h1>
-      <p>This file is local only. Use it beside the student-facing site so you can see the exact target state for each stage, the correct model answers for the planning prompts, and the code state the class should be aiming toward.</p>
-      <div class="chips">
-        <span class="chip">SL SQL Core</span>
-        <span class="chip">SL SQL Tagging</span>
-        <span class="chip">HL JSON Core</span>
-        <span class="chip">HL JSON Tagging</span>
+    <aside class="sidebar">
+      <a class="home-link" href="./teacher-reference.html">Teacher guide home</a>
+      <div>
+        <p class="kicker">IB 2027 Teacher Guide</p>
+        <h2>SQL / NoSQL project build</h2>
+        <p class="muted">Use this as the teacher script: lesson intent, answer key, expected code state, and next step.</p>
       </div>
-      <nav class="toc" aria-label="Teacher reference sections">
-        <a class="chip" href="#states">Reference states</a>
-        <a class="chip" href="#sl-stages">SL stages</a>
-        <a class="chip" href="#feature-sequence">Feature sequence</a>
-        <a class="chip" href="#algorithm">Algorithm + extension</a>
-        <a class="chip" href="#hl-stages">HL stages</a>
+      
+        <details >
+          <summary>Planning and data modelling</summary>
+          <div>
+            <a class="nav-link " href="./teacher-guide/problem-specification.html">
+              <strong>Stage 1: Problem specification</strong>
+              <small>Client brief, success criteria, and answer key.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/planning-and-answers.html">
+              <strong>Stage 2: Planning and answers</strong>
+              <small>Wireframes, field mapping, and planning questions.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/sql-schema.html">
+              <strong>Stage 3: SQL schema</strong>
+              <small>Core two-table schema, normalisation, and ERD.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/init-db.html">
+              <strong>Stage 3: init_db.py</strong>
+              <small>Create the database from schema.sql and seed users.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details >
+          <summary>SQL feature build</summary>
+          <div>
+            <a class="nav-link " href="./teacher-guide/feature-base-html-shell.html">
+              <strong>Feature 1: Base HTML shell</strong>
+              <small>HTML boilerplate, Bootstrap links, and page shell.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-task-list-display.html">
+              <strong>Feature 2: Task list display area</strong>
+              <small>Add the DOM target where tasks will later render.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-add-task-modal.html">
+              <strong>Feature 3: Add-task modal</strong>
+              <small>Add the button and modal shell before the input controls.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-form-inputs.html">
+              <strong>Feature 4: Form inputs</strong>
+              <small>Add the exact fields the schema needs.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-fetch-render.html">
+              <strong>Feature 5: Fetch and render</strong>
+              <small>GET routes plus JavaScript rendering.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-create-task.html">
+              <strong>Feature 6: Create a task</strong>
+              <small>POST route and Save button handler.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-delete-task.html">
+              <strong>Feature 7: Delete a task</strong>
+              <small>Identifier-based deletion in JS and Flask.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-mark-complete.html">
+              <strong>Feature 8: Mark complete</strong>
+              <small>Status updates and PATCH route.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/feature-filter-sort.html">
+              <strong>Feature 9: Filtering and sorting</strong>
+              <small>Teacher target for conditional reads and ordered output.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/testing-and-evidence.html">
+              <strong>Feature 10: Testing and evidence</strong>
+              <small>Use the earlier success criteria as the assessment checkpoint.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details >
+          <summary>SL extension</summary>
+          <div>
+            <a class="nav-link " href="./teacher-guide/sl-tagging-algorithm.html">
+              <strong>SL extension: Tagging algorithm</strong>
+              <small>Plain-English logic, Python function, and integration point.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/sl-database-extension.html">
+              <strong>SL extension: Database extension</strong>
+              <small>tags, task_tags, composite key, and ERD update.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details >
+          <summary>HL bridge</summary>
+          <div>
+            <a class="nav-link " href="./teacher-guide/hl-json-theory.html">
+              <strong>HL Stage 1: JSON theory</strong>
+              <small>Objects, arrays, documents, and SQL vs NoSQL.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-json-practice.html">
+              <strong>HL Stage 2: Python JSON practice</strong>
+              <small>Generic read/write JSON examples before the project backend.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-modelling-comparison.html">
+              <strong>HL Stage 3: Modelling comparison</strong>
+              <small>Separate files versus embedded documents.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details >
+          <summary>HL JSON build</summary>
+          <div>
+            <a class="nav-link " href="./teacher-guide/hl-json-backend-setup.html">
+              <strong>HL Stage 4: JSON backend setup</strong>
+              <small>Create JSON files and Python helper functions.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-json-fetch-render.html">
+              <strong>HL Feature 1: Fetch and render</strong>
+              <small>Read JSON data and render it through the existing frontend.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-json-create-task.html">
+              <strong>HL Feature 2: Create a task</strong>
+              <small>Append a new task object to tasks.json.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-json-delete-task.html">
+              <strong>HL Feature 3: Delete a task</strong>
+              <small>Remove one task object from tasks.json.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-json-mark-complete.html">
+              <strong>HL Feature 4: Mark complete</strong>
+              <small>Update the status field in the correct JSON object.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-json-filter-sort.html">
+              <strong>HL Feature 5: Filtering and sorting</strong>
+              <small>Filter and order JSON data in Python.</small>
+            </a>
+          
+            <a class="nav-link " href="./teacher-guide/hl-json-tagging.html">
+              <strong>HL Stage 5: JSON tagging</strong>
+              <small>Apply the tagging algorithm to the JSON backend.</small>
+            </a>
+          </div>
+        </details>
+      
+    </aside>
+    <main class="content">
+      
+  <header class="hero">
+    <p class="kicker">Teacher guide index</p>
+    <h1>Teacher guide home</h1>
+    <p>Local teacher-facing guide for the IB 2027 SQL / NoSQL project. Use it to run the project one lesson step at a time with the exact expected code state visible.</p>
+    <div class="meta"><span>Teacher only</span><span>Local guide</span></div>
+  </header>
+
+      
+  <section class="lesson-section">
+    <div class="section-head">
+      <p class="kicker">How to use this guide</p>
+      <h2>Teacher workflow</h2>
+      <p>Open this file locally, then move through the linked lesson pages in order. Each page is written from the teacher perspective: what to teach, what students should produce, the likely questions, and the exact code state to aim for.</p>
+    </div>
+    <div class="grid-3">
+      
+  <section class="note-card">
+    <h4>What is included</h4>
+    <ul class="list-tight"><li>Stage-by-stage teacher notes.</li><li>One implementation page per feature.</li><li>Inline syntax-highlighted code with the file name above it.</li><li>Answer keys for the prompts raised on the student side.</li></ul>
+  </section>
+
+      
+  <section class="note-card">
+    <h4>What is not included</h4>
+    <ul class="list-tight"><li>Hosted routes for students.</li><li>Copy-paste project code for the student site.</li><li>Every possible extension beyond the supplied task-manager brief.</li></ul>
+  </section>
+
+      
+  <section class="note-card">
+    <h4>Direct raw code states</h4>
+    <div class="raw-links"><a href="./sl-sql-core/app.py">SL SQL core</a><a href="./sl-sql-tagging/app.py">SL SQL tagging</a><a href="./hl-json-core/app.py">HL JSON core</a><a href="./hl-json-tagging/app.py">HL JSON tagging</a></div>
+  </section>
+
+    </div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
+      <p class="kicker">Guide sequence</p>
+      <h2>Move through the teacher guide in this order</h2>
+      <p>This sequence is deliberately slower and more explicit than the student version so you can run the build lesson by lesson.</p>
+    </div>
+    <div class="card-grid">
+          <article class="summary-card">
+            <p class="kicker">Step 1</p>
+            <h4>Stage 1: Problem specification</h4>
+            <p>Client brief, success criteria, and answer key.</p>
+            <a class="card-link" href="./teacher-guide/problem-specification.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 2</p>
+            <h4>Stage 2: Planning and answers</h4>
+            <p>Wireframes, field mapping, and planning questions.</p>
+            <a class="card-link" href="./teacher-guide/planning-and-answers.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 3</p>
+            <h4>Stage 3: SQL schema</h4>
+            <p>Core two-table schema, normalisation, and ERD.</p>
+            <a class="card-link" href="./teacher-guide/sql-schema.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 4</p>
+            <h4>Stage 3: init_db.py</h4>
+            <p>Create the database from schema.sql and seed users.</p>
+            <a class="card-link" href="./teacher-guide/init-db.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 5</p>
+            <h4>Feature 1: Base HTML shell</h4>
+            <p>HTML boilerplate, Bootstrap links, and page shell.</p>
+            <a class="card-link" href="./teacher-guide/feature-base-html-shell.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 6</p>
+            <h4>Feature 2: Task list display area</h4>
+            <p>Add the DOM target where tasks will later render.</p>
+            <a class="card-link" href="./teacher-guide/feature-task-list-display.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 7</p>
+            <h4>Feature 3: Add-task modal</h4>
+            <p>Add the button and modal shell before the input controls.</p>
+            <a class="card-link" href="./teacher-guide/feature-add-task-modal.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 8</p>
+            <h4>Feature 4: Form inputs</h4>
+            <p>Add the exact fields the schema needs.</p>
+            <a class="card-link" href="./teacher-guide/feature-form-inputs.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 9</p>
+            <h4>Feature 5: Fetch and render</h4>
+            <p>GET routes plus JavaScript rendering.</p>
+            <a class="card-link" href="./teacher-guide/feature-fetch-render.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 10</p>
+            <h4>Feature 6: Create a task</h4>
+            <p>POST route and Save button handler.</p>
+            <a class="card-link" href="./teacher-guide/feature-create-task.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 11</p>
+            <h4>Feature 7: Delete a task</h4>
+            <p>Identifier-based deletion in JS and Flask.</p>
+            <a class="card-link" href="./teacher-guide/feature-delete-task.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 12</p>
+            <h4>Feature 8: Mark complete</h4>
+            <p>Status updates and PATCH route.</p>
+            <a class="card-link" href="./teacher-guide/feature-mark-complete.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 13</p>
+            <h4>Feature 9: Filtering and sorting</h4>
+            <p>Teacher target for conditional reads and ordered output.</p>
+            <a class="card-link" href="./teacher-guide/feature-filter-sort.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 14</p>
+            <h4>Feature 10: Testing and evidence</h4>
+            <p>Use the earlier success criteria as the assessment checkpoint.</p>
+            <a class="card-link" href="./teacher-guide/testing-and-evidence.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 15</p>
+            <h4>SL extension: Tagging algorithm</h4>
+            <p>Plain-English logic, Python function, and integration point.</p>
+            <a class="card-link" href="./teacher-guide/sl-tagging-algorithm.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 16</p>
+            <h4>SL extension: Database extension</h4>
+            <p>tags, task_tags, composite key, and ERD update.</p>
+            <a class="card-link" href="./teacher-guide/sl-database-extension.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 17</p>
+            <h4>HL Stage 1: JSON theory</h4>
+            <p>Objects, arrays, documents, and SQL vs NoSQL.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-theory.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 18</p>
+            <h4>HL Stage 2: Python JSON practice</h4>
+            <p>Generic read/write JSON examples before the project backend.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-practice.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 19</p>
+            <h4>HL Stage 3: Modelling comparison</h4>
+            <p>Separate files versus embedded documents.</p>
+            <a class="card-link" href="./teacher-guide/hl-modelling-comparison.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 20</p>
+            <h4>HL Stage 4: JSON backend setup</h4>
+            <p>Create JSON files and Python helper functions.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-backend-setup.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 21</p>
+            <h4>HL Feature 1: Fetch and render</h4>
+            <p>Read JSON data and render it through the existing frontend.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-fetch-render.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 22</p>
+            <h4>HL Feature 2: Create a task</h4>
+            <p>Append a new task object to tasks.json.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-create-task.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 23</p>
+            <h4>HL Feature 3: Delete a task</h4>
+            <p>Remove one task object from tasks.json.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-delete-task.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 24</p>
+            <h4>HL Feature 4: Mark complete</h4>
+            <p>Update the status field in the correct JSON object.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-mark-complete.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 25</p>
+            <h4>HL Feature 5: Filtering and sorting</h4>
+            <p>Filter and order JSON data in Python.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-filter-sort.html">Open step</a>
+          </article>
+        
+          <article class="summary-card">
+            <p class="kicker">Step 26</p>
+            <h4>HL Stage 5: JSON tagging</h4>
+            <p>Apply the tagging algorithm to the JSON backend.</p>
+            <a class="card-link" href="./teacher-guide/hl-json-tagging.html">Open step</a>
+          </article>
+        </div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
+      <p class="kicker">Teaching note</p>
+      <h2>How the implementation pages are organised</h2>
+      <p>The implementation steps follow the teacher build order you described, not just the current student-roadmap labels.</p>
+    </div>
+    
+  <section class="note-card">
+    <h4>Build order used in this guide</h4>
+    <ol class="list-tight"><li>Problem specification and planning first.</li><li>Core SQL schema before any Flask routes.</li><li>Database initialisation before the web app queries anything.</li><li>HTML shell and interface structure before JavaScript behaviour.</li><li>Flask and JavaScript built together, one small function or feature at a time.</li><li>Algorithm and database extension only after the core SL build works.</li><li>HL theory and JSON practice before the HL backend rebuild.</li><li>A separate HL JSON implementation run after the modelling comparison.</li><li>A final HL tagging lesson showing how the same algorithm lands differently in JSON.</li></ol>
+  </section>
+
+  </section>
+
+      <nav class="lesson-nav">
+        <span class="is-disabled"><small>Previous</small><strong>Start of guide</strong></span>
+        <div class="nav-center">
+          <small>Guide navigation</small>
+          <strong>Teacher guide home</strong>
+        </div>
+        <a href="./teacher-guide/problem-specification.html"><small>Next</small><strong>Stage 1: Problem specification</strong></a>
       </nav>
-      <p class="muted">Local path: <code>/Users/StevenStewart/SGS-CSC REMIX/docs/content/ib-content/teacher-project-reference/sql-nosql-project/teacher-reference.html</code></p>
-    </header>
-
-    <section class="panel" id="states">
-      <div class="stage-banner">
-        <div>
-          <p class="kicker">Reference States</p>
-          <h2>Open the exact code target for each build state</h2>
-        </div>
-        <a href="./feature-sequence.md">Open existing feature-sequence.md</a>
-      </div>
-      <div class="cards">
-        <article class="card">
-          <span class="pill-label">State 1</span>
-          <h3>SL SQL Core</h3>
-          <p>Two-table relational build with CRUD and status updates.</p>
-          <div class="state-links">
-            <a href="./sl-sql-core/schema.sql">schema.sql</a>
-            <a href="./sl-sql-core/init_db.py">init_db.py</a>
-            <a href="./sl-sql-core/app.py">app.py</a>
-            <a href="./sl-sql-core/templates/index.html">templates/index.html</a>
-            <a href="./sl-sql-core/static/index.js">static/index.js</a>
-          </div>
-        </article>
-        <article class="card">
-          <span class="pill-label">State 2</span>
-          <h3>SL SQL Tagging</h3>
-          <p>Core build plus algorithm, <code>tags</code>, and <code>task_tags</code>.</p>
-          <div class="state-links">
-            <a href="./sl-sql-tagging/schema.sql">schema.sql</a>
-            <a href="./sl-sql-tagging/app.py">app.py</a>
-            <a href="./sl-sql-tagging/tag_algorithm.py">tag_algorithm.py</a>
-          </div>
-        </article>
-        <article class="card">
-          <span class="pill-label">State 3</span>
-          <h3>HL JSON Core</h3>
-          <p>Same interface and route structure, but JSON files replace SQL tables.</p>
-          <div class="state-links">
-            <a href="./hl-json-core/app.py">app.py</a>
-            <a href="./hl-json-core/data/users.json">data/users.json</a>
-            <a href="./hl-json-core/data/tasks.json">data/tasks.json</a>
-            <a href="./hl-json-core/templates/index.html">templates/index.html</a>
-            <a href="./hl-json-core/static/index.js">static/index.js</a>
-          </div>
-        </article>
-        <article class="card">
-          <span class="pill-label">State 4</span>
-          <h3>HL JSON Tagging</h3>
-          <p>JSON build plus automatic tags stored inside each task document.</p>
-          <div class="state-links">
-            <a href="./hl-json-tagging/app.py">app.py</a>
-            <a href="./hl-json-tagging/tag_algorithm.py">tag_algorithm.py</a>
-            <a href="./hl-json-tagging/data/tasks.json">data/tasks.json</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="panel" id="sl-stages">
-      <div class="stage-banner">
-        <div>
-          <p class="kicker">SL Stages</p>
-          <h2>Teacher answer key for the standard-level journey</h2>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <article class="card">
-          <span class="pill-label">Stage 1</span>
-          <h3>Problem specification: expected outputs</h3>
-          <ul>
-            <li>Core problem: staff currently track tasks across messages and spreadsheets, so ownership and status are unclear.</li>
-            <li>Inputs students should identify: task title, assigned user, priority, due date.</li>
-            <li>Outputs students should identify: task list, status display, user name, priority, due date, feedback after create/update/delete.</li>
-            <li>Constraints: simple browser-based interface, clear roles, minimal training, persistent data storage.</li>
-          </ul>
-        </article>
-        <article class="card">
-          <span class="pill-label">Stage 1</span>
-          <h3>Success criteria answer set</h3>
-          <ol>
-            <li>User can create a task with a title, user, priority, and optional due date.</li>
-            <li>User list loads from storage.</li>
-            <li>Tasks display in a readable list.</li>
-            <li>User can mark a task as completed.</li>
-            <li>User can delete a task.</li>
-            <li>Completed status remains stored after refresh.</li>
-            <li>Data is saved persistently in the selected backend.</li>
-            <li>The interface is simple enough to use without technical knowledge.</li>
-          </ol>
-        </article>
-      </div>
-
-      <div class="two-col-note">
-        <article class="panel panel-soft">
-          <p class="kicker">Stage 2</p>
-          <h3>Planning decisions the class should land on</h3>
-          <ul>
-            <li><strong>Mandatory fields:</strong> title, user, priority.</li>
-            <li><strong>Optional field:</strong> due date.</li>
-            <li><strong>Where completion happens:</strong> a button on each rendered task row.</li>
-            <li><strong>Why the list screen comes first:</strong> it is the main read view and determines what data must be stored.</li>
-            <li><strong>Display-only UI elements:</strong> button labels, layout containers, modal shell.</li>
-            <li><strong>Stored data:</strong> title, user_id, priority, due_date, status, then later tags.</li>
-          </ul>
-        </article>
-        <article class="panel panel-soft">
-          <p class="kicker">Stage 2</p>
-          <h3>Testing table examples to expect</h3>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Test</th>
-                  <th>Input</th>
-                  <th>Expected output</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Create a task with all fields</td>
-                  <td>"Prepare report", Bob, High, 2026-03-10</td>
-                  <td>Task appears in the list with the correct values</td>
-                </tr>
-                <tr>
-                  <td>Delete a task</td>
-                  <td>Click Delete on an existing row</td>
-                  <td>That task disappears and no longer returns after refresh</td>
-                </tr>
-                <tr>
-                  <td>Complete a task</td>
-                  <td>Click Complete on an open task</td>
-                  <td>Status changes to completed and remains completed after refresh</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-      </div>
-
-      <div class="grid-2">
-        <article class="panel panel-soft">
-          <p class="kicker">Stage 3</p>
-          <h3>Exact SQL core tables</h3>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Table</th>
-                  <th>Field</th>
-                  <th>Type</th>
-                  <th>Key role</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td rowspan="2"><strong>users</strong></td>
-                  <td><code>user_id</code></td>
-                  <td>INTEGER</td>
-                  <td>Primary key, auto increment</td>
-                </tr>
-                <tr>
-                  <td><code>username</code></td>
-                  <td>TEXT</td>
-                  <td>Required</td>
-                </tr>
-                <tr>
-                  <td rowspan="6"><strong>tasks</strong></td>
-                  <td><code>task_id</code></td>
-                  <td>INTEGER</td>
-                  <td>Primary key, auto increment</td>
-                </tr>
-                <tr>
-                  <td><code>title</code></td>
-                  <td>TEXT</td>
-                  <td>Required</td>
-                </tr>
-                <tr>
-                  <td><code>user_id</code></td>
-                  <td>INTEGER</td>
-                  <td>Foreign key to <code>users.user_id</code></td>
-                </tr>
-                <tr>
-                  <td><code>priority</code></td>
-                  <td>TEXT</td>
-                  <td>Required</td>
-                </tr>
-                <tr>
-                  <td><code>due_date</code></td>
-                  <td>TEXT</td>
-                  <td>Optional</td>
-                </tr>
-                <tr>
-                  <td><code>status</code></td>
-                  <td>TEXT</td>
-                  <td>Default <code>open</code></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p><strong>Why this is correct:</strong> one user can own many tasks, but each task belongs to one user in the core build. That gives a clean 1:many relationship before the tagging extension.</p>
-        </article>
-        <article class="panel panel-soft">
-          <p class="kicker">Stage 3</p>
-          <h3>Core ERD to expect</h3>
-          <svg class="erd" viewBox="0 0 760 280" role="img" aria-label="Core SQL ERD">
-            <rect x="50" y="40" width="240" height="150" rx="18" fill="#ffffff" stroke="#0e214b" stroke-width="2"></rect>
-            <text x="80" y="78" fill="#0e214b" font-family="Outfit" font-size="26" font-weight="800">users</text>
-            <text x="80" y="116" fill="#1f2430" font-family="Source Sans 3" font-size="22">PK user_id</text>
-            <text x="80" y="148" fill="#1f2430" font-family="Source Sans 3" font-size="22">username</text>
-            <rect x="470" y="40" width="240" height="190" rx="18" fill="#ffffff" stroke="#0e214b" stroke-width="2"></rect>
-            <text x="500" y="78" fill="#0e214b" font-family="Outfit" font-size="26" font-weight="800">tasks</text>
-            <text x="500" y="116" fill="#1f2430" font-family="Source Sans 3" font-size="22">PK task_id</text>
-            <text x="500" y="148" fill="#1f2430" font-family="Source Sans 3" font-size="22">title</text>
-            <text x="500" y="180" fill="#1f2430" font-family="Source Sans 3" font-size="22">FK user_id</text>
-            <text x="500" y="212" fill="#1f2430" font-family="Source Sans 3" font-size="22">priority, due_date, status</text>
-            <line x1="290" y1="116" x2="470" y2="116" stroke="#be9a5e" stroke-width="4"></line>
-            <text x="333" y="100" fill="#7d5b21" font-family="Outfit" font-size="18" font-weight="800">1 : many</text>
-          </svg>
-          <p><strong>Normalisation note:</strong> username is stored once in <code>users</code>. The task row stores the <code>user_id</code> reference instead of duplicating names across many task records.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="panel" id="feature-sequence">
-      <div class="stage-banner">
-        <div>
-          <p class="kicker">Build Sequence</p>
-          <h2>Feature-by-feature expected outcome</h2>
-        </div>
-      </div>
-      <div class="callout">
-        Use the four code-state folders as anchor points. The table below explains the exact checkpoint after each feature so the student-facing page can always point toward a real, testable outcome.
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Expected visible / functional outcome</th>
-              <th>Files touched</th>
-              <th>Teacher reference</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>1. Project directory structure</strong></td>
-              <td>Folder layout exists and students can explain why HTML, JS, and Python are kept separate.</td>
-              <td><code>app.py</code>, <code>schema.sql</code>, <code>init_db.py</code>, <code>templates/index.html</code>, <code>static/index.js</code></td>
-              <td><a href="./sl-sql-core/app.py">SL SQL core files</a></td>
-            </tr>
-            <tr>
-              <td><strong>2. Base HTML shell</strong></td>
-              <td>Page loads with HTML boilerplate, Bootstrap linked, page title visible, and a main container in place.</td>
-              <td><code>templates/index.html</code></td>
-              <td><a href="./sl-sql-core/templates/index.html">SL SQL core HTML</a></td>
-            </tr>
-            <tr>
-              <td><strong>3. Task list display area</strong></td>
-              <td>An empty list container exists with a stable identifier that JavaScript can target later.</td>
-              <td><code>templates/index.html</code></td>
-              <td><a href="./sl-sql-core/templates/index.html">Look for <code>taskList</code></a></td>
-            </tr>
-            <tr>
-              <td><strong>4. Add-task modal</strong></td>
-              <td>Clicking <em>Add Task</em> opens a modal with a clear header, input area, and save/cancel controls.</td>
-              <td><code>templates/index.html</code></td>
-              <td><a href="./sl-sql-core/templates/index.html">Modal structure</a></td>
-            </tr>
-            <tr>
-              <td><strong>5. Form inputs</strong></td>
-              <td>Modal contains title, user, priority, and due-date controls with sensible element types and labels.</td>
-              <td><code>templates/index.html</code></td>
-              <td><a href="./sl-sql-core/templates/index.html">Input controls</a></td>
-            </tr>
-            <tr>
-              <td><strong>6. Fetch and render tasks</strong></td>
-              <td>The browser can request users and tasks, then render returned data into the list area.</td>
-              <td><code>app.py</code>, <code>static/index.js</code></td>
-              <td><a href="./sl-sql-core/app.py">GET routes</a> and <a href="./sl-sql-core/static/index.js">loadUsers/loadTasks</a></td>
-            </tr>
-            <tr>
-              <td><strong>7. Create task</strong></td>
-              <td>Save sends JSON to the backend, a new row is inserted, and the refreshed list shows the new task.</td>
-              <td><code>app.py</code>, <code>static/index.js</code></td>
-              <td><a href="./sl-sql-core/app.py">POST route</a></td>
-            </tr>
-            <tr>
-              <td><strong>8. Delete task</strong></td>
-              <td>Delete removes exactly one task by identifier and the list refreshes correctly.</td>
-              <td><code>app.py</code>, <code>static/index.js</code></td>
-              <td><a href="./sl-sql-core/app.py">DELETE route</a></td>
-            </tr>
-            <tr>
-              <td><strong>9. Mark task complete</strong></td>
-              <td>Complete updates <code>status</code> to <code>completed</code> and the task reflects that change after refresh.</td>
-              <td><code>app.py</code>, <code>static/index.js</code></td>
-              <td><a href="./sl-sql-core/app.py">PATCH route</a></td>
-            </tr>
-            <tr>
-              <td><strong>10. Filtering and sorting</strong></td>
-              <td>Teacher target: students add UI controls for user/priority/date and produce ordered or filtered output. This is not in the supplied anchor-state files, so treat it as the classroom extension between CRUD and evaluation.</td>
-              <td><code>templates/index.html</code>, <code>static/index.js</code>, <code>app.py</code></td>
-              <td>Use the same route / list structure as the core state, but extend the request and query logic.</td>
-            </tr>
-            <tr>
-              <td><strong>11. Evaluation and evidence</strong></td>
-              <td>The testing table is completed with actual outputs and judgements tied back to the original success criteria.</td>
-              <td>Testing evidence rather than new code</td>
-              <td>Use the Stage 1 success criteria and Stage 2 test table examples above.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <details>
-        <summary>Teacher note: exact directory trees</summary>
-        <div class="grid-2">
-          <pre><code class="language-text">sl_sql_core/
-app.py
-init_db.py
-schema.sql
-templates/
-  index.html
-static/
-  index.js</code></pre>
-          <pre><code class="language-text">hl_json_core/
-app.py
-data/
-  tasks.json
-  users.json
-templates/
-  index.html
-static/
-  index.js</code></pre>
-        </div>
-      </details>
-    </section>
-
-    <section class="panel" id="algorithm">
-      <div class="stage-banner">
-        <div>
-          <p class="kicker">Stage 5 + 6</p>
-          <h2>Algorithm and database extension answer key</h2>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <article class="panel panel-soft">
-          <h3>Plain-English algorithm the class should produce</h3>
-          <ol>
-            <li>Take the task title text.</li>
-            <li>Convert it to lowercase.</li>
-            <li>Split the text into separate words.</li>
-            <li>Remove common stop words such as <code>the</code>, <code>a</code>, and <code>for</code>.</li>
-            <li>Count how many times each remaining word appears.</li>
-            <li>Keep only the words that appear once.</li>
-            <li>Limit the result to a maximum of three tags.</li>
-            <li>Attach those tags to the task when it is created.</li>
-          </ol>
-          <p><a href="./sl-sql-tagging/tag_algorithm.py">Open exact SQL tagging algorithm</a></p>
-          <p><a href="./hl-json-tagging/tag_algorithm.py">Open exact JSON tagging algorithm</a></p>
-        </article>
-
-        <article class="panel panel-soft">
-          <h3>Exact SQL extension tables</h3>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Table</th>
-                  <th>Field</th>
-                  <th>Type</th>
-                  <th>Reason</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td rowspan="2"><strong>tags</strong></td>
-                  <td><code>tag_id</code></td>
-                  <td>INTEGER</td>
-                  <td>Primary key for each unique tag</td>
-                </tr>
-                <tr>
-                  <td><code>tag_name</code></td>
-                  <td>TEXT</td>
-                  <td>Unique tag value</td>
-                </tr>
-                <tr>
-                  <td rowspan="2"><strong>task_tags</strong></td>
-                  <td><code>task_id</code></td>
-                  <td>INTEGER</td>
-                  <td>Foreign key to <code>tasks</code></td>
-                </tr>
-                <tr>
-                  <td><code>tag_id</code></td>
-                  <td>INTEGER</td>
-                  <td>Foreign key to <code>tags</code>; together with <code>task_id</code> forms the composite primary key</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p><strong>Why the composite key matters:</strong> the pair <code>(task_id, tag_id)</code> stops the same task being linked to the same tag twice.</p>
-        </article>
-      </div>
-
-      <div class="grid-2">
-        <article class="panel panel-soft">
-          <h3>Updated SQL ERD after tagging</h3>
-          <svg class="erd" viewBox="0 0 920 360" role="img" aria-label="SQL ERD with tagging">
-            <rect x="40" y="40" width="220" height="150" rx="18" fill="#ffffff" stroke="#0e214b" stroke-width="2"></rect>
-            <text x="66" y="76" fill="#0e214b" font-family="Outfit" font-size="24" font-weight="800">users</text>
-            <text x="66" y="112" fill="#1f2430" font-family="Source Sans 3" font-size="20">PK user_id</text>
-            <text x="66" y="142" fill="#1f2430" font-family="Source Sans 3" font-size="20">username</text>
-
-            <rect x="350" y="40" width="240" height="190" rx="18" fill="#ffffff" stroke="#0e214b" stroke-width="2"></rect>
-            <text x="378" y="76" fill="#0e214b" font-family="Outfit" font-size="24" font-weight="800">tasks</text>
-            <text x="378" y="112" fill="#1f2430" font-family="Source Sans 3" font-size="20">PK task_id</text>
-            <text x="378" y="142" fill="#1f2430" font-family="Source Sans 3" font-size="20">title</text>
-            <text x="378" y="172" fill="#1f2430" font-family="Source Sans 3" font-size="20">FK user_id</text>
-            <text x="378" y="202" fill="#1f2430" font-family="Source Sans 3" font-size="20">priority, due_date, status</text>
-
-            <rect x="670" y="40" width="190" height="120" rx="18" fill="#ffffff" stroke="#0e214b" stroke-width="2"></rect>
-            <text x="698" y="76" fill="#0e214b" font-family="Outfit" font-size="24" font-weight="800">tags</text>
-            <text x="698" y="112" fill="#1f2430" font-family="Source Sans 3" font-size="20">PK tag_id</text>
-            <text x="698" y="140" fill="#1f2430" font-family="Source Sans 3" font-size="20">tag_name</text>
-
-            <rect x="620" y="220" width="240" height="110" rx="18" fill="#ffffff" stroke="#be9a5e" stroke-width="2"></rect>
-            <text x="648" y="256" fill="#7d5b21" font-family="Outfit" font-size="24" font-weight="800">task_tags</text>
-            <text x="648" y="286" fill="#1f2430" font-family="Source Sans 3" font-size="20">PK/FK task_id</text>
-            <text x="648" y="314" fill="#1f2430" font-family="Source Sans 3" font-size="20">PK/FK tag_id</text>
-
-            <line x1="260" y1="112" x2="350" y2="112" stroke="#be9a5e" stroke-width="4"></line>
-            <text x="278" y="96" fill="#7d5b21" font-family="Outfit" font-size="16" font-weight="800">1 : many</text>
-            <line x1="590" y1="180" x2="620" y2="248" stroke="#be9a5e" stroke-width="4"></line>
-            <text x="555" y="228" fill="#7d5b21" font-family="Outfit" font-size="16" font-weight="800">1 : many</text>
-            <line x1="730" y1="160" x2="740" y2="220" stroke="#be9a5e" stroke-width="4"></line>
-            <text x="748" y="198" fill="#7d5b21" font-family="Outfit" font-size="16" font-weight="800">1 : many</text>
-          </svg>
-          <p>The teacher explanation should be: a task can have many tags, and a tag can appear on many tasks, so the direct relationship is many:many and must be resolved with a junction table.</p>
-        </article>
-        <article class="panel panel-soft">
-          <h3>What changes in code when tagging is added</h3>
-          <ul>
-            <li><code>tag_algorithm.py</code> is introduced.</li>
-            <li><code>create_task()</code> still inserts the task first.</li>
-            <li>The backend then generates tags from the title.</li>
-            <li>For SQL: if a tag already exists, reuse its <code>tag_id</code>; otherwise insert it.</li>
-            <li>For SQL: insert each task/tag pair into <code>task_tags</code>.</li>
-            <li>For JSON: the generated tags are stored directly inside the task document as <code>"tags": []</code>.</li>
-          </ul>
-          <pre><code class="language-json">{
-  "task_id": 4,
-  "title": "Prepare physics experiment report",
-  "user_id": 1,
-  "priority": "High",
-  "due_date": "2026-03-10",
-  "status": "open",
-  "tags": ["prepare", "physics", "experiment"]
-}</code></pre>
-        </article>
-      </div>
-    </section>
-
-    <section class="panel" id="hl-stages">
-      <div class="stage-banner">
-        <div>
-          <p class="kicker">HL Stages</p>
-          <h2>Teacher answer key for the higher-level NoSQL path</h2>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <article class="panel panel-soft">
-          <h3>HL Stage 1: theory answers</h3>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>SQL</th>
-                  <th>JSON / NoSQL</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Tables and rows</td>
-                  <td>Documents and objects</td>
-                </tr>
-                <tr>
-                  <td>Fixed schema</td>
-                  <td>Flexible structure</td>
-                </tr>
-                <tr>
-                  <td>Joins handle relationships</td>
-                  <td>ID references or embedded data handle relationships</td>
-                </tr>
-                <tr>
-                  <td>Strong data consistency and integrity rules</td>
-                  <td>Flexible but easier to duplicate data</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-        <article class="panel panel-soft">
-          <h3>HL Stage 3: modelling comparison answers</h3>
-          <ul>
-            <li><strong>Model A:</strong> separate <code>users.json</code> and <code>tasks.json</code> with IDs reduces repeated user data and makes updates easier.</li>
-            <li><strong>Model B:</strong> embedded user data can simplify reads but duplicates user information across many task objects.</li>
-            <li><strong>Expected conclusion:</strong> Model A aligns more closely with the SQL design and makes the SQL/JSON comparison cleaner for students.</li>
-          </ul>
-        </article>
-      </div>
-
-      <div class="grid-2">
-        <article class="panel panel-soft">
-          <h3>Exact HL JSON core shape</h3>
-          <pre><code class="language-json">[
-  {"user_id": 1, "username": "Alice"},
-  {"user_id": 2, "username": "Bob"},
-  {"user_id": 3, "username": "Charlie"}
-]</code></pre>
-          <p><a href="./hl-json-core/data/users.json">Open exact users.json</a></p>
-          <p><a href="./hl-json-core/app.py">Open exact JSON backend</a></p>
-        </article>
-        <article class="panel panel-soft">
-          <h3>Parallel implementation rule</h3>
-          <ul>
-            <li>Frontend stays aligned with the SQL track.</li>
-            <li>Route names stay aligned where possible.</li>
-            <li>The difference is purely the storage layer and backend logic.</li>
-            <li>During HL lessons, students should repeatedly compare how the same frontend action becomes either an SQL query or JSON file read/write.</li>
-          </ul>
-        </article>
-      </div>
-
-      <details>
-        <summary>Open exact teacher code links for HL</summary>
-        <div class="state-links">
-          <a href="./hl-json-core/app.py">hl-json-core/app.py</a>
-          <a href="./hl-json-core/templates/index.html">hl-json-core/templates/index.html</a>
-          <a href="./hl-json-core/static/index.js">hl-json-core/static/index.js</a>
-          <a href="./hl-json-tagging/app.py">hl-json-tagging/app.py</a>
-          <a href="./hl-json-tagging/tag_algorithm.py">hl-json-tagging/tag_algorithm.py</a>
-        </div>
-      </details>
-    </section>
+    </main>
   </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-  <script>
-    document.querySelectorAll('pre code').forEach((block) => window.hljs.highlightElement(block));
-  </script>
+  <script src="./teacher-guide/assets/teacher-guide.js"></script>
 </body>
 </html>

@@ -9,9 +9,17 @@ It contains four working reference states for the IB 2027 database project:
 3. `hl-json-core`
 4. `hl-json-tagging`
 
-For a single teacher-facing file that summarizes the exact target outputs, open:
+For the local teacher entry point, open:
 
 - `teacher-reference.html`
+
+The generated lesson-plan pages live in:
+
+- `teacher-guide/`
+
+To rebuild the local teacher guide after editing the source generator, run:
+
+- `node build-teacher-guide.mjs`
 
 Use these states to anchor the public project pages so each student-facing feature describes a real target outcome.
 

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HL Feature 5: Filter and sort JSON task data | IB 2027 Teacher Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark-reasonable.min.css">
+  <link rel="stylesheet" href="./assets/teacher-guide.css">
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <a class="home-link" href="../teacher-reference.html">Teacher guide home</a>
+      <div>
+        <p class="kicker">IB 2027 Teacher Guide</p>
+        <h2>SQL / NoSQL project build</h2>
+        <p class="muted">Use this as the teacher script: lesson intent, answer key, expected code state, and next step.</p>
+      </div>
+      
+        <details >
+          <summary>Planning and data modelling</summary>
+          <div>
+            <a class="nav-link " href="./problem-specification.html">
+              <strong>Stage 1: Problem specification</strong>
+              <small>Client brief, success criteria, and answer key.</small>
+            </a>
+          
+            <a class="nav-link " href="./planning-and-answers.html">
+              <strong>Stage 2: Planning and answers</strong>
+              <small>Wireframes, field mapping, and planning questions.</small>
+            </a>
+          
+            <a class="nav-link " href="./sql-schema.html">
+              <strong>Stage 3: SQL schema</strong>
+              <small>Core two-table schema, normalisation, and ERD.</small>
+            </a>
+          
+            <a class="nav-link " href="./init-db.html">
+              <strong>Stage 3: init_db.py</strong>
+              <small>Create the database from schema.sql and seed users.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details >
+          <summary>SQL feature build</summary>
+          <div>
+            <a class="nav-link " href="./feature-base-html-shell.html">
+              <strong>Feature 1: Base HTML shell</strong>
+              <small>HTML boilerplate, Bootstrap links, and page shell.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-task-list-display.html">
+              <strong>Feature 2: Task list display area</strong>
+              <small>Add the DOM target where tasks will later render.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-add-task-modal.html">
+              <strong>Feature 3: Add-task modal</strong>
+              <small>Add the button and modal shell before the input controls.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-form-inputs.html">
+              <strong>Feature 4: Form inputs</strong>
+              <small>Add the exact fields the schema needs.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-fetch-render.html">
+              <strong>Feature 5: Fetch and render</strong>
+              <small>GET routes plus JavaScript rendering.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-create-task.html">
+              <strong>Feature 6: Create a task</strong>
+              <small>POST route and Save button handler.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-delete-task.html">
+              <strong>Feature 7: Delete a task</strong>
+              <small>Identifier-based deletion in JS and Flask.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-mark-complete.html">
+              <strong>Feature 8: Mark complete</strong>
+              <small>Status updates and PATCH route.</small>
+            </a>
+          
+            <a class="nav-link " href="./feature-filter-sort.html">
+              <strong>Feature 9: Filtering and sorting</strong>
+              <small>Teacher target for conditional reads and ordered output.</small>
+            </a>
+          
+            <a class="nav-link " href="./testing-and-evidence.html">
+              <strong>Feature 10: Testing and evidence</strong>
+              <small>Use the earlier success criteria as the assessment checkpoint.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details >
+          <summary>SL extension</summary>
+          <div>
+            <a class="nav-link " href="./sl-tagging-algorithm.html">
+              <strong>SL extension: Tagging algorithm</strong>
+              <small>Plain-English logic, Python function, and integration point.</small>
+            </a>
+          
+            <a class="nav-link " href="./sl-database-extension.html">
+              <strong>SL extension: Database extension</strong>
+              <small>tags, task_tags, composite key, and ERD update.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details >
+          <summary>HL bridge</summary>
+          <div>
+            <a class="nav-link " href="./hl-json-theory.html">
+              <strong>HL Stage 1: JSON theory</strong>
+              <small>Objects, arrays, documents, and SQL vs NoSQL.</small>
+            </a>
+          
+            <a class="nav-link " href="./hl-json-practice.html">
+              <strong>HL Stage 2: Python JSON practice</strong>
+              <small>Generic read/write JSON examples before the project backend.</small>
+            </a>
+          
+            <a class="nav-link " href="./hl-modelling-comparison.html">
+              <strong>HL Stage 3: Modelling comparison</strong>
+              <small>Separate files versus embedded documents.</small>
+            </a>
+          </div>
+        </details>
+      
+        <details open>
+          <summary>HL JSON build</summary>
+          <div>
+            <a class="nav-link " href="./hl-json-backend-setup.html">
+              <strong>HL Stage 4: JSON backend setup</strong>
+              <small>Create JSON files and Python helper functions.</small>
+            </a>
+          
+            <a class="nav-link " href="./hl-json-fetch-render.html">
+              <strong>HL Feature 1: Fetch and render</strong>
+              <small>Read JSON data and render it through the existing frontend.</small>
+            </a>
+          
+            <a class="nav-link " href="./hl-json-create-task.html">
+              <strong>HL Feature 2: Create a task</strong>
+              <small>Append a new task object to tasks.json.</small>
+            </a>
+          
+            <a class="nav-link " href="./hl-json-delete-task.html">
+              <strong>HL Feature 3: Delete a task</strong>
+              <small>Remove one task object from tasks.json.</small>
+            </a>
+          
+            <a class="nav-link " href="./hl-json-mark-complete.html">
+              <strong>HL Feature 4: Mark complete</strong>
+              <small>Update the status field in the correct JSON object.</small>
+            </a>
+          
+            <a class="nav-link is-current" href="./hl-json-filter-sort.html">
+              <strong>HL Feature 5: Filtering and sorting</strong>
+              <small>Filter and order JSON data in Python.</small>
+            </a>
+          
+            <a class="nav-link " href="./hl-json-tagging.html">
+              <strong>HL Stage 5: JSON tagging</strong>
+              <small>Apply the tagging algorithm to the JSON backend.</small>
+            </a>
+          </div>
+        </details>
+      
+    </aside>
+    <main class="content">
+      
+  <header class="hero">
+    <p class="kicker">HL Stage 4</p>
+    <h1>HL Feature 5: Filter and sort JSON task data</h1>
+    <p>Teach filtering and sorting in HL as Python list operations that still sit behind the same GET route contract.</p>
+    <div class="meta"><span>Teacher only</span><span>Exact target state</span></div>
+  </header>
+
+      
+  <section class="lesson-section">
+    <div class="section-head">
+      <p class="kicker">Teacher objective</p>
+      <h2>What this lesson should secure</h2>
+      <p>Students should understand that query parameters still describe the read request, even though the backend now filters Python lists instead of SQL results.</p>
+    </div>
+    <div class="grid-2">
+          
+  <section class="note-card">
+    <h4>Expected student output</h4>
+    <ul class="list-tight"><li>The same filter and sort controls from SL are reused.</li><li>The backend reads query parameters and applies them to the task list in Python.</li><li>Students can explain why filtering changes the read logic, not the stored data.</li></ul>
+  </section>
+
+          
+  <section class="note-card">
+    <h4>Questions and answers</h4>
+    
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Prompt for the class</th>
+          <th>Expected answer / direction</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+              <tr>
+                <td>What still stays the same from the SQL version?</td>
+                <td>The HTML controls, query-string pattern, and rendered UI behaviour.</td>
+              </tr>
+            
+              <tr>
+                <td>What changes in HL?</td>
+                <td>Python code filters and sorts in memory instead of SQL doing the work.</td>
+              </tr>
+            
+              <tr>
+                <td>Why still teach the backend as the owner of the returned order?</td>
+                <td>Because the client should request data, not decide the authoritative dataset logic.</td>
+              </tr>
+            
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+
+        </div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
+      <p class="kicker">Files to build</p>
+      <h2>Exact files after the HL filter/sort lesson</h2>
+      <p>This is the teacher target state for the HL filtering lesson.</p>
+    </div>
+    
+  <section class="code-card">
+    <header>
+      <div>
+        <p class="kicker">Whole file after this step</p>
+        <h4>templates/index.html</h4>
+      </div>
+      <div class="raw-links">
+        <span class="file-badge">HTML</span>
+        
+      </div>
+    </header>
+    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Task Manager&lt;/title&gt;
+&lt;link
+href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css&quot;
+rel=&quot;stylesheet&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;container mt-5&quot;&gt;
+&lt;h1 class=&quot;mb-4&quot;&gt;Task Manager&lt;/h1&gt;
+&lt;div class=&quot;d-flex flex-wrap gap-2 mb-3&quot;&gt;
+&lt;select id=&quot;filterUser&quot; class=&quot;form-select w-auto&quot;&gt;
+&lt;option value=&quot;&quot;&gt;All users&lt;/option&gt;
+&lt;/select&gt;
+&lt;select id=&quot;filterPriority&quot; class=&quot;form-select w-auto&quot;&gt;
+&lt;option value=&quot;&quot;&gt;All priorities&lt;/option&gt;
+&lt;option value=&quot;Low&quot;&gt;Low&lt;/option&gt;
+&lt;option value=&quot;Medium&quot;&gt;Medium&lt;/option&gt;
+&lt;option value=&quot;High&quot;&gt;High&lt;/option&gt;
+&lt;/select&gt;
+&lt;select id=&quot;sortTasks&quot; class=&quot;form-select w-auto&quot;&gt;
+&lt;option value=&quot;newest&quot;&gt;Newest first&lt;/option&gt;
+&lt;option value=&quot;due_asc&quot;&gt;Due date (earliest first)&lt;/option&gt;
+&lt;option value=&quot;due_desc&quot;&gt;Due date (latest first)&lt;/option&gt;
+&lt;option value=&quot;priority_desc&quot;&gt;Priority&lt;/option&gt;
+&lt;/select&gt;
+&lt;/div&gt;
+&lt;button class=&quot;btn btn-primary mb-3&quot; data-bs-toggle=&quot;modal&quot; data-bs-target=&quot;#taskModal&quot;&gt;
+Add Task
+&lt;/button&gt;
+&lt;ul id=&quot;taskList&quot; class=&quot;list-group&quot;&gt;&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;modal fade&quot; id=&quot;taskModal&quot;&gt;
+&lt;div class=&quot;modal-dialog&quot;&gt;
+&lt;div class=&quot;modal-content&quot;&gt;
+&lt;div class=&quot;modal-header&quot;&gt;
+&lt;h5 class=&quot;modal-title&quot;&gt;Create Task&lt;/h5&gt;
+&lt;button class=&quot;btn-close&quot; data-bs-dismiss=&quot;modal&quot;&gt;&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class=&quot;modal-body&quot;&gt;
+&lt;div class=&quot;mb-3&quot;&gt;
+&lt;label class=&quot;form-label&quot;&gt;Task Title&lt;/label&gt;
+&lt;input id=&quot;taskTitle&quot; class=&quot;form-control&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;mb-3&quot;&gt;
+&lt;label class=&quot;form-label&quot;&gt;Assign User&lt;/label&gt;
+&lt;select id=&quot;taskUser&quot; class=&quot;form-select&quot;&gt;&lt;/select&gt;
+&lt;/div&gt;
+&lt;div class=&quot;mb-3&quot;&gt;
+&lt;label class=&quot;form-label&quot;&gt;Priority&lt;/label&gt;
+&lt;select id=&quot;taskPriority&quot; class=&quot;form-select&quot;&gt;
+&lt;option value=&quot;Low&quot;&gt;Low&lt;/option&gt;
+&lt;option value=&quot;Medium&quot;&gt;Medium&lt;/option&gt;
+&lt;option value=&quot;High&quot;&gt;High&lt;/option&gt;
+&lt;/select&gt;
+&lt;/div&gt;
+&lt;div class=&quot;mb-3&quot;&gt;
+&lt;label class=&quot;form-label&quot;&gt;Due Date&lt;/label&gt;
+&lt;input type=&quot;date&quot; id=&quot;taskDate&quot; class=&quot;form-control&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;modal-footer&quot;&gt;
+&lt;button class=&quot;btn btn-secondary&quot; data-bs-dismiss=&quot;modal&quot;&gt;Cancel&lt;/button&gt;
+&lt;button class=&quot;btn btn-primary&quot; id=&quot;saveTaskButton&quot;&gt;Save Task&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/static/index.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    
+  <section class="note-card">
+    <h4>Teaching notes for this file</h4>
+    <ul class="list-tight"><li>Reuse the same filter controls from the SQL track so the comparison stays direct.</li><li>The UI should not split into a second design language in HL.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="code-card">
+    <header>
+      <div>
+        <p class="kicker">Whole file after this step</p>
+        <h4>static/index.js</h4>
+      </div>
+      <div class="raw-links">
+        <span class="file-badge">JAVASCRIPT</span>
+        
+      </div>
+    </header>
+    <pre><code class="language-javascript">function loadUsers() {
+    fetch(&quot;/users&quot;)
+    .then(response =&gt; response.json())
+    .then(users =&gt; {
+        const taskUserSelect = document.getElementById(&quot;taskUser&quot;)
+        const filterUserSelect = document.getElementById(&quot;filterUser&quot;)
+
+        taskUserSelect.innerHTML = &quot;&quot;
+        filterUserSelect.innerHTML = &#39;&lt;option value=&quot;&quot;&gt;All users&lt;/option&gt;&#39;
+
+        for (let i = 0; i &lt; users.length; i++) {
+            const option = document.createElement(&quot;option&quot;)
+            option.value = users[i].user_id
+            option.textContent = users[i].username
+            taskUserSelect.appendChild(option)
+
+            const filterOption = document.createElement(&quot;option&quot;)
+            filterOption.value = users[i].user_id
+            filterOption.textContent = users[i].username
+            filterUserSelect.appendChild(filterOption)
+        }
+    })
+}
+
+function buildTaskQuery() {
+    const params = new URLSearchParams()
+    const userId = document.getElementById(&quot;filterUser&quot;).value
+    const priority = document.getElementById(&quot;filterPriority&quot;).value
+    const sort = document.getElementById(&quot;sortTasks&quot;).value
+
+    if (userId) {
+        params.set(&quot;user_id&quot;, userId)
+    }
+
+    if (priority) {
+        params.set(&quot;priority&quot;, priority)
+    }
+
+    if (sort) {
+        params.set(&quot;sort&quot;, sort)
+    }
+
+    const queryString = params.toString()
+    return queryString ? &quot;?&quot; + queryString : &quot;&quot;
+}
+
+function loadTasks() {
+    fetch(&quot;/tasks&quot; + buildTaskQuery())
+    .then(response =&gt; response.json())
+    .then(tasks =&gt; {
+        const list = document.getElementById(&quot;taskList&quot;)
+        list.innerHTML = &quot;&quot;
+
+        for (let i = 0; i &lt; tasks.length; i++) {
+            const task = tasks[i]
+
+            const li = document.createElement(&quot;li&quot;)
+            li.className = &quot;list-group-item d-flex justify-content-between align-items-center&quot;
+
+            const info = document.createElement(&quot;span&quot;)
+            info.textContent =
+                task.title +
+                &quot; | &quot; +
+                task.username +
+                &quot; | &quot; +
+                task.priority +
+                &quot; | &quot; +
+                (task.due_date || &quot;&quot;) +
+                &quot; | &quot; +
+                task.status
+
+            const buttonGroup = document.createElement(&quot;div&quot;)
+
+            const completeButton = document.createElement(&quot;button&quot;)
+            completeButton.textContent = &quot;Complete&quot;
+            completeButton.className = &quot;btn btn-success btn-sm ms-2&quot;
+            completeButton.onclick = () =&gt; completeTask(task.task_id)
+
+            const deleteButton = document.createElement(&quot;button&quot;)
+            deleteButton.textContent = &quot;Delete&quot;
+            deleteButton.className = &quot;btn btn-danger btn-sm ms-2&quot;
+            deleteButton.onclick = () =&gt; deleteTask(task.task_id)
+
+            buttonGroup.appendChild(completeButton)
+            buttonGroup.appendChild(deleteButton)
+
+            li.appendChild(info)
+            li.appendChild(buttonGroup)
+
+            list.appendChild(li)
+        }
+    })
+}
+
+document.getElementById(&quot;saveTaskButton&quot;).onclick = function () {
+    const title = document.getElementById(&quot;taskTitle&quot;).value
+    const user_id = document.getElementById(&quot;taskUser&quot;).value
+    const priority = document.getElementById(&quot;taskPriority&quot;).value
+    const due_date = document.getElementById(&quot;taskDate&quot;).value
+
+    fetch(&quot;/tasks&quot;, {
+        method: &quot;POST&quot;,
+        headers: {
+            &quot;Content-Type&quot;: &quot;application/json&quot;
+        },
+        body: JSON.stringify({
+            title: title,
+            user_id: user_id,
+            priority: priority,
+            due_date: due_date
+        })
+    })
+    .then(() =&gt; loadTasks())
+}
+
+function deleteTask(id) {
+    fetch(&quot;/tasks/&quot; + id, {
+        method: &quot;DELETE&quot;
+    })
+    .then(() =&gt; loadTasks())
+}
+
+function completeTask(id) {
+    fetch(&quot;/tasks/&quot; + id + &quot;/complete&quot;, {
+        method: &quot;PATCH&quot;
+    })
+    .then(() =&gt; loadTasks())
+}
+
+document.getElementById(&quot;filterUser&quot;).addEventListener(&quot;change&quot;, loadTasks)
+document.getElementById(&quot;filterPriority&quot;).addEventListener(&quot;change&quot;, loadTasks)
+document.getElementById(&quot;sortTasks&quot;).addEventListener(&quot;change&quot;, loadTasks)
+
+loadUsers()
+loadTasks()</code></pre>
+    
+  <section class="note-card">
+    <h4>Teaching notes for this file</h4>
+    <ul class="list-tight"><li>The query-string building can remain identical to the SQL version.</li><li>This is a good moment to revisit <code>URLSearchParams</code>.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="code-card">
+    <header>
+      <div>
+        <p class="kicker">Whole file after this step</p>
+        <h4>app.py</h4>
+      </div>
+      <div class="raw-links">
+        <span class="file-badge">PYTHON</span>
+        
+      </div>
+    </header>
+    <pre><code class="language-python">from flask import Flask, render_template, request, jsonify
+import json
+import os
+
+app = Flask(__name__)
+
+TASK_FILE = &quot;data/tasks.json&quot;
+USER_FILE = &quot;data/users.json&quot;
+
+
+def load_tasks():
+    if not os.path.exists(TASK_FILE):
+        return []
+
+    with open(TASK_FILE) as f:
+        return json.load(f)
+
+
+def save_tasks(tasks):
+    with open(TASK_FILE, &quot;w&quot;) as f:
+        json.dump(tasks, f, indent=4)
+
+
+def load_users():
+    with open(USER_FILE) as f:
+        return json.load(f)
+
+
+@app.route(&quot;/&quot;)
+def index():
+    return render_template(&quot;index.html&quot;)
+
+
+@app.route(&quot;/users&quot;)
+def get_users():
+    return jsonify(load_users())
+
+
+@app.route(&quot;/tasks&quot;)
+def get_tasks():
+    tasks = load_tasks()
+    users = load_users()
+    user_map = {}
+
+    for user in users:
+        user_map[user[&quot;user_id&quot;]] = user[&quot;username&quot;]
+
+    for task in tasks:
+        task[&quot;username&quot;] = user_map.get(task[&quot;user_id&quot;], &quot;Unknown&quot;)
+
+    user_id = request.args.get(&quot;user_id&quot;)
+    priority = request.args.get(&quot;priority&quot;)
+    sort = request.args.get(&quot;sort&quot;, &quot;newest&quot;)
+
+    if user_id:
+        tasks = [task for task in tasks if str(task[&quot;user_id&quot;]) == str(user_id)]
+
+    if priority:
+        tasks = [task for task in tasks if task[&quot;priority&quot;] == priority]
+
+    if sort == &quot;due_asc&quot;:
+        tasks.sort(key=lambda task: task.get(&quot;due_date&quot;) or &quot;9999-12-31&quot;)
+    elif sort == &quot;due_desc&quot;:
+        tasks.sort(key=lambda task: task.get(&quot;due_date&quot;) or &quot;&quot;, reverse=True)
+    elif sort == &quot;priority_desc&quot;:
+        order = {&quot;High&quot;: 1, &quot;Medium&quot;: 2, &quot;Low&quot;: 3}
+        tasks.sort(key=lambda task: (order.get(task[&quot;priority&quot;], 99), -task[&quot;task_id&quot;]))
+    else:
+        tasks.sort(key=lambda task: task[&quot;task_id&quot;], reverse=True)
+
+    return jsonify(tasks)
+
+
+@app.route(&quot;/tasks&quot;, methods=[&quot;POST&quot;])
+def create_task():
+    data = request.get_json()
+    tasks = load_tasks()
+
+    new_id = 1
+
+    if len(tasks) &gt; 0:
+        new_id = tasks[-1][&quot;task_id&quot;] + 1
+
+    new_task = {
+        &quot;task_id&quot;: new_id,
+        &quot;title&quot;: data[&quot;title&quot;],
+        &quot;user_id&quot;: int(data[&quot;user_id&quot;]),
+        &quot;priority&quot;: data[&quot;priority&quot;],
+        &quot;due_date&quot;: data[&quot;due_date&quot;],
+        &quot;status&quot;: &quot;open&quot;
+    }
+
+    tasks.append(new_task)
+    save_tasks(tasks)
+
+    return jsonify({&quot;status&quot;: &quot;success&quot;})
+
+
+@app.route(&quot;/tasks/&lt;int:task_id&gt;&quot;, methods=[&quot;DELETE&quot;])
+def delete_task(task_id):
+    tasks = load_tasks()
+    tasks = [t for t in tasks if t[&quot;task_id&quot;] != task_id]
+    save_tasks(tasks)
+    return jsonify({&quot;status&quot;: &quot;deleted&quot;})
+
+
+@app.route(&quot;/tasks/&lt;int:task_id&gt;/complete&quot;, methods=[&quot;PATCH&quot;])
+def complete_task(task_id):
+    tasks = load_tasks()
+
+    for task in tasks:
+        if task[&quot;task_id&quot;] == task_id:
+            task[&quot;status&quot;] = &quot;completed&quot;
+
+    save_tasks(tasks)
+
+    return jsonify({&quot;status&quot;: &quot;completed&quot;})
+
+
+if __name__ == &quot;__main__&quot;:
+    app.run(debug=True)</code></pre>
+    
+  <section class="note-card">
+    <h4>Teaching notes for this file</h4>
+    <ul class="list-tight"><li>Teach filtering first, then ordering, so students do not collapse both ideas together.</li><li>Be explicit about how empty due dates are handled during sorting.</li></ul>
+  </section>
+
+  </section>
+
+  </section>
+
+      <nav class="lesson-nav">
+        <a href="./hl-json-mark-complete.html"><small>Previous</small><strong>HL Feature 4: Mark complete</strong></a>
+        <div class="nav-center">
+          <small>Guide navigation</small>
+          <strong>HL Feature 5: Filter and sort JSON task data</strong>
+        </div>
+        <a href="./hl-json-tagging.html"><small>Next</small><strong>HL Stage 5: JSON tagging</strong></a>
+      </nav>
+    </main>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="./assets/teacher-guide.js"></script>
+</body>
+</html>
