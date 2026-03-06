@@ -300,6 +300,7 @@
     if (filterPriority) params.set(&quot;priority&quot;, filterPriority)
     if (sortTasks) params.set(&quot;sort&quot;, sortTasks)
 
+    // Send the chosen filters as query parameters.
     fetch(&quot;/tasks?&quot; + params.toString())
 }
 
@@ -325,6 +326,7 @@ document.getElementById(&quot;sortTasks&quot;).onchange = loadTasks</code></pre>
     <p>The backend owns the final query logic, so this is where filtering and ordering become real.</p>
     <pre><code class="language-python">@app.route(&quot;/tasks&quot;, methods=[&quot;GET&quot;])
 def get_tasks():
+    # Read the filter and sort choices from the query string.
     user_id = request.args.get(&quot;user_id&quot;)
     priority = request.args.get(&quot;priority&quot;)
     sort = request.args.get(&quot;sort&quot;, &quot;newest&quot;)

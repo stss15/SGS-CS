@@ -239,6 +239,50 @@
 
   <section class="lesson-section">
     <div class="section-head">
+      <p class="kicker">New syntax family</p>
+      <h2>JavaScript, Flask, and SQL terms to teach on this page</h2>
+      <p>This is the first full-stack lesson, so make the generic syntax explicit before students try to combine it.</p>
+    </div>
+    <div class="content-stack">
+          
+  <section class="note-card">
+    <h4>JavaScript request and DOM terms</h4>
+    
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Code</th><th>What it does</th><th>How to explain it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>function loadUsers()</code></td><td>Declares a reusable function.</td><td>Use functions when the same action needs a clear name.</td></tr><tr><td><code>fetch("/users")</code></td><td>Starts an HTTP request from the browser.</td><td>The browser is asking the backend for data.</td></tr><tr><td><code>.then(...)</code></td><td>Runs code after the previous async step finishes.</td><td>This is how the request chain continues.</td></tr><tr><td><code>response.json()</code></td><td>Reads the response body as JSON.</td><td>Turns the HTTP body into usable JavaScript data.</td></tr><tr><td><code>const</code></td><td>Creates a variable that should not be reassigned.</td><td>Use it for values that should keep one meaning in the block.</td></tr><tr><td><code>let</code></td><td>Creates a variable that may change later.</td><td>Useful for counters and values that are updated.</td></tr><tr><td><code>document.getElementById()</code></td><td>Finds one named element in the DOM.</td><td>This is why HTML ids matter so much.</td></tr><tr><td><code>document.createElement()</code></td><td>Builds a new DOM node in JavaScript.</td><td>The page is creating output after the request succeeds.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+
+          
+  <section class="note-card">
+    <h4>Flask and SQL read terms</h4>
+    
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Code / command</th><th>What it does</th><th>How to explain it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>@app.route("/users")</code></td><td>Connects a URL to a Python function.</td><td>This is how Flask knows which function handles which path.</td></tr><tr><td><code>methods=["GET"]</code></td><td>Declares that the route reads data.</td><td>GET is for retrieval, not creation.</td></tr><tr><td><code>jsonify(...)</code></td><td>Returns JSON to the browser.</td><td>This is the backend version of sending structured data.</td></tr><tr><td><code>SELECT</code></td><td>Chooses columns to read.</td><td>This is how SQL asks for data.</td></tr><tr><td><code>JOIN</code></td><td>Combines related rows from different tables.</td><td>Used here so tasks can be displayed with usernames.</td></tr><tr><td><code>ORDER BY</code></td><td>Controls the order of the returned rows.</td><td>Useful for making the list predictable.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+
+        </div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
       <p class="kicker">Live build order</p>
       <h2>Step-by-step code to write with the class</h2>
       <p>Write these blocks in order. Each block is smaller than the final file so the teacher can explain what is happening before moving on.</p>
@@ -365,6 +409,7 @@ def get_tasks():
     </div>
     <p>Now connect the page to the routes by fetching the JSON and preparing the render area.</p>
     <pre><code class="language-javascript">function loadUsers() {
+    // Ask the backend for the current user list.
     fetch(&quot;/users&quot;)
     .then(response =&gt; response.json())
     .then(users =&gt; {
@@ -381,6 +426,7 @@ def get_tasks():
 }
 
 function loadTasks() {
+    // Ask the backend for the current tasks.
     fetch(&quot;/tasks&quot;)
     .then(response =&gt; response.json())
     .then(tasks =&gt; {

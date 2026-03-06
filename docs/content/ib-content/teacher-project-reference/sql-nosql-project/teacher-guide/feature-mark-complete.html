@@ -257,6 +257,7 @@
 def complete_task(task_id):
     conn = get_db_connection()
 
+    # Update only the status field for the chosen task.
     conn.execute(
         &quot;UPDATE tasks SET status = &#39;completed&#39; WHERE task_id = ?&quot;,
         (task_id,)
@@ -284,6 +285,7 @@ def complete_task(task_id):
     </div>
     <p>Like delete, this function is intentionally small: send the request, then refresh the list.</p>
     <pre><code class="language-javascript">function completeTask(id) {
+    // Ask the backend to update one stored record.
     fetch(&quot;/tasks/&quot; + id + &quot;/complete&quot;, {
         method: &quot;PATCH&quot;
     })
@@ -309,6 +311,7 @@ def complete_task(task_id):
     <pre><code class="language-javascript">const completeButton = document.createElement(&quot;button&quot;)
 completeButton.textContent = &quot;Complete&quot;
 completeButton.className = &quot;btn btn-success btn-sm ms-2&quot;
+// This button updates the status for this specific task id.
 completeButton.onclick = () =&gt; completeTask(task.task_id)
 
 li.appendChild(completeButton)</code></pre>

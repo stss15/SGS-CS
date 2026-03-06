@@ -239,6 +239,50 @@
 
   <section class="lesson-section">
     <div class="section-head">
+      <p class="kicker">Request syntax</p>
+      <h2>HTTP, Flask, and SQL insert terms to teach on this page</h2>
+      <p>This feature introduces the first create request, so make the generic request language explicit.</p>
+    </div>
+    <div class="content-stack">
+          
+  <section class="note-card">
+    <h4>Browser request terms</h4>
+    
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Code</th><th>What it does</th><th>How to explain it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>method: "POST"</code></td><td>Marks the request as a create action.</td><td>POST is the method used when the browser sends new data to be stored.</td></tr><tr><td><code>headers</code></td><td>Adds metadata about the request.</td><td>The backend uses this to understand the body format.</td></tr><tr><td><code>"Content-Type": "application/json"</code></td><td>Declares the body as JSON.</td><td>Without it, Flask may not interpret the body the way you expect.</td></tr><tr><td><code>JSON.stringify(...)</code></td><td>Turns a JavaScript object into JSON text.</td><td>The request body must be text on the wire, not a raw JS object.</td></tr><tr><td><code>.value</code></td><td>Reads the current value from an input control.</td><td>This is how the script takes user input out of the form.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+
+          
+  <section class="note-card">
+    <h4>Flask and SQL insert terms</h4>
+    
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Code / command</th><th>What it does</th><th>How to explain it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>request.get_json()</code></td><td>Reads the JSON request body into Python.</td><td>The incoming JSON becomes a Python dictionary.</td></tr><tr><td><code>INSERT INTO</code></td><td>Adds a new row to a table.</td><td>This is the SQL create command.</td></tr><tr><td><code>VALUES</code></td><td>Supplies the values for the new row.</td><td>The placeholders sit inside the VALUES list.</td></tr><tr><td><code>?</code></td><td>Acts as a safe placeholder in SQL.</td><td>SQLite swaps in the real values separately instead of string-building the query.</td></tr><tr><td><code>commit()</code></td><td>Saves the insert permanently.</td><td>Without commit, the new row may not persist.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+
+        </div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
       <p class="kicker">Live build order</p>
       <h2>Step-by-step code to write with the class</h2>
       <p>Write these blocks in order. Each block is smaller than the final file so the teacher can explain what is happening before moving on.</p>
@@ -273,6 +317,7 @@
     <p>Build the route from input reading, then the insert, then the JSON response.</p>
     <pre><code class="language-python">@app.route(&quot;/tasks&quot;, methods=[&quot;POST&quot;])
 def create_task():
+    # Read the JSON body sent by the browser.
     data = request.get_json()
 
     title = data[&quot;title&quot;]
@@ -282,6 +327,7 @@ def create_task():
 
     conn = get_db_connection()
 
+    # Insert the new task row using safe placeholders.
     conn.execute(
         &quot;&quot;&quot;
         INSERT INTO tasks (title, user_id, priority, due_date)
@@ -312,11 +358,13 @@ def create_task():
     </div>
     <p>Collect the values from the modal, turn them into JSON, and send them to the backend.</p>
     <pre><code class="language-javascript">document.getElementById(&quot;saveTaskButton&quot;).onclick = function () {
+    // Read the current values from the modal form.
     const title = document.getElementById(&quot;taskTitle&quot;).value
     const user_id = document.getElementById(&quot;taskUser&quot;).value
     const priority = document.getElementById(&quot;taskPriority&quot;).value
     const due_date = document.getElementById(&quot;taskDate&quot;).value
 
+    // Send the values to Flask as JSON.
     fetch(&quot;/tasks&quot;, {
         method: &quot;POST&quot;,
         headers: {

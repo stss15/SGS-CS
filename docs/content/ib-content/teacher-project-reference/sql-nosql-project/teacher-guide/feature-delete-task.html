@@ -257,6 +257,7 @@
 def delete_task(task_id):
     conn = get_db_connection()
 
+    # Delete the row whose task_id matches the route parameter.
     conn.execute(
         &quot;DELETE FROM tasks WHERE task_id = ?&quot;,
         (task_id,)
@@ -284,6 +285,7 @@ def delete_task(task_id):
     </div>
     <p>This small function sends the request and then reloads the list from the backend.</p>
     <pre><code class="language-javascript">function deleteTask(id) {
+    // Ask the backend to delete one task by id.
     fetch(&quot;/tasks/&quot; + id, {
         method: &quot;DELETE&quot;
     })
@@ -309,6 +311,7 @@ def delete_task(task_id):
     <pre><code class="language-javascript">const deleteButton = document.createElement(&quot;button&quot;)
 deleteButton.textContent = &quot;Delete&quot;
 deleteButton.className = &quot;btn btn-danger btn-sm ms-2&quot;
+// Keep the current task id attached to this button click.
 deleteButton.onclick = () =&gt; deleteTask(task.task_id)
 
 li.appendChild(deleteButton)</code></pre>

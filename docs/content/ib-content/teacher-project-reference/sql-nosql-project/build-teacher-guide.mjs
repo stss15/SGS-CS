@@ -114,6 +114,21 @@ const section = ({ kicker, title, intro = '', content = '' }) => `
   </section>
 `;
 
+const simpleTable = (headers, rows) => `
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>${headers.map((header) => `<th>${header}</th>`).join('')}</tr>
+      </thead>
+      <tbody>
+        ${rows
+          .map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`)
+          .join('')}
+      </tbody>
+    </table>
+  </div>
+`;
+
 const hero = ({ stepLabel, title, summary, tags = [] }) => `
   <header class="hero">
     <p class="kicker">${stepLabel}</p>
@@ -1902,6 +1917,7 @@ def get_tasks():
     return jsonify(result)`;
 
 const featureFetchStep4 = `function loadUsers() {
+    // Ask the backend for the current user list.
     fetch("/users")
     .then(response => response.json())
     .then(users => {
@@ -1918,6 +1934,7 @@ const featureFetchStep4 = `function loadUsers() {
 }
 
 function loadTasks() {
+    // Ask the backend for the current tasks.
     fetch("/tasks")
     .then(response => response.json())
     .then(tasks => {
@@ -1952,6 +1969,7 @@ const featureCreateStep1 = `from flask import Flask, render_template, request, j
 
 const featureCreateStep2 = `@app.route("/tasks", methods=["POST"])
 def create_task():
+    # Read the JSON body sent by the browser.
     data = request.get_json()
 
     title = data["title"]
@@ -1961,6 +1979,7 @@ def create_task():
 
     conn = get_db_connection()
 
+    # Insert the new task row using safe placeholders.
     conn.execute(
         """
         INSERT INTO tasks (title, user_id, priority, due_date)
@@ -1975,11 +1994,13 @@ def create_task():
     return jsonify({"status": "success"})`;
 
 const featureCreateStep3 = `document.getElementById("saveTaskButton").onclick = function () {
+    // Read the current values from the modal form.
     const title = document.getElementById("taskTitle").value
     const user_id = document.getElementById("taskUser").value
     const priority = document.getElementById("taskPriority").value
     const due_date = document.getElementById("taskDate").value
 
+    // Send the values to Flask as JSON.
     fetch("/tasks", {
         method: "POST",
         headers: {
@@ -1999,6 +2020,7 @@ const featureDeleteStep1 = `@app.route("/tasks/<int:task_id>", methods=["DELETE"
 def delete_task(task_id):
     conn = get_db_connection()
 
+    # Delete the row whose task_id matches the route parameter.
     conn.execute(
         "DELETE FROM tasks WHERE task_id = ?",
         (task_id,)
@@ -2010,6 +2032,7 @@ def delete_task(task_id):
     return jsonify({"status": "deleted"})`;
 
 const featureDeleteStep2 = `function deleteTask(id) {
+    // Ask the backend to delete one task by id.
     fetch("/tasks/" + id, {
         method: "DELETE"
     })
@@ -2019,6 +2042,7 @@ const featureDeleteStep2 = `function deleteTask(id) {
 const featureDeleteStep3 = `const deleteButton = document.createElement("button")
 deleteButton.textContent = "Delete"
 deleteButton.className = "btn btn-danger btn-sm ms-2"
+// Keep the current task id attached to this button click.
 deleteButton.onclick = () => deleteTask(task.task_id)
 
 li.appendChild(deleteButton)`;
@@ -2027,6 +2051,7 @@ const featureCompleteStep1 = `@app.route("/tasks/<int:task_id>/complete", method
 def complete_task(task_id):
     conn = get_db_connection()
 
+    # Update only the status field for the chosen task.
     conn.execute(
         "UPDATE tasks SET status = 'completed' WHERE task_id = ?",
         (task_id,)
@@ -2038,6 +2063,7 @@ def complete_task(task_id):
     return jsonify({"status": "completed"})`;
 
 const featureCompleteStep2 = `function completeTask(id) {
+    // Ask the backend to update one stored record.
     fetch("/tasks/" + id + "/complete", {
         method: "PATCH"
     })
@@ -2047,6 +2073,7 @@ const featureCompleteStep2 = `function completeTask(id) {
 const featureCompleteStep3 = `const completeButton = document.createElement("button")
 completeButton.textContent = "Complete"
 completeButton.className = "btn btn-success btn-sm ms-2"
+// This button updates the status for this specific task id.
 completeButton.onclick = () => completeTask(task.task_id)
 
 li.appendChild(completeButton)`;
@@ -2082,6 +2109,7 @@ const featureFilterStep2 = `function loadTasks() {
     if (filterPriority) params.set("priority", filterPriority)
     if (sortTasks) params.set("sort", sortTasks)
 
+    // Send the chosen filters as query parameters.
     fetch("/tasks?" + params.toString())
 }
 
@@ -2091,6 +2119,7 @@ document.getElementById("sortTasks").onchange = loadTasks`;
 
 const featureFilterStep3 = `@app.route("/tasks", methods=["GET"])
 def get_tasks():
+    # Read the filter and sort choices from the query string.
     user_id = request.args.get("user_id")
     priority = request.args.get("priority")
     sort = request.args.get("sort", "newest")
@@ -2116,6 +2145,7 @@ const featurePage = ({
   summary,
   studentOutcome,
   prompts,
+  extraSections = [],
   sqlSteps = [],
   sqlCards,
   sqlFlow,
@@ -2139,6 +2169,7 @@ const featurePage = ({
         ${noteCard('Questions to ask and the answers you want', qaTable(prompts))}
       </div>`
     }),
+    extraSections.join(''),
     sqlSteps.length
       ? buildStepsSection({
           kicker: 'Live build order',
@@ -2328,6 +2359,24 @@ const allPages = [
           ]))}
         </div>`
       }),
+      section({
+        kicker: 'Generic SQL docs',
+        title: 'SQL command language to teach on this page',
+        intro: 'Treat this like the mini documentation page students would need before writing their own schema.',
+        content: noteCard('Schema command reference', simpleTable(
+          ['Command / term', 'What it does', 'How to explain it'],
+          [
+            ['<code>CREATE TABLE</code>', 'Defines a new table.', 'This is the SQL command for creating structure, not inserting data.'],
+            ['<code>INTEGER</code>', 'Stores whole numbers.', 'Used for ids because ids are numeric.'],
+            ['<code>TEXT</code>', 'Stores text values.', 'Used for names, titles, and status text.'],
+            ['<code>PRIMARY KEY</code>', 'Marks the unique row identifier.', 'Every row must be distinguishable.'],
+            ['<code>AUTOINCREMENT</code>', 'Generates the next id automatically.', 'The database handles the numbering for us.'],
+            ['<code>NOT NULL</code>', 'Refuses missing values in that column.', 'This is a database-level rule, not just a UI rule.'],
+            ['<code>DEFAULT</code>', 'Supplies a value automatically when one is missing.', 'Useful for predictable starting states such as <code>open</code>.'],
+            ['<code>FOREIGN KEY</code>', 'Links one table to another.', 'This is how the relational connection is enforced.']
+          ]
+        ))
+      }),
       buildStepsSection({
         kicker: 'Schema build order',
         title: 'Step-by-step schema to write on the board',
@@ -2515,6 +2564,37 @@ const allPages = [
       ['Why does the Bootstrap CSS link go in the head?', 'Because the page should know its styles before the body is rendered.'],
       ['Why load the Bootstrap bundle near the end of the body?', 'So the document exists before the script enhances components like modals.']
     ],
+    extraSections: [
+      section({
+        kicker: 'Reference once, then reuse',
+        title: 'HTML and Bootstrap terms to teach on this page',
+        intro: 'This is the first point where students meet core document structure and basic Bootstrap layout classes.',
+        content: `<div class="content-stack">
+          ${noteCard('HTML tags in this lesson', simpleTable(
+            ['Tag / syntax', 'What it does', 'What to say while teaching it'],
+            [
+              ['<code>&lt;!DOCTYPE html&gt;</code>', 'Tells the browser to use HTML5 rules.', 'This sits at the very top and is not a visible page element.'],
+              ['<code>&lt;html lang="en"&gt;</code>', 'Wraps the whole document and declares the language.', 'Useful for accessibility and browser interpretation.'],
+              ['<code>&lt;head&gt;</code>', 'Stores metadata and links to assets.', 'The user does not see this content directly.'],
+              ['<code>&lt;body&gt;</code>', 'Contains the visible page content.', 'Everything the user sees lives here.'],
+              ['<code>&lt;meta charset="UTF-8"&gt;</code>', 'Sets the character encoding.', 'Stops strange symbol and punctuation issues later.'],
+              ['<code>&lt;title&gt;</code>', 'Names the page in the browser tab.', 'This is different from the visible <code>&lt;h1&gt;</code>.'],
+              ['<code>&lt;script&gt;</code>', 'Loads JavaScript files.', 'Place scripts at the end when you want the page structure to exist first.']
+            ]
+          ))}
+          ${noteCard('Bootstrap classes in this lesson', simpleTable(
+            ['Class / attribute', 'What it does', 'Example output / meaning'],
+            [
+              ['<code>container</code>', 'Creates a centred content area with sensible width.', 'Keeps the page from stretching edge to edge.'],
+              ['<code>mt-5</code>', 'Adds top margin.', 'Bootstrap spacing uses <code>m</code> for margin and <code>t</code> for top.'],
+              ['<code>mb-4</code>', 'Adds bottom margin.', 'The number controls the spacing size.'],
+              ['<code>btn</code>', 'Marks an element as a Bootstrap button.', '<button class="btn">Button</button>'],
+              ['<code>btn-primary</code>', 'Applies the primary action styling.', 'Use this for the main action on the screen.']
+            ]
+          ))}
+        </div>`
+      })
+    ],
     sqlSteps: [
       {
         step: 1,
@@ -2646,6 +2726,28 @@ const allPages = [
       ['Why keep the list page visible underneath?', 'The modal supports the main task view rather than replacing it.'],
       ['What belongs in the modal footer?', 'The action buttons such as cancel and save.']
     ],
+    extraSections: [
+      section({
+        kicker: 'New syntax family',
+        title: 'Bootstrap modal terms to teach on this page',
+        intro: 'Do not assume the class knows Bootstrap component structure. Teach the vocabulary before building the modal shell.',
+        content: noteCard('Modal reference', simpleTable(
+          ['Class / attribute', 'What it does', 'How to explain it'],
+          [
+            ['<code>data-bs-toggle="modal"</code>', 'Tells Bootstrap the button opens a modal.', 'This is the trigger behaviour switch.'],
+            ['<code>data-bs-target="#taskModal"</code>', 'Points to the modal id that should open.', 'The target must match the modal id exactly.'],
+            ['<code>modal</code>', 'Outer wrapper for the popup component.', 'This is the component as a whole.'],
+            ['<code>modal-dialog</code>', 'Controls the positioned dialog box.', 'Think of this as the shell that holds the content box.'],
+            ['<code>modal-content</code>', 'Holds all visible modal content.', 'Header, body, and footer sit inside this box.'],
+            ['<code>modal-header</code>', 'Top region of the modal.', 'Usually contains the title and close control.'],
+            ['<code>modal-body</code>', 'Main content region.', 'This is where the form controls will go next.'],
+            ['<code>modal-footer</code>', 'Action area at the bottom.', 'Good place for Cancel and Save buttons.'],
+            ['<code>btn-close</code>', 'Bootstrap close button styling.', 'This gives a built-in close icon look.'],
+            ['<code>data-bs-dismiss="modal"</code>', 'Closes the modal when the button is clicked.', 'Useful for cancel and close actions.']
+          ]
+        ))
+      })
+    ],
     sqlSteps: [
       {
         step: 1,
@@ -2706,6 +2808,35 @@ const allPages = [
       ['Why is the assignee control a <code>select</code> and not a plain text input?', 'Because users already exist as stored records and the task should reference one of them.'],
       ['Why is due date an input of type <code>date</code>?', 'Because the browser can provide a date picker and the value is already structured correctly.'],
       ['What do the input <code>id</code> values do?', 'They let JavaScript read each value later when the form is submitted.']
+    ],
+    extraSections: [
+      section({
+        kicker: 'Form syntax',
+        title: 'HTML and Bootstrap form terms to teach on this page',
+        intro: 'This is where students first meet the controls that later become request data.',
+        content: `<div class="content-stack">
+          ${noteCard('HTML form elements', simpleTable(
+            ['Element / attribute', 'What it does', 'How to explain it'],
+            [
+              ['<code>&lt;label&gt;</code>', 'Names the purpose of an input.', 'The user should not have to guess what a field means.'],
+              ['<code>&lt;input&gt;</code>', 'Collects typed data.', 'Good for text and date input.'],
+              ['<code>&lt;select&gt;</code>', 'Presents fixed choices.', 'Useful when the data should come from a limited set.'],
+              ['<code>type="date"</code>', 'Uses the browser date input.', 'This helps with consistent date entry.'],
+              ['<code>id="..."</code>', 'Gives the element a unique name for JavaScript.', 'The id becomes the bridge into the script later.'],
+              ['<code>required</code>', 'Stops empty form submission in the browser.', 'Helpful for UI feedback, but not enough on its own.']
+            ]
+          ))}
+          ${noteCard('Bootstrap form classes', simpleTable(
+            ['Class', 'What it does', 'How to explain it'],
+            [
+              ['<code>form-label</code>', 'Styles labels consistently.', 'Use it so labels match the rest of the Bootstrap form design.'],
+              ['<code>form-control</code>', 'Styles text-like inputs.', 'This gives inputs a standard readable shape.'],
+              ['<code>form-select</code>', 'Styles dropdown selects.', 'This is the select version of <code>form-control</code>.'],
+              ['<code>mb-3</code>', 'Adds spacing below a field group.', 'Helps separate controls visually without custom CSS.']
+            ]
+          ))}
+        </div>`
+      })
     ],
     sqlSteps: [
       {
@@ -2769,6 +2900,39 @@ const allPages = [
       ['Why does Flask return JSON here instead of HTML?', 'Because the page is already loaded; JavaScript only needs the data so it can render the list dynamically.'],
       ['What does <code>response.json()</code> do in JavaScript?', 'It converts the HTTP response body into a JavaScript object or array.'],
       ['Why do we fetch users separately from tasks?', 'Because the assignee dropdown and the task list need different datasets.']
+    ],
+    extraSections: [
+      section({
+        kicker: 'New syntax family',
+        title: 'JavaScript, Flask, and SQL terms to teach on this page',
+        intro: 'This is the first full-stack lesson, so make the generic syntax explicit before students try to combine it.',
+        content: `<div class="content-stack">
+          ${noteCard('JavaScript request and DOM terms', simpleTable(
+            ['Code', 'What it does', 'How to explain it'],
+            [
+              ['<code>function loadUsers()</code>', 'Declares a reusable function.', 'Use functions when the same action needs a clear name.'],
+              ['<code>fetch("/users")</code>', 'Starts an HTTP request from the browser.', 'The browser is asking the backend for data.'],
+              ['<code>.then(...)</code>', 'Runs code after the previous async step finishes.', 'This is how the request chain continues.'],
+              ['<code>response.json()</code>', 'Reads the response body as JSON.', 'Turns the HTTP body into usable JavaScript data.'],
+              ['<code>const</code>', 'Creates a variable that should not be reassigned.', 'Use it for values that should keep one meaning in the block.'],
+              ['<code>let</code>', 'Creates a variable that may change later.', 'Useful for counters and values that are updated.'],
+              ['<code>document.getElementById()</code>', 'Finds one named element in the DOM.', 'This is why HTML ids matter so much.'],
+              ['<code>document.createElement()</code>', 'Builds a new DOM node in JavaScript.', 'The page is creating output after the request succeeds.']
+            ]
+          ))}
+          ${noteCard('Flask and SQL read terms', simpleTable(
+            ['Code / command', 'What it does', 'How to explain it'],
+            [
+              ['<code>@app.route("/users")</code>', 'Connects a URL to a Python function.', 'This is how Flask knows which function handles which path.'],
+              ['<code>methods=["GET"]</code>', 'Declares that the route reads data.', 'GET is for retrieval, not creation.'],
+              ['<code>jsonify(...)</code>', 'Returns JSON to the browser.', 'This is the backend version of sending structured data.'],
+              ['<code>SELECT</code>', 'Chooses columns to read.', 'This is how SQL asks for data.'],
+              ['<code>JOIN</code>', 'Combines related rows from different tables.', 'Used here so tasks can be displayed with usernames.'],
+              ['<code>ORDER BY</code>', 'Controls the order of the returned rows.', 'Useful for making the list predictable.']
+            ]
+          ))}
+        </div>`
+      })
     ],
     sqlSteps: [
       {
@@ -2891,6 +3055,35 @@ const allPages = [
       ['Why is this a POST request?', 'Because the client is sending new data to be stored.'],
       ['What does <code>request.get_json()</code> do?', 'It reads the JSON body sent by the browser and turns it into a Python dictionary.'],
       ['Why call <code>loadTasks()</code> after saving?', 'Because the DOM must be refreshed to show the new record.']
+    ],
+    extraSections: [
+      section({
+        kicker: 'Request syntax',
+        title: 'HTTP, Flask, and SQL insert terms to teach on this page',
+        intro: 'This feature introduces the first create request, so make the generic request language explicit.',
+        content: `<div class="content-stack">
+          ${noteCard('Browser request terms', simpleTable(
+            ['Code', 'What it does', 'How to explain it'],
+            [
+              ['<code>method: "POST"</code>', 'Marks the request as a create action.', 'POST is the method used when the browser sends new data to be stored.'],
+              ['<code>headers</code>', 'Adds metadata about the request.', 'The backend uses this to understand the body format.'],
+              ['<code>"Content-Type": "application/json"</code>', 'Declares the body as JSON.', 'Without it, Flask may not interpret the body the way you expect.'],
+              ['<code>JSON.stringify(...)</code>', 'Turns a JavaScript object into JSON text.', 'The request body must be text on the wire, not a raw JS object.'],
+              ['<code>.value</code>', 'Reads the current value from an input control.', 'This is how the script takes user input out of the form.']
+            ]
+          ))}
+          ${noteCard('Flask and SQL insert terms', simpleTable(
+            ['Code / command', 'What it does', 'How to explain it'],
+            [
+              ['<code>request.get_json()</code>', 'Reads the JSON request body into Python.', 'The incoming JSON becomes a Python dictionary.'],
+              ['<code>INSERT INTO</code>', 'Adds a new row to a table.', 'This is the SQL create command.'],
+              ['<code>VALUES</code>', 'Supplies the values for the new row.', 'The placeholders sit inside the VALUES list.'],
+              ['<code>?</code>', 'Acts as a safe placeholder in SQL.', 'SQLite swaps in the real values separately instead of string-building the query.'],
+              ['<code>commit()</code>', 'Saves the insert permanently.', 'Without commit, the new row may not persist.']
+            ]
+          ))}
+        </div>`
+      })
     ],
     sqlSteps: [
       {
