@@ -22,6 +22,9 @@ const stepHref = (step: ProjectStep): string =>
 
 const stageStepCount = (stage: ProjectStage): number =>
   steps.filter((step) => step.stageId === stage.id).length;
+
+const stageFirstStep = (stage: ProjectStage): ProjectStep =>
+  steps.find((step) => step.stageId === stage.id) || steps[0];
 ---
 
 <section class="ib-project-sequence">
@@ -45,65 +48,57 @@ const stageStepCount = (stage: ProjectStage): number =>
     </div>
   </header>
 
-  <div class="ib-project-sequence-shell">
-    <aside class="ib-project-sequence-sidebar" aria-label="Project roadmap">
-      <div class="ib-project-sequence-sidebar-intro">
+  <section class="ib-project-roadmap" aria-label="Project roadmap">
+    <div class="ib-project-roadmap-head">
+      <div>
         <p class="ib-project-sequence-sidebar-label">Project roadmap</p>
-        <p class="ib-project-sequence-sidebar-title">{sequence.projectTitle}</p>
+        <h2>{sequence.projectTitle}</h2>
       </div>
+      <p class="ib-project-roadmap-copy">
+        Use the roadmap to jump back when you need a recap. Otherwise keep moving in order so the project grows cleanly: you are in <strong>{currentStage.title}</strong>, page <strong>{stageStepIndex + 1}</strong> of <strong>{stageSteps.length}</strong>.
+      </p>
+    </div>
 
-      <nav class="ib-project-sequence-roadmap" aria-label="Stage roadmap">
-        {sequence.stages.map((stage) => {
-          const isCurrentStage = stage.id === currentStage.id;
-          const stageItems = steps.filter((step) => step.stageId === stage.id);
-          return (
-            <details class="ib-project-stage-group" open={isCurrentStage}>
-              <summary class:list={{ 'is-current': isCurrentStage }}>
-                <span class="ib-project-stage-pill">{stage.label}</span>
-                <span class="ib-project-stage-summary">
-                  <strong>{stage.title}</strong>
-                  <small>{stage.summary}</small>
-                </span>
-                <span class="ib-project-stage-count">{stageStepCount(stage)} pages</span>
-              </summary>
-              <div class="ib-project-stage-links">
-                {stageItems.map((step, stepIndex) => {
-                  const isCurrentStep = step.slug === currentStep.slug;
-                  return (
-                    <a
-                      class:list={{ 'ib-project-stage-link': true, 'is-current': isCurrentStep }}
-                      href={stepHref(step)}
-                      aria-current={isCurrentStep ? 'page' : undefined}
-                    >
-                      <span class="ib-project-stage-link-index">{stepIndex + 1}</span>
-                      <span class="ib-project-stage-link-copy">
-                        <strong>{step.navLabel}</strong>
-                        <small>{step.sidebarSummary || step.intro}</small>
-                      </span>
-                    </a>
-                  );
-                })}
-              </div>
-            </details>
-          );
-        })}
-      </nav>
-    </aside>
+    <nav class="ib-project-stage-track" aria-label="Stage roadmap">
+      {sequence.stages.map((stage) => {
+        const isCurrentStage = stage.id === currentStage.id;
+        return (
+          <a
+            class:list={{ 'ib-project-stage-card': true, 'is-current': isCurrentStage }}
+            href={stepHref(stageFirstStep(stage))}
+            aria-current={isCurrentStage ? 'step' : undefined}
+          >
+            <span class="ib-project-stage-card-kicker">{stage.label}</span>
+            <strong>{stage.title}</strong>
+            <small>{stage.summary}</small>
+            <span class="ib-project-stage-card-count">{stageStepCount(stage)} pages</span>
+          </a>
+        );
+      })}
+    </nav>
 
-    <article class="ib-project-sequence-article">
-      {currentStep.learningGoals && currentStep.learningGoals.length > 0 && (
-        <section class="ib-project-lesson-strip" aria-label="Page outline">
-          <h2>On this page</h2>
-          <ul>
-            {currentStep.learningGoals.map((goal) => (
-              <li>{goal}</li>
-            ))}
-          </ul>
-        </section>
-      )}
+    <nav class="ib-project-step-track" aria-label={`${currentStage.title} pages`}>
+      {stageSteps.map((step, stepIndex) => {
+        const isCurrentStep = step.slug === currentStep.slug;
+        return (
+          <a
+            class:list={{ 'ib-project-step-card': true, 'is-current': isCurrentStep }}
+            href={stepHref(step)}
+            aria-current={isCurrentStep ? 'page' : undefined}
+          >
+            <span class="ib-project-step-card-index">{stepIndex + 1}</span>
+            <span class="ib-project-step-card-copy">
+              <strong>{step.navLabel}</strong>
+              <small>{step.sidebarSummary || step.intro}</small>
+            </span>
+          </a>
+        );
+      })}
+    </nav>
+  </section>
 
+  <article class="ib-project-sequence-article">
       {currentStep.headerNote && <p class="ib-project-sequence-note">{currentStep.headerNote}</p>}
-
       <div class="ib-project-lesson-body" set:html={currentStep.contentHtml} />
 
       <footer class="ib-project-sequence-footer">
@@ -132,7 +127,6 @@ const stageStepCount = (stage: ProjectStage): number =>
         )}
       </footer>
     </article>
-  </div>
 
   {currentStep.scripts &&
     currentStep.scripts.map((scriptPath) => <script is:inline src={scriptPath} defer></script>)}

@@ -443,19 +443,731 @@ const testPlanBuilderMarkup = `
   </div>
 `;
 
-const flowStrip = `
+const flowStrip = (
+  labels: string[] = ['HTML', 'JavaScript', 'Flask', 'Storage', 'Response']
+): string => `
   <div class="ib-project-flow">
-    <span>HTML</span>
-    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-    <span>JavaScript</span>
-    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-    <span>Flask</span>
-    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-    <span>Storage</span>
-    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-    <span>Response</span>
+    ${labels
+      .map(
+        (label, index) =>
+          `${index > 0 ? '<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>' : ''}<span>${label}</span>`
+      )
+      .join('')}
   </div>
 `;
+
+const docGrid = (...columns: string[]): string => `<div class="ib-project-doc-grid">${columns.join('')}</div>`;
+
+const docPanel = (title: string, body: string): string => `
+  <section class="ib-project-doc-panel">
+    <h4>${title}</h4>
+    ${body}
+  </section>
+`;
+
+const codeNotes = (notes: Array<[string, string]>): string =>
+  `<div class="ib-project-code-notes">${notes
+    .map(
+      ([label, text]) => `
+        <div class="ib-project-code-note">
+          <strong>${label}</strong>
+          <p>${text}</p>
+        </div>
+      `
+    )
+    .join('')}</div>`;
+
+const docCode = (
+  title: string,
+  code: string,
+  language: string,
+  notes: Array<[string, string]>
+): string => `
+  <section class="ib-project-doc-code">
+    <h4>${title}</h4>
+    <pre><code class="language-${language}">${escapeHtml(code)}</code></pre>
+    ${notes.length ? codeNotes(notes) : ''}
+  </section>
+`;
+
+const taskBox = (title: string, intro: string, steps: string[], prompts: string[]): string => `
+  <section class="ib-project-taskbox">
+    <h4>${title}</h4>
+    <p>${intro}</p>
+    ${ordered(steps)}
+    ${
+      prompts.length
+        ? `
+          <div>
+            <p><strong>Be ready to explain:</strong></p>
+            ${unordered(prompts)}
+          </div>
+        `
+        : ''
+    }
+  </section>
+`;
+
+const validationFlowBlock = (title: string, steps: Array<[string, string]>): string =>
+  section(
+    title,
+    `<div class="ib-project-validation-flow">${steps
+      .map(
+        ([label, text]) => `
+          <div class="ib-project-validation-step">
+            <strong>${label}</strong>
+            <p>${text}</p>
+          </div>
+        `
+      )
+      .join('')}</div>`,
+    'default'
+  );
+
+const miniUi = (title: string, note: string, body: string): string => `
+  <section class="ib-project-mini-ui">
+    <h4>${title}</h4>
+    <p>${note}</p>
+    <div class="ib-project-mini-ui-window">
+      ${body}
+    </div>
+  </section>
+`;
+
+const featureSnippetLanguage: Record<number, string> = {
+  1: 'text',
+  2: 'html',
+  3: 'javascript',
+  4: 'html',
+  5: 'html',
+  6: 'javascript',
+  7: 'javascript',
+  8: 'javascript',
+  9: 'javascript',
+  10: 'javascript',
+  11: 'text'
+};
+
+const featureBoilerplate = (
+  featureNumber: number,
+  track: 'sql' | 'json'
+): { title: string; code: string; notes: Array<[string, string]> } => {
+  switch (featureNumber) {
+    case 1:
+      return {
+        title: 'Starter project skeleton',
+        code: `project/
+  app.py
+  templates/
+    index.html
+  static/
+    js/
+      app.js
+${track === 'sql' ? '  schema.sql\n  init_db.py' : '  data/\n    tasks.json\n    users.json'}`,
+        notes: [
+          ['app.py', 'This is the server entry point. It starts Flask and holds the route logic.'],
+          ['templates/', 'Browser-facing HTML lives here so layout is kept separate from Python.'],
+          ['static/js/', 'Client-side JavaScript sits here because it runs in the browser, not on the server.'],
+          [track === 'sql' ? 'schema.sql' : 'data/', track === 'sql' ? 'Database definition belongs outside the route file so the schema stays readable.' : 'The storage difference is made explicit in a dedicated data folder rather than hidden in the UI code.']
+        ]
+      };
+    case 2:
+      return {
+        title: 'Generic HTML boilerplate',
+        code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example App</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+</head>
+<body>
+  <main class="container py-5">
+    <h1 class="mb-4">Example heading</h1>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>`,
+        notes: [
+          ['<!DOCTYPE html>', 'Tells the browser to use modern HTML rules instead of quirks mode.'],
+          ['lang="en"', 'Helps accessibility tools and browsers understand the document language.'],
+          ['meta charset', 'Keeps text encoding predictable so symbols and punctuation display correctly.'],
+          ['container py-5', 'Bootstrap uses `container` for width and `py-5` for vertical padding on the y-axis.'],
+          ['mb-4', 'Bootstrap spacing classes use `m` for margin and `b` for bottom.']
+        ]
+      };
+    case 3:
+      return {
+        title: 'Generic render target pattern',
+        code: `const listArea = document.getElementById("listArea");
+listArea.innerHTML = "<p>No records yet.</p>";`,
+        notes: [
+          ['const', 'Use `const` when the variable should always point at the same element.'],
+          ['getElementById', 'Finds one specific DOM node by the `id` you gave it in HTML.'],
+          ['innerHTML', 'Replaces the contents of the chosen element with new markup.'],
+          ['"listArea"', 'The string must match the HTML `id` exactly or the script will not find the target.']
+        ]
+      };
+    case 4:
+      return {
+        title: 'Generic Bootstrap modal pattern',
+        code: `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Add item
+</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create item</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">Form goes here</div>
+    </div>
+  </div>
+</div>`,
+        notes: [
+          ['btn btn-primary', 'Bootstrap classes style the trigger as a primary action button.'],
+          ['data-bs-toggle', 'This tells Bootstrap which component behaviour to attach.'],
+          ['data-bs-target', 'The button points at the modal `id` it should open.'],
+          ['modal-header / modal-body', 'Bootstrap splits the modal into named regions so structure stays predictable.']
+        ]
+      };
+    case 5:
+      return {
+        title: 'Generic form field pattern',
+        code: `<label class="form-label" for="itemTitle">Item title</label>
+<input id="itemTitle" class="form-control" type="text" required>
+
+<label class="form-label" for="itemPriority">Priority</label>
+<select id="itemPriority" class="form-select" required>
+  <option value="">Choose one</option>
+  <option value="low">Low</option>
+  <option value="medium">Medium</option>
+  <option value="high">High</option>
+</select>`,
+        notes: [
+          ['label', 'A visible label tells the user what the control is for and improves accessibility.'],
+          ['required', 'HTML can stop an empty submission, but it is only the first validation layer.'],
+          ['form-control / form-select', 'Bootstrap classes give inputs a consistent, readable appearance.'],
+          ['value=""', 'An empty first option forces the user to make an intentional choice.']
+        ]
+      };
+    case 6:
+      return {
+        title: 'Generic fetch pattern',
+        code: `function loadItems() {
+  fetch("/api/items")
+    .then((response) => response.json())
+    .then((items) => renderItems(items));
+}`,
+        notes: [
+          ['fetch()', 'Starts an HTTP request from the browser to the backend.'],
+          ['response', 'This variable holds the raw HTTP response object before the JSON is extracted.'],
+          ['response.json()', 'Turns the JSON response body into usable JavaScript data.'],
+          ['=>', 'An arrow function is a short way to write a function you pass into `.then()`.']
+        ]
+      };
+    case 7:
+      return {
+        title: 'Generic create-request pattern',
+        code: `const payload = { title, priority };
+
+fetch("/api/items", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+}).then(() => loadItems());`,
+        notes: [
+          ['payload', 'This is the JavaScript object you want to send to the backend.'],
+          ['method: "POST"', 'POST is the HTTP method commonly used when creating a new record.'],
+          ['Content-Type', 'This header tells the server the request body contains JSON.'],
+          ['JSON.stringify', 'Turns the JavaScript object into JSON text for the request body.']
+        ]
+      };
+    case 8:
+      return {
+        title: 'Generic delete-request pattern',
+        code: `function deleteItem(id) {
+  return fetch(\`/api/items/\${id}\`, {
+    method: "DELETE"
+  });
+}`,
+        notes: [
+          ['id', 'The identifier must belong to the record, not just to the visual row.'],
+          ['template literal', 'Backticks let you insert the id into the URL with `${...}`.'],
+          ['DELETE', 'DELETE tells the backend this request is meant to remove one record.'],
+          ['return', 'Returning the fetch promise makes it easier to chain a refresh or message afterwards.']
+        ]
+      };
+    case 9:
+      return {
+        title: 'Generic update-request pattern',
+        code: `fetch(\`/api/items/\${id}\`, {
+  method: "PATCH",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ status: "complete" })
+});`,
+        notes: [
+          ['PATCH', 'PATCH is used when you are changing part of an existing record.'],
+          ['status', 'Send only the value the backend actually needs to update.'],
+          ['JSON body', 'Even a small update still needs the data packaged clearly.'],
+          ['persistence', 'A true update survives refresh because the stored data changed, not just the styling.']
+        ]
+      };
+    case 10:
+      return {
+        title: 'Generic filter and sort request',
+        code: `const query = new URLSearchParams({
+  user: selectedUser,
+  priority: selectedPriority,
+  sort: "due_date"
+});
+
+fetch(\`/api/items?\${query.toString()}\`);`,
+        notes: [
+          ['URLSearchParams', 'Builds a clean query string instead of hand-writing `?` and `&` each time.'],
+          ['selectedUser', 'These values usually come from form controls the user has changed.'],
+          ['query.toString()', 'Converts the parameters into URL text the browser can send.'],
+          ['sort', 'Sorting is a rule about order, not a second copy of the data.']
+        ]
+      };
+    default:
+      return {
+        title: 'Evaluation mapping',
+        code: `Criterion
+  -> test
+  -> evidence
+  -> pass / fail
+  -> improvement note`,
+        notes: [
+          ['Criterion', 'What the client needed.'],
+          ['Evidence', 'The screenshot, output, or observed behaviour that proves the feature works.'],
+          ['Pass / fail', 'This judgement should come from evidence rather than confidence.']
+        ]
+      };
+  }
+};
+
+const featurePreview = (featureNumber: number, track: 'sql' | 'json'): string => {
+  switch (featureNumber) {
+    case 2:
+      return miniUi(
+        'What the page should roughly look like',
+        'At this stage the screen only needs a heading, a place for the add button, and a clear output region.',
+        `
+          <div class="ib-project-mini-ui-toolbar">
+            <span class="ib-project-mini-ui-button">Add task</span>
+          </div>
+          <div class="ib-project-mini-ui-list">
+            <div class="ib-project-mini-ui-row">
+              <span>Main list area</span>
+              <span class="ib-project-mini-ui-pill">Empty for now</span>
+            </div>
+          </div>
+        `
+      );
+    case 3:
+      return miniUi(
+        'Empty-state preview',
+        'Give the render area a calm, obvious starting state before any data is loaded.',
+        `
+          <div class="ib-project-mini-ui-list">
+            <div class="ib-project-mini-ui-row">
+              <span>No tasks yet. Use the button above to add one.</span>
+            </div>
+          </div>
+        `
+      );
+    case 4:
+      return miniUi(
+        'Modal preview',
+        'The main page stays clean while the create form appears in a focused layer.',
+        `
+          <div class="ib-project-mini-ui-toolbar">
+            <span class="ib-project-mini-ui-button">Add task</span>
+          </div>
+          <div class="ib-project-mini-ui-fieldset">
+            <div class="ib-project-mini-ui-field">
+              <span class="ib-project-mini-ui-label">Modal title</span>
+              <div class="ib-project-mini-ui-input"></div>
+            </div>
+            <div class="ib-project-mini-ui-actions">
+              <span class="ib-project-mini-ui-chip">Cancel</span>
+              <span class="ib-project-mini-ui-button">Save</span>
+            </div>
+          </div>
+        `
+      );
+    case 5:
+      return miniUi(
+        'Input checklist preview',
+        'Students should be able to point at each control and say which field it maps to in storage.',
+        `
+          <div class="ib-project-mini-ui-fieldset">
+            <div class="ib-project-mini-ui-field">
+              <span class="ib-project-mini-ui-label">Task title</span>
+              <div class="ib-project-mini-ui-input"></div>
+            </div>
+            <div class="ib-project-mini-ui-field">
+              <span class="ib-project-mini-ui-label">Assign user</span>
+              <div class="ib-project-mini-ui-input"></div>
+            </div>
+            <div class="ib-project-mini-ui-field">
+              <span class="ib-project-mini-ui-label">Priority</span>
+              <div class="ib-project-mini-ui-input"></div>
+            </div>
+          </div>
+        `
+      );
+    case 6:
+      return miniUi(
+        'Rendered task list preview',
+        'After the read request succeeds, the user should see a list that looks deliberate rather than raw.',
+        `
+          <div class="ib-project-mini-ui-list">
+            <div class="ib-project-mini-ui-row">
+              <span>Prepare report | Alice | High | 2026-03-10 | open</span>
+              <span class="ib-project-mini-ui-chip">Complete</span>
+              <span class="ib-project-mini-ui-chip">Delete</span>
+            </div>
+            <div class="ib-project-mini-ui-row">
+              <span>Order toner | Bob | Low | 2026-03-14 | open</span>
+              <span class="ib-project-mini-ui-chip">Complete</span>
+              <span class="ib-project-mini-ui-chip">Delete</span>
+            </div>
+          </div>
+        `
+      );
+    case 7:
+      return miniUi(
+        'Create flow outcome',
+        'The important moment is not the click. It is the new record appearing back in the list after storage succeeds.',
+        `
+          <div class="ib-project-mini-ui-toolbar">
+            <span class="ib-project-mini-ui-button">Save task</span>
+            <span class="ib-project-mini-ui-pill">${track === 'sql' ? 'Writes to SQL' : 'Writes to JSON'}</span>
+          </div>
+          <div class="ib-project-mini-ui-list">
+            <div class="ib-project-mini-ui-row">
+              <span>New task now visible in the list</span>
+            </div>
+          </div>
+        `
+      );
+    case 8:
+      return miniUi(
+        'Delete action preview',
+        'Delete needs to target one specific record, not whichever line happens to look right.',
+        `
+          <div class="ib-project-mini-ui-list">
+            <div class="ib-project-mini-ui-row">
+              <span>Prepare report</span>
+              <span class="ib-project-mini-ui-pill">task_id = 8</span>
+              <span class="ib-project-mini-ui-button">Delete</span>
+            </div>
+          </div>
+        `
+      );
+    case 9:
+      return miniUi(
+        'Completion state preview',
+        'A good completion feature changes both the stored data and the visible status.',
+        `
+          <div class="ib-project-mini-ui-list">
+            <div class="ib-project-mini-ui-row">
+              <span>Prepare report</span>
+              <span class="ib-project-mini-ui-pill">completed</span>
+              <span class="ib-project-mini-ui-chip">Saved</span>
+            </div>
+          </div>
+        `
+      );
+    case 10:
+      return miniUi(
+        'Filter bar preview',
+        'The toolbar should help the user retrieve the right tasks quickly, not overload the screen.',
+        `
+          <div class="ib-project-mini-ui-toolbar">
+            <span class="ib-project-mini-ui-chip">User</span>
+            <span class="ib-project-mini-ui-chip">Priority</span>
+            <span class="ib-project-mini-ui-chip">Due date</span>
+            <span class="ib-project-mini-ui-button">Apply</span>
+          </div>
+          <div class="ib-project-mini-ui-list">
+            <div class="ib-project-mini-ui-row">
+              <span>Filtered results appear here</span>
+            </div>
+          </div>
+        `
+      );
+    case 11:
+      return docPanel(
+        'What counts as evidence',
+        unordered([
+          'A visible task appearing after create.',
+          'A task disappearing after delete.',
+          'A status change still present after refresh.',
+          'A filtered list showing only the chosen records.'
+        ])
+      );
+    default:
+      return docPanel(
+        'Project shape',
+        paragraph(
+          'Keep the build narrow. The goal is to finish one clean feature, test it, and then move to the next change.'
+        )
+      );
+  }
+};
+
+const featureBuildSteps = (featureNumber: number, track: 'sql' | 'json'): string[] => {
+  switch (featureNumber) {
+    case 1:
+      return [
+        'Create the project root files and folders in the exact order agreed with the class.',
+        `Make the storage layer visible from the start by adding ${track === 'sql' ? '<code>schema.sql</code> and <code>init_db.py</code>' : 'a <code>data/</code> folder with the JSON files'}.`,
+        'Open each file and leave a tiny placeholder so nothing is mysterious later.',
+        'Check that everyone can explain which files run in the browser and which run on the server.'
+      ];
+    case 2:
+      return [
+        'Build the HTML boilerplate and page title first so the browser loads a clean document.',
+        'Link Bootstrap correctly before adding your own interface regions.',
+        'Add one main container, a heading, and a visible place where the main app will live.',
+        'Run the page and confirm the structure loads before you add any dynamic behaviour.'
+      ];
+    case 3:
+      return [
+        'Add a dedicated render target for the task list inside the main page shell.',
+        'Give that target a stable <code>id</code> that JavaScript can look up later.',
+        'Decide what the empty state should say before any tasks exist.',
+        'Make sure the list area and the modal area are not mixed together.'
+      ];
+    case 4:
+      return [
+        'Place the Add Task trigger where the user would naturally expect to find it.',
+        'Add the Bootstrap modal structure with header, body, and footer regions.',
+        'Include a safe close action as well as the main action button.',
+        'Open and close the modal in the browser before you place any real inputs into it.'
+      ];
+    case 5:
+      return [
+        'Add the four agreed controls: title, assignee, priority, and due date.',
+        'Choose the control type deliberately so each field guides good data entry.',
+        'Use labels and <code>required</code> rules where they make sense for usability.',
+        `Match every input to a future ${track === 'sql' ? 'database field' : 'JSON property'} before you move on.`
+      ];
+    case 6:
+      return [
+        `Create a backend GET route that reads ${track === 'sql' ? 'stored records' : 'the JSON document'} and returns JSON to the browser.`,
+        'Write one JavaScript load function that fetches that data.',
+        'Clear the render area before drawing the fresh list.',
+        'Render each returned record into a readable row and keep a sensible empty state.'
+      ];
+    case 7:
+      return [
+        'Read the current form values from the modal controls.',
+        'Build a payload object and send it with a POST request.',
+        `Validate and store the new record in ${track === 'sql' ? 'the database' : 'the JSON file'} on the backend.`,
+        'Refresh the task list so the create action produces visible evidence immediately.'
+      ];
+    case 8:
+      return [
+        'Attach a delete control to every rendered row.',
+        'Pass the record identifier, not the title text, into the delete request.',
+        `Remove the chosen record safely from ${track === 'sql' ? 'storage' : 'the JSON structure'}.`,
+        'Refresh the list and confirm the correct item disappeared.'
+      ];
+    case 9:
+      return [
+        'Add a completion control to each task row.',
+        'Send an update request that carries the identifier of the chosen record.',
+        `Change the stored status in ${track === 'sql' ? 'the database' : 'the JSON file'} rather than faking it in the DOM.`,
+        'Redraw the list so completed work looks visibly different after the update.'
+      ];
+    case 10:
+      return [
+        'Add only the filter and sort controls the original brief genuinely needs.',
+        'Read the chosen values and package them into one request.',
+        `Apply the filtering or ordering rules in ${track === 'sql' ? 'the backend query' : 'the backend document-processing logic'}.`,
+        'Give the user a predictable result and a clear way to change or reset the controls.'
+      ];
+    default:
+      return [
+        'Open the test table and work through the project feature by feature.',
+        'Record the actual result you observed, not the result you hoped for.',
+        'Judge each test row as pass or fail with evidence.',
+        'Finish with one honest limitation or improvement note for the app.'
+      ];
+  }
+};
+
+const featureDocs = (featureNumber: number, track: 'sql' | 'json'): string => {
+  switch (featureNumber) {
+    case 1:
+      return docGrid(
+        docPanel(
+          'Why this feature matters',
+          paragraph(
+            'Students who can explain the folder split usually debug faster later because they know where a problem probably lives.'
+          )
+        ),
+        docPanel(
+          'Names to keep straight',
+          unordered([
+            '<strong>template</strong>: HTML rendered for the browser',
+            '<strong>static file</strong>: browser asset such as JavaScript or CSS',
+            '<strong>entry point</strong>: the file that starts the application'
+          ])
+        )
+      );
+    case 2:
+      return docGrid(
+        docPanel(
+          'HTML tags you will use',
+          unordered([
+            '<code>&lt;head&gt;</code> stores document metadata and linked assets.',
+            '<code>&lt;body&gt;</code> holds the visible page content.',
+            '<code>&lt;main&gt;</code> marks the main content region.',
+            '<code>&lt;script&gt;</code> loads JavaScript after the page structure exists.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 3:
+      return docGrid(
+        docPanel(
+          'JavaScript words to know',
+          unordered([
+            '<code>const</code> creates a variable that should not be reassigned.',
+            '<code>getElementById()</code> finds a single named DOM node.',
+            '<code>innerHTML</code> swaps out what appears inside the target element.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 4:
+      return docGrid(
+        docPanel(
+          'Bootstrap modal words',
+          unordered([
+            '<code>data-bs-toggle</code> switches on component behaviour.',
+            '<code>data-bs-target</code> points at the modal to open.',
+            '<code>modal-header</code>, <code>modal-body</code>, and <code>modal-footer</code> create a predictable layout.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 5:
+      return docGrid(
+        docPanel(
+          'Validation principle',
+          paragraph(
+            'A good user interface catches mistakes early, but the browser is not a security boundary. A curl command or custom request can skip UI checks completely.'
+          ) +
+            unordered([
+              'Use HTML validation for immediate user feedback.',
+              'Use JavaScript to improve clarity before the request is sent.',
+              `Use ${track === 'sql' ? 'Flask and SQL' : 'Flask and JSON-write rules'} to enforce the real data rules.`
+            ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 6:
+      return docGrid(
+        docPanel(
+          'Backend terms to notice',
+          unordered([
+            '<code>@app.route()</code> tells Flask which URL a function responds to.',
+            '<code>methods=["GET"]</code> says the route is for reading data.',
+            '<code>jsonify()</code> returns structured JSON to the browser.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 7:
+      return docGrid(
+        docPanel(
+          'POST request terms',
+          unordered([
+            '<code>request.get_json()</code> reads the JSON body Flask received.',
+            '<code>Content-Type: application/json</code> tells the server how to interpret the body.',
+            'After a create action, the UI should prove success by reloading the list.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 8:
+      return docGrid(
+        docPanel(
+          'Delete design habit',
+          paragraph(
+            'Destructive actions should always be tied to a stable identifier. If two tasks have the same title, the title is not safe enough to delete by.'
+          )
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 9:
+      return docGrid(
+        docPanel(
+          'State-change habit',
+          unordered([
+            'A style change in the DOM is not enough.',
+            'The backend must store the new status.',
+            'Refreshing the page is the simplest proof that the update persisted.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    case 10:
+      return docGrid(
+        docPanel(
+          'Query-string terms',
+          unordered([
+            '<code>?</code> starts the query string.',
+            '<code>&amp;</code> separates multiple parameters.',
+            '<code>URLSearchParams</code> helps build clean filter requests without manual string mistakes.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+    default:
+      return docGrid(
+        docPanel(
+          'How to treat the test table',
+          unordered([
+            'One row should answer one question about the app.',
+            'Expected results must be observable.',
+            'A failed test is useful because it tells you what to repair next.'
+          ])
+        ),
+        featurePreview(featureNumber, track)
+      );
+  }
+};
+
+const featureValidation = (featureNumber: number, track: 'sql' | 'json'): string => {
+  if (![5, 7, 8, 9, 10].includes(featureNumber)) {
+    return '';
+  }
+
+  const storageLabel = track === 'sql' ? 'SQL / SQLite' : 'JSON write step';
+
+  return validationFlowBlock('Where the checks happen', [
+    ['HTML', 'The interface can require fields, constrain control types, and guide the user before submit.'],
+    ['JavaScript', 'The browser can check presence, shape, and request timing before sending data.'],
+    ['Flask', 'The backend must re-check the request because outside tools can bypass the browser entirely.'],
+    [storageLabel, track === 'sql' ? 'Database rules keep the stored record sensible and consistent.' : 'The document write logic must reject or repair bad structures before saving.']
+  ]);
+};
 
 const featureStep = (options: {
   slug: string;
@@ -471,14 +1183,18 @@ const featureStep = (options: {
   prompts: string[];
   deliverable: string;
   track?: 'sql' | 'json';
-}): ProjectStep => ({
+}): ProjectStep => {
+  const track = options.track || 'sql';
+  const boilerplate = featureBoilerplate(options.featureNumber, track);
+
+  return {
   slug: options.slug,
   stageId: options.stageId,
   title: `Feature ${options.featureNumber}: ${options.navLabel}`,
   navLabel: `Feature ${options.featureNumber}: ${options.navLabel}`,
   intro: options.intro,
   sidebarSummary: options.concept,
-  headerNote: `This page covers one feature only. Keep the implementation sequence strict and finish this feature cleanly before moving on.`,
+  headerNote: `Build only this feature on this page. Get it working, test it, and then move on.`,
   paceLabel: `Feature ${options.featureNumber} of 11`,
   deliverable: options.deliverable,
   learningGoals: [
@@ -488,27 +1204,47 @@ const featureStep = (options: {
   ],
   contentHtml:
     section(
-      'What you are building on this page',
+      'What you are building',
       paragraph(
         options.intro,
-        `The core idea here is <strong>${options.concept}</strong>. The class should be able to describe that purpose clearly before touching the real project code.`
+        `The key idea for this feature is <strong>${options.concept}</strong>. Before you write anything, make sure you can describe what the user should see or what the request should do when this feature is finished.`
       ),
       'lead'
     ) +
     keywordTable(featureVocabulary[options.featureNumber] || []) +
-    referenceList('Reference notes', getFeatureReferences(options.featureNumber, options.track || 'sql')) +
-    callout('System flow', flowStrip, 'soft') +
-    codeBlock(options.snippetTitle, options.snippetCode, 'text') +
+    featureDocs(options.featureNumber, track) +
+    callout('How this feature moves through the stack', flowStrip(), 'soft') +
     section(
-      'Work by file',
+      'Useful reference before you code',
+      unordered(getFeatureReferences(options.featureNumber, track), 'ib-project-reference-list'),
+      'reference'
+    ) +
+    docGrid(
+      docCode(
+        boilerplate.title,
+        boilerplate.code,
+        featureSnippetLanguage[options.featureNumber] || 'text',
+        boilerplate.notes
+      ),
+      taskBox(
+        'Build this now',
+        `Use the reference code above to understand the syntax and shape. Then write the real project version yourself in the codebase.`,
+        featureBuildSteps(options.featureNumber, track),
+        options.prompts
+      )
+    ) +
+    featureValidation(options.featureNumber, track) +
+    section(
+      'Where your work goes',
       dataTable(
         ['File or area', 'Why this file matters', 'What belongs in this feature'],
         options.files.map((row) => row as string[])
       ),
       'table'
     ) +
-    completionBlock(options.buildChecklist)
-});
+    completionBlock(options.buildChecklist, 'When this feature is ready to sign off')
+  };
+};
 
 const jsonFeatureStep = (options: {
   slug: string;
@@ -526,7 +1262,7 @@ const jsonFeatureStep = (options: {
 }): ProjectStep =>
   featureStep({
     ...options,
-    intro: `${options.intro} This is the JSON-track equivalent of the SQL build, so the interface behaviour stays aligned while the storage model changes.`,
+    intro: `${options.intro} You are rebuilding the same feature with JSON storage, so keep the user experience aligned while the persistence model changes.`,
     track: 'json'
   });
 
@@ -633,7 +1369,7 @@ const sqlSteps: ProjectStep[] = [
     stageId: 'sql-stage-2',
     title: 'Planning Documents and Wireframes',
     navLabel: 'Planning documents',
-    intro: 'Turn the brief into visible planning decisions before touching tables or code. This page is about interface intent, not implementation.',
+    intro: 'Turn the brief into a visible plan before you touch tables or code. Decide what the user needs to see and use in version one.',
     sidebarSummary: 'Wireframes, screen planning, field mapping, and planning decisions.',
     deliverable: 'Annotated wireframes',
     learningGoals: [
@@ -643,10 +1379,10 @@ const sqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'What this planning page is for',
+        'Start seeing the app before you build it',
         paragraph(
-          'This page turns the brief into visible planning decisions before any real implementation begins.',
-          'The wireframes are not final UI designs. They are planning documents used to decide what the first version of the system actually needs.'
+          'Use the wireframes to decide what belongs on screen, what belongs in the modal, and what can wait until later.',
+          'You are not decorating the app here. You are deciding what the first version must let the user see, click, and type.'
         ),
         'lead'
       ) +
@@ -694,7 +1430,7 @@ const sqlSteps: ProjectStep[] = [
     stageId: 'sql-stage-2',
     title: 'Normalisation and Data Thinking',
     navLabel: 'Normalisation workshop',
-    intro: 'Before you build tables, start with messy data and improve it. The goal is to see why relational design exists at all.',
+    intro: 'Start with messy task data and improve it. This is where you see why relational database design exists in the first place.',
     sidebarSummary: 'Raw task data, 1NF, 2NF, 3NF, and field decisions.',
     deliverable: 'Normalized field plan',
     learningGoals: [
@@ -756,7 +1492,7 @@ const sqlSteps: ProjectStep[] = [
     stageId: 'sql-stage-2',
     title: 'Table Planner: Fields, Types, and Example Data',
     navLabel: 'Table planner',
-    intro: 'Now sketch the actual tables. This page is for naming fields, choosing data types, and checking whether example values make sense.',
+    intro: 'Sketch the actual tables now. Name the fields, choose the data types, and test your ideas with realistic example values.',
     sidebarSummary: 'Interactive table builder for fields, data types, keys, and example values.',
     deliverable: 'Draft table set with field definitions',
     learningGoals: [
@@ -767,10 +1503,10 @@ const sqlSteps: ProjectStep[] = [
     scripts: ['/js/ib-erd-builder.js'],
     contentHtml:
       section(
-        'What this page is for',
+        'Build your first proper table draft',
         paragraph(
-          'This page is where the first proper table definitions are drafted. Name fields carefully, choose sensible data types, and test your thinking with example values before drawing the ERD.',
-          'The aim is not to produce the final schema instantly. The aim is to make the database ideas explicit and easy to review.'
+          'This is where the database stops being abstract and starts becoming real. Name fields carefully, choose sensible data types, and check your ideas with example values before you move into the ERD.',
+          'You are aiming for a reviewable draft, not instant perfection. If the class can explain each field aloud, the page is doing its job.'
         ),
         'lead'
       ) +
@@ -782,7 +1518,7 @@ const sqlSteps: ProjectStep[] = [
       ]) +
       split(
         section(
-          'Reference notes',
+          'Field-naming habits that help later',
           unordered([
             'Use integer-like types for identifiers.',
             'Use date types for deadlines rather than plain text.',
@@ -820,10 +1556,10 @@ const sqlSteps: ProjectStep[] = [
     scripts: ['/js/ib-erd-builder.js'],
     contentHtml:
       section(
-        'What this page is for',
+        'Turn separate tables into one model',
         paragraph(
-          'The ERD turns separate table ideas into one coherent data model. Each relationship should represent a real business rule from the task-tracking system.',
-          'At this stage the class should be able to explain the relationships aloud before drawing them formally.'
+          'The ERD is where the class proves the tables actually belong together. Every line on the diagram should match a relationship you could explain as a sentence about the client system.',
+          'If a relationship cannot be justified from the brief, it probably does not belong in version one.'
         ),
         'lead'
       ) +
@@ -861,10 +1597,10 @@ const sqlSteps: ProjectStep[] = [
     scripts: ['/js/ib-test-plan-builder.js'],
     contentHtml:
       section(
-        'What this page is for',
+        'Write the tests before the code',
         paragraph(
-          'The test table is created before feature work so that evaluation is built into the project rather than added afterwards.',
-          'Every important behaviour in the final system should be traceable back to a clear test row.'
+          'Create the test table now so every important behaviour has somewhere to land once the app is working.',
+          'A good test row should read like a clear promise about what the final system must do.'
         ),
         'lead'
       ) +
@@ -900,7 +1636,7 @@ const sqlSteps: ProjectStep[] = [
     stageId: 'sql-stage-3',
     title: 'Implementation Foundations',
     navLabel: 'Implementation foundations',
-    intro: 'Before feature work starts, understand the overall architecture. Students should know what each technology is doing and why the files are separated.',
+    intro: 'Before feature work starts, get the full stack straight in your head. You should know what HTML, JavaScript, Flask, and SQL each do.',
     sidebarSummary: 'Directory structure, technology roles, request flow, and coding expectations.',
     deliverable: 'Annotated project structure',
     learningGoals: [
@@ -910,10 +1646,10 @@ const sqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'What this page is for',
+        'How this app is stitched together',
         paragraph(
-          'Before any feature implementation begins, the class needs a clear picture of the project architecture and the purpose of each file.',
-          'This page is not about writing code. It is about understanding how HTML, JavaScript, Flask, and SQL cooperate in one application.'
+          'Before you start feature work, you need a mental map of the stack: what runs in the browser, what runs in Flask, and where the data actually lives.',
+          'If you can trace one click from button to stored result and back again, the later feature pages make much more sense.'
         ),
         'lead'
       ) +
@@ -942,7 +1678,7 @@ const sqlSteps: ProjectStep[] = [
         '<strong>Flask</strong> listens for requests and decides what happens next.',
         '<strong>SQL</strong> stores and retrieves structured records.'
       ]) +
-      callout('System flow', flowStrip, 'soft') +
+      callout('System flow', flowStrip(), 'soft') +
       codeBlock(
         'Generic structure sketch',
         `project/\n  app.py\n  schema.sql\n  templates/\n    index.html\n  static/\n    js/\n      app.js`,
@@ -1238,7 +1974,7 @@ const sqlSteps: ProjectStep[] = [
     stageId: 'sql-stage-5',
     title: 'Tagging Algorithm Design',
     navLabel: 'Tagging algorithm',
-    intro: 'Only add the non-standard algorithm after the core app works. This page is about logic first, code second.',
+    intro: 'Add the non-standard algorithm only after the core app works. Start with the logic in plain English, then worry about code later.',
     sidebarSummary: 'Plain-English tagging steps and integration logic.',
     deliverable: 'Plain-English algorithm and flowchart',
     learningGoals: [
@@ -1305,10 +2041,10 @@ const sqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'What this extension is for',
+        'Now extend the database without breaking it',
         paragraph(
-          'The original SQL model was deliberately kept simple. Once tagging is introduced, the database must grow in a controlled way rather than collapsing tags into one repeated text field.',
-          'This extension is where many-to-many thinking and junction tables become essential.'
+          'The original SQL model was deliberately simple so the core build stayed teachable. Once tagging arrives, the structure needs to grow carefully instead of stuffing repeated tag text into the task table.',
+          'This is the point where many-to-many thinking, junction tables, and composite keys stop being vocabulary and become real design choices.'
         ),
         'lead'
       ) +
@@ -1442,7 +2178,7 @@ const nosqlSteps: ProjectStep[] = [
     stageId: 'nosql-stage-2',
     title: 'Python JSON Exploration',
     navLabel: 'Python JSON lab',
-    intro: 'Use small, generic Python examples to understand how JSON is loaded, changed, and saved. This page is intentionally separate from the real project code.',
+    intro: 'Use small Python examples to practise how JSON is loaded, changed, and saved. Keep it separate from the real project until the storage model feels familiar.',
     sidebarSummary: 'Read, update, append, and save JSON in controlled examples.',
     deliverable: 'JSON experiment notes',
     learningGoals: [
@@ -1452,10 +2188,10 @@ const nosqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'What this page is for',
+        'Try JSON with tiny Python examples',
         paragraph(
-          'This page uses small generic examples so the class can focus on how Python reads, edits, and rewrites JSON data.',
-          'It is intentionally separate from the real project code. The point is to understand the storage model first.'
+          'Use these small examples to get comfortable with the read-edit-write cycle before you bring JSON anywhere near the real app.',
+          'This is a practice page. The goal is to understand the storage model clearly enough that the later build feels deliberate.'
         ),
         'lead'
       ) +
@@ -1497,7 +2233,7 @@ const nosqlSteps: ProjectStep[] = [
     stageId: 'nosql-stage-3',
     title: 'SQL vs NoSQL Modelling Comparison',
     navLabel: 'Modelling comparison',
-    intro: 'Compare the same task system in two shapes: a relational model and a document model. The goal is not preference; the goal is reasoning.',
+    intro: 'Compare the same task system in two shapes: a relational model and a document model. You are not picking favourites here; you are learning to justify trade-offs.',
     sidebarSummary: 'Model A vs Model B for the same task-tracking problem.',
     deliverable: 'Model comparison notes',
     learningGoals: [
@@ -1507,10 +2243,10 @@ const nosqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'What this comparison is for',
+        'Compare the same app in two data models',
         paragraph(
-          'The same task-tracking system can be represented in more than one storage model. This page compares those representations so the design trade-offs stay explicit.',
-          'This is the one place where the HL modelling comparison is explored directly before the parallel build begins.'
+          'The task system has not changed. What changes here is the way the data is shaped and maintained.',
+          'Use this page to decide what each model makes easier, what it makes harder, and why the trade-offs matter.'
         ),
         'lead'
       ) +
@@ -1561,7 +2297,7 @@ const nosqlSteps: ProjectStep[] = [
     stageId: 'nosql-stage-4',
     title: 'JSON Track Foundations',
     navLabel: 'Implementation foundations',
-    intro: 'The UI stays familiar, but the storage model changes. This page makes that boundary explicit before feature work starts.',
+    intro: 'Keep the UI familiar while the storage model changes. This page marks the boundary between the shared frontend and the new JSON persistence layer.',
     sidebarSummary: 'How the JSON-backed track differs from the SQL-backed track.',
     deliverable: 'Annotated JSON-track structure',
     learningGoals: [
@@ -1571,10 +2307,10 @@ const nosqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'What this page is for',
+        'Same frontend, different storage',
         paragraph(
-          'The frontend should remain recognisably the same while the storage model changes from SQL to JSON. That makes the comparison between tracks honest and useful.',
-          'This page defines the architectural boundary before the JSON feature sequence begins.'
+          'The screen the user sees should stay familiar while the persistence layer changes from SQL to JSON. That is what makes the comparison between tracks honest.',
+          'By the end of this page, you should know exactly which parts of the app stay the same and which parts need new backend thinking.'
         ),
         'lead'
       ) +
