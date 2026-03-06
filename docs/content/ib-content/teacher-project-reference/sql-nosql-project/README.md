@@ -9,6 +9,10 @@ It contains four working reference states for the IB 2027 database project:
 3. `hl-json-core`
 4. `hl-json-tagging`
 
+For a single teacher-facing file that summarizes the exact target outputs, open:
+
+- `teacher-reference.html`
+
 Use these states to anchor the public project pages so each student-facing feature describes a real target outcome.
 
 The intended teaching path is:
