@@ -512,6 +512,56 @@ const sqlTableFigure = `
   </svg>
 `;
 
+const jsonDocumentFigure = `
+  <svg class="ib-project-doc-svg" viewBox="0 0 620 260" role="img" aria-label="JSON document structure">
+    <rect x="30" y="28" width="560" height="204" rx="22" fill="#ffffff" stroke="#c7d3ea" stroke-width="2"></rect>
+    <rect x="62" y="62" width="156" height="136" rx="18" fill="#eef3ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="244" y="62" width="156" height="136" rx="18" fill="#f7f9ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="426" y="62" width="132" height="136" rx="18" fill="#f7e9cb" stroke="#c49c58" stroke-width="2"></rect>
+    <text x="140" y="94" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">array</text>
+    <text x="140" y="122" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">A list of records</text>
+    <text x="140" y="150" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">[ {...}, {...} ]</text>
+    <text x="322" y="94" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">object</text>
+    <text x="322" y="122" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">One structured record</text>
+    <text x="322" y="150" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">{ "id": 1 }</text>
+    <text x="492" y="94" text-anchor="middle" fill="#7d5b21" font-size="18" font-family="Arial" font-weight="700">key : value</text>
+    <text x="492" y="122" text-anchor="middle" fill="#7d5b21" font-size="13" font-family="Arial">"title": "Example"</text>
+    <text x="492" y="150" text-anchor="middle" fill="#7d5b21" font-size="13" font-family="Arial">"status": "open"</text>
+    <path d="M218 130 L244 130" stroke="#0e214b" stroke-width="3" marker-end="url(#jsonArrow)"></path>
+    <path d="M400 130 L426 130" stroke="#0e214b" stroke-width="3" marker-end="url(#jsonArrow)"></path>
+    <defs>
+      <marker id="jsonArrow" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#0e214b"></polygon>
+      </marker>
+    </defs>
+  </svg>
+`;
+
+const jsonFlowFigure = `
+  <svg class="ib-project-doc-svg" viewBox="0 0 640 240" role="img" aria-label="JSON backend flow">
+    <rect x="22" y="62" width="122" height="108" rx="18" fill="#eef3ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="182" y="62" width="122" height="108" rx="18" fill="#eef3ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="342" y="62" width="122" height="108" rx="18" fill="#eef3ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="502" y="62" width="116" height="108" rx="18" fill="#f7e9cb" stroke="#c49c58" stroke-width="2"></rect>
+    <text x="83" y="98" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">Browser</text>
+    <text x="83" y="124" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">fetch()</text>
+    <text x="243" y="98" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">Flask</text>
+    <text x="243" y="124" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">route</text>
+    <text x="403" y="98" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">Python</text>
+    <text x="403" y="124" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">load / save</text>
+    <text x="560" y="98" text-anchor="middle" fill="#7d5b21" font-size="18" font-family="Arial" font-weight="700">JSON files</text>
+    <text x="560" y="124" text-anchor="middle" fill="#7d5b21" font-size="13" font-family="Arial">tasks.json</text>
+    <path d="M144 116 L182 116" stroke="#0e214b" stroke-width="3" marker-end="url(#flowArrow)"></path>
+    <path d="M304 116 L342 116" stroke="#0e214b" stroke-width="3" marker-end="url(#flowArrow)"></path>
+    <path d="M464 116 L502 116" stroke="#0e214b" stroke-width="3" marker-end="url(#flowArrow)"></path>
+    <defs>
+      <marker id="flowArrow" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#0e214b"></polygon>
+      </marker>
+    </defs>
+  </svg>
+`;
+
 const docGrid = (...columns: string[]): string => `<div class="ib-project-doc-grid">${columns.join('')}</div>`;
 
 const docPanel = (title: string, body: string): string => `
@@ -1814,12 +1864,257 @@ const jsonFeatureStep = (options: {
   buildChecklist: string[];
   prompts: string[];
   deliverable: string;
+  referenceIndex?: number;
+  featureTotal?: number;
+  extraSectionsHtml?: string;
+  buildJourneyHtml?: string;
 }): ProjectStep =>
   featureStep({
     ...options,
     intro: `${options.intro} You are rebuilding the same feature with JSON storage, so keep the user experience aligned while the persistence model changes.`,
     track: 'json'
   });
+
+const jsonFeatureContext = (referenceIndex: number): string => {
+  const map: Record<number, { brief: string[]; reuse: string[] }> = {
+    6: {
+      brief: [
+        'The client still needs a readable task list and a populated assignee control. The storage model changed, but the user-facing promise did not.',
+        'This page proves the same interface can sit on top of a different backend if the response contract stays clear.'
+      ],
+      reuse: [
+        'Bring forward the SQL lesson on render targets and empty states.',
+        'Use the modelling comparison page to explain why usernames may need to be looked up or attached during the backend read.'
+      ]
+    },
+    7: {
+      brief: [
+        'Staff still need to create tasks quickly and trust that the record was saved.',
+        'This feature is where JSON identifier management becomes a real design decision rather than a theory note.'
+      ],
+      reuse: [
+        'Reuse the same modal and field mapping from the SQL track.',
+        'Bring forward the Python JSON practice page so the read-edit-write cycle feels familiar.'
+      ]
+    },
+    8: {
+      brief: [
+        'The client still expects one clear record of current work. Delete only works if the correct object is removed safely.',
+        'This feature is a reminder that flexibility does not remove the need for disciplined updates.'
+      ],
+      reuse: [
+        'Reuse the row-level identifier thinking from the SQL delete lesson.',
+        'Bring forward the JSON write-safety notes from the backend setup pages.'
+      ]
+    },
+    9: {
+      brief: [
+        'Managers need a persistent completed state, not a temporary visual trick.',
+        'This page shows how one field inside one object can be updated and saved back to disk reliably.'
+      ],
+      reuse: [
+        'Bring forward the success criterion about reliable status changes.',
+        'Reuse the same UI expectation from the SQL completion feature.'
+      ]
+    },
+    10: {
+      brief: [
+        'The original brief still asks for retrieval by user, urgency, and due date.',
+        'The point of this page is to prove the retrieval goal can still be met when filtering is done from document data.'
+      ],
+      reuse: [
+        'Return to the planned controls in the wireframe rather than inventing new ones.',
+        'Bring forward the modelling comparison discussion about flexibility versus query control.'
+      ]
+    },
+    11: {
+      brief: [
+        'This is the evidence page for the JSON build. The feature sequence is only finished when the class can prove it works.',
+        'It is also the point where HL students can justify model trade-offs using evidence rather than opinion.'
+      ],
+      reuse: [
+        'Reuse the same test plan categories from the SQL track.',
+        'Bring forward the SQL versus JSON modelling notes when writing evaluation comments.'
+      ]
+    }
+  };
+
+  const entry = map[referenceIndex];
+  if (!entry) return '';
+
+  return docGrid(
+    docPanel('Why this still matters to the client', unordered(entry.brief)),
+    docPanel('What to carry in from earlier pages', unordered(entry.reuse))
+  );
+};
+
+const jsonFeatureJourney = (referenceIndex: number): string => {
+  switch (referenceIndex) {
+    case 6:
+      return buildJourney('Build it in this order', 'Keep the frontend contract stable while the backend swaps to JSON file reads.', [
+        {
+          file: 'app.py',
+          title: 'Write the read helper functions first',
+          body: [
+            'Create one helper to load users and one to load tasks from JSON files.',
+            'Decide what should happen if the tasks file does not exist yet.',
+            'Explain why these helpers belong above the route functions.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Write the `/users` and `/tasks` routes',
+          body: [
+            'Return JSON from the users route first because it is the simpler one.',
+            'Then build the task route and decide how each task will gain a readable username for the UI.',
+            'Keep the response shape aligned with the SQL version so the browser code stays familiar.'
+          ],
+          prompts: [
+            'Where does the username come from if the task object only stores an id?',
+            'Why is backend parity useful when comparing storage models?'
+          ]
+        },
+        {
+          file: 'static/js/app.js',
+          title: 'Reuse the browser read pattern',
+          body: [
+            'Write the same fetch, response.json, and render sequence the SQL track used.',
+            'Prove the list and assignee control both redraw from backend data.'
+          ]
+        }
+      ]);
+    case 7:
+      return buildJourney('Build it in this order', 'Creating in JSON is still a chain: read values, build payload, append carefully, save, then redraw.', [
+        {
+          file: 'static/js/app.js',
+          title: 'Read the modal values and send the POST request',
+          body: [
+            'Reuse the same control ids and payload-building habit from the SQL track.',
+            'Keep the request body focused on the values the backend genuinely needs.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Load the existing records and choose the next id',
+          body: [
+            'Read the existing task list before creating the new object.',
+            'Decide how the next identifier will be produced safely and consistently.',
+            'Convert values into the types the JSON structure should store.'
+          ],
+          prompts: [
+            'What goes wrong if every new task always uses the same id?',
+            'Why might a select value need type conversion before storage?'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Append, save, and return success',
+          body: [
+            'Add the new object to the Python list, then write the whole structure back to disk.',
+            'Return a success response the browser can use to reload evidence on screen.'
+          ]
+        }
+      ]);
+    case 8:
+      return buildJourney('Build it in this order', 'Deleting from JSON usually means rebuilding the list without the chosen record, then saving the new structure.', [
+        {
+          file: 'static/js/app.js',
+          title: 'Attach the delete action to each rendered row',
+          body: [
+            'Pass the record id into the delete request rather than relying on title text.',
+            'Keep the UI action aligned with the SQL version so only the storage logic changes.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Filter out the chosen object and save the remaining list',
+          body: [
+            'Load the tasks, keep every object except the target, then save the updated list.',
+            'Explain why this is a rewrite step rather than a single-row delete query.'
+          ],
+          prompts: [
+            'How can you prove the correct object was removed?',
+            'Why is the resulting JSON file still part of the feature evidence?'
+          ]
+        }
+      ]);
+    case 9:
+      return buildJourney('Build it in this order', 'The completed state should be changed in the stored object first, then reflected back to the user.', [
+        {
+          file: 'static/js/app.js',
+          title: 'Send the update request from the correct task row',
+          body: [
+            'Use the stable task id rather than rebuilding the status in the DOM manually.',
+            'Keep the user action obvious: complete this one task.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Find the matching object and change only the status',
+          body: [
+            'Load the task list, loop until you find the correct object, update the status field, then save the file again.',
+            'Check that no unrelated properties are being changed by accident.'
+          ],
+          prompts: [
+            'How do you know only one object changed?',
+            'Why is reloading the page a good proof of persistence?'
+          ]
+        }
+      ]);
+    case 10:
+      return buildJourney('Build it in this order', 'The controls may look the same as SQL, but the backend now filters and sorts Python data instead of a SQL result set.', [
+        {
+          file: 'templates/index.html',
+          title: 'Add only the planned controls',
+          body: [
+            'Reuse the wireframe and original brief to decide which retrieval controls belong on the page.',
+            'Do not expand the toolbar beyond the needs already agreed.'
+          ]
+        },
+        {
+          file: 'static/js/app.js',
+          title: 'Build a clean request from the selected values',
+          body: [
+            'Read the current control values and package them into a query string or equivalent request format.',
+            'Keep the request readable so debugging later is straightforward.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Apply filtering and ordering in Python',
+          body: [
+            'Load the stored data, narrow the list using the chosen rules, then apply the ordering rule before returning JSON.',
+            'Test each rule separately before testing combinations.'
+          ],
+          prompts: [
+            'Which result would prove due-date sorting is actually correct?',
+            'Why is backend filtering still valuable when the browser can also inspect arrays?'
+          ]
+        }
+      ]);
+    case 11:
+      return buildJourney('Work through the evidence carefully', 'The same client brief now has two implementations behind it. This page is about proof and comparison.', [
+        {
+          file: 'Test plan',
+          title: 'Run the same core behaviours against the JSON build',
+          body: [
+            'Check create, delete, update, and retrieval in the same disciplined way as the SQL track.',
+            'Record actual results, not vague confidence.'
+          ]
+        },
+        {
+          file: 'Evaluation notes',
+          title: 'Write one model-strength note and one model-limitation note',
+          body: [
+            'Use evidence from the build to justify where JSON felt flexible and where it felt weaker or riskier.',
+            'Tie the final judgement back to the client needs rather than abstract preference.'
+          ]
+        }
+      ]);
+    default:
+      return '';
+  }
+};
 
 const sqlStages: ProjectStage[] = [
   {
@@ -3174,8 +3469,20 @@ const nosqlStages: ProjectStage[] = [
   {
     id: 'nosql-stage-4',
     label: 'Stage 4',
-    title: 'Parallel JSON Build',
-    summary: 'Rebuild the feature sequence with JSON storage while keeping the student-facing behaviour aligned.'
+    title: 'JSON Backend Foundations',
+    summary: 'Keep the frontend familiar, set up the JSON files and helpers, and prepare the backend before the live features begin.'
+  },
+  {
+    id: 'nosql-stage-5',
+    label: 'Stage 5',
+    title: 'JSON Feature Build Sequence',
+    summary: 'Rebuild the same client features with JSON storage, one controlled change at a time.'
+  },
+  {
+    id: 'nosql-stage-6',
+    label: 'Stage 6',
+    title: 'JSON Algorithm Extension',
+    summary: 'Apply the same tagging algorithm and see how the JSON storage outcome differs from the SQL extension.'
   }
 ];
 
@@ -3183,51 +3490,83 @@ const nosqlSteps: ProjectStep[] = [
   {
     slug: '',
     stageId: 'nosql-stage-1',
-    title: 'JSON and NoSQL Brief',
-    navLabel: 'Theory brief',
-    intro: 'This opening page sets the theory. JSON and NoSQL are not “better SQL”; they are alternative ways of structuring and scaling data.',
-    sidebarSummary: 'Theory brief, core concepts, and the main JSON/NoSQL framing ideas.',
-    deliverable: 'Short comparison notes',
+    title: 'JSON and NoSQL Theory',
+    navLabel: 'JSON theory',
+    intro: 'HL starts by understanding the storage model before any new backend code is written. JSON and NoSQL are not “better SQL”; they are different ways of structuring data with different trade-offs.',
+    sidebarSummary: 'Core JSON concepts, document structure, and the first SQL versus JSON framing.',
+    deliverable: 'JSON theory notes',
     learningGoals: [
-      'Understand JSON as a structured data format',
-      'Explain what “NoSQL” really means in context',
-      'Recognise why different storage models suit different problems'
+      'Understand JSON as a structured data format rather than just a buzzword',
+      'Explain what “NoSQL” means in the context of document storage',
+      'Recognise that a storage model is a design choice with trade-offs'
     ],
     contentHtml:
-      memo(
-        'Technical extension brief',
-        `
-          <p><strong>Scenario:</strong> The original task system now needs an HL extension. You are exploring whether the same application could be backed by JSON documents instead of a relational database.</p>
-          <p>The purpose of this extension is not to declare one model “best”. The purpose is to compare trade-offs: schema flexibility, data integrity, update complexity, and how easy it is to model relationships.</p>
-          <p>Your job is to understand when a document model is useful, what it simplifies, and what it complicates.</p>
-        `
+      section(
+        'Why HL adds this storage track',
+        paragraph(
+          'The client problem is still the same: track work clearly, store reliable information, and retrieve tasks quickly. What changes in HL is the storage model behind the same user-facing app.',
+          'This page exists so you can justify the JSON version properly later. If you do not understand document storage first, the HL build turns into copying instead of modelling.'
+        ),
+        'lead'
       ) +
       keywordTable([
         ['JSON object', 'A collection of key-value pairs inside braces.'],
         ['Array', 'An ordered list of values inside brackets.'],
         ['Document model', 'A storage approach centred on structured documents rather than rows.'],
-        ['Schema flexibility', 'The ability to change structure more easily, with different trade-offs.']
+        ['Schema flexibility', 'The ability to change structure more easily, with different trade-offs.'],
+        ['Nested data', 'Information stored inside a larger object rather than in a separate table.']
       ]) +
-      split(
-        section(
-          'JSON fundamentals',
-          unordered([
-            'JSON stores data as key-value pairs and nested structures.',
-            'Objects, arrays, strings, numbers, booleans, and null are the core value forms.',
-            'The structure is flexible, but it still needs discipline.'
-          ]),
-          'reference'
+      docGrid(
+        docTablePanel(
+          'JSON building blocks',
+          ['JSON term', 'What it means', 'How to think about it'],
+          [
+            ['Object', 'A group of named values', 'One record can often be represented as one object.'],
+            ['Array', 'A list of values or objects', 'A file may store many records in one array.'],
+            ['Key', 'The label on the left of a key-value pair', 'It describes what the value means.'],
+            ['Value', 'The data attached to a key', 'It may be text, a number, a boolean, or more nested JSON.']
+          ]
         ),
-        section(
-          'NoSQL reality check',
-          unordered([
-            'NoSQL means “not only SQL”, not “no structure”.',
-            'Document databases are one NoSQL model, not the only one.',
-            'Flexibility usually comes with different integrity trade-offs.'
-          ]),
-          'default'
+        docTablePanel(
+          'SQL versus JSON in plain language',
+          ['Question', 'SQL answer', 'JSON answer'],
+          [
+            ['How is data grouped?', 'Into tables and rows', 'Into documents and arrays'],
+            ['How are relationships handled?', 'Keys and joins', 'IDs or embedded data'],
+            ['What keeps structure tight?', 'A formal schema', 'Code discipline and agreed structure'],
+            ['What is the main trade-off?', 'Strong integrity, less flexibility', 'Flexible structure, more update discipline needed']
+          ]
         )
       ) +
+      figureGrid(
+        figurePanel(
+          'How to read a JSON document',
+          'Start with the outer array, then the object, then the key-value pairs inside it.',
+          jsonDocumentFigure
+        ),
+        docCode(
+          'Generic JSON example',
+          `[
+  {
+    "record_id": 1,
+    "label": "Example item",
+    "owner_id": 2,
+    "status": "open"
+  }
+]`,
+          'json',
+          [
+            ['record_id', 'A stable identifier still matters even in a flexible document structure.'],
+            ['owner_id', 'JSON can still use identifiers to express relationships.'],
+            ['status', 'The value can change over time just as it would in SQL.']
+          ]
+        )
+      ) +
+      referenceList('What must stay true throughout HL', [
+        'JSON is still structured data, not “anything goes” text.',
+        'A flexible model still needs deliberate field names and validation rules.',
+        'The frontend can stay familiar while the backend storage changes.'
+      ]) +
       completionBlock([
         'The class can define JSON, NoSQL, and document storage clearly.',
         'Everyone understands that flexibility does not remove the need for structure.',
@@ -3238,9 +3577,9 @@ const nosqlSteps: ProjectStep[] = [
     slug: 'python-json-lab',
     stageId: 'nosql-stage-2',
     title: 'Python JSON Exploration',
-    navLabel: 'Python JSON lab',
-    intro: 'Use small Python examples to practise how JSON is loaded, changed, and saved. Keep it separate from the real project until the storage model feels familiar.',
-    sidebarSummary: 'Read, update, append, and save JSON in controlled examples.',
+    navLabel: 'Python JSON practice',
+    intro: 'Practise the JSON read-edit-write cycle with safe generic examples before you touch the real project backend. This is the Python side of the HL toolkit.',
+    sidebarSummary: 'json.load, json.dump, lists, dictionaries, and safe file rewrites.',
     deliverable: 'JSON experiment notes',
     learningGoals: [
       'Read a JSON file into a Python structure',
@@ -3249,7 +3588,7 @@ const nosqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'Try JSON with tiny Python examples',
+        'Use generic Python examples first',
         paragraph(
           'Use these small examples to get comfortable with the read-edit-write cycle before you bring JSON anywhere near the real app.',
           'This is a practice page. The goal is to understand the storage model clearly enough that the later build feels deliberate.'
@@ -3260,28 +3599,73 @@ const nosqlSteps: ProjectStep[] = [
         ['json.load', 'Reads JSON text into a Python structure.'],
         ['json.dump', 'Writes a Python structure back to JSON text.'],
         ['Dictionary', 'A Python key-value structure often used after loading JSON.'],
+        ['List', 'An ordered Python sequence often used for many JSON records.'],
         ['File rewrite', 'Saving the updated document back to storage.']
       ]) +
-      codeBlock(
-        'Generic Python pattern',
-        `import json\n\nwith open('records.json', 'r') as file:\n    data = json.load(file)\n\ndata.append({'id': 3, 'label': 'Example'})\n\nwith open('records.json', 'w') as file:\n    json.dump(data, file, indent=2)`,
-        'python'
+      docGrid(
+        docTablePanel(
+          'Python JSON tools you need',
+          ['Code', 'What it does', 'Why it matters here'],
+          [
+            ['<code>with open(...)</code>', 'Opens a file safely and closes it when the block ends.', 'The project backend will use this repeatedly.'],
+            ['<code>json.load(file)</code>', 'Turns JSON text into Python data.', 'You cannot loop through the file until it has been loaded.'],
+            ['<code>json.dump(data, file, indent=2)</code>', 'Writes Python data back to JSON text.', 'This is how changes become permanent.'],
+            ['<code>append()</code>', 'Adds one new item to a Python list.', 'Useful when creating a new record in JSON storage.']
+          ]
+        ),
+        docCode(
+          'Generic read-edit-write pattern',
+          `import json
+
+with open("records.json", "r") as file:
+  data = json.load(file)
+
+data.append({
+  "id": 3,
+  "label": "Example item"
+})
+
+with open("records.json", "w") as file:
+  json.dump(data, file, indent=2)`,
+          'python',
+          [
+            ['data', 'After loading, JSON is now a Python structure you can loop through or update.'],
+            ['append', 'This adds one new object to the list in memory.'],
+            ['indent=2', 'Indentation makes the saved file readable for humans.']
+          ]
+        )
       ) +
-      split(
-        referenceList('Reference notes', [
-          'The entire document may be read before it is updated.',
-          'The structure in memory is usually a Python list/dictionary combination.',
-          'When saving, the whole document may be rewritten.'
-        ]),
-        section(
+      docGrid(
+        docPanel(
           'What needs care',
           unordered([
             'Duplicate ids if identifier management is weak.',
             'Broken files if writes are interrupted or structured poorly.',
             'Inconsistent nested data if validation rules are unclear.'
-          ]),
-          'default'
-        )
+          ])
+        ),
+        buildJourney('Practise this in order', 'This is still a docs-and-practice page. Use it to get comfortable before the real HL backend begins.', [
+          {
+            file: 'Practice JSON file',
+            title: 'Load one harmless file first',
+            body: [
+              'Open a simple JSON file containing a small array of objects.',
+              'Read it into Python and explain whether the result is now a list, a dictionary, or a combination.'
+            ]
+          },
+          {
+            file: 'Python script',
+            title: 'Append and rewrite one record carefully',
+            body: [
+              'Add one new object to the list in memory.',
+              'Write the whole structure back and inspect the resulting file.'
+            ],
+            prompts: [
+              'Why do you usually rewrite the whole JSON document rather than one line in the middle?',
+              'What would happen if two objects shared the same id?'
+            ]
+          }
+        ])
       ) +
       completionBlock([
         'The class can describe the read-edit-write cycle for a JSON file.',
@@ -3304,7 +3688,7 @@ const nosqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'Compare the same app in two data models',
+        'Compare the same client problem in two storage models',
         paragraph(
           'The task system has not changed. What changes here is the way the data is shaped and maintained.',
           'Use this page to decide what each model makes easier, what it makes harder, and why the trade-offs matter.'
@@ -3317,36 +3701,61 @@ const nosqlSteps: ProjectStep[] = [
         ['Reference by ID', 'Linking one structure to another using identifiers.'],
         ['Update difficulty', 'How awkward it is to keep related data consistent over time.']
       ]) +
-      section(
-        'Model A: relational view',
-        paragraph(
-          'A relational model separates entities into tables and uses keys to link them. It is strong when you need integrity, clear joins, and well-controlled updates.'
-        ) +
-          dataTable(
-            ['Likely structure', 'Why it works'],
-            [
-              ['tasks table', 'Core task record stays atomic and queryable'],
-              ['users table', 'Assignees can be reused and updated consistently'],
-              ['task_tags link table', 'Many-to-many tagging stays explicit']
-            ]
-          ),
-        'table'
+      docGrid(
+        docCode(
+          'Model A: separate-file reference pattern',
+          `records.json
+[
+  { "record_id": 1, "owner_id": 2, "status": "open" }
+]
+
+owners.json
+[
+  { "owner_id": 2, "display_name": "Sam" }
+]`,
+          'json',
+          [
+            ['Separate files', 'This keeps owner data in one place, more like the relational habit.'],
+            ['owner_id', 'The link still exists, but code has to match the ids later.']
+          ]
+        ),
+        docCode(
+          'Model B: embedded-data pattern',
+          `[
+  {
+    "record_id": 1,
+    "owner": {
+      "owner_id": 2,
+      "display_name": "Sam"
+    },
+    "status": "open"
+  }
+]`,
+          'json',
+          [
+            ['Embedded owner object', 'This can make one read simpler, but repeated owner data can drift later.'],
+            ['Nested structure', 'One document contains more of the story, but updates may become heavier.']
+          ]
+        )
       ) +
       section(
-        'Model B: document view',
-        paragraph(
-          'A document model may keep more related data together inside one record. This can simplify some reads, but it also changes how updates and relationships feel.'
-        ) +
-          dataTable(
-            ['Possible document idea', 'Why it helps / why it hurts'],
-            [
-              ['One document per task', 'Easy to read a whole task at once, but nested updates need care'],
-              ['Embedded assignee summary', 'Fast display, but duplicated user data can drift'],
-              ['Embedded tag array', 'Simple for one task, harder when tags need global management']
-            ]
+        'Trade-off table',
+        dataTable(
+          ['Decision point', 'Reference pattern', 'Embedded pattern'],
+          [
+            ['Redundancy', 'Lower duplication of related data', 'Higher risk of duplicated nested data'],
+            ['Read convenience', 'May require joining logic in Python', 'One document can contain more of what the UI needs'],
+            ['Update difficulty', 'Clear source of truth for related data', 'Repeated nested data can become inconsistent'],
+            ['Flexibility', 'More structured and explicit', 'Can feel faster to change early on']
+          ]
         ),
         'table'
       ) +
+      referenceList('Decision for this HL build', [
+        'Keep the frontend aligned with the SQL version so the comparison stays fair.',
+        'Use separate JSON files with ids for users and tasks.',
+        'Reserve the embedded tags idea for the later algorithm extension where it becomes meaningful.'
+      ]) +
       completionBlock([
         'The class can compare separate-ID models with embedded-document models using real trade-offs.',
         'Redundancy and update difficulty are both visible in the comparison.',
@@ -3354,332 +3763,450 @@ const nosqlSteps: ProjectStep[] = [
       ], 'What should be clear before the parallel JSON build')
   },
   {
-    slug: 'implementation-foundations',
+    slug: 'json-backend-setup',
     stageId: 'nosql-stage-4',
-    title: 'JSON Track Foundations',
-    navLabel: 'Implementation foundations',
-    intro: 'Keep the UI familiar while the storage model changes. This page marks the boundary between the shared frontend and the new JSON persistence layer.',
-    sidebarSummary: 'How the JSON-backed track differs from the SQL-backed track.',
-    deliverable: 'Annotated JSON-track structure',
+    title: 'JSON Backend Setup',
+    navLabel: 'JSON backend setup',
+    intro: 'Keep the interface familiar, but replace the SQL storage layer with JSON files and Python helper functions. This page is the setup run before the HL live features begin.',
+    sidebarSummary: 'JSON files, helper functions, backend parity, and setup sequence.',
+    deliverable: 'JSON backend setup notes',
     learningGoals: [
       'Keep the user experience aligned with the SQL version',
-      'Understand where the storage model changes the backend logic',
-      'Explain the role of `data/*.json` in the project structure'
+      'Understand which files change when the storage model changes',
+      'Explain the role of JSON load/save helpers before routes are written'
     ],
     contentHtml:
       section(
-        'Same frontend, different storage',
+        'Same frontend, different storage layer',
         paragraph(
           'The screen the user sees should stay familiar while the persistence layer changes from SQL to JSON. That is what makes the comparison between tracks honest.',
           'By the end of this page, you should know exactly which parts of the app stay the same and which parts need new backend thinking.'
         ),
         'lead'
       ) +
-      keywordTable([
-        ['Document store', 'The JSON files that now hold the application data.'],
-        ['Backend parity', 'Keeping the purpose of routes aligned across both tracks.'],
-        ['Frontend parity', 'Keeping the user-facing interface aligned across both tracks.'],
-        ['Storage layer', 'The part of the system responsible for persistence.']
-      ]) +
-      section(
-        'What stays the same and what changes',
-        dataTable(
-          ['Area', 'SQL track', 'JSON track'],
+      docGrid(
+        docTablePanel(
+          'What stays the same and what changes',
+          ['Area', 'Still the same', 'Now different'],
           [
-            ['HTML shell', 'Same user-facing layout', 'Same user-facing layout'],
-            ['JavaScript behaviour', 'Same interaction goals', 'Same interaction goals'],
-            ['Backend route purpose', 'Read/write database records', 'Read/write JSON document data'],
-            ['Storage layer', 'Relational database', 'Structured JSON files']
+            ['templates/index.html', 'The user-facing layout can stay aligned with SQL', 'The page should not reveal storage details'],
+            ['static/js/app.js', 'The browser still uses fetch and redraw logic', 'The routes now read and write JSON-backed data'],
+            ['app.py', 'Flask still handles the routes', 'The storage logic uses load/save helpers instead of SQL queries'],
+            ['data/*.json', 'New for HL', 'These files now hold the stored records']
           ]
         ),
-        'table'
+        figurePanel(
+          'Where the JSON backend sits',
+          'The browser still talks to Flask. Flask now reads and saves document data instead of sending SQL queries.',
+          jsonFlowFigure
+        )
       ) +
-      referenceList('Keep the comparison fair', [
-        'Do not redesign the interface just because the storage model changed.',
-        'Let the storage difference appear mainly in backend logic and data design.',
-        'If behaviour differs, be able to explain why the model caused it.'
+      docGrid(
+        docCode(
+          'Generic JSON track structure',
+          `project/
+  app.py
+  data/
+    users.json
+    tasks.json
+  templates/
+    index.html
+  static/
+    js/
+      app.js`,
+          'text',
+          [
+            ['data/', 'This folder makes the storage-model change visible instead of hiding it in UI files.'],
+            ['templates/ and static/js/', 'These can stay conceptually aligned with the SQL version.']
+          ]
+        ),
+        docTablePanel(
+          'Python / JSON helper words',
+          ['Code', 'What it does', 'Why it matters'],
+          [
+            ['<code>os.path.exists()</code>', 'Checks whether a file is already present.', 'Useful when the task file may start empty.'],
+            ['<code>load_tasks()</code>', 'A helper that returns the current stored records.', 'Routes stay cleaner when repeated file logic is extracted.'],
+            ['<code>save_tasks(...)</code>', 'Writes the updated list back to disk.', 'A create, delete, or update action eventually needs this.'],
+            ['<code>jsonify()</code>', 'Returns JSON back to the browser.', 'The frontend contract stays familiar even when storage changes.']
+          ]
+        )
+      ) +
+      docCode(
+        'Generic load / save helper pattern',
+        `import json
+import os
+
+DATA_FILE = "data/records.json"
+
+def load_records():
+  if not os.path.exists(DATA_FILE):
+    return []
+
+  with open(DATA_FILE) as file:
+    return json.load(file)
+
+def save_records(records):
+  with open(DATA_FILE, "w") as file:
+    json.dump(records, file, indent=2)`,
+        'python',
+        [
+          ['os.path.exists', 'Protects the app from crashing when a file is not there yet.'],
+          ['return []', 'An empty list is a sensible starting state for many JSON-backed record sets.'],
+          ['json.dump', 'Writes the whole updated structure back to disk.']
+        ]
+      ) +
+      validationFlowBlock('Validation still matters in HL', [
+        ['HTML', 'The browser can still guide the user with required fields and sensible controls.'],
+        ['JavaScript', 'The browser can still package and check values before sending them.'],
+        ['Flask', 'The backend must still reject weak or inconsistent values.'],
+        ['JSON write step', 'The final saved structure still needs consistent keys and reliable ids.']
       ]) +
-      codeBlock(
-        'Generic JSON-track structure sketch',
-        `project/\n  app.py\n  data/\n    tasks.json\n  templates/\n    index.html\n  static/\n    js/\n      app.js`,
-        'text'
-      ) +
+      buildJourney('Work through the HL setup in this order', 'This is the preparation run before the first JSON feature page.', [
+        {
+          file: 'data/users.json and data/tasks.json',
+          title: 'Create the data files deliberately',
+          body: [
+            'Use one file for users and one for tasks so the comparison with the SQL model stays clear.',
+            'Start with a sensible initial structure rather than leaving the files mysterious.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Write the JSON load and save helpers before the routes',
+          body: [
+            'Keep the repeated file logic in helper functions rather than duplicating it inside every route.',
+            'Explain what each helper returns and when it should be called.'
+          ]
+        },
+        {
+          file: 'Project map',
+          title: 'Keep frontend parity in view',
+          body: [
+            'Notice that the browser-facing HTML and JavaScript can stay very similar.',
+            'The major difference is now the backend storage logic.'
+          ]
+        }
+      ]) +
       completionBlock([
         'The class understands which parts of the app stay the same across both tracks.',
         'The role of `data/*.json` is clear before feature implementation starts.',
         'The JSON track is positioned as a storage-model variation, not as a completely different app.'
-      ], 'What should be secure before Feature 1 in HL')
+      ], 'What should be secure before the live JSON features')
   },
   jsonFeatureStep({
-    slug: 'feature-1-structure',
-    stageId: 'nosql-stage-4',
+    slug: 'feature-1-fetch-render',
+    stageId: 'nosql-stage-5',
     featureNumber: 1,
-    navLabel: 'Project directory structure',
-    intro: 'Set up the JSON-backed directory structure so the storage model is explicit from day one.',
-    concept: 'Structure parity with SQL, storage difference in `data/`.',
-    snippetTitle: 'Generic pattern',
-    snippetCode: `app.py -> application logic\ndata/records.json -> stored document data\ntemplates/index.html -> page structure\nstatic/js/app.js -> browser logic`,
-    files: [
-      ['Project root', 'Still contains the app entry point', 'Keep names aligned with the SQL version'],
-      ['data/', 'Stores JSON documents', 'Create a clearly named data file location'],
-      ['templates/', 'Keeps the UI shell', 'Match the interface layout of the SQL version'],
-      ['static/js/', 'Keeps client-side interaction logic', 'Reuse the same interaction goals']
-    ],
-    buildChecklist: [
-      'The JSON storage area is explicit.',
-      'The UI-related folders still mirror the SQL version.',
-      'The structure remains readable rather than experimental.'
-    ],
-    prompts: [
-      'What is the equivalent of `schema.sql` in this track, if any?',
-      'Why should the JSON file not be mixed into the templates folder?',
-      'Which folders should be identical between SQL and JSON tracks?'
-    ],
-    deliverable: 'JSON project skeleton'
-  }),
-  jsonFeatureStep({
-    slug: 'feature-2-html-shell',
-    stageId: 'nosql-stage-4',
-    featureNumber: 2,
-    navLabel: 'Base HTML shell',
-    intro: 'Reuse the same interface shape so the storage comparison stays honest.',
-    concept: 'Interface parity across storage models.',
-    snippetTitle: 'Generic HTML shell pattern',
-    snippetCode: `<main>\n  <header>...</header>\n  <section id="controls">...</section>\n  <section id="list-area">...</section>\n</main>`,
-    files: [['templates/index.html', 'Keeps the UI stable', 'Use the same layout regions as the SQL version']],
-    buildChecklist: [
-      'The interface structure matches the SQL track.',
-      'The page is ready for dynamic rendering.',
-      'Storage details do not leak into the UI copy.'
-    ],
-    prompts: [
-      'Why does keeping the UI the same make the comparison stronger?',
-      'Which UI changes would make the experiment unfair?'
-    ],
-    deliverable: 'Shared UI shell'
-  }),
-  jsonFeatureStep({
-    slug: 'feature-3-task-list',
-    stageId: 'nosql-stage-4',
-    featureNumber: 3,
-    navLabel: 'Task list display area',
-    intro: 'Define the list area exactly as in the SQL build so the frontend remains portable.',
-    concept: 'Portable frontend structure.',
-    snippetTitle: 'Generic render target pattern',
-    snippetCode: `const listArea = document.querySelector('#list-area');\nlistArea.innerHTML = '<p>No records yet.</p>';`,
-    files: [
-      ['templates/index.html', 'Provides the render target', 'Use the same target naming as the SQL track'],
-      ['static/js/app.js', 'Will later populate the list', 'Prepare one clear render function']
-    ],
-    buildChecklist: [
-      'The list container is clear and stable.',
-      'Empty-state logic is considered.',
-      'The render target can be reused no matter how data is stored.'
-    ],
-    prompts: [
-      'What is gained by keeping the render logic storage-agnostic?',
-      'Which part of the app should not care whether data came from SQL or JSON?'
-    ],
-    deliverable: 'Reusable list container'
-  }),
-  jsonFeatureStep({
-    slug: 'feature-4-modal',
-    stageId: 'nosql-stage-4',
-    featureNumber: 4,
-    navLabel: 'Add-task modal',
-    intro: 'Keep the create-task interaction the same while preparing for JSON-backed storage.',
-    concept: 'Consistent interaction, different persistence.',
-    snippetTitle: 'Generic modal pattern',
-    snippetCode: `openButton -> show modal\ncloseButton -> hide modal\nsubmitButton -> collect form data`,
-    files: [
-      ['templates/index.html', 'Holds the modal structure', 'Reuse the same form layout approach'],
-      ['static/js/app.js', 'Will later handle modal behaviour', 'Keep the behaviour aligned with the SQL track']
-    ],
-    buildChecklist: [
-      'The modal behaves predictably.',
-      'The form layout remains aligned with the SQL version.',
-      'The student can compare both tracks easily.'
-    ],
-    prompts: [
-      'Why is this feature mostly unchanged between tracks?',
-      'Which later file changes will actually reveal the storage-model difference?'
-    ],
-    deliverable: 'Consistent modal UI'
-  }),
-  jsonFeatureStep({
-    slug: 'feature-5-form-inputs',
-    stageId: 'nosql-stage-4',
-    featureNumber: 5,
-    navLabel: 'Form inputs and validation',
-    intro: 'Capture the same task data, but think carefully about how those values will be written into a JSON document.',
-    concept: 'Document properties and validation.',
-    snippetTitle: 'Generic field map',
-    snippetCode: `{\n  "id": 4,\n  "title": "Example",\n  "assignee": "Aisha",\n  "priority": "high"\n}`,
-    files: [
-      ['templates/index.html', 'Defines the inputs', 'Keep data collection aligned with the SQL track'],
-      ['static/js/app.js', 'Will later build the JSON payload', 'Map form fields to document properties']
-    ],
-    buildChecklist: [
-      'The required input set is complete.',
-      'Form values could be turned into a coherent document.',
-      'Validation expectations are written down.'
-    ],
-    prompts: [
-      'Which values should be stored directly in one task document?',
-      'Which input values might become awkward if they later need to be normalised?'
-    ],
-    deliverable: 'Document-ready form'
-  }),
-  jsonFeatureStep({
-    slug: 'feature-6-read-render',
-    stageId: 'nosql-stage-4',
-    featureNumber: 6,
     navLabel: 'Fetch and render tasks',
-    intro: 'Read JSON-backed records and render them into the same list interface.',
-    concept: 'Read pipeline and response consistency.',
+    intro: 'Start the live HL build by reading users and tasks from JSON-backed storage and rendering them through the same interface pattern used in SL.',
+    concept: 'Backend parity, read routes, and predictable rendering from document data.',
     snippetTitle: 'Generic fetch pattern',
-    snippetCode: `fetch('/api/records')\n  .then(response => response.json())\n  .then(data => renderRecords(data));`,
+    snippetCode: `fetch("/api/records")
+  .then((response) => response.json())
+  .then((records) => renderRecords(records));`,
     files: [
-      ['static/js/app.js', 'Renders the returned data', 'Reuse the same output expectations as SQL'],
-      ['app.py', 'Reads from JSON storage', 'Return a clean JSON response for the browser'],
-      ['data/*.json', 'Stores the records', 'Maintain a valid structure at all times']
+      ['app.py', 'Holds the JSON-backed GET routes', 'Load the files, prepare the response, and return JSON'],
+      ['static/js/app.js', 'Draws the list and fills the assignee control', 'Reuse the read-and-render browser pattern'],
+      ['data/users.json and data/tasks.json', 'Hold the stored document data', 'Keep both files valid and readable']
     ],
     buildChecklist: [
-      'The read flow returns predictable data.',
-      'The UI still renders without a full page refresh.',
-      'The list view behaves like the SQL track from the student perspective.'
+      'The `/users` and `/tasks` routes return sensible JSON.',
+      'The browser draws the list from real backend data.',
+      'The interface still feels aligned with the SQL version.'
     ],
     prompts: [
-      'How is reading a whole JSON document different from querying specific SQL rows?',
-      'What problems appear if the stored document becomes inconsistent?'
+      'How does the browser stay mostly the same while the backend changes?',
+      'Where does the readable username come from in the task response?',
+      'What is the JSON equivalent of the SQL read query on this page?'
     ],
-    deliverable: 'JSON read flow'
+    deliverable: 'Working JSON read flow',
+    referenceIndex: 6,
+    featureTotal: 6,
+    extraSectionsHtml: jsonFeatureContext(6),
+    buildJourneyHtml: jsonFeatureJourney(6)
   }),
   jsonFeatureStep({
-    slug: 'feature-7-create-record',
-    stageId: 'nosql-stage-4',
-    featureNumber: 7,
+    slug: 'feature-2-create-record',
+    stageId: 'nosql-stage-5',
+    featureNumber: 2,
     navLabel: 'Create a task',
-    intro: 'Append a new record to the JSON-backed storage flow without breaking the existing structure.',
-    concept: 'Document append and identifier control.',
+    intro: 'Use the existing modal and browser flow to create a new task in JSON storage and then prove the new record appears back in the list.',
+    concept: 'POST requests, id management, and safe JSON append logic.',
     snippetTitle: 'Generic create pattern',
-    snippetCode: `const payload = { ...formValues };\nfetch('/api/records', { method: 'POST', body: JSON.stringify(payload) });`,
+    snippetCode: `const payload = { title, owner_id };
+
+fetch("/api/records", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});`,
     files: [
-      ['static/js/app.js', 'Submits create requests', 'Build the payload cleanly'],
-      ['app.py', 'Validates and writes the new record', 'Manage identifiers carefully'],
-      ['data/*.json', 'Receives the appended record', 'Keep the document valid after each write']
+      ['static/js/app.js', 'Reads the modal values and sends the POST request', 'Build the payload clearly and refresh the list after success'],
+      ['app.py', 'Creates the new JSON-backed record', 'Choose the next id, validate the values, append, and save'],
+      ['data/tasks.json', 'Stores the updated task list', 'The new object should appear here after the write']
     ],
     buildChecklist: [
-      'New records are appended safely.',
-      'Identifiers remain unique.',
-      'The list refresh confirms the new record exists.'
+      'A valid modal submission creates one new stored record.',
+      'The new id is unique and consistent.',
+      'The list redraw gives visible evidence that creation worked.'
     ],
     prompts: [
-      'How will you generate the next identifier safely?',
-      'Why is “just append to the file” not enough as an explanation?'
+      'How will you choose the next id from a JSON file?',
+      'Why must the backend still validate values the browser already collected?',
+      'What would you check first if the task was saved but did not redraw?'
     ],
-    deliverable: 'JSON create flow'
+    deliverable: 'Working JSON create flow',
+    referenceIndex: 7,
+    featureTotal: 6,
+    extraSectionsHtml: jsonFeatureContext(7),
+    buildJourneyHtml: jsonFeatureJourney(7)
   }),
   jsonFeatureStep({
-    slug: 'feature-8-delete-record',
-    stageId: 'nosql-stage-4',
-    featureNumber: 8,
+    slug: 'feature-3-delete-record',
+    stageId: 'nosql-stage-5',
+    featureNumber: 3,
     navLabel: 'Delete a task',
-    intro: 'Remove a record from JSON storage without damaging the overall document structure.',
-    concept: 'Document filtering and safe rewrite.',
+    intro: 'Delete one chosen task from JSON storage without damaging the rest of the saved structure.',
+    concept: 'Identifier-led deletion and safe document rewrite.',
     snippetTitle: 'Generic delete pattern',
-    snippetCode: `remainingRecords = records.filter(record => record.id !== targetId)`,
+    snippetCode: `function deleteRecord(id) {
+  return fetch(\`/api/records/\${id}\`, {
+    method: "DELETE"
+  });
+}`,
     files: [
-      ['static/js/app.js', 'Sends the delete request', 'Pass the correct identifier from the UI'],
-      ['app.py', 'Removes the chosen record and rewrites storage', 'Protect the file structure during update'],
-      ['data/*.json', 'Stores the remaining data', 'Confirm valid JSON remains after deletion']
+      ['static/js/app.js', 'Triggers the delete request from the right row', 'Pass the task id rather than the title text'],
+      ['app.py', 'Removes the chosen object from the stored list', 'Load, filter, save, and return a clear response'],
+      ['data/tasks.json', 'Holds the remaining records', 'The file must still be valid after deletion']
     ],
     buildChecklist: [
-      'Delete targets the correct record.',
-      'The document remains valid after the update.',
-      'The interface stays in sync after delete.'
+      'Delete targets the correct stored record.',
+      'The saved JSON structure remains valid after the rewrite.',
+      'The browser redraw confirms the correct row disappeared.'
     ],
     prompts: [
-      'Why is deleting one JSON record usually a rewrite rather than a row removal?',
-      'How could you prove the correct record was removed?'
+      'Why is deleting by id safer than deleting by title text?',
+      'How is deleting from a JSON file different from deleting a SQL row?'
     ],
-    deliverable: 'JSON delete flow'
+    deliverable: 'Working JSON delete flow',
+    referenceIndex: 8,
+    featureTotal: 6,
+    extraSectionsHtml: jsonFeatureContext(8),
+    buildJourneyHtml: jsonFeatureJourney(8)
   }),
   jsonFeatureStep({
-    slug: 'feature-9-update-status',
-    stageId: 'nosql-stage-4',
-    featureNumber: 9,
+    slug: 'feature-4-update-status',
+    stageId: 'nosql-stage-5',
+    featureNumber: 4,
     navLabel: 'Mark a task complete',
-    intro: 'Update one property inside the JSON record and confirm the change appears persistently in the UI.',
-    concept: 'Document updates and persistence.',
+    intro: 'Update one field inside the chosen JSON object and prove the saved completed state survives refresh.',
+    concept: 'Record updates, persistence, and visible status evidence.',
     snippetTitle: 'Generic update pattern',
-    snippetCode: `record.status = 'complete'`,
+    snippetCode: `fetch(\`/api/records/\${id}\`, {
+  method: "PATCH",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ status: "complete" })
+});`,
     files: [
-      ['static/js/app.js', 'Triggers the status update', 'Reuse the same control pattern as the SQL version'],
-      ['app.py', 'Finds and updates the target record', 'Change only the intended field'],
-      ['data/*.json', 'Persists the changed record', 'Verify the update survives reload']
+      ['static/js/app.js', 'Sends the update request from the list row', 'Use the stable task id and refresh after success'],
+      ['app.py', 'Finds the chosen object and updates its status', 'Change only the intended field, then save'],
+      ['data/tasks.json', 'Stores the changed object', 'The saved status should match the visible status after refresh']
     ],
     buildChecklist: [
-      'The correct record is updated.',
-      'The completed state is visible in the interface.',
-      'The change persists after refresh.'
+      'The correct record changes to completed.',
+      'The completed state is visible in the UI.',
+      'Refreshing proves the change was saved, not just styled.'
     ],
     prompts: [
-      'How do you know only one record changed?',
-      'Why should UI styling follow the persisted data rather than guess it?'
+      'How do you know only one object changed in the JSON list?',
+      'Why is it useful to test with refresh after every status update?'
     ],
-    deliverable: 'JSON status update'
+    deliverable: 'Working JSON status update',
+    referenceIndex: 9,
+    featureTotal: 6,
+    extraSectionsHtml: jsonFeatureContext(9),
+    buildJourneyHtml: jsonFeatureJourney(9)
   }),
   jsonFeatureStep({
-    slug: 'feature-10-filter-sort',
-    stageId: 'nosql-stage-4',
-    featureNumber: 10,
+    slug: 'feature-5-filter-sort',
+    stageId: 'nosql-stage-5',
+    featureNumber: 5,
     navLabel: 'Filtering and sorting',
-    intro: 'Apply the same retrieval goals as the SQL version while deciding how the JSON-backed route should produce ordered results.',
-    concept: 'Filtered responses from document data.',
+    intro: 'Keep the same retrieval goals from the client brief while deciding how the JSON backend should filter and order records before returning them.',
+    concept: 'Conditional retrieval and ordered results from document data.',
     snippetTitle: 'Generic filter pattern',
-    snippetCode: `filtered = records.filter(record => record.assignee === selectedAssignee)`,
+    snippetCode: `const query = new URLSearchParams({
+  user: selectedUser,
+  priority: selectedPriority,
+  sort: "due_date"
+});
+
+fetch(\`/api/records?\${query.toString()}\`);`,
     files: [
-      ['templates/index.html', 'Defines the controls', 'Keep them aligned with the SQL version'],
-      ['static/js/app.js', 'Collects filter choices', 'Build a predictable request flow'],
-      ['app.py', 'Applies filtering and sorting rules', 'Return only the needed subset or order']
+      ['templates/index.html', 'Provides the retrieval controls', 'Keep them aligned with the original planned UI'],
+      ['static/js/app.js', 'Reads the chosen filter values', 'Build a clear request from the current controls'],
+      ['app.py', 'Applies filtering and ordering rules', 'Load the JSON data, narrow it, order it, and return the result']
     ],
     buildChecklist: [
-      'Filters return the expected subset.',
-      'Sorting behaviour is predictable.',
-      'The feature remains comparable to the SQL track.'
+      'The returned list matches the chosen filters.',
+      'Sorting is predictable and testable.',
+      'The controls still serve the original client retrieval needs.'
     ],
     prompts: [
-      'Where should the sorting logic live?',
-      'What makes a filter feature testable rather than impressionistic?'
+      'Where should the final filtering rule live for this project?',
+      'What exact test case would prove the sort order is correct?'
     ],
-    deliverable: 'JSON retrieval controls'
+    deliverable: 'Working JSON retrieval controls',
+    referenceIndex: 10,
+    featureTotal: 6,
+    extraSectionsHtml: jsonFeatureContext(10),
+    buildJourneyHtml: jsonFeatureJourney(10)
   }),
   jsonFeatureStep({
-    slug: 'feature-11-evaluation-check',
-    stageId: 'nosql-stage-4',
-    featureNumber: 11,
+    slug: 'feature-6-evaluation-check',
+    stageId: 'nosql-stage-5',
+    featureNumber: 6,
     navLabel: 'Evaluation and evidence check',
-    intro: 'Judge the JSON-backed build against the same functional expectations as the SQL version, then reflect on the modelling trade-offs.',
-    concept: 'Evidence and comparison.',
+    intro: 'Judge the JSON-backed build against the same client-facing expectations as the SQL version, then explain what the storage model changed behind the scenes.',
+    concept: 'Evidence, traceability, and justified model comparison.',
     snippetTitle: 'Generic evidence log pattern',
-    snippetCode: `Feature -> Evidence -> Pass / Fail -> Model insight`,
+    snippetCode: `Criterion
+  -> test
+  -> actual result
+  -> pass / fail
+  -> model insight`,
     files: [
-      ['Test evidence', 'Shows whether the feature worked', 'Record actual behaviour rather than assumptions'],
-      ['Comparison notes', 'Captures SQL vs JSON trade-offs', 'Explain where one model felt stronger or weaker']
+      ['Test plan', 'Holds the pass/fail evidence', 'Record the actual behaviour for each criterion'],
+      ['Evaluation notes', 'Explains the trade-offs between the two storage models', 'Write one strength and one limitation using evidence']
     ],
     buildChecklist: [
-      'The same core behaviours are evaluated.',
-      'Trade-offs are explained clearly.',
-      'Conclusions are based on evidence.'
+      'Core behaviours are checked with observable evidence.',
+      'The comparison with SQL is based on real build experience.',
+      'Any judgement about the model is justified rather than guessed.'
     ],
     prompts: [
-      'Which feature felt easier in JSON?',
-      'Which feature felt safer or clearer in SQL?',
-      'How would you justify the final model choice to a client?'
+      'Which feature felt simpler in JSON and why?',
+      'Which feature felt safer or clearer in SQL and why?',
+      'How would you justify a final model choice to the client?'
     ],
-    deliverable: 'Model comparison evaluation'
-  })
+    deliverable: 'JSON evidence review',
+    referenceIndex: 11,
+    featureTotal: 6,
+    extraSectionsHtml: jsonFeatureContext(11),
+    buildJourneyHtml: jsonFeatureJourney(11)
+  }),
+  {
+    slug: 'json-tagging-extension',
+    stageId: 'nosql-stage-6',
+    title: 'JSON Tagging Extension',
+    navLabel: 'JSON tagging extension',
+    intro: 'Finish the HL path by reusing the same tagging algorithm idea from SL and then deciding how that result should be stored in the JSON version.',
+    sidebarSummary: 'Same algorithm idea, different storage outcome in the JSON track.',
+    deliverable: 'HL tagging plan',
+    learningGoals: [
+      'Keep the algorithm logic separate from the storage decision',
+      'Explain why JSON can store tags directly inside each task object',
+      'Compare the SQL extension outcome with the JSON extension outcome'
+    ],
+    contentHtml:
+      section(
+        'Same feature goal, different model consequence',
+        paragraph(
+          'The tagging goal has not changed: read task text, remove common words, keep useful unique words, and limit the number of generated tags.',
+          'What changes in HL is the storage outcome. In the SQL version, the extension needed new tables and a junction table. In the JSON version, the generated tags can live directly inside each task object as an array.'
+        ),
+        'lead'
+      ) +
+      keywordTable([
+        ['Algorithm step', 'One ordered action in the tagging process.'],
+        ['Embedded array', 'A list stored directly inside one JSON object.'],
+        ['Model consequence', 'What a data model forces you to do when a new feature appears.'],
+        ['Storage outcome', 'The final shape of the saved data after the feature is added.']
+      ]) +
+      docGrid(
+        docPanel(
+          'Keep the algorithm thinking the same',
+          ordered([
+            'Read the task title text.',
+            'Convert it into words.',
+            'Remove common stop words.',
+            'Keep useful unique words.',
+            'Limit the final tag list.'
+          ])
+        ),
+        docPanel(
+          'How the storage outcome differs',
+          unordered([
+            '<strong>SQL:</strong> new `tags` and `task_tags` structures are needed.',
+            '<strong>JSON:</strong> the generated tags can be stored directly in a `tags` array inside each task object.',
+            'The feature goal is the same, but the data model changes how the result is saved.'
+          ])
+        )
+      ) +
+      callout(
+        'Flow of the JSON tagging extension',
+        flowStrip(['Title text', 'Algorithm', 'Tag list', 'Task object', 'Saved JSON']),
+        'soft'
+      ) +
+      docGrid(
+        docCode(
+          'Generic algorithm pseudocode',
+          `words = split(title)
+remove common words
+keep useful unique words
+limit to 3 tags
+return tag list`,
+          'text',
+          [
+            ['return tag list', 'The algorithm output is still a list, no matter how it will later be stored.']
+          ]
+        ),
+        docTablePanel(
+          'Questions this stage answers',
+          ['Question', 'Direction'],
+          [
+            ['Does the algorithm itself change?', 'No. Keep the logic as similar as possible to the SQL version.'],
+            ['Does JSON need a junction table?', 'No. The tags can be embedded directly in each task object.'],
+            ['What must be retested?', 'Create flow, saved structure, and any display or retrieval logic affected by tags.']
+          ]
+        )
+      ) +
+      buildJourney('Work through the extension in this order', 'Treat this as an algorithm page first and a storage page second.', [
+        {
+          file: 'Algorithm notes',
+          title: 'Reuse the plain-English algorithm and flowchart first',
+          body: [
+            'Before any code changes, make sure the class can still explain the tagging steps in order.',
+            'Keep the algorithm reasoning separate from the storage model.'
+          ]
+        },
+        {
+          file: 'Backend create flow',
+          title: 'Decide where the generated tags will be attached',
+          body: [
+            'The natural place is in the create flow, after the title is known and before the object is saved.',
+            'Store the resulting tags inside the task object rather than building a relational link structure.'
+          ],
+          prompts: [
+            'Why can JSON store the tags directly in the object while SQL needed more schema work?',
+            'What test would prove the tag list was saved correctly?'
+          ]
+        },
+        {
+          file: 'Evaluation notes',
+          title: 'Explain the model consequence clearly',
+          body: [
+            'Write one comparison note about how the same algorithm created different storage consequences in SQL and JSON.',
+            'Use that difference to strengthen the HL comparison, not to declare one model “best” by default.'
+          ]
+        }
+      ]) +
+      completionBlock([
+        'The class can explain the tagging algorithm in plain English.',
+        'Everyone understands why JSON can store the generated tags directly in each object.',
+        'The final HL comparison now includes one clear algorithm-related model difference.'
+      ], 'What should be true by the end of the HL extension')
+  }
 ];
 
 export const nosqlProjectSequence: ProjectSequence = {
@@ -3689,7 +4216,7 @@ export const nosqlProjectSequence: ProjectSequence = {
   unitHref: '/ib-2027/hl/unit-5/index.html',
   unitLabel: 'Back to HL Unit 5',
   projectTitle: 'Parallel JSON Project',
-  projectSummary: 'Move through the HL extension as a sequence of theory, comparison, and JSON-backed implementation pages.',
+  projectSummary: 'Move through the HL extension as a sequence of theory, Python JSON practice, modelling comparison, backend setup, JSON feature build, and the final tagging extension.',
   stages: nosqlStages,
   steps: nosqlSteps
 };
