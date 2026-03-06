@@ -31,39 +31,26 @@ const stageStepCount = (stage: ProjectStage): number =>
       <span>{sequence.unitLabel}</span>
     </a>
 
-    <div class="ib-project-sequence-headline">
-      <div class="ib-project-sequence-copy">
-        <p class="ib-project-sequence-kicker">{sequence.kicker}</p>
-        <h1>{currentStep.title}</h1>
-        <p class="ib-project-sequence-intro">{currentStep.intro}</p>
-      </div>
-
-      <div class="ib-project-sequence-stats">
-        <article class="ib-project-sequence-stat">
-          <span class="ib-project-sequence-stat-value">{currentIndex + 1}</span>
-          <span class="ib-project-sequence-stat-label">of {steps.length} pages</span>
-        </article>
-        <article class="ib-project-sequence-stat">
-          <span class="ib-project-sequence-stat-value">{currentStage.label}</span>
-          <span class="ib-project-sequence-stat-label">{currentStage.title}</span>
-        </article>
-      </div>
+    <div class="ib-project-sequence-copy">
+      <p class="ib-project-sequence-kicker">{sequence.kicker}</p>
+      <h1>{currentStep.title}</h1>
+      <p class="ib-project-sequence-intro">{currentStep.intro}</p>
     </div>
 
-    <div class="ib-project-sequence-progress">
-      <span>{currentStage.label}</span>
-      <span>Page {stageStepIndex + 1} of {stageSteps.length} in this stage</span>
-      {currentStep.paceLabel && <span>{currentStep.paceLabel}</span>}
+    <div class="ib-project-sequence-meta">
+      <span>{currentStage.label}: {currentStage.title}</span>
+      <span>Page {currentIndex + 1} of {steps.length}</span>
+      <span>{stageStepIndex + 1} of {stageSteps.length} in this stage</span>
+      {currentStep.deliverable && <span>{currentStep.deliverable}</span>}
     </div>
   </header>
 
   <div class="ib-project-sequence-shell">
     <aside class="ib-project-sequence-sidebar" aria-label="Project roadmap">
-      <section class="ib-project-sequence-sidebar-card">
-        <p class="ib-project-sequence-sidebar-label">Roadmap</p>
+      <div class="ib-project-sequence-sidebar-intro">
+        <p class="ib-project-sequence-sidebar-label">Project roadmap</p>
         <p class="ib-project-sequence-sidebar-title">{sequence.projectTitle}</p>
-        <p class="ib-project-sequence-sidebar-summary">{sequence.projectSummary}</p>
-      </section>
+      </div>
 
       <nav class="ib-project-sequence-roadmap" aria-label="Stage roadmap">
         {sequence.stages.map((stage) => {
@@ -104,21 +91,9 @@ const stageStepCount = (stage: ProjectStage): number =>
     </aside>
 
     <article class="ib-project-sequence-article">
-      <header class="ib-project-step-header">
-        <div class="ib-project-step-header-copy">
-          <p class="ib-project-step-kicker">{currentStage.label} · {currentStage.title}</p>
-          <h2>{currentStep.navLabel}</h2>
-          <p>{currentStep.headerNote || currentStep.intro}</p>
-        </div>
-        <div class="ib-project-step-badges">
-          <span class="ib-project-step-badge">Current page</span>
-          {currentStep.deliverable && <span class="ib-project-step-badge is-soft">{currentStep.deliverable}</span>}
-        </div>
-      </header>
-
       {currentStep.learningGoals && currentStep.learningGoals.length > 0 && (
-        <section class="ib-project-lesson-strip" aria-label="Learning focus">
-          <h3>Learning Focus</h3>
+        <section class="ib-project-lesson-strip" aria-label="Page outline">
+          <h2>On this page</h2>
           <ul>
             {currentStep.learningGoals.map((goal) => (
               <li>{goal}</li>
@@ -126,6 +101,8 @@ const stageStepCount = (stage: ProjectStage): number =>
           </ul>
         </section>
       )}
+
+      {currentStep.headerNote && <p class="ib-project-sequence-note">{currentStep.headerNote}</p>}
 
       <div class="ib-project-lesson-body" set:html={currentStep.contentHtml} />
 

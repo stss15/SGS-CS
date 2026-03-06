@@ -65,8 +65,155 @@ const callout = (title: string, body: string, tone = 'note'): string => `
   </aside>
 `;
 
-const promptBlock = (title: string, prompts: string[]): string =>
-  section(title, ordered(prompts, 'ib-project-prompt-list'), 'questions');
+const keywordTable = (items: Array<[string, string]>): string =>
+  section('Key words and definitions', dataTable(['Term', 'Meaning'], items), 'table');
+
+const referenceList = (title: string, items: string[]): string =>
+  section(title, unordered(items, 'ib-project-reference-list'), 'reference');
+
+const completionBlock = (items: string[], title = 'What must be in place before moving on'): string =>
+  section(title, unordered(items, 'ib-project-checklist'), 'checks');
+
+const featureVocabulary: Record<number, Array<[string, string]>> = {
+  1: [
+    ['Entry point', 'The main file that starts the application.'],
+    ['Template', 'An HTML file the server sends to the browser.'],
+    ['Static file', 'A browser asset such as JavaScript or CSS.'],
+    ['Separation of concerns', 'Keeping structure, behaviour, and storage responsibilities distinct.']
+  ],
+  2: [
+    ['Semantic HTML', 'Markup whose elements describe their purpose clearly.'],
+    ['Container', 'A layout region that groups related content.'],
+    ['Section', 'A meaningful block of page content.'],
+    ['Bootstrap layout', 'A consistent way to organise the page visually.']
+  ],
+  3: [
+    ['DOM target', 'An element JavaScript can find and update later.'],
+    ['Identifier', 'An `id` or selector used to target a specific element.'],
+    ['Empty state', 'What the interface shows when no records exist yet.'],
+    ['Render area', 'The part of the page where records appear.']
+  ],
+  4: [
+    ['Modal', 'A temporary interface layer for one focused action.'],
+    ['Trigger', 'The control that opens the modal.'],
+    ['Dismiss action', 'A safe way to close the modal without saving.'],
+    ['Focused interaction', 'Keeping one task visible without cluttering the whole page.']
+  ],
+  5: [
+    ['Input control', 'A form element used to collect data.'],
+    ['Validation', 'Checking that the submitted data is sensible.'],
+    ['Required field', 'A field that must be completed before submission.'],
+    ['Data mapping', 'Matching each input to the correct stored value.']
+  ],
+  6: [
+    ['GET request', 'A request used to retrieve existing data.'],
+    ['JSON response', 'Structured data returned to the browser.'],
+    ['Render function', 'A function that turns returned data into visible output.'],
+    ['Request cycle', 'The path from browser action to response and redraw.']
+  ],
+  7: [
+    ['POST request', 'A request used to create a new record.'],
+    ['Payload', 'The data sent with the request.'],
+    ['Insert', 'Adding a new record to storage.'],
+    ['Refresh', 'Updating the interface so the new record is visible.']
+  ],
+  8: [
+    ['Identifier', 'A stable value used to target the correct record.'],
+    ['Delete action', 'A request that removes one stored record.'],
+    ['Confirmation', 'A deliberate check before a destructive action.'],
+    ['Record removal', 'Deleting data cleanly and predictably.']
+  ],
+  9: [
+    ['Update', 'Changing an existing stored record.'],
+    ['Status field', 'The value that shows whether work is complete.'],
+    ['Persistence', 'A change that stays after refresh.'],
+    ['UI feedback', 'Visible evidence that the new state was applied.']
+  ],
+  10: [
+    ['Filter', 'A rule that narrows the records shown.'],
+    ['Sort', 'An ordering rule applied to the returned records.'],
+    ['Query parameter', 'A value sent with a request to control the result set.'],
+    ['Conditional retrieval', 'Returning only records that match the chosen conditions.']
+  ],
+  11: [
+    ['Test case', 'One measurable check of the system.'],
+    ['Expected result', 'What should happen if the feature works.'],
+    ['Actual result', 'What really happened during testing.'],
+    ['Evaluation evidence', 'Proof used to judge whether the app meets the brief.']
+  ]
+};
+
+const featureReferenceNotes: Record<number, string[]> = {
+  1: [
+    'A good project structure makes later debugging easier because each responsibility has a clear home.',
+    'Folder names should describe purpose, not personal preference.',
+    'Students should be able to explain why a file exists before they start filling it.'
+  ],
+  2: [
+    'The first HTML page is a layout document, not a finished interface.',
+    'Leave room for controls, outputs, and later dynamic content.',
+    'Use clear section boundaries so JavaScript targets stay obvious later.'
+  ],
+  3: [
+    'The task list area must exist before any data can be displayed.',
+    'Plan what the user sees when there are no tasks yet as carefully as the populated state.',
+    'Stable IDs and containers reduce confusion when the rendering logic is added.'
+  ],
+  4: [
+    'A modal works well here because task creation is a focused action, not a separate application area.',
+    'The open and close controls should feel deliberate and predictable.',
+    'The form inside the modal should map cleanly to the data fields planned earlier.'
+  ],
+  5: [
+    'Each form field should exist because it serves the brief, not because it seems common in apps.',
+    'Labels should be written for non-technical users, not for the developer.',
+    'Controlled options often produce cleaner data than free text.'
+  ],
+  6: [
+    'The browser needs structured data back from the server before it can draw the list.',
+    'Keep the rendering logic in one place so the display stays consistent.',
+    'A good empty state is part of the feature, not an afterthought.'
+  ],
+  7: [
+    'A create flow starts in the form, passes through the backend, and ends with refreshed evidence on screen.',
+    'Front-end validation improves usability, but back-end validation still matters.',
+    'The class should be able to trace where every submitted value goes.'
+  ],
+  8: [
+    'Delete actions must target a stable identifier, not visible text.',
+    'The interface should make it clear which record is about to be removed.',
+    'After deletion, the visible list and stored data must agree.'
+  ],
+  9: [
+    'A status change is only complete when the stored value and the visible state both update.',
+    'The design should make completed work readable without making the interface noisy.',
+    'Use this feature to reinforce the idea that UI state should reflect stored data.'
+  ],
+  10: [
+    'Filtering and sorting exist to solve retrieval problems named in the original brief.',
+    'Only add controls the user can justify from the problem specification.',
+    'The result set should change in a way the class can predict and test.'
+  ],
+  11: [
+    'Evaluation is strongest when each criterion points to a specific test and result.',
+    'Testing should record evidence, not assumptions.',
+    'A good final review includes limitations as well as successes.'
+  ]
+};
+
+const jsonFeatureAdditions: Partial<Record<number, string[]>> = {
+  1: ['In the JSON track, the storage difference should appear in the `data/` area, not in a completely different UI structure.'],
+  5: ['When values are written into a JSON document, field naming consistency matters because there is no table schema enforcing it for you.'],
+  6: ['Reading JSON-backed data often means loading a document structure and then preparing a browser-friendly response.'],
+  7: ['When creating a record in JSON storage, identifier management and file integrity need explicit care.'],
+  10: ['Some filtering decisions can still happen in the backend even when the source is a JSON document rather than SQL rows.']
+};
+
+const getFeatureReferences = (featureNumber: number, track: 'sql' | 'json'): string[] => {
+  const base = featureReferenceNotes[featureNumber] || [];
+  const additions = track === 'json' ? jsonFeatureAdditions[featureNumber] || [] : [];
+  return [...base, ...additions];
+};
 
 const dataTable = (headers: string[], rows: string[][]): string => `
   <div class="ib-project-table-wrap">
@@ -148,7 +295,7 @@ const builderMarkup = (mode: 'tables' | 'erd'): string => `
       <div class="ib-erd-grid">
         <article class="ib-erd-card">
           <h6>Add a table</h6>
-          <p class="ib-erd-note">Create one table at a time. Keep names singular or plural only if your class has agreed a convention.</p>
+          <p class="ib-erd-note">Add one table at a time and keep naming consistent across the whole draft.</p>
           <form class="ib-erd-form" data-erd-add-table>
             <label>
               Table name
@@ -162,7 +309,7 @@ const builderMarkup = (mode: 'tables' | 'erd'): string => `
             ? `
               <article class="ib-erd-card">
                 <h6>Link a relationship</h6>
-                <p class="ib-erd-note">Use this after your tables and fields exist. Think in terms of one-to-one, one-to-many, and many-to-many.</p>
+                <p class="ib-erd-note">Use this after the tables and fields exist. Link each relationship to a clear business rule.</p>
                 <form class="ib-erd-form" data-erd-add-relationship>
                   <label>
                     From table
@@ -199,7 +346,7 @@ const builderMarkup = (mode: 'tables' | 'erd'): string => `
       <div class="ib-erd-builder-body">
         <article class="ib-erd-card">
           <h6>${mode === 'tables' ? 'Table planner' : 'Table and field editor'}</h6>
-          <p class="ib-erd-note">${mode === 'tables' ? 'Add fields, data types, keys, and example values. This page is about planning the columns before you worry about links.' : 'Refine tables and fields, then connect them with explicit relationships.'}</p>
+          <p class="ib-erd-note">${mode === 'tables' ? 'Draft the fields, types, keys, and example values before moving on to relationships.' : 'Refine the tables and fields first, then connect them with explicit relationships.'}</p>
           <div class="ib-erd-entities" data-erd-entities></div>
           <button type="button" class="ib-erd-reset" data-erd-reset>Reset planner</button>
         </article>
@@ -207,7 +354,7 @@ const builderMarkup = (mode: 'tables' | 'erd'): string => `
         <div class="ib-erd-grid ib-erd-grid-bottom">
           <article class="ib-erd-card">
             <h6>${mode === 'tables' ? 'Data dictionary draft' : 'Schema draft'}</h6>
-            <p class="ib-erd-note">${mode === 'tables' ? 'Use this draft to check whether field names, types, and example values make sense together.' : 'Use the draft below to check whether your relationships and keys are coherent.'}</p>
+            <p class="ib-erd-note">${mode === 'tables' ? 'Use this draft to check whether the field names, types, and example values make sense together.' : 'Use this draft to check whether the relationships and keys are coherent.'}</p>
             <pre data-erd-schema></pre>
           </article>
           ${
@@ -215,7 +362,7 @@ const builderMarkup = (mode: 'tables' | 'erd'): string => `
               ? `
                 <article class="ib-erd-card">
                   <h6>Relationship list</h6>
-                  <p class="ib-erd-note">Each line should match a clear business rule you can explain out loud.</p>
+                  <p class="ib-erd-note">Each line should match a relationship the class can explain aloud.</p>
                   <ul class="ib-erd-rel-list" data-erd-rel-list></ul>
                 </article>
               `
@@ -229,7 +376,7 @@ const builderMarkup = (mode: 'tables' | 'erd'): string => `
           ? `
             <article class="ib-erd-card">
               <h6>ER diagram map</h6>
-              <p class="ib-erd-note">Arrange your thinking here, then redraw it neatly in your final documentation if needed.</p>
+              <p class="ib-erd-note">Use this workspace to organise the ERD before redrawing it neatly in final documentation.</p>
               <svg class="ib-erd-graph" data-erd-graph></svg>
             </article>
           `
@@ -245,7 +392,7 @@ const testPlanBuilderMarkup = `
       <div class="ib-test-plan-grid">
         <article class="ib-test-plan-card">
           <h6>Add a test row</h6>
-          <p class="ib-erd-note">Write one scenario at a time. Keep the wording measurable so the result can be marked pass or fail.</p>
+          <p class="ib-erd-note">Write one measurable scenario at a time so the result can later be marked pass or fail.</p>
           <form class="ib-test-plan-form" data-test-add-row>
             <label>
               Feature or scenario
@@ -263,8 +410,8 @@ const testPlanBuilderMarkup = `
           </form>
         </article>
         <article class="ib-test-plan-card">
-          <h6>How to use this page</h6>
-          <p class="ib-erd-note">Aim for a balanced test set: normal use, boundary cases, invalid input, and one or two usability checks.</p>
+          <h6>Test planning notes</h6>
+          <p class="ib-erd-note">Aim for a balanced set of tests: normal use, boundary cases, invalid input, and a small number of usability checks.</p>
           ${unordered([
             'One test row should answer one specific question.',
             'Expected results must be observable.',
@@ -323,6 +470,7 @@ const featureStep = (options: {
   buildChecklist: string[];
   prompts: string[];
   deliverable: string;
+  track?: 'sql' | 'json';
 }): ProjectStep => ({
   slug: options.slug,
   stageId: options.stageId,
@@ -330,36 +478,36 @@ const featureStep = (options: {
   navLabel: `Feature ${options.featureNumber}: ${options.navLabel}`,
   intro: options.intro,
   sidebarSummary: options.concept,
-  headerNote: `Build this feature only after the previous page is secure. Treat each feature as a clean checkpoint rather than a rushed jump forward.`,
+  headerNote: `This page covers one feature only. Keep the implementation sequence strict and finish this feature cleanly before moving on.`,
   paceLabel: `Feature ${options.featureNumber} of 11`,
   deliverable: options.deliverable,
   learningGoals: [
-    `Understand the purpose of ${options.navLabel.toLowerCase()} in the full system`,
-    `Identify which files change and why`,
-    'Translate the generic pattern into your own implementation'
+    `Understand what ${options.navLabel.toLowerCase()} adds to the system`,
+    'Identify the files involved and the role of each one',
+    'Use the generic references without turning them into a copy-paste solution'
   ],
   contentHtml:
     section(
-      'What this feature is really doing',
+      'What you are building on this page',
       paragraph(
         options.intro,
-        `Core concept for this page: <strong>${options.concept}</strong>.`,
-        'Before you write anything, be able to explain the data flow in words.'
+        `The core idea here is <strong>${options.concept}</strong>. The class should be able to describe that purpose clearly before touching the real project code.`
       ),
-      'default'
+      'lead'
     ) +
-    callout('Request flow for this page', `<p>${flowStrip}</p>`, 'accent') +
+    keywordTable(featureVocabulary[options.featureNumber] || []) +
+    referenceList('Reference notes', getFeatureReferences(options.featureNumber, options.track || 'sql')) +
+    callout('System flow', flowStrip, 'soft') +
     codeBlock(options.snippetTitle, options.snippetCode, 'text') +
     section(
-      'Files involved',
+      'Work by file',
       dataTable(
-        ['File or area', 'Why it matters', 'What students should add'],
+        ['File or area', 'Why this file matters', 'What belongs in this feature'],
         options.files.map((row) => row as string[])
       ),
       'table'
     ) +
-    section('Build checklist', unordered(options.buildChecklist, 'ib-project-checklist'), 'tasks') +
-    promptBlock('Checkpoint questions', options.prompts)
+    completionBlock(options.buildChecklist)
 });
 
 const jsonFeatureStep = (options: {
@@ -378,7 +526,8 @@ const jsonFeatureStep = (options: {
 }): ProjectStep =>
   featureStep({
     ...options,
-    intro: `${options.intro} This is the JSON-track equivalent of the SQL build, so keep the interface behaviour aligned while changing the storage model.`
+    intro: `${options.intro} This is the JSON-track equivalent of the SQL build, so the interface behaviour stays aligned while the storage model changes.`,
+    track: 'json'
   });
 
 const sqlStages: ProjectStage[] = [
@@ -427,7 +576,7 @@ const sqlSteps: ProjectStep[] = [
     title: 'Client Problem Specification',
     navLabel: 'Problem specification',
     intro: 'Start with the client voice. This first page should feel like a real brief that has landed on your desk before any technical planning begins.',
-    sidebarSummary: 'Client document, system need, constraints, and success criteria prompts.',
+    sidebarSummary: 'Client document, system need, constraints, and first success criteria.',
     headerNote: 'Read this page like a project analyst. You are not solving it yet; you are understanding what must be solved.',
     paceLabel: 'Opening brief',
     deliverable: 'Draft success criteria list',
@@ -448,49 +597,36 @@ const sqlSteps: ProjectStep[] = [
           <p>Because this system will become our main source of task information, we need reliable data entry, clear status changes, and easy retrieval of tasks by user, urgency, and due date. The application does not need to be public-facing and does not need complex user accounts for this first version.</p>
         `
       ) +
-      split(
-        section(
-          'Client constraints',
-          unordered([
-            'The app must be understandable to staff who are not programmers.',
-            'Managers need a quick overview without opening multiple documents.',
-            'Data should stay consistent when records are updated or removed.',
-            'The first version should stay small enough to test fully in class.'
-          ]),
-          'default'
-        ),
-        section(
-          'Known users and workflow',
-          unordered([
-            'Operations staff create and update tasks during the day.',
-            'Managers review outstanding and completed work.',
-            'The same task may need to be filtered by assignee, priority, or due date.',
-            'Completed work should stay traceable rather than disappearing.'
-          ]),
-          'default'
-        )
-      ) +
+      keywordTable([
+        ['Problem statement', 'The operational issue the client needs solved.'],
+        ['Constraint', 'A limit or condition the system must respect.'],
+        ['Input', 'Data the user enters into the system.'],
+        ['Output', 'Information the system must show back to the user.']
+      ]) +
+      referenceList('What this brief tells us', [
+        'The client wants one internal system instead of spreadsheets, messages, and verbal updates.',
+        'Version one is about reliable task tracking, not complex accounts or public access.',
+        'The app must support creation, status updates, filtering, and clear overview of work in progress.'
+      ]) +
       section(
-        'Problem specification checklist',
+        'Problem specification map',
         dataTable(
-          ['Section', 'What you should capture from the brief'],
+          ['Section', 'What must be understood from the brief'],
           [
-            ['Problem statement', 'What is failing now, and why is that a real problem?'],
-            ['Inputs', 'What data will staff enter into the system?'],
-            ['Outputs', 'What must the app show clearly on screen?'],
-            ['Processing', 'What actions change or retrieve the stored data?'],
-            ['Constraints', 'What limits or conditions must be respected?']
+            ['Problem statement', 'Tasks are currently hard to track, assign, and review accurately.'],
+            ['Inputs', 'Task title, assignee, due date, priority, and later completion or update actions.'],
+            ['Outputs', 'A visible task list, clear status, filter results, and due-date awareness.'],
+            ['Evaluation criteria', 'The system must be simple to use, reliable, and easy to check against measurable tests.'],
+            ['Constraints', 'Keep the system small, internal, and realistic enough to test fully in class.']
           ]
         ),
         'table'
       ) +
-      promptBlock('Student prompts', [
-        'Which line in the client document tells you this must be a data-driven system rather than a static webpage?',
-        'What are the minimum pieces of information each task record must store?',
-        'Why is “make it easy to use” not good enough as a success criterion by itself?',
-        'Draft 6 to 10 measurable success criteria that the final app could be tested against.',
-        'Which features feel essential in version one, and which should stay out of scope?'
-      ])
+      completionBlock([
+        'The class can state the problem, constraints, inputs, outputs, and evaluation needs in plain language.',
+        'A first draft of six to ten measurable success criteria exists before planning begins.',
+        'Everyone understands which features belong in version one and which stay out of scope for now.'
+      ], 'What should be clear before planning starts')
   },
   {
     slug: 'planning-documents',
@@ -498,7 +634,7 @@ const sqlSteps: ProjectStep[] = [
     title: 'Planning Documents and Wireframes',
     navLabel: 'Planning documents',
     intro: 'Turn the brief into visible planning decisions before touching tables or code. This page is about interface intent, not implementation.',
-    sidebarSummary: 'Wireframes, screen planning, field mapping, and planning questions.',
+    sidebarSummary: 'Wireframes, screen planning, field mapping, and planning decisions.',
     deliverable: 'Annotated wireframes',
     learningGoals: [
       'Read wireframes as design decisions rather than decoration',
@@ -507,24 +643,30 @@ const sqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'Why plan the interface first?',
+        'What this planning page is for',
         paragraph(
-          'A good wireframe forces you to decide what the user actually needs to see, click, or type. It also exposes missing data fields early.',
-          'If you cannot point to where a feature appears on the screen, you probably do not understand the feature well enough yet.'
+          'This page turns the brief into visible planning decisions before any real implementation begins.',
+          'The wireframes are not final UI designs. They are planning documents used to decide what the first version of the system actually needs.'
         ),
-        'default'
+        'lead'
       ) +
+      keywordTable([
+        ['Wireframe', 'A simple planning sketch of the interface.'],
+        ['Modal', 'A temporary form area used for focused input.'],
+        ['Filter', 'A control that narrows which tasks are shown.'],
+        ['Field mapping', 'Matching a screen control to a stored data value.']
+      ]) +
       section('Wireframes', wireframeMarkup, 'diagram') +
       split(
         section(
-          'Planning decisions to make now',
+          'Planning notes',
           unordered([
-            'Where does the user view all tasks?',
-            'Which controls are always visible, and which belong inside the modal?',
-            'How will completed tasks look different from incomplete ones?',
-            'Which filters deserve dedicated UI controls in version one?'
+            'Decide where the user sees all current tasks.',
+            'Separate always-visible controls from controls that belong inside the add-task modal.',
+            'Agree how completed work will look different from active work.',
+            'Keep only the filters the brief can justify in version one.'
           ]),
-          'tasks'
+          'reference'
         ),
         section(
           'Field mapping from the brief',
@@ -541,12 +683,11 @@ const sqlSteps: ProjectStep[] = [
           'table'
         )
       ) +
-      promptBlock('Before you move on', [
-        'Which fields must be mandatory and which could be optional?',
-        'Where would the user click to change a task from incomplete to complete?',
-        'How might the interface become confusing if too many filters are visible at once?',
-        'Which wireframe elements are for display only, and which imply stored data?'
-      ])
+      completionBlock([
+        'The class has agreed which controls belong on the main page and which belong in the modal.',
+        'Every visible input in the wireframe maps to an identifiable data field.',
+        'The first version of the interface is clear enough to support database design.'
+      ], 'What should be agreed before database design')
   },
   {
     slug: 'normalisation-workshop',
@@ -574,44 +715,41 @@ const sqlSteps: ProjectStep[] = [
         ) +
           paragraph(
             'This draft looks convenient, but it hides several design problems. Multi-value cells, repeated text, and future extension issues all appear immediately.'
-          ),
+        ),
         'table'
       ) +
+      keywordTable([
+        ['Table', 'A named collection of related records.'],
+        ['Field', 'One attribute stored for each record.'],
+        ['Primary key', 'The field that uniquely identifies one record.'],
+        ['Foreign key', 'A field that links one table to another.'],
+        ['1NF / 2NF / 3NF', 'Stages of reducing repetition and dependency problems.']
+      ]) +
       split(
         section(
-          '1NF questions',
+          'Normalisation reference',
           unordered([
-            'Are all values atomic?',
-            'Are any cells storing a list?',
-            'Would sorting and filtering behave cleanly with this structure?'
+            '<strong>1NF:</strong> every field should hold one atomic value.',
+            '<strong>2NF:</strong> non-key fields should depend on the whole key.',
+            '<strong>3NF:</strong> non-key fields should not depend on other non-key fields.'
           ]),
-          'questions'
+          'reference'
         ),
         section(
-          '2NF and 3NF questions',
+          'What this means for the task system',
           unordered([
-            'Which fields belong to the task itself, and which describe another entity?',
-            'Are any non-key values depending on something other than the whole key?',
-            'Could one field be determined by another non-key field?'
+            'A list of multiple staff in one cell is a warning sign.',
+            'Assignee information and task information should be considered separately.',
+            'Planning for future tags now shows why repeated values become a design problem.'
           ]),
-          'questions'
+          'default'
         )
       ) +
-      callout(
-        'Normal form reminders',
-        unordered([
-          '<strong>1NF:</strong> atomic values and no repeating groups.',
-          '<strong>2NF:</strong> no partial dependency on part of a composite key.',
-          '<strong>3NF:</strong> no transitive dependency between non-key fields.'
-        ]),
-        'accent'
-      ) +
-      promptBlock('Student prompts', [
-        'Which field groups clearly belong to the same entity?',
-        'If tags are introduced later, what design problem appears in the raw table?',
-        'Would you store an assignee name directly forever, or should that eventually become its own table?',
-        'Which fields definitely belong in the core task table for version one?'
-      ])
+      completionBlock([
+        'The class can explain why repeated groups and multi-value cells cause problems.',
+        'Core entities for version one have been separated before table building begins.',
+        'Everyone can justify why tags are not part of the first SQL model yet.'
+      ], 'What should be settled before table design')
   },
   {
     slug: 'table-planner',
@@ -629,35 +767,39 @@ const sqlSteps: ProjectStep[] = [
     scripts: ['/js/ib-erd-builder.js'],
     contentHtml:
       section(
-        'How to use this page',
-        unordered([
-          'Start with the minimum tables needed for version one.',
-          'Add fields using short, consistent names.',
-          'Choose a type because it fits the data, not because it looks familiar.',
-          'Use example values to catch naming mistakes and impossible structures early.'
-        ]),
-        'tasks'
+        'What this page is for',
+        paragraph(
+          'This page is where the first proper table definitions are drafted. Name fields carefully, choose sensible data types, and test your thinking with example values before drawing the ERD.',
+          'The aim is not to produce the final schema instantly. The aim is to make the database ideas explicit and easy to review.'
+        ),
+        'lead'
       ) +
+      keywordTable([
+        ['Data type', 'The kind of value a field is meant to store.'],
+        ['Primary key', 'The unique identifier for a table.'],
+        ['Candidate foreign key', 'A field likely to link to another table later.'],
+        ['Example value', 'A realistic sample used to test whether the field definition makes sense.']
+      ]) +
       split(
         section(
-          'Type prompts',
+          'Reference notes',
           unordered([
             'Use integer-like types for identifiers.',
             'Use date types for deadlines rather than plain text.',
             'Use boolean-style values only when the state is truly yes/no.',
             'Avoid vague “misc” fields that collect unrelated data.'
           ]),
-          'default'
+          'reference'
         ),
         section(
-          'Questions to ask while planning',
+          'What a strong draft should show',
           unordered([
-            'Does every table have a clear primary key?',
-            'Could two fields be combined accidentally into one vague field?',
-            'Would another student understand the meaning of each column name immediately?',
-            'Can you imagine three example records for each table without confusion?'
+            'Every table has a clear primary key.',
+            'Field names are short, specific, and consistent.',
+            'Example values make the meaning of each field obvious.',
+            'The draft still reflects version one, not future extras.'
           ]),
-          'questions'
+          'default'
         )
       ) +
       section('Interactive table planner', builderMarkup('tables'), 'workspace')
@@ -678,31 +820,30 @@ const sqlSteps: ProjectStep[] = [
     scripts: ['/js/ib-erd-builder.js'],
     contentHtml:
       section(
-        'Relationship rules to keep in mind',
-        unordered([
-          'A relationship should describe a business truth, not just a drawing choice.',
-          'If a field is marked as a foreign key, you should be able to say exactly which primary key it points to.',
-          'Many-to-many relationships usually signal the need for a linking table.',
-          'If you cannot explain the relationship in a sentence, your ERD is probably not ready.'
-        ]),
-        'default'
+        'What this page is for',
+        paragraph(
+          'The ERD turns separate table ideas into one coherent data model. Each relationship should represent a real business rule from the task-tracking system.',
+          'At this stage the class should be able to explain the relationships aloud before drawing them formally.'
+        ),
+        'lead'
       ) +
-      callout(
-        'Say it out loud',
-        ordered([
-          'One user can be assigned many tasks.',
-          'One task has one current priority value.',
-          'One tag can describe many tasks, and one task can have many tags.'
-        ]),
-        'accent'
-      ) +
+      keywordTable([
+        ['One-to-one', 'One record in a table links to one record in another.'],
+        ['One-to-many', 'One parent record can link to many child records.'],
+        ['Many-to-many', 'Both sides can link to multiple records, so a linking table is needed.'],
+        ['Referential integrity', 'Linked records remain valid and consistent.']
+      ]) +
+      referenceList('Relationship rules', [
+        'A foreign key should point to a real parent key you can identify clearly.',
+        'If you cannot express the relationship as a sentence, the ERD is not ready yet.',
+        'The original SQL model should include only the core entities. Tagging comes later.'
+      ]) +
       section('Interactive ERD builder', builderMarkup('erd'), 'workspace') +
-      promptBlock('Checkpoint questions', [
-        'Which relationships are compulsory and which are optional?',
-        'Where would a many-to-many relationship appear if you introduce tags?',
-        'Does every foreign key point to a real parent field?',
-        'Could you redraw this ERD by hand from memory now?'
-      ])
+      completionBlock([
+        'Every foreign key in the draft can be explained as a clear relationship sentence.',
+        'The class can identify which relationships are currently one-to-many and where many-to-many will appear later.',
+        'The ERD is clear enough to redraw without relying on the builder.'
+      ], 'What should be true before the test table and implementation phase')
   },
   {
     slug: 'test-plan',
@@ -720,6 +861,20 @@ const sqlSteps: ProjectStep[] = [
     scripts: ['/js/ib-test-plan-builder.js'],
     contentHtml:
       section(
+        'What this page is for',
+        paragraph(
+          'The test table is created before feature work so that evaluation is built into the project rather than added afterwards.',
+          'Every important behaviour in the final system should be traceable back to a clear test row.'
+        ),
+        'lead'
+      ) +
+      keywordTable([
+        ['Test case', 'One measurable check of system behaviour.'],
+        ['Expected output', 'What should happen if the system works correctly.'],
+        ['Actual output', 'What really happened during the test.'],
+        ['Pass / Fail', 'The final judgement based on evidence, not assumption.']
+      ]) +
+      section(
         'What a strong test row looks like',
         dataTable(
           ['Weak version', 'Better version'],
@@ -731,27 +886,13 @@ const sqlSteps: ProjectStep[] = [
         ),
         'table'
       ) +
-      split(
-        section(
-          'Test categories to include',
-          unordered([
-            'Normal use cases',
-            'Boundary cases',
-            'Invalid input',
-            'Update and delete actions',
-            'Usability or clarity checks'
-          ]),
-          'default'
-        ),
-        section(
-          'Why this page matters now',
-          paragraph(
-            'If you wait until the end, testing becomes guesswork.',
-            'If you write the plan now, every later implementation page can be traced back to a measurable requirement.'
-          ),
-          'default'
-        )
-      ) +
+      referenceList('Test coverage to include', [
+        'Normal use cases',
+        'Boundary cases',
+        'Invalid input',
+        'Update and delete actions',
+        'Usability or clarity checks'
+      ]) +
       section('Interactive test table', testPlanBuilderMarkup, 'workspace')
   },
   {
@@ -769,6 +910,20 @@ const sqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
+        'What this page is for',
+        paragraph(
+          'Before any feature implementation begins, the class needs a clear picture of the project architecture and the purpose of each file.',
+          'This page is not about writing code. It is about understanding how HTML, JavaScript, Flask, and SQL cooperate in one application.'
+        ),
+        'lead'
+      ) +
+      keywordTable([
+        ['Template', 'An HTML page rendered for the browser.'],
+        ['Static JavaScript', 'Client-side code that runs in the browser.'],
+        ['Route', 'A backend endpoint that handles a request.'],
+        ['Request cycle', 'The path from browser action to stored response and back again.']
+      ]) +
+      section(
         'Directory structure and responsibilities',
         dataTable(
           ['Area', 'What lives here', 'Why it is separated'],
@@ -781,27 +936,23 @@ const sqlSteps: ProjectStep[] = [
         ),
         'table'
       ) +
-      callout(
-        'Technology roles in plain English',
-        unordered([
-          '<strong>HTML</strong> decides what the user can see and interact with.',
-          '<strong>JavaScript</strong> reacts to clicks, forms, and requests in the browser.',
-          '<strong>Flask</strong> listens for requests and decides what happens next.',
-          '<strong>SQL</strong> stores and retrieves structured records.'
-        ]),
-        'accent'
-      ) +
+      referenceList('Technology roles in plain English', [
+        '<strong>HTML</strong> decides what the user can see and interact with.',
+        '<strong>JavaScript</strong> reacts to clicks, forms, and requests in the browser.',
+        '<strong>Flask</strong> listens for requests and decides what happens next.',
+        '<strong>SQL</strong> stores and retrieves structured records.'
+      ]) +
+      callout('System flow', flowStrip, 'soft') +
       codeBlock(
         'Generic structure sketch',
         `project/\n  app.py\n  schema.sql\n  templates/\n    index.html\n  static/\n    js/\n      app.js`,
         'text'
       ) +
-      promptBlock('Readiness questions', [
-        'If the browser needs new data, which file or layer acts first?',
-        'Why should SQL setup not be mixed directly into the HTML page?',
-        'What would become confusing if all code lived in one file?',
-        'Can you explain the request flow from browser click to database response?'
-      ])
+      completionBlock([
+        'The class can explain the role of each major folder and file.',
+        'Everyone can describe the request cycle from browser action to database response.',
+        'The separation between interface, behaviour, backend logic, and storage is understood before feature work starts.'
+      ], 'What should be secure before Feature 1')
   },
   featureStep({
     slug: 'feature-1-structure',
@@ -1097,35 +1248,47 @@ const sqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
-        'What problem does tagging solve?',
+        'What this stage adds',
         paragraph(
-          'Tagging gives the client a second way to organise work beyond assignee, date, or priority. It becomes useful only when the core task system already works reliably.',
-          'The algorithm is not “add tags somehow.” It is a repeatable process for receiving labels, checking them, linking them, and avoiding duplication.'
+          'The non-standard algorithm is introduced only after the core task system works. At this point the class adds a second way of organising tasks by deriving short tags from the task text itself.',
+          'This is an algorithm design page, not an implementation page. The goal is to make the logic precise in plain English before anyone writes code.'
         ),
-        'default'
+        'lead'
       ) +
+      keywordTable([
+        ['Token', 'One word or fragment taken from a longer text.'],
+        ['Stop word', 'A very common word removed because it adds little meaning.'],
+        ['Unique word', 'A distinct word worth considering as a tag.'],
+        ['Limit rule', 'A fixed maximum number of tags returned by the algorithm.']
+      ]) +
       section(
         'Plain-English algorithm',
         ordered([
-          'Read the set of tags the user wants to attach to the task.',
-          'Clean the input so tags follow one consistent format.',
-          'Check whether each tag already exists.',
-          'Create any genuinely new tags.',
-          'Link the chosen tags to the correct task through the joining structure.',
-          'Return the updated task view so the user can verify the result.'
+          'Read the task title or task text provided by the user.',
+          'Convert the text to one consistent format so comparisons are reliable.',
+          'Split the text into individual words.',
+          'Remove common stop words that do not help describe the task.',
+          'Keep the useful unique words that remain.',
+          'Limit the final list to a small number of meaningful tags.',
+          'Pass those tags into the storage layer so they can be linked to the task.'
         ]),
-        'tasks'
+        'default'
       ) +
+      referenceList('Where this connects to the system', [
+        'The algorithm sits after task text is received and before the tag links are stored.',
+        'The algorithm does not replace the database design; it depends on the later `tags` and `task_tags` structure.',
+        'The output of the algorithm should be easy to test and explain.'
+      ]) +
       codeBlock(
         'Flow sketch',
-        `Receive tag input\n-> clean and split labels\n-> check existing tags\n-> create missing tags\n-> create task-tag links\n-> return updated task data`,
+        `Read task text\n-> convert to one format\n-> split into words\n-> remove stop words\n-> keep useful unique words\n-> limit tag count\n-> store links`,
         'text'
       ) +
-      promptBlock('Algorithm questions', [
-        'Where could duplicate tags accidentally appear?',
-        'Why is cleaning input part of the algorithm rather than just “nice to have”?',
-        'At which point should the system decide whether a tag already exists?'
-      ])
+      completionBlock([
+        'The class can state the algorithm in ordered plain English without code.',
+        'The flowchart and the written steps describe the same process.',
+        'Everyone understands where the algorithm connects to later storage changes.'
+      ], 'What should be complete before the database extension')
   },
   {
     slug: 'database-extension',
@@ -1142,6 +1305,20 @@ const sqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
+        'What this extension is for',
+        paragraph(
+          'The original SQL model was deliberately kept simple. Once tagging is introduced, the database must grow in a controlled way rather than collapsing tags into one repeated text field.',
+          'This extension is where many-to-many thinking and junction tables become essential.'
+        ),
+        'lead'
+      ) +
+      keywordTable([
+        ['Many-to-many', 'A relationship where both sides can connect to many records.'],
+        ['Junction table', 'A linking table used to resolve many-to-many relationships.'],
+        ['Composite key', 'A key made from more than one column.'],
+        ['Referential integrity', 'The guarantee that linked records remain valid.']
+      ]) +
+      section(
         'What changes in the schema?',
         dataTable(
           ['Entity', 'Purpose in the extension'],
@@ -1153,30 +1330,16 @@ const sqlSteps: ProjectStep[] = [
         ),
         'table'
       ) +
-      split(
-        section(
-          'Why a linking table?',
-          paragraph(
-            'One task can have many tags. One tag can be used by many tasks. A direct field inside the task table will eventually break normalisation and query clarity.',
-            'The linking table makes the relationship explicit and testable.'
-          ),
-          'default'
-        ),
-        section(
-          'Verification prompts',
-          unordered([
-            'Which columns form the composite key in the link table?',
-            'How will you stop the same tag being linked twice to one task?',
-            'Does the updated ERD still make sense to somebody who has not seen your code?'
-          ]),
-          'questions'
-        )
-      ) +
-      promptBlock('Final reflection', [
-        'How did the original design need to change once tags appeared?',
-        'Which part of the database design process saved the most time later on?',
-        'If this project were extended again, which new feature would stress the schema next?'
-      ])
+      referenceList('Why the linking table matters', [
+        'One task can have many tags, and one tag can describe many tasks.',
+        'Storing repeated tag text directly in the task table would damage normalisation.',
+        'The updated ERD should now show `tags` and `task_tags` explicitly.'
+      ]) +
+      completionBlock([
+        'The updated ERD shows `tasks`, `tags`, and `task_tags` clearly.',
+        'The class can explain why the junction table needs a composite key or equivalent uniqueness rule.',
+        'Everyone can describe how the algorithm output reaches the extended data model.'
+      ], 'What should be secure before the SQL journey ends')
   }
 ];
 
@@ -1226,7 +1389,7 @@ const nosqlSteps: ProjectStep[] = [
     title: 'JSON and NoSQL Brief',
     navLabel: 'Theory brief',
     intro: 'This opening page sets the theory. JSON and NoSQL are not “better SQL”; they are alternative ways of structuring and scaling data.',
-    sidebarSummary: 'Theory brief, core concepts, and framing questions.',
+    sidebarSummary: 'Theory brief, core concepts, and the main JSON/NoSQL framing ideas.',
     deliverable: 'Short comparison notes',
     learningGoals: [
       'Understand JSON as a structured data format',
@@ -1242,6 +1405,12 @@ const nosqlSteps: ProjectStep[] = [
           <p>Your job is to understand when a document model is useful, what it simplifies, and what it complicates.</p>
         `
       ) +
+      keywordTable([
+        ['JSON object', 'A collection of key-value pairs inside braces.'],
+        ['Array', 'An ordered list of values inside brackets.'],
+        ['Document model', 'A storage approach centred on structured documents rather than rows.'],
+        ['Schema flexibility', 'The ability to change structure more easily, with different trade-offs.']
+      ]) +
       split(
         section(
           'JSON fundamentals',
@@ -1250,7 +1419,7 @@ const nosqlSteps: ProjectStep[] = [
             'Objects, arrays, strings, numbers, booleans, and null are the core value forms.',
             'The structure is flexible, but it still needs discipline.'
           ]),
-          'default'
+          'reference'
         ),
         section(
           'NoSQL reality check',
@@ -1262,11 +1431,11 @@ const nosqlSteps: ProjectStep[] = [
           'default'
         )
       ) +
-      promptBlock('Thinking prompts', [
-        'Why might a team choose a document model for fast-changing data structures?',
-        'Why would “schema-less” be a dangerous phrase if students interpret it as “no rules”?',
-        'What kinds of data still feel easier to manage in relational tables?'
-      ])
+      completionBlock([
+        'The class can define JSON, NoSQL, and document storage clearly.',
+        'Everyone understands that flexibility does not remove the need for structure.',
+        'SQL and NoSQL are being compared as design choices, not ranked by slogan.'
+      ], 'What should be understood before the Python JSON work')
   },
   {
     slug: 'python-json-lab',
@@ -1282,36 +1451,46 @@ const nosqlSteps: ProjectStep[] = [
       'Understand why file write logic needs care'
     ],
     contentHtml:
+      section(
+        'What this page is for',
+        paragraph(
+          'This page uses small generic examples so the class can focus on how Python reads, edits, and rewrites JSON data.',
+          'It is intentionally separate from the real project code. The point is to understand the storage model first.'
+        ),
+        'lead'
+      ) +
+      keywordTable([
+        ['json.load', 'Reads JSON text into a Python structure.'],
+        ['json.dump', 'Writes a Python structure back to JSON text.'],
+        ['Dictionary', 'A Python key-value structure often used after loading JSON.'],
+        ['File rewrite', 'Saving the updated document back to storage.']
+      ]) +
       codeBlock(
         'Generic Python pattern',
         `import json\n\nwith open('records.json', 'r') as file:\n    data = json.load(file)\n\ndata.append({'id': 3, 'label': 'Example'})\n\nwith open('records.json', 'w') as file:\n    json.dump(data, file, indent=2)`,
         'python'
       ) +
       split(
+        referenceList('Reference notes', [
+          'The entire document may be read before it is updated.',
+          'The structure in memory is usually a Python list/dictionary combination.',
+          'When saving, the whole document may be rewritten.'
+        ]),
         section(
-          'What to notice',
+          'What needs care',
           unordered([
-            'The entire document may be read before it is updated.',
-            'The structure in memory is a Python list/dictionary combination.',
-            'When saving, the whole document may be rewritten.'
+            'Duplicate ids if identifier management is weak.',
+            'Broken files if writes are interrupted or structured poorly.',
+            'Inconsistent nested data if validation rules are unclear.'
           ]),
           'default'
-        ),
-        section(
-          'What can go wrong',
-          unordered([
-            'Duplicate ids if you do not manage identifiers carefully.',
-            'Broken files if writes are interrupted or structured poorly.',
-            'Inconsistent nested data if validation is weak.'
-          ]),
-          'warning'
         )
       ) +
-      promptBlock('Lab questions', [
-        'How is updating a JSON file different from updating one SQL row?',
-        'Why do identifier decisions matter even more in a flat JSON document?',
-        'Which operations feel simple with JSON, and which start to feel awkward?'
-      ])
+      completionBlock([
+        'The class can describe the read-edit-write cycle for a JSON file.',
+        'Everyone understands why identifiers and validation still matter in a flexible document structure.',
+        'The difference between updating JSON and updating SQL rows is clear before modelling comparison begins.'
+      ], 'What should be secure before the modelling comparison')
   },
   {
     slug: 'modelling-comparison',
@@ -1327,6 +1506,20 @@ const nosqlSteps: ProjectStep[] = [
       'Explain trade-offs instead of reciting buzzwords'
     ],
     contentHtml:
+      section(
+        'What this comparison is for',
+        paragraph(
+          'The same task-tracking system can be represented in more than one storage model. This page compares those representations so the design trade-offs stay explicit.',
+          'This is the one place where the HL modelling comparison is explored directly before the parallel build begins.'
+        ),
+        'lead'
+      ) +
+      keywordTable([
+        ['Redundancy', 'The same data being stored in multiple places.'],
+        ['Embedded data', 'Related information stored directly inside one document.'],
+        ['Reference by ID', 'Linking one structure to another using identifiers.'],
+        ['Update difficulty', 'How awkward it is to keep related data consistent over time.']
+      ]) +
       section(
         'Model A: relational view',
         paragraph(
@@ -1354,15 +1547,14 @@ const nosqlSteps: ProjectStep[] = [
               ['Embedded assignee summary', 'Fast display, but duplicated user data can drift'],
               ['Embedded tag array', 'Simple for one task, harder when tags need global management']
             ]
-          ),
+        ),
         'table'
       ) +
-      promptBlock('Comparison questions', [
-        'Which updates would be simpler in the relational model?',
-        'Which reads might feel simpler in the document model?',
-        'Where do duplication risks increase in the JSON approach?',
-        'Why is the correct answer almost always “it depends on the problem”?'
-      ])
+      completionBlock([
+        'The class can compare separate-ID models with embedded-document models using real trade-offs.',
+        'Redundancy and update difficulty are both visible in the comparison.',
+        'The move into the JSON implementation track is now based on reasoning rather than guesswork.'
+      ], 'What should be clear before the parallel JSON build')
   },
   {
     slug: 'implementation-foundations',
@@ -1379,6 +1571,20 @@ const nosqlSteps: ProjectStep[] = [
     ],
     contentHtml:
       section(
+        'What this page is for',
+        paragraph(
+          'The frontend should remain recognisably the same while the storage model changes from SQL to JSON. That makes the comparison between tracks honest and useful.',
+          'This page defines the architectural boundary before the JSON feature sequence begins.'
+        ),
+        'lead'
+      ) +
+      keywordTable([
+        ['Document store', 'The JSON files that now hold the application data.'],
+        ['Backend parity', 'Keeping the purpose of routes aligned across both tracks.'],
+        ['Frontend parity', 'Keeping the user-facing interface aligned across both tracks.'],
+        ['Storage layer', 'The part of the system responsible for persistence.']
+      ]) +
+      section(
         'What stays the same and what changes',
         dataTable(
           ['Area', 'SQL track', 'JSON track'],
@@ -1391,20 +1597,21 @@ const nosqlSteps: ProjectStep[] = [
         ),
         'table'
       ) +
-      callout(
-        'Keep the comparison fair',
-        unordered([
-          'Do not redesign the interface just because the storage model changed.',
-          'Let the storage difference appear mainly in backend logic and data design.',
-          'If behaviour differs, be able to explain why the model caused it.'
-        ]),
-        'accent'
-      ) +
+      referenceList('Keep the comparison fair', [
+        'Do not redesign the interface just because the storage model changed.',
+        'Let the storage difference appear mainly in backend logic and data design.',
+        'If behaviour differs, be able to explain why the model caused it.'
+      ]) +
       codeBlock(
         'Generic JSON-track structure sketch',
         `project/\n  app.py\n  data/\n    tasks.json\n  templates/\n    index.html\n  static/\n    js/\n      app.js`,
         'text'
-      )
+      ) +
+      completionBlock([
+        'The class understands which parts of the app stay the same across both tracks.',
+        'The role of `data/*.json` is clear before feature implementation starts.',
+        'The JSON track is positioned as a storage-model variation, not as a completely different app.'
+      ], 'What should be secure before Feature 1 in HL')
   },
   jsonFeatureStep({
     slug: 'feature-1-structure',
