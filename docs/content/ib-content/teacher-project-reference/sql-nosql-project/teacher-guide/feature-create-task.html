@@ -189,10 +189,10 @@
   <section class="lesson-section">
     <div class="section-head">
       <p class="kicker">Teacher use on this page</p>
-      <h2>Lesson focus and expected outcome</h2>
-      <p>Use this as the teaching script for the live build. The code blocks show the exact file state to aim for by the end of the step.</p>
+      <h2>Lesson focus, student target, and class answers</h2>
+      <p>Use this as the teaching script for the live build. Start with the outcome, then use the build steps below to write the code in order.</p>
     </div>
-    <div class="grid-2">
+    <div class="content-stack">
         
   <section class="note-card">
     <h4>What students should finish with</h4>
@@ -239,9 +239,113 @@
 
   <section class="lesson-section">
     <div class="section-head">
+      <p class="kicker">Live build order</p>
+      <h2>Step-by-step code to write with the class</h2>
+      <p>Write these blocks in order. Each block is smaller than the final file so the teacher can explain what is happening before moving on.</p>
+    </div>
+    <div class="step-stack">
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 1</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in app.py</p>
+        <h4>Import request so Flask can read incoming JSON</h4>
+      </div>
+    </div>
+    <p>This small import matters because GET-only routes do not need it, but POST routes do.</p>
+    <pre><code class="language-python">from flask import Flask, render_template, request, jsonify</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>request</code> gives Flask access to the incoming HTTP request data.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 2</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in app.py</p>
+        <h4>Write the POST route that inserts a task</h4>
+      </div>
+    </div>
+    <p>Build the route from input reading, then the insert, then the JSON response.</p>
+    <pre><code class="language-python">@app.route(&quot;/tasks&quot;, methods=[&quot;POST&quot;])
+def create_task():
+    data = request.get_json()
+
+    title = data[&quot;title&quot;]
+    user_id = data[&quot;user_id&quot;]
+    priority = data[&quot;priority&quot;]
+    due_date = data[&quot;due_date&quot;]
+
+    conn = get_db_connection()
+
+    conn.execute(
+        &quot;&quot;&quot;
+        INSERT INTO tasks (title, user_id, priority, due_date)
+        VALUES (?, ?, ?, ?)
+        &quot;&quot;&quot;,
+        (title, user_id, priority, due_date)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({&quot;status&quot;: &quot;success&quot;})</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>request.get_json()</code> turns the incoming JSON body into a Python dictionary.</li><li>The four <code>?</code> placeholders match the four values in the tuple.</li><li>The response can be small because the frontend will simply reload the task list afterwards.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 3</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in static/index.js</p>
+        <h4>Wire the Save button to the POST request</h4>
+      </div>
+    </div>
+    <p>Collect the values from the modal, turn them into JSON, and send them to the backend.</p>
+    <pre><code class="language-javascript">document.getElementById(&quot;saveTaskButton&quot;).onclick = function () {
+    const title = document.getElementById(&quot;taskTitle&quot;).value
+    const user_id = document.getElementById(&quot;taskUser&quot;).value
+    const priority = document.getElementById(&quot;taskPriority&quot;).value
+    const due_date = document.getElementById(&quot;taskDate&quot;).value
+
+    fetch(&quot;/tasks&quot;, {
+        method: &quot;POST&quot;,
+        headers: {
+            &quot;Content-Type&quot;: &quot;application/json&quot;
+        },
+        body: JSON.stringify({
+            title: title,
+            user_id: user_id,
+            priority: priority,
+            due_date: due_date
+        })
+    })
+    .then(() =&gt; loadTasks())
+}</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>JSON.stringify()</code> converts the JavaScript object into a JSON string for the request body.</li><li><code>Content-Type: application/json</code> tells Flask how to interpret the body.</li><li>Refreshing with <code>loadTasks()</code> means the page always reflects stored data, not guessed UI state.</li></ul>
+  </section>
+
+  </section>
+</div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
       <p class="kicker">SQL lesson build</p>
-      <h2>Files to write in the SQL version</h2>
-      <p>Work through these files in this order during the SQL build.</p>
+      <h2>Final file state after this lesson</h2>
+      <p>Once the smaller blocks are written and explained, this is the exact file state you should expect by the end of the lesson.</p>
     </div>
     
   <section class="code-card">

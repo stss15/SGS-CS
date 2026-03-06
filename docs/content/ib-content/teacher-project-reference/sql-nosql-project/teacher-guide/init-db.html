@@ -239,6 +239,154 @@
 
   <section class="lesson-section">
     <div class="section-head">
+      <p class="kicker">Syntax to explain</p>
+      <h2>Important Python and SQLite ideas not to skip</h2>
+      <p>Students will not know this syntax yet, so the teacher page needs to make the hidden meaning explicit.</p>
+    </div>
+    <div class="content-stack">
+          
+  <section class="note-card">
+    <h4>Key terms for this file</h4>
+    <div class="table-wrap"><table><thead><tr><th>Code</th><th>What it means</th><th>Why it matters here</th></tr></thead><tbody><tr><td><code>conn</code></td><td>The live connection object to the SQLite database</td><td>Every execute, commit, and close call happens through this object.</td></tr><tr><td><code>sqlite3.connect("tasks.db")</code></td><td>Open or create the database file</td><td>This is how Python starts talking to SQLite.</td></tr><tr><td><code>conn.executescript(...)</code></td><td>Run a whole block of SQL commands</td><td>Ideal for a schema file containing multiple statements.</td></tr><tr><td><code>conn.executemany(...)</code></td><td>Run one SQL statement repeatedly with different values</td><td>Useful for seeding several rows in one go.</td></tr><tr><td><code>?</code></td><td>A placeholder for a value supplied separately</td><td>It avoids building SQL by string concatenation and keeps inserts safe.</td></tr><tr><td><code>conn.commit()</code></td><td>Save the pending changes permanently</td><td>Without it, the inserted users may not persist.</td></tr><tr><td><code>conn.close()</code></td><td>Close the database connection</td><td>Always release the connection once the work is done.</td></tr></tbody></table></div>
+  </section>
+
+          
+  <section class="note-card">
+    <h4>Teacher explanation of placeholders</h4>
+    <p>The <code>?</code> symbol is not a mystery character. It marks where SQLite should safely insert the actual value from the tuple. In this file, each tuple in <code>users</code> has one value, so the SQL has one placeholder.</p>
+  </section>
+
+        </div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
+      <p class="kicker">Live build order</p>
+      <h2>Step-by-step code to write with the class</h2>
+      <p>Build this file in short blocks and stop to explain the new Python and SQLite syntax before moving on.</p>
+    </div>
+    <div class="step-stack">
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 1</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in init_db.py</p>
+        <h4>Import SQLite and open the database connection</h4>
+      </div>
+    </div>
+    <p>Start by showing that Python needs the sqlite3 module before it can talk to the database file.</p>
+    <pre><code class="language-python">import sqlite3
+
+
+def init_database():
+    # conn is the live connection object to the SQLite database file.
+    conn = sqlite3.connect(&quot;tasks.db&quot;)</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>sqlite3.connect("tasks.db")</code> returns the connection object, which we store in <code>conn</code>.</li><li>From this point onward, <code>conn</code> is the object that runs SQL and manages saving.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 2</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in init_db.py</p>
+        <h4>Read schema.sql and execute the full script</h4>
+      </div>
+    </div>
+    <p>This is where the class turns the written schema into a real database structure.</p>
+    <pre><code class="language-python">    # Open the schema file and run all of its SQL in one go.
+    with open(&quot;schema.sql&quot;) as f:
+        conn.executescript(f.read())</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>with open(...)</code> opens the file safely and closes it automatically when the block ends.</li><li><code>f.read()</code> gives SQLite the full text of the schema file.</li><li><code>executescript()</code> is used because the schema contains more than one SQL statement.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 3</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in init_db.py</p>
+        <h4>Prepare the seed data as Python tuples</h4>
+      </div>
+    </div>
+    <p>Pause here to explain that Python is just building the values that will later be inserted into SQL.</p>
+    <pre><code class="language-python">    # Each tuple is one row to insert into the users table.
+    users = [
+        (&quot;Alice&quot;,),
+        (&quot;Bob&quot;,),
+        (&quot;Charlie&quot;,)
+    ]</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li>Each tuple matches one row to insert.</li><li>The trailing comma matters because <code>("Alice",)</code> is a one-item tuple, not just brackets around a string.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 4</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in init_db.py</p>
+        <h4>Insert all user rows with placeholders</h4>
+      </div>
+    </div>
+    <p>This is the most important syntax moment in the file because it introduces parameterised SQL.</p>
+    <pre><code class="language-python">    # executemany runs the same SQL once for each tuple in users.
+    # The ? is a placeholder: SQLite safely swaps in each username value.
+    conn.executemany(
+        &quot;INSERT INTO users (username) VALUES (?)&quot;,
+        users
+    )</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>executemany()</code> runs the same insert once for each tuple in <code>users</code>.</li><li>The <code>?</code> placeholder is replaced by each username value in turn.</li><li>This is safer and cleaner than building SQL strings by hand.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 5</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in init_db.py</p>
+        <h4>Save, close, and make the file runnable</h4>
+      </div>
+    </div>
+    <p>End the lesson by making the script executable as a standalone setup step.</p>
+    <pre><code class="language-python">    # commit saves the changes permanently.
+    conn.commit()
+
+    # close releases the database connection.
+    conn.close()
+
+    print(&quot;Database created successfully.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    init_database()</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>commit()</code> permanently saves the changes.</li><li><code>if __name__ == "__main__"</code> means this setup only runs when the file itself is executed.</li></ul>
+  </section>
+
+  </section>
+</div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
       <p class="kicker">File to build</p>
       <h2>Exact initialisation script</h2>
       <p>This is the full file the class should have after the setup lesson.</p>

@@ -189,10 +189,10 @@
   <section class="lesson-section">
     <div class="section-head">
       <p class="kicker">Teacher use on this page</p>
-      <h2>Lesson focus and expected outcome</h2>
-      <p>Use this as the teaching script for the live build. The code blocks show the exact file state to aim for by the end of the step.</p>
+      <h2>Lesson focus, student target, and class answers</h2>
+      <p>Use this as the teaching script for the live build. Start with the outcome, then use the build steps below to write the code in order.</p>
     </div>
-    <div class="grid-2">
+    <div class="content-stack">
         
   <section class="note-card">
     <h4>What students should finish with</h4>
@@ -239,9 +239,122 @@
 
   <section class="lesson-section">
     <div class="section-head">
+      <p class="kicker">Live build order</p>
+      <h2>Step-by-step code to write with the class</h2>
+      <p>Write these blocks in order. Each block is smaller than the final file so the teacher can explain what is happening before moving on.</p>
+    </div>
+    <div class="step-stack">
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 1</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in templates/index.html</p>
+        <h4>Add the filter and sort controls above the list</h4>
+      </div>
+    </div>
+    <p>Put the read controls near the task list because they change what the list shows.</p>
+    <pre><code class="language-html">    &lt;div class=&quot;d-flex flex-wrap gap-2 mb-3&quot;&gt;
+        &lt;select id=&quot;filterUser&quot; class=&quot;form-select w-auto&quot;&gt;
+            &lt;option value=&quot;&quot;&gt;All users&lt;/option&gt;
+        &lt;/select&gt;
+
+        &lt;select id=&quot;filterPriority&quot; class=&quot;form-select w-auto&quot;&gt;
+            &lt;option value=&quot;&quot;&gt;All priorities&lt;/option&gt;
+            &lt;option value=&quot;Low&quot;&gt;Low&lt;/option&gt;
+            &lt;option value=&quot;Medium&quot;&gt;Medium&lt;/option&gt;
+            &lt;option value=&quot;High&quot;&gt;High&lt;/option&gt;
+        &lt;/select&gt;
+
+        &lt;select id=&quot;sortTasks&quot; class=&quot;form-select w-auto&quot;&gt;
+            &lt;option value=&quot;newest&quot;&gt;Newest first&lt;/option&gt;
+            &lt;option value=&quot;due_asc&quot;&gt;Due date (earliest first)&lt;/option&gt;
+            &lt;option value=&quot;due_desc&quot;&gt;Due date (latest first)&lt;/option&gt;
+            &lt;option value=&quot;priority_desc&quot;&gt;Priority&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li>These controls change the query, not the stored data.</li><li>The user filter starts empty and is populated from the same user data already loaded for the modal.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 2</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in static/index.js</p>
+        <h4>Turn the selected controls into query parameters</h4>
+      </div>
+    </div>
+    <p>Teach <code>URLSearchParams</code> here so the class sees how the browser describes a filtered read request.</p>
+    <pre><code class="language-javascript">function loadTasks() {
+    const params = new URLSearchParams()
+
+    const filterUser = document.getElementById(&quot;filterUser&quot;).value
+    const filterPriority = document.getElementById(&quot;filterPriority&quot;).value
+    const sortTasks = document.getElementById(&quot;sortTasks&quot;).value
+
+    if (filterUser) params.set(&quot;user_id&quot;, filterUser)
+    if (filterPriority) params.set(&quot;priority&quot;, filterPriority)
+    if (sortTasks) params.set(&quot;sort&quot;, sortTasks)
+
+    fetch(&quot;/tasks?&quot; + params.toString())
+}
+
+document.getElementById(&quot;filterUser&quot;).onchange = loadTasks
+document.getElementById(&quot;filterPriority&quot;).onchange = loadTasks
+document.getElementById(&quot;sortTasks&quot;).onchange = loadTasks</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li>Only add parameters when the user has actually chosen a value.</li><li>This keeps the request URL clean and predictable.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 3</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in app.py</p>
+        <h4>Read the query parameters and map safe sort options</h4>
+      </div>
+    </div>
+    <p>The backend owns the final query logic, so this is where filtering and ordering become real.</p>
+    <pre><code class="language-python">@app.route(&quot;/tasks&quot;, methods=[&quot;GET&quot;])
+def get_tasks():
+    user_id = request.args.get(&quot;user_id&quot;)
+    priority = request.args.get(&quot;priority&quot;)
+    sort = request.args.get(&quot;sort&quot;, &quot;newest&quot;)
+
+    sort_map = {
+        &quot;newest&quot;: &quot;tasks.task_id DESC&quot;,
+        &quot;due_asc&quot;: &quot;tasks.due_date ASC&quot;,
+        &quot;due_desc&quot;: &quot;tasks.due_date DESC&quot;,
+        &quot;priority_desc&quot;: &quot;tasks.priority DESC&quot;
+    }
+
+    order_by = sort_map.get(sort, &quot;tasks.task_id DESC&quot;)
+
+    # The rest of the route builds the WHERE clause from the chosen filters
+    # and then runs the query using the safe mapped order_by value.</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>request.args</code> reads the query string values sent by the browser.</li><li>The sort map is important because it whitelists safe ORDER BY options rather than trusting raw client input.</li></ul>
+  </section>
+
+  </section>
+</div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
       <p class="kicker">SQL lesson build</p>
-      <h2>Files to write in the SQL version</h2>
-      <p>Work through these files in this order during the SQL build.</p>
+      <h2>Final file state after this lesson</h2>
+      <p>Once the smaller blocks are written and explained, this is the exact file state you should expect by the end of the lesson.</p>
     </div>
     
   <section class="code-card">

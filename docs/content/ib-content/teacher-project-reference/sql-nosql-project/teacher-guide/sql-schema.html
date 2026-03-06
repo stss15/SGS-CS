@@ -274,6 +274,95 @@
 
   <section class="lesson-section">
     <div class="section-head">
+      <p class="kicker">Teacher target</p>
+      <h2>Expected table definitions, field types, and constraints</h2>
+      <p>The ERD shows the logic. This section makes the physical schema explicit so the class sees what must appear in SQL.</p>
+    </div>
+    <div class="content-stack">
+          
+  <section class="note-card">
+    <h4>users table answer</h4>
+    <div class="table-wrap"><table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th><th>Why it is written this way</th></tr></thead><tbody><tr><td><code>user_id</code></td><td>INTEGER</td><td><code>PRIMARY KEY AUTOINCREMENT</code></td><td>Each user needs a unique numeric id generated automatically.</td></tr><tr><td><code>username</code></td><td>TEXT</td><td><code>NOT NULL</code></td><td>The app cannot create a usable user record without a name.</td></tr></tbody></table></div>
+  </section>
+
+          
+  <section class="note-card">
+    <h4>tasks table answer</h4>
+    <div class="table-wrap"><table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th><th>Why it is written this way</th></tr></thead><tbody><tr><td><code>task_id</code></td><td>INTEGER</td><td><code>PRIMARY KEY AUTOINCREMENT</code></td><td>Each task needs its own unique id.</td></tr><tr><td><code>title</code></td><td>TEXT</td><td><code>NOT NULL</code></td><td>A task without a title is not meaningful.</td></tr><tr><td><code>user_id</code></td><td>INTEGER</td><td><code>NOT NULL</code>, <code>FOREIGN KEY</code></td><td>Every task must belong to one user.</td></tr><tr><td><code>priority</code></td><td>TEXT</td><td><code>NOT NULL</code></td><td>Priority is required for sorting and display.</td></tr><tr><td><code>due_date</code></td><td>TEXT</td><td>Optional</td><td>Version one allows tasks without a due date.</td></tr><tr><td><code>status</code></td><td>TEXT</td><td><code>NOT NULL DEFAULT 'open'</code></td><td>New tasks should automatically start as open.</td></tr></tbody></table></div>
+  </section>
+
+          
+  <section class="note-card">
+    <h4>Constraint language to explain explicitly</h4>
+    <ul class="list-tight"><li><code>PRIMARY KEY</code> means the value uniquely identifies the row.</li><li><code>AUTOINCREMENT</code> means SQLite generates the next id for us.</li><li><code>NOT NULL</code> means the column cannot be left empty in the database.</li><li><code>DEFAULT</code> gives a value automatically if the insert does not provide one.</li><li><code>FOREIGN KEY</code> enforces the relationship back to the users table.</li></ul>
+  </section>
+
+        </div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
+      <p class="kicker">Schema build order</p>
+      <h2>Step-by-step schema to write on the board</h2>
+      <p>Treat the ERD and the SQL together: first agree the table idea, then write the SQL that makes it real.</p>
+    </div>
+    <div class="step-stack">
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 1</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in schema.sql</p>
+        <h4>Write the users table first</h4>
+      </div>
+    </div>
+    <p>Start with the simpler table so the class can focus on primary keys and required text fields.</p>
+    <pre><code class="language-sql">CREATE TABLE users (
+    -- INTEGER PRIMARY KEY AUTOINCREMENT creates a unique id for each user.
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    -- NOT NULL means every user record must have a username.
+    username TEXT NOT NULL
+);</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li>This is the cleanest place to explain <code>INTEGER PRIMARY KEY AUTOINCREMENT</code>.</li><li>Tell the class that <code>username TEXT NOT NULL</code> means SQLite will reject a blank missing value at database level.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 2</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in schema.sql</p>
+        <h4>Add the tasks table and relationship</h4>
+      </div>
+    </div>
+    <p>Only add the second table once the class already understands why users is separate.</p>
+    <pre><code class="language-sql">CREATE TABLE tasks (
+    task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    priority TEXT NOT NULL,
+    due_date TEXT,
+    status TEXT NOT NULL DEFAULT &#39;open&#39;,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+);</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li>Point at <code>user_id INTEGER NOT NULL</code> and connect it back to the planning decision that every task must have an owner.</li><li>Use <code>DEFAULT 'open'</code> to show that the database can enforce sensible starting state.</li></ul>
+  </section>
+
+  </section>
+</div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
       <p class="kicker">File to build</p>
       <h2>Exact schema file for the SQL core lesson</h2>
       <p>This is the whole file students should end up with at this point in the build.</p>

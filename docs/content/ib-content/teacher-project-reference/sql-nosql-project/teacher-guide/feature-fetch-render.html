@@ -189,10 +189,10 @@
   <section class="lesson-section">
     <div class="section-head">
       <p class="kicker">Teacher use on this page</p>
-      <h2>Lesson focus and expected outcome</h2>
-      <p>Use this as the teaching script for the live build. The code blocks show the exact file state to aim for by the end of the step.</p>
+      <h2>Lesson focus, student target, and class answers</h2>
+      <p>Use this as the teaching script for the live build. Start with the outcome, then use the build steps below to write the code in order.</p>
     </div>
-    <div class="grid-2">
+    <div class="content-stack">
         
   <section class="note-card">
     <h4>What students should finish with</h4>
@@ -239,9 +239,192 @@
 
   <section class="lesson-section">
     <div class="section-head">
+      <p class="kicker">Live build order</p>
+      <h2>Step-by-step code to write with the class</h2>
+      <p>Write these blocks in order. Each block is smaller than the final file so the teacher can explain what is happening before moving on.</p>
+    </div>
+    <div class="step-stack">
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 1</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in app.py</p>
+        <h4>Add Flask setup and the database connection helper</h4>
+      </div>
+    </div>
+    <p>Before any route can read data, the app needs a reusable way to connect to SQLite.</p>
+    <pre><code class="language-python">from flask import Flask, render_template, jsonify
+import sqlite3
+
+app = Flask(__name__)
+
+
+def get_db_connection():
+    conn = sqlite3.connect(&quot;tasks.db&quot;)
+    conn.row_factory = sqlite3.Row
+    return conn</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>jsonify</code> turns Python dictionaries and lists into JSON responses.</li><li><code>row_factory = sqlite3.Row</code> lets the class access query results by column name instead of position.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 2</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in app.py</p>
+        <h4>Write the users route</h4>
+      </div>
+    </div>
+    <p>This is the simplest read route, so teach it before the joined task query.</p>
+    <pre><code class="language-python">@app.route(&quot;/users&quot;, methods=[&quot;GET&quot;])
+def get_users():
+    conn = get_db_connection()
+    users = conn.execute(
+        &quot;SELECT user_id, username FROM users&quot;
+    ).fetchall()
+    conn.close()
+
+    result = []
+
+    for user in users:
+        result.append({
+            &quot;user_id&quot;: user[&quot;user_id&quot;],
+            &quot;username&quot;: user[&quot;username&quot;]
+        })
+
+    return jsonify(result)</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>fetchall()</code> returns every matching row.</li><li>The loop converts SQLite rows into plain Python dictionaries ready for JSON.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 3</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in app.py</p>
+        <h4>Write the task-list route with the join</h4>
+      </div>
+    </div>
+    <p>Only once the class understands one-table reads should you add the joined task query.</p>
+    <pre><code class="language-python">@app.route(&quot;/tasks&quot;, methods=[&quot;GET&quot;])
+def get_tasks():
+    conn = get_db_connection()
+
+    tasks = conn.execute(&quot;&quot;&quot;
+        SELECT
+            tasks.task_id,
+            tasks.title,
+            tasks.priority,
+            tasks.due_date,
+            tasks.status,
+            users.username
+        FROM tasks
+        JOIN users
+        ON tasks.user_id = users.user_id
+        ORDER BY tasks.task_id DESC
+    &quot;&quot;&quot;).fetchall()
+
+    conn.close()
+
+    result = []
+
+    for task in tasks:
+        result.append({
+            &quot;task_id&quot;: task[&quot;task_id&quot;],
+            &quot;title&quot;: task[&quot;title&quot;],
+            &quot;priority&quot;: task[&quot;priority&quot;],
+            &quot;due_date&quot;: task[&quot;due_date&quot;],
+            &quot;status&quot;: task[&quot;status&quot;],
+            &quot;username&quot;: task[&quot;username&quot;]
+        })
+
+    return jsonify(result)</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li>This is the key join lesson: task data and username are combined before the frontend receives them.</li><li>Use the SQL result to explain why usernames are not repeated inside the tasks table.</li></ul>
+  </section>
+
+  </section>
+
+  <section class="step-card">
+    <div class="step-top">
+      <span class="step-number">Step 4</span>
+      <div class="step-heading">
+        <p class="kicker">Write this in static/index.js</p>
+        <h4>Write the JavaScript loader functions</h4>
+      </div>
+    </div>
+    <p>Now connect the page to the routes by fetching the JSON and preparing the render area.</p>
+    <pre><code class="language-javascript">function loadUsers() {
+    fetch(&quot;/users&quot;)
+    .then(response =&gt; response.json())
+    .then(users =&gt; {
+        const select = document.getElementById(&quot;taskUser&quot;)
+        select.innerHTML = &quot;&quot;
+
+        for (let i = 0; i &lt; users.length; i++) {
+            const option = document.createElement(&quot;option&quot;)
+            option.value = users[i].user_id
+            option.textContent = users[i].username
+            select.appendChild(option)
+        }
+    })
+}
+
+function loadTasks() {
+    fetch(&quot;/tasks&quot;)
+    .then(response =&gt; response.json())
+    .then(tasks =&gt; {
+        const list = document.getElementById(&quot;taskList&quot;)
+        list.innerHTML = &quot;&quot;
+
+        for (let i = 0; i &lt; tasks.length; i++) {
+            const task = tasks[i]
+
+            const li = document.createElement(&quot;li&quot;)
+            li.className = &quot;list-group-item&quot;
+            li.textContent =
+                task.title +
+                &quot; | &quot; +
+                task.username +
+                &quot; | &quot; +
+                task.priority +
+                &quot; | &quot; +
+                (task.due_date || &quot;&quot;) +
+                &quot; | &quot; +
+                task.status
+
+            list.appendChild(li)
+        }
+    })
+}
+
+loadUsers()
+loadTasks()</code></pre>
+    
+  <section class="note-card">
+    <h4>What this block does</h4>
+    <ul class="list-tight"><li><code>response.json()</code> reads the response body and turns it into a JavaScript structure.</li><li><code>const</code> creates a variable that should not be reassigned.</li><li><code>document.createElement()</code> builds DOM nodes in JavaScript instead of hard-coding them in HTML.</li></ul>
+  </section>
+
+  </section>
+</div>
+  </section>
+
+  <section class="lesson-section">
+    <div class="section-head">
       <p class="kicker">SQL lesson build</p>
-      <h2>Files to write in the SQL version</h2>
-      <p>Work through these files in this order during the SQL build.</p>
+      <h2>Final file state after this lesson</h2>
+      <p>Once the smaller blocks are written and explained, this is the exact file state you should expect by the end of the lesson.</p>
     </div>
     
   <section class="code-card">
