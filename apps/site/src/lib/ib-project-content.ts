@@ -456,6 +456,62 @@ const flowStrip = (
   </div>
 `;
 
+const boxModelFigure = `
+  <svg class="ib-project-doc-svg" viewBox="0 0 520 260" role="img" aria-label="HTML box model">
+    <rect x="24" y="24" width="472" height="212" rx="24" fill="#f7e9cb" stroke="#c49c58" stroke-width="2"></rect>
+    <rect x="72" y="64" width="376" height="132" rx="20" fill="#dfe9ff" stroke="#90acd9" stroke-width="2"></rect>
+    <rect x="120" y="102" width="280" height="56" rx="16" fill="#ffffff" stroke="#c8d5f1" stroke-width="2"></rect>
+    <text x="260" y="50" text-anchor="middle" fill="#7d5b21" font-size="18" font-family="Arial" font-weight="700">margin</text>
+    <text x="260" y="92" text-anchor="middle" fill="#25457b" font-size="18" font-family="Arial" font-weight="700">padding</text>
+    <text x="260" y="136" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">content</text>
+    <text x="260" y="162" text-anchor="middle" fill="#51627f" font-size="14" font-family="Arial">This is where the text or button actually sits.</text>
+  </svg>
+`;
+
+const validationLayersFigure = `
+  <svg class="ib-project-doc-svg" viewBox="0 0 640 220" role="img" aria-label="Validation layers">
+    <rect x="18" y="48" width="130" height="110" rx="18" fill="#eef3ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="176" y="48" width="130" height="110" rx="18" fill="#eef3ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="334" y="48" width="130" height="110" rx="18" fill="#eef3ff" stroke="#9db4df" stroke-width="2"></rect>
+    <rect x="492" y="48" width="130" height="110" rx="18" fill="#f7e9cb" stroke="#c49c58" stroke-width="2"></rect>
+    <text x="83" y="84" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">HTML</text>
+    <text x="83" y="108" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">required</text>
+    <text x="241" y="84" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">JavaScript</text>
+    <text x="241" y="108" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">presence checks</text>
+    <text x="399" y="84" text-anchor="middle" fill="#0e214b" font-size="18" font-family="Arial" font-weight="700">Flask</text>
+    <text x="399" y="108" text-anchor="middle" fill="#51627f" font-size="13" font-family="Arial">backend rules</text>
+    <text x="557" y="84" text-anchor="middle" fill="#7d5b21" font-size="18" font-family="Arial" font-weight="700">Storage</text>
+    <text x="557" y="108" text-anchor="middle" fill="#7d5b21" font-size="13" font-family="Arial">final integrity</text>
+    <path d="M148 102 L176 102" stroke="#0e214b" stroke-width="3" marker-end="url(#arrowhead)"></path>
+    <path d="M306 102 L334 102" stroke="#0e214b" stroke-width="3" marker-end="url(#arrowhead)"></path>
+    <path d="M464 102 L492 102" stroke="#0e214b" stroke-width="3" marker-end="url(#arrowhead)"></path>
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#0e214b"></polygon>
+      </marker>
+    </defs>
+  </svg>
+`;
+
+const sqlTableFigure = `
+  <svg class="ib-project-doc-svg" viewBox="0 0 620 260" role="img" aria-label="Users and tasks table relationship">
+    <rect x="54" y="42" width="180" height="152" rx="18" fill="#ffffff" stroke="#c7d3ea" stroke-width="2"></rect>
+    <rect x="386" y="42" width="180" height="152" rx="18" fill="#ffffff" stroke="#c7d3ea" stroke-width="2"></rect>
+    <text x="144" y="72" text-anchor="middle" fill="#0e214b" font-size="20" font-family="Arial" font-weight="700">users</text>
+    <text x="476" y="72" text-anchor="middle" fill="#0e214b" font-size="20" font-family="Arial" font-weight="700">tasks</text>
+    <text x="84" y="104" fill="#25457b" font-size="15" font-family="Arial">user_id (PK)</text>
+    <text x="84" y="132" fill="#51627f" font-size="15" font-family="Arial">username</text>
+    <text x="416" y="104" fill="#25457b" font-size="15" font-family="Arial">task_id (PK)</text>
+    <text x="416" y="132" fill="#51627f" font-size="15" font-family="Arial">title</text>
+    <text x="416" y="160" fill="#c49c58" font-size="15" font-family="Arial">user_id (FK)</text>
+    <text x="416" y="188" fill="#51627f" font-size="15" font-family="Arial">priority / due_date / status</text>
+    <path d="M234 108 C294 108, 326 108, 386 108" stroke="#0e214b" stroke-width="3" fill="none"></path>
+    <circle cx="234" cy="108" r="5" fill="#0e214b"></circle>
+    <circle cx="386" cy="108" r="5" fill="#0e214b"></circle>
+    <text x="310" y="92" text-anchor="middle" fill="#7d5b21" font-size="16" font-family="Arial" font-weight="700">1 : many</text>
+  </svg>
+`;
+
 const docGrid = (...columns: string[]): string => `<div class="ib-project-doc-grid">${columns.join('')}</div>`;
 
 const docPanel = (title: string, body: string): string => `
@@ -507,6 +563,56 @@ const taskBox = (title: string, intro: string, steps: string[], prompts: string[
     }
   </section>
 `;
+
+interface StudentJourneyStep {
+  file: string;
+  title: string;
+  body: string[];
+  prompts?: string[];
+}
+
+const buildJourneyCard = (step: StudentJourneyStep, index: number): string => `
+  <section class="ib-project-build-card">
+    <div class="ib-project-build-card-head">
+      <span class="ib-project-build-card-index">Step ${index + 1}</span>
+      <span class="ib-project-build-card-file">${step.file}</span>
+    </div>
+    <h4>${step.title}</h4>
+    ${unordered(step.body)}
+    ${
+      step.prompts?.length
+        ? `
+          <div class="ib-project-build-card-prompts">
+            <p><strong>Ask yourself</strong></p>
+            ${unordered(step.prompts)}
+          </div>
+        `
+        : ''
+    }
+  </section>
+`;
+
+const buildJourney = (title: string, intro: string, steps: StudentJourneyStep[]): string =>
+  section(
+    title,
+    `<p>${intro}</p><div class="ib-project-build-grid">${steps
+      .map((step, index) => buildJourneyCard(step, index))
+      .join('')}</div>`,
+    'default'
+  );
+
+const docTablePanel = (title: string, headers: string[], rows: string[][]): string =>
+  docPanel(title, dataTable(headers, rows));
+
+const figurePanel = (title: string, intro: string, svg: string): string => `
+  <section class="ib-project-figure-panel">
+    <h4>${title}</h4>
+    <p>${intro}</p>
+    ${svg}
+  </section>
+`;
+
+const figureGrid = (...items: string[]): string => `<div class="ib-project-figure-grid">${items.join('')}</div>`;
 
 const validationFlowBlock = (title: string, steps: Array<[string, string]>): string =>
   section(
@@ -1169,6 +1275,447 @@ const featureValidation = (featureNumber: number, track: 'sql' | 'json'): string
   ]);
 };
 
+const sqlFeatureContext = (referenceIndex: number): string => {
+  const map: Record<number, { brief: string[]; reuse: string[] }> = {
+    2: {
+      brief: [
+        'The client asked for a simple internal system. A clean page shell keeps the interface readable for non-technical staff.',
+        'A stable layout is the base for later success criteria such as easy task viewing and reliable task creation.'
+      ],
+      reuse: [
+        'Return to the task-list wireframe and make sure the page regions match what you planned.',
+        'Use your success criteria list to decide what must be visible on version one of the page.'
+      ]
+    },
+    3: {
+      brief: [
+        'Managers need a clear place to see current work. The list area is where that promise becomes visible.',
+        'An empty state matters because the system should still make sense before any real data exists.'
+      ],
+      reuse: [
+        'Check your planning documents to see where the task list was placed.',
+        'Check the test plan: one early test should prove the page loads sensibly with no tasks.'
+      ]
+    },
+    4: {
+      brief: [
+        'The client wants easy task creation without cluttering the main screen.',
+        'A modal keeps the list readable while still giving staff a focused place to enter data.'
+      ],
+      reuse: [
+        'Use the add-task wireframe rather than inventing new controls.',
+        'Check whether your planned modal regions still match the success criteria.'
+      ]
+    },
+    5: {
+      brief: [
+        'The brief named title, assignee, due date, and priority as important task information.',
+        'The form must collect exactly the data the database design expects.'
+      ],
+      reuse: [
+        'Use your field mapping and table planner before adding any control.',
+        'Ask which fields must be required to stop weak data entering the system.'
+      ]
+    },
+    6: {
+      brief: [
+        'The client asked to retrieve and review work clearly. Reading and rendering tasks is where that starts to happen.',
+        'This feature also prepares the assignee dropdown so task creation uses real stored data.'
+      ],
+      reuse: [
+        'Use the test plan row for “view task list” as a check on what the page must display.',
+        'Use the ERD to explain why the task route needs both task data and username data.'
+      ]
+    },
+    7: {
+      brief: [
+        'The system must let staff create tasks reliably, not just see an empty interface.',
+        'This feature turns the modal from a layout into a working client action.'
+      ],
+      reuse: [
+        'Check the schema before you write the payload so the names match the stored fields.',
+        'Use your validation notes to decide which checks happen in HTML, JavaScript, and Flask.'
+      ]
+    },
+    8: {
+      brief: [
+        'The client wants one clear record of work. Deletion only works if the correct record is removed every time.',
+        'This is a good place to reinforce why stable identifiers matter more than visible text.'
+      ],
+      reuse: [
+        'Use the task list render from the previous feature so each row can carry the right id.',
+        'Add a test case that proves only the intended task disappears.'
+      ]
+    },
+    9: {
+      brief: [
+        'Managers need to see whether work has been completed. This feature makes that status change real.',
+        'A visible completed state must match stored data, not just temporary styling.'
+      ],
+      reuse: [
+        'Return to the success criteria about reliable status changes.',
+        'Update the test plan with a check that still passes after refresh.'
+      ]
+    },
+    10: {
+      brief: [
+        'The brief specifically asked for retrieval by user, urgency, and due date.',
+        'Filtering and sorting are only justified because the client already named those needs.'
+      ],
+      reuse: [
+        'Use the original wireframe so you only add controls that were actually planned.',
+        'Check the evaluation table and write tests for each filter and sort rule.'
+      ]
+    },
+    11: {
+      brief: [
+        'This is where you prove the app meets the client brief rather than simply feeling finished.',
+        'Evidence matters more than confidence.'
+      ],
+      reuse: [
+        'Open the success criteria and test plan side by side.',
+        'Make sure every major feature has observable proof, not just a vague claim.'
+      ]
+    }
+  };
+
+  const entry = map[referenceIndex];
+  if (!entry) return '';
+
+  return docGrid(
+    docPanel('Why the client needs this', unordered(entry.brief)),
+    docPanel('Bring this forward from earlier pages', unordered(entry.reuse))
+  );
+};
+
+const sqlFeatureJourney = (referenceIndex: number): string => {
+  switch (referenceIndex) {
+    case 2:
+      return buildJourney('Build it in this order', 'Work in one file only on this page. The goal is a clean browser shell, not a finished interface.', [
+        {
+          file: 'templates/index.html',
+          title: 'Write the document skeleton first',
+          body: [
+            'Start with `<!DOCTYPE html>`, then add the `html`, `head`, and `body` tags in the correct nesting order.',
+            'Put the document language and character set in place before you think about layout.',
+            'Write a meaningful page title so the browser tab already reflects the client system.'
+          ],
+          prompts: [
+            'Which tags are metadata and which tags are visible content?',
+            'Why should the page load correctly before any task controls exist?'
+          ]
+        },
+        {
+          file: 'templates/index.html',
+          title: 'Link Bootstrap and create the main page container',
+          body: [
+            'Add the Bootstrap stylesheet in the head and the Bootstrap bundle script at the end of the body.',
+            'Create one main container for the app rather than scattering unrelated blocks across the page.',
+            'Add the heading and the high-level space where the task system will live.'
+          ],
+          prompts: [
+            'What does `container` control?',
+            'What is the difference between padding inside an element and margin outside it?'
+          ]
+        },
+        {
+          file: 'Browser check',
+          title: 'Run the page before moving on',
+          body: [
+            'Open the page and confirm there is no broken markup, no missing stylesheet link, and no accidental duplicate regions.',
+            'If the page does not load cleanly now, later JavaScript work becomes harder to debug.'
+          ]
+        }
+      ]);
+    case 3:
+      return buildJourney('Build it in this order', 'Keep the list region separate from the form. You are preparing a reliable target for later rendering.', [
+        {
+          file: 'templates/index.html',
+          title: 'Add the task-list region inside the main page',
+          body: [
+            'Create one obvious container where tasks will later appear.',
+            'Give that region a stable id so JavaScript can find it later.',
+            'Keep it inside the main layout, not inside the modal.'
+          ],
+          prompts: [
+            'What should the page show before the first task exists?',
+            'Which id name will still make sense once the app grows?'
+          ]
+        },
+        {
+          file: 'templates/index.html',
+          title: 'Decide on the empty state now',
+          body: [
+            'Write a short empty-state message that sounds helpful rather than broken.',
+            'Make sure a user can still understand what the page is for before data exists.'
+          ]
+        },
+        {
+          file: 'static/js/app.js',
+          title: 'Reserve the matching JavaScript target name',
+          body: [
+            'Record the exact id or selector you plan to use later in JavaScript.',
+            'Do not write the full render logic yet; just make sure your naming is consistent.'
+          ]
+        }
+      ]);
+    case 4:
+      return buildJourney('Build it in this order', 'The modal is just the shell on this page. Keep the structure clean so the inputs can drop in later without rework.', [
+        {
+          file: 'templates/index.html',
+          title: 'Place the Add Task trigger in the obvious location',
+          body: [
+            'Add one primary button in the page shell where the user would expect the create action to live.',
+            'Use Bootstrap button classes rather than hand-made styling.'
+          ]
+        },
+        {
+          file: 'templates/index.html',
+          title: 'Write the Bootstrap modal structure',
+          body: [
+            'Add the outer modal wrapper, then the dialog, then the content region.',
+            'Split the content into header, body, and footer so later form controls have a clean home.',
+            'Add a dismiss control and a primary action button even before the real form exists.'
+          ],
+          prompts: [
+            'Which part of the modal should hold the labels and controls later?',
+            'Why is it useful to test open/close behaviour before the form is complete?'
+          ]
+        },
+        {
+          file: 'Browser check',
+          title: 'Test the trigger and close actions',
+          body: [
+            'Open and close the modal several times.',
+            'If the shell works now, later form and JavaScript issues are easier to isolate.'
+          ]
+        }
+      ]);
+    case 5:
+      return buildJourney('Build it in this order', 'Every control on this page should exist because the brief or schema demanded it.', [
+        {
+          file: 'templates/index.html',
+          title: 'Add the four agreed form controls',
+          body: [
+            'Create controls for title, assignee, priority, and due date.',
+            'Use labels so each input explains itself to the user.',
+            'Choose the control type deliberately: free text, select list, or date input.'
+          ]
+        },
+        {
+          file: 'templates/index.html',
+          title: 'Name each control so JavaScript and storage can recognise it later',
+          body: [
+            'Use ids that match the meaning of the field, not random short names.',
+            'Check those names against the field mapping and planned table structure.'
+          ]
+        },
+        {
+          file: 'templates/index.html',
+          title: 'Apply the first validation layer',
+          body: [
+            'Use `required` where a blank value would create a weak or useless record.',
+            'Remember that HTML validation is helpful but never the only protection.'
+          ],
+          prompts: [
+            'Which field could realistically be optional?',
+            'How would a curl request ignore the browser layer completely?'
+          ]
+        }
+      ]);
+    case 6:
+      return buildJourney('Build it in this order', 'This is the first true full-stack page. Move one route at a time, then connect the browser code to it.', [
+        {
+          file: 'app.py',
+          title: 'Write the simple read route first',
+          body: [
+            'Create the route that returns the user list before the more complex task route.',
+            'Open a database connection, run the read query, close the connection, then return JSON.',
+            'Make sure you can explain what `jsonify()` is doing.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Write the task-list route with the relationship in mind',
+          body: [
+            'Read the task data the client actually needs on screen.',
+            'Use the database design to explain why usernames come from a related table rather than being repeated everywhere.',
+            'Return a clean JSON shape that the browser can work with.'
+          ],
+          prompts: [
+            'Why is this a good place for a `JOIN`?',
+            'Which columns does the frontend actually need back?'
+          ]
+        },
+        {
+          file: 'static/js/app.js',
+          title: 'Write one load function per dataset',
+          body: [
+            'Create one function to load users and another to load tasks.',
+            'Use `fetch()`, then read the response as JSON, then pass the result into rendering logic.',
+            'Keep the list-clearing and list-building code together so the page redraw stays predictable.'
+          ]
+        },
+        {
+          file: 'Browser check',
+          title: 'Prove the read loop works',
+          body: [
+            'The assignee control should fill from stored data.',
+            'The task list should either render records or show a sensible empty state.'
+          ]
+        }
+      ]);
+    case 7:
+      return buildJourney('Build it in this order', 'A create feature is a chain: read values, package them, send them, store them, then redraw evidence on screen.', [
+        {
+          file: 'static/js/app.js',
+          title: 'Read the current form values',
+          body: [
+            'Use the control ids you created earlier to read the latest modal values.',
+            'Store those values in clearly named variables before building the request.'
+          ]
+        },
+        {
+          file: 'static/js/app.js',
+          title: 'Build the payload and send the POST request',
+          body: [
+            'Create one JavaScript object that holds the submitted values.',
+            'Send it as JSON with the correct HTTP method and headers.',
+            'After the request succeeds, refresh the task list so the user sees evidence.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Receive the JSON and insert the new record',
+          body: [
+            'Read the request body in Flask.',
+            'Validate the values again because the browser cannot be trusted on its own.',
+            'Insert the new record into storage and return a clear success response.'
+          ],
+          prompts: [
+            'Why do the backend checks still matter if the form already had `required`?',
+            'How will you know whether the problem is in the payload or the insert?'
+          ]
+        }
+      ]);
+    case 8:
+      return buildJourney('Build it in this order', 'Delete must target one specific record. Treat it as an identifier lesson, not a button lesson.', [
+        {
+          file: 'static/js/app.js',
+          title: 'Attach delete controls to rendered rows',
+          body: [
+            'Make sure each delete action is linked to the task identifier, not the title text.',
+            'Pass that identifier into the delete request.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Write the delete route',
+          body: [
+            'Receive the task id from the URL path.',
+            'Delete by identifier so duplicate titles cannot remove the wrong record.',
+            'Return a response the browser can use to trigger a redraw.'
+          ]
+        },
+        {
+          file: 'Browser check',
+          title: 'Test a deliberate removal',
+          body: [
+            'Delete one known task and confirm the correct row disappears.',
+            'Refresh and prove the stored data matches what the screen now shows.'
+          ]
+        }
+      ]);
+    case 9:
+      return buildJourney('Build it in this order', 'The completed state should be visible and persistent. If either part is missing, the feature is unfinished.', [
+        {
+          file: 'static/js/app.js',
+          title: 'Attach the completion action to each task row',
+          body: [
+            'Give every row a control that targets the correct task id.',
+            'Send an update request rather than faking the status in the DOM.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Update the stored status',
+          body: [
+            'Receive the identifier and change only the intended record.',
+            'Persist the new status value in storage.'
+          ]
+        },
+        {
+          file: 'Browser check',
+          title: 'Redraw the list and prove persistence',
+          body: [
+            'Make the completed state easy to spot on screen.',
+            'Refresh and confirm the state survives because storage changed, not because of temporary styling.'
+          ]
+        }
+      ]);
+    case 10:
+      return buildJourney('Build it in this order', 'Only add retrieval controls that the original brief justified. This page is about useful retrieval, not feature creep.', [
+        {
+          file: 'templates/index.html',
+          title: 'Add the planned filter and sort controls',
+          body: [
+            'Use the original wireframe and success criteria to decide which controls belong on the page.',
+            'Keep the toolbar readable rather than adding every possible option.'
+          ]
+        },
+        {
+          file: 'static/js/app.js',
+          title: 'Read the selected values and build the request',
+          body: [
+            'Package the current filter and sort choices into one clear request.',
+            'Use query-string tools rather than hand-built URL mistakes.'
+          ]
+        },
+        {
+          file: 'app.py',
+          title: 'Apply the retrieval rules on the backend',
+          body: [
+            'Translate the chosen values into predictable filtering and ordering rules.',
+            'Return only the records that match the current request.'
+          ],
+          prompts: [
+            'Why is the backend the reliable place for the final filtering rule?',
+            'What test case would prove due-date sorting is correct?'
+          ]
+        }
+      ]);
+    case 11:
+      return buildJourney('Work through the evidence carefully', 'This page is about proof. Put the brief, the test plan, and the working system together.', [
+        {
+          file: 'Test plan',
+          title: 'Turn each criterion into an observed result',
+          body: [
+            'Run the feature, record the actual result, and decide pass or fail from evidence.',
+            'Do not write “works” without showing what actually happened.'
+          ]
+        },
+        {
+          file: 'Project app',
+          title: 'Capture evidence from the real build',
+          body: [
+            'Use the working system to prove create, delete, update, and retrieval behaviours.',
+            'Notice where the app still feels weak or unfinished.'
+          ]
+        },
+        {
+          file: 'Evaluation notes',
+          title: 'Finish with one honest improvement point',
+          body: [
+            'A real evaluation includes a limitation, not just celebration.',
+            'Tie that improvement back to the client brief or the testing evidence.'
+          ]
+        }
+      ]);
+    default:
+      return '';
+  }
+};
+
 const featureStep = (options: {
   slug: string;
   stageId: string;
@@ -1183,9 +1730,15 @@ const featureStep = (options: {
   prompts: string[];
   deliverable: string;
   track?: 'sql' | 'json';
+  referenceIndex?: number;
+  featureTotal?: number;
+  extraSectionsHtml?: string;
+  buildJourneyHtml?: string;
 }): ProjectStep => {
   const track = options.track || 'sql';
-  const boilerplate = featureBoilerplate(options.featureNumber, track);
+  const referenceIndex = options.referenceIndex || options.featureNumber;
+  const featureTotal = options.featureTotal || 10;
+  const boilerplate = featureBoilerplate(referenceIndex, track);
 
   return {
   slug: options.slug,
@@ -1195,7 +1748,7 @@ const featureStep = (options: {
   intro: options.intro,
   sidebarSummary: options.concept,
   headerNote: `Build only this feature on this page. Get it working, test it, and then move on.`,
-  paceLabel: `Feature ${options.featureNumber} of 11`,
+  paceLabel: `Feature ${options.featureNumber} of ${featureTotal}`,
   deliverable: options.deliverable,
   learningGoals: [
     `Understand what ${options.navLabel.toLowerCase()} adds to the system`,
@@ -1211,29 +1764,31 @@ const featureStep = (options: {
       ),
       'lead'
     ) +
-    keywordTable(featureVocabulary[options.featureNumber] || []) +
-    featureDocs(options.featureNumber, track) +
+    keywordTable(featureVocabulary[referenceIndex] || []) +
+    (options.extraSectionsHtml || '') +
+    featureDocs(referenceIndex, track) +
     callout('How this feature moves through the stack', flowStrip(), 'soft') +
     section(
       'Useful reference before you code',
-      unordered(getFeatureReferences(options.featureNumber, track), 'ib-project-reference-list'),
+      unordered(getFeatureReferences(referenceIndex, track), 'ib-project-reference-list'),
       'reference'
     ) +
     docGrid(
       docCode(
         boilerplate.title,
         boilerplate.code,
-        featureSnippetLanguage[options.featureNumber] || 'text',
+        featureSnippetLanguage[referenceIndex] || 'text',
         boilerplate.notes
       ),
-      taskBox(
-        'Build this now',
-        `Use the reference code above to understand the syntax and shape. Then write the real project version yourself in the codebase.`,
-        featureBuildSteps(options.featureNumber, track),
-        options.prompts
-      )
+      options.buildJourneyHtml ||
+        taskBox(
+          'Build this now',
+          `Use the reference code above to understand the syntax and shape. Then write the real project version yourself in the codebase.`,
+          featureBuildSteps(referenceIndex, track),
+          options.prompts
+        )
     ) +
-    featureValidation(options.featureNumber, track) +
+    featureValidation(referenceIndex, track) +
     section(
       'Where your work goes',
       dataTable(
@@ -1282,8 +1837,8 @@ const sqlStages: ProjectStage[] = [
   {
     id: 'sql-stage-3',
     label: 'Stage 3',
-    title: 'Implementation Foundations',
-    summary: 'Understand the project structure and the roles of HTML, JavaScript, Flask, and SQL.'
+    title: 'Build Foundations',
+    summary: 'Set up the stack, learn the syntax families, and write schema.sql and init_db.py before the live features begin.'
   },
   {
     id: 'sql-stage-4',
@@ -1634,30 +2189,50 @@ const sqlSteps: ProjectStep[] = [
   {
     slug: 'implementation-foundations',
     stageId: 'sql-stage-3',
-    title: 'Implementation Foundations',
+    title: 'Build Foundations and Project Map',
     navLabel: 'Implementation foundations',
-    intro: 'Before feature work starts, get the full stack straight in your head. You should know what HTML, JavaScript, Flask, and SQL each do.',
-    sidebarSummary: 'Directory structure, technology roles, request flow, and coding expectations.',
+    intro: 'Before you code anything, build a mental map of the stack. This is the page that explains how the client brief becomes HTML, JavaScript, Flask, and SQL.',
+    sidebarSummary: 'Project map, technology roles, client criteria links, and real build order.',
     deliverable: 'Annotated project structure',
     learningGoals: [
       'Explain the role of HTML, JavaScript, Flask, and SQL in the project',
-      'Understand why the project is split into folders',
+      'Understand why the build order starts with planning, schema, and setup before the live features',
       'Read the full-stack request flow in sequence'
     ],
     contentHtml:
       section(
-        'How this app is stitched together',
+        'How this project grows from the client brief',
         paragraph(
-          'Before you start feature work, you need a mental map of the stack: what runs in the browser, what runs in Flask, and where the data actually lives.',
-          'If you can trace one click from button to stored result and back again, the later feature pages make much more sense.'
+          'You are not building “a Flask app” in the abstract. You are building a solution to a client problem: track tasks clearly, assign responsibility, store reliable dates and priorities, and make status easy to review.',
+          'That means the build order matters. Plan the interface, design the database, create the database, and only then start live features in the web app.'
         ),
         'lead'
+      ) +
+      docGrid(
+        docPanel(
+          'What success criteria this build has to support',
+          unordered([
+            'Staff can create tasks with the agreed data fields.',
+            'Managers can see current work and whether it is complete.',
+            'Tasks can be retrieved by user, urgency, and due date.',
+            'The system is simple enough for non-technical users to trust.'
+          ])
+        ),
+        docPanel(
+          'Why the build order looks like this',
+          unordered([
+            'The schema has to exist before the app can read from a database.',
+            'The page structure has to exist before JavaScript can target it.',
+            'The test plan starts early so every later feature has evidence.'
+          ])
+        )
       ) +
       keywordTable([
         ['Template', 'An HTML page rendered for the browser.'],
         ['Static JavaScript', 'Client-side code that runs in the browser.'],
         ['Route', 'A backend endpoint that handles a request.'],
-        ['Request cycle', 'The path from browser action to stored response and back again.']
+        ['Request cycle', 'The path from browser action to stored response and back again.'],
+        ['Schema', 'The SQL definition of the tables and relationships.']
       ]) +
       section(
         'Directory structure and responsibilities',
@@ -1678,49 +2253,495 @@ const sqlSteps: ProjectStep[] = [
         '<strong>Flask</strong> listens for requests and decides what happens next.',
         '<strong>SQL</strong> stores and retrieves structured records.'
       ]) +
-      callout('System flow', flowStrip(), 'soft') +
+      callout('System flow', flowStrip(['Client brief', 'Planning', 'HTML', 'JavaScript', 'Flask', 'SQL', 'Evidence']), 'soft') +
       codeBlock(
         'Generic structure sketch',
         `project/\n  app.py\n  schema.sql\n  templates/\n    index.html\n  static/\n    js/\n      app.js`,
         'text'
       ) +
+      buildJourney('Work through Stage 3 in this order', 'These pages are the setup run before the live features start.', [
+        {
+          file: 'Project root',
+          title: 'Create the project folders and empty files',
+          body: [
+            'Make the folders visible first so you know which work belongs in which file.',
+            'Do not start writing routes and HTML in the same place.'
+          ]
+        },
+        {
+          file: 'HTML / Bootstrap toolkit',
+          title: 'Learn the page-building vocabulary',
+          body: [
+            'Get clear on the HTML tags and Bootstrap classes before the first feature page.',
+            'You should be able to explain `div`, `main`, `class`, `id`, `container`, margin, and padding.'
+          ]
+        },
+        {
+          file: 'schema.sql then init_db.py',
+          title: 'Write the database setup before the live web features',
+          body: [
+            'The schema defines what can be stored.',
+            'The setup script creates the database file and inserts seed users.'
+          ]
+        }
+      ]) +
       completionBlock([
         'The class can explain the role of each major folder and file.',
         'Everyone can describe the request cycle from browser action to database response.',
         'The separation between interface, behaviour, backend logic, and storage is understood before feature work starts.'
-      ], 'What should be secure before Feature 1')
+      ], 'What should be secure before the live feature pages')
+  },
+  {
+    slug: 'html-bootstrap-toolkit',
+    stageId: 'sql-stage-3',
+    title: 'HTML and Bootstrap Toolkit',
+    navLabel: 'HTML and Bootstrap toolkit',
+    intro: 'Use this page like a beginner-friendly docs sheet. It introduces the tags, classes, spacing rules, and layout ideas that the feature pages expect you to recognise.',
+    sidebarSummary: 'HTML tags, class vs id, Bootstrap layout, and box-model visuals.',
+    deliverable: 'Annotated HTML / Bootstrap notes',
+    learningGoals: [
+      'Recognise the HTML tags used in the project shell',
+      'Understand what classes and ids do',
+      'Read Bootstrap spacing and layout classes with confidence'
+    ],
+    contentHtml:
+      section(
+        'Learn the page-building vocabulary first',
+        paragraph(
+          'This is the point where you stop seeing HTML as a wall of angle brackets and start reading it as a set of clear structural decisions.',
+          'You are not trying to memorise the whole web platform. You are learning the small set of tags and Bootstrap classes that this project genuinely needs.'
+        ),
+        'lead'
+      ) +
+      docGrid(
+        docTablePanel(
+          'Core HTML tags you will meet in this project',
+          ['Tag / attribute', 'What it does', 'How to think about it'],
+          [
+            ['<code>&lt;!DOCTYPE html&gt;</code>', 'Tells the browser to use modern HTML rules.', 'This belongs right at the top of the file.'],
+            ['<code>&lt;html lang="en"&gt;</code>', 'Wraps the whole page and sets the document language.', 'Accessibility tools use this.'],
+            ['<code>&lt;head&gt;</code>', 'Stores metadata and linked assets.', 'The user does not see this part directly.'],
+            ['<code>&lt;body&gt;</code>', 'Holds the visible page content.', 'Everything the user sees sits somewhere inside it.'],
+            ['<code>&lt;main&gt;</code>', 'Marks the main content region.', 'Use it for the central part of the app.'],
+            ['<code>class</code>', 'Groups elements for styling or behaviour.', 'Many elements can share the same class.'],
+            ['<code>id</code>', 'Names one specific element uniquely.', 'JavaScript often uses ids to find a single target.']
+          ]
+        ),
+        docTablePanel(
+          'Bootstrap classes you will use early',
+          ['Class', 'What it does', 'What the letters mean'],
+          [
+            ['<code>container</code>', 'Keeps content within a readable page width.', 'Think of it as the main page wrapper.'],
+            ['<code>py-5</code>', 'Adds padding on the y-axis.', '<code>p</code> = padding, <code>y</code> = top and bottom.'],
+            ['<code>mb-4</code>', 'Adds margin below the element.', '<code>m</code> = margin, <code>b</code> = bottom.'],
+            ['<code>btn btn-primary</code>', 'Styles an element as a primary action button.', 'Bootstrap ships the styling for you.'],
+            ['<code>form-control</code>', 'Styles a text input.', 'Use it for consistent readable inputs.'],
+            ['<code>form-select</code>', 'Styles a select element.', 'Use it for controlled choices like priority.']
+          ]
+        )
+      ) +
+      figureGrid(
+        figurePanel(
+          'Margin, padding, and content',
+          'Read this before you start using spacing classes. Margin creates space outside the element. Padding creates space inside it.',
+          boxModelFigure
+        ),
+        docPanel(
+          'How to read a Bootstrap spacing class',
+          unordered([
+            '<code>m</code> means margin. <code>p</code> means padding.',
+            '<code>t</code>, <code>b</code>, <code>x</code>, and <code>y</code> describe direction.',
+            'The number is the size scale, not a number of pixels you memorise directly.',
+            'A class like <code>py-5</code> means “add padding on top and bottom using size 5”.'
+          ])
+        )
+      ) +
+      docGrid(
+        docCode(
+          'Generic page shell',
+          `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example App</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <main class="container py-5">
+    <h1 class="mb-4">Example heading</h1>
+  </main>
+</body>
+</html>`,
+          'html',
+          [
+            ['head', 'Metadata, page title, and stylesheet links live here.'],
+            ['main', 'This is the visible app region.'],
+            ['container py-5', 'Readable width plus vertical padding.']
+          ]
+        ),
+        buildJourney('Use this page before Feature 1', 'This is a docs page, not a feature page. Use it to prepare for the real build.', [
+          {
+            file: 'templates/index.html',
+            title: 'Practise reading structure before writing project code',
+            body: [
+              'Point to each tag and say whether it is metadata, structure, or visible content.',
+              'Explain what each Bootstrap class is changing on the page.'
+            ]
+          },
+          {
+            file: 'Planning notes',
+            title: 'Link the code vocabulary back to the wireframe',
+            body: [
+              'Decide which parts of the wireframe will become headings, containers, buttons, and form regions.',
+              'Keep the wireframe decisions in mind so the page structure is purposeful.'
+            ]
+          }
+        ])
+      ) +
+      completionBlock([
+        'You can explain `class` and `id` clearly.',
+        'You can read a Bootstrap spacing class without guessing.',
+        'You can identify which tags belong in the head and which belong in the visible page.'
+      ], 'What should be secure before the first HTML feature')
+  },
+  {
+    slug: 'sql-schema-build',
+    stageId: 'sql-stage-3',
+    title: 'Build the SQL Schema',
+    navLabel: 'SQL schema build',
+    intro: 'This is where the planned tables become real SQL. Use the table planner and ERD to decide what each table must store and what each constraint must protect.',
+    sidebarSummary: 'SQL commands, constraints, table decisions, and the first real schema build.',
+    deliverable: 'Working `schema.sql` draft',
+    learningGoals: [
+      'Write a table definition using SQL structure and constraint words',
+      'Explain why `NOT NULL`, `AUTOINCREMENT`, and foreign keys exist',
+      'Translate the ERD into real SQL tables'
+    ],
+    contentHtml:
+      section(
+        'Build the database the brief actually needs',
+        paragraph(
+          'At this point the client brief, field mapping, table planner, and ERD all come together. The schema should not be invented from scratch on this page; it should be the written version of decisions you already made.',
+          'Keep the first version narrow: `users` and `tasks` first. The tagging extension comes later.'
+        ),
+        'lead'
+      ) +
+      docGrid(
+        docTablePanel(
+          'SQL words you need for this page',
+          ['Command / keyword', 'What it does', 'How to use it here'],
+          [
+            ['<code>CREATE TABLE</code>', 'Starts a table definition.', 'You will use it once for `users` and once for `tasks`.'],
+            ['<code>INTEGER PRIMARY KEY AUTOINCREMENT</code>', 'Creates a numeric id that grows automatically.', 'Use it for the main table identifiers.'],
+            ['<code>TEXT</code>', 'Stores text values.', 'Suitable for fields like names and titles.'],
+            ['<code>NOT NULL</code>', 'Prevents blanks for fields that must always exist.', 'Use it where missing data would break the task system.'],
+            ['<code>DEFAULT</code>', 'Supplies a value when none is given.', 'Useful for status on new tasks.'],
+            ['<code>FOREIGN KEY</code>', 'Connects one table to another.', 'Use it to link tasks back to users.']
+          ]
+        ),
+        docTablePanel(
+          'Questions to ask while writing the schema',
+          ['Question', 'Why it matters'],
+          [
+            ['Which field uniquely identifies each user?', 'That field will become the primary key.'],
+            ['Which task fields must never be empty?', 'Those fields likely need `NOT NULL`.'],
+            ['Which task field points back to `users`?', 'That becomes the foreign key.'],
+            ['Which value should appear automatically on new tasks?', 'That is a candidate for `DEFAULT`.']
+          ]
+        )
+      ) +
+      figureGrid(
+        figurePanel(
+          'Read the relationship before you write the SQL',
+          'The SQL should match this relationship picture exactly: one user can be linked to many tasks.',
+          sqlTableFigure
+        ),
+        docPanel(
+          'Constraints are part of the teaching, not just decoration',
+          unordered([
+            '<code>AUTOINCREMENT</code> matters because the app needs stable identifiers for update and delete actions.',
+            '<code>NOT NULL</code> matters because blank titles or missing assignees would weaken the client system.',
+            '<code>FOREIGN KEY</code> matters because a task must point to a real user.'
+          ])
+        )
+      ) +
+      docCode(
+        'Generic SQL table pattern',
+        `CREATE TABLE example_items (
+  item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  item_name TEXT NOT NULL,
+  owner_id INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open',
+  FOREIGN KEY (owner_id) REFERENCES owners(owner_id)
+);`,
+        'sql',
+        [
+          ['PRIMARY KEY', 'The unique identifier for one row.'],
+          ['AUTOINCREMENT', 'The database creates the next id for you.'],
+          ['FOREIGN KEY', 'This links one table to another.']
+        ]
+      ) +
+      buildJourney('Write `schema.sql` in this order', 'Move from the simpler table to the linked table, then review the constraints against the brief.', [
+        {
+          file: 'schema.sql',
+          title: 'Write the users table first',
+          body: [
+            'Start with the table that does not depend on any other table.',
+            'Decide the primary key and the minimum fields needed for version one.'
+          ],
+          prompts: [
+            'Why is `username` a better field than a vague field like `details`?',
+            'Which part of the brief proves the user table is needed?'
+          ]
+        },
+        {
+          file: 'schema.sql',
+          title: 'Write the tasks table from the field mapping',
+          body: [
+            'Use the planning documents to decide the task fields.',
+            'Choose data types and `NOT NULL` rules deliberately.',
+            'Add a default for status because every new task needs an initial state.'
+          ]
+        },
+        {
+          file: 'schema.sql',
+          title: 'Add the relationship and review the whole file',
+          body: [
+            'Write the foreign key so tasks point to real users.',
+            'Check that the final schema still matches the ERD and the client brief.'
+          ]
+        }
+      ]) +
+      completionBlock([
+        'The schema defines `users` and `tasks` clearly.',
+        'You can explain why the key constraints exist.',
+        'The schema still matches the table planner and ERD.'
+      ], 'What should be true before the database setup script')
+  },
+  {
+    slug: 'init-db-build',
+    stageId: 'sql-stage-3',
+    title: 'Build `init_db.py`',
+    navLabel: 'Database setup script',
+    intro: 'The schema defines the structure, but it does not create the live database file on its own. This page teaches the Python and SQLite syntax needed to turn the schema into a real database.',
+    sidebarSummary: 'Python + SQLite setup, placeholders, tuples, trailing comma, and seed data.',
+    deliverable: 'Working `init_db.py` plan',
+    learningGoals: [
+      'Explain what the connection object does',
+      'Understand placeholders, tuples, and `executemany()`',
+      'Create the database file and seed the starting users'
+    ],
+    contentHtml:
+      section(
+        'Turn the written schema into a live database',
+        paragraph(
+          'This is the first Python file students write for the data layer, so nothing should be assumed. Learn what the connection object is, what the placeholders do, and why the seed users are inserted here before the web app begins.',
+          'The goal is not to memorise SQLite. The goal is to understand the handful of commands this project genuinely needs.'
+        ),
+        'lead'
+      ) +
+      docGrid(
+        docTablePanel(
+          'Python and SQLite words you need',
+          ['Code', 'What it means', 'Why it matters here'],
+          [
+            ['<code>conn</code>', 'The live database connection object.', 'All SQL execution in this file goes through it.'],
+            ['<code>sqlite3.connect("tasks.db")</code>', 'Open or create the SQLite database file.', 'This is how Python starts talking to SQLite.'],
+            ['<code>executescript()</code>', 'Run a full block of SQL statements.', 'Useful because the schema file contains more than one command.'],
+            ['<code>executemany()</code>', 'Run one SQL statement repeatedly with many values.', 'Ideal for seeding several users at once.'],
+            ['<code>?</code>', 'A placeholder for a value supplied separately.', 'Safer than building SQL with string concatenation.'],
+            ['<code>commit()</code>', 'Save the changes permanently.', 'Without it, your inserted rows may disappear.']
+          ]
+        ),
+        docTablePanel(
+          'Tiny Python syntax details that matter',
+          ['Detail', 'What to notice'],
+          [
+            ['Single-item tuple', '<code>("Alice",)</code> needs the trailing comma so Python reads it as one tuple item instead of just a bracketed string.'],
+            ['<code>with open(...)</code>', 'This opens the file safely and closes it when the block ends.'],
+            ['Function block indentation', 'Python uses indentation to decide what belongs inside the function or loop.'],
+            ['<code>if __name__ == "__main__"</code>', 'This makes the setup run when the file itself is executed.']
+          ]
+        )
+      ) +
+      callout(
+        'Why the trailing comma matters',
+        paragraph(
+          'A single-item tuple in Python needs a comma. Without it, `("Alice")` is just a string in brackets, not a tuple.',
+          'That matters because `executemany()` expects a sequence of row tuples. If each row is not structured correctly, your placeholders will not line up with the values you intended to insert.'
+        ),
+        'soft'
+      ) +
+      docCode(
+        'Generic setup-script pattern',
+        `import sqlite3
+
+def build_database():
+  conn = sqlite3.connect("example.db")
+
+  with open("schema.sql") as file:
+    conn.executescript(file.read())
+
+  rows = [
+    ("Alpha",),
+    ("Beta",)
+  ]
+
+  conn.executemany(
+    "INSERT INTO examples (name) VALUES (?)",
+    rows
+  )
+
+  conn.commit()
+  conn.close()`,
+        'python',
+        [
+          ['rows', 'This list holds one tuple per row to insert.'],
+          ['?', 'The placeholder is replaced by one value from each tuple.'],
+          ['commit()', 'The database saves the changes permanently at this point.']
+        ]
+      ) +
+      buildJourney('Write `init_db.py` in this order', 'Work through the file top to bottom and explain the meaning of each line before moving on.', [
+        {
+          file: 'init_db.py',
+          title: 'Import SQLite and create the connection',
+          body: [
+            'Import the sqlite3 module.',
+            'Inside a function, create the connection object that points at the database file.'
+          ]
+        },
+        {
+          file: 'init_db.py',
+          title: 'Open `schema.sql` and run the whole script',
+          body: [
+            'Read the schema file into Python.',
+            'Use the connection object to execute the full SQL script.'
+          ],
+          prompts: [
+            'Why is `executescript()` more suitable here than a single `execute()` call?',
+            'Why does the setup script belong in its own file instead of `app.py`?'
+          ]
+        },
+        {
+          file: 'init_db.py',
+          title: 'Prepare the seed users and insert them safely',
+          body: [
+            'Create one tuple per user.',
+            'Use placeholders with `executemany()` to insert them.',
+            'Commit and close the connection once the work is done.'
+          ]
+        }
+      ]) +
+      completionBlock([
+        'You can explain what `conn`, `executescript()`, `executemany()`, and `?` do.',
+        'You understand why the seed users are inserted before the app is used.',
+        'You can explain why the trailing comma matters in a one-item tuple.'
+      ], 'What should be secure before the JavaScript and Flask pages')
+  },
+  {
+    slug: 'js-flask-toolkit',
+    stageId: 'sql-stage-3',
+    title: 'JavaScript and Flask Toolkit',
+    navLabel: 'JavaScript and Flask toolkit',
+    intro: 'This is the final docs page before the live feature build starts. Use it to understand the browser-to-server request cycle, the JavaScript methods you will rely on, and the Flask route syntax that makes the backend work.',
+    sidebarSummary: 'DOM methods, fetch, Flask routes, request/response flow, and validation layers.',
+    deliverable: 'Annotated JS / Flask notes',
+    learningGoals: [
+      'Recognise the JavaScript and Flask syntax used in the feature pages',
+      'Follow a request from browser action to server response',
+      'Understand that browser validation improves UX but does not replace backend checks'
+    ],
+    contentHtml:
+      section(
+        'Learn the request cycle before the live features begin',
+        paragraph(
+          'Once the build reaches fetch, POST, update, and delete, you need to be able to say what happens in the browser and what happens in Flask.',
+          'This page is where the vocabulary becomes concrete before you use it in the task features.'
+        ),
+        'lead'
+      ) +
+      docGrid(
+        docTablePanel(
+          'JavaScript terms you will use',
+          ['Code', 'What it does', 'How to think about it'],
+          [
+            ['<code>const</code>', 'Creates a variable that should not be reassigned.', 'Useful for DOM targets and response data references.'],
+            ['<code>let</code>', 'Creates a variable that can change later.', 'Useful for counters or values that update.'],
+            ['<code>document.getElementById()</code>', 'Find one named element in the DOM.', 'This is why stable ids matter.'],
+            ['<code>fetch()</code>', 'Start an HTTP request from the browser.', 'The browser is asking the server for something.'],
+            ['<code>response.json()</code>', 'Read the response body as JSON.', 'Turns the raw response into usable data.'],
+            ['<code>=></code>', 'Short arrow-function syntax.', 'Common in `.then()` chains.']
+          ]
+        ),
+        docTablePanel(
+          'Flask and backend terms you will use',
+          ['Code', 'What it does', 'How to think about it'],
+          [
+            ['<code>@app.route()</code>', 'Connect a URL to a Python function.', 'This is how Flask knows which function handles which path.'],
+            ['<code>methods=["GET"]</code>', 'Marks a route as a read route.', 'GET is for retrieval.'],
+            ['<code>request.get_json()</code>', 'Reads the JSON body Flask received.', 'Used in create and update actions.'],
+            ['<code>jsonify()</code>', 'Returns JSON to the browser.', 'The server sends structured data back.'],
+            ['<code>SELECT</code>', 'Read data from SQL.', 'Used for list views and dropdown values.'],
+            ['<code>INSERT / UPDATE / DELETE</code>', 'Change stored data.', 'These power create, complete, and delete actions.']
+          ]
+        )
+      ) +
+      callout('Request cycle to keep in your head', flowStrip(['Click', 'JavaScript', 'HTTP request', 'Flask route', 'SQL', 'JSON response', 'Redraw']), 'soft') +
+      figureGrid(
+        figurePanel(
+          'Validation happens in layers',
+          'HTML helps the user, JavaScript improves clarity, Flask re-checks the request, and the database rules protect final integrity.',
+          validationLayersFigure
+        ),
+        docPanel(
+          'Important truth about validation',
+          unordered([
+            'HTML validation is for user experience, not security.',
+            'JavaScript can improve messages and prevent obvious mistakes.',
+            'A custom request can still bypass the browser completely.',
+            'That is why Flask and storage rules must always re-check the data.'
+          ])
+        )
+      ) +
+      docGrid(
+        docCode(
+          'Generic browser request pattern',
+          `fetch("/api/items")
+  .then((response) => response.json())
+  .then((items) => {
+    console.log(items)
+  })`,
+          'javascript',
+          [
+            ['fetch()', 'Starts the request.'],
+            ['response.json()', 'Converts the response body into JavaScript data.'],
+            ['.then()', 'Runs the next step after the current async step finishes.']
+          ]
+        ),
+        docCode(
+          'Generic Flask route pattern',
+          `@app.route("/api/items", methods=["GET"])
+def get_items():
+    return jsonify([])`,
+          'python',
+          [
+            ['@app.route', 'Connects the URL path to the function below it.'],
+            ['methods=["GET"]', 'Tells Flask this route reads data.'],
+            ['jsonify', 'Returns JSON in a browser-friendly response.']
+          ]
+        )
+      ) +
+      completionBlock([
+        'You can describe what `fetch()` and `jsonify()` do.',
+        'You can follow the request cycle from click to redraw.',
+        'You understand why HTML validation is useful but never enough on its own.'
+      ], 'What should be secure before the first full-stack feature')
   },
   featureStep({
-    slug: 'feature-1-structure',
+    slug: 'feature-1-html-shell',
     stageId: 'sql-stage-4',
     featureNumber: 1,
-    navLabel: 'Project directory structure',
-    intro: 'Create the file and folder skeleton so the project has a stable shape before you write behaviours.',
-    concept: 'Separation of concerns and predictable naming.',
-    snippetTitle: 'Generic pattern',
-    snippetCode: `app.py -> application entry point\ntemplates/index.html -> page structure\nstatic/js/app.js -> browser logic\nschema.sql -> database definition`,
-    files: [
-      ['Project root', 'Holds the main app entry and setup files', 'Create only the folders you can explain'],
-      ['templates/', 'Stores browser-facing structure', 'Add the initial page template'],
-      ['static/js/', 'Stores client-side behaviour', 'Prepare a single main script file'],
-      ['schema.sql', 'Describes the database structure conceptually', 'Keep it separate from app logic']
-    ],
-    buildChecklist: [
-      'Folder names are clear and consistent.',
-      'Each file has one obvious purpose.',
-      'The structure matches the full-stack flow explained on the previous page.'
-    ],
-    prompts: [
-      'Which folder would change if you redesign the layout but not the database?',
-      'Which file would change if you add a new button click handler?',
-      'Why is a good directory structure really a readability feature?'
-    ],
-    deliverable: 'Folder skeleton'
-  }),
-  featureStep({
-    slug: 'feature-2-html-shell',
-    stageId: 'sql-stage-4',
-    featureNumber: 2,
     navLabel: 'Base HTML shell',
     intro: 'Build the main page shell that will later hold task cards, filters, and modal controls.',
     concept: 'Semantic layout and stable containers.',
@@ -1739,12 +2760,16 @@ const sqlSteps: ProjectStep[] = [
       'What makes an HTML container easy for JavaScript to target later?',
       'Why is semantic structure useful even before styling?'
     ],
-    deliverable: 'Page shell'
+    deliverable: 'Page shell',
+    referenceIndex: 2,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(2),
+    buildJourneyHtml: sqlFeatureJourney(2)
   }),
   featureStep({
-    slug: 'feature-3-task-list',
+    slug: 'feature-2-task-list',
     stageId: 'sql-stage-4',
-    featureNumber: 3,
+    featureNumber: 2,
     navLabel: 'Task list display area',
     intro: 'Define the task list region and decide how empty, loading, and populated states should look.',
     concept: 'Stable DOM targets and render states.',
@@ -1764,12 +2789,16 @@ const sqlSteps: ProjectStep[] = [
       'How will you know whether the list area is being updated correctly later?',
       'Why should the modal not be mixed inside each task card?'
     ],
-    deliverable: 'Render container'
+    deliverable: 'Render container',
+    referenceIndex: 3,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(3),
+    buildJourneyHtml: sqlFeatureJourney(3)
   }),
   featureStep({
-    slug: 'feature-4-modal',
+    slug: 'feature-3-modal',
     stageId: 'sql-stage-4',
-    featureNumber: 4,
+    featureNumber: 3,
     navLabel: 'Add-task modal',
     intro: 'Introduce the UI pattern that allows new task creation without cluttering the main list screen.',
     concept: 'Modal interaction and controlled visibility.',
@@ -1789,12 +2818,16 @@ const sqlSteps: ProjectStep[] = [
       'What should happen if the user closes the modal halfway through?',
       'How will you prevent the modal from feeling disconnected from the main page?'
     ],
-    deliverable: 'Modal interface'
+    deliverable: 'Modal interface',
+    referenceIndex: 4,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(4),
+    buildJourneyHtml: sqlFeatureJourney(4)
   }),
   featureStep({
-    slug: 'feature-5-form-inputs',
+    slug: 'feature-4-form-inputs',
     stageId: 'sql-stage-4',
-    featureNumber: 5,
+    featureNumber: 4,
     navLabel: 'Form inputs and validation',
     intro: 'Build the form fields that collect the data the database will eventually store.',
     concept: 'Field mapping and validation expectations.',
@@ -1814,12 +2847,16 @@ const sqlSteps: ProjectStep[] = [
       'Should priority be free text or controlled options?',
       'How can the form guide better data quality before submission?'
     ],
-    deliverable: 'Complete input form'
+    deliverable: 'Complete input form',
+    referenceIndex: 5,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(5),
+    buildJourneyHtml: sqlFeatureJourney(5)
   }),
   featureStep({
-    slug: 'feature-6-read-render',
+    slug: 'feature-5-fetch-render',
     stageId: 'sql-stage-4',
-    featureNumber: 6,
+    featureNumber: 5,
     navLabel: 'Fetch and render tasks',
     intro: 'This is the first full data loop: retrieve records from storage and display them on the page.',
     concept: 'GET requests, JSON responses, and rendering.',
@@ -1839,12 +2876,16 @@ const sqlSteps: ProjectStep[] = [
       'Why should rendering be handled in one dedicated function?',
       'How will you know whether the bug is in the route or the rendering logic?'
     ],
-    deliverable: 'Readable list view'
+    deliverable: 'Readable list view',
+    referenceIndex: 6,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(6),
+    buildJourneyHtml: sqlFeatureJourney(6)
   }),
   featureStep({
-    slug: 'feature-7-create-record',
+    slug: 'feature-6-create-record',
     stageId: 'sql-stage-4',
-    featureNumber: 7,
+    featureNumber: 6,
     navLabel: 'Create a task',
     intro: 'Turn the modal form into a working create flow that stores a new record and refreshes the list.',
     concept: 'POST requests and record insertion.',
@@ -1865,12 +2906,16 @@ const sqlSteps: ProjectStep[] = [
       'Why is it useful to refresh the list immediately after create?',
       'Which validation should happen in the browser, and which must still happen on the server?'
     ],
-    deliverable: 'Working create flow'
+    deliverable: 'Working create flow',
+    referenceIndex: 7,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(7),
+    buildJourneyHtml: sqlFeatureJourney(7)
   }),
   featureStep({
-    slug: 'feature-8-delete-record',
+    slug: 'feature-7-delete-record',
     stageId: 'sql-stage-4',
-    featureNumber: 8,
+    featureNumber: 7,
     navLabel: 'Delete a task',
     intro: 'Allow the user to remove the correct record using a stable identifier rather than visible text.',
     concept: 'Identifier-based delete actions.',
@@ -1890,12 +2935,16 @@ const sqlSteps: ProjectStep[] = [
       'Should the UI ask for confirmation before delete?',
       'How can you test that the intended record was removed?'
     ],
-    deliverable: 'Working delete action'
+    deliverable: 'Working delete action',
+    referenceIndex: 8,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(8),
+    buildJourneyHtml: sqlFeatureJourney(8)
   }),
   featureStep({
-    slug: 'feature-9-update-status',
+    slug: 'feature-8-update-status',
     stageId: 'sql-stage-4',
-    featureNumber: 9,
+    featureNumber: 8,
     navLabel: 'Mark a task complete',
     intro: 'Update an existing record and reflect the new state visibly in the interface.',
     concept: 'Record updates and state feedback.',
@@ -1915,12 +2964,16 @@ const sqlSteps: ProjectStep[] = [
       'What evidence proves the update is stored rather than just styled on screen?',
       'Would you hide completed tasks or keep them visible? Why?'
     ],
-    deliverable: 'Persisted status update'
+    deliverable: 'Persisted status update',
+    referenceIndex: 9,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(9),
+    buildJourneyHtml: sqlFeatureJourney(9)
   }),
   featureStep({
-    slug: 'feature-10-filter-sort',
+    slug: 'feature-9-filter-sort',
     stageId: 'sql-stage-4',
-    featureNumber: 10,
+    featureNumber: 9,
     navLabel: 'Filtering and sorting',
     intro: 'Make the task list genuinely useful by helping users retrieve the right records quickly.',
     concept: 'Conditional retrieval and ordered outputs.',
@@ -1941,12 +2994,16 @@ const sqlSteps: ProjectStep[] = [
       'Should filtering happen in the browser, the server, or both? Why?',
       'What test would prove the sorting logic is correct?'
     ],
-    deliverable: 'Searchable task list'
+    deliverable: 'Searchable task list',
+    referenceIndex: 10,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(10),
+    buildJourneyHtml: sqlFeatureJourney(10)
   }),
   featureStep({
-    slug: 'feature-11-evaluation-check',
+    slug: 'feature-10-evaluation-check',
     stageId: 'sql-stage-4',
-    featureNumber: 11,
+    featureNumber: 10,
     navLabel: 'Evaluation and evidence check',
     intro: 'Use this page to connect the implementation back to the criteria you drafted at the beginning.',
     concept: 'Traceability between specification and evidence.',
@@ -1967,7 +3024,11 @@ const sqlSteps: ProjectStep[] = [
       'What failed or felt weaker than expected during testing?',
       'How would you prioritise the next iteration if this were a real client job?'
     ],
-    deliverable: 'Evidence-based evaluation'
+    deliverable: 'Evidence-based evaluation',
+    referenceIndex: 11,
+    featureTotal: 10,
+    extraSectionsHtml: sqlFeatureContext(11),
+    buildJourneyHtml: sqlFeatureJourney(11)
   }),
   {
     slug: 'tagging-algorithm',
