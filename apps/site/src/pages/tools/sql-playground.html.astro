@@ -15,121 +15,69 @@ const description =
   ]}
 >
   <section class="sql-playground-route">
-    <div class="sql-playground-page">
-      <header class="playground-hero">
-        <div class="playground-hero-copy">
-          <p class="eyebrow">Shared classroom tool</p>
+    <div class="sql-playground-page" id="sql-playground-page">
+      <header class="playground-topbar">
+        <div class="topbar-brand">
           <h1>SQL Playground</h1>
-          <p class="hero-lead">
-            Run real SQL against JSON-backed teaching databases or a blank workspace, inspect keys
-            and relationships, and export or re-import browser-built databases as JSON when you
-            want to continue later.
-          </p>
+          <p class="workspace-pill" id="workspace-pill" aria-live="polite"></p>
         </div>
-
-        <div class="playground-hero-links" aria-label="Related course pages">
-          <a href="/igcse/topic9/index.html#independent-tasks">IGCSE Topic 9</a>
-          <a href="/ib-2027/sl/unit-6/index.html#student-activities">IB SL Unit 6</a>
-          <a href="/ib-2027/hl/unit-5/index.html#student-activities">IB HL Unit 5</a>
-        </div>
-      </header>
-
-      <section class="playground-toolbar card">
-        <div class="control-group">
-          <span class="control-label">Teaching mode</span>
-          <div class="mode-switch" id="mode-switch" role="tablist" aria-label="Teaching mode">
-            <button type="button" data-mode="igcse" role="tab" aria-selected="false">IGCSE</button>
-            <button type="button" data-mode="sl" role="tab" aria-selected="false">IB SL</button>
-            <button type="button" data-mode="hl" role="tab" aria-selected="false">IB HL</button>
-          </div>
-        </div>
-
-        <label class="control-group selector-group" for="dataset-select">
-          <span class="control-label">Workspace</span>
-          <select id="dataset-select" name="dataset"></select>
-        </label>
-
-        <div class="control-group summary-group">
-          <span class="control-label">Current workspace</span>
-          <div class="dataset-summary">
-            <strong id="dataset-name">Loading...</strong>
-            <p id="dataset-description"></p>
-            <div class="pill-row" id="dataset-badges"></div>
-          </div>
-        </div>
-
-        <div class="control-group utility-group">
-          <span class="control-label">Workspace tools</span>
+        <div class="topbar-actions">
           <input
             id="import-json-input"
             type="file"
             accept=".json,application/json"
             hidden
           />
-          <div class="toolbar-actions">
-            <button type="button" class="secondary-button" id="new-blank-button">New blank database</button>
-            <button type="button" class="secondary-button" id="import-json-button">Import JSON</button>
-            <button type="button" class="secondary-button" id="export-json-button">Export JSON</button>
-          </div>
-          <div class="toolbar-actions toolbar-actions-secondary">
-            <button type="button" class="secondary-button" id="reset-database-button">Reset workspace</button>
-            <button type="button" class="secondary-button" id="clear-query-button">Clear query</button>
-          </div>
+          <label class="workspace-select" for="dataset-select">
+            <span class="sr-only">Select database</span>
+            <select id="dataset-select" name="dataset"></select>
+          </label>
+          <button type="button" class="secondary-button" id="import-json-button">Open</button>
+          <button type="button" class="secondary-button" id="export-json-button">Export</button>
         </div>
-      </section>
+      </header>
 
-      <div class="playground-grid">
-        <aside class="card inspector-card" aria-labelledby="schema-heading">
-          <div class="panel-header">
-            <div>
-              <p class="panel-eyebrow">Inspect the schema</p>
-              <h2 id="schema-heading">Tables and relationships</h2>
+      <div class="playground-shell" id="playground-shell">
+        <aside class="sidebar-panel" aria-labelledby="tables-heading">
+          <div class="sidebar-header">
+            <div class="panel-title-group">
+              <p class="section-kicker">Explorer</p>
+              <h2 id="tables-heading">Tables</h2>
             </div>
-            <p class="panel-help">Click any table to load a preview query.</p>
+            <span class="sidebar-meta" id="table-count"></span>
           </div>
-
-          <div class="inspector-tabs" role="tablist" aria-label="Schema views">
-            <button type="button" data-tab="tables" role="tab" aria-selected="true">Tables</button>
-            <button type="button" data-tab="erd" role="tab" aria-selected="false">ERD</button>
-          </div>
-
-          <div class="inspector-panel" id="tables-panel" role="tabpanel">
-            <div class="table-list" id="table-list"></div>
-          </div>
-
-          <div class="inspector-panel" id="erd-panel" role="tabpanel" hidden>
-            <div class="erd-stage" id="erd-stage"></div>
-            <div class="relationship-list" id="relationship-list"></div>
-          </div>
+          <div class="table-list" id="table-list"></div>
         </aside>
 
-        <section class="workspace">
-          <section class="card editor-card" aria-labelledby="editor-heading">
-            <div class="panel-header editor-header">
-              <div>
-                <p class="panel-eyebrow">Write and run SQL</p>
-                <h2 id="editor-heading">Query editor</h2>
-              </div>
-              <div class="editor-actions">
-                <button type="button" class="ghost-button" id="format-query-button">Format</button>
-                <button type="button" class="primary-button" id="run-query-button">Run query</button>
+        <div
+          class="pane-splitter pane-splitter-vertical"
+          id="sidebar-splitter"
+          role="separator"
+          aria-label="Resize tables panel"
+          aria-orientation="vertical"
+        ></div>
+
+        <section class="workspace-panel" id="workspace-panel">
+          <section class="editor-panel" aria-labelledby="editor-heading">
+            <div class="panel-chrome">
+              <div class="panel-title-group">
+                <h2 id="editor-heading">SQL</h2>
+                <span class="shortcut-badge">Ctrl/Cmd + Enter</span>
               </div>
             </div>
 
-            <div class="editor-context">
-              <div class="pill-row" id="focus-pill-row"></div>
-              <p class="editor-tip" id="editor-tip">Ctrl/Cmd + Enter runs the current query.</p>
-            </div>
-
-            <div class="editor-shell" id="editor-shell">
-              <pre class="editor-highlight" id="editor-highlight" aria-hidden="true"><code class="language-sql" id="editor-highlight-code"></code></pre>
-              <textarea
-                id="query-input"
-                spellcheck="false"
-                placeholder="Loading sample query..."
-                aria-label="SQL query input"
-              ></textarea>
-              <div class="suggestions" id="query-suggestions" hidden></div>
+            <div class="editor-stage">
+              <div class="editor-shell" id="editor-shell">
+                <pre class="editor-highlight" id="editor-highlight" aria-hidden="true"><code class="language-sql" id="editor-highlight-code"></code></pre>
+                <textarea
+                  id="query-input"
+                  spellcheck="false"
+                  placeholder="Write SQL here..."
+                  aria-label="SQL query input"
+                ></textarea>
+                <div class="suggestions" id="query-suggestions" hidden></div>
+              </div>
+              <button type="button" class="run-fab" id="run-query-button">Run</button>
             </div>
 
             <div class="editor-footer">
@@ -137,18 +85,85 @@ const description =
             </div>
           </section>
 
-          <section class="card results-card" aria-labelledby="results-heading">
-            <div class="panel-header">
-              <div>
-                <p class="panel-eyebrow">See the output</p>
-                <h2 id="results-heading">Query results</h2>
+          <div
+            class="pane-splitter pane-splitter-horizontal"
+            id="results-splitter"
+            role="separator"
+            aria-label="Resize editor and output panels"
+            aria-orientation="horizontal"
+          ></div>
+
+          <section class="inspector-panel" aria-labelledby="inspector-heading">
+            <div class="panel-chrome inspector-chrome">
+              <div class="panel-title-group">
+                <h2 id="inspector-heading">Inspect</h2>
+                <div class="inspector-tabs" role="tablist" aria-label="Workspace panels">
+                  <button
+                    type="button"
+                    class="inspector-tab"
+                    id="inspector-tab-results"
+                    data-inspector-view="results"
+                    role="tab"
+                    aria-controls="inspector-view-results"
+                    aria-selected="true"
+                  >
+                    Results
+                  </button>
+                  <button
+                    type="button"
+                    class="inspector-tab"
+                    id="inspector-tab-schema"
+                    data-inspector-view="schema"
+                    role="tab"
+                    aria-controls="inspector-view-schema"
+                    aria-selected="false"
+                  >
+                    Schema
+                  </button>
+                  <button
+                    type="button"
+                    class="inspector-tab"
+                    id="inspector-tab-erd"
+                    data-inspector-view="erd"
+                    role="tab"
+                    aria-controls="inspector-view-erd"
+                    aria-selected="false"
+                  >
+                    ERD
+                  </button>
+                </div>
               </div>
               <div class="results-meta" id="results-meta" aria-live="polite"></div>
             </div>
 
-            <div class="results-output" id="results-output">
-              <div class="empty-state">
-                <p>Initialising SQL engine...</p>
+            <div class="inspector-body">
+              <div class="inspector-view" id="inspector-view-results" role="tabpanel" aria-labelledby="inspector-tab-results">
+                <div class="results-output" id="results-output">
+                  <div class="empty-state">
+                    <p>Initialising SQL engine...</p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="inspector-view"
+                id="inspector-view-schema"
+                role="tabpanel"
+                aria-labelledby="inspector-tab-schema"
+                hidden
+              >
+                <div class="schema-table-list" id="schema-table-list"></div>
+              </div>
+
+              <div
+                class="inspector-view inspector-view-erd"
+                id="inspector-view-erd"
+                role="tabpanel"
+                aria-labelledby="inspector-tab-erd"
+                hidden
+              >
+                <div class="erd-stage" id="erd-stage"></div>
+                <div class="relationship-list" id="relationship-list"></div>
               </div>
             </div>
           </section>

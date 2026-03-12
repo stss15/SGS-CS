@@ -1,18 +1,11 @@
-const MODE_ORDER = { igcse: 0, sl: 1, hl: 2 };
-const MODE_LABELS = {
-  igcse: 'IGCSE Core',
-  sl: 'IB Standard Level',
-  hl: 'IB Higher Level'
-};
-const WORKSPACE_SOURCE_LABELS = {
-  sample: 'Sample dataset',
-  blank: 'Custom workspace',
-  imported: 'Imported JSON'
-};
 const CUSTOM_DATASET_VALUE = '__blank_workspace__';
 const IMPORTED_DATASET_VALUE = '__imported_workspace__';
 const EXPORT_FORMAT = 'sgs-sql-playground/v1';
 const DEFAULT_BLANK_NAME = 'Blank Workspace';
+const STORAGE_KEYS = {
+  sidebarWidth: 'sgs-sql-playground/sidebar-width',
+  inspectorHeight: 'sgs-sql-playground/inspector-height'
+};
 
 const SQL_KEYWORDS = [
   'SELECT',
@@ -60,9 +53,9 @@ const state = {
   datasetCatalogEntry: null,
   dataset: null,
   db: null,
-  mode: 'igcse',
+  mode: 'hl',
   workspaceSource: 'sample',
-  activeTab: 'tables',
+  inspectorView: 'results',
   schema: [],
   selectedTable: '',
   query: '',
@@ -79,6 +72,10 @@ const state = {
     activeIndex: 0,
     wordStart: 0,
     coords: { left: 18, top: 18 }
+  },
+  layout: {
+    sidebarWidth: 296,
+    inspectorHeight: 280
   },
   datasetCache: new Map()
 };
@@ -109,11 +106,10 @@ async function init() {
       locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
     });
 
-    const initialPreferences = resolveInitialPreferences(state.catalog);
-    state.mode = initialPreferences.mode;
+    const initialPreferences = resolveInitialPreferences();
 
     if (initialPreferences.datasetId === CUSTOM_DATASET_VALUE) {
-      await loadBlankWorkspace({ preserveMode: true });
+      await loadBlankWorkspace();
       return;
     }
 
@@ -124,23 +120,27 @@ async function init() {
 }
 
 function cacheElements() {
-  elements.modeSwitch = document.getElementById('mode-switch');
+  elements.page = document.getElementById('sql-playground-page');
+  elements.playgroundShell = document.getElementById('playground-shell');
+  elements.workspacePanel = document.getElementById('workspace-panel');
+  elements.workspacePill = document.getElementById('workspace-pill');
   elements.datasetSelect = document.getElementById('dataset-select');
-  elements.datasetName = document.getElementById('dataset-name');
-  elements.datasetDescription = document.getElementById('dataset-description');
-  elements.datasetBadges = document.getElementById('dataset-badges');
-  elements.newBlankButton = document.getElementById('new-blank-button');
   elements.importJsonButton = document.getElementById('import-json-button');
   elements.exportJsonButton = document.getElementById('export-json-button');
   elements.importJsonInput = document.getElementById('import-json-input');
-  elements.resetDatabaseButton = document.getElementById('reset-database-button');
-  elements.clearQueryButton = document.getElementById('clear-query-button');
+  elements.tableCount = document.getElementById('table-count');
   elements.tableList = document.getElementById('table-list');
+  elements.schemaTableList = document.getElementById('schema-table-list');
   elements.erdStage = document.getElementById('erd-stage');
   elements.relationshipList = document.getElementById('relationship-list');
-  elements.focusPillRow = document.getElementById('focus-pill-row');
-  elements.editorTip = document.getElementById('editor-tip');
-  elements.formatQueryButton = document.getElementById('format-query-button');
+  elements.sidebarSplitter = document.getElementById('sidebar-splitter');
+  elements.resultsSplitter = document.getElementById('results-splitter');
+  elements.inspectorTabs = Array.from(document.querySelectorAll('[data-inspector-view]'));
+  elements.inspectorViews = {
+    results: document.getElementById('inspector-view-results'),
+    schema: document.getElementById('inspector-view-schema'),
+    erd: document.getElementById('inspector-view-erd')
+  };
   elements.runQueryButton = document.getElementById('run-query-button');
   elements.editorShell = document.getElementById('editor-shell');
   elements.queryInput = document.getElementById('query-input');
@@ -150,19 +150,11 @@ function cacheElements() {
   elements.editorStatus = document.getElementById('editor-status');
   elements.resultsMeta = document.getElementById('results-meta');
   elements.resultsOutput = document.getElementById('results-output');
-  elements.inspectorTabs = Array.from(document.querySelectorAll('.inspector-tabs button'));
-  elements.modeButtons = Array.from(document.querySelectorAll('#mode-switch button'));
 }
 
 function bindEvents() {
-  elements.modeSwitch.addEventListener('click', async (event) => {
-    const button = event.target.closest('button[data-mode]');
-    if (!button) return;
-
-    await runWorkspaceAction('Switching teaching mode...', async () => {
-      await changeMode(button.dataset.mode);
-    });
-  });
+  loadLayoutPreferences();
+  applyLayout();
 
   elements.datasetSelect.addEventListener('change', async (event) => {
     const selectedValue = event.target.value;
@@ -178,12 +170,6 @@ function bindEvents() {
       }
 
       await loadSampleDataset(selectedValue);
-    });
-  });
-
-  elements.newBlankButton.addEventListener('click', async () => {
-    await runWorkspaceAction('Creating a blank workspace...', async () => {
-      await loadBlankWorkspace();
     });
   });
 
@@ -209,38 +195,13 @@ function bindEvents() {
     }
   });
 
-  elements.resetDatabaseButton.addEventListener('click', async () => {
-    if (!state.resetWorkspaceDefinition) return;
-
-    await runWorkspaceAction('Resetting workspace...', async () => {
-      const resetDefinition = cloneJson(state.resetWorkspaceDefinition);
-      await loadWorkspaceDefinition(resetDefinition, {
-        workspaceSource: state.workspaceSource,
-        catalogEntry: state.datasetCatalogEntry,
-        importedFileName: state.importedFileName,
-        resetSource: resetDefinition,
-        statusMessage:
-          state.workspaceSource === 'sample'
-            ? `${resetDefinition.name} reloaded from the sample JSON.`
-            : `${resetDefinition.name} reset to its starting state.`
-      });
-    });
-  });
-
-  elements.clearQueryButton.addEventListener('click', () => {
-    setQuery('');
-    state.statusMessage = 'Query cleared.';
-    renderEditorStatus();
-  });
-
-  elements.inspectorTabs.forEach((button) => {
-    button.addEventListener('click', () => {
-      state.activeTab = button.dataset.tab === 'erd' ? 'erd' : 'tables';
-      renderInspectorTabs();
-    });
-  });
-
   elements.tableList.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-table]');
+    if (!button) return;
+    previewTable(button.dataset.table);
+  });
+
+  elements.schemaTableList.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-table]');
     if (!button) return;
     previewTable(button.dataset.table);
@@ -262,20 +223,10 @@ function bindEvents() {
     }
   });
 
-  elements.formatQueryButton.addEventListener('click', () => {
-    if (!state.query.trim() || !window.sqlFormatter) return;
-
-    try {
-      const formatted = window.sqlFormatter.format(state.query, {
-        language: 'sqlite',
-        keywordCase: 'upper'
-      });
-      setQuery(formatted);
-      state.statusMessage = 'Query formatted.';
-      renderEditorStatus();
-    } catch (error) {
-      reportActionError(`Could not format the current query: ${error.message}`);
-    }
+  elements.inspectorTabs.forEach((button) => {
+    button.addEventListener('click', () => {
+      setInspectorView(button.dataset.inspectorView || 'results');
+    });
   });
 
   elements.runQueryButton.addEventListener('click', () => {
@@ -300,6 +251,134 @@ function bindEvents() {
       hideSuggestions();
     }
   });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && state.suggestions.visible) {
+      hideSuggestions();
+    }
+  });
+
+  bindPaneResize();
+  window.addEventListener('resize', () => {
+    applyLayout();
+  });
+}
+
+function loadLayoutPreferences() {
+  state.layout.sidebarWidth = parseStoredNumber(STORAGE_KEYS.sidebarWidth, state.layout.sidebarWidth);
+  state.layout.inspectorHeight = parseStoredNumber(
+    STORAGE_KEYS.inspectorHeight,
+    state.layout.inspectorHeight
+  );
+}
+
+function parseStoredNumber(key, fallback) {
+  try {
+    const rawValue = window.localStorage.getItem(key);
+    if (!rawValue) return fallback;
+
+    const parsed = Number.parseInt(rawValue, 10);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  } catch (_error) {
+    return fallback;
+  }
+}
+
+function applyLayout() {
+  if (!elements.playgroundShell || !elements.workspacePanel) return;
+
+  const shellWidth = elements.playgroundShell.clientWidth || 1200;
+  const workspaceHeight = elements.workspacePanel.clientHeight || 720;
+  const sidebarWidth = clamp(state.layout.sidebarWidth, 220, Math.max(260, shellWidth - 560));
+  const inspectorHeight = clamp(
+    state.layout.inspectorHeight,
+    190,
+    Math.max(220, workspaceHeight - 220)
+  );
+
+  state.layout.sidebarWidth = sidebarWidth;
+  state.layout.inspectorHeight = inspectorHeight;
+
+  elements.playgroundShell.style.setProperty('--sidebar-width', `${sidebarWidth}px`);
+  elements.workspacePanel.style.setProperty('--inspector-height', `${inspectorHeight}px`);
+}
+
+function bindPaneResize() {
+  bindHorizontalResize(elements.sidebarSplitter, (startWidth, deltaX) => {
+    state.layout.sidebarWidth = startWidth + deltaX;
+    applyLayout();
+    persistLayout(STORAGE_KEYS.sidebarWidth, state.layout.sidebarWidth);
+  }, () => state.layout.sidebarWidth);
+
+  bindVerticalResize(elements.resultsSplitter, (startHeight, deltaY) => {
+    state.layout.inspectorHeight = startHeight - deltaY;
+    applyLayout();
+    persistLayout(STORAGE_KEYS.inspectorHeight, state.layout.inspectorHeight);
+  }, () => state.layout.inspectorHeight);
+}
+
+function bindHorizontalResize(handle, onDrag, getStartValue) {
+  if (!handle) return;
+
+  handle.addEventListener('pointerdown', (event) => {
+    if (window.matchMedia('(max-width: 960px)').matches) return;
+
+    event.preventDefault();
+    const startX = event.clientX;
+    const startValue = getStartValue();
+    handle.setPointerCapture(event.pointerId);
+
+    const handlePointerMove = (moveEvent) => {
+      onDrag(startValue, moveEvent.clientX - startX);
+    };
+
+    const stopDragging = (endEvent) => {
+      handle.releasePointerCapture(endEvent.pointerId);
+      handle.removeEventListener('pointermove', handlePointerMove);
+      handle.removeEventListener('pointerup', stopDragging);
+      handle.removeEventListener('pointercancel', stopDragging);
+    };
+
+    handle.addEventListener('pointermove', handlePointerMove);
+    handle.addEventListener('pointerup', stopDragging);
+    handle.addEventListener('pointercancel', stopDragging);
+  });
+}
+
+function bindVerticalResize(handle, onDrag, getStartValue) {
+  if (!handle) return;
+
+  handle.addEventListener('pointerdown', (event) => {
+    if (window.matchMedia('(max-width: 960px)').matches) return;
+
+    event.preventDefault();
+    const startY = event.clientY;
+    const startValue = getStartValue();
+    handle.setPointerCapture(event.pointerId);
+
+    const handlePointerMove = (moveEvent) => {
+      onDrag(startValue, moveEvent.clientY - startY);
+    };
+
+    const stopDragging = (endEvent) => {
+      handle.releasePointerCapture(endEvent.pointerId);
+      handle.removeEventListener('pointermove', handlePointerMove);
+      handle.removeEventListener('pointerup', stopDragging);
+      handle.removeEventListener('pointercancel', stopDragging);
+    };
+
+    handle.addEventListener('pointermove', handlePointerMove);
+    handle.addEventListener('pointerup', stopDragging);
+    handle.addEventListener('pointercancel', stopDragging);
+  });
+}
+
+function persistLayout(key, value) {
+  try {
+    window.localStorage.setItem(key, String(Math.round(value)));
+  } catch (_error) {
+    // Ignore storage issues. Layout can still work for this session.
+  }
 }
 
 async function runWorkspaceAction(message, action) {
@@ -336,25 +415,14 @@ function reportActionError(message) {
   renderEditorStatus(true);
 }
 
-function resolveInitialPreferences(catalog) {
+function resolveInitialPreferences() {
   const params = new URLSearchParams(window.location.search);
-  const requestedMode = params.get('mode');
   const requestedDatasetId = params.get('dataset');
-  let mode = isValidMode(requestedMode) ? requestedMode : catalog.defaultMode || 'igcse';
-
-  if (requestedDatasetId && requestedDatasetId !== CUSTOM_DATASET_VALUE) {
-    const requestedDataset = catalog.datasets.find((dataset) => dataset.id === requestedDatasetId);
-    if (requestedDataset && MODE_ORDER[requestedDataset.difficulty] > MODE_ORDER[mode]) {
-      mode = requestedDataset.difficulty;
-    }
-  }
-
-  return { mode, datasetId: requestedDatasetId };
+  return { datasetId: requestedDatasetId || CUSTOM_DATASET_VALUE };
 }
 
 function updateUrlState() {
   const url = new URL(window.location.href);
-  url.searchParams.set('mode', state.mode);
 
   if (state.workspaceSource === 'sample' && state.datasetCatalogEntry?.id) {
     url.searchParams.set('dataset', state.datasetCatalogEntry.id);
@@ -369,75 +437,7 @@ function updateUrlState() {
 
 function getSampleDatasetsForMode() {
   if (!state.catalog) return [];
-
-  return state.catalog.datasets.filter(
-    (dataset) => MODE_ORDER[dataset.difficulty] <= MODE_ORDER[state.mode]
-  );
-}
-
-async function changeMode(nextMode) {
-  if (!isValidMode(nextMode) || nextMode === state.mode) {
-    state.isLoading = false;
-    updateControlStates();
-    return;
-  }
-
-  if (state.workspaceSource === 'sample') {
-    state.mode = nextMode;
-    const availableDatasets = getSampleDatasetsForMode();
-    const nextEntry =
-      availableDatasets.find((dataset) => dataset.id === state.datasetCatalogEntry?.id) ||
-      availableDatasets[0] ||
-      null;
-
-    if (!nextEntry) {
-      throw new Error(`No sample datasets are available for ${MODE_LABELS[nextMode]}.`);
-    }
-
-    await loadSampleDataset(nextEntry.id);
-    return;
-  }
-
-  const shouldRefreshGuidance =
-    state.workspaceSource === 'blank' ||
-    !(Array.isArray(state.dataset?.focus) && state.dataset.focus.length);
-
-  state.mode = nextMode;
-  state.dataset = {
-    ...state.dataset,
-    difficulty: nextMode,
-    focus: shouldRefreshGuidance ? buildDefaultWorkspaceFocus(nextMode) : state.dataset.focus,
-    notes: shouldRefreshGuidance ? [buildWorkspaceNote(state.schema.length, nextMode)] : state.dataset.notes,
-    defaultQuery:
-      state.workspaceSource === 'blank' && !state.schema.length
-        ? buildBlankPrompt(nextMode)
-        : state.dataset.defaultQuery
-  };
-
-  if (state.resetWorkspaceDefinition) {
-    const nextResetWorkspace = {
-      ...cloneJson(state.resetWorkspaceDefinition),
-      difficulty: nextMode
-    };
-
-    if (state.workspaceSource === 'blank' && (!nextResetWorkspace.tables || !nextResetWorkspace.tables.length)) {
-      nextResetWorkspace.focus = buildDefaultWorkspaceFocus(nextMode);
-      nextResetWorkspace.notes = [buildWorkspaceNote(0, nextMode)];
-      nextResetWorkspace.defaultQuery = buildBlankPrompt(nextMode);
-    }
-
-    state.resetWorkspaceDefinition = nextResetWorkspace;
-  }
-
-  state.isLoading = false;
-  state.statusMessage = `Teaching mode switched to ${MODE_LABELS[nextMode]}.`;
-
-  if (state.workspaceSource === 'blank' && !state.schema.length) {
-    setQuery(buildBlankPrompt(nextMode), { preserveStatus: true });
-  }
-
-  updateUrlState();
-  renderAll();
+  return Array.isArray(state.catalog.datasets) ? state.catalog.datasets : [];
 }
 
 async function loadSampleDataset(requestedDatasetId) {
@@ -448,7 +448,7 @@ async function loadSampleDataset(requestedDatasetId) {
     null;
 
   if (!nextEntry) {
-    throw new Error(`No sample datasets are available for ${MODE_LABELS[state.mode]}.`);
+    throw new Error('No sample datasets are available right now.');
   }
 
   const dataset = await getDatasetDefinition(nextEntry);
@@ -462,10 +462,6 @@ async function loadSampleDataset(requestedDatasetId) {
 }
 
 async function loadBlankWorkspace(options = {}) {
-  if (!options.preserveMode && !isValidMode(state.mode)) {
-    state.mode = 'igcse';
-  }
-
   const blankWorkspace = createBlankWorkspaceDefinition(state.mode);
   await loadWorkspaceDefinition(blankWorkspace, {
     workspaceSource: 'blank',
@@ -521,12 +517,13 @@ async function loadWorkspaceDefinition(definition, options) {
   state.executionTime = null;
   state.schema = getLiveSchema(db, normalizedWorkspace);
   state.selectedTable = state.schema[0]?.name || '';
+  state.inspectorView = 'results';
   state.isLoading = false;
   state.statusMessage = options.statusMessage || `${normalizedWorkspace.name} loaded.`;
 
   const nextQuery =
     normalizedWorkspace.defaultQuery ||
-    (state.selectedTable ? buildPreviewQuery(state.selectedTable) : buildBlankPrompt(state.mode));
+    (state.selectedTable ? buildPreviewQuery(state.selectedTable) : buildBlankPrompt());
 
   setQuery(nextQuery, { preserveStatus: true });
   updateUrlState();
@@ -567,7 +564,7 @@ function normalizeWorkspaceDefinition(definition, context) {
     focus:
       Array.isArray(definition?.focus) && definition.focus.length
         ? definition.focus.map(String)
-        : buildDefaultWorkspaceFocus(difficulty),
+        : buildDefaultWorkspaceFocus(),
     relationshipHighlights:
       Array.isArray(definition?.relationshipHighlights) && definition.relationshipHighlights.length
         ? definition.relationshipHighlights.map(String)
@@ -577,11 +574,11 @@ function normalizeWorkspaceDefinition(definition, context) {
         ? definition.defaultQuery
         : tables.length
           ? buildPreviewQuery(tables[0].name)
-          : buildBlankPrompt(difficulty),
+          : buildBlankPrompt(),
     notes:
       Array.isArray(definition?.notes) && definition.notes.length
         ? definition.notes.map(String)
-        : [buildWorkspaceNote(tables.length, difficulty)],
+        : [buildWorkspaceNote(tables.length)],
     tables,
     relationships:
       Array.isArray(definition?.relationships) && definition.relationships.length
@@ -1152,15 +1149,15 @@ function serializeCurrentWorkspace() {
     focus:
       Array.isArray(state.dataset.focus) && state.dataset.focus.length
         ? state.dataset.focus
-        : buildDefaultWorkspaceFocus(state.mode),
+        : buildDefaultWorkspaceFocus(),
     relationshipHighlights: buildRelationshipHighlights(liveSchema, relationships),
     defaultQuery:
       state.query.trim() ||
-      (liveSchema[0] ? buildPreviewQuery(liveSchema[0].name) : buildBlankPrompt(state.mode)),
+      (liveSchema[0] ? buildPreviewQuery(liveSchema[0].name) : buildBlankPrompt()),
     notes:
       Array.isArray(state.dataset.notes) && state.dataset.notes.length
         ? state.dataset.notes
-        : [buildWorkspaceNote(liveSchema.length, state.mode)],
+        : [buildWorkspaceNote(liveSchema.length)],
     tables: liveSchema.map((table) => ({
       name: table.name,
       description: metadataMap.get(table.name)?.description || table.description || '',
@@ -1224,13 +1221,13 @@ function getRelationshipsFromSchema(schema, dataset) {
 }
 
 function renderAll() {
-  renderModeSwitch();
+  applyLayout();
+  renderWorkspaceSummary();
   renderDatasetSelector();
-  renderDatasetSummary();
-  renderInspectorTabs();
   renderTables();
+  renderSchemaPanel();
+  renderInspectorView();
   renderErd();
-  renderFocusArea();
   renderHighlight();
   renderResults();
   renderEditorStatus();
@@ -1238,20 +1235,45 @@ function renderAll() {
   updateControlStates();
 }
 
-function renderModeSwitch() {
-  elements.modeButtons.forEach((button) => {
-    const isActive = button.dataset.mode === state.mode;
-    button.classList.toggle('is-active', isActive);
-    button.setAttribute('aria-selected', String(isActive));
-    button.setAttribute('tabindex', isActive ? '0' : '-1');
-  });
+function renderWorkspaceSummary() {
+  if (elements.workspacePill) {
+    elements.workspacePill.textContent = buildWorkspacePillText();
+  }
+
+  if (elements.tableCount) {
+    if (!state.dataset) {
+      elements.tableCount.textContent = '';
+    } else if (!state.schema.length) {
+      elements.tableCount.textContent = 'No tables';
+    } else {
+      elements.tableCount.textContent = `${state.schema.length} table${state.schema.length === 1 ? '' : 's'}`;
+    }
+  }
+}
+
+function buildWorkspacePillText() {
+  if (!state.dataset) {
+    return '';
+  }
+
+  const sourceLabel =
+    state.workspaceSource === 'sample'
+      ? 'Sample'
+      : state.workspaceSource === 'imported'
+        ? 'Imported'
+        : 'Blank';
+  const tableLabel = state.schema.length
+    ? `${state.schema.length} table${state.schema.length === 1 ? '' : 's'}`
+    : 'No tables';
+
+  return `${sourceLabel} · ${state.dataset.name} · ${tableLabel}`;
 }
 
 function renderDatasetSelector() {
   const options = [
     {
       value: CUSTOM_DATASET_VALUE,
-      label: 'Blank workspace',
+      label: 'Create new database',
       selected: state.workspaceSource === 'blank'
     }
   ];
@@ -1282,100 +1304,124 @@ function renderDatasetSelector() {
     .join('');
 }
 
-function renderDatasetSummary() {
-  if (!state.dataset) return;
-
-  const relationships = getRelationshipsForCurrentSchema();
-  const highlights = buildRelationshipHighlights(state.schema, relationships);
-
-  elements.datasetName.textContent = state.dataset.name;
-  elements.datasetDescription.textContent =
-    typeof state.dataset.summary === 'string' && state.dataset.summary.trim()
-      ? state.dataset.summary
-      : buildWorkspaceSummary(state.workspaceSource, state.schema.length);
-
-  const badges = [
-    WORKSPACE_SOURCE_LABELS[state.workspaceSource],
-    MODE_LABELS[state.mode],
-    `${state.schema.length} table${state.schema.length === 1 ? '' : 's'}`,
-    ...highlights
-  ].slice(0, 6);
-
-  elements.datasetBadges.innerHTML = badges
-    .map((badge) => `<span class="pill subtle">${escapeHtml(badge)}</span>`)
-    .join('');
-}
-
-function renderInspectorTabs() {
-  elements.inspectorTabs.forEach((button) => {
-    const isActive = button.dataset.tab === state.activeTab;
-    button.classList.toggle('is-active', isActive);
-    button.setAttribute('aria-selected', String(isActive));
-  });
-
-  document.getElementById('tables-panel').hidden = state.activeTab !== 'tables';
-  document.getElementById('erd-panel').hidden = state.activeTab !== 'erd';
+function renderSchemaPanel() {
+  elements.schemaTableList.innerHTML = buildTableListMarkup({ variant: 'schema' });
 }
 
 function renderTables() {
+  elements.tableList.innerHTML = buildTableListMarkup({ variant: 'sidebar' });
+}
+
+function buildTableListMarkup(options = {}) {
   if (!state.schema.length) {
-    elements.tableList.innerHTML = `
+    return `
       <div class="empty-state compact">
-        <p>No tables yet. Use CREATE TABLE in the editor to build this workspace.</p>
+        <p>Create a table to start building this database.</p>
       </div>
     `;
+  }
+
+  return state.schema
+    .map((table) => buildTableMarkup(table, options))
+    .join('');
+}
+
+function buildTableMarkup(table, options = {}) {
+  const isSidebar = options.variant !== 'schema';
+  const isSelected = table.name === state.selectedTable;
+  const detailsExpanded = !isSidebar || isSelected;
+  const tableRole = isSidebar ? 'sidebar' : 'schema';
+  const tableBadge = getTableBadge(table);
+
+  return `
+    <article class="table-block ${isSelected ? 'is-selected' : ''} ${isSidebar ? 'is-sidebar' : 'is-schema'}">
+      <button type="button" class="table-block-button" data-table="${escapeHtmlAttribute(table.name)}" data-context="${tableRole}">
+        <div class="table-block-head">
+          <div class="table-block-title">
+            <h3>${escapeHtml(table.name)}</h3>
+            <span>${table.rowCount} row${table.rowCount === 1 ? '' : 's'}</span>
+          </div>
+          <span class="table-block-badge">${escapeHtml(tableBadge)}</span>
+        </div>
+      </button>
+      <div class="table-block-body" ${detailsExpanded ? '' : 'hidden'}>
+        <div class="table-column-grid">
+          ${table.columns
+            .map(
+              (column) => `
+                <span class="table-column-name">
+                  <span>${escapeHtml(column.name)}</span>
+                  ${buildColumnBadges(column)}
+                </span>
+                <span class="table-column-type">${escapeHtml(column.type)}</span>
+              `
+            )
+            .join('')}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function getTableBadge(table) {
+  if (table.kind === 'junction') return 'Junction';
+  if (table.kind === 'extension') return '1:1';
+  return 'Table';
+}
+
+function buildColumnBadges(column) {
+  const badges = []
+    .concat(column.isPrimaryKey ? ['PK'] : [])
+    .concat(column.isForeignKey ? ['FK'] : [])
+    .concat(column.isUnique ? ['UQ'] : []);
+
+  if (!badges.length) {
+    return '';
+  }
+
+  return `<span class="column-badge-list">${badges
+    .map((badge) => `<span class="column-badge">${escapeHtml(badge)}</span>`)
+    .join('')}</span>`;
+}
+
+function renderInspectorView() {
+  const relationships = getRelationshipsForCurrentSchema();
+
+  elements.inspectorTabs.forEach((button) => {
+    const isSelected = button.dataset.inspectorView === state.inspectorView;
+    button.setAttribute('aria-selected', String(isSelected));
+    button.classList.toggle('is-selected', isSelected);
+  });
+
+  Object.entries(elements.inspectorViews).forEach(([view, panel]) => {
+    panel.hidden = view !== state.inspectorView;
+  });
+
+  if (state.inspectorView === 'schema') {
+    elements.resultsMeta.textContent = state.schema.length
+      ? `${state.schema.length} table${state.schema.length === 1 ? '' : 's'} in the current workspace`
+      : 'No tables yet';
     return;
   }
 
-  elements.tableList.innerHTML = state.schema
-    .map((table) => {
-      const typeBadges = [];
+  if (state.inspectorView === 'erd') {
+    elements.resultsMeta.textContent = relationships.length
+      ? `${relationships.length} relationship${relationships.length === 1 ? '' : 's'}`
+      : 'No relationships yet';
+    return;
+  }
 
-      if (table.kind === 'junction') {
-        typeBadges.push('<span class="mini-badge junction">Junction</span>');
-      } else if (table.kind === 'extension') {
-        typeBadges.push('<span class="mini-badge extension">One-to-one</span>');
-      }
+  elements.resultsMeta.textContent = buildResultsMetaText();
+}
 
-      if (table.primaryKey.length > 1) {
-        typeBadges.push('<span class="mini-badge composite">Composite key</span>');
-      }
-
-      return `
-        <article class="table-card ${table.name === state.selectedTable ? 'is-selected' : ''}">
-          <button type="button" class="table-card-button" data-table="${escapeHtmlAttribute(table.name)}">
-            <div class="table-card-head">
-              <div>
-                <h3>${escapeHtml(table.name)}</h3>
-                <p>${escapeHtml(table.description || 'Database table')}</p>
-              </div>
-              <span class="row-count">${table.rowCount} row${table.rowCount === 1 ? '' : 's'}</span>
-            </div>
-            <div class="table-card-flags">${typeBadges.join('')}</div>
-            <ul class="column-list">
-              ${table.columns
-                .map((column) => {
-                  const badges = [];
-                  if (column.isPrimaryKey) badges.push('<span class="column-badge pk">PK</span>');
-                  if (column.isForeignKey) badges.push('<span class="column-badge fk">FK</span>');
-                  if (column.isUnique) badges.push('<span class="column-badge uq">UQ</span>');
-                  return `
-                    <li class="column-item">
-                      <div class="column-name-wrap">
-                        <span class="column-name">${escapeHtml(column.name)}</span>
-                        <span class="column-type">${escapeHtml(column.type)}</span>
-                      </div>
-                      <div class="column-badges">${badges.join('')}</div>
-                    </li>
-                  `;
-                })
-                .join('')}
-            </ul>
-          </button>
-        </article>
-      `;
-    })
-    .join('');
+function setInspectorView(nextView) {
+  const normalizedView =
+    nextView === 'schema' || nextView === 'erd' || nextView === 'results' ? nextView : 'results';
+  state.inspectorView = normalizedView;
+  renderInspectorView();
+  if (normalizedView === 'erd') {
+    renderErd();
+  }
 }
 
 function renderErd() {
@@ -1499,28 +1545,6 @@ function renderErd() {
       `;
 }
 
-function renderFocusArea() {
-  if (!state.dataset) return;
-
-  const pills = [`Mode: ${MODE_LABELS[state.mode]}`]
-    .concat(
-      Array.isArray(state.dataset.focus) && state.dataset.focus.length
-        ? state.dataset.focus
-        : buildDefaultWorkspaceFocus(state.mode)
-    )
-    .slice(0, 6);
-
-  elements.focusPillRow.innerHTML = pills
-    .map((pill) => `<span class="pill">${escapeHtml(pill)}</span>`)
-    .join('');
-
-  const notes = Array.isArray(state.dataset.notes) && state.dataset.notes.length
-    ? state.dataset.notes
-    : [buildWorkspaceNote(state.schema.length, state.mode)];
-
-  elements.editorTip.textContent = `${notes[0]} Ctrl/Cmd + Enter runs the current query.`;
-}
-
 function renderHighlight() {
   const source = state.query || '';
   const highlighted =
@@ -1533,9 +1557,12 @@ function renderHighlight() {
 
 function renderResults() {
   if (state.isLoading && !state.result && !state.error) {
-    elements.resultsMeta.textContent = '';
+    if (state.inspectorView === 'results') {
+      elements.resultsMeta.textContent = '';
+    }
     elements.resultsOutput.innerHTML = `
       <div class="empty-state">
+        <div class="loader-line"></div>
         <p>Loading workspace...</p>
       </div>
     `;
@@ -1543,7 +1570,9 @@ function renderResults() {
   }
 
   if (state.error) {
-    elements.resultsMeta.textContent = 'Execution error';
+    if (state.inspectorView === 'results') {
+      elements.resultsMeta.textContent = 'Execution error';
+    }
     elements.resultsOutput.innerHTML = `
       <div class="message-box error">
         <h3>Execution error</h3>
@@ -1554,7 +1583,9 @@ function renderResults() {
   }
 
   if (!state.result) {
-    elements.resultsMeta.textContent = '';
+    if (state.inspectorView === 'results') {
+      elements.resultsMeta.textContent = '';
+    }
     elements.resultsOutput.innerHTML = `
       <div class="empty-state">
         <p>Run a query to see results here.</p>
@@ -1564,7 +1595,9 @@ function renderResults() {
   }
 
   if (!state.result.columns.length) {
-    elements.resultsMeta.textContent = buildResultsMetaText();
+    if (state.inspectorView === 'results') {
+      elements.resultsMeta.textContent = buildResultsMetaText();
+    }
     elements.resultsOutput.innerHTML = `
       <div class="message-box success">
         <h3>Statement complete</h3>
@@ -1575,7 +1608,9 @@ function renderResults() {
   }
 
   if (!state.result.rows.length) {
-    elements.resultsMeta.textContent = buildResultsMetaText();
+    if (state.inspectorView === 'results') {
+      elements.resultsMeta.textContent = buildResultsMetaText();
+    }
     elements.resultsOutput.innerHTML = `
       <div class="message-box info">
         <h3>No rows returned</h3>
@@ -1585,7 +1620,9 @@ function renderResults() {
     return;
   }
 
-  elements.resultsMeta.textContent = buildResultsMetaText();
+  if (state.inspectorView === 'results') {
+    elements.resultsMeta.textContent = buildResultsMetaText();
+  }
   elements.resultsOutput.innerHTML = `
     <div class="results-table-wrap">
       <table class="results-table">
@@ -1620,21 +1657,22 @@ function updateControlStates() {
   const disabled = state.isLoading || !state.dataset;
 
   elements.datasetSelect.disabled = state.isLoading;
-  elements.newBlankButton.disabled = state.isLoading;
   elements.importJsonButton.disabled = state.isLoading;
   elements.exportJsonButton.disabled = disabled;
-  elements.resetDatabaseButton.disabled = disabled;
-  elements.clearQueryButton.disabled = state.isLoading && !hasQuery;
-  elements.formatQueryButton.disabled = disabled || !hasQuery;
   elements.runQueryButton.disabled = disabled || !hasQuery;
   elements.queryInput.disabled = disabled;
+  elements.inspectorTabs.forEach((button) => {
+    button.disabled = disabled;
+  });
 }
 
 function renderLoading(message) {
   state.isLoading = true;
   state.statusMessage = message;
+  renderWorkspaceSummary();
   renderEditorStatus();
   renderResults();
+  renderInspectorView();
   updateControlStates();
 }
 
@@ -1642,9 +1680,20 @@ function renderFatalError(message) {
   state.error = message;
   state.isLoading = false;
   state.statusMessage = message;
-  elements.datasetName.textContent = 'Playground unavailable';
-  elements.datasetDescription.textContent = message;
-  elements.datasetBadges.innerHTML = '<span class="pill subtle">Load failed</span>';
+  elements.tableList.innerHTML = `
+    <div class="empty-state compact">
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+  elements.schemaTableList.innerHTML = elements.tableList.innerHTML;
+  elements.erdStage.innerHTML = `
+    <div class="empty-state compact">
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+  elements.relationshipList.innerHTML = '';
+  renderWorkspaceSummary();
+  renderInspectorView();
   renderResults();
   renderEditorStatus(true);
   updateControlStates();
@@ -1661,10 +1710,13 @@ function buildResultsMetaText() {
 function previewTable(tableName) {
   if (!tableName) return;
   state.selectedTable = tableName;
+  state.inspectorView = 'results';
   setQuery(buildPreviewQuery(tableName), { preserveStatus: true });
   state.statusMessage = `${tableName} loaded into the editor.`;
   renderTables();
+  renderSchemaPanel();
   renderErd();
+  renderInspectorView();
   renderEditorStatus();
   runQuery();
 }
@@ -1673,8 +1725,8 @@ function buildPreviewQuery(tableName) {
   return `SELECT * FROM ${quoteIdentifier(tableName)} LIMIT 10;`;
 }
 
-function buildBlankPrompt(mode) {
-  const exampleTable = mode === 'hl' ? 'Course' : 'Student';
+function buildBlankPrompt() {
+  const exampleTable = 'Student';
   return `-- Blank workspace\n-- Create your own tables, then add rows with INSERT INTO.\n\nCREATE TABLE ${exampleTable} (\n  ${exampleTable}ID INTEGER PRIMARY KEY,\n  Name TEXT NOT NULL\n);`;
 }
 
@@ -1846,6 +1898,7 @@ function runQuery() {
   if (!state.db || !state.query.trim()) return;
 
   hideSuggestions();
+  state.inspectorView = 'results';
   state.error = '';
 
   try {
@@ -2093,25 +2146,17 @@ function createBlankWorkspaceDefinition(mode) {
     difficulty: mode,
     summary:
       'Start with an empty in-browser SQLite database, create tables with SQL, and export the workspace as JSON when you want to continue later.',
-    focus: buildDefaultWorkspaceFocus(mode),
+    focus: buildDefaultWorkspaceFocus(),
     relationshipHighlights: [],
-    defaultQuery: buildBlankPrompt(mode),
-    notes: [buildWorkspaceNote(0, mode)],
+    defaultQuery: buildBlankPrompt(),
+    notes: [buildWorkspaceNote(0)],
     tables: [],
     relationships: []
   };
 }
 
-function buildDefaultWorkspaceFocus(mode) {
-  if (mode === 'hl') {
-    return ['CREATE TABLE', 'INSERT INTO', 'JOIN', 'HAVING'];
-  }
-
-  if (mode === 'sl') {
-    return ['CREATE TABLE', 'INSERT INTO', 'JOIN', 'GROUP BY'];
-  }
-
-  return ['CREATE TABLE', 'INSERT INTO', 'SELECT', 'ORDER BY'];
+function buildDefaultWorkspaceFocus() {
+  return ['CREATE TABLE', 'INSERT INTO', 'SELECT', 'JOIN'];
 }
 
 function buildWorkspaceSummary(source, tableCount) {
@@ -2130,12 +2175,16 @@ function buildWorkspaceSummary(source, tableCount) {
   return 'Sample teaching database loaded from JSON.';
 }
 
-function buildWorkspaceNote(tableCount, mode) {
+function buildWorkspaceNote(tableCount) {
   if (tableCount === 0) {
-    return `Use CREATE TABLE to build a schema from scratch, then INSERT INTO to add data for ${MODE_LABELS[mode]}.`;
+    return 'Use CREATE TABLE to build a schema from scratch, then INSERT INTO to add data.';
   }
 
   return 'Export the current workspace as JSON when you want to continue this exact database later.';
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.min(Math.max(value, minimum), maximum);
 }
 
 function sanitizeFileName(value) {
