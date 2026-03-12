@@ -1,0 +1,143 @@
+{
+  "id": "course-enrolment",
+  "name": "Course Enrolment",
+  "difficulty": "hl",
+  "summary": "A higher-level dataset for grouped calculations, joins, averages, and HAVING clauses.",
+  "focus": ["JOIN", "GROUP BY", "HAVING", "AVG"],
+  "relationshipHighlights": ["One-to-many", "Many-to-many", "Composite key"],
+  "defaultQuery": "SELECT d.DepartmentName, COUNT(*) AS EnrolledCount, ROUND(AVG(e.Score), 1) AS AverageScore FROM ENROLLMENT e JOIN COURSE c ON e.CourseID = c.CourseID JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID GROUP BY d.DepartmentName HAVING COUNT(*) >= 3 ORDER BY AverageScore DESC;",
+  "notes": [
+    "ENROLLMENT is a junction table with a composite key made from StudentID and CourseID.",
+    "Grouped queries can summarise how many students each department has and what their average score is."
+  ],
+  "tables": [
+    {
+      "name": "DEPARTMENT",
+      "description": "Departments that own courses.",
+      "kind": "entity",
+      "diagram": { "x": 24, "y": 46 },
+      "columns": [
+        { "name": "DepartmentID", "type": "TEXT", "notNull": true },
+        { "name": "DepartmentName", "type": "TEXT", "notNull": true },
+        { "name": "Office", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["DepartmentID"],
+      "rows": [
+        { "DepartmentID": "CS", "DepartmentName": "Computer Science", "Office": "Tech 201" },
+        { "DepartmentID": "MAT", "DepartmentName": "Mathematics", "Office": "C Block 14" },
+        { "DepartmentID": "DES", "DepartmentName": "Design", "Office": "Studio 5" }
+      ]
+    },
+    {
+      "name": "COURSE",
+      "description": "Courses offered by each department.",
+      "kind": "entity",
+      "diagram": { "x": 320, "y": 46 },
+      "columns": [
+        { "name": "CourseID", "type": "INTEGER", "notNull": true },
+        { "name": "DepartmentID", "type": "TEXT", "notNull": true },
+        { "name": "CourseName", "type": "TEXT", "notNull": true },
+        { "name": "Level", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["CourseID"],
+      "foreignKeys": [
+        {
+          "columns": ["DepartmentID"],
+          "references": { "table": "DEPARTMENT", "columns": ["DepartmentID"] }
+        }
+      ],
+      "rows": [
+        { "CourseID": 9101, "DepartmentID": "CS", "CourseName": "Databases", "Level": "HL" },
+        { "CourseID": 9102, "DepartmentID": "CS", "CourseName": "Web Systems", "Level": "SL" },
+        { "CourseID": 9201, "DepartmentID": "MAT", "CourseName": "Statistics", "Level": "SL" },
+        { "CourseID": 9202, "DepartmentID": "MAT", "CourseName": "Discrete Maths", "Level": "HL" },
+        { "CourseID": 9301, "DepartmentID": "DES", "CourseName": "Product Design", "Level": "SL" },
+        { "CourseID": 9302, "DepartmentID": "DES", "CourseName": "CAD Studio", "Level": "HL" }
+      ]
+    },
+    {
+      "name": "ENROLLMENT",
+      "description": "Junction table connecting students to the courses they study.",
+      "kind": "junction",
+      "diagram": { "x": 632, "y": 184 },
+      "columns": [
+        { "name": "StudentID", "type": "INTEGER", "notNull": true },
+        { "name": "CourseID", "type": "INTEGER", "notNull": true },
+        { "name": "Score", "type": "INTEGER", "notNull": true },
+        { "name": "Semester", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["StudentID", "CourseID"],
+      "foreignKeys": [
+        {
+          "columns": ["StudentID"],
+          "references": { "table": "STUDENT", "columns": ["StudentID"] }
+        },
+        {
+          "columns": ["CourseID"],
+          "references": { "table": "COURSE", "columns": ["CourseID"] }
+        }
+      ],
+      "rows": [
+        { "StudentID": 8101, "CourseID": 9101, "Score": 84, "Semester": "Spring" },
+        { "StudentID": 8101, "CourseID": 9201, "Score": 78, "Semester": "Spring" },
+        { "StudentID": 8102, "CourseID": 9101, "Score": 88, "Semester": "Spring" },
+        { "StudentID": 8102, "CourseID": 9302, "Score": 81, "Semester": "Spring" },
+        { "StudentID": 8103, "CourseID": 9102, "Score": 74, "Semester": "Spring" },
+        { "StudentID": 8103, "CourseID": 9202, "Score": 79, "Semester": "Spring" },
+        { "StudentID": 8104, "CourseID": 9201, "Score": 91, "Semester": "Spring" },
+        { "StudentID": 8104, "CourseID": 9301, "Score": 72, "Semester": "Spring" },
+        { "StudentID": 8105, "CourseID": 9301, "Score": 85, "Semester": "Spring" },
+        { "StudentID": 8105, "CourseID": 9102, "Score": 77, "Semester": "Spring" },
+        { "StudentID": 8106, "CourseID": 9202, "Score": 83, "Semester": "Spring" },
+        { "StudentID": 8106, "CourseID": 9302, "Score": 89, "Semester": "Spring" },
+        { "StudentID": 8107, "CourseID": 9101, "Score": 92, "Semester": "Spring" },
+        { "StudentID": 8107, "CourseID": 9201, "Score": 87, "Semester": "Spring" }
+      ]
+    },
+    {
+      "name": "STUDENT",
+      "description": "Students enrolled on the available courses.",
+      "kind": "entity",
+      "diagram": { "x": 940, "y": 46 },
+      "columns": [
+        { "name": "StudentID", "type": "INTEGER", "notNull": true },
+        { "name": "FirstName", "type": "TEXT", "notNull": true },
+        { "name": "LastName", "type": "TEXT", "notNull": true },
+        { "name": "Cohort", "type": "INTEGER", "notNull": true }
+      ],
+      "primaryKey": ["StudentID"],
+      "rows": [
+        { "StudentID": 8101, "FirstName": "Aisha", "LastName": "Rahman", "Cohort": 2026 },
+        { "StudentID": 8102, "FirstName": "Daniel", "LastName": "Bell", "Cohort": 2026 },
+        { "StudentID": 8103, "FirstName": "Elsa", "LastName": "Nguyen", "Cohort": 2027 },
+        { "StudentID": 8104, "FirstName": "Finley", "LastName": "Cooper", "Cohort": 2027 },
+        { "StudentID": 8105, "FirstName": "Grace", "LastName": "Morris", "Cohort": 2027 },
+        { "StudentID": 8106, "FirstName": "Hugo", "LastName": "King", "Cohort": 2026 },
+        { "StudentID": 8107, "FirstName": "Ivy", "LastName": "Ross", "Cohort": 2026 }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "fromTable": "COURSE",
+      "toTable": "DEPARTMENT",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "label": "One department can offer many courses."
+    },
+    {
+      "fromTable": "ENROLLMENT",
+      "toTable": "COURSE",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "label": "One course can have many enrolments."
+    },
+    {
+      "fromTable": "ENROLLMENT",
+      "toTable": "STUDENT",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "label": "One student can appear in many enrolment records."
+    }
+  ]
+}

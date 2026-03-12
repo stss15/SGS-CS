@@ -1,0 +1,108 @@
+{
+  "id": "school-library",
+  "name": "School Library",
+  "difficulty": "igcse",
+  "summary": "A simple borrowing system with clear one-to-many relationships between students, books, and loans.",
+  "focus": ["SELECT", "WHERE", "ORDER BY", "COUNT"],
+  "relationshipHighlights": ["One-to-many", "Foreign keys", "Referential integrity"],
+  "defaultQuery": "SELECT Title, Genre, PublishedYear FROM BOOK ORDER BY PublishedYear DESC;",
+  "notes": [
+    "Each loan belongs to one student and one book.",
+    "A single student can appear in many loan records over time."
+  ],
+  "tables": [
+    {
+      "name": "STUDENT",
+      "description": "Basic student details used by the library system.",
+      "kind": "entity",
+      "diagram": { "x": 24, "y": 48 },
+      "columns": [
+        { "name": "StudentID", "type": "INTEGER", "notNull": true },
+        { "name": "FirstName", "type": "TEXT", "notNull": true },
+        { "name": "LastName", "type": "TEXT", "notNull": true },
+        { "name": "TutorGroup", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["StudentID"],
+      "rows": [
+        { "StudentID": 1001, "FirstName": "Mina", "LastName": "Patel", "TutorGroup": "12A" },
+        { "StudentID": 1002, "FirstName": "Jacob", "LastName": "Miller", "TutorGroup": "12A" },
+        { "StudentID": 1003, "FirstName": "Sara", "LastName": "Ng", "TutorGroup": "11C" },
+        { "StudentID": 1004, "FirstName": "Leo", "LastName": "Smith", "TutorGroup": "11B" },
+        { "StudentID": 1005, "FirstName": "Amira", "LastName": "Hassan", "TutorGroup": "10D" },
+        { "StudentID": 1006, "FirstName": "Noah", "LastName": "Brown", "TutorGroup": "10D" }
+      ]
+    },
+    {
+      "name": "BOOK",
+      "description": "Books that can be borrowed from the school library.",
+      "kind": "entity",
+      "diagram": { "x": 632, "y": 48 },
+      "columns": [
+        { "name": "BookID", "type": "INTEGER", "notNull": true },
+        { "name": "Title", "type": "TEXT", "notNull": true },
+        { "name": "Genre", "type": "TEXT", "notNull": true },
+        { "name": "PublishedYear", "type": "INTEGER", "notNull": true }
+      ],
+      "primaryKey": ["BookID"],
+      "rows": [
+        { "BookID": 2001, "Title": "Binary Stars", "Genre": "Science Fiction", "PublishedYear": 2021 },
+        { "BookID": 2002, "Title": "Curious Code", "Genre": "Technology", "PublishedYear": 2023 },
+        { "BookID": 2003, "Title": "Hidden Figures", "Genre": "Biography", "PublishedYear": 2016 },
+        { "BookID": 2004, "Title": "Ocean Atlas", "Genre": "Reference", "PublishedYear": 2019 },
+        { "BookID": 2005, "Title": "Poetry of Place", "Genre": "Poetry", "PublishedYear": 2018 },
+        { "BookID": 2006, "Title": "Designing Cities", "Genre": "Geography", "PublishedYear": 2020 }
+      ]
+    },
+    {
+      "name": "LOAN",
+      "description": "Borrowing transactions that connect students and books.",
+      "kind": "entity",
+      "diagram": { "x": 328, "y": 132 },
+      "columns": [
+        { "name": "LoanID", "type": "INTEGER", "notNull": true },
+        { "name": "StudentID", "type": "INTEGER", "notNull": true },
+        { "name": "BookID", "type": "INTEGER", "notNull": true },
+        { "name": "LoanDate", "type": "TEXT", "notNull": true },
+        { "name": "DueDate", "type": "TEXT", "notNull": true },
+        { "name": "ReturnStatus", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["LoanID"],
+      "foreignKeys": [
+        {
+          "columns": ["StudentID"],
+          "references": { "table": "STUDENT", "columns": ["StudentID"] }
+        },
+        {
+          "columns": ["BookID"],
+          "references": { "table": "BOOK", "columns": ["BookID"] }
+        }
+      ],
+      "rows": [
+        { "LoanID": 3001, "StudentID": 1001, "BookID": 2002, "LoanDate": "2026-01-09", "DueDate": "2026-01-23", "ReturnStatus": "Returned" },
+        { "LoanID": 3002, "StudentID": 1003, "BookID": 2004, "LoanDate": "2026-01-15", "DueDate": "2026-01-29", "ReturnStatus": "Returned" },
+        { "LoanID": 3003, "StudentID": 1002, "BookID": 2001, "LoanDate": "2026-02-02", "DueDate": "2026-02-16", "ReturnStatus": "Returned" },
+        { "LoanID": 3004, "StudentID": 1005, "BookID": 2003, "LoanDate": "2026-02-04", "DueDate": "2026-02-18", "ReturnStatus": "Overdue" },
+        { "LoanID": 3005, "StudentID": 1001, "BookID": 2006, "LoanDate": "2026-02-10", "DueDate": "2026-02-24", "ReturnStatus": "Returned" },
+        { "LoanID": 3006, "StudentID": 1004, "BookID": 2002, "LoanDate": "2026-02-18", "DueDate": "2026-03-04", "ReturnStatus": "On Loan" },
+        { "LoanID": 3007, "StudentID": 1006, "BookID": 2005, "LoanDate": "2026-03-01", "DueDate": "2026-03-15", "ReturnStatus": "On Loan" },
+        { "LoanID": 3008, "StudentID": 1003, "BookID": 2001, "LoanDate": "2026-03-03", "DueDate": "2026-03-17", "ReturnStatus": "On Loan" }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "fromTable": "LOAN",
+      "toTable": "STUDENT",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "label": "One student can create many loan records."
+    },
+    {
+      "fromTable": "LOAN",
+      "toTable": "BOOK",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "label": "One book can appear in many loan records over time."
+    }
+  ]
+}

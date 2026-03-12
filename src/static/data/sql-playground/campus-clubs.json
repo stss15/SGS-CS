@@ -1,0 +1,137 @@
+{
+  "id": "campus-clubs",
+  "name": "Campus Clubs",
+  "difficulty": "sl",
+  "summary": "A clubs database that combines one-to-one logins with a many-to-many membership junction table.",
+  "focus": ["JOIN", "COUNT", "Composite key", "One-to-one"],
+  "relationshipHighlights": ["One-to-one", "Many-to-many", "Junction table"],
+  "defaultQuery": "SELECT s.FirstName, s.LastName, c.ClubName, m.Role FROM MEMBERSHIP m JOIN STUDENT s ON m.StudentID = s.StudentID JOIN CLUB c ON m.ClubID = c.ClubID ORDER BY c.ClubName, s.LastName;",
+  "notes": [
+    "LOGIN_ACCOUNT uses StudentID as both its primary key and foreign key, creating a one-to-one link.",
+    "MEMBERSHIP is a junction table with a composite primary key made from StudentID and ClubID."
+  ],
+  "tables": [
+    {
+      "name": "STUDENT",
+      "description": "Students who can hold club memberships and login accounts.",
+      "kind": "entity",
+      "diagram": { "x": 24, "y": 40 },
+      "columns": [
+        { "name": "StudentID", "type": "INTEGER", "notNull": true },
+        { "name": "FirstName", "type": "TEXT", "notNull": true },
+        { "name": "LastName", "type": "TEXT", "notNull": true },
+        { "name": "YearGroup", "type": "INTEGER", "notNull": true }
+      ],
+      "primaryKey": ["StudentID"],
+      "rows": [
+        { "StudentID": 4101, "FirstName": "Ava", "LastName": "Reed", "YearGroup": 12 },
+        { "StudentID": 4102, "FirstName": "Harun", "LastName": "Ali", "YearGroup": 12 },
+        { "StudentID": 4103, "FirstName": "Nina", "LastName": "Khan", "YearGroup": 11 },
+        { "StudentID": 4104, "FirstName": "Tom", "LastName": "Evans", "YearGroup": 11 },
+        { "StudentID": 4105, "FirstName": "Lina", "LastName": "Chen", "YearGroup": 10 },
+        { "StudentID": 4106, "FirstName": "Ben", "LastName": "Wright", "YearGroup": 10 }
+      ]
+    },
+    {
+      "name": "LOGIN_ACCOUNT",
+      "description": "One login account per student.",
+      "kind": "extension",
+      "diagram": { "x": 24, "y": 286 },
+      "columns": [
+        { "name": "StudentID", "type": "INTEGER", "notNull": true },
+        { "name": "Username", "type": "TEXT", "notNull": true, "unique": true },
+        { "name": "LastLogin", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["StudentID"],
+      "foreignKeys": [
+        {
+          "columns": ["StudentID"],
+          "references": { "table": "STUDENT", "columns": ["StudentID"] }
+        }
+      ],
+      "rows": [
+        { "StudentID": 4101, "Username": "areed12", "LastLogin": "2026-03-10" },
+        { "StudentID": 4102, "Username": "hali12", "LastLogin": "2026-03-07" },
+        { "StudentID": 4103, "Username": "nkhan11", "LastLogin": "2026-03-09" },
+        { "StudentID": 4104, "Username": "tevans11", "LastLogin": "2026-03-05" },
+        { "StudentID": 4105, "Username": "lchen10", "LastLogin": "2026-03-08" },
+        { "StudentID": 4106, "Username": "bwright10", "LastLogin": "2026-03-06" }
+      ]
+    },
+    {
+      "name": "CLUB",
+      "description": "Clubs available for students to join.",
+      "kind": "entity",
+      "diagram": { "x": 700, "y": 152 },
+      "columns": [
+        { "name": "ClubID", "type": "INTEGER", "notNull": true },
+        { "name": "ClubName", "type": "TEXT", "notNull": true },
+        { "name": "MeetingRoom", "type": "TEXT", "notNull": true },
+        { "name": "StaffLead", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["ClubID"],
+      "rows": [
+        { "ClubID": 5201, "ClubName": "Debate Society", "MeetingRoom": "B12", "StaffLead": "Mr Price" },
+        { "ClubID": 5202, "ClubName": "Robotics Team", "MeetingRoom": "Lab 4", "StaffLead": "Ms Ortiz" },
+        { "ClubID": 5203, "ClubName": "Eco Committee", "MeetingRoom": "A07", "StaffLead": "Mrs Lewis" },
+        { "ClubID": 5204, "ClubName": "Chess Club", "MeetingRoom": "Library", "StaffLead": "Mr Cole" }
+      ]
+    },
+    {
+      "name": "MEMBERSHIP",
+      "description": "Junction table linking students to the clubs they attend.",
+      "kind": "junction",
+      "diagram": { "x": 360, "y": 152 },
+      "columns": [
+        { "name": "StudentID", "type": "INTEGER", "notNull": true },
+        { "name": "ClubID", "type": "INTEGER", "notNull": true },
+        { "name": "Role", "type": "TEXT", "notNull": true },
+        { "name": "JoinedOn", "type": "TEXT", "notNull": true }
+      ],
+      "primaryKey": ["StudentID", "ClubID"],
+      "foreignKeys": [
+        {
+          "columns": ["StudentID"],
+          "references": { "table": "STUDENT", "columns": ["StudentID"] }
+        },
+        {
+          "columns": ["ClubID"],
+          "references": { "table": "CLUB", "columns": ["ClubID"] }
+        }
+      ],
+      "rows": [
+        { "StudentID": 4101, "ClubID": 5201, "Role": "Chair", "JoinedOn": "2025-09-16" },
+        { "StudentID": 4101, "ClubID": 5202, "Role": "Member", "JoinedOn": "2025-09-17" },
+        { "StudentID": 4102, "ClubID": 5202, "Role": "Programmer", "JoinedOn": "2025-09-17" },
+        { "StudentID": 4103, "ClubID": 5203, "Role": "Member", "JoinedOn": "2025-09-20" },
+        { "StudentID": 4104, "ClubID": 5201, "Role": "Member", "JoinedOn": "2025-09-18" },
+        { "StudentID": 4104, "ClubID": 5204, "Role": "Captain", "JoinedOn": "2025-09-19" },
+        { "StudentID": 4105, "ClubID": 5204, "Role": "Member", "JoinedOn": "2025-09-21" },
+        { "StudentID": 4106, "ClubID": 5203, "Role": "Secretary", "JoinedOn": "2025-09-22" }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "fromTable": "LOGIN_ACCOUNT",
+      "toTable": "STUDENT",
+      "fromCardinality": "one",
+      "toCardinality": "one",
+      "label": "Each student has one login account in this dataset."
+    },
+    {
+      "fromTable": "MEMBERSHIP",
+      "toTable": "STUDENT",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "label": "One student can have many club memberships."
+    },
+    {
+      "fromTable": "MEMBERSHIP",
+      "toTable": "CLUB",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "label": "One club can include many students."
+    }
+  ]
+}
