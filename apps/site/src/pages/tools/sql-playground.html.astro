@@ -1,44 +1,21 @@
 ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
 const title = 'SQL Playground | SGS Education';
 const description =
-  'A shared SQL playground for IGCSE and IB lessons with JSON-backed sample databases and schema diagrams.';
+  'A shared SQL playground for IGCSE and IB lessons with JSON-backed sample databases, custom workspaces, and schema diagrams.';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/png" href="/images/Logo.png" />
-    <link rel="apple-touch-icon" href="/images/Logo.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
-    />
-    <link rel="stylesheet" href="/css/tool-sql-playground.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js" defer></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/12.2.3/sql-formatter.min.js"
-      defer
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"
-      defer
-    ></script>
-    <script type="module" src="/js/tool-sql-playground.js"></script>
-  </head>
-  <body class="sql-playground-shell">
-    <a class="skip-link" href="#main-content">Skip to main content</a>
-
-    <main id="main-content" class="sql-playground-page">
+<BaseLayout
+  title={title}
+  description={description}
+  extraStyles={[
+    'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css',
+    'css/tool-sql-playground.css'
+  ]}
+>
+  <section class="sql-playground-route">
+    <div class="sql-playground-page">
       <header class="playground-hero">
         <div class="playground-hero-copy">
           <p class="eyebrow">Shared classroom tool</p>
@@ -177,6 +154,18 @@ const description =
           </section>
         </section>
       </div>
-    </main>
-  </body>
-</html>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js" defer></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/12.2.3/sql-formatter.min.js"
+    defer
+  ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"
+    defer
+  ></script>
+  <script type="module" src="/js/tool-sql-playground.js"></script>
+</BaseLayout>
