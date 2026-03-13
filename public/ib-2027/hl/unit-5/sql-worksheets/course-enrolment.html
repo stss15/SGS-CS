@@ -119,24 +119,30 @@
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — SELECT, WHERE, ORDER BY, multi-table JOIN, LIKE</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Filter and sort
-SELECT * FROM COURSE WHERE Level = 'HL' ORDER BY Department, CourseName;
+                <pre><code>-- Filter rows and sort the result
+SELECT column_a, column_b
+FROM table_name
+WHERE level_column = 'HL'
+ORDER BY category_column, name_column;
 
 -- Two-table join
-SELECT c.CourseName, d.DepartmentName, c.Credits
-FROM COURSE c
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID;
+SELECT a.name_column, b.group_name, a.value_column
+FROM first_table AS a
+INNER JOIN second_table AS b
+    ON a.group_id = b.group_id;
 
 -- Three-table join
-SELECT s.FirstName, s.LastName, c.CourseName, e.Score
-FROM ENROLLMENT e
-INNER JOIN STUDENT s ON e.StudentID = s.StudentID
-INNER JOIN COURSE  c ON e.CourseID  = c.CourseID
-WHERE e.Semester = 'Spring';
+SELECT a.name_column, c.title_column, b.value_column
+FROM link_table   AS b
+INNER JOIN first_table  AS a ON b.first_id = a.first_id
+INNER JOIN second_table AS c ON b.second_id = c.second_id
+WHERE b.period_column = 'Spring';
 
--- LIKE — finds 'Design' or 'Analytics' anywhere in the name
-SELECT CourseName FROM COURSE WHERE CourseName LIKE '%Design%';</code></pre>
-                <p>Remember to qualify ambiguous column names with the table alias, especially when joining — e.g. <code>e.Score</code> not just <code>Score</code>.</p>
+-- LIKE searches a text column for a pattern
+SELECT name_column
+FROM table_name
+WHERE name_column LIKE '%text%';</code></pre>
+                <p>Aliases such as <code>a</code>, <code>b</code>, and <code>c</code> shorten long queries. When several tables contain similarly named columns, qualify them with the alias to avoid ambiguity.</p>
             </div>
         </details>
 
@@ -211,36 +217,34 @@ SELECT CourseName FROM COURSE WHERE CourseName LIKE '%Design%';</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — COUNT, AVG, SUM, MAX, MIN, GROUP BY, HAVING</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Count rows per group
-SELECT DepartmentID, COUNT(*) AS CourseCount
-FROM COURSE
-GROUP BY DepartmentID;
+                <pre><code>-- Count rows in each group
+SELECT group_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY group_column;
 
--- Average, with a join
-SELECT d.DepartmentName, ROUND(AVG(e.Score), 1) AS AvgScore
-FROM ENROLLMENT e
-INNER JOIN COURSE      c ON e.CourseID      = c.CourseID
-INNER JOIN DEPARTMENT  d ON c.DepartmentID  = d.DepartmentID
-GROUP BY d.DepartmentName;
+-- Average a numeric value in each group
+SELECT group_column, ROUND(AVG(score_column), 1) AS average_score
+FROM table_name
+GROUP BY group_column;
 
--- MAX and MIN per course
-SELECT CourseID, MAX(Score) AS Highest, MIN(Score) AS Lowest
-FROM ENROLLMENT
-GROUP BY CourseID;
+-- MAX and MIN find the largest and smallest value in each group
+SELECT group_column,
+       MAX(score_column) AS highest_score,
+       MIN(score_column) AS lowest_score
+FROM table_name
+GROUP BY group_column;
 
--- Sum credits by level
-SELECT Level, SUM(Credits) AS TotalCredits
-FROM COURSE
-GROUP BY Level;
+-- SUM totals a numeric column for each group
+SELECT category_column, SUM(number_column) AS total_value
+FROM table_name
+GROUP BY category_column;
 
--- HAVING — filter groups AFTER aggregation
-SELECT d.DepartmentName, COUNT(*) AS Enrolments
-FROM ENROLLMENT e
-INNER JOIN COURSE     c ON e.CourseID     = c.CourseID
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID
-GROUP BY d.DepartmentName
+-- HAVING filters groups after aggregation
+SELECT group_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY group_column
 HAVING COUNT(*) >= 4;</code></pre>
-                <p><strong>Key rule:</strong> <code>WHERE</code> filters <em>rows before</em> grouping. <code>HAVING</code> filters <em>groups after</em> aggregation. Any column in <code>SELECT</code> that isn't inside an aggregate function must appear in <code>GROUP BY</code>.</p>
+                <p><strong>Key rule:</strong> <code>WHERE</code> filters rows before grouping, while <code>HAVING</code> filters grouped results after the aggregate functions have run. Non-aggregated columns in the <code>SELECT</code> list must appear in <code>GROUP BY</code>.</p>
             </div>
         </details>
 
@@ -333,23 +337,20 @@ HAVING COUNT(*) >= 4;</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — CREATE VIEW and querying views</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Create a virtual view
-CREATE VIEW HighScorers AS
-SELECT s.FirstName, s.LastName,
-       c.CourseName, d.DepartmentName, e.Score
-FROM ENROLLMENT e
-INNER JOIN STUDENT    s ON e.StudentID    = s.StudentID
-INNER JOIN COURSE     c ON e.CourseID     = c.CourseID
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID
-WHERE e.Score >= 90;
+                <pre><code>-- Create a view from a reusable SELECT query
+CREATE VIEW view_name AS
+SELECT column_a, column_b, column_c
+FROM table_name
+WHERE status_column = 'Active';
 
--- Query the view like a table
-SELECT * FROM HighScorers
-ORDER BY Score DESC, LastName;
+-- Query a view just like a table
+SELECT *
+FROM view_name
+ORDER BY column_a;
 
--- Drop a view
-DROP VIEW HighScorers;</code></pre>
-                <p>A <strong>virtual view</strong> stores the query definition only — it re-runs the underlying query every time you <code>SELECT</code> from it. A <strong>materialized view</strong> (or snapshot) physically stores the result; it is faster to query but goes stale unless refreshed.</p>
+-- Drop a view definition
+DROP VIEW view_name;</code></pre>
+                <p>A <strong>virtual view</strong> stores the query definition, not the result rows themselves. You can query it like a table, but the underlying <code>SELECT</code> runs each time unless the database supports materialized views or snapshots.</p>
             </div>
         </details>
 
@@ -397,26 +398,28 @@ DROP VIEW HighScorers;</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — BEGIN, COMMIT, ROLLBACK</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Start a transaction, insert, then commit
+                <pre><code>-- Start a transaction
 BEGIN;
 
-INSERT INTO STUDENT (StudentID, FirstName, LastName, Cohort)
-VALUES (999, 'Alex', 'Chen', 2026);
+UPDATE account_table
+SET balance_column = balance_column - 50
+WHERE account_id = 1;
 
-INSERT INTO ENROLLMENT (StudentID, CourseID, Semester, Score)
-VALUES (999, 101, 'Spring', 78);
+UPDATE account_table
+SET balance_column = balance_column + 50
+WHERE account_id = 2;
 
-COMMIT; -- makes changes permanent
+COMMIT; -- makes the whole transaction permanent
 
--- Start a second transaction, change something, then undo it
+-- Undo an uncommitted transaction
 BEGIN;
 
-UPDATE ENROLLMENT SET Score = 100 WHERE StudentID = 999;
+UPDATE table_name
+SET status_column = 'Archived'
+WHERE id_column = 10;
 
-SELECT Score FROM ENROLLMENT WHERE StudentID = 999; -- inspect
-
-ROLLBACK; -- reverts to state before BEGIN</code></pre>
-                <p><strong>ACID reminder:</strong> <em>Atomicity</em> — all or nothing. <em>Consistency</em> — invariants preserved. <em>Isolation</em> — concurrent transactions don't corrupt each other. <em>Durability</em> — committed data survives crashes.</p>
+ROLLBACK; -- returns the data to its state before BEGIN</code></pre>
+                <p><strong>ACID reminder:</strong> <em>Atomicity</em> means all of the transaction succeeds or none of it does. <em>Consistency</em>, <em>Isolation</em>, and <em>Durability</em> are what make transactions reliable under real use.</p>
             </div>
         </details>
 

@@ -177,27 +177,33 @@
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — SELECT, WHERE, LIKE, BETWEEN</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Select all columns
+                <pre><code>-- Select all columns from a table
 SELECT * FROM table_name;
 
--- Select specific columns
-SELECT col1, col2 FROM table_name;
+-- Select only the columns you need
+SELECT column_a, column_b
+FROM table_name;
 
--- Filter rows
-SELECT * FROM table_name WHERE column = 'value';
+-- Filter rows with WHERE
+SELECT *
+FROM table_name
+WHERE status_column = 'Active';
 
--- AND / OR
-SELECT * FROM table_name WHERE col1 = 'A' OR col1 = 'B';
+-- AND / OR combine conditions
+SELECT *
+FROM table_name
+WHERE type_column = 'A' OR type_column = 'B';
 
 -- BETWEEN (inclusive)
-SELECT * FROM table_name WHERE year BETWEEN 2020 AND 2024;
+SELECT *
+FROM table_name
+WHERE numeric_column BETWEEN 10 AND 20;
 
--- LIKE with wildcards: % = any sequence of characters
---   Contains:    WHERE title LIKE '%Code%'
---   Starts with: WHERE title LIKE 'The%'
---   Ends with:   WHERE title LIKE '%ing'
-SELECT title, author FROM BOOK WHERE title LIKE '%Code%';</code></pre>
-                <p>SQL keywords are not case-sensitive, but it is convention to write them in UPPER CASE. String values in <code>WHERE</code> clauses are case-sensitive in most databases.</p>
+-- LIKE with wildcards: % means “any number of characters”
+SELECT *
+FROM table_name
+WHERE text_column LIKE '%keyword%';</code></pre>
+                <p><code>WHERE</code> filters rows before sorting or grouping. <code>BETWEEN</code> includes both end values, and <code>LIKE</code> is used for pattern matching in text columns.</p>
             </div>
         </details>
 
@@ -272,18 +278,26 @@ SELECT title, author FROM BOOK WHERE title LIKE '%Code%';</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — ORDER BY, DISTINCT</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Sort ascending (A–Z, 0–9) — ASC is the default
-SELECT * FROM table_name ORDER BY column ASC;
+                <pre><code>-- Sort ascending (ASC is the default)
+SELECT *
+FROM table_name
+ORDER BY column_name ASC;
 
 -- Sort descending (Z–A, 9–0)
-SELECT * FROM table_name ORDER BY column DESC;
+SELECT *
+FROM table_name
+ORDER BY date_column DESC;
 
--- Sort by multiple columns (primary then secondary)
-SELECT * FROM STUDENT ORDER BY TutorGroup ASC, LastName ASC;
+-- Sort by more than one column
+SELECT *
+FROM table_name
+ORDER BY group_column ASC, name_column ASC;
 
--- DISTINCT removes duplicate values
-SELECT DISTINCT ReturnStatus FROM LOAN ORDER BY ReturnStatus;</code></pre>
-                <p><code>ORDER BY</code> always applies to the <em>final result set</em> — put it at the end of your query, after any <code>WHERE</code> clause.</p>
+-- DISTINCT removes repeated values from the selected columns
+SELECT DISTINCT category_column
+FROM table_name
+ORDER BY category_column;</code></pre>
+                <p><code>ORDER BY</code> comes at the end of the query and controls how the final result is sorted. <code>DISTINCT</code> removes duplicate rows from the columns you selected.</p>
             </div>
         </details>
 
@@ -331,24 +345,28 @@ SELECT DISTINCT ReturnStatus FROM LOAN ORDER BY ReturnStatus;</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — JOIN</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- INNER JOIN: only rows that match in both tables
-SELECT col1, col2
-FROM tableA
-INNER JOIN tableB ON tableA.key = tableB.foreign_key;
+                <pre><code>-- INNER JOIN returns rows that match in both tables
+SELECT a.column_a, b.column_b
+FROM first_table AS a
+INNER JOIN second_table AS b
+    ON a.primary_key = b.foreign_key;
 
--- Joining LOAN to STUDENT
-SELECT s.FirstName, s.LastName, l.ReturnStatus
-FROM LOAN l
-INNER JOIN STUDENT s ON l.StudentID = s.StudentID;
+-- Join three related tables
+SELECT a.column_a, b.column_b, c.column_c
+FROM first_table  AS a
+INNER JOIN link_table   AS b
+    ON a.primary_key = b.first_id
+INNER JOIN third_table  AS c
+    ON b.third_id = c.primary_key;
 
--- Joining three tables
-SELECT s.FirstName, s.LastName, b.Title, l.DueDate
-FROM LOAN l
-INNER JOIN STUDENT s ON l.StudentID = s.StudentID
-INNER JOIN BOOK b   ON l.BookID    = b.BookID
-WHERE l.ReturnStatus = 'On Loan'
-ORDER BY l.DueDate;</code></pre>
-                <p>Use table aliases (e.g. <code>l</code>, <code>s</code>, <code>b</code>) to keep long queries readable. Always qualify column names with the alias when the same column name exists in more than one table.</p>
+-- Add filtering and sorting after the JOIN clauses
+SELECT a.column_a, c.column_c
+FROM first_table  AS a
+INNER JOIN link_table   AS b ON a.primary_key = b.first_id
+INNER JOIN third_table  AS c ON b.third_id    = c.primary_key
+WHERE c.status_column = 'Open'
+ORDER BY c.date_column;</code></pre>
+                <p>A <code>JOIN</code> links rows from different tables using matching key values. Aliases like <code>a</code>, <code>b</code>, and <code>c</code> make longer queries easier to read and write.</p>
             </div>
         </details>
 
@@ -405,28 +423,27 @@ ORDER BY l.DueDate;</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — CREATE TABLE, INSERT, UPDATE, DELETE</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Create a table (DDL)
-CREATE TABLE REVIEW (
-    ReviewID   INTEGER PRIMARY KEY,
-    BookID     INTEGER,
-    Rating     INTEGER,
-    Comment    TEXT,
-    FOREIGN KEY (BookID) REFERENCES BOOK(BookID)
+                <pre><code>-- CREATE TABLE defines a new table structure
+CREATE TABLE child_table (
+    child_id   INTEGER PRIMARY KEY,
+    parent_id  INTEGER,
+    note_text  TEXT,
+    FOREIGN KEY (parent_id) REFERENCES parent_table(parent_id)
 );
 
--- Insert a row (DML)
-INSERT INTO REVIEW (ReviewID, BookID, Rating, Comment)
-VALUES (1, 2002, 5, 'Excellent introduction to coding.');
+-- INSERT adds a new row
+INSERT INTO child_table (child_id, parent_id, note_text)
+VALUES (1, 10, 'Example note');
 
--- Update a row (DML) — always include a WHERE clause
-UPDATE LOAN
-SET ReturnStatus = 'Returned'
-WHERE LoanID = 3006;
+-- UPDATE changes existing rows
+UPDATE child_table
+SET note_text = 'Updated note'
+WHERE child_id = 1;
 
--- Delete a row (DML) — always include a WHERE clause
-DELETE FROM REVIEW
-WHERE ReviewID = 1;</code></pre>
-                <p><strong>DDL</strong> (Data Definition Language) changes the structure — <code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>. <strong>DML</strong> (Data Manipulation Language) changes the data — <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>SELECT</code>.</p>
+-- DELETE removes rows
+DELETE FROM child_table
+WHERE child_id = 1;</code></pre>
+                <p><strong>DDL</strong> changes the database structure, while <strong>DML</strong> changes the data stored in that structure. In <code>UPDATE</code> and <code>DELETE</code>, the <code>WHERE</code> clause is what targets the rows you mean to change.</p>
             </div>
         </details>
 

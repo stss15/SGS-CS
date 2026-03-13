@@ -168,20 +168,25 @@
             <summary><i class="fa-solid fa-code"></i> Syntax reference — WHERE, BETWEEN, AND/OR, DISTINCT</summary>
             <div class="sql-syntax-body">
                 <pre><code>-- Numeric comparison
-SELECT * FROM PRODUCT WHERE Price > 4.00;
+SELECT *
+FROM table_name
+WHERE numeric_column > 4.00;
 
--- Text OR
-SELECT * FROM CUSTOMER
-WHERE House = 'Ash' OR House = 'Oak'
-ORDER BY CustomerName;
+-- AND / OR combine logical tests
+SELECT *
+FROM table_name
+WHERE category_column = 'A' OR category_column = 'B'
+ORDER BY name_column;
 
 -- Date BETWEEN (inclusive)
-SELECT * FROM ORDER_HEADER
-WHERE OrderDate BETWEEN '2026-03-05' AND '2026-03-12';
+SELECT *
+FROM table_name
+WHERE date_column BETWEEN '2026-01-01' AND '2026-01-31';
 
 -- DISTINCT values
-SELECT DISTINCT PaymentMethod FROM ORDER_HEADER;</code></pre>
-                <p>Date literals must be in <code>YYYY-MM-DD</code> format in most SQL engines. Wrap them in single quotes like any other string.</p>
+SELECT DISTINCT category_column
+FROM table_name;</code></pre>
+                <p>Date values are usually written in <code>YYYY-MM-DD</code> format and wrapped in single quotes. <code>BETWEEN</code> includes both the start and end values.</p>
             </div>
         </details>
 
@@ -238,22 +243,21 @@ SELECT DISTINCT PaymentMethod FROM ORDER_HEADER;</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — Multi-table JOIN through junction table</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Four-table join pattern
--- CUSTOMER → ORDER_HEADER → ORDER_ITEM → PRODUCT
-SELECT c.CustomerName, oh.OrderDate, p.ProductName, oi.Quantity
-FROM ORDER_HEADER oh
-INNER JOIN CUSTOMER  c  ON oh.CustomerID = c.CustomerID
-INNER JOIN ORDER_ITEM oi ON oh.OrderID  = oi.OrderID
-INNER JOIN PRODUCT   p  ON oi.ProductID = p.ProductID;
+                <pre><code>-- A common multi-table join pattern
+SELECT a.name_column, b.date_column, c.item_column, j.quantity_column
+FROM parent_table    AS b
+INNER JOIN owner_table    AS a ON b.owner_id  = a.owner_id
+INNER JOIN junction_table AS j ON b.record_id = j.record_id
+INNER JOIN item_table     AS c ON j.item_id   = c.item_id;
 
--- Filter the joined result
-SELECT p.ProductName, oh.OrderDate
-FROM ORDER_HEADER oh
-INNER JOIN ORDER_ITEM oi ON oh.OrderID   = oi.OrderID
-INNER JOIN PRODUCT   p  ON oi.ProductID  = p.ProductID
-WHERE p.Category = 'Drink' AND oh.OrderDate >= '2026-03-07'
-ORDER BY oh.OrderDate;</code></pre>
-                <p>The key join path is: <code>ORDER_HEADER</code> ↔ <code>ORDER_ITEM</code> (one-to-many) ↔ <code>PRODUCT</code>. Each order line links one header to one product.</p>
+-- Add a filter after the joins
+SELECT c.item_column, b.date_column
+FROM parent_table    AS b
+INNER JOIN junction_table AS j ON b.record_id = j.record_id
+INNER JOIN item_table     AS c ON j.item_id   = c.item_id
+WHERE c.category_column = 'Example'
+ORDER BY b.date_column;</code></pre>
+                <p>When a query crosses several tables, write one <code>JOIN</code> at a time and follow the key path carefully. A junction table usually holds the links between a header record and an item record.</p>
             </div>
         </details>
 
@@ -310,27 +314,28 @@ ORDER BY oh.OrderDate;</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — CREATE, INSERT, UPDATE, DELETE</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Create a new table with FK
-CREATE TABLE PROMOTION (
-    PromotionID INTEGER PRIMARY KEY,
-    ProductID   INTEGER,
-    PromoText   TEXT,
-    StartDate   DATE,
-    FOREIGN KEY (ProductID) REFERENCES PRODUCT(ProductID)
+                <pre><code>-- Create a new table with a foreign key
+CREATE TABLE child_table (
+    child_id    INTEGER PRIMARY KEY,
+    parent_id   INTEGER,
+    note_text   TEXT,
+    start_date  DATE,
+    FOREIGN KEY (parent_id) REFERENCES parent_table(parent_id)
 );
 
--- Insert
-INSERT INTO PROMOTION (PromotionID, ProductID, PromoText, StartDate)
-VALUES (1, 3, '20% off this week!', '2026-03-13');
+-- Insert a row
+INSERT INTO child_table (child_id, parent_id, note_text, start_date)
+VALUES (1, 3, 'Example note', '2026-01-15');
 
--- Update with WHERE — always target exactly the rows you need
-UPDATE PRODUCT
-SET Price = 1.1
-WHERE ProductName = 'Still Water';
+-- Update existing data
+UPDATE table_name
+SET numeric_column = 1.1
+WHERE id_column = 3;
 
--- Delete
-DELETE FROM PROMOTION WHERE PromotionID = 1;</code></pre>
-                <p>Never omit the <code>WHERE</code> clause on an <code>UPDATE</code> or <code>DELETE</code> — without it every row in the table is affected.</p>
+-- Delete one row
+DELETE FROM child_table
+WHERE child_id = 1;</code></pre>
+                <p>Always think about how many rows your <code>UPDATE</code> or <code>DELETE</code> will affect. Without a <code>WHERE</code> clause, every row in the table is changed.</p>
             </div>
         </details>
 
@@ -396,21 +401,24 @@ DELETE FROM PROMOTION WHERE PromotionID = 1;</code></pre>
         <details class="sql-syntax-ref">
             <summary><i class="fa-solid fa-code"></i> Syntax reference — GROUP BY and HAVING</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- COUNT rows per group
-SELECT PaymentMethod, COUNT(*) AS OrderCount
-FROM ORDER_HEADER
-GROUP BY PaymentMethod;
+                <pre><code>-- Count rows in each group
+SELECT group_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY group_column;
 
--- HAVING filters AFTER grouping (WHERE filters BEFORE)
-SELECT PaymentMethod, COUNT(*) AS OrderCount
-FROM ORDER_HEADER
-GROUP BY PaymentMethod
-HAVING COUNT(*) >= 3;
+-- Use more than one aggregate
+SELECT group_column,
+       COUNT(*) AS row_count,
+       AVG(number_column) AS average_value
+FROM table_name
+GROUP BY group_column;
 
--- Rule of thumb:
---   WHERE  → filter individual rows   (before GROUP BY)
---   HAVING → filter groups / aggregates (after GROUP BY)</code></pre>
-                <p><code>GROUP BY</code> collapses all rows with the same value into one. Aggregate functions like <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MAX</code>, <code>MIN</code> then run on each group.</p>
+-- HAVING filters grouped results
+SELECT group_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY group_column
+HAVING COUNT(*) >= 3;</code></pre>
+                <p><code>GROUP BY</code> creates one result row per group. <code>WHERE</code> filters individual rows before grouping, while <code>HAVING</code> filters the grouped results afterwards.</p>
             </div>
         </details>
 
