@@ -1,0 +1,786 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1: School Library | SQL Worksheets</title>
+    <meta name="description" content="SQL worksheet for the School Library dataset.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sql-worksheet.css">
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/Logo.png" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/index.html" class="nav-link ">KS3</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <main id="main-content" class="">
+
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 1 | SL Core</p>
+            <h1 class="sql-sheet-title">School Library</h1>
+            <p class="sql-sheet-summary">
+                Start with a clean relational model of students, books, and loans. This worksheet covers
+                relational database fundamentals, schema language, core retrieval queries, and a first step
+                into DDL and DML.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">SELECT</span>
+                <span class="sql-chip">WHERE</span>
+                <span class="sql-chip">LIKE</span>
+                <span class="sql-chip">BETWEEN</span>
+                <span class="sql-chip">ORDER BY</span>
+                <span class="sql-chip">JOIN</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=school-library" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open SQL Playground
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/sl/unit-6/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-meta-strip">
+        <div class="sql-meta-cell">
+            <h2>Dataset</h2>
+            <ul>
+                <li>3 tables: <code>STUDENT</code>, <code>BOOK</code>, <code>LOAN</code></li>
+                <li>Clear one-to-many relationships via foreign keys</li>
+                <li>Good for first joins — each loan links one student to one book</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>A3.1.1 relational database features, benefits, and limitations</li>
+                <li>A3.2.1 schema levels</li>
+                <li>A3.3.1 DDL versus DML</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Open the Schema and ERD tabs before Section 1.</li>
+                <li>Write SQL in the playground, not on this page.</li>
+                <li>Do Section 5 last — it changes live data.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Schema Warm-Up</h2>
+                <p>Use the table explorer, schema view, and ERD before writing queries.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Primary keys</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Name the three tables and identify the primary key in each one.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.2.1</span>
+                    <span class="sql-task-focus">Schema levels</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>State which schema level would show: the entities and their relationships, the data types and keys, and the indexing or storage choices.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Relationships</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Describe the relationship between <code>STUDENT</code> and <code>LOAN</code>, and between <code>BOOK</code> and <code>LOAN</code>. Include cardinality and the role of referential integrity.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Evaluation</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Give one benefit and one limitation of storing this data in a relational database rather than in separate spreadsheets.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Retrieve and Filter</h2>
+                <p>Build confidence with <code>SELECT</code>, <code>FROM</code>, and <code>WHERE</code>.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Syntax reference — SELECT, WHERE, LIKE, BETWEEN</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Select all columns
+SELECT * FROM table_name;
+
+-- Select specific columns
+SELECT col1, col2 FROM table_name;
+
+-- Filter rows
+SELECT * FROM table_name WHERE column = 'value';
+
+-- AND / OR
+SELECT * FROM table_name WHERE col1 = 'A' OR col1 = 'B';
+
+-- BETWEEN (inclusive)
+SELECT * FROM table_name WHERE year BETWEEN 2020 AND 2024;
+
+-- LIKE with wildcards: % = any sequence of characters
+--   Contains:    WHERE title LIKE '%Code%'
+--   Starts with: WHERE title LIKE 'The%'
+--   Ends with:   WHERE title LIKE '%ing'
+SELECT title, author FROM BOOK WHERE title LIKE '%Code%';</code></pre>
+                <p>SQL keywords are not case-sensitive, but it is convention to write them in UPPER CASE. String values in <code>WHERE</code> clauses are case-sensitive in most databases.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">SELECT *</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Display every row and column from <code>STUDENT</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Specific columns</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show only <code>FirstName</code>, <code>LastName</code>, and <code>TutorGroup</code> for students in tutor group <code>12B</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">AND / OR</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>List the titles and genres of books where the genre is <code>Science</code> or <code>Technology</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Find every loan record where <code>ReturnStatus</code> is <code>Overdue</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">BETWEEN</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show books published between <code>2020</code> and <code>2024</code> inclusive.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">LIKE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return the titles and authors of books whose title contains the word <code>Code</code>.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Sort the Result Set</h2>
+                <p>Control how the rows are presented after filtering.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Syntax reference — ORDER BY, DISTINCT</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Sort ascending (A–Z, 0–9) — ASC is the default
+SELECT * FROM table_name ORDER BY column ASC;
+
+-- Sort descending (Z–A, 9–0)
+SELECT * FROM table_name ORDER BY column DESC;
+
+-- Sort by multiple columns (primary then secondary)
+SELECT * FROM STUDENT ORDER BY TutorGroup ASC, LastName ASC;
+
+-- DISTINCT removes duplicate values
+SELECT DISTINCT ReturnStatus FROM LOAN ORDER BY ReturnStatus;</code></pre>
+                <p><code>ORDER BY</code> always applies to the <em>final result set</em> — put it at the end of your query, after any <code>WHERE</code> clause.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">DISTINCT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>List every distinct value that appears in <code>ReturnStatus</code>, sorted alphabetically.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">ORDER BY DESC</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Display book title, author, and published year, sorted newest to oldest. If two books share a year, sort those alphabetically by title.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">ORDER BY ASC</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show student names grouped by tutor group, then by last name.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">4</span>
+            <div>
+                <h2>First Joins</h2>
+                <p>Use foreign keys to combine tables into one result set.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Syntax reference — JOIN</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- INNER JOIN: only rows that match in both tables
+SELECT col1, col2
+FROM tableA
+INNER JOIN tableB ON tableA.key = tableB.foreign_key;
+
+-- Joining LOAN to STUDENT
+SELECT s.FirstName, s.LastName, l.ReturnStatus
+FROM LOAN l
+INNER JOIN STUDENT s ON l.StudentID = s.StudentID;
+
+-- Joining three tables
+SELECT s.FirstName, s.LastName, b.Title, l.DueDate
+FROM LOAN l
+INNER JOIN STUDENT s ON l.StudentID = s.StudentID
+INNER JOIN BOOK b   ON l.BookID    = b.BookID
+WHERE l.ReturnStatus = 'On Loan'
+ORDER BY l.DueDate;</code></pre>
+                <p>Use table aliases (e.g. <code>l</code>, <code>s</code>, <code>b</code>) to keep long queries readable. Always qualify column names with the alias when the same column name exists in more than one table.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 2 tables</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Join <code>LOAN</code> to <code>STUDENT</code> and show which students currently have a book <code>On Loan</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 2 tables</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Join <code>LOAN</code> to <code>BOOK</code> to list the titles, authors, and due dates for every overdue loan.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 3 tables</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show each current loan with student full name, book title, author, and due date. Sort by due date first.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Integrity</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Explain why a loan row with <code>StudentID = 9999</code> should be rejected in a relational database with referential integrity turned on.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">5</span>
+            <div>
+                <h2>DDL and DML</h2>
+                <p>Complete these last. They change the live workspace.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Syntax reference — CREATE TABLE, INSERT, UPDATE, DELETE</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Create a table (DDL)
+CREATE TABLE REVIEW (
+    ReviewID   INTEGER PRIMARY KEY,
+    BookID     INTEGER,
+    Rating     INTEGER,
+    Comment    TEXT,
+    FOREIGN KEY (BookID) REFERENCES BOOK(BookID)
+);
+
+-- Insert a row (DML)
+INSERT INTO REVIEW (ReviewID, BookID, Rating, Comment)
+VALUES (1, 2002, 5, 'Excellent introduction to coding.');
+
+-- Update a row (DML) — always include a WHERE clause
+UPDATE LOAN
+SET ReturnStatus = 'Returned'
+WHERE LoanID = 3006;
+
+-- Delete a row (DML) — always include a WHERE clause
+DELETE FROM REVIEW
+WHERE ReviewID = 1;</code></pre>
+                <p><strong>DDL</strong> (Data Definition Language) changes the structure — <code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>. <strong>DML</strong> (Data Manipulation Language) changes the data — <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>SELECT</code>.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">DDL</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Create a new table called <code>REVIEW</code> with columns <code>ReviewID</code>, <code>BookID</code>, <code>Rating</code>, and <code>Comment</code>. Make <code>ReviewID</code> the primary key and link <code>BookID</code> back to <code>BOOK</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">INSERT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Insert one review for <code>BookID 2002</code> with a rating and a short comment.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">UPDATE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Update loan <code>3006</code> so that its <code>ReturnStatus</code> becomes <code>Returned</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">DELETE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Delete the review row you added, then check that the table is empty again.</p>
+                </div>
+            </li>
+        </ol>
+        <p class="sql-sheet-note">Reset the dataset afterwards by reopening the worksheet launch link or selecting <code>School Library</code> again in the playground.</p>
+    </section>
+
+    <!-- Teacher answer gate -->
+    <section class="sql-answers-gate" id="answers">
+        <div class="sql-answers-lock" id="answers-lock">
+            <div class="sql-answers-lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <h2>Teacher Answers</h2>
+            <p>Enter the teacher password to reveal model answers for all sections.</p>
+            <div class="sql-answers-lock-row">
+                <input type="password" id="answer-pw" placeholder="Password…" autocomplete="off">
+                <button onclick="checkAnswerPw()">Unlock</button>
+            </div>
+            <p class="sql-answers-err" id="answer-err"></p>
+        </div>
+        <div class="sql-answers-content" id="answer-content" hidden>
+            <h2><i class="fa-solid fa-unlock"></i> Model Answers — School Library</h2>
+
+            <h3>Section 1 — Schema Warm-Up</h3>
+            <dl>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">1</span>
+                    <div class="sql-answer-body">
+                        <strong>Three tables and primary keys</strong>
+                        <code>STUDENT</code> → <code>StudentID</code> &nbsp;|&nbsp; <code>BOOK</code> → <code>BookID</code> &nbsp;|&nbsp; <code>LOAN</code> → <code>LoanID</code>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">2</span>
+                    <div class="sql-answer-body">
+                        <strong>Schema levels</strong>
+                        Entities and relationships → <strong>conceptual</strong> schema (ERD). Data types and keys → <strong>logical</strong> schema. Indexing and storage → <strong>physical</strong> schema.
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">3</span>
+                    <div class="sql-answer-body">
+                        <strong>Relationships</strong>
+                        STUDENT to LOAN: one-to-many (one student can have many loans; each loan belongs to exactly one student). BOOK to LOAN: one-to-many (one book can appear in many loan records). Referential integrity ensures a <code>StudentID</code> or <code>BookID</code> in LOAN must exist in the parent table.
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">4</span>
+                    <div class="sql-answer-body">
+                        <strong>Benefit / Limitation</strong>
+                        Benefit: data is stored once and linked, avoiding duplication (e.g. a student's name is in one place). Limitation: queries across tables require joins, which adds complexity compared to a single flat spreadsheet.
+                    </div>
+                </div>
+            </dl>
+
+            <h3>Section 2 — Retrieve and Filter</h3>
+            <dl>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">1</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT * FROM STUDENT;</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">2</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT FirstName, LastName, TutorGroup
+FROM STUDENT
+WHERE TutorGroup = '12B';</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">3</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT Title, Genre
+FROM BOOK
+WHERE Genre = 'Science' OR Genre = 'Technology';</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">4</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT * FROM LOAN
+WHERE ReturnStatus = 'Overdue';</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">5</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT * FROM BOOK
+WHERE PublishedYear BETWEEN 2020 AND 2024;</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">6</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT Title, Author
+FROM BOOK
+WHERE Title LIKE '%Code%';</code></pre>
+                    </div>
+                </div>
+            </dl>
+
+            <h3>Section 3 — Sort the Result Set</h3>
+            <dl>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">1</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT DISTINCT ReturnStatus
+FROM LOAN
+ORDER BY ReturnStatus;</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">2</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT Title, Author, PublishedYear
+FROM BOOK
+ORDER BY PublishedYear DESC, Title ASC;</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">3</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT FirstName, LastName, TutorGroup
+FROM STUDENT
+ORDER BY TutorGroup ASC, LastName ASC;</code></pre>
+                    </div>
+                </div>
+            </dl>
+
+            <h3>Section 4 — First Joins</h3>
+            <dl>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">1</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT s.FirstName, s.LastName
+FROM LOAN l
+INNER JOIN STUDENT s ON l.StudentID = s.StudentID
+WHERE l.ReturnStatus = 'On Loan';</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">2</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT b.Title, b.Author, l.DueDate
+FROM LOAN l
+INNER JOIN BOOK b ON l.BookID = b.BookID
+WHERE l.ReturnStatus = 'Overdue';</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">3</span>
+                    <div class="sql-answer-body">
+                        <pre><code>SELECT s.FirstName, s.LastName, b.Title, b.Author, l.DueDate
+FROM LOAN l
+INNER JOIN STUDENT s ON l.StudentID = s.StudentID
+INNER JOIN BOOK b   ON l.BookID    = b.BookID
+WHERE l.ReturnStatus = 'On Loan'
+ORDER BY l.DueDate;</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">4</span>
+                    <div class="sql-answer-body">
+                        <strong>Referential integrity</strong>
+                        The LOAN table has a foreign key on <code>StudentID</code> that references <code>STUDENT(StudentID)</code>. If <code>StudentID = 9999</code> does not exist in STUDENT, the database engine refuses the insert to maintain referential integrity — preventing orphaned loan records that cannot be linked to a real student.
+                    </div>
+                </div>
+            </dl>
+
+            <h3>Section 5 — DDL and DML</h3>
+            <dl>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">1</span>
+                    <div class="sql-answer-body">
+                        <pre><code>CREATE TABLE REVIEW (
+    ReviewID  INTEGER PRIMARY KEY,
+    BookID    INTEGER,
+    Rating    INTEGER,
+    Comment   TEXT,
+    FOREIGN KEY (BookID) REFERENCES BOOK(BookID)
+);</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">2</span>
+                    <div class="sql-answer-body">
+                        <pre><code>INSERT INTO REVIEW (ReviewID, BookID, Rating, Comment)
+VALUES (1, 2002, 5, 'A brilliant read.');</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">3</span>
+                    <div class="sql-answer-body">
+                        <pre><code>UPDATE LOAN
+SET ReturnStatus = 'Returned'
+WHERE LoanID = 3006;</code></pre>
+                    </div>
+                </div>
+                <div class="sql-answer-item">
+                    <span class="sql-answer-num">4</span>
+                    <div class="sql-answer-body">
+                        <pre><code>DELETE FROM REVIEW WHERE ReviewID = 1;
+SELECT * FROM REVIEW; -- should return 0 rows</code></pre>
+                    </div>
+                </div>
+            </dl>
+        </div>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> Back to worksheet list</a>
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/campus-clubs.html">Next: Campus Clubs <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <script>
+        function checkAnswerPw() {
+            var val = document.getElementById('answer-pw').value;
+            if (val === atob('dGVhY2hlcjE=')) {
+                document.getElementById('answer-content').hidden = false;
+                document.getElementById('answers-lock').hidden = true;
+            } else {
+                document.getElementById('answer-err').textContent = 'Incorrect password. Try again.';
+                document.getElementById('answer-pw').value = '';
+                document.getElementById('answer-pw').focus();
+            }
+        }
+        document.getElementById('answer-pw').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkAnswerPw();
+        });
+    </script>
+</body>
+
+</html>
