@@ -1,96 +1,142 @@
-/* ============================================================
-   SQL Worksheet — Component Styles
-   ============================================================ */
-
 :root {
-    --sql-ink:          #14213d;
-    --sql-accent:       #0f766e;
-    --sql-accent-soft:  #dff7f3;
-    --sql-accent-mid:   rgba(15, 118, 110, 0.18);
-    --sql-warm:         #f4efe6;
-    --sql-line:         #d7dde8;
-    --sql-panel:        #ffffff;
-    --sql-panel-alt:    #f7f9fc;
-    --sql-muted:        #5f6c82;
-    --sql-shadow:       0 18px 45px rgba(20, 33, 61, 0.08);
-    --sql-radius:       20px;
-    --sql-code-bg:      #1a2236;
-    --sql-code-ink:     #e2f0ed;
-    --sql-answer-bg:    rgba(15, 118, 110, 0.06);
-    --sql-answer-border:rgba(15, 118, 110, 0.3);
+    --sql-bg: #f4f0e8;
+    --sql-paper: rgba(255, 255, 255, 0.74);
+    --sql-paper-strong: rgba(255, 255, 255, 0.9);
+    --sql-ink: #19284a;
+    --sql-ink-soft: #5f6f8d;
+    --sql-accent: #0d7c74;
+    --sql-accent-soft: rgba(13, 124, 116, 0.12);
+    --sql-accent-line: rgba(13, 124, 116, 0.24);
+    --sql-line: rgba(25, 40, 74, 0.15);
+    --sql-line-strong: rgba(25, 40, 74, 0.24);
+    --sql-wash: rgba(225, 238, 234, 0.72);
+    --sql-deep: #172746;
+    --sql-code-bg: linear-gradient(135deg, #172746, #132036 58%, #0f7b73 150%);
+    --sql-code-ink: #d6fff1;
+    --sql-radius-xl: 34px;
+    --sql-radius-lg: 22px;
+    --sql-radius-md: 14px;
+    --sql-shadow-soft: 0 24px 60px rgba(25, 40, 74, 0.07);
 }
 
-/* ── Shell ────────────────────────────────────────────────── */
 .sql-sheet-shell {
-    width: min(1100px, calc(100vw - 3rem));
-    margin: 2rem auto 4rem;
+    position: relative;
+    width: min(1180px, calc(100vw - 3rem));
+    margin: 1.75rem auto 4rem;
+    padding: 1.4rem 0 0;
 }
 
-/* ── Hero ─────────────────────────────────────────────────── */
+.sql-sheet-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0 -4vw auto;
+    height: 23rem;
+    z-index: -2;
+    border-radius: 40px;
+    background:
+        radial-gradient(circle at 0 12%, rgba(13, 124, 116, 0.11), transparent 38%),
+        radial-gradient(circle at 92% 12%, rgba(25, 40, 74, 0.1), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0));
+    filter: blur(2px);
+}
+
+.sql-sheet-shell::after {
+    content: "";
+    position: absolute;
+    inset: 1.25rem -3vw auto;
+    height: calc(100% - 1.25rem);
+    z-index: -3;
+    background:
+        repeating-linear-gradient(
+            180deg,
+            rgba(25, 40, 74, 0.028) 0,
+            rgba(25, 40, 74, 0.028) 1px,
+            transparent 1px,
+            transparent 82px
+        );
+    pointer-events: none;
+}
+
 .sql-sheet-hero {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 1.5rem;
+    gap: 2rem;
     align-items: start;
+    padding: 2.2rem 2.2rem 2rem;
+    border: 1px solid var(--sql-line);
+    border-radius: var(--sql-radius-xl);
     background:
-        radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 40%),
-        linear-gradient(135deg, #ffffff, #f7fafc 70%, #eef7f5);
-    border: 1px solid rgba(20, 33, 61, 0.08);
-    border-radius: 24px;
-    padding: 2rem;
-    box-shadow: var(--sql-shadow);
+        linear-gradient(108deg, var(--sql-paper-strong) 0%, rgba(255, 255, 255, 0.74) 58%, rgba(227, 239, 236, 0.78) 100%);
+    box-shadow: var(--sql-shadow-soft);
+    overflow: hidden;
+}
+
+.sql-sheet-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -8% -28% auto;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(13, 124, 116, 0.18), rgba(13, 124, 116, 0));
+    pointer-events: none;
 }
 
 .sql-sheet-kicker {
-    margin: 0 0 0.65rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    margin: 0 0 0.7rem;
     color: var(--sql-accent);
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
 }
 
 .sql-sheet-title {
     margin: 0;
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.02;
     color: var(--sql-ink);
+    font-size: clamp(2.9rem, 5vw, 4.75rem);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
 }
 
 .sql-sheet-summary {
-    max-width: 64ch;
-    margin: 0.95rem 0 0;
-    font-size: 1.05rem;
-    line-height: 1.65;
-    color: var(--sql-muted);
+    max-width: 34rem;
+    margin: 1.1rem 0 0;
+    color: var(--sql-ink-soft);
+    font-size: 1.18rem;
+    line-height: 1.72;
 }
 
-/* chips */
-.sql-chip-row {
+.sql-chip-row,
+.sql-link-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 1.15rem;
+    gap: 0.7rem;
+}
+
+.sql-chip-row {
+    margin-top: 1.45rem;
 }
 
 .sql-chip {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.85rem;
+    min-height: 2.6rem;
+    padding: 0.55rem 0.95rem;
+    border: 1px solid rgba(13, 124, 116, 0.08);
     border-radius: 999px;
-    background: var(--sql-accent-soft);
+    background: rgba(215, 238, 232, 0.92);
     color: var(--sql-accent);
-    font-size: 0.88rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
 }
 
-/* hero buttons */
 .sql-sheet-actions {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.85rem;
     justify-items: end;
-    align-content: start;
 }
 
 .sql-launch,
@@ -98,84 +144,105 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.55rem;
-    min-height: 2.9rem;
-    padding: 0.8rem 1.1rem;
-    border-radius: 14px;
+    gap: 0.65rem;
+    min-height: 3.05rem;
+    padding: 0.88rem 1.25rem;
+    border-radius: 18px;
+    font-size: 0.96rem;
     font-weight: 700;
     text-decoration: none;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
 .sql-launch {
-    background: var(--sql-ink);
-    color: #ffffff;
-    box-shadow: 0 12px 28px rgba(20, 33, 61, 0.16);
+    background: var(--sql-deep);
+    color: #fff;
+    box-shadow: 0 16px 30px rgba(23, 39, 70, 0.18);
 }
 
 .sql-secondary-link {
-    background: rgba(20, 33, 61, 0.05);
+    border: 1px solid rgba(25, 40, 74, 0.08);
+    background: rgba(237, 244, 243, 0.92);
     color: var(--sql-ink);
 }
 
 .sql-launch:hover,
 .sql-secondary-link:hover,
-.sql-sheet-nav a:hover {
+.sql-sheet-nav a:hover,
+.sql-hub-card a:hover {
     transform: translateY(-1px);
 }
 
-/* ── Metadata strip (replaces old overview card grid) ─────── */
 .sql-meta-strip {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    margin-top: 1.75rem;
-    border: 1px solid var(--sql-line);
-    border-radius: var(--sql-radius);
-    overflow: hidden;
-    background: var(--sql-panel);
+    margin-top: 1.45rem;
+    border-top: 1px solid var(--sql-line-strong);
+    border-bottom: 1px solid var(--sql-line-strong);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.32));
 }
 
 .sql-meta-cell {
-    flex: 1 1 220px;
-    padding: 1.1rem 1.4rem;
-    border-right: 1px solid var(--sql-line);
+    min-height: 100%;
+    padding: 1.25rem 1.55rem 1.35rem;
+    border-left: 1px solid var(--sql-line);
 }
 
-.sql-meta-cell:last-child {
-    border-right: none;
+.sql-meta-cell:first-child {
+    border-left: none;
 }
 
 .sql-meta-cell h2 {
-    margin: 0 0 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    margin: 0 0 0.7rem;
     color: var(--sql-accent);
+    font-size: 0.83rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
 }
 
-.sql-meta-cell ul {
+.sql-meta-cell ul,
+.sql-outline-card ul {
     margin: 0;
-    padding-left: 1.1rem;
-    color: var(--sql-muted);
-    font-size: 0.93rem;
-    line-height: 1.7;
+    padding-left: 1.2rem;
+    color: var(--sql-ink-soft);
+    font-size: 1rem;
+    line-height: 1.8;
 }
 
-.sql-meta-cell ul code,
-.sql-meta-cell p code {
-    padding: 0.1rem 0.35rem;
-    border-radius: 5px;
-    background: rgba(20, 33, 61, 0.07);
+.sql-meta-cell li::marker,
+.sql-outline-card li::marker {
+    color: rgba(25, 40, 74, 0.58);
+}
+
+.sql-meta-cell code,
+.sql-outline-card code,
+.sql-task-body code,
+.sql-sheet-note code,
+.sql-answer-body code {
+    padding: 0.12rem 0.44rem;
+    border-radius: 7px;
+    background: rgba(25, 40, 74, 0.075);
     color: var(--sql-ink);
     font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
     font-size: 0.88em;
 }
 
-/* ── Section ──────────────────────────────────────────────── */
 .sql-sheet-section {
-    margin-top: 2rem;
+    position: relative;
+    margin-top: 2.2rem;
+    padding-top: 1.3rem;
+}
+
+.sql-sheet-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(25, 40, 74, 0.16), rgba(25, 40, 74, 0.04));
 }
 
 .sql-section-heading {
@@ -183,63 +250,70 @@
     grid-template-columns: auto minmax(0, 1fr);
     gap: 1rem;
     align-items: start;
-    margin-bottom: 0.85rem;
+    margin-bottom: 1rem;
 }
 
 .sql-section-number {
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.95rem;
+    height: 2.95rem;
     display: grid;
     place-items: center;
-    border-radius: 12px;
-    background: var(--sql-ink);
-    color: #ffffff;
-    font-size: 0.95rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #21345e, #162542);
+    color: #fff;
+    font-size: 1rem;
     font-weight: 800;
+    box-shadow: 0 10px 20px rgba(22, 37, 66, 0.14);
 }
 
 .sql-section-heading h2 {
     margin: 0;
-    font-size: 1.25rem;
     color: var(--sql-ink);
+    font-size: clamp(1.5rem, 2vw, 2.05rem);
+    letter-spacing: -0.03em;
 }
 
 .sql-section-heading p {
-    margin: 0.3rem 0 0;
-    color: var(--sql-muted);
-    font-size: 0.95rem;
+    max-width: 46rem;
+    margin: 0.22rem 0 0;
+    color: var(--sql-ink-soft);
+    font-size: 1rem;
+    line-height: 1.65;
 }
 
-/* ── Syntax reference panel ───────────────────────────────── */
 .sql-syntax-ref {
-    margin-bottom: 1rem;
-    border: 1px solid rgba(15, 118, 110, 0.22);
-    border-radius: 14px;
+    margin: 0 0 1rem;
+    border: 1px solid rgba(25, 40, 74, 0.05);
+    border-radius: 20px;
     overflow: hidden;
     background: var(--sql-code-bg);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .sql-syntax-ref summary {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.75rem 1.1rem;
-    font-size: 0.88rem;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding: 0.9rem 1.15rem;
+    color: rgba(255, 255, 255, 0.94);
+    font-size: 0.98rem;
     font-weight: 700;
-    color: var(--sql-accent-soft);
+    letter-spacing: 0.01em;
     cursor: pointer;
     user-select: none;
     list-style: none;
-    letter-spacing: 0.02em;
 }
 
-.sql-syntax-ref summary::-webkit-details-marker { display: none; }
+.sql-syntax-ref summary::-webkit-details-marker {
+    display: none;
+}
 
 .sql-syntax-ref summary::before {
     content: "▶";
-    font-size: 0.7rem;
-    transition: transform 0.2s ease;
-    color: var(--sql-accent);
+    color: #58d6cb;
+    font-size: 0.72rem;
+    transition: transform 0.18s ease;
 }
 
 .sql-syntax-ref[open] summary::before {
@@ -247,64 +321,58 @@
 }
 
 .sql-syntax-ref summary i {
-    color: var(--sql-accent);
+    color: #58d6cb;
 }
 
 .sql-syntax-body {
-    padding: 0 1.1rem 1rem;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 0 1.15rem 1.05rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.sql-syntax-body pre {
+.sql-syntax-body pre,
+.sql-answer-body pre {
     margin: 0.75rem 0 0;
-    padding: 0.85rem 1rem;
-    border-radius: 10px;
-    background: rgba(0,0,0,0.25);
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    background: rgba(6, 10, 20, 0.32);
     overflow-x: auto;
 }
 
-.sql-syntax-body pre code {
-    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-    font-size: 0.86rem;
-    line-height: 1.7;
-    color: #a7f3d0;
-    background: none;
+.sql-syntax-body pre code,
+.sql-answer-body pre code {
     padding: 0;
+    background: none;
+    color: var(--sql-code-ink);
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 0.87rem;
+    line-height: 1.72;
 }
 
 .sql-syntax-body p {
-    margin: 0.65rem 0 0;
-    font-size: 0.87rem;
-    line-height: 1.6;
-    color: #94a3b8;
+    margin: 0.7rem 0 0;
+    color: rgba(214, 255, 241, 0.7);
+    font-size: 0.92rem;
+    line-height: 1.66;
 }
 
 .sql-syntax-body p code {
-    padding: 0.1rem 0.35rem;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.1);
-    color: #a7f3d0;
-    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-    font-size: 0.88em;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--sql-code-ink);
 }
 
-/* ── Task list (document style) ───────────────────────────── */
 .sql-task-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    gap: 0;
 }
 
 .sql-task {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0 1rem;
+    grid-template-columns: minmax(6.9rem, 8.2rem) minmax(0, 1fr);
+    gap: 1.15rem;
     align-items: start;
-    padding: 0.85rem 0;
+    padding: 1.1rem 0.15rem;
     border-bottom: 1px solid var(--sql-line);
-    counter-increment: task-counter;
 }
 
 .sql-task:first-child {
@@ -315,191 +383,180 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.4rem;
-    padding-top: 0.1rem;
-    min-width: 4.5rem;
+    gap: 0.5rem;
+    padding-top: 0.05rem;
 }
 
 .sql-task-tag,
 .sql-task-focus {
     display: inline-flex;
     align-items: center;
-    min-height: 1.6rem;
-    padding: 0.15rem 0.55rem;
+    min-height: 1.8rem;
+    padding: 0.18rem 0.62rem;
     border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    white-space: nowrap;
+    font-size: 0.77rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
 }
 
 .sql-task-tag {
-    background: rgba(20, 33, 61, 0.08);
+    background: rgba(25, 40, 74, 0.08);
     color: var(--sql-ink);
 }
 
 .sql-task-focus {
-    background: var(--sql-accent-mid);
+    background: var(--sql-accent-soft);
     color: var(--sql-accent);
 }
 
 .sql-task-body {
-    padding-top: 0.15rem;
+    padding-top: 0.08rem;
 }
 
 .sql-task-body p {
     margin: 0;
     color: var(--sql-ink);
-    line-height: 1.62;
+    font-size: 1.04rem;
+    line-height: 1.75;
 }
 
 .sql-task-body p + p {
     margin-top: 0.45rem;
 }
 
-.sql-task-body code,
-.sql-sheet-note code {
-    padding: 0.1rem 0.4rem;
-    border-radius: 6px;
-    background: rgba(20, 33, 61, 0.07);
-    color: var(--sql-ink);
-    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-    font-size: 0.91em;
+.sql-task:hover {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0));
 }
 
-/* ── Sheet note (reset / info box) ───────────────────────── */
 .sql-sheet-note {
     margin-top: 1rem;
-    padding: 0.85rem 1.1rem;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(15, 118, 110, 0.02));
-    border: 1px solid rgba(15, 118, 110, 0.16);
-    color: var(--sql-muted);
-    font-size: 0.92rem;
-    line-height: 1.6;
+    padding: 0.95rem 1rem 1rem;
+    border-top: 1px solid var(--sql-accent-line);
+    border-bottom: 1px solid var(--sql-accent-line);
+    background: rgba(13, 124, 116, 0.045);
+    color: var(--sql-ink-soft);
+    font-size: 0.97rem;
+    line-height: 1.7;
 }
 
-/* ── Answer gate ──────────────────────────────────────────── */
 .sql-answers-gate {
-    margin-top: 2.5rem;
+    margin-top: 2.75rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--sql-line-strong);
+}
+
+.sql-answers-lock,
+.sql-answers-content {
     border: 1px solid var(--sql-line);
-    border-radius: var(--sql-radius);
-    overflow: hidden;
-    background: var(--sql-panel);
-    box-shadow: var(--sql-shadow);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.56));
 }
 
 .sql-answers-lock {
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    padding: 2rem 1.5rem;
     gap: 0.6rem;
+    padding: 2rem 1.5rem;
+    text-align: center;
 }
 
 .sql-answers-lock-icon {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.4rem;
+    height: 3.4rem;
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: rgba(20, 33, 61, 0.07);
+    background: rgba(25, 40, 74, 0.08);
     color: var(--sql-ink);
     font-size: 1.2rem;
-    margin-bottom: 0.35rem;
 }
 
-.sql-answers-lock h2 {
+.sql-answers-lock h2,
+.sql-answers-content h2 {
     margin: 0;
-    font-size: 1.15rem;
     color: var(--sql-ink);
 }
 
-.sql-answers-lock p {
-    margin: 0;
-    color: var(--sql-muted);
-    font-size: 0.92rem;
+.sql-answers-lock p,
+.sql-answer-body {
+    color: var(--sql-ink-soft);
 }
 
 .sql-answers-lock-row {
     display: flex;
-    gap: 0.6rem;
-    margin-top: 0.5rem;
+    gap: 0.65rem;
     align-items: center;
+    margin-top: 0.55rem;
 }
 
 .sql-answers-lock input[type="password"] {
-    padding: 0.6rem 0.9rem;
-    border-radius: 10px;
-    border: 1px solid var(--sql-line);
-    font-size: 0.95rem;
+    width: 15rem;
+    min-height: 2.85rem;
+    padding: 0.7rem 0.92rem;
+    border: 1px solid var(--sql-line-strong);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.84);
     color: var(--sql-ink);
-    background: var(--sql-panel-alt);
+    font: inherit;
     outline: none;
-    width: 14rem;
-    font-family: inherit;
-    transition: border-color 0.2s;
 }
 
 .sql-answers-lock input[type="password"]:focus {
     border-color: var(--sql-accent);
+    box-shadow: 0 0 0 3px rgba(13, 124, 116, 0.12);
 }
 
 .sql-answers-lock button {
-    padding: 0.6rem 1.1rem;
-    border-radius: 10px;
+    min-height: 2.85rem;
+    padding: 0.68rem 1.12rem;
     border: none;
-    background: var(--sql-ink);
-    color: #ffffff;
+    border-radius: 14px;
+    background: var(--sql-deep);
+    color: #fff;
+    font: inherit;
     font-weight: 700;
-    font-size: 0.92rem;
     cursor: pointer;
-    font-family: inherit;
-    transition: opacity 0.2s;
 }
 
 .sql-answers-lock button:hover {
-    opacity: 0.85;
+    opacity: 0.92;
 }
 
 .sql-answers-err {
-    font-size: 0.85rem;
-    color: #dc2626;
     min-height: 1.2rem;
     margin: 0;
+    color: #c72b43;
+    font-size: 0.88rem;
 }
 
 .sql-answers-content {
-    padding: 1.4rem 1.6rem 1.8rem;
-    border-top: 1px solid var(--sql-line);
-}
-
-.sql-answers-content h2 {
-    margin: 0 0 0.2rem;
-    font-size: 1.1rem;
-    color: var(--sql-ink);
+    margin-top: 1rem;
+    padding: 1.35rem 1.45rem 1.75rem;
 }
 
 .sql-answers-content h3 {
-    margin: 1.4rem 0 0.75rem;
-    font-size: 0.88rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    margin: 1.45rem 0 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sql-line);
     color: var(--sql-accent);
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--sql-accent-soft);
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.sql-answers-content h3:first-of-type {
+    padding-top: 0;
+    border-top: none;
 }
 
 .sql-answer-item {
-    margin: 0;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid rgba(20,33,61,0.07);
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0 0.85rem;
-    align-items: start;
-    font-size: 0.94rem;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.85rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(25, 40, 74, 0.08);
 }
 
 .sql-answer-item:last-child {
@@ -507,56 +564,29 @@
 }
 
 .sql-answer-num {
-    font-weight: 800;
     color: var(--sql-accent);
-    min-width: 1.6rem;
-    padding-top: 0.15rem;
+    font-weight: 800;
+    padding-top: 0.1rem;
 }
 
 .sql-answer-body {
-    color: var(--sql-muted);
-    line-height: 1.6;
+    line-height: 1.72;
 }
 
 .sql-answer-body strong {
-    color: var(--sql-ink);
     display: block;
-    margin-bottom: 0.25rem;
-}
-
-.sql-answer-body pre {
-    margin: 0.5rem 0 0;
-    padding: 0.75rem 0.9rem;
-    border-radius: 10px;
-    background: var(--sql-code-bg);
-    overflow-x: auto;
-}
-
-.sql-answer-body pre code {
-    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-    font-size: 0.84rem;
-    line-height: 1.7;
-    color: #a7f3d0;
-    background: none;
-    padding: 0;
-}
-
-.sql-answer-body code {
-    padding: 0.1rem 0.35rem;
-    border-radius: 5px;
-    background: rgba(20, 33, 61, 0.07);
+    margin-bottom: 0.18rem;
     color: var(--sql-ink);
-    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-    font-size: 0.88em;
 }
 
-/* ── Nav bar ──────────────────────────────────────────────── */
 .sql-sheet-nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 0.85rem;
-    margin-top: 1.5rem;
+    gap: 1rem;
+    margin-top: 1.85rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sql-line);
 }
 
 .sql-sheet-nav a {
@@ -566,180 +596,154 @@
     color: var(--sql-ink);
     font-weight: 700;
     text-decoration: none;
-    transition: transform 0.18s ease;
 }
 
-/* ── Index page specific ──────────────────────────────────── */
-.sql-outline-grid {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 1.4rem;
-}
-
-.sql-outline-card,
-.sql-hub-card {
-    background: var(--sql-panel);
-    border: 1px solid rgba(20, 33, 61, 0.08);
-    border-radius: var(--sql-radius);
-    box-shadow: var(--sql-shadow);
-}
-
-.sql-outline-card {
-    grid-column: span 6;
-    padding: 1.25rem;
-}
-
-.sql-hub-grid {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 1.4rem;
-}
-
-.sql-hub-card {
-    grid-column: span 4;
-    padding: 1.3rem;
-}
-
-.sql-hub-card h2 {
-    margin: 0;
-    font-size: 1.3rem;
-    color: var(--sql-ink);
-}
-
-.sql-hub-card p {
-    margin: 0.75rem 0 0;
-    color: var(--sql-muted);
-    line-height: 1.6;
-}
-
-.sql-hub-card .sql-chip-row { margin-top: 0.9rem; }
-
-.sql-link-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 1rem;
-}
-
-.sql-outline-card h2 {
-    margin: 0;
-    color: var(--sql-ink);
-}
-
-.sql-outline-card ul {
-    margin: 0.85rem 0 0;
-    padding-left: 1.15rem;
-    color: var(--sql-muted);
-    line-height: 1.7;
-}
-
-.sql-outline-card code {
-    padding: 0.1rem 0.35rem;
-    border-radius: 5px;
-    background: rgba(20, 33, 61, 0.07);
-    color: var(--sql-ink);
-    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-    font-size: 0.88em;
-}
-
+.sql-outline-grid,
+.sql-hub-grid,
 .sql-callout-grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 1rem;
-    margin-top: 1.4rem;
+    margin-top: 1.6rem;
 }
 
+.sql-outline-card,
+.sql-hub-card,
+.sql-callout {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.52));
+    border-top: 1px solid var(--sql-line-strong);
+    border-bottom: 1px solid var(--sql-line-strong);
+    border-radius: 20px;
+    box-shadow: none;
+}
+
+.sql-outline-card,
 .sql-callout {
     grid-column: span 6;
-    padding: 1.2rem;
-    border-radius: 18px;
-    background: linear-gradient(180deg, rgba(244, 239, 230, 0.7), rgba(255,255,255,0.95));
-    border: 1px solid rgba(20, 33, 61, 0.08);
+    padding: 1.35rem 1.4rem;
 }
 
-.sql-callout h3 { margin: 0; color: var(--sql-ink); }
-.sql-callout p  { margin: 0.6rem 0 0; color: var(--sql-muted); line-height: 1.6; }
+.sql-hub-card {
+    grid-column: span 4;
+    padding: 1.35rem 1.4rem;
+}
 
-/* ── Responsive ────────────────────────────────────────────── */
+.sql-outline-card h2,
+.sql-hub-card h2,
+.sql-callout h3 {
+    margin: 0;
+    color: var(--sql-ink);
+}
+
+.sql-hub-card h2 {
+    font-size: 1.32rem;
+}
+
+.sql-hub-card p,
+.sql-callout p,
+.sql-outline-card p {
+    margin: 0.7rem 0 0;
+    color: var(--sql-ink-soft);
+    line-height: 1.68;
+}
+
+.sql-hub-card .sql-chip-row {
+    margin-top: 1rem;
+}
+
+.sql-hub-card .sql-link-row {
+    margin-top: 1rem;
+}
+
+.sql-callout h3 {
+    font-size: 1.08rem;
+}
+
+@media (max-width: 1100px) {
+    .sql-task {
+        grid-template-columns: minmax(5.7rem, 7.2rem) minmax(0, 1fr);
+    }
+}
+
 @media (max-width: 980px) {
     .sql-sheet-shell {
-        width: min(1100px, calc(100vw - 1.5rem));
+        width: min(1180px, calc(100vw - 1.5rem));
     }
 
     .sql-sheet-hero {
         grid-template-columns: 1fr;
+        padding: 1.8rem 1.5rem 1.6rem;
     }
 
     .sql-sheet-actions {
         justify-items: stretch;
     }
 
-    .sql-hub-card,
-    .sql-outline-card,
-    .sql-callout {
-        grid-column: span 12;
+    .sql-meta-strip {
+        grid-template-columns: 1fr;
     }
 
     .sql-meta-cell {
-        border-right: none;
-        border-bottom: 1px solid var(--sql-line);
+        border-left: none;
+        border-top: 1px solid var(--sql-line);
     }
 
-    .sql-meta-cell:last-child {
-        border-bottom: none;
+    .sql-meta-cell:first-child {
+        border-top: none;
+    }
+
+    .sql-outline-card,
+    .sql-hub-card,
+    .sql-callout {
+        grid-column: span 12;
     }
 }
 
 @media (max-width: 720px) {
-    .sql-sheet-shell { margin-top: 1.25rem; }
-
-    .sql-sheet-hero {
-        border-radius: 18px;
-        padding: 1.4rem;
+    .sql-sheet-shell {
+        margin-top: 1rem;
+        padding-top: 0.8rem;
     }
 
-    .sql-meta-strip {
-        border-radius: 14px;
+    .sql-sheet-title {
+        font-size: clamp(2.25rem, 12vw, 3.25rem);
     }
 
-    .sql-meta-cell {
-        padding: 0.9rem 1rem;
-    }
-
-    .sql-section-heading {
-        grid-template-columns: 1fr;
-        gap: 0.7rem;
-    }
-
-    .sql-section-number {
-        width: 2.2rem;
-        height: 2.2rem;
+    .sql-sheet-summary {
+        font-size: 1.03rem;
     }
 
     .sql-task {
         grid-template-columns: 1fr;
-        gap: 0.5rem;
+        gap: 0.7rem;
+        padding: 0.95rem 0;
     }
 
     .sql-task-left {
         flex-direction: row;
         flex-wrap: wrap;
-        min-width: unset;
+        gap: 0.45rem;
     }
 
-    .sql-sheet-nav { justify-content: flex-start; }
+    .sql-task-body p {
+        font-size: 0.99rem;
+    }
+
+    .sql-section-heading {
+        grid-template-columns: 1fr;
+        gap: 0.72rem;
+    }
+
+    .sql-sheet-nav {
+        justify-content: flex-start;
+    }
 
     .sql-answers-lock-row {
+        width: 100%;
         flex-direction: column;
-        width: 100%;
     }
 
-    .sql-answers-lock input[type="password"] {
-        width: 100%;
-    }
-
+    .sql-answers-lock input[type="password"],
     .sql-answers-lock button {
         width: 100%;
     }
