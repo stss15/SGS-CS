@@ -1,0 +1,301 @@
+---
+layout: layouts/base.njk
+title: "Worksheet 4: Course Enrolment | SQL Worksheets"
+description: "Higher Level SQL worksheet for the Course Enrolment dataset."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "HL", href: "ib-2027/hl/index.html" }
+  - { label: "Unit 5", href: "ib-2027/hl/unit-5/index.html" }
+  - { label: "SQL Worksheets", href: "ib-2027/hl/unit-5/sql-worksheets/index.html" }
+  - { label: "Course Enrolment" }
+extraStyles:
+  - "css/sql-worksheet.css"
+---
+
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 4 | HL Extension</p>
+            <h1 class="sql-sheet-title">Course Enrolment</h1>
+            <p class="sql-sheet-summary">
+                Use a multi-table enrolment model for Higher Level reporting. This worksheet starts with an
+                SL recap, then moves into grouped calculations, views, transaction control, ACID, and
+                denormalization decisions.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">COUNT</span>
+                <span class="sql-chip">AVG</span>
+                <span class="sql-chip">SUM</span>
+                <span class="sql-chip">HAVING</span>
+                <span class="sql-chip">VIEW</span>
+                <span class="sql-chip">TRANSACTION</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=course-enrolment" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open SQL Playground
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/hl/unit-5/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-overview-grid">
+        <section class="sql-overview-card">
+            <h2>Dataset Focus</h2>
+            <ul>
+                <li>4 tables with a composite-key junction table</li>
+                <li>Enough rows for aggregate reporting by department, course, level, and semester</li>
+                <li>Designed for <code>GROUP BY</code>, <code>HAVING</code>, views, and transactions</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>A3.3.4 aggregate functions on grouped data</li>
+                <li>A3.3.5 virtual and materialized views</li>
+                <li>A3.3.6 ACID and transaction control</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Work through the SL worksheets first if joins are still slow.</li>
+                <li>Run Sections 4 and 5 last because they create or modify objects and rows.</li>
+                <li>Use the results pane carefully when checking transaction effects.</li>
+            </ul>
+        </section>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>SL Recap</h2>
+                <p>Reconfirm the core retrieval and join skills before moving into aggregates.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Composite key</span>
+                </div>
+                <p>Identify the composite primary key in <code>ENROLLMENT</code> and explain what real-world relationship that table captures.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">SELECT</span>
+                </div>
+                <p>Show all HL courses, ordered by department and course name.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <p>List every student in cohort <code>2026</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 2 tables</span>
+                </div>
+                <p>Join <code>COURSE</code> to <code>DEPARTMENT</code> and show each course with its department name and credit value.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 3 tables</span>
+                </div>
+                <p>Show student full name, course name, and score for all <code>Spring</code> enrollments.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">LIKE</span>
+                </div>
+                <p>Find the course names that contain the word <code>Design</code> or <code>Analytics</code>.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Aggregate Functions and Grouping</h2>
+                <p>Build reporting queries that summarize grouped data.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">COUNT</span>
+                </div>
+                <p>Count how many courses each department offers.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">COUNT + GROUP BY</span>
+                </div>
+                <p>Count how many enrollment rows each course has.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">AVG</span>
+                </div>
+                <p>Calculate the average score for each department.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">MAX / MIN</span>
+                </div>
+                <p>Return the maximum and minimum score in each course.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">SUM</span>
+                </div>
+                <p>Sum the course credits by level so you end up with one total for <code>SL</code> and one total for <code>HL</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">HAVING</span>
+                </div>
+                <p>Show only departments with at least four enrollments.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">AVG + HAVING</span>
+                </div>
+                <p>Return only courses whose average score is above <code>85</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">Report query</span>
+                </div>
+                <p>Produce a department report showing department name, enrollment count, and rounded average score, ordered from highest average to lowest.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Views</h2>
+                <p>Create a reusable query layer on top of the base tables.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.5</span>
+                    <span class="sql-task-focus">CREATE VIEW</span>
+                </div>
+                <p>Create a view called <code>HighScorers</code> that shows student full name, course name, department name, and score for rows where the score is at least <code>90</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.5</span>
+                    <span class="sql-task-focus">Query a view</span>
+                </div>
+                <p>Query <code>HighScorers</code> and order the result by score descending, then student surname.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.5</span>
+                    <span class="sql-task-focus">Explain</span>
+                </div>
+                <p>Explain one benefit of a virtual view and one difference between a virtual view and a materialized or snapshot view.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">4</span>
+            <div>
+                <h2>Transactions and ACID</h2>
+                <p>Use transaction control language to protect data integrity.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.6</span>
+                    <span class="sql-task-focus">BEGIN / COMMIT</span>
+                </div>
+                <p>Begin a transaction, insert a new student, insert one matching enrollment row for that student, then commit the transaction.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.6</span>
+                    <span class="sql-task-focus">BEGIN / ROLLBACK</span>
+                </div>
+                <p>Begin a second transaction, make a change to a score or cohort, inspect the result, then roll the transaction back.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.6</span>
+                    <span class="sql-task-focus">ACID</span>
+                </div>
+                <p>Explain how atomicity, consistency, isolation, and durability help keep this enrollment dataset reliable during concurrent updates.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">5</span>
+            <div>
+                <h2>Normalization and Denormalization Review</h2>
+                <p>Connect the report work back to database design decisions.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.5</span>
+                    <span class="sql-task-focus">Functional dependencies</span>
+                </div>
+                <p>Explain why <code>ENROLLMENT</code> is closer to 3NF than a single table that also repeats student names, course names, and department offices on every row.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.5</span>
+                    <span class="sql-task-focus">Partial dependency</span>
+                </div>
+                <p>Describe one partial-key dependency that would appear if a poorly designed table used the composite key <code>(StudentID, CourseID)</code> but also stored repeated student details.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.7</span>
+                    <span class="sql-task-focus">Denormalization</span>
+                </div>
+                <p>Propose one denormalized dashboard table for fast reporting and evaluate the tradeoff between query simplicity and redundancy.</p>
+            </li>
+        </ol>
+        <p class="sql-sheet-note">Reload <code>Course Enrolment</code> after the transaction section so the dataset returns to its original state for the next run.</p>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> Back to HL worksheet list</a>
+        <a href="/tools/sql-playground.html?dataset=course-enrolment" target="_blank" rel="noopener">Open the playground again <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>

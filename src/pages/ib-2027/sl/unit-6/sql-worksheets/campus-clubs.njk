@@ -1,0 +1,278 @@
+---
+layout: layouts/base.njk
+title: "Worksheet 2: Campus Clubs | SQL Worksheets"
+description: "SQL worksheet for the Campus Clubs dataset."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 6", href: "ib-2027/sl/unit-6/index.html" }
+  - { label: "SQL Worksheets", href: "ib-2027/sl/unit-6/sql-worksheets/index.html" }
+  - { label: "Campus Clubs" }
+extraStyles:
+  - "css/sql-worksheet.css"
+---
+
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 2 | SL Core</p>
+            <h1 class="sql-sheet-title">Campus Clubs</h1>
+            <p class="sql-sheet-summary">
+                This dataset is built for relationships. Use it to read ERDs, explain one-to-one and
+                many-to-many structures, and write joins that move through a junction table.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">Composite key</span>
+                <span class="sql-chip">JOIN</span>
+                <span class="sql-chip">DISTINCT</span>
+                <span class="sql-chip">LIKE</span>
+                <span class="sql-chip">ORDER BY</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=campus-clubs" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open SQL Playground
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/sl/unit-6/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-overview-grid">
+        <section class="sql-overview-card">
+            <h2>Dataset Focus</h2>
+            <ul>
+                <li><code>LOGIN_ACCOUNT</code> is one-to-one with <code>STUDENT</code></li>
+                <li><code>MEMBERSHIP</code> is a junction table with a composite key</li>
+                <li>Good for cardinality, modality, and join-path questions</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>A3.2.2 construct ERDs</li>
+                <li>A3.2.3 relational data types</li>
+                <li>A3.2.4 primary keys, foreign keys, and composite keys</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Use the ERD to trace the join route before you write SQL.</li>
+                <li>Pay attention to where the composite key lives.</li>
+                <li>Save Section 5 for the end because it adds and edits rows.</li>
+            </ul>
+        </section>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Read the Design</h2>
+                <p>These are design questions first, query questions second.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.2</span>
+                    <span class="sql-task-focus">ERD</span>
+                </div>
+                <p>Identify the junction table and explain why it represents a many-to-many relationship.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Composite key</span>
+                </div>
+                <p>State the composite primary key in <code>MEMBERSHIP</code> and explain why both columns are needed together.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.2</span>
+                    <span class="sql-task-focus">One-to-one</span>
+                </div>
+                <p>Explain why <code>LOGIN_ACCOUNT</code> to <code>STUDENT</code> is one-to-one in this dataset.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.3</span>
+                    <span class="sql-task-focus">Data types</span>
+                </div>
+                <p>Explain why <code>YearGroup</code> is stored as an integer, while <code>Username</code> and <code>MeetingRoom</code> are text fields. Give one possible problem caused by choosing the wrong type.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Filtering and Distinct Values</h2>
+                <p>Query one table at a time before you join them together.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <p>List every club that meets on <code>Thursday</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">DISTINCT</span>
+                </div>
+                <p>Return each unique role used in the <code>MEMBERSHIP</code> table, sorted alphabetically.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">LIKE</span>
+                </div>
+                <p>Find clubs where the meeting room contains the word <code>Lab</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <p>Show the first names, last names, and year groups of both students whose surname is <code>Khan</code>.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Join Through Relationships</h2>
+                <p>Move from entity table to entity table using foreign keys.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 2 tables</span>
+                </div>
+                <p>Join <code>STUDENT</code> to <code>LOGIN_ACCOUNT</code> and show each student's full name, username, and last login date.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 3 tables</span>
+                </div>
+                <p>Show every member of <code>Coding Collective</code> with their role and year group. Sort by role, then last name.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 3 tables</span>
+                </div>
+                <p>List the club name, meeting day, student full name, and role for all memberships. Order first by meeting day, then club name.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Filter joined data</span>
+                </div>
+                <p>Show only Year 12 students and the clubs they attend.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Date filter</span>
+                </div>
+                <p>Return usernames and last-login dates for accounts that were used on or after <code>2026-03-09</code>.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">4</span>
+            <div>
+                <h2>Schema and ERD Thinking</h2>
+                <p>Use the dataset to explain the database design, not just query it.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.1</span>
+                    <span class="sql-task-focus">Schema levels</span>
+                </div>
+                <p>Give one example of what belongs in the conceptual schema, logical schema, and physical schema for this clubs system.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.2</span>
+                    <span class="sql-task-focus">Modality</span>
+                </div>
+                <p>Explain the likely modality between <code>STUDENT</code> and <code>LOGIN_ACCOUNT</code>, then compare it with the modality between <code>STUDENT</code> and <code>MEMBERSHIP</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Integrity</span>
+                </div>
+                <p>Explain why a membership row with a valid <code>StudentID</code> but an invalid <code>ClubID</code> should be rejected.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">5</span>
+            <div>
+                <h2>DDL and DML Practice</h2>
+                <p>Make structural and row-level changes after you finish the earlier sections.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">CREATE TABLE</span>
+                </div>
+                <p>Create a table called <code>EVENT</code> with <code>EventID</code> as the primary key, plus <code>ClubID</code>, <code>EventName</code>, and <code>EventDate</code>. Link <code>ClubID</code> back to <code>CLUB</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">INSERT</span>
+                </div>
+                <p>Insert a new event called <code>Hack Night</code> for <code>Coding Collective</code> on a date of your choice.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">UPDATE</span>
+                </div>
+                <p>Update Omar James's role in <code>Coding Collective</code> from <code>Member</code> to <code>Coordinator</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">DELETE</span>
+                </div>
+                <p>Delete the <code>Hack Night</code> event you inserted.</p>
+            </li>
+        </ol>
+        <p class="sql-sheet-note">After DDL and DML work, reload <code>Campus Clubs</code> in the playground to restore the original sample dataset.</p>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/school-library.html"><i class="fa-solid fa-arrow-left"></i> Previous: School Library</a>
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/canteen-orders.html">Next: Canteen Orders <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>

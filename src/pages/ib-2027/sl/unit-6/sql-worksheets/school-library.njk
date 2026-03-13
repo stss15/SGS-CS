@@ -1,0 +1,287 @@
+---
+layout: layouts/base.njk
+title: "Worksheet 1: School Library | SQL Worksheets"
+description: "SQL worksheet for the School Library dataset."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 6", href: "ib-2027/sl/unit-6/index.html" }
+  - { label: "SQL Worksheets", href: "ib-2027/sl/unit-6/sql-worksheets/index.html" }
+  - { label: "School Library" }
+extraStyles:
+  - "css/sql-worksheet.css"
+---
+
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 1 | SL Core</p>
+            <h1 class="sql-sheet-title">School Library</h1>
+            <p class="sql-sheet-summary">
+                Start with a clean relational model of students, books, and loans. This worksheet covers
+                relational database fundamentals, schema language, core retrieval queries, and a first step
+                into DDL and DML.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">SELECT</span>
+                <span class="sql-chip">WHERE</span>
+                <span class="sql-chip">LIKE</span>
+                <span class="sql-chip">BETWEEN</span>
+                <span class="sql-chip">ORDER BY</span>
+                <span class="sql-chip">JOIN</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=school-library" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open SQL Playground
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/sl/unit-6/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-overview-grid">
+        <section class="sql-overview-card">
+            <h2>Dataset Focus</h2>
+            <ul>
+                <li>3 tables: <code>STUDENT</code>, <code>BOOK</code>, <code>LOAN</code></li>
+                <li>Clear one-to-many relationships through foreign keys</li>
+                <li>Good for first joins because each loan links one student to one book</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>A3.1.1 relational database features, benefits, and limitations</li>
+                <li>A3.2.1 schema levels</li>
+                <li>A3.3.1 DDL versus DML</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Open the Schema and ERD tabs before Section 1.</li>
+                <li>Write SQL in the playground, not on this page.</li>
+                <li>Do Section 5 last because it changes data.</li>
+            </ul>
+        </section>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Schema Warm-Up</h2>
+                <p>Use the table explorer, schema view, and ERD before writing queries.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Primary keys</span>
+                </div>
+                <p>Name the three tables and identify the primary key in each one.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.1</span>
+                    <span class="sql-task-focus">Schema levels</span>
+                </div>
+                <p>State which schema level would show: the entities and their relationships, the data types and keys, and the indexing or storage choices.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Relationships</span>
+                </div>
+                <p>Describe the relationship between <code>STUDENT</code> and <code>LOAN</code>, and between <code>BOOK</code> and <code>LOAN</code>. Include cardinality and the role of referential integrity.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Evaluation</span>
+                </div>
+                <p>Give one benefit and one limitation of storing this data in a relational database rather than in separate spreadsheets.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Retrieve and Filter</h2>
+                <p>Build confidence with <code>SELECT</code>, <code>FROM</code>, and <code>WHERE</code>.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">SELECT *</span>
+                </div>
+                <p>Display every row and column from <code>STUDENT</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Specific columns</span>
+                </div>
+                <p>Show only <code>FirstName</code>, <code>LastName</code>, and <code>TutorGroup</code> for students in tutor group <code>12B</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">AND / OR</span>
+                </div>
+                <p>List the titles and genres of books where the genre is <code>Science</code> or <code>Technology</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <p>Find every loan record where <code>ReturnStatus</code> is <code>Overdue</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">BETWEEN</span>
+                </div>
+                <p>Show books published between <code>2020</code> and <code>2024</code> inclusive.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">LIKE</span>
+                </div>
+                <p>Return the titles and authors of books whose title contains the word <code>Code</code>.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Sort the Result Set</h2>
+                <p>Control how the rows are presented after filtering.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">DISTINCT</span>
+                </div>
+                <p>List every distinct value that appears in <code>ReturnStatus</code>, sorted alphabetically.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">ORDER BY DESC</span>
+                </div>
+                <p>Display book title, author, and published year, sorted newest to oldest. If two books share a year, sort those alphabetically by title.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">ORDER BY ASC</span>
+                </div>
+                <p>Show student names grouped by tutor group, then by last name.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">4</span>
+            <div>
+                <h2>First Joins</h2>
+                <p>Use foreign keys to combine tables into one result set.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 2 tables</span>
+                </div>
+                <p>Join <code>LOAN</code> to <code>STUDENT</code> and show which students currently have a book <code>On Loan</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 2 tables</span>
+                </div>
+                <p>Join <code>LOAN</code> to <code>BOOK</code> to list the titles, authors, and due dates for every overdue loan.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 3 tables</span>
+                </div>
+                <p>Show each current loan with student full name, book title, author, and due date. Sort by due date first.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Integrity</span>
+                </div>
+                <p>Explain why a loan row with <code>StudentID = 9999</code> should be rejected in a relational database with referential integrity turned on.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">5</span>
+            <div>
+                <h2>DDL and DML</h2>
+                <p>Complete these last. They change the live workspace.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">DDL</span>
+                </div>
+                <p>Create a new table called <code>REVIEW</code> with columns <code>ReviewID</code>, <code>BookID</code>, <code>Rating</code>, and <code>Comment</code>. Make <code>ReviewID</code> the primary key and link <code>BookID</code> back to <code>BOOK</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">INSERT</span>
+                </div>
+                <p>Insert one review for <code>BookID 2002</code> with a rating and a short comment.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">UPDATE</span>
+                </div>
+                <p>Update loan <code>3006</code> so that its <code>ReturnStatus</code> becomes <code>Returned</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">DELETE</span>
+                </div>
+                <p>Delete the review row you added, then check that the table is empty again.</p>
+            </li>
+        </ol>
+        <p class="sql-sheet-note">Reset the dataset afterwards by reopening the worksheet launch link or selecting <code>School Library</code> again in the playground.</p>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> Back to worksheet list</a>
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/campus-clubs.html">Next: Campus Clubs <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>

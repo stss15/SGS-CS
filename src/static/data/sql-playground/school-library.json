@@ -3,9 +3,18 @@
   "name": "School Library",
   "difficulty": "igcse",
   "summary": "A simple borrowing system with clear one-to-many relationships between students, books, and loans.",
-  "focus": ["SELECT", "WHERE", "ORDER BY", "COUNT"],
-  "relationshipHighlights": ["One-to-many", "Foreign keys", "Referential integrity"],
-  "defaultQuery": "SELECT Title, Genre, PublishedYear FROM BOOK ORDER BY PublishedYear DESC;",
+  "focus": [
+    "SELECT",
+    "WHERE",
+    "LIKE",
+    "ORDER BY"
+  ],
+  "relationshipHighlights": [
+    "One-to-many",
+    "Foreign keys",
+    "Referential integrity"
+  ],
+  "defaultQuery": "SELECT Title, Author, Genre, PublishedYear FROM BOOK ORDER BY PublishedYear DESC;",
   "notes": [
     "Each loan belongs to one student and one book.",
     "A single student can appear in many loan records over time."
@@ -15,77 +24,521 @@
       "name": "STUDENT",
       "description": "Basic student details used by the library system.",
       "kind": "entity",
-      "diagram": { "x": 24, "y": 48 },
+      "diagram": {
+        "x": 24,
+        "y": 48
+      },
       "columns": [
-        { "name": "StudentID", "type": "INTEGER", "notNull": true },
-        { "name": "FirstName", "type": "TEXT", "notNull": true },
-        { "name": "LastName", "type": "TEXT", "notNull": true },
-        { "name": "TutorGroup", "type": "TEXT", "notNull": true }
+        {
+          "name": "StudentID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "FirstName",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "LastName",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "TutorGroup",
+          "type": "TEXT",
+          "notNull": true
+        }
       ],
-      "primaryKey": ["StudentID"],
+      "primaryKey": [
+        "StudentID"
+      ],
       "rows": [
-        { "StudentID": 1001, "FirstName": "Mina", "LastName": "Patel", "TutorGroup": "12A" },
-        { "StudentID": 1002, "FirstName": "Jacob", "LastName": "Miller", "TutorGroup": "12A" },
-        { "StudentID": 1003, "FirstName": "Sara", "LastName": "Ng", "TutorGroup": "11C" },
-        { "StudentID": 1004, "FirstName": "Leo", "LastName": "Smith", "TutorGroup": "11B" },
-        { "StudentID": 1005, "FirstName": "Amira", "LastName": "Hassan", "TutorGroup": "10D" },
-        { "StudentID": 1006, "FirstName": "Noah", "LastName": "Brown", "TutorGroup": "10D" }
+        {
+          "StudentID": 1001,
+          "FirstName": "Mina",
+          "LastName": "Patel",
+          "TutorGroup": "12A"
+        },
+        {
+          "StudentID": 1002,
+          "FirstName": "Jacob",
+          "LastName": "Miller",
+          "TutorGroup": "12A"
+        },
+        {
+          "StudentID": 1003,
+          "FirstName": "Sara",
+          "LastName": "Ng",
+          "TutorGroup": "11C"
+        },
+        {
+          "StudentID": 1004,
+          "FirstName": "Leo",
+          "LastName": "Smith",
+          "TutorGroup": "11B"
+        },
+        {
+          "StudentID": 1005,
+          "FirstName": "Amira",
+          "LastName": "Hassan",
+          "TutorGroup": "10D"
+        },
+        {
+          "StudentID": 1006,
+          "FirstName": "Noah",
+          "LastName": "Brown",
+          "TutorGroup": "10D"
+        },
+        {
+          "StudentID": 1007,
+          "FirstName": "Emily",
+          "LastName": "Ward",
+          "TutorGroup": "12B"
+        },
+        {
+          "StudentID": 1008,
+          "FirstName": "Yusuf",
+          "LastName": "Khan",
+          "TutorGroup": "11A"
+        },
+        {
+          "StudentID": 1009,
+          "FirstName": "Chloe",
+          "LastName": "Green",
+          "TutorGroup": "11B"
+        },
+        {
+          "StudentID": 1010,
+          "FirstName": "Oscar",
+          "LastName": "Perez",
+          "TutorGroup": "10C"
+        },
+        {
+          "StudentID": 1011,
+          "FirstName": "Ruby",
+          "LastName": "Adams",
+          "TutorGroup": "10C"
+        },
+        {
+          "StudentID": 1012,
+          "FirstName": "Mason",
+          "LastName": "Hall",
+          "TutorGroup": "9D"
+        },
+        {
+          "StudentID": 1013,
+          "FirstName": "Zuri",
+          "LastName": "Johnson",
+          "TutorGroup": "9C"
+        },
+        {
+          "StudentID": 1014,
+          "FirstName": "Ewan",
+          "LastName": "Scott",
+          "TutorGroup": "12B"
+        }
       ]
     },
     {
       "name": "BOOK",
       "description": "Books that can be borrowed from the school library.",
       "kind": "entity",
-      "diagram": { "x": 632, "y": 48 },
+      "diagram": {
+        "x": 632,
+        "y": 48
+      },
       "columns": [
-        { "name": "BookID", "type": "INTEGER", "notNull": true },
-        { "name": "Title", "type": "TEXT", "notNull": true },
-        { "name": "Genre", "type": "TEXT", "notNull": true },
-        { "name": "PublishedYear", "type": "INTEGER", "notNull": true }
+        {
+          "name": "BookID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "Title",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "Author",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "Genre",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "PublishedYear",
+          "type": "INTEGER",
+          "notNull": true
+        }
       ],
-      "primaryKey": ["BookID"],
+      "primaryKey": [
+        "BookID"
+      ],
       "rows": [
-        { "BookID": 2001, "Title": "Binary Stars", "Genre": "Science Fiction", "PublishedYear": 2021 },
-        { "BookID": 2002, "Title": "Curious Code", "Genre": "Technology", "PublishedYear": 2023 },
-        { "BookID": 2003, "Title": "Hidden Figures", "Genre": "Biography", "PublishedYear": 2016 },
-        { "BookID": 2004, "Title": "Ocean Atlas", "Genre": "Reference", "PublishedYear": 2019 },
-        { "BookID": 2005, "Title": "Poetry of Place", "Genre": "Poetry", "PublishedYear": 2018 },
-        { "BookID": 2006, "Title": "Designing Cities", "Genre": "Geography", "PublishedYear": 2020 }
+        {
+          "BookID": 2001,
+          "Title": "Binary Stars",
+          "Author": "J. Ortega",
+          "Genre": "Science Fiction",
+          "PublishedYear": 2021
+        },
+        {
+          "BookID": 2002,
+          "Title": "Curious Code",
+          "Author": "Priya Shah",
+          "Genre": "Technology",
+          "PublishedYear": 2023
+        },
+        {
+          "BookID": 2003,
+          "Title": "Hidden Figures",
+          "Author": "Margot Lee",
+          "Genre": "Biography",
+          "PublishedYear": 2016
+        },
+        {
+          "BookID": 2004,
+          "Title": "Ocean Atlas",
+          "Author": "Daniel Crowe",
+          "Genre": "Reference",
+          "PublishedYear": 2019
+        },
+        {
+          "BookID": 2005,
+          "Title": "Poetry of Place",
+          "Author": "Elin Frost",
+          "Genre": "Poetry",
+          "PublishedYear": 2018
+        },
+        {
+          "BookID": 2006,
+          "Title": "Designing Cities",
+          "Author": "A. Mensah",
+          "Genre": "Geography",
+          "PublishedYear": 2020
+        },
+        {
+          "BookID": 2007,
+          "Title": "Data Detectives",
+          "Author": "Zoe Marshall",
+          "Genre": "Technology",
+          "PublishedYear": 2022
+        },
+        {
+          "BookID": 2008,
+          "Title": "Mountain Echoes",
+          "Author": "Carla Dunn",
+          "Genre": "Fiction",
+          "PublishedYear": 2017
+        },
+        {
+          "BookID": 2009,
+          "Title": "Renewable Planet",
+          "Author": "Amir Saleh",
+          "Genre": "Science",
+          "PublishedYear": 2024
+        },
+        {
+          "BookID": 2010,
+          "Title": "Theatre Lights",
+          "Author": "Sophie Grant",
+          "Genre": "Drama",
+          "PublishedYear": 2015
+        },
+        {
+          "BookID": 2011,
+          "Title": "The Art of Algebra",
+          "Author": "Ben Carter",
+          "Genre": "Mathematics",
+          "PublishedYear": 2021
+        },
+        {
+          "BookID": 2012,
+          "Title": "History of Flight",
+          "Author": "Laura Price",
+          "Genre": "History",
+          "PublishedYear": 2014
+        },
+        {
+          "BookID": 2013,
+          "Title": "Codebreakers",
+          "Author": "Nia Roberts",
+          "Genre": "Biography",
+          "PublishedYear": 2020
+        },
+        {
+          "BookID": 2014,
+          "Title": "Wildlife Watch",
+          "Author": "Felix Green",
+          "Genre": "Science",
+          "PublishedYear": 2023
+        }
       ]
     },
     {
       "name": "LOAN",
       "description": "Borrowing transactions that connect students and books.",
       "kind": "entity",
-      "diagram": { "x": 328, "y": 132 },
+      "diagram": {
+        "x": 328,
+        "y": 132
+      },
       "columns": [
-        { "name": "LoanID", "type": "INTEGER", "notNull": true },
-        { "name": "StudentID", "type": "INTEGER", "notNull": true },
-        { "name": "BookID", "type": "INTEGER", "notNull": true },
-        { "name": "LoanDate", "type": "TEXT", "notNull": true },
-        { "name": "DueDate", "type": "TEXT", "notNull": true },
-        { "name": "ReturnStatus", "type": "TEXT", "notNull": true }
-      ],
-      "primaryKey": ["LoanID"],
-      "foreignKeys": [
         {
-          "columns": ["StudentID"],
-          "references": { "table": "STUDENT", "columns": ["StudentID"] }
+          "name": "LoanID",
+          "type": "INTEGER",
+          "notNull": true
         },
         {
-          "columns": ["BookID"],
-          "references": { "table": "BOOK", "columns": ["BookID"] }
+          "name": "StudentID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "BookID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "LoanDate",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "DueDate",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "ReturnStatus",
+          "type": "TEXT",
+          "notNull": true
+        }
+      ],
+      "primaryKey": [
+        "LoanID"
+      ],
+      "foreignKeys": [
+        {
+          "columns": [
+            "StudentID"
+          ],
+          "references": {
+            "table": "STUDENT",
+            "columns": [
+              "StudentID"
+            ]
+          }
+        },
+        {
+          "columns": [
+            "BookID"
+          ],
+          "references": {
+            "table": "BOOK",
+            "columns": [
+              "BookID"
+            ]
+          }
         }
       ],
       "rows": [
-        { "LoanID": 3001, "StudentID": 1001, "BookID": 2002, "LoanDate": "2026-01-09", "DueDate": "2026-01-23", "ReturnStatus": "Returned" },
-        { "LoanID": 3002, "StudentID": 1003, "BookID": 2004, "LoanDate": "2026-01-15", "DueDate": "2026-01-29", "ReturnStatus": "Returned" },
-        { "LoanID": 3003, "StudentID": 1002, "BookID": 2001, "LoanDate": "2026-02-02", "DueDate": "2026-02-16", "ReturnStatus": "Returned" },
-        { "LoanID": 3004, "StudentID": 1005, "BookID": 2003, "LoanDate": "2026-02-04", "DueDate": "2026-02-18", "ReturnStatus": "Overdue" },
-        { "LoanID": 3005, "StudentID": 1001, "BookID": 2006, "LoanDate": "2026-02-10", "DueDate": "2026-02-24", "ReturnStatus": "Returned" },
-        { "LoanID": 3006, "StudentID": 1004, "BookID": 2002, "LoanDate": "2026-02-18", "DueDate": "2026-03-04", "ReturnStatus": "On Loan" },
-        { "LoanID": 3007, "StudentID": 1006, "BookID": 2005, "LoanDate": "2026-03-01", "DueDate": "2026-03-15", "ReturnStatus": "On Loan" },
-        { "LoanID": 3008, "StudentID": 1003, "BookID": 2001, "LoanDate": "2026-03-03", "DueDate": "2026-03-17", "ReturnStatus": "On Loan" }
+        {
+          "LoanID": 3001,
+          "StudentID": 1001,
+          "BookID": 2002,
+          "LoanDate": "2026-01-09",
+          "DueDate": "2026-01-23",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3002,
+          "StudentID": 1003,
+          "BookID": 2004,
+          "LoanDate": "2026-01-15",
+          "DueDate": "2026-01-29",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3003,
+          "StudentID": 1002,
+          "BookID": 2001,
+          "LoanDate": "2026-02-02",
+          "DueDate": "2026-02-16",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3004,
+          "StudentID": 1005,
+          "BookID": 2003,
+          "LoanDate": "2026-02-04",
+          "DueDate": "2026-02-18",
+          "ReturnStatus": "Overdue"
+        },
+        {
+          "LoanID": 3005,
+          "StudentID": 1001,
+          "BookID": 2006,
+          "LoanDate": "2026-02-10",
+          "DueDate": "2026-02-24",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3006,
+          "StudentID": 1004,
+          "BookID": 2002,
+          "LoanDate": "2026-02-18",
+          "DueDate": "2026-03-04",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3007,
+          "StudentID": 1006,
+          "BookID": 2005,
+          "LoanDate": "2026-03-01",
+          "DueDate": "2026-03-15",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3008,
+          "StudentID": 1003,
+          "BookID": 2001,
+          "LoanDate": "2026-03-03",
+          "DueDate": "2026-03-17",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3009,
+          "StudentID": 1007,
+          "BookID": 2007,
+          "LoanDate": "2026-01-12",
+          "DueDate": "2026-01-26",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3010,
+          "StudentID": 1008,
+          "BookID": 2009,
+          "LoanDate": "2026-01-20",
+          "DueDate": "2026-02-03",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3011,
+          "StudentID": 1009,
+          "BookID": 2011,
+          "LoanDate": "2026-02-05",
+          "DueDate": "2026-02-19",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3012,
+          "StudentID": 1010,
+          "BookID": 2008,
+          "LoanDate": "2026-02-07",
+          "DueDate": "2026-02-21",
+          "ReturnStatus": "Returned"
+        },
+        {
+          "LoanID": 3013,
+          "StudentID": 1011,
+          "BookID": 2013,
+          "LoanDate": "2026-02-14",
+          "DueDate": "2026-02-28",
+          "ReturnStatus": "Overdue"
+        },
+        {
+          "LoanID": 3014,
+          "StudentID": 1012,
+          "BookID": 2010,
+          "LoanDate": "2026-02-25",
+          "DueDate": "2026-03-11",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3015,
+          "StudentID": 1013,
+          "BookID": 2014,
+          "LoanDate": "2026-02-27",
+          "DueDate": "2026-03-13",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3016,
+          "StudentID": 1014,
+          "BookID": 2012,
+          "LoanDate": "2026-03-02",
+          "DueDate": "2026-03-16",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3017,
+          "StudentID": 1002,
+          "BookID": 2007,
+          "LoanDate": "2026-03-04",
+          "DueDate": "2026-03-18",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3018,
+          "StudentID": 1008,
+          "BookID": 2006,
+          "LoanDate": "2026-03-05",
+          "DueDate": "2026-03-19",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3019,
+          "StudentID": 1009,
+          "BookID": 2004,
+          "LoanDate": "2026-03-06",
+          "DueDate": "2026-03-20",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3020,
+          "StudentID": 1007,
+          "BookID": 2005,
+          "LoanDate": "2026-03-07",
+          "DueDate": "2026-03-21",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3021,
+          "StudentID": 1010,
+          "BookID": 2009,
+          "LoanDate": "2026-03-08",
+          "DueDate": "2026-03-22",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3022,
+          "StudentID": 1011,
+          "BookID": 2002,
+          "LoanDate": "2026-03-09",
+          "DueDate": "2026-03-23",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3023,
+          "StudentID": 1012,
+          "BookID": 2011,
+          "LoanDate": "2026-03-10",
+          "DueDate": "2026-03-24",
+          "ReturnStatus": "On Loan"
+        },
+        {
+          "LoanID": 3024,
+          "StudentID": 1014,
+          "BookID": 2013,
+          "LoanDate": "2026-01-28",
+          "DueDate": "2026-02-11",
+          "ReturnStatus": "Returned"
+        }
       ]
     }
   ],

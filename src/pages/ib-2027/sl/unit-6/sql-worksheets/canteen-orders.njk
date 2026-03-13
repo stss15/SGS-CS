@@ -1,0 +1,279 @@
+---
+layout: layouts/base.njk
+title: "Worksheet 3: Canteen Orders | SQL Worksheets"
+description: "SQL worksheet for the Canteen Orders dataset."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "SL", href: "ib-2027/sl/index.html" }
+  - { label: "Unit 6", href: "ib-2027/sl/unit-6/index.html" }
+  - { label: "SQL Worksheets", href: "ib-2027/sl/unit-6/sql-worksheets/index.html" }
+  - { label: "Canteen Orders" }
+extraStyles:
+  - "css/sql-worksheet.css"
+---
+
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 3 | SL Core</p>
+            <h1 class="sql-sheet-title">Canteen Orders</h1>
+            <p class="sql-sheet-summary">
+                Use a richer order-processing dataset to connect normalization theory with SQL practice.
+                This is where table design, junction tables, joins, updates, and denormalization tradeoffs
+                start to come together.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">Normalization</span>
+                <span class="sql-chip">JOIN</span>
+                <span class="sql-chip">UPDATE</span>
+                <span class="sql-chip">DELETE</span>
+                <span class="sql-chip">GROUP BY stretch</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=canteen-orders" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open SQL Playground
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/sl/unit-6/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-overview-grid">
+        <section class="sql-overview-card">
+            <h2>Dataset Focus</h2>
+            <ul>
+                <li><code>ORDER_ITEM</code> is the key junction table</li>
+                <li>Good model for one-to-many plus many-to-many design</li>
+                <li>Enough rows for more realistic joined results and grouped summaries</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>A3.2.5 normal forms</li>
+                <li>A3.2.6 constructing 3NF designs</li>
+                <li>A3.2.7 denormalization tradeoffs</li>
+            </ul>
+        </section>
+        <section class="sql-overview-card">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Use the schema to trace which foreign key belongs to which table.</li>
+                <li>Keep Section 5 and Section 6 until the end.</li>
+                <li>Reload the dataset after any price changes or inserts.</li>
+            </ul>
+        </section>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Normalization and Table Design</h2>
+                <p>Read the structure before you write the queries.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.5</span>
+                    <span class="sql-task-focus">1NF to 3NF</span>
+                </div>
+                <p>Explain why <code>ORDER_ITEM</code> exists instead of storing several product names in one order row.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.5</span>
+                    <span class="sql-task-focus">Dependencies</span>
+                </div>
+                <p>If <code>ProductName</code> and <code>Price</code> were copied into every order line, what update anomaly or duplication problem would appear?</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Composite key</span>
+                </div>
+                <p>State the composite key in <code>ORDER_ITEM</code> and explain how it helps prevent duplicate line items for the same order.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.6</span>
+                    <span class="sql-task-focus">3NF</span>
+                </div>
+                <p>Explain why splitting this system into <code>CUSTOMER</code>, <code>ORDER_HEADER</code>, <code>PRODUCT</code>, and <code>ORDER_ITEM</code> is closer to a 3NF design.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Product and Order Filters</h2>
+                <p>Retrieve targeted rows before joining the full order pathway.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <p>List all lunch products that cost more than <code>4.00</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">AND / OR</span>
+                </div>
+                <p>Show every customer from house <code>Ash</code> or <code>Oak</code>, ordered alphabetically by name.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">BETWEEN</span>
+                </div>
+                <p>Find order headers paid by <code>Account</code> between <code>2026-03-05</code> and <code>2026-03-12</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">DISTINCT</span>
+                </div>
+                <p>Return every distinct payment method used in the canteen.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Join the Full Order Path</h2>
+                <p>Move from customers to orders to products through the junction table.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 2 tables</span>
+                </div>
+                <p>Show the customer name and order date for all orders placed by <code>Zara Ahmed</code> or <code>Mina Patel</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN 4 tables</span>
+                </div>
+                <p>Display every order line with <code>OrderID</code>, customer name, product name, and quantity.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Filter joined data</span>
+                </div>
+                <p>Show only drink items sold on or after <code>2026-03-07</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN + ORDER BY</span>
+                </div>
+                <p>List every product bought by <code>Aisha Rahman</code>, including the order date, ordered from earliest to latest.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">4</span>
+            <div>
+                <h2>DDL, DML, and Performance Thinking</h2>
+                <p>Use structure-changing and row-changing commands deliberately.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">CREATE TABLE</span>
+                </div>
+                <p>Create a <code>PROMOTION</code> table with <code>PromotionID</code> as the primary key, plus <code>ProductID</code>, <code>PromoText</code>, and <code>StartDate</code>. Add a foreign key back to <code>PRODUCT</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">INSERT</span>
+                </div>
+                <p>Insert one promotion for <code>Muffin</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">UPDATE</span>
+                </div>
+                <p>Update the price of <code>Still Water</code> from <code>1.0</code> to <code>1.1</code>.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">DELETE</span>
+                </div>
+                <p>Delete the promotion you inserted.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">Performance</span>
+                </div>
+                <p>Explain why frequent updates to indexed columns can create extra maintenance work for the database engine.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">5</span>
+            <div>
+                <h2>Stretch: Reporting and Denormalization</h2>
+                <p>Use these if your class is ready to move toward HL-style reporting.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">GROUP BY</span>
+                </div>
+                <p>Count how many order headers used each payment method.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">HAVING</span>
+                </div>
+                <p>Extend the previous query so it returns only payment methods used at least three times.</p>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-top">
+                    <span class="sql-task-tag">A3.2.7</span>
+                    <span class="sql-task-focus">Denormalization</span>
+                </div>
+                <p>Suggest one denormalized reporting table for the canteen and evaluate the tradeoff between easier read queries and extra redundancy.</p>
+            </li>
+        </ol>
+        <p class="sql-sheet-note">Reload <code>Canteen Orders</code> when you finish so the next student starts from the untouched sample data.</p>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/campus-clubs.html"><i class="fa-solid fa-arrow-left"></i> Previous: Campus Clubs</a>
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/course-enrolment.html">Continue to HL: Course Enrolment <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>

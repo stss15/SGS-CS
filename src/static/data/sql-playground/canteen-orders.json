@@ -2,114 +2,639 @@
   "id": "canteen-orders",
   "name": "Canteen Orders",
   "difficulty": "sl",
-  "summary": "An order-processing database that supports joins, totals, GROUP BY, and SUM.",
-  "focus": ["JOIN", "SUM", "GROUP BY", "ORDER BY"],
-  "relationshipHighlights": ["One-to-many", "Many-to-many", "Junction table"],
-  "defaultQuery": "SELECT oh.OrderID, c.CustomerName, ROUND(SUM(oi.Quantity * p.Price), 2) AS OrderTotal FROM ORDER_HEADER oh JOIN CUSTOMER c ON oh.CustomerID = c.CustomerID JOIN ORDER_ITEM oi ON oh.OrderID = oi.OrderID JOIN PRODUCT p ON oi.ProductID = p.ProductID GROUP BY oh.OrderID, c.CustomerName ORDER BY OrderTotal DESC;",
+  "summary": "An order-processing database that supports joins, filtering, grouping, and reporting tasks.",
+  "focus": [
+    "JOIN",
+    "ORDER BY",
+    "GROUP BY",
+    "Junction table"
+  ],
+  "relationshipHighlights": [
+    "One-to-many",
+    "Many-to-many",
+    "Junction table"
+  ],
+  "defaultQuery": "SELECT oh.OrderID, c.CustomerName, p.ProductName, oi.Quantity FROM ORDER_HEADER oh JOIN CUSTOMER c ON oh.CustomerID = c.CustomerID JOIN ORDER_ITEM oi ON oh.OrderID = oi.OrderID JOIN PRODUCT p ON oi.ProductID = p.ProductID ORDER BY oh.OrderID, p.ProductName;",
   "notes": [
     "ORDER_ITEM is the junction table that links each order to one or more products.",
-    "Totals can be calculated by multiplying quantity by price and then grouping by order."
+    "Grouped reports can summarise payment methods, categories, or item counts once joins are working."
   ],
   "tables": [
     {
       "name": "CUSTOMER",
       "description": "Students and staff who place canteen orders.",
       "kind": "entity",
-      "diagram": { "x": 24, "y": 44 },
+      "diagram": {
+        "x": 24,
+        "y": 44
+      },
       "columns": [
-        { "name": "CustomerID", "type": "INTEGER", "notNull": true },
-        { "name": "CustomerName", "type": "TEXT", "notNull": true },
-        { "name": "House", "type": "TEXT", "notNull": true }
+        {
+          "name": "CustomerID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "CustomerName",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "House",
+          "type": "TEXT",
+          "notNull": true
+        }
       ],
-      "primaryKey": ["CustomerID"],
+      "primaryKey": [
+        "CustomerID"
+      ],
       "rows": [
-        { "CustomerID": 6101, "CustomerName": "Mina Patel", "House": "Ash" },
-        { "CustomerID": 6102, "CustomerName": "Noah Brown", "House": "Cedar" },
-        { "CustomerID": 6103, "CustomerName": "Lina Chen", "House": "Oak" },
-        { "CustomerID": 6104, "CustomerName": "Tom Evans", "House": "Ash" },
-        { "CustomerID": 6105, "CustomerName": "Ms Ortiz", "House": "Staff" }
+        {
+          "CustomerID": 6101,
+          "CustomerName": "Mina Patel",
+          "House": "Ash"
+        },
+        {
+          "CustomerID": 6102,
+          "CustomerName": "Noah Brown",
+          "House": "Cedar"
+        },
+        {
+          "CustomerID": 6103,
+          "CustomerName": "Lina Chen",
+          "House": "Oak"
+        },
+        {
+          "CustomerID": 6104,
+          "CustomerName": "Tom Evans",
+          "House": "Ash"
+        },
+        {
+          "CustomerID": 6105,
+          "CustomerName": "Ms Ortiz",
+          "House": "Staff"
+        },
+        {
+          "CustomerID": 6106,
+          "CustomerName": "Aisha Rahman",
+          "House": "Oak"
+        },
+        {
+          "CustomerID": 6107,
+          "CustomerName": "Finley Cooper",
+          "House": "Cedar"
+        },
+        {
+          "CustomerID": 6108,
+          "CustomerName": "Grace Morris",
+          "House": "Birch"
+        },
+        {
+          "CustomerID": 6109,
+          "CustomerName": "Hugo King",
+          "House": "Oak"
+        },
+        {
+          "CustomerID": 6110,
+          "CustomerName": "Ivy Ross",
+          "House": "Cedar"
+        },
+        {
+          "CustomerID": 6111,
+          "CustomerName": "Daniel Bell",
+          "House": "Staff"
+        },
+        {
+          "CustomerID": 6112,
+          "CustomerName": "Zara Ahmed",
+          "House": "Ash"
+        }
       ]
     },
     {
       "name": "ORDER_HEADER",
       "description": "Each order placed in the canteen.",
       "kind": "entity",
-      "diagram": { "x": 292, "y": 44 },
+      "diagram": {
+        "x": 292,
+        "y": 44
+      },
       "columns": [
-        { "name": "OrderID", "type": "INTEGER", "notNull": true },
-        { "name": "CustomerID", "type": "INTEGER", "notNull": true },
-        { "name": "OrderDate", "type": "TEXT", "notNull": true },
-        { "name": "PaymentMethod", "type": "TEXT", "notNull": true }
+        {
+          "name": "OrderID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "CustomerID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "OrderDate",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "PaymentMethod",
+          "type": "TEXT",
+          "notNull": true
+        }
       ],
-      "primaryKey": ["OrderID"],
+      "primaryKey": [
+        "OrderID"
+      ],
       "foreignKeys": [
         {
-          "columns": ["CustomerID"],
-          "references": { "table": "CUSTOMER", "columns": ["CustomerID"] }
+          "columns": [
+            "CustomerID"
+          ],
+          "references": {
+            "table": "CUSTOMER",
+            "columns": [
+              "CustomerID"
+            ]
+          }
         }
       ],
       "rows": [
-        { "OrderID": 7201, "CustomerID": 6101, "OrderDate": "2026-03-03", "PaymentMethod": "Card" },
-        { "OrderID": 7202, "CustomerID": 6102, "OrderDate": "2026-03-03", "PaymentMethod": "Cash" },
-        { "OrderID": 7203, "CustomerID": 6103, "OrderDate": "2026-03-04", "PaymentMethod": "Card" },
-        { "OrderID": 7204, "CustomerID": 6104, "OrderDate": "2026-03-04", "PaymentMethod": "Card" },
-        { "OrderID": 7205, "CustomerID": 6105, "OrderDate": "2026-03-05", "PaymentMethod": "Account" }
+        {
+          "OrderID": 7201,
+          "CustomerID": 6101,
+          "OrderDate": "2026-03-03",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7202,
+          "CustomerID": 6102,
+          "OrderDate": "2026-03-03",
+          "PaymentMethod": "Cash"
+        },
+        {
+          "OrderID": 7203,
+          "CustomerID": 6103,
+          "OrderDate": "2026-03-04",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7204,
+          "CustomerID": 6104,
+          "OrderDate": "2026-03-04",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7205,
+          "CustomerID": 6105,
+          "OrderDate": "2026-03-05",
+          "PaymentMethod": "Account"
+        },
+        {
+          "OrderID": 7206,
+          "CustomerID": 6106,
+          "OrderDate": "2026-03-05",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7207,
+          "CustomerID": 6107,
+          "OrderDate": "2026-03-06",
+          "PaymentMethod": "Cash"
+        },
+        {
+          "OrderID": 7208,
+          "CustomerID": 6108,
+          "OrderDate": "2026-03-06",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7209,
+          "CustomerID": 6109,
+          "OrderDate": "2026-03-07",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7210,
+          "CustomerID": 6110,
+          "OrderDate": "2026-03-07",
+          "PaymentMethod": "Cash"
+        },
+        {
+          "OrderID": 7211,
+          "CustomerID": 6111,
+          "OrderDate": "2026-03-08",
+          "PaymentMethod": "Account"
+        },
+        {
+          "OrderID": 7212,
+          "CustomerID": 6112,
+          "OrderDate": "2026-03-08",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7213,
+          "CustomerID": 6101,
+          "OrderDate": "2026-03-09",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7214,
+          "CustomerID": 6103,
+          "OrderDate": "2026-03-09",
+          "PaymentMethod": "Cash"
+        },
+        {
+          "OrderID": 7215,
+          "CustomerID": 6107,
+          "OrderDate": "2026-03-10",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7216,
+          "CustomerID": 6109,
+          "OrderDate": "2026-03-11",
+          "PaymentMethod": "Cash"
+        },
+        {
+          "OrderID": 7217,
+          "CustomerID": 6112,
+          "OrderDate": "2026-03-11",
+          "PaymentMethod": "Card"
+        },
+        {
+          "OrderID": 7218,
+          "CustomerID": 6106,
+          "OrderDate": "2026-03-12",
+          "PaymentMethod": "Account"
+        }
       ]
     },
     {
       "name": "PRODUCT",
       "description": "Items sold by the canteen.",
       "kind": "entity",
-      "diagram": { "x": 830, "y": 44 },
+      "diagram": {
+        "x": 830,
+        "y": 44
+      },
       "columns": [
-        { "name": "ProductID", "type": "INTEGER", "notNull": true },
-        { "name": "ProductName", "type": "TEXT", "notNull": true },
-        { "name": "Category", "type": "TEXT", "notNull": true },
-        { "name": "Price", "type": "REAL", "notNull": true }
+        {
+          "name": "ProductID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "ProductName",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "Category",
+          "type": "TEXT",
+          "notNull": true
+        },
+        {
+          "name": "Price",
+          "type": "REAL",
+          "notNull": true
+        }
       ],
-      "primaryKey": ["ProductID"],
+      "primaryKey": [
+        "ProductID"
+      ],
       "rows": [
-        { "ProductID": 8301, "ProductName": "Panini", "Category": "Lunch", "Price": 3.8 },
-        { "ProductID": 8302, "ProductName": "Fruit Pot", "Category": "Snack", "Price": 1.6 },
-        { "ProductID": 8303, "ProductName": "Orange Juice", "Category": "Drink", "Price": 1.4 },
-        { "ProductID": 8304, "ProductName": "Pasta Box", "Category": "Lunch", "Price": 4.2 },
-        { "ProductID": 8305, "ProductName": "Cookie", "Category": "Snack", "Price": 1.1 },
-        { "ProductID": 8306, "ProductName": "Still Water", "Category": "Drink", "Price": 1.0 }
+        {
+          "ProductID": 8301,
+          "ProductName": "Panini",
+          "Category": "Lunch",
+          "Price": 3.8
+        },
+        {
+          "ProductID": 8302,
+          "ProductName": "Fruit Pot",
+          "Category": "Snack",
+          "Price": 1.6
+        },
+        {
+          "ProductID": 8303,
+          "ProductName": "Orange Juice",
+          "Category": "Drink",
+          "Price": 1.4
+        },
+        {
+          "ProductID": 8304,
+          "ProductName": "Pasta Box",
+          "Category": "Lunch",
+          "Price": 4.2
+        },
+        {
+          "ProductID": 8305,
+          "ProductName": "Cookie",
+          "Category": "Snack",
+          "Price": 1.1
+        },
+        {
+          "ProductID": 8306,
+          "ProductName": "Still Water",
+          "Category": "Drink",
+          "Price": 1
+        },
+        {
+          "ProductID": 8307,
+          "ProductName": "Salad Bowl",
+          "Category": "Lunch",
+          "Price": 4.5
+        },
+        {
+          "ProductID": 8308,
+          "ProductName": "Hot Chocolate",
+          "Category": "Drink",
+          "Price": 1.8
+        },
+        {
+          "ProductID": 8309,
+          "ProductName": "Yogurt Parfait",
+          "Category": "Snack",
+          "Price": 1.9
+        },
+        {
+          "ProductID": 8310,
+          "ProductName": "Wrap",
+          "Category": "Lunch",
+          "Price": 3.9
+        },
+        {
+          "ProductID": 8311,
+          "ProductName": "Apple Juice",
+          "Category": "Drink",
+          "Price": 1.5
+        },
+        {
+          "ProductID": 8312,
+          "ProductName": "Muffin",
+          "Category": "Snack",
+          "Price": 1.4
+        }
       ]
     },
     {
       "name": "ORDER_ITEM",
       "description": "Junction table listing the products inside each order.",
       "kind": "junction",
-      "diagram": { "x": 560, "y": 190 },
+      "diagram": {
+        "x": 560,
+        "y": 190
+      },
       "columns": [
-        { "name": "OrderID", "type": "INTEGER", "notNull": true },
-        { "name": "ProductID", "type": "INTEGER", "notNull": true },
-        { "name": "Quantity", "type": "INTEGER", "notNull": true }
-      ],
-      "primaryKey": ["OrderID", "ProductID"],
-      "foreignKeys": [
         {
-          "columns": ["OrderID"],
-          "references": { "table": "ORDER_HEADER", "columns": ["OrderID"] }
+          "name": "OrderID",
+          "type": "INTEGER",
+          "notNull": true
         },
         {
-          "columns": ["ProductID"],
-          "references": { "table": "PRODUCT", "columns": ["ProductID"] }
+          "name": "ProductID",
+          "type": "INTEGER",
+          "notNull": true
+        },
+        {
+          "name": "Quantity",
+          "type": "INTEGER",
+          "notNull": true
+        }
+      ],
+      "primaryKey": [
+        "OrderID",
+        "ProductID"
+      ],
+      "foreignKeys": [
+        {
+          "columns": [
+            "OrderID"
+          ],
+          "references": {
+            "table": "ORDER_HEADER",
+            "columns": [
+              "OrderID"
+            ]
+          }
+        },
+        {
+          "columns": [
+            "ProductID"
+          ],
+          "references": {
+            "table": "PRODUCT",
+            "columns": [
+              "ProductID"
+            ]
+          }
         }
       ],
       "rows": [
-        { "OrderID": 7201, "ProductID": 8301, "Quantity": 1 },
-        { "OrderID": 7201, "ProductID": 8303, "Quantity": 1 },
-        { "OrderID": 7202, "ProductID": 8304, "Quantity": 1 },
-        { "OrderID": 7202, "ProductID": 8306, "Quantity": 2 },
-        { "OrderID": 7203, "ProductID": 8302, "Quantity": 2 },
-        { "OrderID": 7203, "ProductID": 8305, "Quantity": 1 },
-        { "OrderID": 7204, "ProductID": 8301, "Quantity": 1 },
-        { "OrderID": 7204, "ProductID": 8305, "Quantity": 2 },
-        { "OrderID": 7205, "ProductID": 8302, "Quantity": 1 },
-        { "OrderID": 7205, "ProductID": 8303, "Quantity": 1 },
-        { "OrderID": 7205, "ProductID": 8304, "Quantity": 1 }
+        {
+          "OrderID": 7201,
+          "ProductID": 8301,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7201,
+          "ProductID": 8303,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7202,
+          "ProductID": 8304,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7202,
+          "ProductID": 8306,
+          "Quantity": 2
+        },
+        {
+          "OrderID": 7203,
+          "ProductID": 8302,
+          "Quantity": 2
+        },
+        {
+          "OrderID": 7203,
+          "ProductID": 8305,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7204,
+          "ProductID": 8301,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7204,
+          "ProductID": 8305,
+          "Quantity": 2
+        },
+        {
+          "OrderID": 7205,
+          "ProductID": 8302,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7205,
+          "ProductID": 8303,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7205,
+          "ProductID": 8304,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7206,
+          "ProductID": 8310,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7206,
+          "ProductID": 8311,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7207,
+          "ProductID": 8307,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7207,
+          "ProductID": 8306,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7208,
+          "ProductID": 8309,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7208,
+          "ProductID": 8308,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7209,
+          "ProductID": 8304,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7209,
+          "ProductID": 8303,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7209,
+          "ProductID": 8305,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7210,
+          "ProductID": 8302,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7210,
+          "ProductID": 8312,
+          "Quantity": 2
+        },
+        {
+          "OrderID": 7211,
+          "ProductID": 8307,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7211,
+          "ProductID": 8308,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7212,
+          "ProductID": 8301,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7212,
+          "ProductID": 8306,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7212,
+          "ProductID": 8305,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7213,
+          "ProductID": 8310,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7213,
+          "ProductID": 8303,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7214,
+          "ProductID": 8309,
+          "Quantity": 2
+        },
+        {
+          "OrderID": 7214,
+          "ProductID": 8311,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7215,
+          "ProductID": 8304,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7215,
+          "ProductID": 8306,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7215,
+          "ProductID": 8312,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7216,
+          "ProductID": 8307,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7216,
+          "ProductID": 8305,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7217,
+          "ProductID": 8301,
+          "Quantity": 2
+        },
+        {
+          "OrderID": 7217,
+          "ProductID": 8311,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7218,
+          "ProductID": 8302,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7218,
+          "ProductID": 8308,
+          "Quantity": 1
+        },
+        {
+          "OrderID": 7218,
+          "ProductID": 8310,
+          "Quantity": 1
+        }
       ]
     }
   ],
