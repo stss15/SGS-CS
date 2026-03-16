@@ -1,7 +1,7 @@
 ---
 layout: layouts/base.njk
-title: "Worksheet 4: Course Enrolment | SQL Worksheets"
-description: "Higher Level SQL worksheet for the Course Enrolment dataset."
+title: "Worksheet 1: Course Enrolment Reporting | HL SQL"
+description: "Higher Level SQL worksheet focused on aggregate functions and grouped reporting."
 activeSection: "ib"
 breadcrumbs:
   - { label: "Home", href: "index.html" }
@@ -9,7 +9,7 @@ breadcrumbs:
   - { label: "HL", href: "ib-2027/hl/index.html" }
   - { label: "Unit 5", href: "ib-2027/hl/unit-5/index.html" }
   - { label: "SQL Worksheets", href: "ib-2027/hl/unit-5/sql-worksheets/index.html" }
-  - { label: "Course Enrolment" }
+  - { label: "Course Enrolment Reporting" }
 extraStyles:
   - "css/sql-worksheet.css"
 scripts:
@@ -20,30 +20,31 @@ scripts:
 <div class="sql-sheet-shell">
     <section class="sql-sheet-hero">
         <div>
-            <p class="sql-sheet-kicker">Worksheet 4 | HL Extension</p>
-            <h1 class="sql-sheet-title">Course Enrolment</h1>
+            <p class="sql-sheet-kicker">Worksheet 1 | HL Focus</p>
+            <h1 class="sql-sheet-title">Course Enrolment Reporting</h1>
             <p class="sql-sheet-summary">
-                This is the Higher Level extension. It assumes the three SL worksheets are already complete,
-                then shifts the focus onto grouped calculations, reporting queries, views, transactions, and
-                the ACID model of reliable database processing.
+                This worksheet is only about the HL aggregate content. Use the prepared course enrolment
+                dataset to write grouped queries with <code>COUNT</code>, <code>AVG</code>,
+                <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>GROUP BY</code>, and
+                <code>HAVING</code>.
             </p>
             <div class="sql-chip-row">
                 <span class="sql-chip">COUNT</span>
                 <span class="sql-chip">AVG</span>
                 <span class="sql-chip">SUM</span>
+                <span class="sql-chip">MAX</span>
+                <span class="sql-chip">MIN</span>
                 <span class="sql-chip">HAVING</span>
-                <span class="sql-chip">VIEW</span>
-                <span class="sql-chip">TRANSACTION</span>
             </div>
         </div>
         <div class="sql-sheet-actions">
             <a class="sql-launch" href="/tools/sql-playground.html?dataset=course-enrolment" target="_blank" rel="noopener">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                Open SQL Playground
+                Open HL Dataset
             </a>
             <a class="sql-secondary-link" href="/ib-2027/hl/unit-5/sql-worksheets/index.html">
                 <i class="fa-solid fa-list"></i>
-                All SQL worksheets
+                All HL SQL worksheets
             </a>
         </div>
     </section>
@@ -52,25 +53,25 @@ scripts:
         <div class="sql-meta-cell">
             <h2>Dataset</h2>
             <ul>
-                <li>4 tables with a composite-key junction table</li>
-                <li>Enough rows for department, course, level, and semester reporting</li>
-                <li>Designed for aggregates, views, and transaction practice</li>
+                <li>4 linked tables with 36 enrollment rows</li>
+                <li>Enough data for grouped summaries by department, course, level, and semester</li>
+                <li>Designed for reporting queries rather than basic retrieval practice</li>
             </ul>
         </div>
         <div class="sql-meta-cell">
-            <h2>Syllabus Links</h2>
+            <h2>HL Focus</h2>
             <ul>
                 <li>A3.3.4 aggregate functions on grouped data</li>
-                <li>A3.3.5 virtual and materialized view concepts</li>
-                <li>A3.3.6 transactions, ACID, and integrity</li>
+                <li>Reporting and decision-making from summarized results</li>
+                <li>Choosing the right grouping column and threshold</li>
             </ul>
         </div>
         <div class="sql-meta-cell">
             <h2>Before You Start</h2>
             <ul>
-                <li>Use this only after the SL sequence is secure.</li>
-                <li>Leave the transaction work until the end because it changes the live workspace.</li>
-                <li>Remember: <code>WHERE</code> filters rows, <code>HAVING</code> filters groups.</li>
+                <li>Assume the SL query skills are already secure.</li>
+                <li>Focus on what each group represents before writing the SQL.</li>
+                <li>Remember: <code>WHERE</code> filters rows and <code>HAVING</code> filters groups.</li>
             </ul>
         </div>
     </div>
@@ -79,95 +80,27 @@ scripts:
         <div class="sql-section-heading">
             <span class="sql-section-number">1</span>
             <div>
-                <h2>Fast Recap</h2>
-                <p>Reconfirm the core SL ideas before you move into grouped reporting.</p>
+                <h2>Count the Groups</h2>
+                <p>Start with row counts so you can see how the data is distributed.</p>
             </div>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Reference pattern — multi-table retrieval recap</summary>
-            <div class="sql-syntax-body">
-                <pre><code>SELECT a.column_a, b.column_b
-FROM first_table AS a
-INNER JOIN second_table AS b
-    ON a.primary_key = b.foreign_key
-WHERE a.status_column = 'HL'
-ORDER BY b.name_column;
-
-SELECT s.name_column, c.course_column, e.value_column
-FROM junction_table AS e
-INNER JOIN student_table AS s
-    ON e.student_id = s.student_id
-INNER JOIN course_table AS c
-    ON e.course_id = c.course_id;</code></pre>
-                <p>HL reporting still depends on clean joins. If the join path is wrong, the grouped result will also be wrong.</p>
-            </div>
-        </details>
-
-        <ol class="sql-task-list">
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.4</span>
-                    <span class="sql-task-focus">Composite key</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Identify the composite primary key in <code>ENROLLMENT</code> and explain what real-world relationship that table stores.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">JOIN</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Join <code>COURSE</code> to <code>DEPARTMENT</code> and show each course with its department name and credit value.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">JOIN 3 tables</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Show student full name, course name, and score for all <code>Spring</code> enrollments.</p>
-                </div>
-            </li>
-        </ol>
-    </section>
-
-    <section class="sql-sheet-section">
-        <div class="sql-section-heading">
-            <span class="sql-section-number">2</span>
-            <div>
-                <h2>Aggregates and Grouped Reporting</h2>
-                <p>Build reporting queries that summarize many rows into decision-making information.</p>
-            </div>
-        </div>
-
-        <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Reference pattern — COUNT, AVG, SUM, MAX, MIN, GROUP BY, HAVING</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — COUNT and GROUP BY</summary>
             <div class="sql-syntax-body">
                 <pre><code>-- Count rows in each group
 SELECT group_column, COUNT(*) AS row_count
 FROM table_name
 GROUP BY group_column;
 
--- Average a numeric value in each group
-SELECT group_column, AVG(score_column) AS average_score
-FROM table_name
-GROUP BY group_column;
-
--- Total a numeric value in each group
-SELECT category_column, SUM(number_column) AS total_value
-FROM table_name
-GROUP BY category_column;
-
--- Filter grouped results after aggregation
-SELECT group_column, COUNT(*) AS row_count
-FROM table_name
-GROUP BY group_column
-HAVING COUNT(*) >= 4;</code></pre>
-                <p><code>COUNT</code>, <code>AVG</code>, <code>SUM</code>, <code>MAX</code>, and <code>MIN</code> work on grouped data. <code>HAVING</code> is the clause that filters those grouped summaries.</p>
+-- Count after a join
+SELECT category_column, COUNT(*) AS row_count
+FROM first_table AS a
+INNER JOIN second_table AS b
+    ON a.primary_key = b.foreign_key
+GROUP BY category_column
+ORDER BY row_count DESC;</code></pre>
+                <p><code>GROUP BY</code> creates one summary row per group. <code>COUNT(*)</code> tells you how many source rows ended up in each summary.</p>
             </div>
         </details>
 
@@ -193,6 +126,51 @@ HAVING COUNT(*) >= 4;</code></pre>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">COUNT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Count how many enrollment rows fall in each semester.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Average, Total, Highest, and Lowest</h2>
+                <p>Move from raw counts into richer summary measures.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — AVG, SUM, MAX, MIN</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Average a numeric value in each group
+SELECT group_column, AVG(number_column) AS average_value
+FROM table_name
+GROUP BY group_column;
+
+-- Add up a numeric value in each group
+SELECT group_column, SUM(number_column) AS total_value
+FROM table_name
+GROUP BY group_column;
+
+-- Find the largest and smallest value in each group
+SELECT group_column,
+       MAX(number_column) AS highest_value,
+       MIN(number_column) AS lowest_value
+FROM table_name
+GROUP BY group_column;</code></pre>
+                <p>Aggregate functions collapse many rows into one summary. Choose the grouping column first, then decide which measure helps answer the reporting question.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
                     <span class="sql-task-focus">AVG</span>
                 </div>
                 <div class="sql-task-body">
@@ -202,10 +180,10 @@ HAVING COUNT(*) >= 4;</code></pre>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.4</span>
-                    <span class="sql-task-focus">MAX / MIN</span>
+                    <span class="sql-task-focus">AVG</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Return the maximum and minimum score in each course.</p>
+                    <p>Calculate the average score for each course.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -220,10 +198,60 @@ HAVING COUNT(*) >= 4;</code></pre>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">MAX / MIN</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return the maximum and minimum score in each course.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Filter Groups with HAVING</h2>
+                <p>Now add thresholds to the grouped results.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — HAVING after aggregation</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Keep only the groups that meet a threshold
+SELECT group_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY group_column
+HAVING COUNT(*) >= 4;
+
+-- HAVING can also test averages or totals
+SELECT group_column, AVG(score_column) AS average_score
+FROM table_name
+GROUP BY group_column
+HAVING AVG(score_column) > 85
+ORDER BY average_score DESC;</code></pre>
+                <p><code>HAVING</code> is for group-level conditions. If the condition is about the summary, it belongs after <code>GROUP BY</code>, not in <code>WHERE</code>.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
                     <span class="sql-task-focus">HAVING</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Show only departments with at least four enrollments.</p>
+                    <p>Show only departments with at least <code>9</code> enrollment rows.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">HAVING</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return only courses whose average score is above <code>85</code>.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -235,125 +263,13 @@ HAVING COUNT(*) >= 4;</code></pre>
                     <p>Produce a department report showing department name, enrollment count, and rounded average score, ordered from highest average to lowest.</p>
                 </div>
             </li>
-        </ol>
-    </section>
-
-    <section class="sql-sheet-section">
-        <div class="sql-section-heading">
-            <span class="sql-section-number">3</span>
-            <div>
-                <h2>Views</h2>
-                <p>Create a reusable query layer on top of the base tables.</p>
-            </div>
-        </div>
-
-        <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Reference pattern — CREATE VIEW</summary>
-            <div class="sql-syntax-body">
-                <pre><code>CREATE VIEW useful_view AS
-SELECT a.column_a, b.column_b, c.score_column
-FROM first_table AS a
-INNER JOIN link_table AS c
-    ON a.primary_key = c.first_id
-INNER JOIN second_table AS b
-    ON c.second_id = b.primary_key
-WHERE c.score_column >= 90;
-
-SELECT *
-FROM useful_view
-ORDER BY score_column DESC;</code></pre>
-                <p>A virtual view stores the query, not a second copy of the data. It can simplify long joins and hide unnecessary complexity from users.</p>
-            </div>
-        </details>
-
-        <ol class="sql-task-list">
             <li class="sql-task">
                 <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.5</span>
-                    <span class="sql-task-focus">CREATE VIEW</span>
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">Decision-making</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Create a view called <code>HighScorers</code> that shows student full name, course name, department name, and score for rows where the score is at least <code>90</code>.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.5</span>
-                    <span class="sql-task-focus">Query a view</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Query <code>HighScorers</code> and order the result by score descending, then by student surname.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.5</span>
-                    <span class="sql-task-focus">Explain</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Explain one benefit of a virtual view and one difference between a virtual view and a materialized or snapshot view.</p>
-                </div>
-            </li>
-        </ol>
-    </section>
-
-    <section class="sql-sheet-section">
-        <div class="sql-section-heading">
-            <span class="sql-section-number">4</span>
-            <div>
-                <h2>Transactions and ACID</h2>
-                <p>Use transaction control language to protect data integrity while changes are being made.</p>
-            </div>
-        </div>
-
-        <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Reference pattern — BEGIN TRANSACTION, COMMIT, ROLLBACK</summary>
-            <div class="sql-syntax-body">
-                <pre><code>BEGIN TRANSACTION;
-
-INSERT INTO parent_table (id, name_column)
-VALUES (9001, 'New record');
-
-INSERT INTO child_table (parent_id, item_id, score_column)
-VALUES (9001, 501, 88);
-
-COMMIT;
-
-BEGIN TRANSACTION;
-UPDATE child_table
-SET score_column = 91
-WHERE parent_id = 9001;
-ROLLBACK;</code></pre>
-                <p>Use <code>COMMIT</code> when all related changes should become permanent together. Use <code>ROLLBACK</code> when you need to undo the whole transaction.</p>
-            </div>
-        </details>
-
-        <ol class="sql-task-list">
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.6</span>
-                    <span class="sql-task-focus">BEGIN / COMMIT</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Begin a transaction, insert a new student, insert one matching enrollment row for that student, then commit the transaction.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.6</span>
-                    <span class="sql-task-focus">BEGIN / ROLLBACK</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Begin a second transaction, change a score or cohort value, inspect the result, then roll the transaction back.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.6</span>
-                    <span class="sql-task-focus">ACID</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Explain how atomicity, consistency, isolation, and durability help keep this database reliable when several changes happen close together.</p>
+                    <p>Write one sentence explaining how a head of department could use your final report to support a planning decision.</p>
                 </div>
             </li>
         </ol>
@@ -371,14 +287,19 @@ ROLLBACK;</code></pre>
             <p class="sql-answers-err" data-answer-error></p>
         </div>
         <div class="sql-answers-content" data-answer-content hidden>
-            <h2><i class="fa-solid fa-unlock"></i> Model Answers — Course Enrolment</h2>
+            <h2><i class="fa-solid fa-unlock"></i> Model Answers — Course Enrolment Reporting</h2>
 
             <h3>Section 1</h3>
             <div class="sql-answer-item">
                 <span class="sql-answer-num">1</span>
                 <div class="sql-answer-body">
-                    <strong>Recap answer</strong>
-                    <code>ENROLLMENT</code> has the composite key <code>(StudentID, CourseID)</code>, representing which student is enrolled on which course.
+                    <strong>Example count query</strong>
+                    <pre><code>SELECT d.DepartmentName, COUNT(*) AS CourseCount
+FROM COURSE AS c
+INNER JOIN DEPARTMENT AS d
+    ON c.DepartmentID = d.DepartmentID
+GROUP BY d.DepartmentName
+ORDER BY d.DepartmentName;</code></pre>
                 </div>
             </div>
 
@@ -386,15 +307,18 @@ ROLLBACK;</code></pre>
             <div class="sql-answer-item">
                 <span class="sql-answer-num">2</span>
                 <div class="sql-answer-body">
-                    <strong>Aggregate examples</strong>
-                    <pre><code>SELECT d.DepartmentName, COUNT(*) AS EnrollmentCount
+                    <strong>Average and total examples</strong>
+                    <pre><code>SELECT d.DepartmentName, ROUND(AVG(e.Score), 1) AS AverageScore
 FROM ENROLLMENT AS e
 INNER JOIN COURSE AS c
     ON e.CourseID = c.CourseID
 INNER JOIN DEPARTMENT AS d
     ON c.DepartmentID = d.DepartmentID
-GROUP BY d.DepartmentName
-HAVING COUNT(*) >= 4;</code></pre>
+GROUP BY d.DepartmentName;
+
+SELECT Level, SUM(Credits) AS TotalCredits
+FROM COURSE
+GROUP BY Level;</code></pre>
                 </div>
             </div>
 
@@ -402,33 +326,23 @@ HAVING COUNT(*) >= 4;</code></pre>
             <div class="sql-answer-item">
                 <span class="sql-answer-num">3</span>
                 <div class="sql-answer-body">
-                    <strong>View pattern</strong>
-                    <pre><code>CREATE VIEW HighScorers AS
-SELECT s.FirstName, s.LastName, c.CourseName, d.DepartmentName, e.Score
+                    <strong>HAVING example</strong>
+                    <pre><code>SELECT d.DepartmentName, COUNT(*) AS EnrollmentCount
 FROM ENROLLMENT AS e
-INNER JOIN STUDENT AS s
-    ON e.StudentID = s.StudentID
 INNER JOIN COURSE AS c
     ON e.CourseID = c.CourseID
 INNER JOIN DEPARTMENT AS d
     ON c.DepartmentID = d.DepartmentID
-WHERE e.Score >= 90;</code></pre>
-                </div>
-            </div>
-
-            <h3>Section 4</h3>
-            <div class="sql-answer-item">
-                <span class="sql-answer-num">4</span>
-                <div class="sql-answer-body">
-                    <strong>ACID summary</strong>
-                    Atomicity keeps related changes together, consistency preserves valid states, isolation stops overlapping transactions from interfering, and durability keeps committed work safe after failure.
+GROUP BY d.DepartmentName
+HAVING COUNT(*) >= 9
+ORDER BY EnrollmentCount DESC;</code></pre>
                 </div>
             </div>
         </div>
     </section>
 
     <div class="sql-sheet-nav">
-        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> HL worksheet hub</a>
-        <a href="/tools/sql-playground.html?dataset=course-enrolment" target="_blank" rel="noopener">Open Course Enrolment dataset <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> HL SQL worksheet hub</a>
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/house-competition.html">Next: Build the House Competition Database <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 </div>
