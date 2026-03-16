@@ -6,18 +6,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worksheet 2: Campus Clubs | SQL Worksheets</title>
-    <meta name="description" content="SQL worksheet for the Campus Clubs dataset.">
+    <meta name="description" content="Second SQL worksheet for the Campus Clubs dataset.">
 
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/Logo.png">
     <link rel="apple-touch-icon" href="/images/Logo.png">
 
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/sql-worksheet.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/sql-worksheet.css">
+            
+        
+    
+
+    
 
     <!-- data-sgs-auth-gate -->
     <link rel="stylesheet" href="/css/auth-gate.css">
@@ -37,32 +52,39 @@
                     <span class="site-title">SGS Education</span>
                 </a>
             </div>
+
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
                 <a href="/ks3/index.html" class="nav-link ">KS3</a>
                 <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
                 <a href="/ib-2027/index.html" class="nav-link active">IB</a>
             </nav>
+
             <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
         </div>
     </header>
 
     <main id="main-content" class="">
+        
 
+        
 <div class="sql-sheet-shell">
     <section class="sql-sheet-hero">
         <div>
             <p class="sql-sheet-kicker">Worksheet 2 | SL Core</p>
             <h1 class="sql-sheet-title">Campus Clubs</h1>
             <p class="sql-sheet-summary">
-                This dataset is built for relationships. Use it to read ERDs, explain one-to-one and
-                many-to-many structures, and write joins that move through a junction table.
+                This worksheet assumes students already know basic retrieval. Use it to move into
+                <code>ORDER BY</code>, <code>DISTINCT</code>, <code>LIKE</code>,
+                <code>BETWEEN</code>, joins, and a first grouped report while reinforcing one-to-one,
+                many-to-many, and composite-key structures.
             </p>
             <div class="sql-chip-row">
-                <span class="sql-chip">Composite key</span>
-                <span class="sql-chip">JOIN</span>
+                <span class="sql-chip">ORDER BY</span>
                 <span class="sql-chip">DISTINCT</span>
                 <span class="sql-chip">LIKE</span>
-                <span class="sql-chip">ORDER BY</span>
+                <span class="sql-chip">BETWEEN</span>
+                <span class="sql-chip">JOIN</span>
+                <span class="sql-chip">GROUP BY</span>
             </div>
         </div>
         <div class="sql-sheet-actions">
@@ -83,44 +105,43 @@
             <ul>
                 <li><code>LOGIN_ACCOUNT</code> is one-to-one with <code>STUDENT</code></li>
                 <li><code>MEMBERSHIP</code> is a junction table with a composite key</li>
-                <li>Good for cardinality, modality, and join-path questions</li>
+                <li>Ideal for learning join routes through an ERD</li>
             </ul>
         </div>
         <div class="sql-meta-cell">
             <h2>Syllabus Links</h2>
             <ul>
-                <li>A3.2.2 construct ERDs</li>
-                <li>A3.2.3 relational data types</li>
+                <li>A3.2.2 ERDs and relationship structure</li>
                 <li>A3.2.4 primary keys, foreign keys, and composite keys</li>
+                <li>A3.3.2 ordering, pattern matching, filtering, and joins</li>
             </ul>
         </div>
         <div class="sql-meta-cell">
             <h2>Before You Start</h2>
             <ul>
-                <li>Use the ERD to trace the join route before writing SQL.</li>
-                <li>Pay attention to where the composite key lives.</li>
-                <li>Save Section 5 for the end — it adds and edits rows.</li>
+                <li>Use the ERD to trace the join path before writing the SQL.</li>
+                <li>This worksheet assumes <code>SELECT</code>, <code>FROM</code>, and <code>WHERE</code> are already secure.</li>
+                <li>The grouped report at the end is a bridge into later reporting work.</li>
             </ul>
         </div>
     </div>
 
-    <!-- Section 1 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">1</span>
             <div>
-                <h2>Read the Design</h2>
-                <p>These are design questions first, query questions second.</p>
+                <h2>Read the Relationships</h2>
+                <p>Use the schema and ERD to describe how the tables fit together.</p>
             </div>
         </div>
         <ol class="sql-task-list">
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.2.2</span>
-                    <span class="sql-task-focus">ERD</span>
+                    <span class="sql-task-focus">Many-to-many</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Identify the junction table and explain why it represents a many-to-many relationship.</p>
+                    <p>Identify the junction table and explain which many-to-many relationship it resolves.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -129,7 +150,7 @@
                     <span class="sql-task-focus">Composite key</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>State the composite primary key in <code>MEMBERSHIP</code> and explain why both columns are needed together.</p>
+                    <p>State the composite primary key in <code>MEMBERSHIP</code> and explain why both fields are needed together.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -138,54 +159,44 @@
                     <span class="sql-task-focus">One-to-one</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Explain why <code>LOGIN_ACCOUNT</code> to <code>STUDENT</code> is one-to-one in this dataset.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.3</span>
-                    <span class="sql-task-focus">Data types</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Explain why <code>YearGroup</code> is stored as an integer, while <code>Username</code> and <code>MeetingRoom</code> are text fields. Give one possible problem caused by choosing the wrong type.</p>
+                    <p>Explain why <code>LOGIN_ACCOUNT</code> to <code>STUDENT</code> is one-to-one in this model.</p>
                 </div>
             </li>
         </ol>
     </section>
 
-    <!-- Section 2 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">2</span>
             <div>
-                <h2>Filtering and Distinct Values</h2>
-                <p>Query one table at a time before you join them together.</p>
+                <h2>Sort, Match, and Narrow</h2>
+                <p>Use next-step query clauses on one table at a time.</p>
             </div>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Syntax reference — WHERE, DISTINCT, LIKE</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — ORDER BY, DISTINCT, LIKE, BETWEEN</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Filter rows by one value
+                <pre><code>-- Sort rows
+SELECT column_a, column_b
+FROM table_name
+ORDER BY column_a ASC, column_b ASC;
+
+-- Return unique values only
+SELECT DISTINCT category_column
+FROM table_name
+ORDER BY category_column;
+
+-- Match part of a text value
 SELECT *
 FROM table_name
-WHERE column_name = 'Value';
+WHERE text_column LIKE '%Lab%';
 
--- DISTINCT returns unique values from the selected column
-SELECT DISTINCT column_name
-FROM table_name
-ORDER BY column_name;
-
--- LIKE searches for a pattern inside a text field
+-- Filter within an inclusive range
 SELECT *
 FROM table_name
-WHERE text_column LIKE '%part_of_text%';
-
--- Prefix matching
-SELECT *
-FROM table_name
-WHERE text_column LIKE 'Start%';</code></pre>
-                <p><code>DISTINCT</code> removes duplicate rows from the columns you selected. With <code>LIKE</code>, the <code>%</code> wildcard stands for any sequence of characters.</p>
+WHERE date_column BETWEEN '2025-09-20' AND '2025-09-30';</code></pre>
+                <p><code>ORDER BY</code> controls presentation of the final result. <code>DISTINCT</code> removes repeated rows from the selected columns. <code>LIKE</code> uses <code>%</code> as a wildcard.</p>
             </div>
         </details>
 
@@ -193,10 +204,10 @@ WHERE text_column LIKE 'Start%';</code></pre>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">WHERE</span>
+                    <span class="sql-task-focus">ORDER BY</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>List every club that meets on <code>Thursday</code>.</p>
+                    <p>List every club with its meeting day and room, ordered first by <code>MeetingDay</code> and then by <code>ClubName</code>.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -205,7 +216,7 @@ WHERE text_column LIKE 'Start%';</code></pre>
                     <span class="sql-task-focus">DISTINCT</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Return each unique role used in the <code>MEMBERSHIP</code> table, sorted alphabetically.</p>
+                    <p>Return each unique role used in <code>MEMBERSHIP</code>, sorted alphabetically.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -220,50 +231,50 @@ WHERE text_column LIKE 'Start%';</code></pre>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">WHERE</span>
+                    <span class="sql-task-focus">BETWEEN</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Show the first names, last names, and year groups of both students whose surname is <code>Khan</code>.</p>
+                    <p>Show membership rows where <code>JoinedOn</code> falls between <code>2025-09-20</code> and <code>2025-09-30</code> inclusive.</p>
                 </div>
             </li>
         </ol>
     </section>
 
-    <!-- Section 3 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">3</span>
             <div>
-                <h2>Join Through Relationships</h2>
-                <p>Move from entity table to entity table using foreign keys.</p>
+                <h2>Join Through the ERD</h2>
+                <p>Move from entity table to entity table by following the foreign keys.</p>
             </div>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Syntax reference — JOIN through a junction table</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — JOIN through a junction table</summary>
             <div class="sql-syntax-body">
                 <pre><code>-- Two-table join
 SELECT a.column_a, b.column_b
-FROM left_table AS a
-INNER JOIN right_table AS b
-    ON a.id = b.left_id;
+FROM first_table AS a
+INNER JOIN second_table AS b
+    ON a.primary_key = b.foreign_key;
 
--- Many-to-many join through a junction table
-SELECT l.name_column, j.role_column, r.title_column
-FROM left_table      AS l
+-- Join through a junction table
+SELECT s.name_column, j.role_column, c.title_column
+FROM student_table AS s
 INNER JOIN junction_table AS j
-    ON l.id = j.left_id
-INNER JOIN right_table    AS r
-    ON j.right_id = r.id;
+    ON s.student_id = j.student_id
+INNER JOIN club_table AS c
+    ON j.club_id = c.club_id;
 
--- Add filtering and sorting after the joins
-SELECT l.name_column, r.title_column
-FROM left_table      AS l
-INNER JOIN junction_table AS j ON l.id = j.left_id
-INNER JOIN right_table    AS r ON j.right_id = r.id
-WHERE r.status_column = 'Active'
-ORDER BY r.title_column, l.name_column;</code></pre>
-                <p>A junction table is used when many rows in one table can link to many rows in another. The usual pattern is: first table → junction table → second table.</p>
+-- Filter after the joins
+SELECT s.name_column, c.title_column
+FROM student_table AS s
+INNER JOIN junction_table AS j
+    ON s.student_id = j.student_id
+INNER JOIN club_table AS c
+    ON j.club_id = c.club_id
+WHERE s.year_group = 12;</code></pre>
+                <p>When a result needs columns from several tables, follow the relationship path one link at a time. Table aliases keep longer join queries readable.</p>
             </div>
         </details>
 
@@ -274,7 +285,7 @@ ORDER BY r.title_column, l.name_column;</code></pre>
                     <span class="sql-task-focus">JOIN 2 tables</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Join <code>STUDENT</code> to <code>LOGIN_ACCOUNT</code> and show each student's full name, username, and last login date.</p>
+                    <p>Join <code>STUDENT</code> to <code>LOGIN_ACCOUNT</code> and show each student’s full name, username, and last-login date.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -283,358 +294,153 @@ ORDER BY r.title_column, l.name_column;</code></pre>
                     <span class="sql-task-focus">JOIN 3 tables</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Show every member of <code>Coding Collective</code> with their role and year group. Sort by role, then last name.</p>
+                    <p>Show every member of <code>Coding Collective</code> with their role and year group. Sort by role and then surname.</p>
                 </div>
             </li>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">JOIN 3 tables</span>
+                    <span class="sql-task-focus">Filtered join</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>List the club name, meeting day, student full name, and role for all memberships. Order first by meeting day, then club name.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">Filter joined data</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Show only Year 12 students and the clubs they attend.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">Date filter</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Return usernames and last-login dates for accounts that were used on or after <code>2026-03-09</code>.</p>
+                    <p>Return the full names of Year 12 students and the clubs they attend.</p>
                 </div>
             </li>
         </ol>
     </section>
 
-    <!-- Section 4 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">4</span>
             <div>
-                <h2>Schema and ERD Thinking</h2>
-                <p>Use the dataset to explain the database design, not just query it.</p>
-            </div>
-        </div>
-        <ol class="sql-task-list">
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.1</span>
-                    <span class="sql-task-focus">Schema levels</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Give one example of what belongs in the conceptual schema, logical schema, and physical schema for this clubs system.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.2</span>
-                    <span class="sql-task-focus">Modality</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Explain the likely modality between <code>STUDENT</code> and <code>LOGIN_ACCOUNT</code>, then compare it with the modality between <code>STUDENT</code> and <code>MEMBERSHIP</code>.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.4</span>
-                    <span class="sql-task-focus">Integrity</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Explain why a membership row with a valid <code>StudentID</code> but an invalid <code>ClubID</code> should be rejected.</p>
-                </div>
-            </li>
-        </ol>
-    </section>
-
-    <!-- Section 5 -->
-    <section class="sql-sheet-section">
-        <div class="sql-section-heading">
-            <span class="sql-section-number">5</span>
-            <div>
-                <h2>DDL and DML Practice</h2>
-                <p>Make structural and row-level changes after you finish the earlier sections.</p>
+                <h2>First Grouped Report</h2>
+                <p>Use one grouped summary to bridge into later reporting work.</p>
             </div>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Syntax reference — CREATE TABLE with FK, INSERT, UPDATE, DELETE</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — COUNT and GROUP BY</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Create a table with a foreign key
-CREATE TABLE child_table (
-    child_id   INTEGER PRIMARY KEY,
-    parent_id  INTEGER,
-    title_text TEXT,
-    event_date DATE,
-    FOREIGN KEY (parent_id) REFERENCES parent_table(parent_id)
-);
+                <pre><code>-- Count rows in each group
+SELECT category_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY category_column;
 
--- Insert a row
-INSERT INTO child_table (child_id, parent_id, title_text, event_date)
-VALUES (1, 10, 'Example title', '2026-01-15');
-
--- Update one row in a junction table by matching the full key
-UPDATE junction_table
-SET role_column = 'Leader'
-WHERE left_id = 5 AND right_id = 10;
-
--- Delete a specific row
-DELETE FROM child_table
-WHERE child_id = 1;</code></pre>
-                <p>In a composite-key table, the <code>WHERE</code> clause usually needs every part of the key to identify one row exactly. That is especially important when you <code>UPDATE</code> or <code>DELETE</code>.</p>
+-- Group after a join
+SELECT c.title_column, COUNT(*) AS member_count
+FROM junction_table AS j
+INNER JOIN club_table AS c
+    ON j.club_id = c.club_id
+GROUP BY c.title_column
+ORDER BY member_count DESC;</code></pre>
+                <p><code>GROUP BY</code> creates one summary row per group. <code>COUNT(*)</code> tells you how many rows ended up in each group.</p>
             </div>
         </details>
 
         <ol class="sql-task-list">
             <li class="sql-task">
                 <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.1</span>
-                    <span class="sql-task-focus">CREATE TABLE</span>
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">GROUP BY</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Create a table called <code>EVENT</code> with <code>EventID</code> as the primary key, plus <code>ClubID</code>, <code>EventName</code>, and <code>EventDate</code>. Link <code>ClubID</code> back to <code>CLUB</code>.</p>
+                    <p>Count how many students belong to each club. Show club name and member count only.</p>
                 </div>
             </li>
             <li class="sql-task">
                 <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.3</span>
-                    <span class="sql-task-focus">INSERT</span>
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">COUNT</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Insert a new event called <code>Hack Night</code> for <code>Coding Collective</code> on a date of your choice.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.3</span>
-                    <span class="sql-task-focus">UPDATE</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Update Omar James's role in <code>Coding Collective</code> from <code>Member</code> to <code>Coordinator</code>.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.3</span>
-                    <span class="sql-task-focus">DELETE</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Delete the <code>Hack Night</code> event you inserted.</p>
+                    <p>Count how many students there are in each year group, ordered from highest year group to lowest.</p>
                 </div>
             </li>
         </ol>
-        <p class="sql-sheet-note">After DDL and DML work, reload <code>Campus Clubs</code> in the playground to restore the original sample dataset.</p>
     </section>
 
-    <!-- Teacher answer gate -->
-    <section class="sql-answers-gate" id="answers">
-        <div class="sql-answers-lock" id="answers-lock">
+    <section class="sql-answers-gate" data-answer-gate="dGVhY2hlcjE=">
+        <div class="sql-answers-lock" data-answer-lock>
             <div class="sql-answers-lock-icon"><i class="fa-solid fa-lock"></i></div>
             <h2>Teacher Answers</h2>
-            <p>Enter the teacher password to reveal model answers for all sections.</p>
+            <p>Enter the teacher password to reveal model answers for this worksheet.</p>
             <div class="sql-answers-lock-row">
-                <input type="password" id="answer-pw" placeholder="Password…" autocomplete="off">
-                <button onclick="checkAnswerPw()">Unlock</button>
+                <input type="password" placeholder="Password…" autocomplete="off" data-answer-input>
+                <button type="button" data-answer-button>Unlock</button>
             </div>
-            <p class="sql-answers-err" id="answer-err"></p>
+            <p class="sql-answers-err" data-answer-error></p>
         </div>
-        <div class="sql-answers-content" id="answer-content" hidden>
+        <div class="sql-answers-content" data-answer-content hidden>
             <h2><i class="fa-solid fa-unlock"></i> Model Answers — Campus Clubs</h2>
 
-            <h3>Section 1 — Read the Design</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <strong>Junction table</strong>
-                        <code>MEMBERSHIP</code> is the junction table. It has a row for each student–club pairing, so one student can join many clubs and one club can have many students — a many-to-many relationship.
-                    </div>
+            <h3>Section 1</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">1</span>
+                <div class="sql-answer-body">
+                    <strong>Relationships</strong>
+                    <code>MEMBERSHIP</code> resolves the many-to-many relationship between <code>STUDENT</code> and <code>CLUB</code>. The composite key is <code>(StudentID, ClubID)</code>. <code>LOGIN_ACCOUNT</code> is one-to-one because its primary key is also the student foreign key.
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <strong>Composite key</strong>
-                        The composite primary key is <code>(StudentID, ClubID)</code>. Neither column alone is unique — a student can join multiple clubs (same StudentID, different ClubID) and a club has multiple members (same ClubID, different StudentID). Together they uniquely identify one membership.
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <strong>One-to-one</strong>
-                        Each student has exactly one login account and each login account belongs to exactly one student. The foreign key in <code>LOGIN_ACCOUNT</code> is also a unique key, preventing more than one account per student.
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">4</span>
-                    <div class="sql-answer-body">
-                        <strong>Data types</strong>
-                        <code>YearGroup</code> is an integer because arithmetic comparisons (e.g. <code>YearGroup = 12</code>) are needed and it never contains letters. Storing it as text would cause incorrect sort order (11 sorts before 9 alphabetically). If <code>MeetingRoom</code> were an integer, values like "Lab B" could not be stored.
-                    </div>
-                </div>
-            </dl>
+            </div>
 
-            <h3>Section 2 — Filtering and Distinct Values</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT * FROM CLUB WHERE MeetingDay = 'Thursday';</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT DISTINCT Role FROM MEMBERSHIP ORDER BY Role;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT * FROM CLUB WHERE MeetingRoom LIKE '%Lab%';</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">4</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT FirstName, LastName, YearGroup
-FROM STUDENT
-WHERE LastName = 'Khan';</code></pre>
-                    </div>
-                </div>
-            </dl>
+            <h3>Section 2</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">2</span>
+                <div class="sql-answer-body">
+                    <strong>Sorting and matching</strong>
+                    <pre><code>SELECT ClubName, MeetingDay, MeetingRoom
+FROM CLUB
+ORDER BY MeetingDay, ClubName;
 
-            <h3>Section 3 — Join Through Relationships</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT s.FirstName, s.LastName, a.Username, a.LastLoginDate
-FROM STUDENT s
-INNER JOIN LOGIN_ACCOUNT a ON s.StudentID = a.StudentID;</code></pre>
-                    </div>
+SELECT DISTINCT Role
+FROM MEMBERSHIP
+ORDER BY Role;
+
+SELECT *
+FROM CLUB
+WHERE MeetingRoom LIKE '%Lab%';</code></pre>
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT s.FirstName, s.LastName, m.Role, s.YearGroup
-FROM STUDENT s
-INNER JOIN MEMBERSHIP m ON s.StudentID = m.StudentID
-INNER JOIN CLUB c       ON m.ClubID    = c.ClubID
+            </div>
+
+            <h3>Section 3</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">3</span>
+                <div class="sql-answer-body">
+                    <strong>Join pattern</strong>
+                    <pre><code>SELECT s.FirstName, s.LastName, l.Username, l.LastLogin
+FROM STUDENT AS s
+INNER JOIN LOGIN_ACCOUNT AS l
+    ON s.StudentID = l.StudentID;
+
+SELECT s.FirstName, s.LastName, m.Role, s.YearGroup
+FROM STUDENT AS s
+INNER JOIN MEMBERSHIP AS m
+    ON s.StudentID = m.StudentID
+INNER JOIN CLUB AS c
+    ON m.ClubID = c.ClubID
 WHERE c.ClubName = 'Coding Collective'
 ORDER BY m.Role, s.LastName;</code></pre>
-                    </div>
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT c.ClubName, c.MeetingDay,
-       s.FirstName, s.LastName, m.Role
-FROM STUDENT s
-INNER JOIN MEMBERSHIP m ON s.StudentID = m.StudentID
-INNER JOIN CLUB c       ON m.ClubID    = c.ClubID
-ORDER BY c.MeetingDay, c.ClubName;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">4</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT s.FirstName, s.LastName, c.ClubName
-FROM STUDENT s
-INNER JOIN MEMBERSHIP m ON s.StudentID = m.StudentID
-INNER JOIN CLUB c       ON m.ClubID    = c.ClubID
-WHERE s.YearGroup = 12;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">5</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT a.Username, a.LastLoginDate
-FROM LOGIN_ACCOUNT a
-WHERE a.LastLoginDate >= '2026-03-09';</code></pre>
-                    </div>
-                </div>
-            </dl>
+            </div>
 
-            <h3>Section 4 — Schema and ERD Thinking</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <strong>Schema levels</strong>
-                        Conceptual: "Student joins Club" entity relationship. Logical: STUDENT table with StudentID INTEGER PRIMARY KEY, ClubName VARCHAR(100), composite key (StudentID, ClubID) in MEMBERSHIP. Physical: B-tree index on StudentID for fast membership lookups.
-                    </div>
+            <h3>Section 4</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">4</span>
+                <div class="sql-answer-body">
+                    <strong>Grouped report</strong>
+                    <pre><code>SELECT c.ClubName, COUNT(*) AS MemberCount
+FROM MEMBERSHIP AS m
+INNER JOIN CLUB AS c
+    ON m.ClubID = c.ClubID
+GROUP BY c.ClubName
+ORDER BY MemberCount DESC, c.ClubName;</code></pre>
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <strong>Modality</strong>
-                        STUDENT to LOGIN_ACCOUNT: mandatory on both sides — every student must have exactly one account. STUDENT to MEMBERSHIP: optional — a student may exist without joining any club (zero memberships is valid).
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <strong>Referential integrity</strong>
-                        The MEMBERSHIP table has a foreign key on ClubID referencing CLUB(ClubID). If ClubID does not exist in CLUB, the database rejects the insert — preventing a membership record that points to a non-existent club.
-                    </div>
-                </div>
-            </dl>
-
-            <h3>Section 5 — DDL and DML Practice</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <pre><code>CREATE TABLE EVENT (
-    EventID   INTEGER PRIMARY KEY,
-    ClubID    INTEGER,
-    EventName TEXT,
-    EventDate DATE,
-    FOREIGN KEY (ClubID) REFERENCES CLUB(ClubID)
-);</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <pre><code>-- Coding Collective ClubID must match actual data; assume 101
-INSERT INTO EVENT (EventID, ClubID, EventName, EventDate)
-VALUES (1, 101, 'Hack Night', '2026-04-15');</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <pre><code>-- Find Omar James's StudentID first, then:
-UPDATE MEMBERSHIP
-SET Role = 'Coordinator'
-WHERE StudentID = (SELECT StudentID FROM STUDENT
-                   WHERE FirstName = 'Omar' AND LastName = 'James')
-  AND ClubID   = (SELECT ClubID FROM CLUB WHERE ClubName = 'Coding Collective');</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">4</span>
-                    <div class="sql-answer-body">
-                        <pre><code>DELETE FROM EVENT WHERE EventName = 'Hack Night';</code></pre>
-                    </div>
-                </div>
-            </dl>
+            </div>
         </div>
     </section>
 
     <div class="sql-sheet-nav">
         <a href="/ib-2027/sl/unit-6/sql-worksheets/school-library.html"><i class="fa-solid fa-arrow-left"></i> Previous: School Library</a>
-        <a href="/ib-2027/sl/unit-6/sql-worksheets/canteen-orders.html">Next: Canteen Orders <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/canteen-orders.html">Next: Build Canteen Orders <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 </div>
 
@@ -644,13 +450,31 @@ WHERE StudentID = (SELECT StudentID FROM STUDENT
         <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
     </footer>
 
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+            
+        
+            
+                <script src="/js/sql-worksheet.js"></script>
+            
+        
+    
+    
+
+    
     <div class="feedback-modals" data-feedback-default-level="General">
         <div class="feedback-overlay" data-feedback-overlay></div>
+
         <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <p class="modal-kicker">Something broken?</p>
             <h2 id="bug-modal-title">Report a bug</h2>
             <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
             <form id="bug-form" class="feedback-form" data-form-type="bug">
                 <label for="bug-level">Course area</label>
                 <select id="bug-level" name="level" required>
@@ -660,6 +484,7 @@ WHERE StudentID = (SELECT StudentID FROM STUDENT
                     <option value="IB">IB</option>
                     <option value="General">General</option>
                 </select>
+
                 <label for="bug-category">Resource type</label>
                 <select id="bug-category" name="category" required>
                     <option value="">Choose a resource type</option>
@@ -669,20 +494,27 @@ WHERE StudentID = (SELECT StudentID FROM STUDENT
                     <option value="Simulation">Simulation</option>
                     <option value="Misc">Misc</option>
                 </select>
+
                 <label for="bug-title">Title (be specific)</label>
                 <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
                 <label for="bug-details">What happened?</label>
                 <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
                 <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
                 <button type="submit" class="submit-btn">Submit bug report</button>
                 <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
             </form>
         </div>
+
         <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <p class="modal-kicker">Have an idea?</p>
             <h2 id="feature-modal-title">Request a feature</h2>
             <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
             <form id="feature-form" class="feedback-form" data-form-type="feature">
                 <label for="feature-level">Course area</label>
                 <select id="feature-level" name="level" required>
@@ -692,9 +524,11 @@ WHERE StudentID = (SELECT StudentID FROM STUDENT
                     <option value="IB">IB</option>
                     <option value="General">General</option>
                 </select>
+
                 <label for="feature-details">What should we add?</label>
                 <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
                 <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
                 <button type="submit" class="submit-btn">Submit feature request</button>
                 <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
             </form>
@@ -702,27 +536,12 @@ WHERE StudentID = (SELECT StudentID FROM STUDENT
     </div>
 
     <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
     <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
     <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
     <script src="/__/firebase/init.js"></script>
     <script src="/js/auth-gate.js"></script>
-
-    <script>
-        function checkAnswerPw() {
-            var val = document.getElementById('answer-pw').value;
-            if (val === atob('dGVhY2hlcjE=')) {
-                document.getElementById('answer-content').hidden = false;
-                document.getElementById('answers-lock').hidden = true;
-            } else {
-                document.getElementById('answer-err').textContent = 'Incorrect password. Try again.';
-                document.getElementById('answer-pw').value = '';
-                document.getElementById('answer-pw').focus();
-            }
-        }
-        document.getElementById('answer-pw').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') checkAnswerPw();
-        });
-    </script>
 </body>
 
 </html>

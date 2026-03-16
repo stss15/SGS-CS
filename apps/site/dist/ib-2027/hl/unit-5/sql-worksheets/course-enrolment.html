@@ -8,16 +8,31 @@
     <title>Worksheet 4: Course Enrolment | SQL Worksheets</title>
     <meta name="description" content="Higher Level SQL worksheet for the Course Enrolment dataset.">
 
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/Logo.png">
     <link rel="apple-touch-icon" href="/images/Logo.png">
 
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/sql-worksheet.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/sql-worksheet.css">
+            
+        
+    
+
+    
 
     <!-- data-sgs-auth-gate -->
     <link rel="stylesheet" href="/css/auth-gate.css">
@@ -37,26 +52,30 @@
                     <span class="site-title">SGS Education</span>
                 </a>
             </div>
+
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
                 <a href="/ks3/index.html" class="nav-link ">KS3</a>
                 <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
                 <a href="/ib-2027/index.html" class="nav-link active">IB</a>
             </nav>
+
             <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
         </div>
     </header>
 
     <main id="main-content" class="">
+        
 
+        
 <div class="sql-sheet-shell">
     <section class="sql-sheet-hero">
         <div>
             <p class="sql-sheet-kicker">Worksheet 4 | HL Extension</p>
             <h1 class="sql-sheet-title">Course Enrolment</h1>
             <p class="sql-sheet-summary">
-                Use a multi-table enrolment model for Higher Level reporting. This worksheet starts with an
-                SL recap, then moves into grouped calculations, views, transaction control, ACID, and
-                denormalization decisions.
+                This is the Higher Level extension. It assumes the three SL worksheets are already complete,
+                then shifts the focus onto grouped calculations, reporting queries, views, transactions, and
+                the ACID model of reliable database processing.
             </p>
             <div class="sql-chip-row">
                 <span class="sql-chip">COUNT</span>
@@ -84,65 +103,54 @@
             <h2>Dataset</h2>
             <ul>
                 <li>4 tables with a composite-key junction table</li>
-                <li>Enough rows for aggregate reporting by department, course, level, and semester</li>
-                <li>Designed for <code>GROUP BY</code>, <code>HAVING</code>, views, and transactions</li>
+                <li>Enough rows for department, course, level, and semester reporting</li>
+                <li>Designed for aggregates, views, and transaction practice</li>
             </ul>
         </div>
         <div class="sql-meta-cell">
             <h2>Syllabus Links</h2>
             <ul>
                 <li>A3.3.4 aggregate functions on grouped data</li>
-                <li>A3.3.5 virtual and materialized views</li>
-                <li>A3.3.6 ACID and transaction control</li>
+                <li>A3.3.5 virtual and materialized view concepts</li>
+                <li>A3.3.6 transactions, ACID, and integrity</li>
             </ul>
         </div>
         <div class="sql-meta-cell">
             <h2>Before You Start</h2>
             <ul>
-                <li>Work through the SL worksheets first if joins are still slow.</li>
-                <li>Run Sections 4 and 5 last — they create or modify objects and rows.</li>
-                <li>Use the results pane carefully when checking transaction effects.</li>
+                <li>Use this only after the SL sequence is secure.</li>
+                <li>Leave the transaction work until the end because it changes the live workspace.</li>
+                <li>Remember: <code>WHERE</code> filters rows, <code>HAVING</code> filters groups.</li>
             </ul>
         </div>
     </div>
 
-    <!-- Section 1 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">1</span>
             <div>
-                <h2>SL Recap</h2>
-                <p>Reconfirm the core retrieval and join skills before moving into aggregates.</p>
+                <h2>Fast Recap</h2>
+                <p>Reconfirm the core SL ideas before you move into grouped reporting.</p>
             </div>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Syntax reference — SELECT, WHERE, ORDER BY, multi-table JOIN, LIKE</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — multi-table retrieval recap</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Filter rows and sort the result
-SELECT column_a, column_b
-FROM table_name
-WHERE level_column = 'HL'
-ORDER BY category_column, name_column;
-
--- Two-table join
-SELECT a.name_column, b.group_name, a.value_column
+                <pre><code>SELECT a.column_a, b.column_b
 FROM first_table AS a
 INNER JOIN second_table AS b
-    ON a.group_id = b.group_id;
+    ON a.primary_key = b.foreign_key
+WHERE a.status_column = 'HL'
+ORDER BY b.name_column;
 
--- Three-table join
-SELECT a.name_column, c.title_column, b.value_column
-FROM link_table   AS b
-INNER JOIN first_table  AS a ON b.first_id = a.first_id
-INNER JOIN second_table AS c ON b.second_id = c.second_id
-WHERE b.period_column = 'Spring';
-
--- LIKE searches a text column for a pattern
-SELECT name_column
-FROM table_name
-WHERE name_column LIKE '%text%';</code></pre>
-                <p>Aliases such as <code>a</code>, <code>b</code>, and <code>c</code> shorten long queries. When several tables contain similarly named columns, qualify them with the alias to avoid ambiguity.</p>
+SELECT s.name_column, c.course_column, e.value_column
+FROM junction_table AS e
+INNER JOIN student_table AS s
+    ON e.student_id = s.student_id
+INNER JOIN course_table AS c
+    ON e.course_id = c.course_id;</code></pre>
+                <p>HL reporting still depends on clean joins. If the join path is wrong, the grouped result will also be wrong.</p>
             </div>
         </details>
 
@@ -153,31 +161,13 @@ WHERE name_column LIKE '%text%';</code></pre>
                     <span class="sql-task-focus">Composite key</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Identify the composite primary key in <code>ENROLLMENT</code> and explain what real-world relationship that table captures.</p>
+                    <p>Identify the composite primary key in <code>ENROLLMENT</code> and explain what real-world relationship that table stores.</p>
                 </div>
             </li>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">SELECT</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Show all HL courses, ordered by department and course name.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">WHERE</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>List every student in cohort <code>2026</code>.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">JOIN 2 tables</span>
+                    <span class="sql-task-focus">JOIN</span>
                 </div>
                 <div class="sql-task-body">
                     <p>Join <code>COURSE</code> to <code>DEPARTMENT</code> and show each course with its department name and credit value.</p>
@@ -192,30 +182,20 @@ WHERE name_column LIKE '%text%';</code></pre>
                     <p>Show student full name, course name, and score for all <code>Spring</code> enrollments.</p>
                 </div>
             </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.2</span>
-                    <span class="sql-task-focus">LIKE</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Find the course names that contain the word <code>Design</code> or <code>Analytics</code>.</p>
-                </div>
-            </li>
         </ol>
     </section>
 
-    <!-- Section 2 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">2</span>
             <div>
-                <h2>Aggregate Functions and Grouping</h2>
-                <p>Build reporting queries that summarize grouped data.</p>
+                <h2>Aggregates and Grouped Reporting</h2>
+                <p>Build reporting queries that summarize many rows into decision-making information.</p>
             </div>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Syntax reference — COUNT, AVG, SUM, MAX, MIN, GROUP BY, HAVING</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — COUNT, AVG, SUM, MAX, MIN, GROUP BY, HAVING</summary>
             <div class="sql-syntax-body">
                 <pre><code>-- Count rows in each group
 SELECT group_column, COUNT(*) AS row_count
@@ -223,28 +203,21 @@ FROM table_name
 GROUP BY group_column;
 
 -- Average a numeric value in each group
-SELECT group_column, ROUND(AVG(score_column), 1) AS average_score
+SELECT group_column, AVG(score_column) AS average_score
 FROM table_name
 GROUP BY group_column;
 
--- MAX and MIN find the largest and smallest value in each group
-SELECT group_column,
-       MAX(score_column) AS highest_score,
-       MIN(score_column) AS lowest_score
-FROM table_name
-GROUP BY group_column;
-
--- SUM totals a numeric column for each group
+-- Total a numeric value in each group
 SELECT category_column, SUM(number_column) AS total_value
 FROM table_name
 GROUP BY category_column;
 
--- HAVING filters groups after aggregation
+-- Filter grouped results after aggregation
 SELECT group_column, COUNT(*) AS row_count
 FROM table_name
 GROUP BY group_column
 HAVING COUNT(*) >= 4;</code></pre>
-                <p><strong>Key rule:</strong> <code>WHERE</code> filters rows before grouping, while <code>HAVING</code> filters grouped results after the aggregate functions have run. Non-aggregated columns in the <code>SELECT</code> list must appear in <code>GROUP BY</code>.</p>
+                <p><code>COUNT</code>, <code>AVG</code>, <code>SUM</code>, <code>MAX</code>, and <code>MIN</code> work on grouped data. <code>HAVING</code> is the clause that filters those grouped summaries.</p>
             </div>
         </details>
 
@@ -261,7 +234,7 @@ HAVING COUNT(*) >= 4;</code></pre>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.4</span>
-                    <span class="sql-task-focus">COUNT + GROUP BY</span>
+                    <span class="sql-task-focus">COUNT</span>
                 </div>
                 <div class="sql-task-body">
                     <p>Count how many enrollment rows each course has.</p>
@@ -306,15 +279,6 @@ HAVING COUNT(*) >= 4;</code></pre>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.3.4</span>
-                    <span class="sql-task-focus">AVG + HAVING</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Return only courses whose average score is above <code>85</code>.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.3.4</span>
                     <span class="sql-task-focus">Report query</span>
                 </div>
                 <div class="sql-task-body">
@@ -324,7 +288,6 @@ HAVING COUNT(*) >= 4;</code></pre>
         </ol>
     </section>
 
-    <!-- Section 3 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">3</span>
@@ -335,22 +298,21 @@ HAVING COUNT(*) >= 4;</code></pre>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Syntax reference — CREATE VIEW and querying views</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — CREATE VIEW</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Create a view from a reusable SELECT query
-CREATE VIEW view_name AS
-SELECT column_a, column_b, column_c
-FROM table_name
-WHERE status_column = 'Active';
+                <pre><code>CREATE VIEW useful_view AS
+SELECT a.column_a, b.column_b, c.score_column
+FROM first_table AS a
+INNER JOIN link_table AS c
+    ON a.primary_key = c.first_id
+INNER JOIN second_table AS b
+    ON c.second_id = b.primary_key
+WHERE c.score_column >= 90;
 
--- Query a view just like a table
 SELECT *
-FROM view_name
-ORDER BY column_a;
-
--- Drop a view definition
-DROP VIEW view_name;</code></pre>
-                <p>A <strong>virtual view</strong> stores the query definition, not the result rows themselves. You can query it like a table, but the underlying <code>SELECT</code> runs each time unless the database supports materialized views or snapshots.</p>
+FROM useful_view
+ORDER BY score_column DESC;</code></pre>
+                <p>A virtual view stores the query, not a second copy of the data. It can simplify long joins and hide unnecessary complexity from users.</p>
             </div>
         </details>
 
@@ -370,7 +332,7 @@ DROP VIEW view_name;</code></pre>
                     <span class="sql-task-focus">Query a view</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Query <code>HighScorers</code> and order the result by score descending, then student surname.</p>
+                    <p>Query <code>HighScorers</code> and order the result by score descending, then by student surname.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -385,41 +347,34 @@ DROP VIEW view_name;</code></pre>
         </ol>
     </section>
 
-    <!-- Section 4 -->
     <section class="sql-sheet-section">
         <div class="sql-section-heading">
             <span class="sql-section-number">4</span>
             <div>
                 <h2>Transactions and ACID</h2>
-                <p>Use transaction control language to protect data integrity.</p>
+                <p>Use transaction control language to protect data integrity while changes are being made.</p>
             </div>
         </div>
 
         <details class="sql-syntax-ref">
-            <summary><i class="fa-solid fa-code"></i> Syntax reference — BEGIN, COMMIT, ROLLBACK</summary>
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — BEGIN TRANSACTION, COMMIT, ROLLBACK</summary>
             <div class="sql-syntax-body">
-                <pre><code>-- Start a transaction
-BEGIN;
+                <pre><code>BEGIN TRANSACTION;
 
-UPDATE account_table
-SET balance_column = balance_column - 50
-WHERE account_id = 1;
+INSERT INTO parent_table (id, name_column)
+VALUES (9001, 'New record');
 
-UPDATE account_table
-SET balance_column = balance_column + 50
-WHERE account_id = 2;
+INSERT INTO child_table (parent_id, item_id, score_column)
+VALUES (9001, 501, 88);
 
-COMMIT; -- makes the whole transaction permanent
+COMMIT;
 
--- Undo an uncommitted transaction
-BEGIN;
-
-UPDATE table_name
-SET status_column = 'Archived'
-WHERE id_column = 10;
-
-ROLLBACK; -- returns the data to its state before BEGIN</code></pre>
-                <p><strong>ACID reminder:</strong> <em>Atomicity</em> means all of the transaction succeeds or none of it does. <em>Consistency</em>, <em>Isolation</em>, and <em>Durability</em> are what make transactions reliable under real use.</p>
+BEGIN TRANSACTION;
+UPDATE child_table
+SET score_column = 91
+WHERE parent_id = 9001;
+ROLLBACK;</code></pre>
+                <p>Use <code>COMMIT</code> when all related changes should become permanent together. Use <code>ROLLBACK</code> when you need to undo the whole transaction.</p>
             </div>
         </details>
 
@@ -439,7 +394,7 @@ ROLLBACK; -- returns the data to its state before BEGIN</code></pre>
                     <span class="sql-task-focus">BEGIN / ROLLBACK</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Begin a second transaction, make a change to a score or cohort, inspect the result, then roll the transaction back.</p>
+                    <p>Begin a second transaction, change a score or cohort value, inspect the result, then roll the transaction back.</p>
                 </div>
             </li>
             <li class="sql-task">
@@ -448,294 +403,83 @@ ROLLBACK; -- returns the data to its state before BEGIN</code></pre>
                     <span class="sql-task-focus">ACID</span>
                 </div>
                 <div class="sql-task-body">
-                    <p>Explain how atomicity, consistency, isolation, and durability help keep this enrollment dataset reliable during concurrent updates.</p>
+                    <p>Explain how atomicity, consistency, isolation, and durability help keep this database reliable when several changes happen close together.</p>
                 </div>
             </li>
         </ol>
     </section>
 
-    <!-- Section 5 -->
-    <section class="sql-sheet-section">
-        <div class="sql-section-heading">
-            <span class="sql-section-number">5</span>
-            <div>
-                <h2>Normalization and Denormalization Review</h2>
-                <p>Connect the report work back to database design decisions.</p>
-            </div>
-        </div>
-        <ol class="sql-task-list">
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.5</span>
-                    <span class="sql-task-focus">Functional dependencies</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Explain why <code>ENROLLMENT</code> is closer to 3NF than a single table that also repeats student names, course names, and department offices on every row.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.5</span>
-                    <span class="sql-task-focus">Partial dependency</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Describe one partial-key dependency that would appear if a poorly designed table used the composite key <code>(StudentID, CourseID)</code> but also stored repeated student details.</p>
-                </div>
-            </li>
-            <li class="sql-task">
-                <div class="sql-task-left">
-                    <span class="sql-task-tag">A3.2.7</span>
-                    <span class="sql-task-focus">Denormalization</span>
-                </div>
-                <div class="sql-task-body">
-                    <p>Propose one denormalized dashboard table for fast reporting and evaluate the tradeoff between query simplicity and redundancy.</p>
-                </div>
-            </li>
-        </ol>
-        <p class="sql-sheet-note">Reload <code>Course Enrolment</code> after the transaction section so the dataset returns to its original state for the next run.</p>
-    </section>
-
-    <!-- Teacher answer gate -->
-    <section class="sql-answers-gate" id="answers">
-        <div class="sql-answers-lock" id="answers-lock">
+    <section class="sql-answers-gate" data-answer-gate="dGVhY2hlcjE=">
+        <div class="sql-answers-lock" data-answer-lock>
             <div class="sql-answers-lock-icon"><i class="fa-solid fa-lock"></i></div>
             <h2>Teacher Answers</h2>
-            <p>Enter the teacher password to reveal model answers for all sections.</p>
+            <p>Enter the teacher password to reveal model answers for this worksheet.</p>
             <div class="sql-answers-lock-row">
-                <input type="password" id="answer-pw" placeholder="Password…" autocomplete="off">
-                <button onclick="checkAnswerPw()">Unlock</button>
+                <input type="password" placeholder="Password…" autocomplete="off" data-answer-input>
+                <button type="button" data-answer-button>Unlock</button>
             </div>
-            <p class="sql-answers-err" id="answer-err"></p>
+            <p class="sql-answers-err" data-answer-error></p>
         </div>
-        <div class="sql-answers-content" id="answer-content" hidden>
+        <div class="sql-answers-content" data-answer-content hidden>
             <h2><i class="fa-solid fa-unlock"></i> Model Answers — Course Enrolment</h2>
 
-            <h3>Section 1 — SL Recap</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <strong>Composite key in ENROLLMENT</strong>
-                        The composite key is <code>(StudentID, CourseID)</code>. It represents the real-world fact that one student enrolls in one course — the combination is unique per enrolment row.
-                    </div>
+            <h3>Section 1</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">1</span>
+                <div class="sql-answer-body">
+                    <strong>Recap answer</strong>
+                    <code>ENROLLMENT</code> has the composite key <code>(StudentID, CourseID)</code>, representing which student is enrolled on which course.
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT * FROM COURSE
-WHERE Level = 'HL'
-ORDER BY Department, CourseName;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT * FROM STUDENT WHERE Cohort = 2026;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">4</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT c.CourseName, d.DepartmentName, c.Credits
-FROM COURSE c
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">5</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT s.FirstName, s.LastName, c.CourseName, e.Score
-FROM ENROLLMENT e
-INNER JOIN STUDENT s ON e.StudentID = s.StudentID
-INNER JOIN COURSE  c ON e.CourseID  = c.CourseID
-WHERE e.Semester = 'Spring';</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">6</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT CourseName FROM COURSE
-WHERE CourseName LIKE '%Design%' OR CourseName LIKE '%Analytics%';</code></pre>
-                    </div>
-                </div>
-            </dl>
+            </div>
 
-            <h3>Section 2 — Aggregate Functions and Grouping</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT DepartmentID, COUNT(*) AS CourseCount
-FROM COURSE
-GROUP BY DepartmentID;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT CourseID, COUNT(*) AS EnrolmentCount
-FROM ENROLLMENT
-GROUP BY CourseID;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT d.DepartmentName, ROUND(AVG(e.Score), 1) AS AvgScore
-FROM ENROLLMENT e
-INNER JOIN COURSE     c ON e.CourseID     = c.CourseID
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID
-GROUP BY d.DepartmentName;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">4</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT CourseID, MAX(Score) AS Highest, MIN(Score) AS Lowest
-FROM ENROLLMENT
-GROUP BY CourseID;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">5</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT Level, SUM(Credits) AS TotalCredits
-FROM COURSE
-GROUP BY Level;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">6</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT d.DepartmentName, COUNT(*) AS Enrolments
-FROM ENROLLMENT e
-INNER JOIN COURSE     c ON e.CourseID     = c.CourseID
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID
+            <h3>Section 2</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">2</span>
+                <div class="sql-answer-body">
+                    <strong>Aggregate examples</strong>
+                    <pre><code>SELECT d.DepartmentName, COUNT(*) AS EnrollmentCount
+FROM ENROLLMENT AS e
+INNER JOIN COURSE AS c
+    ON e.CourseID = c.CourseID
+INNER JOIN DEPARTMENT AS d
+    ON c.DepartmentID = d.DepartmentID
 GROUP BY d.DepartmentName
 HAVING COUNT(*) >= 4;</code></pre>
-                    </div>
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">7</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT CourseID, AVG(Score) AS AvgScore
-FROM ENROLLMENT
-GROUP BY CourseID
-HAVING AVG(Score) > 85;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">8</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT d.DepartmentName,
-       COUNT(*)              AS Enrolments,
-       ROUND(AVG(e.Score),1) AS AvgScore
-FROM ENROLLMENT e
-INNER JOIN COURSE     c ON e.CourseID     = c.CourseID
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID
-GROUP BY d.DepartmentName
-ORDER BY AvgScore DESC;</code></pre>
-                    </div>
-                </div>
-            </dl>
+            </div>
 
-            <h3>Section 3 — Views</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <pre><code>CREATE VIEW HighScorers AS
-SELECT s.FirstName, s.LastName,
-       c.CourseName, d.DepartmentName, e.Score
-FROM ENROLLMENT e
-INNER JOIN STUDENT    s ON e.StudentID    = s.StudentID
-INNER JOIN COURSE     c ON e.CourseID     = c.CourseID
-INNER JOIN DEPARTMENT d ON c.DepartmentID = d.DepartmentID
+            <h3>Section 3</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">3</span>
+                <div class="sql-answer-body">
+                    <strong>View pattern</strong>
+                    <pre><code>CREATE VIEW HighScorers AS
+SELECT s.FirstName, s.LastName, c.CourseName, d.DepartmentName, e.Score
+FROM ENROLLMENT AS e
+INNER JOIN STUDENT AS s
+    ON e.StudentID = s.StudentID
+INNER JOIN COURSE AS c
+    ON e.CourseID = c.CourseID
+INNER JOIN DEPARTMENT AS d
+    ON c.DepartmentID = d.DepartmentID
 WHERE e.Score >= 90;</code></pre>
-                    </div>
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <pre><code>SELECT * FROM HighScorers
-ORDER BY Score DESC, LastName;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <strong>Virtual vs materialized view</strong>
-                        Benefit of a virtual view: it always reflects current data — when base tables change, the next query of the view shows updated results. Difference: a materialized view stores a physical copy of the query result, making reads much faster but requiring explicit refresh commands to stay current. A virtual view uses no extra storage but re-executes the full join on every access.
-                    </div>
-                </div>
-            </dl>
+            </div>
 
-            <h3>Section 4 — Transactions and ACID</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <pre><code>BEGIN;
-
-INSERT INTO STUDENT (StudentID, FirstName, LastName, Cohort)
-VALUES (999, 'Alex', 'Chen', 2026);
-
-INSERT INTO ENROLLMENT (StudentID, CourseID, Semester, Score)
-VALUES (999, 101, 'Spring', 78);
-
-COMMIT;</code></pre>
-                    </div>
+            <h3>Section 4</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">4</span>
+                <div class="sql-answer-body">
+                    <strong>ACID summary</strong>
+                    Atomicity keeps related changes together, consistency preserves valid states, isolation stops overlapping transactions from interfering, and durability keeps committed work safe after failure.
                 </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <pre><code>BEGIN;
-
-UPDATE ENROLLMENT SET Score = 100 WHERE StudentID = 999;
-SELECT Score FROM ENROLLMENT WHERE StudentID = 999;
-
-ROLLBACK;</code></pre>
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <strong>ACID explanation</strong>
-                        <em>Atomicity</em>: if the student INSERT succeeds but the ENROLLMENT INSERT fails (e.g. constraint violation), both changes roll back — no orphaned student record. <em>Consistency</em>: foreign key constraints always hold; no enrollment can reference a non-existent student. <em>Isolation</em>: two simultaneous enrollment processes do not see each other's uncommitted changes, preventing double-booking. <em>Durability</em>: once COMMIT is issued, the data is written to persistent storage and survives a power failure.
-                    </div>
-                </div>
-            </dl>
-
-            <h3>Section 5 — Normalization and Denormalization Review</h3>
-            <dl>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">1</span>
-                    <div class="sql-answer-body">
-                        <strong>3NF advantage</strong>
-                        In the normalized design, student name is stored once in STUDENT; course name and credits once in COURSE. A flat table repeating these on every enrollment row would contain transitive dependencies — e.g. DepartmentOffice depends on DepartmentID which depends on CourseID, not on the primary key (StudentID, CourseID). 3NF removes those transitive dependencies.
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">2</span>
-                    <div class="sql-answer-body">
-                        <strong>Partial dependency</strong>
-                        If the table stored <code>StudentFirstName</code> alongside the composite key <code>(StudentID, CourseID)</code>, <code>StudentFirstName</code> depends only on <code>StudentID</code> — not on the full composite key. This partial dependency violates 2NF and causes the student's name to be repeated once per enrolled course, creating update anomalies.
-                    </div>
-                </div>
-                <div class="sql-answer-item">
-                    <span class="sql-answer-num">3</span>
-                    <div class="sql-answer-body">
-                        <strong>Denormalized dashboard table</strong>
-                        A <code>ENROLMENT_REPORT</code> table could store: <code>DepartmentName</code>, <code>CourseName</code>, <code>Level</code>, <code>StudentName</code>, <code>Semester</code>, <code>Score</code>. Benefit: the BI dashboard reads one flat table with no joins. Tradeoff: if a department is renamed, every row must be updated; if not, reports show the old name — introducing inconsistency. Update anomalies from non-3NF design reappear.
-                    </div>
-                </div>
-            </dl>
+            </div>
         </div>
     </section>
 
     <div class="sql-sheet-nav">
-        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> Back to HL worksheet list</a>
-        <a href="/tools/sql-playground.html?dataset=course-enrolment" target="_blank" rel="noopener noreferrer">Open the playground again <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> HL worksheet hub</a>
+        <a href="/tools/sql-playground.html?dataset=course-enrolment" target="_blank" rel="noopener noreferrer">Open Course Enrolment dataset <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 </div>
 
@@ -745,44 +489,85 @@ ROLLBACK;</code></pre>
         <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
     </footer>
 
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+            
+        
+            
+                <script src="/js/sql-worksheet.js"></script>
+            
+        
+    
+    
+
+    
     <div class="feedback-modals" data-feedback-default-level="General">
         <div class="feedback-overlay" data-feedback-overlay></div>
+
         <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <p class="modal-kicker">Something broken?</p>
             <h2 id="bug-modal-title">Report a bug</h2>
             <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
             <form id="bug-form" class="feedback-form" data-form-type="bug">
                 <label for="bug-level">Course area</label>
                 <select id="bug-level" name="level" required>
-                    <option value="">Select a course</option><option value="KS3">KS3</option><option value="IGCSE">IGCSE</option><option value="IB">IB</option><option value="General">General</option>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
                 </select>
+
                 <label for="bug-category">Resource type</label>
                 <select id="bug-category" name="category" required>
-                    <option value="">Choose a resource type</option><option value="Slide deck">Slide deck</option><option value="Game">Game</option><option value="Image">Image</option><option value="Simulation">Simulation</option><option value="Misc">Misc</option>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
                 </select>
+
                 <label for="bug-title">Title (be specific)</label>
                 <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
                 <label for="bug-details">What happened?</label>
                 <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
                 <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
                 <button type="submit" class="submit-btn">Submit bug report</button>
                 <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
             </form>
         </div>
+
         <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <p class="modal-kicker">Have an idea?</p>
             <h2 id="feature-modal-title">Request a feature</h2>
             <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
             <form id="feature-form" class="feedback-form" data-form-type="feature">
                 <label for="feature-level">Course area</label>
                 <select id="feature-level" name="level" required>
-                    <option value="">Select a course</option><option value="KS3">KS3</option><option value="IGCSE">IGCSE</option><option value="IB">IB</option><option value="General">General</option>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
                 </select>
+
                 <label for="feature-details">What should we add?</label>
                 <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
                 <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
                 <button type="submit" class="submit-btn">Submit feature request</button>
                 <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
             </form>
@@ -790,27 +575,12 @@ ROLLBACK;</code></pre>
     </div>
 
     <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
     <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
     <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
     <script src="/__/firebase/init.js"></script>
     <script src="/js/auth-gate.js"></script>
-
-    <script>
-        function checkAnswerPw() {
-            var val = document.getElementById('answer-pw').value;
-            if (val === atob('dGVhY2hlcjE=')) {
-                document.getElementById('answer-content').hidden = false;
-                document.getElementById('answers-lock').hidden = true;
-            } else {
-                document.getElementById('answer-err').textContent = 'Incorrect password. Try again.';
-                document.getElementById('answer-pw').value = '';
-                document.getElementById('answer-pw').focus();
-            }
-        }
-        document.getElementById('answer-pw').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') checkAnswerPw();
-        });
-    </script>
 </body>
 
 </html>
