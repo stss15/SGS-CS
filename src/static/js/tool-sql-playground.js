@@ -1614,7 +1614,7 @@ function renderResults() {
     elements.resultsOutput.innerHTML = `
       <div class="message-box info">
         <h3>No rows returned</h3>
-        <p>The query ran successfully, but it did not match any rows.</p>
+        <p>${escapeHtml(state.statusMessage || 'The query ran successfully, but it did not match any rows.')}</p>
       </div>
     `;
     return;
@@ -1701,7 +1701,7 @@ function renderFatalError(message) {
 
 function buildResultsMetaText() {
   if (state.executionTime == null) return '';
-  if (state.result?.rows?.length) {
+  if (state.result?.kind === 'query') {
     return `${state.result.rows.length} row${state.result.rows.length === 1 ? '' : 's'} in ${state.executionTime.toFixed(1)}ms`;
   }
   return `${state.executionTime.toFixed(1)}ms`;
@@ -1908,16 +1908,25 @@ function runQuery() {
     state.schema = getLiveSchema(state.db, state.dataset);
 
     const displayResult = pickDisplayResult(resultSets);
+    const preparedColumns = displayResult ? [] : getPreparedColumnNames(state.db, state.query);
     const rowsModified = typeof state.db.getRowsModified === 'function' ? state.db.getRowsModified() : 0;
 
     if (displayResult) {
       state.result = {
         columns: displayResult.columns || [],
-        rows: displayResult.values || []
+        rows: displayResult.values || [],
+        kind: 'query'
       };
       state.statusMessage = `${state.result.rows.length} row${state.result.rows.length === 1 ? '' : 's'} returned.`;
+    } else if (preparedColumns.length) {
+      state.result = {
+        columns: preparedColumns,
+        rows: [],
+        kind: 'query'
+      };
+      state.statusMessage = '0 rows returned.';
     } else {
-      state.result = { columns: [], rows: [] };
+      state.result = { columns: [], rows: [], kind: 'statement' };
       state.statusMessage =
         rowsModified > 0
           ? `Statement executed successfully. ${rowsModified} row${rowsModified === 1 ? '' : 's'} changed.`
@@ -1954,6 +1963,25 @@ function pickDisplayResult(resultSets) {
   }
 
   return null;
+}
+
+function getPreparedColumnNames(db, query) {
+  if (!db || !query.trim()) return [];
+
+  let statement;
+
+  try {
+    statement = db.prepare(query);
+    const columnNames =
+      typeof statement.getColumnNames === 'function' ? statement.getColumnNames() : [];
+    return Array.isArray(columnNames) ? columnNames : [];
+  } catch (_error) {
+    return [];
+  } finally {
+    if (statement) {
+      statement.free();
+    }
+  }
 }
 
 async function fetchJson(url) {
