@@ -69,6 +69,7 @@ const injectHeadMeta = (html, metaTag) => {
 const getActiveSectionFromRoute = (relativePath) => {
   const normalizedPath = toPosix(relativePath).toLowerCase();
 
+  if (normalizedPath.startsWith('ai-prompt-generator/')) return 'ai-prompt';
   if (normalizedPath.startsWith('ks3/')) return 'ks3';
   if (normalizedPath.startsWith('igcse/')) return 'igcse';
   if (normalizedPath.startsWith('ib-2027/') || normalizedPath.startsWith('ib/')) return 'ib';
@@ -95,6 +96,7 @@ const buildUnifiedHeader = (activeSection) => {
             </div>
 
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                ${navItem('AI Prompt', '/ai-prompt-generator/index.html', 'ai-prompt')}
                 ${navItem('KS3', '/ks3/index.html', 'ks3')}
                 ${navItem('IGCSE', '/igcse/index.html', 'igcse')}
                 ${navItem('IB', '/ib-2027/index.html', 'ib')}

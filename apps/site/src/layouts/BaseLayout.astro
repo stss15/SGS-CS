@@ -1,7 +1,7 @@
 ---
 import SiteNav from '../components/SiteNav.astro';
 
-type NavSection = 'ks3' | 'igcse' | 'ib';
+type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
 
 interface BreadcrumbItem {
   label: string;
@@ -13,6 +13,7 @@ interface Props {
   description?: string;
   activeSection?: NavSection;
   breadcrumbs?: BreadcrumbItem[];
+  mainClass?: string;
   extraStyles?: string[];
 }
 
@@ -20,11 +21,14 @@ const {
   title = 'SGS Education',
   description = 'SGS Education Hub for KS3, IGCSE, and IB students.',
   activeSection,
+  mainClass = '',
   extraStyles = []
 } = Astro.props;
 
 const inferredActiveSection: NavSection | undefined = Astro.url.pathname.startsWith('/ib')
   ? 'ib'
+  : Astro.url.pathname.startsWith('/ai-prompt-generator')
+  ? 'ai-prompt'
   : Astro.url.pathname.startsWith('/igcse')
   ? 'igcse'
   : Astro.url.pathname.startsWith('/ks3')
@@ -68,7 +72,7 @@ const normalizeStyleHref = (stylePath: string): string => {
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <SiteNav activeSection={resolvedActiveSection} />
-    <main id="main-content">
+    <main id="main-content" class={mainClass}>
       <slot />
     </main>
     <footer>

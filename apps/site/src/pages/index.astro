@@ -2,9 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FeatureLinkGrid from '../components/FeatureLinkGrid.astro';
 import HeroPanel from '../components/HeroPanel.astro';
-import { getHomePageData } from '@sgs/content-schema';
+import { getHomeFeatureCards } from '@sgs/content-schema';
 
-const homePage = await getHomePageData();
+const featureCards = await getHomeFeatureCards();
 ---
 
 <BaseLayout title="SGS Education" description="SGS Education Hub for KS3, IGCSE, and IB students.">
@@ -12,15 +12,6 @@ const homePage = await getHomePageData();
     title="Welcome to SGS Education"
     subtitle="Explore, learn, and master Computer Science through KS3, IGCSE, and IB pathways."
   >
-    <FeatureLinkGrid cards={homePage.cards} />
-    {
-      homePage.footerLink && (
-        <div class="home-footer-link">
-          <a href={homePage.footerLink.href} class="home-footer-pill">
-            {homePage.footerLink.label}
-          </a>
-        </div>
-      )
-    }
+    <FeatureLinkGrid cards={featureCards} />
   </HeroPanel>
 </BaseLayout>

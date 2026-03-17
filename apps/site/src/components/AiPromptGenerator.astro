@@ -2,98 +2,105 @@
 import {
   DEFAULT_PROMPT_TYPE,
   GUIDE_CONTENT,
+  LOCAL_ONLY_NOTE,
   PLACEHOLDERS,
   PROMPT_TYPE_ORDER,
   PROMPT_TYPES,
-  STAGE_OPTIONS
+  getContextStage
 } from '../lib/ai-prompt-generator';
 
 const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
   id,
   ...PROMPT_TYPES[id]
 }));
+
+const principlePairs = GUIDE_CONTENT.doUseAiFor.map((safe, index) => ({
+  safe,
+  unsafe: GUIDE_CONTENT.doNotUseAiFor[index]
+}));
 ---
 
 <section class="ai-prompt-page" data-ai-prompt-app>
-  <header class="ai-prompt-intro">
-    <p class="ai-prompt-intro__eyebrow">{GUIDE_CONTENT.intro}</p>
-    <h1>AI Prompt Generator</h1>
-    <p>{GUIDE_CONTENT.purpose}</p>
+  <header class="ai-prompt-panel ai-prompt-hero">
+    <div class="ai-prompt-hero__copy">
+      <p class="ai-prompt-eyebrow">AI Prompt</p>
+      <h1>Use AI without outsourcing your thinking.</h1>
+      <p class="ai-prompt-lede">
+        Build a safe prompt, paste it into your model, and keep full ownership of your work.
+      </p>
+    </div>
+
+    <div class="ai-prompt-hero__actions">
+      <button type="button" class="ai-prompt-cta" data-ai-open-modal>
+        Generate prompt
+      </button>
+      <p class="ai-prompt-privacy">{LOCAL_ONLY_NOTE}</p>
+    </div>
   </header>
 
-  <section class="ai-prompt-section">
-    <div class="ai-prompt-section__heading">
-      <h2>Non-negotiable principles</h2>
-    </div>
-    <div class="ai-prompt-table-grid">
-      <div class="ai-prompt-table-shell">
-        <table class="ai-prompt-table">
-          <thead>
-            <tr>
-              <th>Do use AI for</th>
-              <th>Do not use AI for</th>
-            </tr>
-          </thead>
-          <tbody>
-            {GUIDE_CONTENT.doUseAiFor.map((item, index) => (
-              <tr>
-                <td>{item}</td>
-                <td>{GUIDE_CONTENT.doNotUseAiFor[index]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  <div class="ai-prompt-grid">
+    <section class="ai-prompt-panel ai-prompt-panel--principles">
+      <div class="ai-prompt-panel__header">
+        <h2>Non-negotiable principles</h2>
       </div>
-    </div>
-  </section>
 
-  <section class="ai-prompt-section">
-    <div class="ai-prompt-section__heading">
-      <h2>Before you use any prompt</h2>
-    </div>
-    <ul class="ai-prompt-list">
-      {GUIDE_CONTENT.beforeYouUsePrompt.map((item) => (
-        <li>{item}</li>
-      ))}
-    </ul>
-  </section>
+      <div class="ai-prompt-principles">
+        <div class="ai-prompt-principles__head">
+          <span>Use AI for</span>
+          <span>Do not use AI for</span>
+        </div>
 
-  <section class="ai-prompt-section">
-    <div class="ai-prompt-section__heading">
-      <h2>Safe requests and unsafe requests</h2>
-    </div>
-    <div class="ai-prompt-table-shell">
-      <table class="ai-prompt-table ai-prompt-table--requests">
-        <thead>
-          <tr>
-            <th>Safer request</th>
-            <th>Unsafe request</th>
-          </tr>
-        </thead>
-        <tbody>
-          {GUIDE_CONTENT.requestPairs.map((pair) => (
-            <tr>
-              <td>{pair.safe}</td>
-              <td>{pair.unsafe}</td>
-            </tr>
+        <ul class="ai-prompt-principles__rows">
+          {principlePairs.map((pair) => (
+            <li>
+              <span>{pair.safe}</span>
+              <span>{pair.unsafe}</span>
+            </li>
           ))}
-        </tbody>
-      </table>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ai-prompt-panel ai-prompt-panel--requests">
+      <div class="ai-prompt-panel__header">
+        <h2>Safe and unsafe requests</h2>
+      </div>
+
+      <div class="ai-prompt-requests">
+        <div class="ai-prompt-requests__head">
+          <span>Safer</span>
+          <span>Unsafe</span>
+        </div>
+
+        <ul class="ai-prompt-requests__rows">
+          {GUIDE_CONTENT.requestPairs.map((pair) => (
+            <li>
+              <span>{pair.safe}</span>
+              <span>{pair.unsafe}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="ai-prompt-panel ai-prompt-panel--footer">
+    <div class="ai-prompt-footer__block">
+      <h2>Before you start</h2>
+      <ul class="ai-prompt-checklist">
+        {GUIDE_CONTENT.beforeYouUsePrompt.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="ai-prompt-footer__block ai-prompt-footer__block--reminder">
+      <h2>{GUIDE_CONTENT.finalReminderTitle}</h2>
+      <p>{GUIDE_CONTENT.finalReminder[0]}</p>
+      <p>{GUIDE_CONTENT.finalReminder[1]}</p>
+      <p>{GUIDE_CONTENT.finalReminder[2]}</p>
     </div>
   </section>
-
-  <section class="ai-prompt-reminder">
-    <h2>{GUIDE_CONTENT.finalReminderTitle}</h2>
-    {GUIDE_CONTENT.finalReminder.map((item) => (
-      <p>{item}</p>
-    ))}
-  </section>
-
-  <div class="ai-prompt-launch-row">
-    <button type="button" class="ai-prompt-button" data-ai-open-modal>
-      Generate prompt
-    </button>
-  </div>
 
   <div class="ai-prompt-modal-root" aria-live="polite">
     <div class="ai-prompt-modal-overlay" data-ai-overlay hidden></div>
@@ -109,39 +116,19 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
       <button type="button" class="ai-prompt-modal__close" data-ai-close-modal aria-label="Close">
         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
       </button>
+
       <h2 id="ai-prompt-modal-title" class="sr-only">AI Prompt Generator</h2>
 
       <div class="ai-prompt-modal__view" data-ai-view="form">
         <header class="ai-prompt-modal__header">
-          <h2>Generate a prompt</h2>
+          <div>
+            <p class="ai-prompt-modal__eyebrow">Local only</p>
+            <h3>Generate a prompt</h3>
+          </div>
+          <p class="ai-prompt-modal__note">{LOCAL_ONLY_NOTE}</p>
         </header>
 
-        <form class="ai-prompt-form" data-ai-form>
-          <input type="hidden" name="type" value={DEFAULT_PROMPT_TYPE} data-ai-type-input />
-
-          <fieldset class="ai-prompt-types">
-            <legend>Prompt type</legend>
-            <div class="ai-prompt-types__grid">
-              {promptTypes.map((type) => (
-                <button
-                  type="button"
-                  class:list={{
-                    'ai-prompt-types__option': true,
-                    'is-active': type.id === DEFAULT_PROMPT_TYPE
-                  }}
-                  data-ai-type-option
-                  data-type={type.id}
-                  aria-pressed={type.id === DEFAULT_PROMPT_TYPE ? 'true' : 'false'}
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
-            <p class="ai-prompt-types__helper" data-ai-type-helper>
-              {PROMPT_TYPES[DEFAULT_PROMPT_TYPE].helper}
-            </p>
-          </fieldset>
-
+        <form class="ai-prompt-form" data-ai-form autocomplete="off">
           <div class="ai-prompt-form__grid">
             <label class="ai-prompt-field">
               <span>Subject + course</span>
@@ -150,6 +137,7 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
                 name="subject"
                 placeholder="IB Biology HL"
                 autocomplete="off"
+                autocapitalize="off"
                 required
               />
             </label>
@@ -161,33 +149,49 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
                 name="taskType"
                 placeholder="IA, EE, essay, report"
                 autocomplete="off"
+                autocapitalize="off"
                 required
               />
             </label>
           </div>
 
-          <label class="ai-prompt-field">
-            <span>Current stage</span>
-            <select name="stage" data-ai-stage-select required>
-              {STAGE_OPTIONS[DEFAULT_PROMPT_TYPE].map((stage) => (
-                <option value={stage}>{stage}</option>
-              ))}
-            </select>
-          </label>
+          <div class="ai-prompt-form__grid ai-prompt-form__grid--secondary">
+            <label class="ai-prompt-field">
+              <span>Prompt type</span>
+              <select name="type" data-ai-type-select>
+                {promptTypes.map((type) => (
+                  <option value={type.id} selected={type.id === DEFAULT_PROMPT_TYPE}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <div class="ai-prompt-field ai-prompt-field--meta">
+              <span>Prompt context</span>
+              <p data-ai-stage-note>Added automatically: {getContextStage(DEFAULT_PROMPT_TYPE)}.</p>
+            </div>
+          </div>
+
+          <p class="ai-prompt-form__helper" data-ai-type-helper>
+            {PROMPT_TYPES[DEFAULT_PROMPT_TYPE].helper}
+          </p>
 
           <label class="ai-prompt-field ai-prompt-field--textarea">
-            <span>Excerpt or notes</span>
+            <span>Paste work or notes</span>
             <textarea
               name="work"
-              rows="9"
+              rows="6"
               placeholder={PLACEHOLDERS[DEFAULT_PROMPT_TYPE]}
               data-ai-work-input
+              spellcheck="false"
+              autocomplete="off"
               required
             ></textarea>
           </label>
 
           <div class="ai-prompt-form__meta">
-            <p>Paste only the section you actually want checked.</p>
+            <p>Nothing you paste leaves this browser tab.</p>
             <span data-ai-character-count>0 characters</span>
           </div>
 
@@ -200,7 +204,7 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
             <button type="button" class="ai-prompt-text-button" data-ai-close-modal>
               Cancel
             </button>
-            <button type="submit" class="ai-prompt-button">
+            <button type="submit" class="ai-prompt-cta">
               Generate prompt
             </button>
           </div>
@@ -209,8 +213,11 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
 
       <div class="ai-prompt-modal__view" data-ai-view="result" hidden>
         <header class="ai-prompt-modal__header ai-prompt-modal__header--result">
-          <h2>Generated prompt</h2>
-          <p data-ai-result-summary></p>
+          <div>
+            <p class="ai-prompt-modal__eyebrow">Ready to copy</p>
+            <h3>Generated prompt</h3>
+          </div>
+          <p class="ai-prompt-modal__note" data-ai-result-summary></p>
         </header>
 
         <div class="ai-prompt-soft-checks" data-ai-result-checks hidden>
@@ -226,10 +233,11 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           <button type="button" class="ai-prompt-text-button" data-ai-edit-form>
             Edit details
           </button>
-          <button type="button" class="ai-prompt-button" data-ai-copy-prompt>
+          <button type="button" class="ai-prompt-cta" data-ai-copy-prompt>
             Copy prompt
           </button>
         </div>
+
         <p class="ai-prompt-copy-status" data-ai-copy-status></p>
       </div>
     </section>
@@ -239,12 +247,12 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
 <script>
   import {
     DEFAULT_PROMPT_TYPE,
+    LOCAL_ONLY_NOTE,
     PLACEHOLDERS,
     PROMPT_TYPES,
-    STAGE_OPTIONS,
     buildPrompt,
+    getContextStage,
     isPromptTypeId,
-    normalizeStage,
     qualityChecks
   } from '../lib/ai-prompt-generator';
   import type { PromptInput, PromptTypeId } from '../lib/ai-prompt-generator';
@@ -259,10 +267,9 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
     const formView = root.querySelector<HTMLElement>('[data-ai-view="form"]');
     const resultView = root.querySelector<HTMLElement>('[data-ai-view="result"]');
     const form = root.querySelector<HTMLFormElement>('[data-ai-form]');
-    const typeInput = root.querySelector<HTMLInputElement>('[data-ai-type-input]');
-    const typeButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-ai-type-option]'));
+    const typeSelect = root.querySelector<HTMLSelectElement>('[data-ai-type-select]');
     const typeHelper = root.querySelector<HTMLElement>('[data-ai-type-helper]');
-    const stageSelect = root.querySelector<HTMLSelectElement>('[data-ai-stage-select]');
+    const stageNote = root.querySelector<HTMLElement>('[data-ai-stage-note]');
     const workInput = root.querySelector<HTMLTextAreaElement>('[data-ai-work-input]');
     const characterCount = root.querySelector<HTMLElement>('[data-ai-character-count]');
     const softChecks = root.querySelector<HTMLElement>('[data-ai-soft-checks]');
@@ -282,9 +289,9 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
       formView &&
       resultView &&
       form &&
-      typeInput &&
+      typeSelect &&
       typeHelper &&
-      stageSelect &&
+      stageNote &&
       workInput &&
       characterCount &&
       softChecks &&
@@ -300,6 +307,7 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
     ) {
       const subjectInput = form.elements.namedItem('subject');
       const taskTypeInput = form.elements.namedItem('taskType');
+
       if (subjectInput instanceof HTMLInputElement && taskTypeInput instanceof HTMLInputElement) {
         let activeTrigger: HTMLElement | null = null;
         let submittedOnce = false;
@@ -312,32 +320,14 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           ).filter((element) => !element.hasAttribute('hidden'));
 
         const getCurrentType = (): PromptTypeId => {
-          const value = typeInput.value;
+          const value = typeSelect.value;
           return isPromptTypeId(value) ? value : DEFAULT_PROMPT_TYPE;
         };
 
         const setType = (nextType: PromptTypeId): void => {
-          typeInput.value = nextType;
-
-          typeButtons.forEach((button) => {
-            const isActive = button.dataset.type === nextType;
-            button.classList.toggle('is-active', isActive);
-            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-          });
-
+          typeSelect.value = nextType;
           typeHelper.textContent = PROMPT_TYPES[nextType].helper;
-
-          const stages = STAGE_OPTIONS[nextType];
-          const nextStage = normalizeStage(nextType, stageSelect.value);
-
-          stageSelect.innerHTML = '';
-          stages.forEach((stage: string) => {
-            const option = document.createElement('option');
-            option.value = stage;
-            option.textContent = stage;
-            stageSelect.appendChild(option);
-          });
-          stageSelect.value = nextStage;
+          stageNote.textContent = `Added automatically: ${getContextStage(nextType)}.`;
           workInput.placeholder = PLACEHOLDERS[nextType];
           updateChecks();
         };
@@ -346,7 +336,6 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           type: getCurrentType(),
           subject: subjectInput.value,
           taskType: taskTypeInput.value,
-          stage: stageSelect.value,
           work: workInput.value
         });
 
@@ -357,6 +346,7 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           shouldShow: boolean
         ): void => {
           list.innerHTML = '';
+
           if (!shouldShow || checks.length === 0) {
             container.hidden = true;
             return;
@@ -367,6 +357,7 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
             entry.textContent = item;
             list.appendChild(entry);
           });
+
           container.hidden = false;
         };
 
@@ -379,9 +370,8 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
             formData.subject.trim().length > 0 ||
             formData.taskType.trim().length > 0 ||
             formData.work.trim().length > 0;
-          const shouldShow = submittedOnce || hasStarted;
 
-          renderChecks(softChecks, softChecksList, checks, shouldShow);
+          renderChecks(softChecks, softChecksList, checks, submittedOnce || hasStarted);
           renderChecks(resultChecks, resultChecksList, checks, checks.length > 0);
         };
 
@@ -391,25 +381,23 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           resultView.hidden = showForm;
 
           if (showForm) {
-            requestAnimationFrame(() => {
-              subjectInput.focus();
-            });
+            requestAnimationFrame(() => subjectInput.focus());
             return;
           }
 
-          requestAnimationFrame(() => {
-            copyButton.focus();
-          });
+          requestAnimationFrame(() => output.focus());
         };
 
         const openModal = (trigger: HTMLElement | null): void => {
           activeTrigger = trigger;
           overlay.hidden = false;
           modal.hidden = false;
+
           requestAnimationFrame(() => {
             overlay.classList.add('is-active');
             modal.classList.add('is-active');
           });
+
           modal.setAttribute('aria-hidden', 'false');
           document.body.classList.add('modal-open');
           showView(outputText.textContent ? 'result' : 'form');
@@ -419,15 +407,19 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           overlay.classList.remove('is-active');
           modal.classList.remove('is-active');
           modal.setAttribute('aria-hidden', 'true');
+
           window.setTimeout(() => {
             overlay.hidden = true;
             modal.hidden = true;
-          }, 220);
+          }, 180);
+
           document.body.classList.remove('modal-open');
           copyStatus.textContent = '';
+
           if (activeTrigger) {
             activeTrigger.focus();
           }
+
           activeTrigger = null;
         };
 
@@ -450,24 +442,14 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           }
         };
 
-        typeButtons.forEach((button) => {
-          button.addEventListener('click', () => {
-            const nextType = button.dataset.type;
-            if (!nextType || !isPromptTypeId(nextType)) {
-              return;
-            }
+        typeSelect.addEventListener('change', () => {
+          const nextType = typeSelect.value;
+          if (isPromptTypeId(nextType)) {
             setType(nextType);
-          });
+          }
         });
 
-        const listenableFields: Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = [
-          subjectInput,
-          taskTypeInput,
-          stageSelect,
-          workInput
-        ];
-
-        listenableFields.forEach((field) => {
+        [subjectInput, taskTypeInput, workInput].forEach((field) => {
           field.addEventListener('input', updateChecks);
           field.addEventListener('change', updateChecks);
         });
@@ -494,9 +476,8 @@ const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
           }
 
           const formData = getFormData();
-          const prompt = buildPrompt(formData);
-          outputText.textContent = prompt;
-          resultSummary.textContent = `${PROMPT_TYPES[formData.type].label} prompt for ${formData.subject}.`;
+          outputText.textContent = buildPrompt(formData);
+          resultSummary.textContent = `${PROMPT_TYPES[formData.type].label} prompt ready. ${LOCAL_ONLY_NOTE}`;
           copyStatus.textContent = '';
           updateChecks();
           showView('result');

@@ -9,7 +9,6 @@ export interface PromptInput {
   type: PromptTypeId;
   subject: string;
   taskType: string;
-  stage: string;
   work: string;
 }
 
@@ -52,11 +51,11 @@ export const PROMPT_TYPES: Record<PromptTypeId, PromptTypeConfig> = {
   }
 };
 
-export const STAGE_OPTIONS: Record<PromptTypeId, string[]> = {
-  planning: ['planning'],
-  feedback: ['first draft', 'revision'],
-  spag: ['revision', 'proofreading'],
-  viva: ['revision', 'proofreading']
+export const CONTEXT_STAGE_BY_TYPE: Record<PromptTypeId, string> = {
+  planning: 'planning',
+  feedback: 'in progress',
+  spag: 'in progress',
+  viva: 'in progress'
 };
 
 export const PLACEHOLDERS: Record<PromptTypeId, string> = {
@@ -88,7 +87,7 @@ export const GUIDE_CONTENT: GuideContent = {
   ],
   beforeYouUsePrompt: [
     'Paste only the part of your work you actually want feedback on.',
-    'Be honest about what stage you are at: planning, drafting, revising, or proofreading.',
+    'Be honest about whether you are still planning or already writing.',
     'Keep a record of what help you asked for if your course requires AI use to be declared.',
     'Do not keep pushing the model until it gives you wording you can copy.',
     'If the response feels too polished, too advanced, or not really yours, stop using it.'
@@ -123,22 +122,25 @@ export const GUIDE_CONTENT: GuideContent = {
   ]
 };
 
-const SHARED_INSTRUCTION = 'If there is not enough information, ask brief clarifying questions instead of guessing.';
+export const LOCAL_ONLY_NOTE =
+  'Runs entirely in this browser tab. What you paste is not sent, saved, or stored in cookies or local storage.';
 
-export const normalizeStage = (type: PromptTypeId, stage: string): string => {
-  const availableStages = STAGE_OPTIONS[type];
-  return availableStages.includes(stage) ? stage : availableStages[0];
-};
+const SHARED_INSTRUCTION = 'If there is not enough information, ask brief clarifying questions instead of guessing.';
 
 export const isPromptTypeId = (value: string): value is PromptTypeId =>
   Object.hasOwn(PROMPT_TYPES, value);
 
-const buildContextLine = ({ subject, taskType, stage }: Omit<PromptInput, 'type' | 'work'>): string =>
-  `I am an IB or BTEC student aged 16-18 working on ${subject || '[subject + course]'} for ${taskType || '[task type]'}. My current stage is ${stage}. Keep all feedback suitable for this level. Do not make it childish, and do not move beyond upper-secondary level into undergraduate-level concepts, phrasing, or expectations unless I have already used them myself.`;
+export const getContextStage = (type: PromptTypeId): string => CONTEXT_STAGE_BY_TYPE[type];
 
-export const buildPrompt = ({ type, subject, taskType, stage, work }: PromptInput): string => {
-  const safeStage = normalizeStage(type, stage);
-  const contextLine = buildContextLine({ subject, taskType, stage: safeStage });
+const buildContextLine = ({
+  type,
+  subject,
+  taskType
+}: Pick<PromptInput, 'type' | 'subject' | 'taskType'>): string =>
+  `I am an IB or BTEC student aged 16-18 working on ${subject || '[subject + course]'} for ${taskType || '[task type]'}. My current stage is ${getContextStage(type)}. Keep all feedback suitable for this level. Do not make it childish, and do not move beyond upper-secondary level into undergraduate-level concepts, phrasing, or expectations unless I have already used them myself.`;
+
+export const buildPrompt = ({ type, subject, taskType, work }: PromptInput): string => {
+  const contextLine = buildContextLine({ type, subject, taskType });
 
   if (type === 'planning') {
     return `ROLE:
