@@ -22,6 +22,16 @@ export interface FeatureCard {
   comingSoon?: boolean;
 }
 
+export interface FooterLink {
+  href: string;
+  label: string;
+}
+
+export interface HomePageData {
+  cards: FeatureCard[];
+  footerLink?: FooterLink;
+}
+
 export interface TopicItem {
   href: string;
   number: string;
@@ -383,6 +393,7 @@ interface LegacySiteData {
 
 interface LegacyHomeFrontmatter {
   cards: FeatureCard[];
+  footerLink?: FooterLink;
 }
 
 const IB_2027_PATHWAY_CARDS: PathwayCard[] = [
@@ -432,12 +443,25 @@ const getCurriculumListingPage = async (filePath: string): Promise<CurriculumLis
   };
 };
 
-export const getHomeFeatureCards = async (): Promise<FeatureCard[]> => {
+export const getHomePageData = async (): Promise<HomePageData> => {
   const frontmatter = await readFrontmatterCached<LegacyHomeFrontmatter>(HOME_PAGE_PATH);
-  return (frontmatter.cards || []).map((card) => ({
-    ...card,
-    href: ensureLeadingSlash(card.href)
-  }));
+  return {
+    cards: (frontmatter.cards || []).map((card) => ({
+      ...card,
+      href: ensureLeadingSlash(card.href)
+    })),
+    footerLink: frontmatter.footerLink
+      ? {
+          ...frontmatter.footerLink,
+          href: ensureLeadingSlash(frontmatter.footerLink.href)
+        }
+      : undefined
+  };
+};
+
+export const getHomeFeatureCards = async (): Promise<FeatureCard[]> => {
+  const homePage = await getHomePageData();
+  return homePage.cards;
 };
 
 export const getIgcseListing = async (): Promise<IGCSEListing> => {

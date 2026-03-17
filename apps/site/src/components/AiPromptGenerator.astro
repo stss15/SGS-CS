@@ -1,0 +1,542 @@
+---
+import {
+  DEFAULT_PROMPT_TYPE,
+  GUIDE_CONTENT,
+  PLACEHOLDERS,
+  PROMPT_TYPE_ORDER,
+  PROMPT_TYPES,
+  STAGE_OPTIONS
+} from '../lib/ai-prompt-generator';
+
+const promptTypes = PROMPT_TYPE_ORDER.map((id) => ({
+  id,
+  ...PROMPT_TYPES[id]
+}));
+---
+
+<section class="ai-prompt-page" data-ai-prompt-app>
+  <header class="ai-prompt-intro">
+    <p class="ai-prompt-intro__eyebrow">{GUIDE_CONTENT.intro}</p>
+    <h1>AI Prompt Generator</h1>
+    <p>{GUIDE_CONTENT.purpose}</p>
+  </header>
+
+  <section class="ai-prompt-section">
+    <div class="ai-prompt-section__heading">
+      <h2>Non-negotiable principles</h2>
+    </div>
+    <div class="ai-prompt-table-grid">
+      <div class="ai-prompt-table-shell">
+        <table class="ai-prompt-table">
+          <thead>
+            <tr>
+              <th>Do use AI for</th>
+              <th>Do not use AI for</th>
+            </tr>
+          </thead>
+          <tbody>
+            {GUIDE_CONTENT.doUseAiFor.map((item, index) => (
+              <tr>
+                <td>{item}</td>
+                <td>{GUIDE_CONTENT.doNotUseAiFor[index]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="ai-prompt-section">
+    <div class="ai-prompt-section__heading">
+      <h2>Before you use any prompt</h2>
+    </div>
+    <ul class="ai-prompt-list">
+      {GUIDE_CONTENT.beforeYouUsePrompt.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="ai-prompt-section">
+    <div class="ai-prompt-section__heading">
+      <h2>Safe requests and unsafe requests</h2>
+    </div>
+    <div class="ai-prompt-table-shell">
+      <table class="ai-prompt-table ai-prompt-table--requests">
+        <thead>
+          <tr>
+            <th>Safer request</th>
+            <th>Unsafe request</th>
+          </tr>
+        </thead>
+        <tbody>
+          {GUIDE_CONTENT.requestPairs.map((pair) => (
+            <tr>
+              <td>{pair.safe}</td>
+              <td>{pair.unsafe}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="ai-prompt-reminder">
+    <h2>{GUIDE_CONTENT.finalReminderTitle}</h2>
+    {GUIDE_CONTENT.finalReminder.map((item) => (
+      <p>{item}</p>
+    ))}
+  </section>
+
+  <div class="ai-prompt-launch-row">
+    <button type="button" class="ai-prompt-button" data-ai-open-modal>
+      Generate prompt
+    </button>
+  </div>
+
+  <div class="ai-prompt-modal-root" aria-live="polite">
+    <div class="ai-prompt-modal-overlay" data-ai-overlay hidden></div>
+    <section
+      class="ai-prompt-modal"
+      data-ai-modal
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ai-prompt-modal-title"
+      aria-hidden="true"
+      hidden
+    >
+      <button type="button" class="ai-prompt-modal__close" data-ai-close-modal aria-label="Close">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <h2 id="ai-prompt-modal-title" class="sr-only">AI Prompt Generator</h2>
+
+      <div class="ai-prompt-modal__view" data-ai-view="form">
+        <header class="ai-prompt-modal__header">
+          <h2>Generate a prompt</h2>
+        </header>
+
+        <form class="ai-prompt-form" data-ai-form>
+          <input type="hidden" name="type" value={DEFAULT_PROMPT_TYPE} data-ai-type-input />
+
+          <fieldset class="ai-prompt-types">
+            <legend>Prompt type</legend>
+            <div class="ai-prompt-types__grid">
+              {promptTypes.map((type) => (
+                <button
+                  type="button"
+                  class:list={{
+                    'ai-prompt-types__option': true,
+                    'is-active': type.id === DEFAULT_PROMPT_TYPE
+                  }}
+                  data-ai-type-option
+                  data-type={type.id}
+                  aria-pressed={type.id === DEFAULT_PROMPT_TYPE ? 'true' : 'false'}
+                >
+                  {type.label}
+                </button>
+              ))}
+            </div>
+            <p class="ai-prompt-types__helper" data-ai-type-helper>
+              {PROMPT_TYPES[DEFAULT_PROMPT_TYPE].helper}
+            </p>
+          </fieldset>
+
+          <div class="ai-prompt-form__grid">
+            <label class="ai-prompt-field">
+              <span>Subject + course</span>
+              <input
+                type="text"
+                name="subject"
+                placeholder="IB Biology HL"
+                autocomplete="off"
+                required
+              />
+            </label>
+
+            <label class="ai-prompt-field">
+              <span>Task type</span>
+              <input
+                type="text"
+                name="taskType"
+                placeholder="IA, EE, essay, report"
+                autocomplete="off"
+                required
+              />
+            </label>
+          </div>
+
+          <label class="ai-prompt-field">
+            <span>Current stage</span>
+            <select name="stage" data-ai-stage-select required>
+              {STAGE_OPTIONS[DEFAULT_PROMPT_TYPE].map((stage) => (
+                <option value={stage}>{stage}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class="ai-prompt-field ai-prompt-field--textarea">
+            <span>Excerpt or notes</span>
+            <textarea
+              name="work"
+              rows="9"
+              placeholder={PLACEHOLDERS[DEFAULT_PROMPT_TYPE]}
+              data-ai-work-input
+              required
+            ></textarea>
+          </label>
+
+          <div class="ai-prompt-form__meta">
+            <p>Paste only the section you actually want checked.</p>
+            <span data-ai-character-count>0 characters</span>
+          </div>
+
+          <div class="ai-prompt-soft-checks" data-ai-soft-checks hidden>
+            <p>Quick checks</p>
+            <ul data-ai-soft-checks-list></ul>
+          </div>
+
+          <div class="ai-prompt-form__actions">
+            <button type="button" class="ai-prompt-text-button" data-ai-close-modal>
+              Cancel
+            </button>
+            <button type="submit" class="ai-prompt-button">
+              Generate prompt
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="ai-prompt-modal__view" data-ai-view="result" hidden>
+        <header class="ai-prompt-modal__header ai-prompt-modal__header--result">
+          <h2>Generated prompt</h2>
+          <p data-ai-result-summary></p>
+        </header>
+
+        <div class="ai-prompt-soft-checks" data-ai-result-checks hidden>
+          <p>Quick checks</p>
+          <ul data-ai-result-checks-list></ul>
+        </div>
+
+        <div class="ai-prompt-output" tabindex="-1" data-ai-output>
+          <pre data-ai-output-text></pre>
+        </div>
+
+        <div class="ai-prompt-result__actions">
+          <button type="button" class="ai-prompt-text-button" data-ai-edit-form>
+            Edit details
+          </button>
+          <button type="button" class="ai-prompt-button" data-ai-copy-prompt>
+            Copy prompt
+          </button>
+        </div>
+        <p class="ai-prompt-copy-status" data-ai-copy-status></p>
+      </div>
+    </section>
+  </div>
+</section>
+
+<script>
+  import {
+    DEFAULT_PROMPT_TYPE,
+    PLACEHOLDERS,
+    PROMPT_TYPES,
+    STAGE_OPTIONS,
+    buildPrompt,
+    isPromptTypeId,
+    normalizeStage,
+    qualityChecks
+  } from '../lib/ai-prompt-generator';
+  import type { PromptInput, PromptTypeId } from '../lib/ai-prompt-generator';
+
+  const root = document.querySelector<HTMLElement>('[data-ai-prompt-app]');
+
+  if (root) {
+    const openButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-ai-open-modal]'));
+    const overlay = root.querySelector<HTMLElement>('[data-ai-overlay]');
+    const modal = root.querySelector<HTMLElement>('[data-ai-modal]');
+    const closeButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-ai-close-modal]'));
+    const formView = root.querySelector<HTMLElement>('[data-ai-view="form"]');
+    const resultView = root.querySelector<HTMLElement>('[data-ai-view="result"]');
+    const form = root.querySelector<HTMLFormElement>('[data-ai-form]');
+    const typeInput = root.querySelector<HTMLInputElement>('[data-ai-type-input]');
+    const typeButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-ai-type-option]'));
+    const typeHelper = root.querySelector<HTMLElement>('[data-ai-type-helper]');
+    const stageSelect = root.querySelector<HTMLSelectElement>('[data-ai-stage-select]');
+    const workInput = root.querySelector<HTMLTextAreaElement>('[data-ai-work-input]');
+    const characterCount = root.querySelector<HTMLElement>('[data-ai-character-count]');
+    const softChecks = root.querySelector<HTMLElement>('[data-ai-soft-checks]');
+    const softChecksList = root.querySelector<HTMLUListElement>('[data-ai-soft-checks-list]');
+    const resultChecks = root.querySelector<HTMLElement>('[data-ai-result-checks]');
+    const resultChecksList = root.querySelector<HTMLUListElement>('[data-ai-result-checks-list]');
+    const output = root.querySelector<HTMLElement>('[data-ai-output]');
+    const outputText = root.querySelector<HTMLElement>('[data-ai-output-text]');
+    const resultSummary = root.querySelector<HTMLElement>('[data-ai-result-summary]');
+    const editButton = root.querySelector<HTMLButtonElement>('[data-ai-edit-form]');
+    const copyButton = root.querySelector<HTMLButtonElement>('[data-ai-copy-prompt]');
+    const copyStatus = root.querySelector<HTMLElement>('[data-ai-copy-status]');
+
+    if (
+      overlay &&
+      modal &&
+      formView &&
+      resultView &&
+      form &&
+      typeInput &&
+      typeHelper &&
+      stageSelect &&
+      workInput &&
+      characterCount &&
+      softChecks &&
+      softChecksList &&
+      resultChecks &&
+      resultChecksList &&
+      output &&
+      outputText &&
+      resultSummary &&
+      editButton &&
+      copyButton &&
+      copyStatus
+    ) {
+      const subjectInput = form.elements.namedItem('subject');
+      const taskTypeInput = form.elements.namedItem('taskType');
+      if (subjectInput instanceof HTMLInputElement && taskTypeInput instanceof HTMLInputElement) {
+        let activeTrigger: HTMLElement | null = null;
+        let submittedOnce = false;
+
+        const getFocusableElements = (container: ParentNode): HTMLElement[] =>
+          Array.from(
+            container.querySelectorAll<HTMLElement>(
+              'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((element) => !element.hasAttribute('hidden'));
+
+        const getCurrentType = (): PromptTypeId => {
+          const value = typeInput.value;
+          return isPromptTypeId(value) ? value : DEFAULT_PROMPT_TYPE;
+        };
+
+        const setType = (nextType: PromptTypeId): void => {
+          typeInput.value = nextType;
+
+          typeButtons.forEach((button) => {
+            const isActive = button.dataset.type === nextType;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          });
+
+          typeHelper.textContent = PROMPT_TYPES[nextType].helper;
+
+          const stages = STAGE_OPTIONS[nextType];
+          const nextStage = normalizeStage(nextType, stageSelect.value);
+
+          stageSelect.innerHTML = '';
+          stages.forEach((stage: string) => {
+            const option = document.createElement('option');
+            option.value = stage;
+            option.textContent = stage;
+            stageSelect.appendChild(option);
+          });
+          stageSelect.value = nextStage;
+          workInput.placeholder = PLACEHOLDERS[nextType];
+          updateChecks();
+        };
+
+        const getFormData = (): PromptInput => ({
+          type: getCurrentType(),
+          subject: subjectInput.value,
+          taskType: taskTypeInput.value,
+          stage: stageSelect.value,
+          work: workInput.value
+        });
+
+        const renderChecks = (
+          container: HTMLElement,
+          list: HTMLUListElement,
+          checks: string[],
+          shouldShow: boolean
+        ): void => {
+          list.innerHTML = '';
+          if (!shouldShow || checks.length === 0) {
+            container.hidden = true;
+            return;
+          }
+
+          checks.forEach((item: string) => {
+            const entry = document.createElement('li');
+            entry.textContent = item;
+            list.appendChild(entry);
+          });
+          container.hidden = false;
+        };
+
+        const updateChecks = (): void => {
+          characterCount.textContent = `${workInput.value.length} characters`;
+
+          const formData = getFormData();
+          const checks = qualityChecks(formData);
+          const hasStarted =
+            formData.subject.trim().length > 0 ||
+            formData.taskType.trim().length > 0 ||
+            formData.work.trim().length > 0;
+          const shouldShow = submittedOnce || hasStarted;
+
+          renderChecks(softChecks, softChecksList, checks, shouldShow);
+          renderChecks(resultChecks, resultChecksList, checks, checks.length > 0);
+        };
+
+        const showView = (view: 'form' | 'result'): void => {
+          const showForm = view === 'form';
+          formView.hidden = !showForm;
+          resultView.hidden = showForm;
+
+          if (showForm) {
+            requestAnimationFrame(() => {
+              subjectInput.focus();
+            });
+            return;
+          }
+
+          requestAnimationFrame(() => {
+            copyButton.focus();
+          });
+        };
+
+        const openModal = (trigger: HTMLElement | null): void => {
+          activeTrigger = trigger;
+          overlay.hidden = false;
+          modal.hidden = false;
+          requestAnimationFrame(() => {
+            overlay.classList.add('is-active');
+            modal.classList.add('is-active');
+          });
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('modal-open');
+          showView(outputText.textContent ? 'result' : 'form');
+        };
+
+        const closeModal = (): void => {
+          overlay.classList.remove('is-active');
+          modal.classList.remove('is-active');
+          modal.setAttribute('aria-hidden', 'true');
+          window.setTimeout(() => {
+            overlay.hidden = true;
+            modal.hidden = true;
+          }, 220);
+          document.body.classList.remove('modal-open');
+          copyStatus.textContent = '';
+          if (activeTrigger) {
+            activeTrigger.focus();
+          }
+          activeTrigger = null;
+        };
+
+        const copyPrompt = async (): Promise<void> => {
+          const promptText = outputText.textContent || '';
+          if (!promptText) {
+            return;
+          }
+
+          try {
+            await navigator.clipboard.writeText(promptText);
+            copyStatus.textContent = 'Prompt copied.';
+          } catch (_error) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(outputText);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
+            copyStatus.textContent = 'Select the prompt and copy it manually.';
+          }
+        };
+
+        typeButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            const nextType = button.dataset.type;
+            if (!nextType || !isPromptTypeId(nextType)) {
+              return;
+            }
+            setType(nextType);
+          });
+        });
+
+        const listenableFields: Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = [
+          subjectInput,
+          taskTypeInput,
+          stageSelect,
+          workInput
+        ];
+
+        listenableFields.forEach((field) => {
+          field.addEventListener('input', updateChecks);
+          field.addEventListener('change', updateChecks);
+        });
+
+        openButtons.forEach((button) => {
+          button.addEventListener('click', () => openModal(button));
+        });
+
+        closeButtons.forEach((button) => {
+          button.addEventListener('click', closeModal);
+        });
+
+        overlay.addEventListener('click', closeModal);
+        editButton.addEventListener('click', () => showView('form'));
+        copyButton.addEventListener('click', copyPrompt);
+
+        form.addEventListener('submit', (event: SubmitEvent) => {
+          event.preventDefault();
+          submittedOnce = true;
+
+          if (!form.reportValidity()) {
+            updateChecks();
+            return;
+          }
+
+          const formData = getFormData();
+          const prompt = buildPrompt(formData);
+          outputText.textContent = prompt;
+          resultSummary.textContent = `${PROMPT_TYPES[formData.type].label} prompt for ${formData.subject}.`;
+          copyStatus.textContent = '';
+          updateChecks();
+          showView('result');
+        });
+
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+          if (modal.hidden) {
+            return;
+          }
+
+          if (event.key === 'Escape') {
+            closeModal();
+            return;
+          }
+
+          if (event.key !== 'Tab') {
+            return;
+          }
+
+          const focusable = getFocusableElements(modal);
+          if (focusable.length === 0) {
+            return;
+          }
+
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          const activeElement = document.activeElement;
+
+          if (event.shiftKey && activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        });
+
+        setType(DEFAULT_PROMPT_TYPE);
+        updateChecks();
+      }
+    }
+  }
+</script>
