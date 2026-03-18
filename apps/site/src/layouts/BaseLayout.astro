@@ -2,6 +2,10 @@
 import '../styles/tokens.css';
 import SiteNav from '../components/SiteNav.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CourseExplorer from '../components/CourseExplorer.astro';
+import PrevNextNav from '../components/PrevNextNav.astro';
+import type { ShellContext, ShellMode, ShellPageLink } from '../lib/curriculum-shell';
+import { getAutoShellState } from '../lib/auto-shell';
 
 type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
 
@@ -18,6 +22,10 @@ interface Props {
   bodyClass?: string;
   mainClass?: string;
   extraStyles?: string[];
+  courseShell?: ShellContext;
+  layoutMode?: ShellMode;
+  prevLink?: ShellPageLink;
+  nextLink?: ShellPageLink;
 }
 
 const {
@@ -27,7 +35,11 @@ const {
   breadcrumbs = [],
   bodyClass = '',
   mainClass = '',
-  extraStyles = []
+  extraStyles = [],
+  courseShell,
+  layoutMode,
+  prevLink,
+  nextLink
 } = Astro.props;
 
 const inferredActiveSection: NavSection | undefined = Astro.url.pathname.startsWith('/ib')
@@ -41,9 +53,21 @@ const inferredActiveSection: NavSection | undefined = Astro.url.pathname.startsW
   : undefined;
 
 const resolvedActiveSection = activeSection || inferredActiveSection;
+const autoShellState = await getAutoShellState(Astro.url.pathname);
+const resolvedCourseShell = courseShell ?? autoShellState.courseShell;
+const resolvedLayoutMode = layoutMode ?? autoShellState.layoutMode ?? 'worksheet';
+const resolvedPrevLink = prevLink ?? autoShellState.prevLink;
+const resolvedNextLink = nextLink ?? autoShellState.nextLink;
+const resolvedBreadcrumbs = breadcrumbs.length > 0 ? breadcrumbs : autoShellState.breadcrumbs ?? [];
 const currentYear = new Date().getFullYear();
 const bodyClasses = ['site-body', bodyClass].filter(Boolean);
-const mainClasses = ['page-shell', mainClass].filter(Boolean);
+const mainClasses = [
+  'page-shell',
+  `page-shell--${resolvedLayoutMode}`,
+  resolvedCourseShell ? 'page-shell--with-sidebar' : '',
+  mainClass
+].filter(Boolean);
+const sidebarToggleId = resolvedCourseShell ? 'course-explorer-toggle' : undefined;
 
 const normalizeStyleHref = (stylePath: string): string => {
   if (stylePath.startsWith('http://') || stylePath.startsWith('https://') || stylePath.startsWith('//')) {
@@ -80,8 +104,29 @@ const normalizeStyleHref = (stylePath: string): string => {
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <SiteNav activeSection={resolvedActiveSection} />
     <main id="main-content" class:list={mainClasses}>
-      <Breadcrumbs items={breadcrumbs} />
-      <slot />
+      {resolvedCourseShell && sidebarToggleId && (
+        <input id={sidebarToggleId} class="course-shell__toggle" type="checkbox" hidden />
+      )}
+
+      {resolvedCourseShell && (
+        <aside class="course-shell__sidebar" id="course-shell-sidebar">
+          <CourseExplorer context={resolvedCourseShell} currentPath={Astro.url.pathname} />
+        </aside>
+      )}
+
+      <div class="page-shell__content">
+        {resolvedCourseShell && sidebarToggleId && (
+          <div class="page-shell__mobilebar">
+            <label for={sidebarToggleId} class="page-shell__mobiletoggle">
+              Browse Course
+            </label>
+          </div>
+        )}
+
+        <Breadcrumbs items={resolvedBreadcrumbs} />
+        <slot />
+        <PrevNextNav prevLink={resolvedPrevLink} nextLink={resolvedNextLink} />
+      </div>
     </main>
     <footer class="site-footer">
       <p>&copy; {currentYear} SGS Education &middot; SG Stewart. All rights reserved.</p>

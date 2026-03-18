@@ -1,0 +1,164 @@
+---
+interface Props {
+  title: string;
+  html: string;
+  variant?: 'document' | 'workspace' | 'slides';
+  hideSelectors?: string[];
+}
+
+const {
+  title,
+  html,
+  variant = 'document',
+  hideSelectors = ['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay']
+} = Astro.props as Props;
+
+const frameId = Astro.url.pathname.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') || 'legacy-frame';
+
+const resizeScript = `
+  <script>
+    (() => {
+      const cleanupLegacyChrome = () => {
+        const removeSelectors = [
+          '.site-header',
+          '.main-header',
+          '.feedback-modals',
+          '.site-feedback',
+          '.feedback-trigger',
+          '[data-feedback-open]',
+          'body > footer'
+        ];
+
+        removeSelectors.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => node.remove());
+        });
+
+        const placeholderLinks = [
+          'a[href="/coming-soon.html"]',
+          'a[href="coming-soon.html"]',
+          'a[href="./coming-soon.html"]'
+        ];
+
+        placeholderLinks.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => {
+            const removableParent =
+              node.closest('.resource-btn, .activity-card, .feature-card, .feature-link, li, article') || node;
+            removableParent.remove();
+          });
+        });
+      };
+
+      const sendHeight = () => {
+        const height = Math.max(
+          document.documentElement.scrollHeight,
+          document.body ? document.body.scrollHeight : 0,
+          document.documentElement.offsetHeight,
+          document.body ? document.body.offsetHeight : 0
+        );
+        parent.postMessage({ type: 'sgs-legacy-frame-height', id: '${frameId}', height }, '*');
+      };
+
+      window.addEventListener('load', () => {
+        cleanupLegacyChrome();
+        sendHeight();
+        setTimeout(sendHeight, 250);
+      });
+      window.addEventListener('resize', sendHeight);
+
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(sendHeight).observe(document.documentElement);
+      }
+
+      setInterval(sendHeight, 1200);
+    })();
+  <\/script>
+`;
+
+const injectedStyles = `
+  <style>
+    ${hideSelectors.join(', ')} { display: none !important; }
+    .site-header,
+    .main-header,
+    .feedback-modals,
+    .site-feedback,
+    .feedback-trigger,
+    [data-feedback-open],
+    body > footer {
+      display: none !important;
+    }
+    html, body { margin: 0 !important; }
+  </style>
+`;
+
+const buildSrcdoc = (documentHtml: string) => {
+  if (/<\/head>/i.test(documentHtml)) {
+    return documentHtml
+      .replace(/<\/head>/i, `${injectedStyles}</head>`)
+      .replace(/<\/body>/i, `${resizeScript}</body>`);
+  }
+
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8" />${injectedStyles}</head><body>${documentHtml}${resizeScript}</body></html>`;
+};
+
+const srcdoc = buildSrcdoc(html);
+const showFullscreen = variant === 'slides';
+---
+
+<section class:list={['legacy-frame', `legacy-frame--${variant}`]}>
+  {showFullscreen && (
+    <div class="legacy-frame__actions">
+      <button type="button" class="legacy-frame__fullscreen" data-legacy-frame-fullscreen={frameId}>
+        Present Fullscreen
+      </button>
+    </div>
+  )}
+
+  <iframe
+    title={title}
+    class="legacy-frame__iframe"
+    data-legacy-frame-id={frameId}
+    srcdoc={srcdoc}
+    loading="eager"
+    allowfullscreen
+  ></iframe>
+</section>
+
+<script is:inline data-frame-id={frameId}>
+  (() => {
+    const activeScript = document.currentScript;
+    const activeFrameId = activeScript?.getAttribute('data-frame-id');
+    if (!activeFrameId) return;
+
+    const selector = `iframe[data-legacy-frame-id="${activeFrameId}"]`;
+    const frame = document.querySelector(selector);
+    if (!frame) return;
+
+    const fullscreenButton = document.querySelector(`[data-legacy-frame-fullscreen="${activeFrameId}"]`);
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          await frame.requestFullscreen();
+        } catch {
+          // Ignore fullscreen failures triggered by browser policy.
+        }
+      });
+    }
+
+    window.addEventListener('message', (event) => {
+      if (!event.data || event.data.type !== 'sgs-legacy-frame-height' || event.data.id !== activeFrameId) {
+        return;
+      }
+
+      const nextHeight = Number(event.data.height);
+      if (!Number.isFinite(nextHeight) || nextHeight <= 0) {
+        return;
+      }
+
+      if (!frame.closest('.legacy-frame--document')) {
+        return;
+      }
+
+      frame.style.height = `${Math.max(880, nextHeight)}px`;
+    });
+  })();
+</script>

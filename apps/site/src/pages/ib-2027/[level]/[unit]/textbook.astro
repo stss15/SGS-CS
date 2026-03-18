@@ -32,14 +32,13 @@ const TextbookContent = textbookRendered?.Content;
 ---
 
 <ReaderShell
-  title={`${levelLabel} Unit ${unitPlan.unitNumber}: ${unitPlan.unitName} Textbook Reader`}
-  description={`IB Computer Science ${levelLabel} Unit ${unitPlan.unitNumber} textbook reader.`}
+  title={`${levelLabel} Unit ${unitPlan.unitNumber}: ${unitPlan.unitName}`}
+  description={`IB Computer Science ${levelLabel} Unit ${unitPlan.unitNumber} reading mode.`}
   activeSection="ib"
   breadcrumbs={buildIb2027UnitBreadcrumbs(level, unitPlan.unitNumber, 'Textbook')}
   storageKey="sgs-reader-textbook-settings-v1"
   kicker={`IB 2027 · ${getIb2027LevelLabel(level)} · Unit ${unitPlan.unitNumber}`}
   heading={`Unit ${unitPlan.unitNumber}: ${unitPlan.unitName}`}
-  subtitle="Textbook Reader"
 >
   {TextbookContent ? (
     <>
@@ -47,31 +46,13 @@ const TextbookContent = textbookRendered?.Content;
     </>
   ) : (
     <>
-      <p class="reader-callout">
-        <strong>This textbook space is ready.</strong> Full chapter content for this unit will be published here.
-      </p>
-
-      <h2>What You Will Learn In This Unit</h2>
+      <h2>Chapters</h2>
       <ul>
         {syllabusRows.map((row) => (
           <li>
             <strong>{row.code}</strong> {row.topic}
           </li>
         ))}
-      </ul>
-
-      <h2>What You Should Be Able To Do</h2>
-      <ul>
-        {syllabusRows.map((row) => (
-          <li>{row.expectedOutcome}</li>
-        ))}
-      </ul>
-
-      <h2>How To Use This Reader</h2>
-      <ul>
-        <li>Use the <strong>Tools</strong> panel to adjust font, size, and theme.</li>
-        <li>Turn on <strong>Paged reading</strong> when you want one section at a time.</li>
-        <li>Use this page before and after lessons to consolidate understanding.</li>
       </ul>
     </>
   )}

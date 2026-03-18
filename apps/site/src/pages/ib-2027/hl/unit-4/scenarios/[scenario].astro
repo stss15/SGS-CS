@@ -1,6 +1,8 @@
 ---
-import LegacyHtmlDocument from '../../../../../components/LegacyHtmlDocument.astro';
+import LegacyEmbedFrame from '../../../../../components/LegacyEmbedFrame.astro';
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import { getIb2027AliasRouteHtml, getIb2027ScenarioAliasRoutes } from '@sgs/content-schema';
+import { extractHtmlTitle } from '../../../../../lib/source-content';
 
 interface ScenarioAliasPageProps {
   html: string;
@@ -35,6 +37,11 @@ export async function getStaticPaths() {
 }
 
 const { html } = Astro.props as ScenarioAliasPageProps;
+const title = extractHtmlTitle(html, 'IB Scenario');
 ---
 
-<LegacyHtmlDocument html={html} />
+<BaseLayout title={title} description={title}>
+  <section class="page-panel page-panel--flush">
+    <LegacyEmbedFrame title={title} html={html} variant="workspace" />
+  </section>
+</BaseLayout>

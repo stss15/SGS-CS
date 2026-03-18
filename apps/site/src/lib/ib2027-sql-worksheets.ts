@@ -1,5 +1,6 @@
 import type { IbCourseLevel } from '@sgs/content-schema';
 import type { LegacyHtmlPage } from './legacy-page-loader';
+import { rewriteIbCourseHref, stripBlankTarget } from './course-links';
 import { loadLegacyHtmlPage } from './legacy-page-loader';
 
 interface SqlWorksheetGroup {
@@ -36,6 +37,21 @@ const buildLegacySqlWorksheetPath = (
   worksheet: string = 'index'
 ): string => `src/pages/ib-2027/${level}/unit-${unitNumber}/sql-worksheets/${worksheet}.njk`;
 
+const stripWorksheetMetaChatter = (bodyHtml: string): string =>
+  bodyHtml
+    .replace(/<section class="sql-outline-card">\s*<h2>How to Use the Sequence<\/h2>[\s\S]*?<\/section>/i, '')
+    .replace(/<section class="sql-callout">\s*<h3>Teacher Flow<\/h3>[\s\S]*?<\/section>/i, '');
+
+const rewriteWorksheetToolLinks = (level: IbCourseLevel, unitNumber: number, bodyHtml: string): string =>
+  bodyHtml.replace(/href=(["'])(\/tools\/sql-playground\.html[^"']*)\1/gi, (_match, quote, href) => {
+    return `href=${quote}${rewriteIbCourseHref(level, unitNumber, href)}${quote}`;
+  });
+
+const transformWorksheetPage = (page: LegacyHtmlPage, level: IbCourseLevel, unitNumber: number): LegacyHtmlPage => ({
+  ...page,
+  bodyHtml: stripBlankTarget(stripWorksheetMetaChatter(rewriteWorksheetToolLinks(level, unitNumber, page.bodyHtml)))
+});
+
 export const getIb2027SqlWorksheetHubStaticPaths = async () =>
   SQL_WORKSHEET_GROUPS.map(({ level, unitNumber }) => ({
     params: {
@@ -67,10 +83,16 @@ export const getIb2027SqlWorksheetStaticPaths = async () =>
 export const getIb2027SqlWorksheetHubPage = (
   level: IbCourseLevel,
   unitNumber: number
-): Promise<LegacyHtmlPage> => loadLegacyHtmlPage(buildLegacySqlWorksheetPath(level, unitNumber));
+): Promise<LegacyHtmlPage> =>
+  loadLegacyHtmlPage(buildLegacySqlWorksheetPath(level, unitNumber)).then((page) =>
+    transformWorksheetPage(page, level, unitNumber)
+  );
 
 export const getIb2027SqlWorksheetPage = (
   level: IbCourseLevel,
   unitNumber: number,
   worksheet: string
-): Promise<LegacyHtmlPage> => loadLegacyHtmlPage(buildLegacySqlWorksheetPath(level, unitNumber, worksheet));
+): Promise<LegacyHtmlPage> =>
+  loadLegacyHtmlPage(buildLegacySqlWorksheetPath(level, unitNumber, worksheet)).then((page) =>
+    transformWorksheetPage(page, level, unitNumber)
+  );

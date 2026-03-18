@@ -1,0 +1,84 @@
+---
+import ToolShell from '../../../layouts/ToolShell.astro';
+import SqlPlaygroundApp from '../../../components/SqlPlaygroundApp.astro';
+import { getIgcseListing } from '@sgs/content-schema';
+import { readSourceFrontmatter } from '../../../lib/source-content';
+
+interface TopicResourceLink {
+  href: string;
+}
+
+interface TopicTaskCard {
+  href: string;
+}
+
+interface TopicPageFrontmatter {
+  independentTasks?: TopicTaskCard[];
+  studentActivitiesResources?: TopicResourceLink[];
+}
+
+interface RouteProps {
+  topic: string;
+  topicNumber: number;
+  topicName: string;
+}
+
+export async function getStaticPaths() {
+  const sqlPlaygroundPattern = /\/tools\/sql-playground\.html(?:[?#]|$)/i;
+  const listing = await getIgcseListing();
+  const topicItems = (listing.sections || []).flatMap((section) => section.items || []);
+  const matches = await Promise.all(
+    topicItems.map(async (item) => {
+      const href = String(item.href || '');
+      const match = href.match(/\/igcse\/(topic\d+)\/index\.html$/i);
+      if (!match) {
+        return null;
+      }
+
+      const topic = match[1].toLowerCase();
+      const numberMatch = topic.match(/^topic(\d+)$/);
+      if (!numberMatch) {
+        return null;
+      }
+
+      const topicNumber = Number(numberMatch[1]);
+      const page = await readSourceFrontmatter<TopicPageFrontmatter>(`src/pages/igcse/${topic}/index.njk`);
+      const linkedResources = [
+        ...(page.studentActivitiesResources || []).map((item) => item.href),
+        ...(page.independentTasks || []).map((item) => item.href)
+      ];
+
+      if (!linkedResources.some((resourceHref) => sqlPlaygroundPattern.test(String(resourceHref || '')))) {
+        return null;
+      }
+
+      return {
+        params: { topic },
+        props: {
+          topic,
+          topicNumber,
+          topicName: String(item.name || `Topic ${topicNumber}`)
+        }
+      };
+    })
+  );
+
+  return matches.flatMap((entry) => (entry ? [entry] : []));
+}
+
+const { topicNumber, topicName } = Astro.props as RouteProps;
+const title = `SQL Playground | IGCSE Topic ${topicNumber}`;
+const description = `SQL workspace for IGCSE Topic ${topicNumber}: ${topicName}.`;
+---
+
+<ToolShell
+  title={title}
+  description={description}
+  activeSection="igcse"
+  extraStyles={[
+    'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css',
+    'css/tool-sql-playground.css'
+  ]}
+>
+  <SqlPlaygroundApp />
+</ToolShell>

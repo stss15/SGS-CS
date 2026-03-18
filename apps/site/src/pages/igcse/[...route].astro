@@ -1,9 +1,12 @@
 ---
-import LegacyHtmlDocument from '../../components/LegacyHtmlDocument.astro';
+import LegacyEmbedFrame from '../../components/LegacyEmbedFrame.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getIgcseLegacyRouteHtml, getIgcseLegacyRoutes } from '@sgs/content-schema';
+import { extractHtmlTitle } from '../../lib/source-content';
 
 interface IgcseLegacyPageProps {
   html: string;
+  routePath: string;
 }
 
 export async function getStaticPaths() {
@@ -19,13 +22,26 @@ export async function getStaticPaths() {
           route: route.routePath.replace(/^\/igcse\//, '').replace(/\.html$/, '')
         },
         props: {
-          html: await getIgcseLegacyRouteHtml(route.routePath)
+          html: await getIgcseLegacyRouteHtml(route.routePath),
+          routePath: route.routePath
         }
       }))
   );
 }
 
-const { html } = Astro.props as IgcseLegacyPageProps;
+const { html, routePath } = Astro.props as IgcseLegacyPageProps;
+const title = extractHtmlTitle(html, 'IGCSE Resource');
+const variant =
+  /(?:^|\/)(?:\d+\.\d+_[^/]+|slides\/)/i.test(routePath) ? 'slides' : /(assessment|flashcards|game|activity|quiz|sql|simulator|project)/i.test(routePath) ? 'workspace' : 'document';
 ---
 
-<LegacyHtmlDocument html={html} />
+<BaseLayout title={title} description={title}>
+  <section class="page-panel page-panel--flush">
+    <LegacyEmbedFrame
+      title={title}
+      html={html}
+      variant={variant}
+      hideSelectors={variant === 'slides' ? ['#back-btn', '#sg-logo', '.footer-text', '.standalone-nav'] : ['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay']}
+    />
+  </section>
+</BaseLayout>

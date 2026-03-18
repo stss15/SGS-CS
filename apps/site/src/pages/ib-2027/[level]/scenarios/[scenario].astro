@@ -1,9 +1,8 @@
 ---
-import LegacyHtmlDocument from '../../../../components/LegacyHtmlDocument.astro';
-import { getIb2027AliasRouteHtml, getIb2027ScenarioAliasRoutes } from '@sgs/content-schema';
+import { getIb2027ScenarioAliasRoutes } from '@sgs/content-schema';
 
 interface ScenarioAliasPageProps {
-  html: string;
+  destination: string;
 }
 
 export async function getStaticPaths() {
@@ -30,13 +29,28 @@ export async function getStaticPaths() {
           scenario: route.scenario
         },
         props: {
-          html: await getIb2027AliasRouteHtml(route.routePath)
+          destination:
+            route.level === 'sl'
+              ? `/ib-2027/sl/unit-5/scenarios/${route.scenario}.html`
+              : `/ib-2027/hl/unit-4/scenarios/${route.scenario}.html`
         }
       }))
   );
 }
 
-const { html } = Astro.props as ScenarioAliasPageProps;
+const { destination } = Astro.props as ScenarioAliasPageProps;
 ---
 
-<LegacyHtmlDocument html={html} />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${destination}`} />
+    <meta name="robots" content="noindex" />
+    <title>Redirecting…</title>
+    <link rel="canonical" href={destination} />
+  </head>
+  <body>
+    <p>Redirecting to <a href={destination}>{destination}</a>.</p>
+  </body>
+</html>

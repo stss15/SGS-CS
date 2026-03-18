@@ -1,0 +1,208 @@
+---
+import { getIgcseListing } from '@sgs/content-schema';
+import CompactList from '../../../components/CompactList.astro';
+import CurriculumShell from '../../../layouts/CurriculumShell.astro';
+import { rewriteIgcseCourseHref } from '../../../lib/course-links';
+import { readMarkdownDocument, readSourceFrontmatter } from '../../../lib/source-content';
+
+interface TopicResourceLink {
+  href: string;
+  number?: string;
+  name?: string;
+  type?: string;
+}
+
+interface TopicTaskCard {
+  href: string;
+  title: string;
+  subtitle?: string;
+}
+
+interface TopicPageFrontmatter {
+  title: string;
+  description?: string;
+  hero?: {
+    title?: string;
+    subtitle?: string;
+  };
+  specification?: {
+    examCode?: string;
+    unitSummary?: string;
+    objectives?: string[];
+    outcomes?: string[];
+  };
+  slideDeckResources?: TopicResourceLink[];
+  studentActivitiesResources?: TopicResourceLink[];
+  assessmentResources?: TopicResourceLink[];
+  homeworkResources?: TopicResourceLink[];
+  revisionResources?: TopicResourceLink[];
+  independentTasks?: TopicTaskCard[];
+}
+
+interface TopicTextbookFrontmatter {
+  subtopics?: Array<{
+    code: string;
+    title: string;
+  }>;
+}
+
+interface TopicPageProps {
+  topic: string;
+  topicNumber: number;
+  topicName: string;
+}
+
+const isRenderableHref = (href?: string): href is string => {
+  if (!href) {
+    return false;
+  }
+
+  return !href.startsWith('#') && !/\/coming-soon(?:\.html)?$/i.test(href);
+};
+
+const absolutizeTopicHref = (topic: string, href: string) => {
+  if (href.startsWith('/')) {
+    return rewriteIgcseCourseHref(topicNumber, href);
+  }
+
+  return rewriteIgcseCourseHref(topicNumber, `/igcse/${topic}/${href.replace(/^\.?\//, '')}`);
+};
+
+const toResourceLabel = (item: TopicResourceLink) => {
+  const name = (item.name || 'Resource').trim();
+  const number = String(item.number || '').trim();
+  if (!number) {
+    return name;
+  }
+
+  return name === number || name.startsWith(`${number} `) ? name : `${number} ${name}`;
+};
+
+const toCompactItems = (topic: string, items: TopicResourceLink[] = [], defaultMeta: string) =>
+  items
+    .filter((item) => isRenderableHref(item.href))
+    .map((item) => ({
+      label: toResourceLabel(item),
+      href: absolutizeTopicHref(topic, item.href),
+      meta: item.number ? defaultMeta : item.type || defaultMeta
+    }));
+
+export async function getStaticPaths() {
+  const listing = await getIgcseListing();
+  const topicItems = (listing.sections || []).flatMap((section) => section.items || []);
+
+  return topicItems
+    .map((item) => {
+      const href = String(item.href || '');
+      const match = href.match(/\/igcse\/(topic\d+)\/index\.html$/i);
+      if (!match) return null;
+
+      const topic = match[1].toLowerCase();
+      const numberMatch = topic.match(/^topic(\d+)$/);
+      if (!numberMatch) return null;
+
+      return {
+        params: {
+          topic
+        },
+        props: {
+          topic,
+          topicNumber: Number(numberMatch[1]),
+          topicName: String(item.name || `Topic ${numberMatch[1]}`)
+        }
+      };
+    })
+    .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+}
+
+const { topic, topicNumber, topicName } = Astro.props as TopicPageProps;
+const [page, textbook] = await Promise.all([
+  readSourceFrontmatter<TopicPageFrontmatter>(`src/pages/igcse/${topic}/index.njk`),
+  readMarkdownDocument<TopicTextbookFrontmatter>(`apps/site/src/content/igcse-textbooks/topic-${topicNumber}.md`).catch(
+    () => ({ data: {} as TopicTextbookFrontmatter, content: '' })
+  )
+]);
+
+const textbookItems = (textbook.data.subtopics || []).map((subtopic) => ({
+  label: `${subtopic.code} ${subtopic.title}`,
+  href: `/igcse/${topic}/textbook/${subtopic.code.replace('.', '-')}.html`,
+  meta: 'Textbook chapter'
+}));
+
+const activityItems = [
+  ...toCompactItems(topic, page.studentActivitiesResources, 'Activity'),
+  ...(page.independentTasks || [])
+    .filter((item) => isRenderableHref(item.href))
+    .map((item) => ({
+      label: item.title,
+      href: absolutizeTopicHref(topic, item.href),
+      meta: item.subtitle || 'Interactive practice'
+    }))
+];
+
+const sections = [
+  {
+    title: 'Textbook',
+    summary: 'Read the topic sequence without leaving the topic context.',
+    items: textbookItems
+  },
+  {
+    title: 'Slide Decks',
+    summary: 'Open any subtopic deck from the same topic workspace.',
+    items: toCompactItems(topic, page.slideDeckResources, 'Slide deck')
+  },
+  {
+    title: 'Activities',
+    summary: 'Practical tasks and interactive work for the topic.',
+    items: activityItems
+  },
+  {
+    title: 'Mini-Assessments',
+    summary: 'Checkpoint tasks for each mapped subtopic.',
+    items: toCompactItems(topic, page.assessmentResources, 'Mini-assessment')
+  },
+  {
+    title: 'Revision',
+    summary: 'Stay inside the topic while revising and retrieving.',
+    items: [
+      ...toCompactItems(topic, page.revisionResources, 'Revision'),
+      ...toCompactItems(topic, page.homeworkResources, 'Independent study')
+    ]
+  }
+].filter((section) => section.items.length > 0);
+---
+
+<CurriculumShell
+  title={page.title}
+  description={page.description || `IGCSE Topic ${topicNumber}: ${topicName}`}
+  activeSection="igcse"
+  breadcrumbs={[
+    { label: 'IGCSE', href: '/igcse/index.html' },
+    { label: `Topic ${topicNumber}` }
+  ]}
+  eyebrow={page.specification?.examCode || 'IGCSE Computer Science'}
+  heroTitle={page.hero?.title || `Topic ${topicNumber}: ${topicName}`}
+  heroSubtitle={page.specification?.unitSummary || page.hero?.subtitle}
+>
+  <div class="spec-grid">
+    <section class="spec-card">
+      <h2>Objectives</h2>
+      <ul>
+        {(page.specification?.objectives || []).map((objective) => (
+          <li>{objective}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="spec-card">
+      <h2>Outcomes</h2>
+      <ul>
+        {(page.specification?.outcomes || []).map((outcome) => (
+          <li>{outcome}</li>
+        ))}
+      </ul>
+    </section>
+  </div>
+
+  <CompactList sections={sections} />
+</CurriculumShell>

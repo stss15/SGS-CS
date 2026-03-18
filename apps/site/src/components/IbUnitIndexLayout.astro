@@ -1,7 +1,9 @@
 ---
 import type { UnitIndexFrontmatter, UnitPlanFrontmatter } from '@sgs/content-schema';
+import CompactList from './CompactList.astro';
 import CurriculumShell from '../layouts/CurriculumShell.astro';
 import { buildSyllabusRows, getFlashcardsHref } from '../lib/ib2027-unit-index';
+import { rewriteIbCourseHref } from '../lib/course-links';
 import {
   buildIb2027UnitBreadcrumbs,
   getIb2027LevelLabel,
@@ -49,24 +51,56 @@ const unitOverviewFocus =
     : 'You will build understanding and confidence with the key ideas in this unit.';
 const level = normalizeIb2027Level(unitPlan.level);
 const breadcrumbs = buildIb2027UnitBreadcrumbs(level, unitPlan.unitNumber);
+const unitBasePath = `/ib-2027/${level}/unit-${unitPlan.unitNumber}`;
 
-const placeholderSections = [
+const resolveUnitHref = (href: string) =>
+  rewriteIbCourseHref(
+    level,
+    unitPlan.unitNumber,
+    href.startsWith('/') ? href : `${unitBasePath}/${href.replace(/^\.?\//, '')}`
+  );
+
+const toCompactItems = (resources: typeof slides, fallbackMeta: string) =>
+  resources
+    .filter((resource) => resource.href && !/\/coming-soon(?:\.html)?$/i.test(resource.href))
+    .map((resource) => ({
+      label: resource.number ? `${resource.number} ${resource.name}` : resource.name,
+      href: resolveUnitHref(resource.href),
+      meta: resource.type || fallbackMeta
+    }));
+
+const teacherItems = toCompactItems(page.resourcesSecondary || [], 'Additional resource');
+const revisionItems = /\/coming-soon(?:\.html)?$/i.test(flashcardsHref)
+  ? []
+  : [{ label: 'Flashcards', href: resolveUnitHref(flashcardsHref), meta: 'Revision' }];
+
+const resourceSections = [
   {
-    id: 'assessment',
-    title: 'Assessment',
-    message: 'Assessment tasks for this unit will be added here.'
+    title: 'Textbook',
+    summary: 'Open the reading view without leaving the unit workspace.',
+    items: [{ label: 'Open unit textbook', href: `${unitBasePath}/textbook.html`, meta: 'Reading mode' }]
   },
   {
-    id: 'homework',
-    title: 'Homework',
-    message: 'Homework tasks for this unit will be added here.'
+    title: 'Slide Decks',
+    summary: 'Subtopic decks stay inside the same unit shell.',
+    items: toCompactItems(slides, 'Slide deck')
   },
   {
-    id: 'independent-tasks',
-    title: 'Independent Tasks',
-    message: 'Independent study tasks for this unit will be added here.'
+    title: 'Activities',
+    summary: 'Worksheets, projects, and practical work for the unit.',
+    items: toCompactItems(studentActivities, 'Activity')
+  },
+  {
+    title: 'Revision',
+    summary: 'Review and retrieval resources for the unit.',
+    items: revisionItems
+  },
+  {
+    title: 'Teacher & Extension',
+    summary: 'Teacher-facing and supplementary material when it exists.',
+    items: teacherItems
   }
-];
+].filter((section) => section.items.length > 0);
 ---
 
 <CurriculumShell
@@ -74,43 +108,36 @@ const placeholderSections = [
   description={page.description || 'IB unit resources.'}
   activeSection="ib"
   breadcrumbs={breadcrumbs}
-  extraStyles={['css/resource-style.css', 'css/unit.css', 'css/ib-unit-index.css']}
   eyebrow={`IB 2027 · ${getIb2027LevelLabel(level)}`}
   heroTitle={page.hero.title}
   heroSubtitle={page.hero.subtitle}
 >
-  <section class="unit-details ib-unit-plan-top">
-    <div class="ib-overview-shell">
-      <article class="content-box ib-overview-card">
-        <h2 class="content-title">
-          <i class="fa-solid fa-binoculars" aria-hidden="true"></i>
-          Unit Overview
-        </h2>
-        <p class="ib-big-question"><strong>{unitOverviewQuestion}</strong></p>
-        <p class="ib-overview-copy">{unitOverviewLead}</p>
-        <p class="ib-overview-copy">{unitOverviewFocus}</p>
-        <p class="ib-overview-copy ib-overview-note">
-          Use the table below to track exactly what you should know and what you should be able to do for each sub-topic.
-        </p>
-        {subTopicCodes.length > 0 && (
-          <ul class="ib-code-pills" aria-label="Sub-topic codes">
-            {subTopicCodes.map((code) => (
-              <li>{code}</li>
-            ))}
-          </ul>
-        )}
-      </article>
+  <div class="page-stack">
+    <div class="spec-grid">
+      <section class="spec-card">
+        <h2>Unit overview</h2>
+        <p><strong>{unitOverviewQuestion}</strong></p>
+        <p>{unitOverviewLead}</p>
+        <p>{unitOverviewFocus}</p>
+      </section>
+
+      <section class="spec-card">
+        <h2>Coverage</h2>
+        <ul>
+          {subTopicCodes.map((code, index) => (
+            <li>
+              <strong>{code}</strong> {subTopicNames[index]}
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
 
-    <article class="content-box">
-      <h2 class="content-title">
-        <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
-        Learning Objectives and Outcomes
-      </h2>
-      <p class="ib-table-intro">Use this table to track what you are learning and what you should be able to do by the end of each sub-topic.</p>
+    <section class="page-panel">
+      <h2>Objectives and outcomes</h2>
 
-      <div class="ib-table-wrap">
-        <table class="ib-spec-table">
+      <div class="table-scroll">
+        <table class="data-table">
           <thead>
             <tr>
               <th scope="col">Code</th>
@@ -129,120 +156,8 @@ const placeholderSections = [
           </tbody>
         </table>
       </div>
-    </article>
-  </section>
-
-  <section class="resource-section" id="textbook-reader">
-    <div class="resource-header">
-      <h2 class="resource-title">Textbook Reader</h2>
-      <div class="resource-line"></div>
-    </div>
-
-    <div class="resource-grid">
-      <a href="textbook/index.html" class="resource-btn">
-        <span class="resource-number"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
-        <span class="resource-info">
-          <span class="resource-name">Open Unit Textbook</span>
-          <span class="resource-type">Reader Template</span>
-        </span>
-        <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
-      </a>
-    </div>
-  </section>
-
-  <section class="resource-section" id="slide-decks">
-    <div class="resource-header">
-      <h2 class="resource-title">Slide Decks</h2>
-      <div class="resource-line"></div>
-    </div>
-
-    {slides.length > 0 ? (
-      <div class="resource-grid">
-        {slides.map((resource) => (
-          <a
-            href={resource.href}
-            class="resource-btn"
-            target={resource.target}
-            rel={resource.target === '_blank' ? 'noopener noreferrer' : undefined}
-          >
-            <span class="resource-number">
-              {resource.icon ? <i class={resource.icon} aria-hidden="true"></i> : (resource.number || '')}
-            </span>
-            <span class="resource-info">
-              <span class="resource-name">{resource.name}</span>
-              {resource.type && <span class="resource-type">{resource.type}</span>}
-            </span>
-            <i class={`fa-solid ${resource.target === '_blank' ? 'fa-arrow-up-right-from-square' : 'fa-arrow-right'} resource-arrow`} aria-hidden="true"></i>
-          </a>
-        ))}
-      </div>
-    ) : (
-      <div class="content-box ib-empty-box">
-        <p>Slide decks for this unit will be added here.</p>
-      </div>
-    )}
-  </section>
-
-  <section class="resource-section" id="student-activities">
-    <div class="resource-header">
-      <h2 class="resource-title">Student Activities</h2>
-      <div class="resource-line"></div>
-    </div>
-
-    {studentActivities.length > 0 ? (
-      <div class="resource-grid">
-        {studentActivities.map((resource) => (
-          <a
-            href={resource.href}
-            class="resource-btn"
-            target={resource.target}
-            rel={resource.target === '_blank' ? 'noopener noreferrer' : undefined}
-          >
-            <span class="resource-number">
-              {resource.icon ? <i class={resource.icon} aria-hidden="true"></i> : (resource.number || '')}
-            </span>
-            <span class="resource-info">
-              <span class="resource-name">{resource.name}</span>
-              {resource.type && <span class="resource-type">{resource.type}</span>}
-            </span>
-            <i class={`fa-solid ${resource.target === '_blank' ? 'fa-arrow-up-right-from-square' : 'fa-arrow-right'} resource-arrow`} aria-hidden="true"></i>
-          </a>
-        ))}
-      </div>
-    ) : (
-      <div class="content-box ib-empty-box">
-        <p>Student activities for this unit will be added here.</p>
-      </div>
-    )}
-  </section>
-
-  {placeholderSections.map((section) => (
-    <section class="resource-section" id={section.id}>
-      <div class="resource-header">
-        <h2 class="resource-title">{section.title}</h2>
-        <div class="resource-line"></div>
-      </div>
-      <div class="content-box ib-empty-box">
-        <p>{section.message}</p>
-      </div>
     </section>
-  ))}
 
-  <section class="resource-section" id="revision">
-    <div class="resource-header">
-      <h2 class="resource-title">Revision</h2>
-      <div class="resource-line"></div>
-    </div>
-
-    <div class="resource-grid">
-      <a href={flashcardsHref} class="resource-btn">
-        <span class="resource-number"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
-        <span class="resource-info">
-          <span class="resource-name">Flashcards</span>
-          <span class="resource-type">Quick retrieval practice</span>
-        </span>
-        <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
-      </a>
-    </div>
-  </section>
+    <CompactList sections={resourceSections} />
+  </div>
 </CurriculumShell>

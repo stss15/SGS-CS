@@ -1,9 +1,12 @@
 ---
-import LegacyHtmlDocument from '../../components/LegacyHtmlDocument.astro';
+import LegacyEmbedFrame from '../../components/LegacyEmbedFrame.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getKs3LegacyRouteHtml, getKs3LegacyRoutes } from '@sgs/content-schema';
+import { extractHtmlTitle } from '../../lib/source-content';
 
 interface Ks3LegacyPageProps {
   html: string;
+  routePath: string;
 }
 
 export async function getStaticPaths() {
@@ -15,13 +18,25 @@ export async function getStaticPaths() {
         route: route.routePath.replace(/^\/ks3\//, '')
       },
       props: {
-        html: await getKs3LegacyRouteHtml(route.routePath)
+        html: await getKs3LegacyRouteHtml(route.routePath),
+        routePath: route.routePath
       }
     }))
   );
 }
 
-const { html } = Astro.props as Ks3LegacyPageProps;
+const { html, routePath } = Astro.props as Ks3LegacyPageProps;
+const title = extractHtmlTitle(html, 'KS3 Resource');
+const variant = /(activity|quiz|game|slide|\/l\d)/i.test(routePath) ? 'workspace' : /textbook/i.test(routePath) ? 'document' : 'document';
 ---
 
-<LegacyHtmlDocument html={html} />
+<BaseLayout title={title} description={title}>
+  <section class="page-panel page-panel--flush">
+    <LegacyEmbedFrame
+      title={title}
+      html={html}
+      variant={variant}
+      hideSelectors={['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay']}
+    />
+  </section>
+</BaseLayout>

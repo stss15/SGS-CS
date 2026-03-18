@@ -79,24 +79,24 @@ export async function getStaticPaths() {
     return entry.data.subtopics
       .filter((subtopic) => allowedChapterCodes.includes(subtopic.code))
       .map((subtopic) => {
-      const chapterCode = subtopic.code;
-      const chapterSlug = chapterCode.replace('.', '-');
+        const chapterCode = subtopic.code;
+        const chapterSlug = chapterCode.replace('.', '-');
 
-      return {
-        params: {
-          topic,
-          chapter: chapterSlug
-        },
-        props: {
-          topic,
-          topicNumber,
-          topicName: entry.data.topicName,
-          chapterCode,
-          chapterTitle: subtopic.title,
-          chapterSlug
-        }
-      };
-    });
+        return {
+          params: {
+            topic,
+            chapter: chapterSlug
+          },
+          props: {
+            topic,
+            topicNumber,
+            topicName: entry.data.topicName,
+            chapterCode,
+            chapterTitle: subtopic.title,
+            chapterSlug
+          }
+        };
+      });
   });
 }
 
@@ -118,12 +118,12 @@ const availableChapters = textbookEntry?.data.subtopics || [];
 ---
 
 <ReaderShell
-  title={`IGCSE Topic ${topicNumber} ${chapterCode}: ${chapterTitle} Textbook Reader`}
-  description={`IGCSE Computer Science Topic ${topicNumber} ${chapterCode} (${chapterTitle}) textbook chapter.`}
+  title={`IGCSE Topic ${topicNumber} ${chapterCode}: ${chapterTitle}`}
+  description={`IGCSE Computer Science Topic ${topicNumber} ${chapterCode} (${chapterTitle}) reading.`}
   storageKey={`sgs-reader-igcse-${topic}-${chapterSlug}-settings-v1`}
   kicker={`IGCSE 0478 · Topic ${topicNumber} · ${chapterCode}`}
   heading={`${chapterCode} ${chapterTitle}`}
-  subtitle={`${topicName} Textbook Chapter`}
+  subtitle={`${topicName} reading`}
 >
   {
     chapterHtml ? (

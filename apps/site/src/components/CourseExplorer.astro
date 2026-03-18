@@ -1,0 +1,67 @@
+---
+import type { ShellContext } from '../lib/curriculum-shell';
+import { hrefMatchesCurrentPath } from '../lib/curriculum-shell';
+
+interface Props {
+  context: ShellContext;
+  currentPath: string;
+}
+
+const { context, currentPath } = Astro.props as Props;
+
+const groupIsActive = (group: ShellContext['groups'][number]) =>
+  group.items.some((item) => hrefMatchesCurrentPath(item.href, currentPath));
+
+const isGenericMeta = (value?: string): boolean => {
+  if (!value) {
+    return false;
+  }
+
+  return [
+    /^objectives and daily sequence$/i,
+    /^reading mode$/i,
+    /^reader template(?:\s*\(.+\))?$/i,
+    /^quick retrieval practice$/i,
+    /^interactive (?:task|practice|simulator)$/i,
+    /^educational game$/i,
+    /^additional resource$/i,
+    /^independent study$/i,
+    /^slide deck$/i,
+    /^activity$/i,
+    /^mini-assessment$/i,
+    /^revision$/i,
+    /^textbook chapter$/i
+  ].some((pattern) => pattern.test(value.trim()));
+};
+---
+
+<div class="course-explorer">
+  <div class="course-explorer__header">
+    <p class="course-explorer__title">{context.title}</p>
+    {context.meta && <p class="course-explorer__meta">{context.meta}</p>}
+  </div>
+
+  <div class="course-explorer__groups">
+    {context.groups.map((group) => (
+      <details class="course-explorer__group" open={group.open || groupIsActive(group)}>
+        <summary>
+          <span>{group.label}</span>
+          {group.meta && !isGenericMeta(group.meta) && <small>{group.meta}</small>}
+        </summary>
+        <ul>
+          {group.items.map((item) => {
+            const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
+            return (
+              <li>
+                <a href={item.href} aria-current={isCurrent ? 'page' : undefined} class:list={{ current: isCurrent }}>
+                  <span>{item.label}</span>
+                  {item.meta && !isGenericMeta(item.meta) && <small>{item.meta}</small>}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+    ))}
+  </div>
+</div>

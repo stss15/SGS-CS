@@ -13,7 +13,14 @@ const { items = [] } = Astro.props;
 const normalizedItems = items.map((item) => ({
   ...item,
   href: item.href ? (item.href.startsWith('/') ? item.href : `/${item.href}`) : undefined
-}));
+})).filter((item, index) => {
+  if (index !== 0) {
+    return true;
+  }
+
+  const href = item.href?.replace(/\/+$/g, '') || '';
+  return !(/^home$/i.test(item.label) && (href === '' || href === '/' || href === '/index.html'));
+});
 ---
 
 {normalizedItems.length > 1 && (

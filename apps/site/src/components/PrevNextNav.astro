@@ -1,0 +1,30 @@
+---
+import type { ShellPageLink } from '../lib/curriculum-shell';
+
+interface Props {
+  prevLink?: ShellPageLink;
+  nextLink?: ShellPageLink;
+}
+
+const { prevLink, nextLink } = Astro.props as Props;
+---
+
+{(prevLink || nextLink) && (
+  <nav class="prev-next-nav" aria-label="Page sequence">
+    {prevLink ? (
+      <a href={prevLink.href} class="prev-next-nav__link prev-next-nav__link--prev">
+        <span class="prev-next-nav__label">Previous</span>
+        <strong>{prevLink.label}</strong>
+      </a>
+    ) : (
+      <span class="prev-next-nav__spacer" aria-hidden="true"></span>
+    )}
+
+    {nextLink && (
+      <a href={nextLink.href} class="prev-next-nav__link prev-next-nav__link--next">
+        <span class="prev-next-nav__label">Next</span>
+        <strong>{nextLink.label}</strong>
+      </a>
+    )}
+  </nav>
+)}

@@ -1,6 +1,8 @@
 ---
-import LegacyHtmlDocument from '../../../../../components/LegacyHtmlDocument.astro';
+import LegacyEmbedFrame from '../../../../../components/LegacyEmbedFrame.astro';
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import { getIb2027UnitSlideHtml, getIb2027UnitSlideRoutes } from '@sgs/content-schema';
+import { extractHtmlTitle } from '../../../../../lib/source-content';
 
 interface SlidePageProps {
   html: string;
@@ -24,6 +26,16 @@ export async function getStaticPaths() {
 }
 
 const { html } = Astro.props as SlidePageProps;
+const title = extractHtmlTitle(html, 'IB Slide Deck');
 ---
 
-<LegacyHtmlDocument html={html} />
+<BaseLayout title={title} description={title}>
+  <section class="page-panel page-panel--flush">
+    <LegacyEmbedFrame
+      title={title}
+      html={html}
+      variant="slides"
+      hideSelectors={['#back-btn', '#sg-logo', '.footer-text', '.standalone-nav']}
+    />
+  </section>
+</BaseLayout>
