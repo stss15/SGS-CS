@@ -54,6 +54,7 @@
             </div>
 
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ai-prompt-generator/index.html" class="nav-link ">AI Prompt</a>
                 <a href="/ks3/index.html" class="nav-link ">KS3</a>
                 <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
                 <a href="/ib-2027/index.html" class="nav-link active">IB</a>
@@ -120,6 +121,7 @@
                 <li>Use the blank workspace, not a preloaded dataset.</li>
                 <li>Create parent tables before child tables.</li>
                 <li>When deleting linked rows, remove the child row before the parent row.</li>
+                <li><code>DDL</code> defines the structure; <code>DML</code> adds, changes, or removes rows.</li>
             </ul>
         </div>
     </div>
@@ -218,6 +220,15 @@
         </div>
 
         <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">DDL vs DML</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>State why <code>CREATE TABLE</code> is <code>DDL</code>, while <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> are <code>DML</code>.</p>
+                </div>
+            </li>
             <li class="sql-task">
                 <div class="sql-task-left">
                     <span class="sql-task-tag">A3.2.4</span>
@@ -429,11 +440,11 @@ FROM table_name;
 
 SELECT h.record_id, o.name_column, i.item_column, l.quantity_column
 FROM header_table AS h
-INNER JOIN owner_table AS o
+JOIN owner_table AS o
     ON h.owner_id = o.owner_id
-INNER JOIN link_table AS l
+JOIN link_table AS l
     ON h.record_id = l.record_id
-INNER JOIN item_table AS i
+JOIN item_table AS i
     ON l.item_id = i.item_id;</code></pre>
                 <p>Once the structure exists, use simple <code>SELECT</code> queries first, then a join to confirm the relationships are working.</p>
             </div>
@@ -491,7 +502,7 @@ WHERE parent_id = 101;
 
 DELETE FROM parent_table
 WHERE primary_key_column = 101;</code></pre>
-                <p>Use a <code>WHERE</code> clause every time you change or remove rows. If a child row depends on a parent row, remove the child first.</p>
+                <p>Use a <code>WHERE</code> clause every time you change or remove rows. If a child row depends on a parent row, remove the child first. In larger systems, changing an indexed column can slow an update because the index also has to change; after major data changes, indexes may need rebuilding or reorganizing.</p>
             </div>
         </details>
 
@@ -546,7 +557,7 @@ WHERE primary_key_column = 101;</code></pre>
                 <span class="sql-answer-num">1</span>
                 <div class="sql-answer-body">
                     <strong>Recommended table order</strong>
-                    Create <code>CUSTOMER</code> and <code>PRODUCT</code> first, then <code>ORDER_HEADER</code>, then <code>ORDER_ITEM</code>. The composite key in <code>ORDER_ITEM</code> stops the same product being duplicated within the same order row.
+                    <code>CREATE TABLE</code> is <code>DDL</code> because it defines the database structure. <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> are <code>DML</code> because they add, change, or remove rows. Create <code>CUSTOMER</code> and <code>PRODUCT</code> first, then <code>ORDER_HEADER</code>, then <code>ORDER_ITEM</code>. The composite key in <code>ORDER_ITEM</code> stops the same product being duplicated within the same order row.
                 </div>
             </div>
 
@@ -608,11 +619,11 @@ VALUES
                     <strong>Join check</strong>
                     <pre><code>SELECT oh.OrderID, c.CustomerName, p.ProductName, oi.Quantity
 FROM ORDER_HEADER AS oh
-INNER JOIN CUSTOMER AS c
+JOIN CUSTOMER AS c
     ON oh.CustomerID = c.CustomerID
-INNER JOIN ORDER_ITEM AS oi
+JOIN ORDER_ITEM AS oi
     ON oh.OrderID = oi.OrderID
-INNER JOIN PRODUCT AS p
+JOIN PRODUCT AS p
     ON oi.ProductID = p.ProductID;</code></pre>
                 </div>
             </div>

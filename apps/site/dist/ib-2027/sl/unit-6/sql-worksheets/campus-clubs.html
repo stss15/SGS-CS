@@ -42,7 +42,7 @@
 <body class="">
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <header class="main-header">
+        <header class="main-header">
         <div class="header-primary">
             <div class="logo-container">
                 <a href="/index.html">
@@ -54,9 +54,10 @@
             </div>
 
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
-                <a href="/ks3/index.html" class="nav-link ">KS3</a>
-                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
-                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+                <a href="/ai-prompt-generator/index.html" class="nav-link">AI Prompt</a>
+                <a href="/ks3/index.html" class="nav-link">KS3</a>
+                <a href="/igcse/index.html" class="nav-link">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active" aria-current="page">IB</a>
             </nav>
 
             <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
@@ -255,23 +256,23 @@ WHERE date_column BETWEEN '2025-09-20' AND '2025-09-30';</code></pre>
                 <pre><code>-- Two-table join
 SELECT a.column_a, b.column_b
 FROM first_table AS a
-INNER JOIN second_table AS b
+JOIN second_table AS b
     ON a.primary_key = b.foreign_key;
 
 -- Join through a junction table
 SELECT s.name_column, j.role_column, c.title_column
 FROM student_table AS s
-INNER JOIN junction_table AS j
+JOIN junction_table AS j
     ON s.student_id = j.student_id
-INNER JOIN club_table AS c
+JOIN club_table AS c
     ON j.club_id = c.club_id;
 
 -- Filter after the joins
 SELECT s.name_column, c.title_column
 FROM student_table AS s
-INNER JOIN junction_table AS j
+JOIN junction_table AS j
     ON s.student_id = j.student_id
-INNER JOIN club_table AS c
+JOIN club_table AS c
     ON j.club_id = c.club_id
 WHERE s.year_group = 12;</code></pre>
                 <p>When a result needs columns from several tables, follow the relationship path one link at a time. Table aliases keep longer join queries readable.</p>
@@ -329,7 +330,7 @@ GROUP BY category_column;
 -- Group after a join
 SELECT c.title_column, COUNT(*) AS member_count
 FROM junction_table AS j
-INNER JOIN club_table AS c
+JOIN club_table AS c
     ON j.club_id = c.club_id
 GROUP BY c.title_column
 ORDER BY member_count DESC;</code></pre>
@@ -408,14 +409,14 @@ WHERE MeetingRoom LIKE '%Lab%';</code></pre>
                     <strong>Join pattern</strong>
                     <pre><code>SELECT s.FirstName, s.LastName, l.Username, l.LastLogin
 FROM STUDENT AS s
-INNER JOIN LOGIN_ACCOUNT AS l
+JOIN LOGIN_ACCOUNT AS l
     ON s.StudentID = l.StudentID;
 
 SELECT s.FirstName, s.LastName, m.Role, s.YearGroup
 FROM STUDENT AS s
-INNER JOIN MEMBERSHIP AS m
+JOIN MEMBERSHIP AS m
     ON s.StudentID = m.StudentID
-INNER JOIN CLUB AS c
+JOIN CLUB AS c
     ON m.ClubID = c.ClubID
 WHERE c.ClubName = 'Coding Collective'
 ORDER BY m.Role, s.LastName;</code></pre>
@@ -429,7 +430,7 @@ ORDER BY m.Role, s.LastName;</code></pre>
                     <strong>Grouped report</strong>
                     <pre><code>SELECT c.ClubName, COUNT(*) AS MemberCount
 FROM MEMBERSHIP AS m
-INNER JOIN CLUB AS c
+JOIN CLUB AS c
     ON m.ClubID = c.ClubID
 GROUP BY c.ClubName
 ORDER BY MemberCount DESC, c.ClubName;</code></pre>

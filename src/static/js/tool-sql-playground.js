@@ -15,7 +15,6 @@ const SQL_KEYWORDS = [
   'GROUP BY',
   'HAVING',
   'JOIN',
-  'INNER JOIN',
   'LEFT JOIN',
   'RIGHT JOIN',
   'ON',
