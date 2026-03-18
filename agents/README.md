@@ -22,10 +22,26 @@ npm run framework:dev
 npm run deploy
 ```
 
+## Refactor Entry Points
+
+Use these first for architecture and migration work:
+
+- `skills/site-architecture-map/SKILL.md`
+- `skills/site-migration-parity/SKILL.md`
+- `skills/site-web-qa/SKILL.md`
+- `skills/site-build-deploy/SKILL.md`
+
 ## Agent Skills
 
 - `skills/site-build-deploy/SKILL.md`
 - `skills/site-content-edit/SKILL.md`
+- `skills/site-architecture-map/SKILL.md`
+- `skills/site-migration-parity/SKILL.md`
+- `skills/site-frontend-design/SKILL.md`
+- `skills/site-layout-patterns/SKILL.md`
+- `skills/site-interactive-lessons/SKILL.md`
+- `skills/site-web-qa/SKILL.md`
+- `skills/revealjs-slides/SKILL.md`
 
 Use these skills as the default operating procedures for this codebase.
 

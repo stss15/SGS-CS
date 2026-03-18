@@ -1,25 +1,10 @@
 # SGS-CSC Remix
 
-Current site source and build pipeline for the Firebase-hosted SGS Computer Science site.
+Current source and build pipeline for the SGS Computer Science site.
 
-## Active Build Path
+This repository is in a hybrid transition state. The current production build still spans legacy Nunjucks content, Astro routes, shared static assets, and migration scripts. The target is a single, typed, Astro-first site with a small number of isolated interactive experiences.
 
-1. `npm run build:legacy`
-- Renders `src/pages` + `src/static` into `public/` via `scripts/build.js`.
-- Compiles LaTeX printables from `src/printables` into `public/` (PDF downloads).
-
-2. `npm run build --workspace @sgs/site`
-- Builds Astro app in `apps/site`.
-
-3. `npm run framework:postbuild-routes`
-- Adds legacy-compatible route aliases and copies required non-HTML assets into `apps/site/dist`.
-
-4. `npm run framework:harden-dist`
-- Applies auth/meta/header hardening to generated HTML in `apps/site/dist`.
-
-Firebase deploys from `apps/site/dist` (`firebase.json`).
-
-## Primary Commands
+## Start Here
 
 ```bash
 npm ci
@@ -28,51 +13,30 @@ npm run framework:build
 npm run deploy
 ```
 
+## Where To Read First
+
+- [Docs index](docs/README.md)
+- [Architecture](docs/architecture/README.md)
+- [Content model](docs/content/README.md)
+- [UI system](docs/ui/README.md)
+- [Migration plan](docs/migration/README.md)
+
 ## Repository Layout
 
-- `apps/site`: Astro framework app (deploy target output in `apps/site/dist`).
-- `packages/content-schema`: Typed adapters that map legacy source/content into Astro routes.
-- `src`: Legacy source-of-truth templates/content still used in active build pipeline.
-- `src/printables`: LaTeX source for printable PDFs generated into `public/`.
-- `scripts/build.js`: Legacy render step used before Astro build.
-- `scripts/migration/alias-framework-html-routes.js`: Alias and asset sync step.
-- `scripts/migration/harden-framework-dist.js`: Dist hardening step.
-- `docs/content`: Curriculum source materials (`.txt`, `.pdf`, `.docx`).
-- `agents`: Agent operating guide and repo-specific skills.
-- `archive/repo-cleanup-2026-02-07`: Archived legacy/bloat content removed from active path.
+- `apps/site`: Astro app and route shell for the refactored site.
+- `packages/content-schema`: Current typed adapters and content contracts.
+- `src`: Legacy source that still powers part of the production build during migration.
+- `docs`: Agent-facing architecture, content, UI, and migration docs.
+- `docs/content`: Canonical curriculum source materials (`.txt`, `.pdf`, `.docx`).
+- `archive/repo-cleanup-2026-02-07`: Retired legacy material kept out of the active path.
 
-## Agent Entry Point
+## Build Path
 
-Use:
-- `agents/README.md`
+The repo still builds through a bridge layer until migration phases are complete:
 
-And the skills under:
-- `agents/skills/site-build-deploy/SKILL.md`
-- `agents/skills/site-content-edit/SKILL.md`
+1. Legacy render into `public/`.
+2. Astro build into `apps/site/dist`.
+3. Route aliasing and non-HTML asset sync.
+4. Dist hardening for public hosting.
 
-## IGCSE Topic Index Pattern (2026-02)
-
-- `src/pages/igcse/topic1` to `src/pages/igcse/topic10` now use sectioned index pages rendered by `layouts/arcade.njk`.
-- Each topic index now starts with a boxed specification write-up (`Unit Summary`, `Unit Objectives`, `Learning Outcomes`, `Subtopic Focus`).
-- Each topic index follows the same section order: `Textbook`, `Slide Decks`, `Student Activities`, `Assessments`, `Homework`, `Independent Tasks`, `Revision`.
-- Blank textbook reader templates now exist at `src/pages/igcse/topic*/textbook.njk`.
-- Revision visuals now open in an in-page modal carousel (no standalone image-page navigation).
-- Intermediate menu pages were removed from `src/static/igcse/topic*/assessments.html` and `src/static/igcse/topic*/teaching-and-revision.html`; index pages now link directly to assessment files and revision artifacts.
-
-## IGCSE Textbooks (Astro Content Collection)
-
-- IGCSE textbook pages are now Astro-first and content-collection driven:
-  - Route: `apps/site/src/pages/igcse/[topic]/textbook.astro`
-  - Chapter route (Topic 1-2 split): `apps/site/src/pages/igcse/[topic]/textbook/[chapter].astro`
-  - Content: `apps/site/src/content/igcse-textbooks/topic-1.md` ... `topic-10.md`
-  - Collection schema: `apps/site/src/content/config.ts` (`igcse-textbooks`)
-- Legacy IGCSE catch-all route excludes textbook aliases so Astro is authoritative:
-  - `apps/site/src/pages/igcse/[...route].astro`
-- Legacy `.html` compatibility for textbook links is preserved through migration alias routes:
-  - `meta/migration/wave2-routes.json` includes `/igcse/topic1/textbook.html` ... `/igcse/topic10/textbook.html`
-  - Topic 1-2 chapter aliases are included (`/igcse/topic1/textbook/1-1.html` ... `/igcse/topic2/textbook/2-3.html`)
-- Textbook authoring/QA scripts:
-  - `npm run igcse:textbook:source-map -- --topic <1-10>`
-  - `npm run igcse:textbook:generate -- --overwrite true`
-  - `npm run igcse:textbook:validate`
-  - scripts live in `scripts/igcse-textbook/`
+See [docs/architecture/README.md](docs/architecture/README.md) and [docs/migration/README.md](docs/migration/README.md) for the target state and the exit path from that bridge.

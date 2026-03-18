@@ -7,8 +7,8 @@ const fg = require('fast-glob');
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const DEFAULT_TARGET = path.join(ROOT_DIR, 'apps/site/dist');
 const DEFAULT_LEGACY = path.join(ROOT_DIR, 'public');
-const DEFAULT_PILOT = path.join(ROOT_DIR, 'meta/migration/pilot-routes.json');
-const DEFAULT_WAVE2 = path.join(ROOT_DIR, 'meta/migration/wave2-routes.json');
+const DEFAULT_CONTRACT_ROUTES = path.join(ROOT_DIR, 'meta/contracts/routes.json');
+const DEFAULT_REPORT = path.join(ROOT_DIR, 'meta/contracts/framework-route-source-report.json');
 
 const toPosix = (value) => value.split(path.sep).join('/');
 
@@ -16,8 +16,10 @@ const parseArgs = () => {
   const options = {
     target: DEFAULT_TARGET,
     legacy: DEFAULT_LEGACY,
-    pilot: DEFAULT_PILOT,
-    wave2: DEFAULT_WAVE2
+    contracts: DEFAULT_CONTRACT_ROUTES,
+    pilot: null,
+    wave2: null,
+    report: DEFAULT_REPORT
   };
 
   process.argv.slice(2).forEach((arg) => {
@@ -31,6 +33,11 @@ const parseArgs = () => {
       return;
     }
 
+    if (arg.startsWith('--contracts=')) {
+      options.contracts = path.resolve(ROOT_DIR, arg.replace('--contracts=', ''));
+      return;
+    }
+
     if (arg.startsWith('--pilot=')) {
       options.pilot = path.resolve(ROOT_DIR, arg.replace('--pilot=', ''));
       return;
@@ -38,6 +45,11 @@ const parseArgs = () => {
 
     if (arg.startsWith('--wave2=')) {
       options.wave2 = path.resolve(ROOT_DIR, arg.replace('--wave2=', ''));
+      return;
+    }
+
+    if (arg.startsWith('--report=')) {
+      options.report = path.resolve(ROOT_DIR, arg.replace('--report=', ''));
     }
   });
 
@@ -127,13 +139,23 @@ const run = async () => {
     process.exit(1);
   }
 
-  if (!(await fs.pathExists(options.pilot))) {
+  if (options.pilot && !(await fs.pathExists(options.pilot))) {
     console.error(`ERROR: pilot route file not found: ${toPosix(path.relative(ROOT_DIR, options.pilot))}`);
     process.exit(1);
   }
 
   const routeSet = new Set();
-  const routeConfigs = [options.pilot, options.wave2];
+  if (await fs.pathExists(options.contracts)) {
+    const contracts = await fs.readJson(options.contracts);
+    const contractEntries = Array.isArray(contracts.entries) ? contracts.entries : [];
+    contractEntries.forEach((entry) => {
+      if (entry && typeof entry.routePath === 'string') {
+        routeSet.add(entry.routePath);
+      }
+    });
+  }
+
+  const routeConfigs = [options.pilot, options.wave2].filter(Boolean);
 
   for (const routeConfigPath of routeConfigs) {
     if (!(await fs.pathExists(routeConfigPath))) {
@@ -148,43 +170,66 @@ const run = async () => {
   let createdFromAstro = 0;
   let createdFromLegacy = 0;
   let skipped = 0;
+  const createdFromAstroRoutes = [];
+  const createdFromLegacyRoutes = [];
+  const skippedRoutes = [];
+  const astroCapableRoutes = [];
+  const legacyDependentRoutes = [];
+  const unresolvedRoutes = [];
 
   for (const route of pilotRoutes) {
     const expectedPath = routeToFilePath(options.target, route);
+    const fallbackPath = routeToFallbackIndexPath(options.target, route);
+    const nestedHtmlFallbackPath = routeToNestedHtmlIndexPath(options.target, route);
+    const legacySourcePath = routeToFilePath(options.legacy, route);
+    const exactTargetExists = await fs.pathExists(expectedPath);
+    const fallbackExists = fallbackPath ? await fs.pathExists(fallbackPath) : false;
+    const nestedFallbackExists = nestedHtmlFallbackPath ? await fs.pathExists(nestedHtmlFallbackPath) : false;
+    const legacyExists = await fs.pathExists(legacySourcePath);
 
-    if (await fs.pathExists(expectedPath)) {
+    if (exactTargetExists || fallbackExists || nestedFallbackExists) {
+      astroCapableRoutes.push(route);
+    } else if (legacyExists) {
+      legacyDependentRoutes.push(route);
+    } else {
+      unresolvedRoutes.push(route);
+    }
+
+    if (exactTargetExists) {
       if (route.endsWith('.html') && (await collapseHtmlDirectoryRoute(expectedPath))) {
         createdFromAstro += 1;
+        createdFromAstroRoutes.push(route);
         continue;
       }
       skipped += 1;
+      skippedRoutes.push(route);
       continue;
     }
 
-    const fallbackPath = routeToFallbackIndexPath(options.target, route);
-    if (fallbackPath && (await fs.pathExists(fallbackPath))) {
+    if (fallbackPath && fallbackExists) {
       await fs.ensureDir(path.dirname(expectedPath));
       await fs.copyFile(fallbackPath, expectedPath);
       createdFromAstro += 1;
+      createdFromAstroRoutes.push(route);
       continue;
     }
 
-    const nestedHtmlFallbackPath = routeToNestedHtmlIndexPath(options.target, route);
-    if (nestedHtmlFallbackPath && (await fs.pathExists(nestedHtmlFallbackPath))) {
+    if (nestedHtmlFallbackPath && nestedFallbackExists) {
       await fs.ensureDir(path.dirname(expectedPath));
       await fs.copyFile(nestedHtmlFallbackPath, expectedPath);
       createdFromAstro += 1;
+      createdFromAstroRoutes.push(route);
       continue;
     }
 
-    const legacySourcePath = routeToFilePath(options.legacy, route);
-    if (!(await fs.pathExists(legacySourcePath))) {
+    if (!legacyExists) {
       continue;
     }
 
     await fs.ensureDir(path.dirname(expectedPath));
     await fs.copyFile(legacySourcePath, expectedPath);
     createdFromLegacy += 1;
+    createdFromLegacyRoutes.push(route);
   }
 
   console.log(`Framework route aliasing complete.`);
@@ -196,6 +241,35 @@ const run = async () => {
   console.log(`Framework static asset sync complete.`);
   console.log(`  Copied non-HTML assets from legacy: ${staticAssets.copied}`);
   console.log(`  Existing non-HTML assets preserved: ${staticAssets.skipped}`);
+
+  if (options.report) {
+    await fs.outputJson(
+      options.report,
+      {
+        target: toPosix(path.relative(ROOT_DIR, options.target)),
+        generatedAt: new Date().toISOString(),
+        counts: {
+          createdFromAstro,
+          createdFromLegacy,
+          skipped,
+          astroCapableRoutes: astroCapableRoutes.length,
+          legacyDependentRoutes: legacyDependentRoutes.length,
+          unresolvedRoutes: unresolvedRoutes.length,
+          copiedLegacyAssets: staticAssets.copied,
+          preservedAssets: staticAssets.skipped
+        },
+        routes: {
+          createdFromAstro: createdFromAstroRoutes.sort(),
+          createdFromLegacy: createdFromLegacyRoutes.sort(),
+          alreadyPresent: skippedRoutes.sort(),
+          astroCapable: astroCapableRoutes.sort(),
+          legacyDependent: legacyDependentRoutes.sort(),
+          unresolved: unresolvedRoutes.sort()
+        }
+      },
+      { spaces: 2 }
+    );
+  }
 };
 
 run().catch((error) => {

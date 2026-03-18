@@ -1,33 +1,29 @@
 ---
-import HeroPanel from '../../components/HeroPanel.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import CurriculumShell from '../../layouts/CurriculumShell.astro';
 import { getIb2027PathwayIndex } from '@sgs/content-schema';
 
 const page = await getIb2027PathwayIndex();
 ---
 
-<BaseLayout
+<CurriculumShell
   title={page.title}
   description={page.description || 'IB Computer Science curriculum for first assessment 2027.'}
   extraStyles={['css/resource-style.css']}
   activeSection={page.activeSection}
   breadcrumbs={page.breadcrumbs}
+  eyebrow="IB 2027"
+  heroTitle={page.hero.title}
+  heroSubtitle={page.hero.subtitle}
 >
-  <HeroPanel
-    eyebrow="IB 2027"
-    title={page.hero.title}
-    subtitle={page.hero.subtitle}
-  >
-    <div class="cards-container pathway-cards">
-      {(page.pathways || []).map((pathway) => (
-        <a href={pathway.href} class="card pathway-card" id={pathway.id}>
-          <div class="card-icon">
-            <i class={pathway.id === 'card-hl' ? 'fa-solid fa-brain' : 'fa-solid fa-book'} aria-hidden="true"></i>
-          </div>
-          <h2 class="card-title">{pathway.title}</h2>
-          <p class="card-desc">{pathway.desc}</p>
-        </a>
-      ))}
-    </div>
-  </HeroPanel>
-</BaseLayout>
+  <div class="cards-container pathway-cards">
+    {(page.pathways || []).map((pathway) => (
+      <a href={pathway.href} class="card pathway-card" id={pathway.id}>
+        <div class="card-icon">
+          <i class={pathway.id === 'card-hl' ? 'fa-solid fa-brain' : 'fa-solid fa-book'} aria-hidden="true"></i>
+        </div>
+        <h2 class="card-title">{pathway.title}</h2>
+        <p class="card-desc">{pathway.desc}</p>
+      </a>
+    ))}
+  </div>
+</CurriculumShell>

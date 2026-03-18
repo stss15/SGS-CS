@@ -1,8 +1,12 @@
 ---
 import type { UnitIndexFrontmatter, UnitPlanFrontmatter } from '@sgs/content-schema';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroPanel from './HeroPanel.astro';
+import CurriculumShell from '../layouts/CurriculumShell.astro';
 import { buildSyllabusRows, getFlashcardsHref } from '../lib/ib2027-unit-index';
+import {
+  buildIb2027UnitBreadcrumbs,
+  getIb2027LevelLabel,
+  normalizeIb2027Level
+} from '../lib/ib2027-routes';
 
 interface Props {
   page: UnitIndexFrontmatter;
@@ -43,6 +47,8 @@ const unitOverviewFocus =
   subTopicNames.length > 0
     ? `The focus areas are ${formatList(subTopicNames)}.`
     : 'You will build understanding and confidence with the key ideas in this unit.';
+const level = normalizeIb2027Level(unitPlan.level);
+const breadcrumbs = buildIb2027UnitBreadcrumbs(level, unitPlan.unitNumber);
 
 const placeholderSections = [
   {
@@ -63,13 +69,16 @@ const placeholderSections = [
 ];
 ---
 
-<BaseLayout
+<CurriculumShell
   title={page.title}
   description={page.description || 'IB unit resources.'}
+  activeSection="ib"
+  breadcrumbs={breadcrumbs}
   extraStyles={['css/resource-style.css', 'css/unit.css', 'css/ib-unit-index.css']}
+  eyebrow={`IB 2027 · ${getIb2027LevelLabel(level)}`}
+  heroTitle={page.hero.title}
+  heroSubtitle={page.hero.subtitle}
 >
-  <HeroPanel title={page.hero.title} />
-
   <section class="unit-details ib-unit-plan-top">
     <div class="ib-overview-shell">
       <article class="content-box ib-overview-card">
@@ -236,4 +245,4 @@ const placeholderSections = [
       </a>
     </div>
   </section>
-</BaseLayout>
+</CurriculumShell>

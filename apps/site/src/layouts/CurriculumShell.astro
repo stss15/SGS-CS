@@ -1,0 +1,52 @@
+---
+import HeroPanel from '../components/HeroPanel.astro';
+import BaseLayout from './BaseLayout.astro';
+
+type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  activeSection?: NavSection;
+  breadcrumbs?: BreadcrumbItem[];
+  extraStyles?: string[];
+  mainClass?: string;
+  eyebrow?: string;
+  heroTitle: string;
+  heroSubtitle?: string;
+  pills?: string[];
+}
+
+const {
+  title,
+  description = title,
+  activeSection,
+  breadcrumbs = [],
+  extraStyles = [],
+  mainClass = '',
+  eyebrow,
+  heroTitle,
+  heroSubtitle,
+  pills = []
+} = Astro.props as Props;
+
+const shellMainClass = ['curriculum-shell', mainClass].filter(Boolean).join(' ');
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  activeSection={activeSection}
+  breadcrumbs={breadcrumbs}
+  mainClass={shellMainClass}
+  extraStyles={extraStyles}
+>
+  <HeroPanel eyebrow={eyebrow} title={heroTitle} subtitle={heroSubtitle} pills={pills}>
+    <slot />
+  </HeroPanel>
+</BaseLayout>

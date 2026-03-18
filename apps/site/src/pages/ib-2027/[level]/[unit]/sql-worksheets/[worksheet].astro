@@ -1,0 +1,29 @@
+---
+import type { IbCourseLevel } from '@sgs/content-schema';
+import SqlWorksheetShell from '../../../../../layouts/SqlWorksheetShell.astro';
+import {
+  getIb2027SqlWorksheetPage,
+  getIb2027SqlWorksheetStaticPaths
+} from '../../../../../lib/ib2027-sql-worksheets';
+
+interface SqlWorksheetRouteProps {
+  level: IbCourseLevel;
+  unitNumber: number;
+  worksheet: string;
+}
+
+export const getStaticPaths = getIb2027SqlWorksheetStaticPaths;
+
+const { level, unitNumber, worksheet } = Astro.props as SqlWorksheetRouteProps;
+const page = await getIb2027SqlWorksheetPage(level, unitNumber, worksheet);
+---
+
+<SqlWorksheetShell
+  title={page.title}
+  description={page.description}
+  activeSection={page.activeSection}
+  breadcrumbs={page.breadcrumbs}
+  extraStyles={page.extraStyles}
+  scriptUrls={page.scripts}
+  bodyHtml={page.bodyHtml}
+/>

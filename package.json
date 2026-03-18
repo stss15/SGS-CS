@@ -7,6 +7,11 @@
   "scripts": {
     "build": "npm run framework:build",
     "build:legacy": "node scripts/build.js",
+    "contracts:generate": "node scripts/contracts/generate-site-contracts.mjs",
+    "contracts:validate": "node scripts/contracts/validate-site-contracts.mjs",
+    "contracts:parity:public": "node scripts/contracts/check-site-parity.mjs --target=public",
+    "contracts:parity:framework": "node scripts/contracts/check-site-parity.mjs --target=apps/site/dist",
+    "contracts:check": "npm run check --workspace @sgs/site-contracts && npm run contracts:validate",
     "framework:dev": "npm run build:legacy && npm run dev --workspace @sgs/site",
     "framework:build": "npm run build:legacy && npm run build --workspace @sgs/site && npm run framework:postbuild-routes && npm run framework:harden-dist",
     "framework:postbuild-routes": "node scripts/migration/alias-framework-html-routes.js --target=apps/site/dist",

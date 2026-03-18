@@ -1,0 +1,55 @@
+---
+import type { IbCourseLevel } from '@sgs/content-schema';
+import HeroPanel from '../components/HeroPanel.astro';
+import BaseLayout from './BaseLayout.astro';
+import { getIb2027LevelLabel } from '../lib/ib2027-routes';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  level: IbCourseLevel;
+  unitNumber: number;
+  breadcrumbs?: BreadcrumbItem[];
+  heroTitle: string;
+  heroSubtitle: string;
+}
+
+const {
+  title,
+  description = title,
+  level,
+  unitNumber,
+  breadcrumbs = [],
+  heroTitle,
+  heroSubtitle
+} = Astro.props as Props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  activeSection="ib"
+  breadcrumbs={breadcrumbs}
+  mainClass="unit-plan-shell"
+>
+  <HeroPanel
+    eyebrow={`IB 2027 · ${getIb2027LevelLabel(level)} · Unit ${unitNumber}`}
+    title={heroTitle}
+    subtitle={heroSubtitle}
+  />
+
+  <section class="unit-grid">
+    <article class="unit-main">
+      <slot />
+    </article>
+
+    <aside class="unit-side">
+      <slot name="side" />
+    </aside>
+  </section>
+</BaseLayout>

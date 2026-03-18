@@ -1,0 +1,65 @@
+---
+import ToolShell from './ToolShell.astro';
+
+type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  activeSection?: NavSection;
+  breadcrumbs?: BreadcrumbItem[];
+  extraStyles?: string[];
+  scriptUrls?: string[];
+  bodyHtml: string;
+  bodyClass?: string;
+  mainClass?: string;
+}
+
+const {
+  title,
+  description = title,
+  activeSection = 'ib',
+  breadcrumbs = [],
+  extraStyles = [],
+  scriptUrls = [],
+  bodyHtml,
+  bodyClass = '',
+  mainClass = ''
+} = Astro.props as Props;
+
+const normalizeAssetHref = (assetPath: string): string => {
+  if (
+    assetPath.startsWith('/') ||
+    assetPath.startsWith('http://') ||
+    assetPath.startsWith('https://') ||
+    assetPath.startsWith('//')
+  ) {
+    return assetPath;
+  }
+
+  return `/${assetPath.replace(/^\.?\//, '')}`;
+};
+
+const shellBodyClass = ['sql-worksheet-body', bodyClass].filter(Boolean).join(' ');
+const shellMainClass = ['sql-worksheet-main', mainClass].filter(Boolean).join(' ');
+---
+
+<ToolShell
+  title={title}
+  description={description}
+  activeSection={activeSection}
+  breadcrumbs={breadcrumbs}
+  extraStyles={extraStyles.map(normalizeAssetHref)}
+  bodyClass={shellBodyClass}
+  mainClass={shellMainClass}
+>
+  <Fragment set:html={bodyHtml} />
+  {scriptUrls.map((scriptUrl) => (
+    <script is:inline src={normalizeAssetHref(scriptUrl)} defer></script>
+  ))}
+</ToolShell>

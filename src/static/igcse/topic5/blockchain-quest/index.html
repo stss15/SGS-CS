@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Blockchain Quest - Arcade Edition | SGS Education</title>
+    <meta name="description"
+        content="Arcade learning adventure for IGCSE Computer Science Topic 5.2. Explore, run, and battle through blockchain missions.">
+
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.11.0/sha256.min.js"></script>
+    <link rel="stylesheet" href="css/game.css">
+
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body>
+    <div id="game-root">
+
+        <section class="screen active" id="title-screen">
+            <div class="title-card pixel-panel">
+                <div class="title-kicker">IGCSE Topic 5.2 Mission</div>
+                <h1>Blockchain Quest</h1>
+                <p class="title-tagline">Game Boy Color vibes + arcade speed. Learn blockchain by moving, jumping, and battling.</p>
+
+                <div class="title-icons" aria-hidden="true">
+                    <span>🕹️</span>
+                    <span>🔗</span>
+                    <span>⛏️</span>
+                    <span>⚔️</span>
+                </div>
+
+                <div class="title-actions">
+                    <button id="start-btn" class="arcade-btn primary">
+                        <i class="fa-solid fa-play"></i> Start New Run
+                    </button>
+                    <button id="continue-btn" class="arcade-btn secondary hidden">
+                        <i class="fa-solid fa-forward"></i> Continue Run
+                    </button>
+                </div>
+
+                <div class="title-foot">
+                    <span id="title-progress-text">No save data yet</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="screen" id="level-screen">
+            <div class="level-shell pixel-panel">
+                <div class="level-head">
+                    <button id="back-title-btn" class="arcade-btn secondary small"><i class="fa-solid fa-arrow-left"></i> Title</button>
+                    <div id="level-stats"></div>
+                </div>
+                <h2>Mission Select</h2>
+                <p>Each mission blends exploration, action, and blockchain mechanics. Beat one to unlock the next.</p>
+                <div id="level-grid"></div>
+            </div>
+        </section>
+
+        <section class="screen" id="play-screen">
+            <header id="hud" class="pixel-panel">
+                <div class="hud-left">
+                    <div id="hud-level">Level 1</div>
+                    <div id="hud-objective">Objective text</div>
+                </div>
+                <div class="hud-right">
+                    <div class="hud-stat"><span>XP</span><strong id="hud-xp">0</strong></div>
+                    <div class="hud-stat"><span>Coins</span><strong id="hud-coins">0</strong></div>
+                    <div class="hud-stat"><span>Lives</span><strong id="hud-lives">3</strong></div>
+                    <button id="pause-btn" class="arcade-btn secondary small"><i class="fa-solid fa-bars"></i></button>
+                </div>
+            </header>
+
+            <main id="stage-wrap">
+                <canvas id="game-canvas" width="960" height="540" aria-label="Blockchain quest game canvas"></canvas>
+
+                <div id="dialogue-panel" class="overlay hidden pixel-panel">
+                    <div class="overlay-head">
+                        <span id="dialogue-speaker">Professor</span>
+                        <span id="dialogue-role">Guide</span>
+                    </div>
+                    <div id="dialogue-text"></div>
+                    <button id="dialogue-next-btn" class="arcade-btn primary">Continue</button>
+                </div>
+
+                <div id="challenge-panel" class="overlay hidden pixel-panel"></div>
+
+                <div id="result-panel" class="overlay hidden pixel-panel"></div>
+
+                <div id="pause-panel" class="overlay hidden pixel-panel">
+                    <h3>Paused</h3>
+                    <div class="pause-actions">
+                        <button id="resume-btn" class="arcade-btn primary">Resume</button>
+                        <button id="restart-level-btn" class="arcade-btn secondary">Restart Level</button>
+                        <button id="level-select-btn" class="arcade-btn secondary">Mission Select</button>
+                    </div>
+                </div>
+
+                <div id="toast-layer"></div>
+            </main>
+
+            <div id="touch-controls">
+                <div class="touch-cluster">
+                    <button class="touch-btn" data-action="up">▲</button>
+                    <div>
+                        <button class="touch-btn" data-action="left">◀</button>
+                        <button class="touch-btn" data-action="down">▼</button>
+                        <button class="touch-btn" data-action="right">▶</button>
+                    </div>
+                </div>
+                <div class="touch-cluster">
+                    <button class="touch-btn action" data-action="jump">JUMP</button>
+                    <button class="touch-btn action" data-action="interact">ACT</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="js/blockchain.js"></script>
+    <script src="js/characters.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/minigames.js"></script>
+    <script src="js/engine.js"></script>
+
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <script src="/js/legacy-inline-events.js"></script>
+</body>
+
+</html>

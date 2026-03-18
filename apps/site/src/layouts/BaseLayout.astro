@@ -1,5 +1,7 @@
 ---
+import '../styles/tokens.css';
 import SiteNav from '../components/SiteNav.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 
 type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
 
@@ -13,6 +15,7 @@ interface Props {
   description?: string;
   activeSection?: NavSection;
   breadcrumbs?: BreadcrumbItem[];
+  bodyClass?: string;
   mainClass?: string;
   extraStyles?: string[];
 }
@@ -21,6 +24,8 @@ const {
   title = 'SGS Education',
   description = 'SGS Education Hub for KS3, IGCSE, and IB students.',
   activeSection,
+  breadcrumbs = [],
+  bodyClass = '',
   mainClass = '',
   extraStyles = []
 } = Astro.props;
@@ -37,6 +42,8 @@ const inferredActiveSection: NavSection | undefined = Astro.url.pathname.startsW
 
 const resolvedActiveSection = activeSection || inferredActiveSection;
 const currentYear = new Date().getFullYear();
+const bodyClasses = ['site-body', bodyClass].filter(Boolean);
+const mainClasses = ['page-shell', mainClass].filter(Boolean);
 
 const normalizeStyleHref = (stylePath: string): string => {
   if (stylePath.startsWith('http://') || stylePath.startsWith('https://') || stylePath.startsWith('//')) {
@@ -69,13 +76,14 @@ const normalizeStyleHref = (stylePath: string): string => {
     ))}
     <title>{title}</title>
   </head>
-  <body>
+  <body class:list={bodyClasses}>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <SiteNav activeSection={resolvedActiveSection} />
-    <main id="main-content" class={mainClass}>
+    <main id="main-content" class:list={mainClasses}>
+      <Breadcrumbs items={breadcrumbs} />
       <slot />
     </main>
-    <footer>
+    <footer class="site-footer">
       <p>&copy; {currentYear} SGS Education &middot; SG Stewart. All rights reserved.</p>
     </footer>
   </body>

@@ -1,0 +1,34 @@
+---
+import type { IbCourseLevel } from '@sgs/content-schema';
+import TopicSectionGrid from '../../../components/TopicSectionGrid.astro';
+import CurriculumShell from '../../../layouts/CurriculumShell.astro';
+import {
+  buildIb2027LevelBreadcrumbs,
+  getIb2027LevelListing,
+  getIb2027LevelStaticPaths
+} from '../../../lib/ib2027-routes';
+
+interface LevelPageProps {
+  level: IbCourseLevel;
+}
+
+export const getStaticPaths = getIb2027LevelStaticPaths;
+
+const { level } = Astro.props as LevelPageProps;
+const page = await getIb2027LevelListing(level);
+---
+
+<CurriculumShell
+  title={page.title}
+  description={
+    page.description ||
+    `IB Computer Science ${level.toUpperCase()} units for first assessment 2027.`
+  }
+  activeSection={page.activeSection}
+  breadcrumbs={page.breadcrumbs || buildIb2027LevelBreadcrumbs(level)}
+  eyebrow="IB 2027"
+  heroTitle={page.hero.title}
+  heroSubtitle={page.hero.subtitle}
+>
+  <TopicSectionGrid sections={page.sections} />
+</CurriculumShell>

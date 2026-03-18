@@ -1,0 +1,24 @@
+---
+import type { IbCourseLevel } from '@sgs/content-schema';
+import IbUnitIndexLayout from '../../../../components/IbUnitIndexLayout.astro';
+import {
+  getIb2027UnitIndexData,
+  getIb2027UnitPlanData,
+  getIb2027UnitStaticPaths
+} from '../../../../lib/ib2027-routes';
+
+interface UnitPageProps {
+  level: IbCourseLevel;
+  unitNumber: number;
+}
+
+export const getStaticPaths = getIb2027UnitStaticPaths;
+
+const { level, unitNumber } = Astro.props as UnitPageProps;
+const [page, unitPlan] = await Promise.all([
+  getIb2027UnitIndexData(level, unitNumber),
+  getIb2027UnitPlanData(level, unitNumber)
+]);
+---
+
+<IbUnitIndexLayout page={page} unitPlan={unitPlan} />

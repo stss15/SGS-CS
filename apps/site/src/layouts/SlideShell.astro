@@ -1,0 +1,44 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  activeSection?: NavSection;
+  breadcrumbs?: BreadcrumbItem[];
+  extraStyles?: string[];
+  bodyClass?: string;
+  mainClass?: string;
+}
+
+const {
+  title,
+  description = title,
+  activeSection,
+  breadcrumbs = [],
+  extraStyles = [],
+  bodyClass = '',
+  mainClass = ''
+} = Astro.props as Props;
+
+const shellMainClass = ['slide-shell', mainClass].filter(Boolean).join(' ');
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  activeSection={activeSection}
+  breadcrumbs={breadcrumbs}
+  bodyClass={bodyClass}
+  mainClass={shellMainClass}
+  extraStyles={extraStyles}
+>
+  <slot />
+</BaseLayout>
