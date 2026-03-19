@@ -287,23 +287,6 @@ const createLegacyScenarioAliases = async () => {
     console.log(`Created ${aliasTargets.size} legacy scenario aliases.`);
 };
 
-const ensureMissionControlPlaceholder = async () => {
-    const placeholderPath = path.join(
-        OUTPUT_DIR,
-        'ib',
-        'Learn Python Map',
-        'ib-python-mission-control',
-        'dist',
-        'index.html'
-    );
-
-    if (await fs.pathExists(placeholderPath)) return;
-
-    await fs.ensureDir(path.dirname(placeholderPath));
-    await fs.writeFile(placeholderPath, buildMissionControlPlaceholder());
-    console.log('Wrote Mission Control placeholder.');
-};
-
 const injectAuthGate = (html) => {
     if (html.includes(AUTH_GATE_MARKER)) return html;
 
@@ -565,7 +548,6 @@ const buildAll = async () => {
     await writeManifest();
     await createLegacySlideAliases();
     await createLegacyScenarioAliases();
-    await ensureMissionControlPlaceholder();
     await applyAuthGateToOutput();
 };
 

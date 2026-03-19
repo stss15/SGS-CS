@@ -12,7 +12,6 @@ Use the touched route first, then add nearby pages from this matrix when the sam
 | `/igcse/topic1/textbook.html` | Astro IGCSE textbook reader route |
 | `/igcse/topic1/textbook/1-1.html` | Chapter-split textbook route pattern |
 | `/ks3/index.html` | KS3 landing page behavior |
-| `/ib/index.html` | Legacy IB passthrough family |
 | `/ib-2027/index.html` | Modern IB 2027 pathway landing page |
 | `/ib-2027/sl/unit-2/index.html` | SL unit index pattern |
 | `/ib-2027/hl/unit-5/index.html` | HL unit index pattern |

@@ -200,14 +200,17 @@ const SITE_DATA_PATH = path.join(ROOT_DIR, 'src/data/site.json');
 const HOME_PAGE_PATH = path.join(ROOT_DIR, 'src/pages/index.njk');
 const IB_2027_ROOT_DIR = path.join(ROOT_DIR, 'src/pages/ib-2027');
 const LEGACY_PUBLIC_DIR = path.join(ROOT_DIR, 'public');
+const LEGACY_IB_ARCHIVE_DIR = path.join(ROOT_DIR, 'archive/legacy-ib');
+const LEGACY_IB_ARCHIVE_PUBLIC_DIR = path.join(LEGACY_IB_ARCHIVE_DIR, 'public');
 const IB_2027_LEGACY_SL_SLIDES_DIR = path.join(LEGACY_PUBLIC_DIR, 'ib-2027/sl/slides');
 const IB_2027_LEGACY_HL_SLIDES_DIR = path.join(LEGACY_PUBLIC_DIR, 'ib-2027/hl/slides');
 const IB_2027_LEGACY_SL_SCENARIOS_DIR = path.join(LEGACY_PUBLIC_DIR, 'ib-2027/sl/scenarios');
 const IB_2027_LEGACY_HL_SCENARIOS_DIR = path.join(LEGACY_PUBLIC_DIR, 'ib-2027/hl/scenarios');
 const IB_2027_LEGACY_HL_UNIT4_SCENARIOS_DIR = path.join(LEGACY_PUBLIC_DIR, 'ib-2027/hl/unit-4/scenarios');
+const IB_LEGACY_DIR = path.join(LEGACY_IB_ARCHIVE_PUBLIC_DIR, 'ib');
 const IGCSE_LEGACY_DIR = path.join(LEGACY_PUBLIC_DIR, 'igcse');
 const KS3_LEGACY_DIR = path.join(LEGACY_PUBLIC_DIR, 'ks3');
-const IB_LEGACY_NJK_ROOT_DIR = path.join(ROOT_DIR, 'src/pages/ib');
+const IB_LEGACY_NJK_ROOT_DIR = path.join(LEGACY_IB_ARCHIVE_DIR, 'src/pages/ib');
 const ROOT_LEGACY_ROUTE_ALLOWLIST = new Set(['/404.html', '/admin.html', '/coming-soon.html']);
 const IB_2027_INDEX_PATH = path.join(ROOT_DIR, 'src/pages/ib-2027/index.njk');
 const IB_2027_SL_INDEX_PATH = path.join(ROOT_DIR, 'src/pages/ib-2027/sl/index.njk');
@@ -341,15 +344,19 @@ const toRouteEntries = (baseRoutePath: string, slugs: string[]): LegacyAliasRout
 
 const normalizeRoutePath = (routePath: string): string => routePath.replace(/\\/g, '/');
 
-const getLegacyPublicPathForRoute = (routePath: string, allowedPrefixes: string[]): string => {
+const getLegacyPublicPathForRoute = (
+  routePath: string,
+  allowedPrefixes: string[],
+  publicDir: string = LEGACY_PUBLIC_DIR
+): string => {
   const normalizedRoutePath = normalizeRoutePath(routePath);
 
   if (!allowedPrefixes.some((prefix) => normalizedRoutePath.startsWith(prefix)) || normalizedRoutePath.includes('..')) {
     throw new Error(`Invalid legacy alias route path: ${routePath}`);
   }
 
-  const absolutePath = path.resolve(LEGACY_PUBLIC_DIR, `.${normalizedRoutePath}`);
-  const publicRoot = `${path.resolve(LEGACY_PUBLIC_DIR)}${path.sep}`;
+  const absolutePath = path.resolve(publicDir, `.${normalizedRoutePath}`);
+  const publicRoot = `${path.resolve(publicDir)}${path.sep}`;
   if (!absolutePath.startsWith(publicRoot)) {
     throw new Error(`Legacy alias route escaped public root: ${routePath}`);
   }
@@ -631,7 +638,7 @@ export const getIbLegacyNunjucksRoutes = async (): Promise<LegacyAliasRoute[]> =
 };
 
 export const getIbLegacyAllRoutes = async (): Promise<LegacyAliasRoute[]> => {
-  return getLegacyHtmlRoutes(path.join(LEGACY_PUBLIC_DIR, 'ib'), '/ib');
+  return getLegacyHtmlRoutes(IB_LEGACY_DIR, '/ib');
 };
 
 export const getIbLegacyRouteHtml = async (routePath: string): Promise<string> => {
@@ -640,7 +647,7 @@ export const getIbLegacyRouteHtml = async (routePath: string): Promise<string> =
     throw new Error(`Legacy IB route must end with .html: ${routePath}`);
   }
 
-  const sourcePath = getLegacyPublicPathForRoute(normalizedRoutePath, ['/ib/']);
+  const sourcePath = getLegacyPublicPathForRoute(normalizedRoutePath, ['/ib/'], LEGACY_IB_ARCHIVE_PUBLIC_DIR);
   if (!existsSync(sourcePath)) {
     throw new Error(`Unknown legacy IB route source: ${normalizedRoutePath}`);
   }

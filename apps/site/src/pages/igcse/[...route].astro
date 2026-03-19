@@ -2,6 +2,7 @@
 import LegacyEmbedFrame from '../../components/LegacyEmbedFrame.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getIgcseLegacyRouteHtml, getIgcseLegacyRoutes } from '@sgs/content-schema';
+import { isIgcseLegacySlideRoute, isIgcseWorkspaceRoute } from '../../lib/legacy-route-classification';
 import { extractHtmlTitle } from '../../lib/source-content';
 
 interface IgcseLegacyPageProps {
@@ -31,8 +32,11 @@ export async function getStaticPaths() {
 
 const { html, routePath } = Astro.props as IgcseLegacyPageProps;
 const title = extractHtmlTitle(html, 'IGCSE Resource');
-const variant =
-  /(?:^|\/)(?:\d+\.\d+_[^/]+|slides\/)/i.test(routePath) ? 'slides' : /(assessment|flashcards|game|activity|quiz|sql|simulator|project)/i.test(routePath) ? 'workspace' : 'document';
+const variant = isIgcseLegacySlideRoute(routePath)
+  ? 'slides'
+  : isIgcseWorkspaceRoute(routePath)
+  ? 'workspace'
+  : 'document';
 ---
 
 <BaseLayout title={title} description={title}>

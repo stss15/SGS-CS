@@ -2,6 +2,7 @@
 import LegacyEmbedFrame from '../../components/LegacyEmbedFrame.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getKs3LegacyRouteHtml, getKs3LegacyRoutes } from '@sgs/content-schema';
+import { isKs3WorkspaceRoute } from '../../lib/legacy-route-classification';
 import { extractHtmlTitle } from '../../lib/source-content';
 
 interface Ks3LegacyPageProps {
@@ -27,7 +28,7 @@ export async function getStaticPaths() {
 
 const { html, routePath } = Astro.props as Ks3LegacyPageProps;
 const title = extractHtmlTitle(html, 'KS3 Resource');
-const variant = /(activity|quiz|game|slide|\/l\d)/i.test(routePath) ? 'workspace' : /textbook/i.test(routePath) ? 'document' : 'document';
+const variant = isKs3WorkspaceRoute(routePath) ? 'workspace' : 'document';
 ---
 
 <BaseLayout title={title} description={title}>

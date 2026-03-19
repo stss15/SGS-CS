@@ -104,7 +104,7 @@ const getRouteShell = (routePath: string): SiteShell => {
   if (routePath === '/index.html') return 'curriculum';
   if (routePath === '/coming-soon.html' || routePath === '/404.html' || routePath === '/admin.html') return 'utility';
   if (routePath.startsWith('/tools/sql-playground')) return 'tool';
-  if (routePath.startsWith('/igcse/') || routePath.startsWith('/ib-2027/') || routePath.startsWith('/ib/') || routePath.startsWith('/ks3/')) {
+  if (routePath.startsWith('/igcse/') || routePath.startsWith('/ib-2027/') || routePath.startsWith('/ks3/')) {
     if (routePath.includes('/slides/')) return 'slide';
     if (routePath.includes('/textbook')) return 'reader';
     if (routePath.includes('flashcards') || routePath.includes('assessment') || routePath.includes('quiz')) {

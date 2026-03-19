@@ -57,11 +57,11 @@ Typed content adapters and schema contracts for framework migration routes.
   - route discovery via `getIb2027SlideAliasRoutes()` and `getIb2027ScenarioAliasRoutes()`
   - source HTML passthrough via `getIb2027AliasRouteHtml(routePath)` from `public/ib-2027/*`
 - IB legacy Nunjucks-backed pages (`/ib/index.html` + `/ib/<section>/*.html`):
-  - route discovery via `getIbLegacyNunjucksRoutes()` from `src/pages/ib/**/*.njk`
-  - source HTML passthrough via `getIbLegacyRouteHtml(routePath)` from `public/ib/*`
+  - route discovery via `getIbLegacyNunjucksRoutes()` from `archive/legacy-ib/src/pages/ib/**/*.njk`
+  - source HTML passthrough via `getIbLegacyRouteHtml(routePath)` from `archive/legacy-ib/public/ib/*`
 - IB legacy extra pages (non-Nunjucks-backed `/ib/**/*.html`):
-  - route discovery via `getIbLegacyAllRoutes()` from `public/ib/**/*.html`
-  - source HTML passthrough via `getIbLegacyRouteHtml(routePath)` from `public/ib/*`
+  - route discovery via `getIbLegacyAllRoutes()` from `archive/legacy-ib/public/ib/**/*.html`
+  - source HTML passthrough via `getIbLegacyRouteHtml(routePath)` from `archive/legacy-ib/public/ib/*`
 - IGCSE legacy pages (`/igcse/**/*.html`):
   - route discovery via `getIgcseLegacyRoutes()` from `public/igcse/**/*.html`
   - source HTML passthrough via `getIgcseLegacyRouteHtml(routePath)` from `public/igcse/*`

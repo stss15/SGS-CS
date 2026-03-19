@@ -28,6 +28,7 @@ import {
   type ShellNavItem,
   type ShellPageLink
 } from './curriculum-shell';
+import { isIgcseWorkspaceRoute, isKs3WorkspaceRoute } from './legacy-route-classification';
 
 interface TopicResourceLink {
   href: string;
@@ -382,7 +383,7 @@ const buildIgcseTopicShell = async (pathname: string): Promise<{
 
   const layoutMode: ShellMode = currentPath.includes('/textbook')
     ? 'reading'
-    : /(assessment|flashcards|game|negative|simulator|quiz|activity|sql|slide|number_representation|text_sound_images|data_storage_compression)/i.test(currentPath)
+    : isIgcseWorkspaceRoute(currentPath)
     ? 'workspace'
     : 'worksheet';
 
@@ -546,7 +547,7 @@ const buildKs3Shell = async (pathname: string): Promise<{
   const currentLocation = findCurrentLocation(localGroups, currentPath);
   const layoutMode: ShellMode = /textbook/i.test(currentPath)
     ? 'reading'
-    : /(activity|quiz|game|l\d_|slide)/i.test(currentPath)
+    : isKs3WorkspaceRoute(currentPath)
     ? 'workspace'
     : 'worksheet';
   const breadcrumbs: ShellBreadcrumb[] = [
