@@ -27,6 +27,9 @@
     
 
     
+    
+<link rel="stylesheet" href="/css/unit-plan.css">
+
 
     <!-- data-sgs-auth-gate -->
     <link rel="stylesheet" href="/css/auth-gate.css">
@@ -48,306 +51,120 @@
             </div>
 
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
-                <a href="/ai-prompt-generator/index.html" class="nav-link ">AI Prompt</a>
                 <a href="/ks3/index.html" class="nav-link ">KS3</a>
                 <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
                 <a href="/ib-2027/index.html" class="nav-link active">IB</a>
             </nav>
 
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
             <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
         </div>
     </header>
 
-    <main id="main-content" class="">
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/index.html" class="">KS3</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
         
 
-        
-<style>
-    /* Wider textbook layout - force full width */
-    .textbook-container {
-        max-width: 1100px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 2rem;
-        box-sizing: border-box;
-    }
-    
-    /* Chapter header */
-    .chapter-header {
-        text-align: center;
-        padding: 3rem 2rem;
-        background: linear-gradient(135deg, #0E214B 0%, #1a3a6b 100%);
-        color: white;
-        border-radius: 16px;
-        margin-bottom: 2rem;
-    }
-    .chapter-number {
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        opacity: 0.8;
-        margin-bottom: 0.5rem;
-    }
-    .chapter-title {
-        font-size: 2.75rem;
-        font-weight: 800;
-        margin-bottom: 0;
-    }
-    
-    /* Two-column layout - fixed widths */
-    .textbook-grid {
-        display: grid;
-        grid-template-columns: calc(100% - 320px - 2rem) 320px;
-        gap: 2rem;
-        align-items: start;
-    }
-    @media (max-width: 900px) {
-        .textbook-grid { grid-template-columns: 1fr; }
-    }
-    
-    /* Main content area */
-    .main-content {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        overflow: hidden;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    
-    /* Collapsible sections */
-    .section-accordion {
-        border-bottom: 1px solid #e9ecef;
-        display: block;
-        width: 100%;
-    }
-    .section-accordion:last-child {
-        border-bottom: none;
-    }
-    .section-accordion > summary {
-        list-style: none;
-    }
-    .section-accordion > summary::-webkit-details-marker {
-        display: none;
-    }
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1.25rem 1.5rem;
-        cursor: pointer;
-        background: #f8f9fa;
-        transition: background 0.2s;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    .section-header:hover {
-        background: #e9ecef;
-    }
-    .section-header h2 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #0E214B;
-        margin: 0;
-        flex: 1;
-    }
-    .section-icon {
-        width: 36px;
-        height: 36px;
-        background: #0E214B;
-        color: white;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-    .toggle-arrow {
-        color: #999;
-        transition: transform 0.3s;
-    }
-    details[open] .toggle-arrow {
-        transform: rotate(180deg);
-    }
-    
-    /* Section body content */
-    .section-body {
-        padding: 1.5rem;
-        line-height: 1.8;
-        color: #333;
-        overflow-x: auto;
-    }
-    .section-body p {
-        margin-bottom: 1rem;
-    }
-    .section-body ul {
-        margin-left: 1.5rem;
-    }
-    
-    /* Sidebar */
-    .sidebar {
-        position: sticky;
-        top: 100px;
-    }
-    .sidebar-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    .sidebar-card h3 {
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #666;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #BE9A5E;
-    }
-    
-    /* Syllabus list */
-    .syllabus-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    .syllabus-list li {
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 0.9rem;
-    }
-    .syllabus-list li:last-child {
-        border-bottom: none;
-    }
-    .syllabus-code {
-        font-weight: 700;
-        color: #0E214B;
-    }
-    
-    /* Term table */
-    .term-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .term-table th {
-        background: #0E214B;
-        color: white;
-        padding: 0.75rem 1rem;
-        text-align: left;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .term-table td {
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #e9ecef;
-        vertical-align: top;
-    }
-    .term-table tr:nth-child(even) {
-        background: #f8f9fa;
-    }
-    .term-table .term-name {
-        font-weight: 600;
-        color: #0E214B;
-        white-space: nowrap;
-    }
-    
-    /* Pillar cards */
-    .pillar-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin: 1rem 0;
-    }
-    @media (max-width: 600px) {
-        .pillar-grid { grid-template-columns: 1fr; }
-    }
-    .pillar-card {
-        background: linear-gradient(135deg, #f0f7ff 0%, #e8f0ff 100%);
-        border-left: 4px solid #0E214B;
-        border-radius: 8px;
-        padding: 1.25rem;
-    }
-    .pillar-card h4 {
-        color: #0E214B;
-        margin: 0 0 0.5rem 0;
-        font-size: 1rem;
-    }
-    .pillar-card p {
-        margin: 0;
-        font-size: 0.9rem;
-        color: #555;
-    }
-    
-    /* Warning box */
-    .warning-box {
-        background: linear-gradient(135deg, #fff3cd 0%, #ffe5a0 100%);
-        border-left: 4px solid #ffc107;
-        border-radius: 8px;
-        padding: 1.25rem;
-        margin: 1rem 0;
-    }
-    .warning-box h4 {
-        color: #856404;
-        margin: 0 0 0.5rem 0;
-        font-size: 0.95rem;
-    }
-    .warning-box p {
-        margin: 0;
-        color: #664d03;
-    }
-    
-    /* Placeholder content */
-    .placeholder-content {
-        background: #f8f9fa;
-        border: 2px dashed #dee2e6;
-        border-radius: 8px;
-        padding: 2rem;
-        text-align: center;
-        color: #6c757d;
-    }
-    .placeholder-content i {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-        display: block;
-    }
-    
-    /* Back link */
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #0E214B;
-        text-decoration: none;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        transition: all 0.2s;
-        margin-top: 2rem;
-    }
-    .back-link:hover {
-        background: #0E214B;
-        color: white;
-    }
-</style>
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/index.html">SL</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/unit-12/index.html">Unit 12</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Unit Plan</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
 
+            
+
+            
 <div class="textbook-container">
-    
+
     <!-- Chapter Header -->
     <header class="chapter-header">
-        <div class="chapter-number">Unit 12 • SL</div>
+        <div class="chapter-number">Unit 12 &bull; SL</div>
         <h1 class="chapter-title">Case Study Inquiry</h1>
     </header>
 
     <!-- Two-column layout -->
     <div class="textbook-grid">
-        
+
         <!-- Main Content -->
-        <main class="main-content">
-            
+        <div class="unit-plan-main">
+
             <!-- Introduction -->
+            
             <details class="section-accordion" open>
                 <summary class="section-header">
                     <div class="section-icon"><i class="fa-solid fa-compass"></i></div>
@@ -356,18 +173,17 @@
                 </summary>
                 <div class="section-body">
                     
-                        
-                        <p><strong>How do we apply computer science to the unknown?</strong></p>
-                        
-                        
-                        <p>This unit prepares you for <strong>Paper 1 Section B</strong>. Each year, the IB releases a 'Case Study' scenario describing a fictional organization facing a new technological challenge (e.g., Rescue Robots, Automated Airports). Your job is to research the emerging technology and propose strategic solutions.</p>
-                        
-                        
-                        <p>You will start by analyzing the <strong>Scenario</strong> to identify stakeholders and problems. Then you'll conduct <strong>Research</strong> into the specific technology (outside the standard syllabus). Finally, you'll practice answering the <strong>Challenge Questions</strong>, justifying your strategy with evidence.</p>
-                        
+                    <p><strong>How do we apply computer science to the unknown?</strong></p>
+                    
+                    
+                    <p>This unit prepares you for <strong>Paper 1 Section B</strong>. Each year, the IB releases a 'Case Study' scenario describing a fictional organization facing a new technological challenge (e.g., Rescue Robots, Automated Airports). Your job is to research the emerging technology and propose strategic solutions.</p>
+                    
+                    
+                    <p>You will start by analyzing the <strong>Scenario</strong> to identify stakeholders and problems. Then you'll conduct <strong>Research</strong> into the specific technology (outside the standard syllabus). Finally, you'll practice answering the <strong>Challenge Questions</strong>, justifying your strategy with evidence.</p>
                     
                 </div>
             </details>
+            
 
             <!-- Core Concepts (dynamic sections) -->
             
@@ -426,6 +242,7 @@
             
 
             <!-- Key Terminology -->
+            
             <details class="section-accordion">
                 <summary class="section-header">
                     <div class="section-icon"><i class="fa-solid fa-book"></i></div>
@@ -433,9 +250,8 @@
                     <i class="fa-solid fa-chevron-down toggle-arrow"></i>
                 </summary>
                 <div class="section-body">
-                    
                     <table class="term-table">
-                        <tr><th style="width: 180px;">Term</th><th>Definition</th></tr>
+                        <tr><th>Term</th><th>Definition</th></tr>
                         
                         <tr><td class="term-name">Case Study</td><td>A document detailing a specific scenario involving emerging technology, used for Paper 1 Section B.</td></tr>
                         
@@ -450,76 +266,47 @@
                         <tr><td class="term-name">Emerging Technology</td><td>Tech that is currently developing or will be developed in the next 5-10 years (e.g., Quantum, AR, AI Swarms).</td></tr>
                         
                     </table>
-                    
                 </div>
             </details>
+            
 
             <!-- Common Misconceptions -->
+            
             <details class="section-accordion">
                 <summary class="section-header">
-                    <div class="section-icon" style="background: #ffc107;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="section-icon section-icon--warning"><i class="fa-solid fa-triangle-exclamation"></i></div>
                     <h2>Common Misconceptions</h2>
                     <i class="fa-solid fa-chevron-down toggle-arrow"></i>
                 </summary>
                 <div class="section-body">
                     
-                        
-                        <div class="warning-box">
-                            <h4><i class="fa-solid fa-times-circle"></i> General Knowledge</h4>
-                            <p>Writing generic answers like 'It makes it faster'. You need SPECIFIC details about the specific tech in the case study.</p>
-                        </div>
-                        
-                        <div class="warning-box">
-                            <h4><i class="fa-solid fa-times-circle"></i> Listing vs Evaluating</h4>
-                            <p>Listing 10 features of the tech is not an evaluation. You must explain the IMPACT of those features on the stakeholders.</p>
-                        </div>
-                        
-                        <div class="warning-box">
-                            <h4><i class="fa-solid fa-times-circle"></i> Ignoring Constraints</h4>
-                            <p>Suggesting a solution that is too expensive or technically impossible given the scenario's limits.</p>
-                        </div>
-                        
+                    <div class="warning-box">
+                        <h4><i class="fa-solid fa-times-circle"></i> General Knowledge</h4>
+                        <p>Writing generic answers like 'It makes it faster'. You need SPECIFIC details about the specific tech in the case study.</p>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <h4><i class="fa-solid fa-times-circle"></i> Listing vs Evaluating</h4>
+                        <p>Listing 10 features of the tech is not an evaluation. You must explain the IMPACT of those features on the stakeholders.</p>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <h4><i class="fa-solid fa-times-circle"></i> Ignoring Constraints</h4>
+                        <p>Suggesting a solution that is too expensive or technically impossible given the scenario's limits.</p>
+                    </div>
                     
                 </div>
             </details>
+            
 
             <!-- Slide Decks -->
             
 
-            <!-- Teacher Resources -->
-            <details class="section-accordion">
-                <summary class="section-header">
-                    <div class="section-icon" style="background: #6c757d;"><i class="fa-solid fa-chalkboard-user"></i></div>
-                    <h2>Teacher Resources</h2>
-                    <i class="fa-solid fa-chevron-down toggle-arrow"></i>
-                </summary>
-                <div class="section-body">
-                    <div class="resource-grid">
-                        <button type="button" disabled style="
-                            display: flex;
-                            align-items: center;
-                            gap: 0.75rem;
-                            padding: 1rem;
-                            background: #f8f9fa;
-                            border: 1px dashed #ced4da;
-                            border-radius: 8px;
-                            color: #6c757d;
-                            font-weight: 600;
-                            width: 100%;
-                            cursor: not-allowed;
-                        ">
-                            <i class="fa-solid fa-clipboard-question"></i>
-                            <span>Assessments (Coming Soon)</span>
-                        </button>
-                    </div>
-                </div>
-            </details>
+        </div>
 
-        </main>
-        
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            
+        <!-- Right Sidebar -->
+        <aside class="unit-plan-sidebar">
+
             <!-- Syllabus Coverage -->
             <div class="sidebar-card">
                 <h3>Syllabus Coverage</h3>
@@ -537,12 +324,12 @@
                 </ul>
                 
             </div>
-            
+
             <!-- Applications -->
             
             <div class="sidebar-card">
                 <h3>Real-World Uses</h3>
-                <ul style="padding-left: 1.25rem; margin: 0; font-size: 0.9rem; line-height: 1.8;">
+                <ul class="applications-list">
                     
                     <li>Autonomous Rescue Robots (2024 Case?)</li>
                     
@@ -557,19 +344,19 @@
                 </ul>
             </div>
             
-            
+
             <!-- Think Deeper -->
             
-            <div class="sidebar-card" style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f0ff 100%);">
+            <div class="sidebar-card sidebar-card--think-deeper">
                 <h3>Think Deeper</h3>
-                <p style="font-size: 0.9rem; line-height: 1.6; margin: 0;"><em>"The Pace of Change"</em> Computer Science moves faster than any textbook. Is the ability to research new tech more valuable than knowing old definitions?</p>
+                <p class="think-deeper-text"><em>"The Pace of Change"</em> Computer Science moves faster than any textbook. Is the ability to research new tech more valuable than knowing old definitions?</p>
             </div>
             
-            
+
         </aside>
-        
+
     </div>
-    
+
     <!-- Back link -->
     <a href="index.html" class="back-link">
         <i class="fa-solid fa-arrow-left"></i> Back to Unit 12
@@ -577,7 +364,8 @@
 
 </div>
 
-    </main>
+        </main>
+    </div>
 
     <footer>
         <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>

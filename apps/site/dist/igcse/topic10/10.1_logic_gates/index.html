@@ -1,0 +1,961 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="10.1 Logic Gates | SGS Education"><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><title>10.1 Logic Gates | SGS Education</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css"></head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html" class="active" aria-current="page"> IGCSE </a><a href="/ib-2027/index.html"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html" class="active" aria-current="page"> IGCSE </a> </li><li> <a href="/ib-2027/index.html"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace page-shell--with-sidebar"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div class="course-explorer"> <div class="course-explorer__header"> <p class="course-explorer__title">Topic 10</p> <p class="course-explorer__meta">10. Boolean Logic</p> </div> <div class="course-explorer__groups"> <details class="course-explorer__group" open> <summary> <span>Overview</span>  </summary> <ul> <li> <a href="/igcse/topic10/index.html"> <span>Topic overview</span>  </a> </li> </ul> </details><details class="course-explorer__group" open> <summary> <span>10.1 Logic Gates</span>  </summary> <ul> <li> <a href="/igcse/topic10/textbook/10-1.html"> <span>Read chapter</span> <small>Logic Gates</small> </a> </li><li> <a href="/igcse/topic10/10.1_logic_gates.html" aria-current="page" class="current"> <span>Slide deck</span> <small>Logic Gates</small> </a> </li><li> <a href="/igcse/topic10/10.1_assessment.html"> <span>Mini-assessment</span> <small>10.1 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>10.2 Logic Circuits</span>  </summary> <ul> <li> <a href="/igcse/topic10/textbook/10-2.html"> <span>Read chapter</span> <small>Logic Circuits</small> </a> </li><li> <a href="/igcse/topic10/10.2_logic_circuits.html"> <span>Slide deck</span> <small>Logic Circuits</small> </a> </li><li> <a href="/igcse/topic10/10.2_assessment.html"> <span>Mini-assessment</span> <small>10.2 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>10.3 Truth Tables</span>  </summary> <ul> <li> <a href="/igcse/topic10/textbook/10-3.html"> <span>Read chapter</span> <small>Truth Tables</small> </a> </li><li> <a href="/igcse/topic10/10.3_truth_tables.html"> <span>Slide deck</span> <small>Truth Tables</small> </a> </li><li> <a href="/igcse/topic10/10.3_assessment.html"> <span>Mini-assessment</span> <small>10.3 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Revision &amp; Reading</span>  </summary> <ul> <li> <a href="/igcse/topic10/textbook.html"> <span>Open Topic Textbook</span>  </a> </li><li> <a href="/igcse/topic10/flashcards.html"> <span>Flashcards</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Paper 1</span> <small>Computer Systems</small> </summary> <ul> <li> <a href="/igcse/topic1/index.html"> <span>1. Data Representation</span>  </a> </li><li> <a href="/igcse/topic2/index.html"> <span>2. Data Transmission</span>  </a> </li><li> <a href="/igcse/topic3/index.html"> <span>3. Hardware</span>  </a> </li><li> <a href="/igcse/topic4/index.html"> <span>4. Software</span>  </a> </li><li> <a href="/igcse/topic5/index.html"> <span>5. The Internet and its Uses</span>  </a> </li><li> <a href="/igcse/topic6/index.html"> <span>6. Automated and Emerging Technologies</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Paper 2</span> <small>Algorithms, Programming and Logic</small> </summary> <ul> <li> <a href="/igcse/topic7/index.html"> <span>7. Algorithm Design and Problem-Solving</span>  </a> </li><li> <a href="/igcse/topic8/index.html"> <span>8. Programming</span>  </a> </li><li> <a href="/igcse/topic9/index.html"> <span>9. Databases</span>  </a> </li><li> <a href="/igcse/topic10/index.html"> <span>10. Boolean Logic</span>  </a> </li> </ul> </details> </div> </div> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/igcse/index.html">IGCSE</a></li><li><a href="/igcse/topic10/index.html">Topic 10</a></li><li><span>10.1 Logic Gates</span></li><li><span aria-current="page">Slide deck</span></li></ol></nav>  <section class="page-panel page-panel--flush"> <section class="legacy-frame legacy-frame--slides"> <div class="legacy-frame__actions"> <button type="button" class="legacy-frame__fullscreen" data-legacy-frame-fullscreen="igcse-topic10-10-1-logic-gates">
+Present Fullscreen
+</button> </div> <iframe title="10.1 Logic Gates | SGS Education" class="legacy-frame__iframe" data-legacy-frame-id="igcse-topic10-10-1-logic-gates" srcdoc="<!DOCTYPE html>
+<html lang=&#34;en&#34;>
+
+<head>
+    <meta charset=&#34;utf-8&#34;>
+    <meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;>
+    <title>10.1 Logic Gates | SGS Education</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css&#34;>
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css&#34;>
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css&#34;>
+
+    <!-- Highlight.js -->
+    <link rel=&#34;stylesheet&#34;
+        href=&#34;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css&#34;>
+
+    <!-- Font Awesome -->
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&#34;>
+
+    <link rel=&#34;stylesheet&#34; href=&#34;/css/slide-deck.css&#34;>
+
+
+    <!-- data-sgs-auth-gate -->
+    <link rel=&#34;stylesheet&#34; href=&#34;/css/auth-gate.css&#34;>
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name=&#34;description&#34; content=&#34;SGS Education resources for KS3, IGCSE, and IB students and teachers.&#34;>
+<base href=&#34;/igcse/topic10/10.1_logic_gates/&#34; target=&#34;_top&#34;>
+  <style>
+    html.auth-pending body,
+    html.auth-ready body {
+      visibility: visible !important;
+    }
+    #back-btn, #sg-logo, .footer-text, .standalone-nav { display: none !important; }
+    .site-header,
+    .main-header,
+    .feedback-modals,
+    .site-feedback,
+    .feedback-trigger,
+    [data-feedback-open],
+    body > footer,
+    .sgs-auth-overlay,
+    #sgs-auth-overlay {
+      display: none !important;
+    }
+    html, body { margin: 0 !important; }
+  </style>
+</head>
+
+<body>
+    <a href=&#34;/igcse/topic10/index.html&#34; id=&#34;back-btn&#34; title=&#34;Back&#34; class=&#34;back-nav&#34;>
+        <i class=&#34;fa-solid fa-circle-arrow-left&#34;></i>
+    </a>
+    <img src=&#34;/images/Logo.png&#34; id=&#34;sg-logo&#34; alt=&#34;Logo&#34;
+        data-sgs-onerror=&#34;this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'&#34; decoding=&#34;async&#34; decoding="async">
+    <div class=&#34;footer-text live-date&#34; id=&#34;live-date-display&#34;></div>
+    <div class=&#34;footer-text course-footer&#34;>IGCSE Computer Science</div>
+
+    <div class=&#34;reveal&#34;>
+        <div class=&#34;slides&#34;>
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class=&#34;title-container&#34;>
+                    <div class=&#34;title-line-top&#34;></div>
+                    <div>
+                        <h1 class=&#34;main-title&#34;>10.1 <span class=&#34;keyword&#34; data-def=&#34;an electronic circuit that relies on ‘on/off’ logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR&#34;>Logic Gates</span></h1>
+                        <h3 class=&#34;sub-title&#34;>Topic 10: Boolean Logic | The Building Blocks</h3>
+                    </div>
+                    <div class=&#34;title-line-bottom&#34;></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class=&#34;fa-solid fa-brain&#34;></i> Quick Recall (Topic 8)</h2>
+                <div class=&#34;cols&#34; style=&#34;margin-top:20px;&#34;>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>Q1:</strong> What values can a BOOLEAN store?</p>
+                        <p class=&#34;fragment small-text&#34; style=&#34;color: var(--primary-blue);&#34;>TRUE or FALSE only</p>
+                    </div>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>Q2:</strong> In binary, what two values are there?</p>
+                        <p class=&#34;fragment small-text&#34; style=&#34;color: var(--primary-blue);&#34;>0 and 1</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class=&#34;r-stack&#34;>
+                        <div class=&#34;fragment fade-in-then-out&#34;>
+                            <div class=&#34;question-box&#34;>
+                                <p style=&#34;font-size:1.2em; margin:0;&#34;>How do computers &#34;think&#34;?</p>
+                            </div>
+                        </div>
+                        <div class=&#34;fragment fade-in-then-out&#34;>
+                            <div class=&#34;box&#34; style=&#34;background: #ffebee; padding: 30px;&#34;>
+                                <p class=&#34;small-text&#34; style=&#34;margin:0;&#34;>Computers are just metal and silicon. They don't have brains.</p>
+                                <p class=&#34;small-text&#34; style=&#34;margin-top:10px;&#34;>Yet they can play chess, recognise faces, and drive cars.</p>
+                            </div>
+                        </div>
+                        <div class=&#34;fragment fade-in&#34;>
+                            <div class=&#34;box-blue&#34; style=&#34;padding: 30px;&#34;>
+                                <p class=&#34;small-text&#34;><strong>✅ The secret:</strong> billions of tiny electronic switches called <span class=&#34;keyword&#34; data-def=&#34;an electronic circuit that relies on ‘on/off’ logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR&#34;>logic gates</span>.</p>
+                                <p class=&#34;small-text&#34;>By combining simple ON/OFF decisions, we can do complex tasks.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>What is a <span class=&#34;keyword&#34; data-def=&#34;an electronic circuit that relies on ‘on/off’ logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR&#34;>logic gate</span>?</span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>What is a <span class=&#34;keyword&#34; data-def=&#34;an electronic circuit that relies on ‘on/off’ logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR&#34;>Logic Gate</span>?</h3>
+                    <div class=&#34;box&#34;>
+                        <p><strong>Definition:</strong> A <span class=&#34;keyword&#34; data-def=&#34;an electronic circuit that relies on ‘on/off’ logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR&#34;>logic gate</span> is an electronic circuit that takes binary inputs (0 or 1) and produces a binary output.</p>
+                    </div>
+                    <div class=&#34;cols fragment&#34; style=&#34;margin-top:20px;&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4><i class=&#34;fa-solid fa-right-to-bracket&#34;></i> Inputs</h4>
+                            <p class=&#34;small-text&#34;>One or more binary values (0 or 1)</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <h4><i class=&#34;fa-solid fa-right-from-bracket&#34;></i> Output</h4>
+                            <p class=&#34;small-text&#34;>A single binary value (0 or 1)</p>
+                        </div>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Think of it as:</strong> A decision-maker that follows simple rules.</p>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3><i class=&#34;fa-solid fa-lightbulb&#34;></i> Did You Know?</h3>
+                <div class=&#34;cols&#34;>
+                    <div class=&#34;box&#34;>
+                        <h4><i class=&#34;fa-solid fa-infinity&#34;></i> NAND Is a “Universal” Gate</h4>
+                        <p class=&#34;small-text fragment&#34;>You can build all other gates using only NAND gates.</p>
+                        <p class=&#34;small-text fragment&#34;>That’s why NAND is very common in real circuits.</p>
+                    </div>
+                    <div class=&#34;box-blue&#34;>
+                        <h4><i class=&#34;fa-solid fa-shield-halved&#34;></i> XOR Shows Up in Error Checking</h4>
+                        <p class=&#34;small-text fragment&#34;>XOR is used in parity and error detection ideas (Topic 2).</p>
+                        <p class=&#34;small-text fragment&#34;>It outputs 1 when inputs are different.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE 6 GATES
+                 ============================================ -->
+            <section>
+                <h2>The 6 <span class=&#34;keyword&#34; data-def=&#34;an electronic circuit that relies on ‘on/off’ logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR&#34;>Logic Gates</span></h2>
+                <div class=&#34;cols-3&#34; style=&#34;gap:10px;&#34;>
+                    <div class=&#34;box fragment&#34;>
+                        <h4>NOT</h4>
+                        <p class=&#34;small-text&#34;>Reverses the input</p>
+                    </div>
+                    <div class=&#34;box fragment&#34;>
+                        <h4>AND</h4>
+                        <p class=&#34;small-text&#34;>Both must be 1</p>
+                    </div>
+                    <div class=&#34;box fragment&#34;>
+                        <h4>OR</h4>
+                        <p class=&#34;small-text&#34;>Either can be 1</p>
+                    </div>
+                </div>
+                <div class=&#34;cols-3&#34; style=&#34;gap:10px; margin-top:10px;&#34;>
+                    <div class=&#34;box box-blue fragment&#34;>
+                        <h4>NAND</h4>
+                        <p class=&#34;small-text&#34;>NOT AND</p>
+                    </div>
+                    <div class=&#34;box box-blue fragment&#34;>
+                        <h4>NOR</h4>
+                        <p class=&#34;small-text&#34;>NOT OR</p>
+                    </div>
+                    <div class=&#34;box box-blue fragment&#34;>
+                        <h4>XOR</h4>
+                        <p class=&#34;small-text&#34;>Either but not both</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 NOT GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The NOT Gate</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>The simplest gate: it <strong>reverses</strong> the input.</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Analogy:</strong> An opposite day machine.</p>
+                        <p class=&#34;small-text&#34;>If you say YES (1), it says NO (0). If you say NO (0), it says YES (1).</p>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Expression:</strong> X = NOT A</p>
+                        <p class=&#34;small-text&#34;><em>It's the only gate with just ONE input!</em></p>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>See the <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>NOT Gate <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>Truth Table</span></h3>
+                    <div class=&#34;cols&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>Expression</h4>
+                            <p><code>X = NOT A</code></p>
+                            <p class=&#34;small-text&#34;>Output is opposite of input.</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <table style=&#34;width:100%; font-size:1em; text-align:center;&#34;>
+                                <tr>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:10px;&#34;>A</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:10px;&#34;>X</th>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:10px;&#34;>0</td>
+                                    <td style=&#34;padding:10px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:10px;&#34;>1</td>
+                                    <td style=&#34;padding:10px; background:#f8d7da; font-weight:bold;&#34;>0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Memory trick:</strong> Whatever goes in, the opposite comes out!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 AND GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The AND Gate</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>Output is 1 only if <strong>BOTH</strong> inputs are 1.</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Analogy:</strong> A strict parent who says:</p>
+                        <p class=&#34;small-text&#34;>&#34;You can go out IF you've done your homework AND tidied your room.&#34;</p>
+                        <p class=&#34;small-text&#34;><em>Both must be true!</em></p>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Expression:</strong> X = A AND B</p>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>See the <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>AND Gate <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>Truth Table</span></h3>
+                    <div class=&#34;cols&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>Expression</h4>
+                            <p><code>X = A AND B</code></p>
+                            <p class=&#34;small-text&#34;>Both must be 1 to get 1.</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <table style=&#34;width:100%; font-size:1em; text-align:center;&#34;>
+                                <tr>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>A</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>B</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>X</th>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Memory trick:</strong> Only the last row gives 1 (when both are 1)!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 QUICK CHECK 1
+                 ============================================ -->
+            <section>
+                <h3>Quick Check</h3>
+                <div class=&#34;question-box&#34;>
+                    <p style=&#34;margin:0;&#34;>A login system uses an AND gate:</p>
+                    <p style=&#34;margin:0;&#34;><strong>P</strong> = correct password, <strong>C</strong> = correct code</p>
+                    <p style=&#34;margin-top:10px;&#34;>If P = 1 and C = 0, what is the output X?</p>
+                </div>
+                <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                    <p style=&#34;margin:0;&#34;><strong>X = 0</strong> — an AND gate needs <strong>both</strong> inputs to be 1.</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 OR GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The OR Gate</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>Output is 1 if <strong>EITHER</strong> input (or both) is 1.</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Analogy:</strong> A relaxed parent who says:</p>
+                        <p class=&#34;small-text&#34;>&#34;You can go out IF you've done your homework OR tidied your room.&#34;</p>
+                        <p class=&#34;small-text&#34;><em>Either one (or both) is enough!</em></p>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Expression:</strong> X = A OR B</p>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>See the <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>OR Gate <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>Truth Table</span></h3>
+                    <div class=&#34;cols&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>Expression</h4>
+                            <p><code>X = A OR B</code></p>
+                            <p class=&#34;small-text&#34;>Either (or both) gives 1.</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <table style=&#34;width:100%; font-size:1em; text-align:center;&#34;>
+                                <tr>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>A</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>B</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>X</th>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Memory trick:</strong> Only 0 when both are 0!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 AND VS OR (R-STACK COMPARISON)
+                 ============================================ -->
+            <section>
+                <h3>AND vs OR</h3>
+                <div class=&#34;r-stack&#34;>
+                    <div class=&#34;fragment fade-in-then-out&#34;>
+                        <div class=&#34;cols&#34;>
+                            <div class=&#34;box&#34; style=&#34;padding: 25px;&#34;>
+                                <h4><i class=&#34;fa-solid fa-lock&#34;></i> AND</h4>
+                                <p class=&#34;small-text&#34;>“Both conditions must be true.”</p>
+                                <p class=&#34;small-text&#34;><em>Strict rule</em></p>
+                            </div>
+                            <div class=&#34;box-blue&#34; style=&#34;padding: 25px;&#34;>
+                                <h4><i class=&#34;fa-solid fa-door-open&#34;></i> OR</h4>
+                                <p class=&#34;small-text&#34;>“Either condition can be true.”</p>
+                                <p class=&#34;small-text&#34;><em>Flexible rule</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=&#34;fragment fade-in&#34;>
+                        <div class=&#34;cols&#34;>
+                            <div class=&#34;box&#34; style=&#34;background:#ffebee; padding: 20px;&#34;>
+                                <h4>AND outputs</h4>
+                                <table style=&#34;width:100%; font-size:0.85em; text-align:center;&#34;>
+                                    <tr>
+                                        <th style=&#34;background:var(--primary-blue); color:white; padding:6px;&#34;>A</th>
+                                        <th style=&#34;background:var(--primary-blue); color:white; padding:6px;&#34;>B</th>
+                                        <th style=&#34;background:var(--primary-blue); color:white; padding:6px;&#34;>X</th>
+                                    </tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>0</td><td>1</td><td>0</td></tr>
+                                    <tr><td>1</td><td>0</td><td>0</td></tr>
+                                    <tr><td>1</td><td>1</td><td style=&#34;font-weight:bold; background:#d4edda;&#34;>1</td></tr>
+                                </table>
+                            </div>
+                            <div class=&#34;box box-blue&#34; style=&#34;padding: 20px;&#34;>
+                                <h4>OR outputs</h4>
+                                <table style=&#34;width:100%; font-size:0.85em; text-align:center;&#34;>
+                                    <tr>
+                                        <th style=&#34;background:var(--primary-blue); color:white; padding:6px;&#34;>A</th>
+                                        <th style=&#34;background:var(--primary-blue); color:white; padding:6px;&#34;>B</th>
+                                        <th style=&#34;background:var(--primary-blue); color:white; padding:6px;&#34;>X</th>
+                                    </tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>0</td><td>1</td><td style=&#34;font-weight:bold; background:#d4edda;&#34;>1</td></tr>
+                                    <tr><td>1</td><td>0</td><td style=&#34;font-weight:bold; background:#d4edda;&#34;>1</td></tr>
+                                    <tr><td>1</td><td>1</td><td style=&#34;font-weight:bold; background:#d4edda;&#34;>1</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 NAND &#38; NOR GATES
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>NAND &#38; NOR Gates</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>What's the opposite of AND and OR?</p>
+                    </div>
+                    <div class=&#34;cols fragment&#34; style=&#34;margin-top:20px;&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>NAND</h4>
+                            <p class=&#34;small-text&#34;><strong>NOT AND</strong></p>
+                            <p class=&#34;small-text&#34;>Do AND, then flip the result.</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <h4>NOR</h4>
+                            <p class=&#34;small-text&#34;><strong>NOT OR</strong></p>
+                            <p class=&#34;small-text&#34;>Do OR, then flip the result.</p>
+                        </div>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>See the <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>truth tables</span></span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>NAND <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>Truth Table</span></h3>
+                    <div class=&#34;cols&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>Expression</h4>
+                            <p><code>X = NOT (A AND B)</code></p>
+                            <p class=&#34;small-text&#34;>Opposite of AND.</p>
+                            <p class=&#34;small-text&#34;>0 only when both are 1.</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <table style=&#34;width:100%; font-size:1em; text-align:center;&#34;>
+                                <tr>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>A</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>B</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>X</th>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>NOR <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>Truth Table</span></h3>
+                    <div class=&#34;cols&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>Expression</h4>
+                            <p><code>X = NOT (A OR B)</code></p>
+                            <p class=&#34;small-text&#34;>Opposite of OR.</p>
+                            <p class=&#34;small-text&#34;>1 only when both are 0.</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <table style=&#34;width:100%; font-size:1em; text-align:center;&#34;>
+                                <tr>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>A</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>B</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>X</th>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 QUICK CHECK 2
+                 ============================================ -->
+            <section>
+                <h3>Quick Check</h3>
+                <div class=&#34;question-box&#34;>
+                    <p style=&#34;margin:0;&#34;>A gate outputs <strong>1</strong> for:</p>
+                    <p style=&#34;margin:0;&#34;><code>00</code>, <code>01</code>, <code>10</code></p>
+                    <p style=&#34;margin-top:10px;&#34;>But outputs <strong>0</strong> for <code>11</code>.</p>
+                    <p style=&#34;margin-top:10px;&#34;>Which gate is it?</p>
+                </div>
+                <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                    <p style=&#34;margin:0;&#34;><strong>NAND</strong> — it is <strong>NOT (A AND B)</strong>.</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 XOR GATE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The XOR Gate</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>Output is 1 if inputs are <strong>DIFFERENT</strong>.</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Analogy:</strong> A two-way light switch.</p>
+                        <p class=&#34;small-text&#34;>If both switches are the same position → light OFF.</p>
+                        <p class=&#34;small-text&#34;>If switches are different positions → light ON.</p>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Expression:</strong> X = A XOR B</p>
+                        <p class=&#34;small-text&#34;><strong>XOR</strong> = &#34;Exclusive OR&#34; – one or the other, but <em>not both</em>.</p>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>See the <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>truth table</span></span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>XOR <span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>Truth Table</span></h3>
+                    <div class=&#34;cols&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>Expression</h4>
+                            <p><code>X = A XOR B</code></p>
+                            <p class=&#34;small-text&#34;>Different inputs → 1</p>
+                            <p class=&#34;small-text&#34;>Same inputs → 0</p>
+                        </div>
+                        <div class=&#34;box box-blue&#34;>
+                            <table style=&#34;width:100%; font-size:1em; text-align:center;&#34;>
+                                <tr>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>A</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>B</th>
+                                    <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>X</th>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>0</td>
+                                    <td style=&#34;padding:8px; background:#d4edda; font-weight:bold;&#34;>1</td>
+                                </tr>
+                                <tr>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px;&#34;>1</td>
+                                    <td style=&#34;padding:8px; background:#f8d7da;&#34;>0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Memory trick:</strong> XOR = &#34;eXclusive&#34; – only one can be 1!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <div class=&#34;box&#34; style=&#34;margin-top:20px;&#34;>
+                    <table style=&#34;width:100%; font-size:0.85em; text-align:center;&#34;>
+                        <tr>
+                            <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Gate</th>
+                            <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Rule</th>
+                            <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Outputs 1 when...</th>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:6px;&#34;><strong>NOT</strong></td>
+                            <td style=&#34;padding:6px;&#34;>Reverses</td>
+                            <td style=&#34;padding:6px;&#34;>Input is 0</td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:6px;&#34;><strong>AND</strong></td>
+                            <td style=&#34;padding:6px;&#34;>Both must be 1</td>
+                            <td style=&#34;padding:6px;&#34;>A=1 AND B=1</td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:6px;&#34;><strong>OR</strong></td>
+                            <td style=&#34;padding:6px;&#34;>Either can be 1</td>
+                            <td style=&#34;padding:6px;&#34;>A=1 OR B=1</td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:6px;&#34;><strong>NAND</strong></td>
+                            <td style=&#34;padding:6px;&#34;>NOT AND</td>
+                            <td style=&#34;padding:6px;&#34;>NOT both 1</td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:6px;&#34;><strong>NOR</strong></td>
+                            <td style=&#34;padding:6px;&#34;>NOT OR</td>
+                            <td style=&#34;padding:6px;&#34;>Both are 0</td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:6px;&#34;><strong>XOR</strong></td>
+                            <td style=&#34;padding:6px;&#34;>Different</td>
+                            <td style=&#34;padding:6px;&#34;>A ≠ B</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 CONNECTIONS
+                 ============================================ -->
+            <section>
+                <h2>Connections</h2>
+                <div class=&#34;cols&#34; style=&#34;margin-top:20px;&#34;>
+                    <div class=&#34;box&#34;>
+                        <h4><i class=&#34;fa-solid fa-link&#34;></i> Back Links</h4>
+                        <p class=&#34;small-text fragment&#34;><strong>Topic 1:</strong> gates use <strong>binary</strong> inputs (0/1) just like number representation.</p>
+                        <p class=&#34;small-text fragment&#34;><strong>Topic 8:</strong> <strong>Boolean</strong> values (TRUE/FALSE) map directly to 1/0 decisions.</p>
+                    </div>
+                    <div class=&#34;box-blue&#34;>
+                        <h4><i class=&#34;fa-solid fa-forward&#34;></i> Coming Up</h4>
+                        <p class=&#34;small-text fragment&#34;><strong>10.2:</strong> combine gates into <strong><span class=&#34;keyword&#34; data-def=&#34;these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1&#34;>logic circuits</span></strong> that solve real conditions.</p>
+                        <p class=&#34;small-text fragment&#34;><strong>10.3:</strong> use <strong><span class=&#34;keyword&#34; data-def=&#34;a method of checking the output from a logic circuit; a truth table lists all the possible binary input combinations and their associated outputs; the number of outputs will depend on the number of inputs; for example, two inputs have 22 (4) possible binary combinations, three inputs have 2 3 (8) possible binary combinations, and so on&#34;>truth tables</span></strong> to prove every input gives the right output.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class=&#34;fa-solid fa-check-double&#34;></i> True or False?</h2>
+                    <div class=&#34;box-blue&#34;>
+                        <p style=&#34;margin:0;&#34;>Check Your Understanding</p>
+                    </div>
+                    <ol style=&#34;font-size:1.1em; line-height:1.6; margin-top: 20px;&#34;>
+                        <li>A NOT gate has two inputs.</li>
+                        <li>An AND gate outputs 1 if any input is 1.</li>
+                        <li>XOR outputs 1 if the inputs are different.</li>
+                    </ol>
+                    <p class=&#34;small-text&#34; style=&#34;margin-top: 20px; color: #666;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down&#34;></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class=&#34;question-box&#34;>A NOT gate has two inputs.</div>
+                    <div class=&#34;fragment box-blue&#34;>
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style=&#34;border-color: rgba(255,255,255,0.3);&#34;>
+                        <p>NOT is the only gate with just <strong>one</strong> input. It simply reverses it.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class=&#34;question-box&#34;>An AND gate outputs 1 if any input is 1.</div>
+                    <div class=&#34;fragment box-blue&#34;>
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style=&#34;border-color: rgba(255,255,255,0.3);&#34;>
+                        <p>AND needs <strong>BOTH</strong> inputs to be 1. That's OR you're thinking of!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class=&#34;question-box&#34;>XOR outputs 1 if the inputs are different.</div>
+                    <div class=&#34;fragment box-blue&#34;>
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style=&#34;border-color: rgba(255,255,255,0.3);&#34;>
+                        <p>XOR = &#34;eXclusive OR&#34;. It outputs 1 when A ≠ B (different inputs).</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 GRADIENT SUMMARY (AFTER TRUE/FALSE)
+                 ============================================ -->
+            <section data-background=&#34;linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)&#34;>
+                <h2 style=&#34;color: white;&#34;>10.1 Summary</h2>
+                <div class=&#34;cols&#34; style=&#34;color: white;&#34;>
+                    <div class=&#34;box&#34; style=&#34;background: rgba(255,255,255,0.1);&#34;>
+                        <p class=&#34;small-text&#34;>🔹 <strong><span class=&#34;keyword&#34; data-def=&#34;an electronic circuit that relies on ‘on/off’ logic; the most common gates are NOT, AND, OR, NAND, NOR and XOR&#34;>Logic gates</span></strong> take binary inputs and output 0 or 1.</p>
+                        <p class=&#34;small-text&#34;>🔹 <strong>NOT</strong> flips a single input.</p>
+                        <p class=&#34;small-text&#34;>🔹 <strong>AND</strong> outputs 1 only when both inputs are 1.</p>
+                    </div>
+                    <div class=&#34;box&#34; style=&#34;background: rgba(255,255,255,0.1);&#34;>
+                        <p class=&#34;small-text&#34;>🔹 <strong>OR</strong> outputs 1 when at least one input is 1.</p>
+                        <p class=&#34;small-text&#34;>🔹 <strong>NAND/NOR</strong> are the opposites of AND/OR.</p>
+                        <p class=&#34;small-text&#34;>🔹 <strong>XOR</strong> outputs 1 when inputs are different.</p>
+                    </div>
+                </div>
+                <div class=&#34;box&#34; style=&#34;margin-top:20px; background: rgba(255,255,255,0.1); color: white;&#34;>
+                    <p><strong>Coming up next:</strong> 10.2 <span class=&#34;keyword&#34; data-def=&#34;these are formed from a combination of logic gates and designed to carry out a particular task; the output from a logic circuit will be 0 or 1&#34;>Logic Circuits</span> — combining gates to build systems.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js&#34;></script>
+    <script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js&#34;></script>
+
+    <script src=&#34;/js/slide-deck.js&#34;></script>
+
+    
+    <script src=&#34;/js/live-date-display.js&#34;></script>
+
+
+    <!-- data-sgs-auth-gate -->
+    <script src=&#34;/__/firebase/10.13.2/firebase-app-compat.js&#34;></script>
+    <script src=&#34;/__/firebase/10.13.2/firebase-auth-compat.js&#34;></script>
+    <script src=&#34;/__/firebase/init.js&#34;></script>
+    <script src=&#34;/js/auth-gate.js&#34;></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src=&#34;/js/legacy-inline-events.js&#34;></script>
+
+  <script>
+    (() => {
+      const cleanupLegacyChrome = () => {
+        const removeSelectors = [
+          '.site-header',
+          '.main-header',
+          '.feedback-modals',
+          '.site-feedback',
+          '.feedback-trigger',
+          '[data-feedback-open]',
+          'body > footer',
+          '#sgs-auth-overlay',
+          '.sgs-auth-overlay',
+          'link[href*=&#34;/css/auth-gate.css&#34;]',
+          'script[src*=&#34;/__/firebase/&#34;]',
+          'script[src*=&#34;/js/auth-gate.js&#34;]'
+        ];
+
+        removeSelectors.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => node.remove());
+        });
+
+        document.documentElement.classList.remove('auth-pending');
+        document.documentElement.classList.add('auth-ready');
+        document.body.classList.remove('sgs-auth-locked');
+        document.body.style.visibility = 'visible';
+        document.body.style.overflow = '';
+
+        const placeholderLinks = [
+          'a[href=&#34;/coming-soon.html&#34;]',
+          'a[href=&#34;coming-soon.html&#34;]',
+          'a[href=&#34;./coming-soon.html&#34;]'
+        ];
+
+        placeholderLinks.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => {
+            const removableParent =
+              node.closest('.resource-btn, .activity-card, .feature-card, .feature-link, li, article') || node;
+            removableParent.remove();
+          });
+        });
+      };
+
+      const sendHeight = () => {
+        const height = Math.max(
+          document.documentElement.scrollHeight,
+          document.body ? document.body.scrollHeight : 0,
+          document.documentElement.offsetHeight,
+          document.body ? document.body.offsetHeight : 0
+        );
+        parent.postMessage({ type: 'sgs-legacy-frame-height', id: 'igcse-topic10-10-1-logic-gates', height }, '*');
+      };
+
+      window.addEventListener('load', () => {
+        cleanupLegacyChrome();
+        sendHeight();
+        setTimeout(sendHeight, 250);
+      });
+      window.addEventListener('resize', sendHeight);
+
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(sendHeight).observe(document.documentElement);
+      }
+
+      setInterval(sendHeight, 1200);
+    })();
+  </script>
+</body>
+
+</html>
+" loading="eager" allowfullscreen></iframe> </section> <script data-frame-id="igcse-topic10-10-1-logic-gates">
+  (() => {
+    const activeScript = document.currentScript;
+    const activeFrameId = activeScript?.getAttribute('data-frame-id');
+    if (!activeFrameId) return;
+
+    const selector = `iframe[data-legacy-frame-id="${activeFrameId}"]`;
+    const frame = document.querySelector(selector);
+    if (!frame) return;
+
+    const fullscreenButton = document.querySelector(`[data-legacy-frame-fullscreen="${activeFrameId}"]`);
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          await frame.requestFullscreen();
+        } catch {
+          // Ignore fullscreen failures triggered by browser policy.
+        }
+      });
+    }
+
+    window.addEventListener('message', (event) => {
+      if (!event.data || event.data.type !== 'sgs-legacy-frame-height' || event.data.id !== activeFrameId) {
+        return;
+      }
+
+      const nextHeight = Number(event.data.height);
+      if (!Number.isFinite(nextHeight) || nextHeight <= 0) {
+        return;
+      }
+
+      if (!frame.closest('.legacy-frame--document')) {
+        return;
+      }
+
+      frame.style.height = `${Math.max(880, nextHeight)}px`;
+    });
+  })();
+</script> </section>  <nav class="prev-next-nav" aria-label="Page sequence"><a href="/igcse/topic10/textbook/10-1.html" class="prev-next-nav__link prev-next-nav__link--prev"><span class="prev-next-nav__label">Previous</span><strong>Read chapter</strong></a><a href="/igcse/topic10/10.1_assessment.html" class="prev-next-nav__link prev-next-nav__link--next"><span class="prev-next-nav__label">Next</span><strong>Mini-assessment</strong></a></nav> </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> </body> </html>

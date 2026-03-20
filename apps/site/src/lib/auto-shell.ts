@@ -222,6 +222,7 @@ const buildIgcseCourseGroups = async (): Promise<ShellNavGroup[]> => {
     id: section.title.toLowerCase().replace(/\s+/g, '-'),
     label: section.title,
     meta: section.subtitle,
+    courseLevel: true,
     items: (section.items || []).map((item) => ({
       label: `${item.number}. ${item.name}`,
       href: item.href
@@ -476,12 +477,15 @@ const buildKs3Shell = async (pathname: string): Promise<{
   nextLink?: ShellPageLink;
 }> => {
   const listing = await getListingByKey<ListingRecord>('ks3');
+  const formatKs3CourseItemLabel = (item: ListingRecord['sections'][number]['items'][number]) =>
+    /\/cover\//.test(item.href) ? item.name : `Unit ${item.number}. ${item.name}`;
   const courseGroups: ShellNavGroup[] = (listing.sections || []).map((section) => ({
     id: section.title.toLowerCase().replace(/\s+/g, '-'),
     label: section.title,
     meta: section.subtitle,
+    courseLevel: true,
     items: (section.items || []).map((item) => ({
-      label: `Unit ${item.number}. ${item.name}`,
+      label: formatKs3CourseItemLabel(item),
       href: item.href
     }))
   }));
@@ -581,6 +585,7 @@ const buildIbCourseGroups = async (level: 'sl' | 'hl'): Promise<ShellNavGroup[]>
     id: `${level}-${section.title.toLowerCase().replace(/\s+/g, '-')}`,
     label: section.title,
     meta: section.subtitle,
+    courseLevel: true,
     items: (section.items || []).map((item) => ({
       label: `Unit ${item.number}. ${item.name}`,
       href: ensureAbsoluteHref(basePath, item.href)
@@ -774,7 +779,7 @@ const buildIbShell = async (pathname: string): Promise<{
     : /(slides|sql|scenario|oop-project|project|worksheet)/i.test(currentPath)
     ? 'workspace'
     : currentPath.endsWith('/unit-plan')
-    ? 'reading'
+    ? 'worksheet'
     : 'worksheet';
   const unitOverviewHref = `/ib-2027/${routeParts.level}/unit-${unitNumber}/index.html`;
   const breadcrumbs: ShellBreadcrumb[] = [

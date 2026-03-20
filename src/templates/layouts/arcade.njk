@@ -2,7 +2,20 @@
 {% import "../components.njk" as ui %}
 
 {% set resolvedSlideDeckResources = slideDeckResources or (specification and specification.sections) %}
-{% set hasStructuredSections = specification or (textbookResources and textbookResources.length) or (resolvedSlideDeckResources and resolvedSlideDeckResources.length) or (studentActivitiesResources and studentActivitiesResources.length) or (assessmentResources and assessmentResources.length) or (homeworkResources and homeworkResources.length) or (independentTasks and independentTasks.length) or (revisionResources and revisionResources.length) %}
+
+{# Filter out placeholder items that link to coming-soon.html #}
+{% set realTextbook = textbookResources | withoutPlaceholders if textbookResources else [] %}
+{% set realSlideDecks = resolvedSlideDeckResources | withoutPlaceholders if resolvedSlideDeckResources else [] %}
+{% set realActivities = studentActivitiesResources | withoutPlaceholders if studentActivitiesResources else [] %}
+{% set realAssessments = assessmentResources | withoutPlaceholders if assessmentResources else [] %}
+{% set realHomework = homeworkResources | withoutPlaceholders if homeworkResources else [] %}
+{% set realRevision = revisionResources | withoutPlaceholders if revisionResources else [] %}
+{% set realIndependentTasks = independentTasks | withoutPlaceholders if independentTasks else [] %}
+{% set realCards = cards | withoutPlaceholders if cards else [] %}
+{% set realResources = resources | withoutPlaceholders if resources else [] %}
+{% set realResourcesSecondary = resourcesSecondary | withoutPlaceholders if resourcesSecondary else [] %}
+
+{% set hasStructuredSections = specification or (realTextbook and realTextbook.length) or (realSlideDecks and realSlideDecks.length) or (realActivities and realActivities.length) or (realAssessments and realAssessments.length) or (realHomework and realHomework.length) or (realIndependentTasks and realIndependentTasks.length) or (realRevision and realRevision.length) %}
 
 {% macro resourceSection(title, items, sectionId='') %}
     {% if items and items.length %}
@@ -18,6 +31,51 @@
 
 {% block content %}
     {% if hasStructuredSections %}
+    <div class="app-layout has-sidebar">
+        <aside class="course-sidebar" aria-label="Topic navigation">
+            <div class="sidebar-header">
+                <span class="sidebar-heading">{{ hero.title if hero else 'In this topic' }}</span>
+            </div>
+            <ul class="sidebar-links" role="list">
+                {% if specification %}
+                <li><a href="#specification" class="sidebar-link" data-section="specification">
+                    <i class="fa-solid fa-book-open" aria-hidden="true"></i> Overview
+                </a></li>
+                {% endif %}
+                {% if realTextbook and realTextbook.length %}
+                <li><a href="#textbook" class="sidebar-link" data-section="textbook">
+                    <i class="fa-solid fa-book" aria-hidden="true"></i> Textbook
+                </a></li>
+                {% endif %}
+                {% if realSlideDecks and realSlideDecks.length %}
+                <li><a href="#slide-decks" class="sidebar-link" data-section="slide-decks">
+                    <i class="fa-solid fa-presentation-screen" aria-hidden="true"></i> Slide Decks
+                </a></li>
+                {% endif %}
+                {% if realActivities and realActivities.length %}
+                <li><a href="#student-activities" class="sidebar-link" data-section="student-activities">
+                    <i class="fa-solid fa-laptop-code" aria-hidden="true"></i> Activities
+                </a></li>
+                {% endif %}
+                {% if realAssessments and realAssessments.length %}
+                <li><a href="#assessments" class="sidebar-link" data-section="assessments">
+                    <i class="fa-solid fa-file-pen" aria-hidden="true"></i> Assessments
+                </a></li>
+                {% endif %}
+                {% if realIndependentTasks and realIndependentTasks.length %}
+                <li><a href="#independent-tasks" class="sidebar-link" data-section="independent-tasks">
+                    <i class="fa-solid fa-gamepad" aria-hidden="true"></i> Independent Tasks
+                </a></li>
+                {% endif %}
+                {% if realRevision and realRevision.length %}
+                <li><a href="#revision" class="sidebar-link" data-section="revision">
+                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i> Revision
+                </a></li>
+                {% endif %}
+            </ul>
+        </aside>
+        <div class="arcade-sections">
+
         {% if specification %}
             <div class="unit-details igcse-specification" id="specification">
                 <div class="content-box">
@@ -70,25 +128,25 @@
             </div>
         {% endif %}
 
-        {{ resourceSection('Textbook', textbookResources, 'textbook') }}
-        {{ resourceSection('Slide Decks', resolvedSlideDeckResources, 'slide-decks') }}
-        {{ resourceSection('Student Activities', studentActivitiesResources, 'student-activities') }}
-        {{ resourceSection('Assessments', assessmentResources, 'assessments') }}
-        {{ resourceSection('Homework', homeworkResources, 'homework') }}
+        {{ resourceSection('Textbook', realTextbook, 'textbook') }}
+        {{ resourceSection('Slide Decks', realSlideDecks, 'slide-decks') }}
+        {{ resourceSection('Student Activities', realActivities, 'student-activities') }}
+        {{ resourceSection('Assessments', realAssessments, 'assessments') }}
+        {{ resourceSection('Homework', realHomework, 'homework') }}
 
-        {% if independentTasks %}
+        {% if realIndependentTasks and realIndependentTasks.length %}
             <div class="resource-section" id="independent-tasks">
                 <div class="resource-header">
                     <h2 class="resource-title">Independent Tasks</h2>
                     <div class="resource-line"></div>
                 </div>
-                {{ ui.independentTaskGrid(independentTasks, basePath) }}
+                {{ ui.independentTaskGrid(realIndependentTasks, basePath) }}
             </div>
         {% endif %}
 
-        {{ resourceSection('Revision', revisionResources, 'revision') }}
+        {{ resourceSection('Revision', realRevision, 'revision') }}
 
-        {% if revisionResources and revisionResources.length %}
+        {% if realRevision and realRevision.length %}
             <div class="carousel-overlay" id="carousel" role="dialog" aria-modal="true" aria-label="Revision image carousel">
                 <div class="carousel-content">
                     <button class="carousel-nav" id="carousel-prev" aria-label="Previous image">
@@ -105,26 +163,30 @@
                 </div>
             </div>
         {% endif %}
-    {% else %}
-        {% if cards %}{{ ui.cardGrid(cards, basePath) }}{% endif %}
 
-        {% if resources %}
+        </div>{# /arcade-sections #}
+    </div>{# /app-layout has-sidebar #}
+    <script src="/js/section-nav.js"></script>
+    {% else %}
+        {% if realCards and realCards.length %}{{ ui.cardGrid(realCards, basePath) }}{% endif %}
+
+        {% if realResources and realResources.length %}
             <div class="resource-section">
                 <div class="resource-header">
                     <h2 class="resource-title">{{ resourcesTitle | default('Teacher Resources') }}</h2>
                     <div class="resource-line"></div>
                 </div>
-                {{ ui.resourceGrid(resources, basePath) }}
+                {{ ui.resourceGrid(realResources, basePath) }}
             </div>
         {% endif %}
 
-        {% if resourcesSecondary %}
+        {% if realResourcesSecondary and realResourcesSecondary.length %}
             <div class="resource-section">
                 <div class="resource-header">
                     <h2 class="resource-title">{{ resourcesSecondaryTitle | default('Teacher Resources') }}</h2>
                     <div class="resource-line"></div>
                 </div>
-                {{ ui.resourceGrid(resourcesSecondary, basePath) }}
+                {{ ui.resourceGrid(realResourcesSecondary, basePath) }}
             </div>
         {% endif %}
     {% endif %}

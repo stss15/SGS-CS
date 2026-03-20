@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="A shared SQL playground for IGCSE and IB lessons with JSON-backed sample databases, custom workspaces, and schema diagrams."><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"><link rel="stylesheet" href="/css/tool-sql-playground.css"><title>SQL Playground | SGS Education</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css">
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html"> IGCSE </a><a href="/ib-2027/index.html"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html"> IGCSE </a> </li><li> <a href="/ib-2027/index.html"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace tool-shell">   <div class="page-shell__content">      <section class="sql-playground-route"> <div class="sql-playground-page" id="sql-playground-page"> <header class="playground-topbar"> <div class="topbar-brand"> <h1>SQL Playground</h1> <p class="workspace-pill" id="workspace-pill" aria-live="polite"></p> </div> <div class="topbar-actions"> <input id="import-json-input" type="file" accept=".json,application/json" hidden> <label class="workspace-select" for="dataset-select"> <span class="sr-only">Select database</span> <select id="dataset-select" name="dataset"></select> </label> <button type="button" class="secondary-button" id="import-json-button">Open</button> <button type="button" class="secondary-button" id="export-json-button">Export</button> </div> </header> <div class="playground-shell" id="playground-shell"> <aside class="sidebar-panel" aria-labelledby="tables-heading"> <div class="sidebar-header"> <div class="panel-title-group"> <h2 id="tables-heading">Tables</h2> </div> <span class="sidebar-meta" id="table-count"></span> </div> <div class="table-list" id="table-list"></div> </aside> <div class="pane-splitter pane-splitter-vertical" id="sidebar-splitter" role="separator" aria-label="Resize tables panel" aria-orientation="vertical"></div> <section class="workspace-panel" id="workspace-panel"> <section class="editor-panel" aria-labelledby="editor-heading"> <div class="panel-chrome"> <div class="panel-title-group"> <h2 id="editor-heading">SQL</h2> <span class="shortcut-badge">Ctrl/Cmd + Enter</span> </div> </div> <div class="editor-stage"> <div class="editor-shell" id="editor-shell"> <pre class="editor-highlight" id="editor-highlight" aria-hidden="true"><code class="language-sql" id="editor-highlight-code"></code></pre> <textarea id="query-input" spellcheck="false" placeholder="Write SQL here..." aria-label="SQL query input"></textarea> <div class="suggestions" id="query-suggestions" hidden></div> </div> <button type="button" class="run-fab" id="run-query-button">Run</button> </div> <div class="editor-footer"> <div class="status-inline" id="editor-status" aria-live="polite"></div> </div> </section> <div class="pane-splitter pane-splitter-horizontal" id="results-splitter" role="separator" aria-label="Resize editor and output panels" aria-orientation="horizontal"></div> <section class="inspector-panel" aria-labelledby="inspector-heading"> <div class="panel-chrome inspector-chrome"> <div class="panel-title-group"> <h2 id="inspector-heading">Inspect</h2> <div class="inspector-tabs" role="tablist" aria-label="Workspace panels"> <button type="button" class="inspector-tab" id="inspector-tab-results" data-inspector-view="results" role="tab" aria-controls="inspector-view-results" aria-selected="true">
+Results
+</button> <button type="button" class="inspector-tab" id="inspector-tab-schema" data-inspector-view="schema" role="tab" aria-controls="inspector-view-schema" aria-selected="false">
+Schema
+</button> <button type="button" class="inspector-tab" id="inspector-tab-erd" data-inspector-view="erd" role="tab" aria-controls="inspector-view-erd" aria-selected="false">
+ERD
+</button> </div> </div> <div class="results-meta" id="results-meta" aria-live="polite"></div> </div> <div class="inspector-body"> <div class="inspector-view" id="inspector-view-results" role="tabpanel" aria-labelledby="inspector-tab-results"> <div class="results-output" id="results-output"> <div class="empty-state"> <p>Initialising SQL engine...</p> </div> </div> </div> <div class="inspector-view" id="inspector-view-schema" role="tabpanel" aria-labelledby="inspector-tab-schema" hidden> <div class="schema-table-list" id="schema-table-list"></div> </div> <div class="inspector-view inspector-view-erd" id="inspector-view-erd" role="tabpanel" aria-labelledby="inspector-tab-erd" hidden> <div class="erd-stage" id="erd-stage"></div> <div class="relationship-list" id="relationship-list"></div> </div> </div> </section> </section> </div> </div> </section> <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js" defer></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/12.2.3/sql-formatter.min.js" defer></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js" defer></script> <script type="module" src="/js/tool-sql-playground.js"></script>    </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> 
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body> </html>

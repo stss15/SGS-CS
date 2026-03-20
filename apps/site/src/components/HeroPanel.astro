@@ -4,17 +4,19 @@ interface Props {
   title: string;
   subtitle?: string;
   pills?: string[];
+  variant?: 'feature' | 'compact';
 }
 
 const {
   eyebrow,
   title,
   subtitle,
-  pills = []
+  pills = [],
+  variant = 'feature'
 } = Astro.props;
 ---
 
-<section class="hero">
+<section class:list={['hero', `hero--${variant}`]}>
   <div class="hero-copy">
     {eyebrow && <p class="eyebrow">{eyebrow}</p>}
     <h1 class="hero-title">{title}</h1>

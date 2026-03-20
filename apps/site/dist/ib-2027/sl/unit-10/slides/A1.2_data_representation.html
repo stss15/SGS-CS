@@ -1,0 +1,595 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="A1.2 Data Representation &#38; Logic | IB Computer Science"><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><title>A1.2 Data Representation &amp; Logic | IB Computer Science</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css">
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html"> IGCSE </a><a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html"> IGCSE </a> </li><li> <a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace page-shell--with-sidebar"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div class="course-explorer"> <div class="course-explorer__header"> <p class="course-explorer__title">SL Unit 10</p> <p class="course-explorer__meta">Binary Logic &amp; Circuits</p> </div> <div class="course-explorer__groups"> <details class="course-explorer__group" open> <summary> <span>Overview</span>  </summary> <ul> <li> <a href="/ib-2027/sl/unit-10/index.html"> <span>Unit overview</span>  </a> </li><li> <a href="/ib-2027/sl/unit-10/unit-plan.html"> <span>Unit plan</span>  </a> </li><li> <a href="/ib-2027/sl/unit-10/textbook.html"> <span>Textbook</span>  </a> </li> </ul> </details><details class="course-explorer__group" open> <summary> <span>Slides</span>  </summary> <ul> <li> <a href="/ib-2027/sl/unit-10/slides/A1.2_data_representation.html" aria-current="page" class="current"> <span>Data Representation</span>  </a> </li><li> <a href="/ib-2027/sl/unit-10/slides/A1.3_operating_systems.html"> <span>Operating Systems</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 12</span> <small>Units 1–6</small> </summary> <ul> <li> <a href="/ib-2027/sl/unit-1/index.html"> <span>Unit 1. Computational Thinking</span>  </a> </li><li> <a href="/ib-2027/sl/unit-2/index.html"> <span>Unit 2. Programming Fundamentals</span>  </a> </li><li> <a href="/ib-2027/sl/unit-3/index.html"> <span>Unit 3. Data Structures &amp; Logic</span>  </a> </li><li> <a href="/ib-2027/sl/unit-4/index.html"> <span>Unit 4. Algorithmic Control</span>  </a> </li><li> <a href="/ib-2027/sl/unit-5/index.html"> <span>Unit 5. The OOP Paradigm</span>  </a> </li><li> <a href="/ib-2027/sl/unit-6/index.html"> <span>Unit 6. Data &amp; Information</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 13</span> <small>Units 7–12</small> </summary> <ul> <li> <a href="/ib-2027/sl/unit-7/index.html"> <span>Unit 7. Machine Intelligence</span>  </a> </li><li> <a href="/ib-2027/sl/unit-8/index.html"> <span>Unit 8. The IA Cycle</span>  </a> </li><li> <a href="/ib-2027/sl/unit-9/index.html"> <span>Unit 9. Computer Systems</span>  </a> </li><li> <a href="/ib-2027/sl/unit-10/index.html"> <span>Unit 10. Binary Logic &amp; Circuits</span>  </a> </li><li> <a href="/ib-2027/sl/unit-11/index.html"> <span>Unit 11. Global Networking</span>  </a> </li><li> <a href="/ib-2027/sl/unit-12/index.html"> <span>Unit 12. Case Study Inquiry</span>  </a> </li> </ul> </details> </div> </div> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB 2027</a></li><li><a href="/ib-2027/sl/index.html">SL</a></li><li><a href="/ib-2027/sl/unit-10/index.html">Unit 10</a></li><li><span aria-current="page">Data Representation</span></li></ol></nav>  <section class="page-panel page-panel--flush"> <section class="legacy-frame legacy-frame--slides"> <div class="legacy-frame__actions"> <button type="button" class="legacy-frame__fullscreen" data-legacy-frame-fullscreen="ib-2027-sl-unit-10-slides-A1-2-data-representation">
+Present Fullscreen
+</button> </div> <iframe title="A1.2 Data Representation &#38; Logic | IB Computer Science" class="legacy-frame__iframe" data-legacy-frame-id="ib-2027-sl-unit-10-slides-A1-2-data-representation" srcdoc="<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang=&#34;en&#34;>
+
+<head>
+    <meta charset=&#34;utf-8&#34;>
+    <meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;>
+    <title>A1.2 Data Representation &#38; Logic | IB Computer Science</title>
+    <meta name=&#34;description&#34; content=&#34;How computers represent numbers, text, images, and sound in binary — plus logic gates, truth tables, and HL Karnaugh maps.&#34;>
+
+    <!-- Reveal.js CSS -->
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css&#34;>
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css&#34;>
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css&#34;>
+
+    <!-- Highlight.js -->
+    <link rel=&#34;stylesheet&#34;
+        href=&#34;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css&#34;>
+
+    <!-- Font Awesome -->
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&#34;>
+
+    <link rel=&#34;stylesheet&#34; href=&#34;../../../../css/slide-deck.css&#34;>
+    
+<base href=&#34;/ib-2027/sl/unit-10/slides/A1.2_data_representation/&#34; target=&#34;_top&#34;>
+  <style>
+    html.auth-pending body,
+    html.auth-ready body {
+      visibility: visible !important;
+    }
+    #back-btn, #sg-logo, .footer-text, .standalone-nav { display: none !important; }
+    .site-header,
+    .main-header,
+    .feedback-modals,
+    .site-feedback,
+    .feedback-trigger,
+    [data-feedback-open],
+    body > footer,
+    .sgs-auth-overlay,
+    #sgs-auth-overlay {
+      display: none !important;
+    }
+    html, body { margin: 0 !important; }
+  </style>
+</head>
+
+<body>
+    <a href=&#34;../index.html&#34; id=&#34;back-btn&#34; title=&#34;Back&#34; class=&#34;back-nav&#34;>
+        <i class=&#34;fa-solid fa-circle-arrow-left&#34;></i>
+    </a>
+    <img src=&#34;../../../../images/Logo.png&#34; id=&#34;sg-logo&#34; alt=&#34;Logo&#34;
+        data-fallback-src=&#34;https://via.placeholder.com/80/003366/ffffff?text=LOGO&#34; decoding="async">
+    <div class=&#34;footer-text live-date&#34; id=&#34;live-date-display&#34;></div>
+    <div class=&#34;footer-text course-footer&#34;>IB Computer Science</div>
+
+    <div class=&#34;reveal&#34;>
+        <div class=&#34;slides&#34;>
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class=&#34;title-container&#34;>
+        <div class=&#34;title-line-top&#34;></div>
+        <div>
+            <h1 class=&#34;main-title&#34;>A1.2 Data Representation &#38;amp; Logic</h1>
+            <h3 class=&#34;sub-title&#34;>Topic A1: Computer Fundamentals | From Meaning → Bits</h3>
+        </div>
+        <div class=&#34;title-line-bottom&#34;></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A1.1) -->
+<section>
+    <section data-background=&#34;#e6f0fa&#34;>
+        <h3><i class=&#34;fa-solid fa-brain&#34;></i> Retrieval Practice</h3>
+        <div class=&#34;box-blue&#34;>
+            <p class=&#34;small-text&#34; style=&#34;margin:0;&#34;>Recall A1.1 (Computer Hardware) before we move on.</p>
+        </div>
+        <ol style=&#34;font-size:1.1em; line-height:1.6; margin-top:1rem;&#34;>
+            <li>Which register stores the address of the <em>next</em> instruction?</li>
+            <li>Which bus carries memory addresses from CPU to RAM?</li>
+            <li>What is the difference between a cache <em>hit</em> and a cache <em>miss</em>?</li>
+        </ol>
+        <p class=&#34;small-text&#34; style=&#34;margin-top: 20px; color: #666;&#34;>
+            <i class=&#34;fa-solid fa-arrow-down&#34;></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class=&#34;question-box&#34;>Which register stores the address of the <em>next</em> instruction?</div>
+        <div class=&#34;fragment box-blue&#34;>
+            <p><strong>Program Counter (PC)</strong> — it points to the next instruction to fetch.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class=&#34;question-box&#34;>Which bus carries memory addresses from CPU to RAM?</div>
+        <div class=&#34;fragment box-blue&#34;>
+            <p><strong>Address bus</strong> — it carries the location (not the data itself).</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class=&#34;question-box&#34;>What is the difference between a cache hit and a cache miss?</div>
+        <div class=&#34;fragment box-blue&#34;>
+            <p><strong>Hit:</strong> data is found in cache (fast). <strong>Miss:</strong> data must be fetched from slower memory (stall).</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class=&#34;r-stack&#34;>
+        <div class=&#34;fragment fade-in-then-out&#34;>
+            <div class=&#34;question-box&#34;>
+                <p style=&#34;font-size:1.25em;&#34;>🤔 A photo, a song, and your password look totally different.</p>
+                <p style=&#34;font-size:1.25em; margin-top:0.6em;&#34;>So how can a computer store them all using the <strong>same memory</strong>?</p>
+            </div>
+        </div>
+        <div class=&#34;fragment fade-in-then-out&#34;>
+            <div class=&#34;box&#34; style=&#34;background:#ffebee;&#34;>
+                <p style=&#34;font-size:1.15em;&#34;><strong>❌ Misconception:</strong> &#34;Computers store images as tiny pictures and sound as tiny waves.&#34;</p>
+                <p class=&#34;small-text&#34;>In memory, everything must be reduced to patterns of 0s and 1s.</p>
+            </div>
+        </div>
+        <div class=&#34;fragment fade-in&#34;>
+            <div class=&#34;box-blue&#34;>
+                <p style=&#34;font-size:1.15em;&#34;><strong>✅ Key idea:</strong> <span class=&#34;keyword&#34; data-def=&#34;Binary digit: a single 0 or 1.&#34;>bits</span> only have meaning because we agree on an <strong>encoding</strong> rule.</p>
+                <p class=&#34;small-text&#34;>Different data types use different representations: numbers, characters, samples, pixels…</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. WHY BINARY + BITS/BYTES -->
+<section>
+    <h3>Why <span class=&#34;keyword&#34; data-def=&#34;Base-2 number system using digits 0 and 1.&#34;>binary</span>?</h3>
+    <div class=&#34;question-box&#34;>Why did modern computing &#34;choose&#34; base‑2 instead of base‑10?</div>
+    <div class=&#34;cols&#34;>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>Hardware is built from switches (transistors) with two stable states: <strong>on</strong>/<strong>off</strong>.</p>
+            <p class=&#34;fragment&#34;>Two-state systems are robust against electrical <span class=&#34;keyword&#34; data-def=&#34;Unwanted electrical disturbance that can corrupt signals (not sound noise).&#34;>noise</span>.</p>
+            <p class=&#34;fragment&#34;><strong>1 <span class=&#34;keyword&#34; data-def=&#34;Byte: 8 bits.&#34;>byte</span></strong> = 8 <span class=&#34;keyword&#34; data-def=&#34;Binary digit: a single 0 or 1.&#34;>bits</span> → 256 possible patterns (0–255 for unsigned integers).</p>
+        </div>
+        <div class=&#34;box-blue&#34;>
+            <h4><i class=&#34;fa-solid fa-lightbulb&#34;></i> Human-friendly bases</h4>
+            <p class=&#34;small-text fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Base-10 number system.&#34;>Denary</span> is convenient for humans.</p>
+            <p class=&#34;small-text fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Base-16 number system using digits 0–9 and A–F.&#34;>Hexadecimal</span> is convenient for humans reading binary (4 bits per hex digit).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. CONVERSIONS (VERTICAL) -->
+<section>
+    <section>
+        <h2>Base Conversions</h2>
+        <div class=&#34;question-box&#34;>How do we move between binary, denary, and hex without guessing?</div>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>Binary → denary uses <strong>place values</strong> (powers of 2).</p>
+            <p class=&#34;fragment&#34;>Denary → binary uses <strong>repeated division by 2</strong> (remainders).</p>
+            <p class=&#34;fragment&#34;>Binary ↔ hex groups bits into <strong>4‑bit nibbles</strong>.</p>
+        </div>
+        <p class=&#34;small-text&#34; style=&#34;text-align:center; margin-top:0.6em;&#34;>
+            <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;blue&#34;>Press Down</span> for worked methods
+        </p>
+    </section>
+
+    <section data-background=&#34;#f4f6f8&#34;>
+        <h3>Binary → Denary (Place Values)</h3>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>Example: <code>0110</code><sub>2</sub></p>
+            <p class=&#34;fragment&#34;>Place values: 8, 4, 2, 1</p>
+            <p class=&#34;fragment&#34;><code>0×8 + 1×4 + 1×2 + 0×1 = 6</code><sub>10</sub></p>
+        </div>
+    </section>
+
+    <section data-background=&#34;#f4f6f8&#34;>
+        <h3>Denary → Binary (Divide by 2)</h3>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>Example: <code>13</code><sub>10</sub></p>
+            <p class=&#34;fragment&#34;>Divide by 2 and record remainders: <code>13→6 r1</code>, <code>6→3 r0</code>, <code>3→1 r1</code>, <code>1→0 r1</code></p>
+            <p class=&#34;fragment&#34;>Read remainders <strong>bottom‑to‑top</strong>: <code>1101</code><sub>2</sub></p>
+        </div>
+    </section>
+
+    <section data-background=&#34;#f4f6f8&#34;>
+        <h3>Binary ↔ Hex (4-bit Groups)</h3>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>Example: <code>1010 1111</code><sub>2</sub></p>
+            <p class=&#34;fragment&#34;><code>1010</code> = A, <code>1111</code> = F</p>
+            <p class=&#34;fragment&#34;>So <code>1010 1111</code><sub>2</sub> = <code>AF</code><sub>16</sub></p>
+        </div>
+        <div class=&#34;box-blue fragment&#34;>
+            <p class=&#34;small-text&#34;><strong>Why hex is useful:</strong> one hex digit exactly represents 4 bits, so long binary patterns become readable.</p>
+        </div>
+    </section>
+
+    <section data-background=&#34;#fff3e0&#34;>
+        <h3>🧠 Quick Check</h3>
+        <div class=&#34;question-box&#34;>What denary value is <code>10010000</code><sub>2</sub>?</div>
+        <div class=&#34;fragment box-blue&#34;>
+            <p><strong>144</strong> — because 128 + 16 = 144.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 6. TEXT REPRESENTATION -->
+<section>
+    <h3>Representing Text</h3>
+    <div class=&#34;question-box&#34;>When you press <kbd>A</kbd>, how does the computer know which letter you meant?</div>
+    <div class=&#34;cols&#34;>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Character encoding where each character maps to a numeric code (historically 7-bit, extended variants exist).&#34;>ASCII</span> maps characters to numbers (codes).</p>
+            <p class=&#34;fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Universal character set mapping characters to code points so many languages/symbols can be represented.&#34;>Unicode</span> extends this idea to support global writing systems and symbols.</p>
+            <p class=&#34;fragment&#34;><strong>Key idea:</strong> text is stored as <strong>numeric codes</strong> in binary.</p>
+        </div>
+        <div class=&#34;box-blue&#34;>
+            <h4><i class=&#34;fa-solid fa-language&#34;></i> Why Unicode matters</h4>
+            <p class=&#34;small-text fragment&#34;>ASCII struggles with non‑English alphabets and emoji.</p>
+            <p class=&#34;small-text fragment&#34;>Unicode provides code points for many scripts (Latin, Arabic, Chinese…).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 7. IMAGES (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3>Representing Images</h3>
+        <div class=&#34;question-box&#34;>Why does a &#34;higher quality&#34; image usually mean a larger file?</div>
+        <div class=&#34;cols&#34;>
+            <div class=&#34;box&#34;>
+                <p class=&#34;fragment&#34;>A bitmap image is a grid of <span class=&#34;keyword&#34; data-def=&#34;Smallest unit of an image (picture element).&#34;>pixels</span>.</p>
+                <p class=&#34;fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Width × height of an image in pixels.&#34;>Resolution</span> increases the number of pixels.</p>
+                <p class=&#34;fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Number of bits used to represent the colour of one pixel.&#34;>Colour depth</span> increases the number of bits per pixel.</p>
+                <p class=&#34;fragment&#34;><strong>Uncompressed size:</strong> width × height × colour depth (bits).</p>
+            </div>
+            <div class=&#34;box-blue&#34;>
+                <h4><i class=&#34;fa-solid fa-compress&#34;></i> Compression</h4>
+                <p class=&#34;small-text fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Compression that preserves all original information when decompressed.&#34;>Lossless</span>: exact original restored (e.g., PNG).</p>
+                <p class=&#34;small-text fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Compression that permanently discards some information to reduce size.&#34;>Lossy</span>: trades quality for size (e.g., JPEG).</p>
+            </div>
+        </div>
+        <p class=&#34;small-text&#34; style=&#34;margin-top:0.5em;&#34;><i class=&#34;fa-solid fa-arrow-down&#34;></i> Quick Check</p>
+    </section>
+    <section data-background=&#34;#fff3e0&#34;>
+        <h3>🧠 Quick Check</h3>
+        <div class=&#34;question-box&#34;>If you double both width and height, what happens to the number of pixels?</div>
+        <div class=&#34;fragment box-blue&#34;>
+            <p>It becomes <strong>4×</strong> larger (area scales with width × height).</p>
+        </div>
+    </section>
+</section>
+
+<!-- 8. SOUND -->
+<section>
+    <h3>Representing Sound (Sampling)</h3>
+    <div class=&#34;question-box&#34;>How can a continuous sound wave become discrete binary data?</div>
+    <div class=&#34;cols&#34;>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Number of samples taken per second when digitising sound (Hz).&#34;>Sampling rate</span> measures how often we take a sample.</p>
+            <p class=&#34;fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;Number of bits used to store each sample value (amplitude).&#34;>Bit depth</span> controls precision (quantisation levels).</p>
+            <p class=&#34;fragment&#34;><strong>Uncompressed size:</strong> sampling rate × bit depth × duration × channels.</p>
+        </div>
+        <div class=&#34;box-blue&#34;>
+            <h4><i class=&#34;fa-solid fa-music&#34;></i> Intuition</h4>
+            <p class=&#34;small-text fragment&#34;>Higher sampling rate captures higher frequencies.</p>
+            <p class=&#34;small-text fragment&#34;>Higher bit depth reduces quantisation error (less &#34;stepping&#34;).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 9. VIDEO -->
+<section>
+    <h3>Representing Video</h3>
+    <div class=&#34;question-box&#34;>Why is raw video enormous — and why is compression essential?</div>
+    <div class=&#34;cols&#34;>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>Video is a sequence of images (frames) + audio.</p>
+            <p class=&#34;fragment&#34;>High resolution × high frame rate × high colour depth → massive data rates.</p>
+        </div>
+        <div class=&#34;box-blue&#34;>
+            <h4><i class=&#34;fa-solid fa-film&#34;></i> Two compression ideas</h4>
+            <p class=&#34;small-text fragment&#34;><strong>Spatial</strong>: compress within one frame (similar pixels).</p>
+            <p class=&#34;small-text fragment&#34;><strong>Temporal</strong>: compress across frames (only changes are stored).</p>
+        </div>
+    </div>
+    <div class=&#34;fragment box&#34;>
+        <p><strong>🔗 Connection to A2:</strong> streaming video works because data is split into packets and delivered over networks with buffering and error control.</p>
+    </div>
+</section>
+
+<!-- 10. LOGIC GATES -->
+<section>
+    <h3>Logic Gates</h3>
+    <div class=&#34;question-box&#34;>How can hardware &#34;decide&#34; between two actions using only 0 and 1?</div>
+    <div class=&#34;cols&#34;>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;><span class=&#34;keyword&#34; data-def=&#34;A basic building block of digital circuits that performs a Boolean operation on one or more binary inputs.&#34;>Logic gates</span> implement Boolean operations in hardware.</p>
+            <p class=&#34;fragment&#34;>Inputs/outputs are binary: 1 (true) or 0 (false).</p>
+            <p class=&#34;fragment&#34;>Common gates: AND, OR, NOT, NAND, NOR, XOR.</p>
+        </div>
+        <div class=&#34;box-blue&#34;>
+            <h4><i class=&#34;fa-solid fa-circle-nodes&#34;></i> Why gates matter</h4>
+            <p class=&#34;small-text fragment&#34;>They are the basis of adders, comparators, memory, and CPU control logic.</p>
+            <p class=&#34;small-text fragment&#34;>At scale, &#34;software&#34; becomes electrical decisions through gate networks.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 11. TRUTH TABLES + LOGIC DIAGRAMS (VERTICAL) -->
+<section>
+    <section>
+        <h2>Truth Tables &#38;amp; Logic Diagrams</h2>
+        <div class=&#34;question-box&#34;>How do we prove a logic circuit is correct?</div>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>A <span class=&#34;keyword&#34; data-def=&#34;A table listing all possible input combinations and the corresponding output(s) of a Boolean expression/circuit.&#34;>truth table</span> lists all input combinations and outputs.</p>
+            <p class=&#34;fragment&#34;>A <span class=&#34;keyword&#34; data-def=&#34;A diagram showing logic gates connected to implement a Boolean function.&#34;>logic diagram</span> visualises gates wired together.</p>
+        </div>
+        <p class=&#34;small-text&#34; style=&#34;text-align:center; margin-top:0.6em;&#34;>
+            <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;blue&#34;>Press Down</span> for an example
+        </p>
+    </section>
+
+    <section data-background=&#34;#f4f6f8&#34;>
+        <h3>Example: <code>Y = A AND (NOT B)</code></h3>
+        <div class=&#34;box&#34;>
+            <table style=&#34;width:100%; font-size:0.95em;&#34;>
+                <thead>
+                    <tr><th>A</th><th>B</th><th>NOT B</th><th>Y</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+                    <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+                    <tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+                    <tr><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class=&#34;box-blue fragment&#34;>
+            <p class=&#34;small-text&#34;><strong>Interpretation:</strong> the output is 1 only when A is 1 and B is 0.</p>
+        </div>
+    </section>
+
+    <section data-background=&#34;#fff3e0&#34;>
+        <h3>🧠 Quick Check</h3>
+        <div class=&#34;question-box&#34;>If <code>A=1</code> and <code>B=1</code>, what is <code>Y = A AND (NOT B)</code>?</div>
+        <div class=&#34;fragment box-blue&#34;>
+            <p><strong>0</strong> — because NOT B = 0, and 1 AND 0 = 0.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 12. HL: KARNAUGH MAPS -->
+<section>
+    <h3><span class=&#34;hl-badge&#34;>HL</span> Karnaugh Maps (K‑Maps)</h3>
+    <div class=&#34;question-box&#34;>How can we simplify Boolean expressions without &#34;guessing&#34;?</div>
+    <div class=&#34;cols&#34;>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;>A <span class=&#34;keyword&#34; data-def=&#34;A visual method for simplifying Boolean expressions by grouping 1s in a grid ordered using Gray code.&#34;>Karnaugh map</span> groups 1s to remove redundant variables.</p>
+            <p class=&#34;fragment&#34;>Headings use <span class=&#34;keyword&#34; data-def=&#34;A binary ordering where adjacent values differ by exactly one bit (e.g., 00, 01, 11, 10).&#34;>Gray code</span> so adjacent cells differ by one bit.</p>
+        </div>
+        <div class=&#34;box-blue&#34;>
+            <h4><i class=&#34;fa-solid fa-map&#34;></i> What you gain</h4>
+            <p class=&#34;small-text fragment&#34;>Simpler circuits: fewer gates → lower cost, lower delay, fewer failure points.</p>
+            <p class=&#34;small-text fragment&#34;>Cleaner expressions: easier to analyse and implement.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 13. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class=&#34;fa-solid fa-check-double&#34;></i> Misconception Check</h2>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;><strong>A.</strong> Hexadecimal is &#34;how the computer stores data internally&#34;.</p>
+            <p class=&#34;fragment&#34;><strong>B.</strong> Increasing sampling rate increases uncompressed audio file size.</p>
+            <p class=&#34;fragment&#34;><strong>C.</strong> Lossless compression always makes a file smaller.</p>
+            <p class=&#34;fragment&#34;><strong>D.</strong> A truth table can be used to verify a logic circuit.</p>
+        </div>
+        <p class=&#34;small-text&#34; style=&#34;text-align:center; margin-top:0.6em;&#34;>
+            <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;blue&#34;>Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background=&#34;#f4f6f8&#34;>
+        <h3>Answers</h3>
+        <div class=&#34;box&#34;>
+            <p class=&#34;fragment&#34;><strong>A: False.</strong> Computers store in binary; hex is a human-friendly shorthand.</p>
+            <p class=&#34;fragment&#34;><strong>B: True.</strong> More samples per second = more data (before compression).</p>
+            <p class=&#34;fragment&#34;><strong>C: False.</strong> Some data is already close to random/uncompressible.</p>
+            <p class=&#34;fragment&#34;><strong>D: True.</strong> It exhaustively checks all input combinations.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 14. SUMMARY -->
+<section data-background=&#34;linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)&#34;>
+    <h2 style=&#34;color: white;&#34;>Key Takeaways</h2>
+    <div class=&#34;box&#34; style=&#34;background: rgba(255,255,255,0.1); color: white;&#34;>
+        <ul style=&#34;line-height:1.5;&#34;>
+            <li>All data is stored as <strong>binary</strong>, but meaning comes from <strong>representation rules</strong>.</li>
+            <li>We convert between <strong>binary</strong>, <strong>denary</strong>, and <strong>hex</strong> using systematic methods.</li>
+            <li>Text, images, audio, and video rely on <strong>encoding</strong> + (often) <strong>compression</strong>.</li>
+            <li>Digital circuits use <strong>logic gates</strong>, verified by <strong>truth tables</strong>.</li>
+            <li><span class=&#34;hl-badge&#34;>HL</span> <strong>K‑maps</strong> simplify Boolean expressions using Gray-code adjacency.</li>
+        </ul>
+    </div>
+    <div class=&#34;box&#34; style=&#34;background: rgba(255,255,255,0.12); color: white;&#34;>
+        <p><strong>Coming up:</strong> A1.3 Operating Systems &#38;amp; Control Systems — managing resources and feedback loops.</p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js&#34;></script>
+    <script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js&#34;></script>
+    
+    <script src=&#34;../../../../js/slide-deck.js&#34;></script>
+    
+
+  <script>
+    (() => {
+      const cleanupLegacyChrome = () => {
+        const removeSelectors = [
+          '.site-header',
+          '.main-header',
+          '.feedback-modals',
+          '.site-feedback',
+          '.feedback-trigger',
+          '[data-feedback-open]',
+          'body > footer',
+          '#sgs-auth-overlay',
+          '.sgs-auth-overlay',
+          'link[href*=&#34;/css/auth-gate.css&#34;]',
+          'script[src*=&#34;/__/firebase/&#34;]',
+          'script[src*=&#34;/js/auth-gate.js&#34;]'
+        ];
+
+        removeSelectors.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => node.remove());
+        });
+
+        document.documentElement.classList.remove('auth-pending');
+        document.documentElement.classList.add('auth-ready');
+        document.body.classList.remove('sgs-auth-locked');
+        document.body.style.visibility = 'visible';
+        document.body.style.overflow = '';
+
+        const placeholderLinks = [
+          'a[href=&#34;/coming-soon.html&#34;]',
+          'a[href=&#34;coming-soon.html&#34;]',
+          'a[href=&#34;./coming-soon.html&#34;]'
+        ];
+
+        placeholderLinks.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => {
+            const removableParent =
+              node.closest('.resource-btn, .activity-card, .feature-card, .feature-link, li, article') || node;
+            removableParent.remove();
+          });
+        });
+      };
+
+      const sendHeight = () => {
+        const height = Math.max(
+          document.documentElement.scrollHeight,
+          document.body ? document.body.scrollHeight : 0,
+          document.documentElement.offsetHeight,
+          document.body ? document.body.offsetHeight : 0
+        );
+        parent.postMessage({ type: 'sgs-legacy-frame-height', id: 'ib-2027-sl-unit-10-slides-A1-2-data-representation', height }, '*');
+      };
+
+      window.addEventListener('load', () => {
+        cleanupLegacyChrome();
+        sendHeight();
+        setTimeout(sendHeight, 250);
+      });
+      window.addEventListener('resize', sendHeight);
+
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(sendHeight).observe(document.documentElement);
+      }
+
+      setInterval(sendHeight, 1200);
+    })();
+  </script>
+</body>
+
+</html>
+" loading="eager" allowfullscreen></iframe> </section> <script data-frame-id="ib-2027-sl-unit-10-slides-A1-2-data-representation">
+  (() => {
+    const activeScript = document.currentScript;
+    const activeFrameId = activeScript?.getAttribute('data-frame-id');
+    if (!activeFrameId) return;
+
+    const selector = `iframe[data-legacy-frame-id="${activeFrameId}"]`;
+    const frame = document.querySelector(selector);
+    if (!frame) return;
+
+    const fullscreenButton = document.querySelector(`[data-legacy-frame-fullscreen="${activeFrameId}"]`);
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          await frame.requestFullscreen();
+        } catch {
+          // Ignore fullscreen failures triggered by browser policy.
+        }
+      });
+    }
+
+    window.addEventListener('message', (event) => {
+      if (!event.data || event.data.type !== 'sgs-legacy-frame-height' || event.data.id !== activeFrameId) {
+        return;
+      }
+
+      const nextHeight = Number(event.data.height);
+      if (!Number.isFinite(nextHeight) || nextHeight <= 0) {
+        return;
+      }
+
+      if (!frame.closest('.legacy-frame--document')) {
+        return;
+      }
+
+      frame.style.height = `${Math.max(880, nextHeight)}px`;
+    });
+  })();
+</script> </section>  <nav class="prev-next-nav" aria-label="Page sequence"><a href="/ib-2027/sl/unit-10/textbook.html" class="prev-next-nav__link prev-next-nav__link--prev"><span class="prev-next-nav__label">Previous</span><strong>Textbook</strong></a><a href="/ib-2027/sl/unit-10/slides/A1.3_operating_systems.html" class="prev-next-nav__link prev-next-nav__link--next"><span class="prev-next-nav__label">Next</span><strong>Operating Systems</strong></a></nav> </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> 
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body> </html>

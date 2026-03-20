@@ -13,6 +13,7 @@ export interface ShellNavGroup {
   meta?: string;
   open?: boolean;
   sequence?: boolean;
+  courseLevel?: boolean;
 }
 
 export interface ShellContext {

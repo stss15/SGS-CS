@@ -1,0 +1,200 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="This is where the planned tables become real SQL. Use the table planner and ERD to decide what each table must store and what each constraint must protect."><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark-reasonable.min.css"><link rel="stylesheet" href="/css/ib-project-sequence.css"><title>Build the SQL Schema | Full-Stack SQL Project</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css">
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html"> IGCSE </a><a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html"> IGCSE </a> </li><li> <a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace page-shell--with-sidebar"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div class="course-explorer"> <div class="course-explorer__header"> <p class="course-explorer__title">SL Unit 6</p> <p class="course-explorer__meta">Data &amp; Information</p> </div> <div class="course-explorer__groups"> <details class="course-explorer__group" open> <summary> <span>Overview</span>  </summary> <ul> <li> <a href="/ib-2027/sl/unit-6/index.html"> <span>Unit overview</span>  </a> </li><li> <a href="/ib-2027/sl/unit-6/unit-plan.html"> <span>Unit plan</span>  </a> </li><li> <a href="/ib-2027/sl/unit-6/textbook.html"> <span>Textbook</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Slides</span>  </summary> <ul> <li> <a href="/ib-2027/sl/unit-6/slides/A3.1_database_fundamentals.html"> <span>Database Fundamentals</span>  </a> </li><li> <a href="/ib-2027/sl/unit-6/slides/A3.2_database_design.html"> <span>Database Design</span>  </a> </li><li> <a href="/ib-2027/sl/unit-6/slides/A3.3_database_programming.html"> <span>Database Programming</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Activities</span>  </summary> <ul> <li> <a href="/ib-2027/sl/unit-6/sql-worksheets/index.html"> <span>SQL Worksheets</span> <small>Dataset-by-dataset worksheet sequence for A3.1-A3.3</small> </a> </li><li> <a href="/ib-2027/sl/unit-6/sql-playground.html?dataset=campus-clubs"> <span>SQL Playground</span> <small>Shared query tool with schema, ERD, and import or export</small> </a> </li><li> <a href="/ib-2027/sl/unit-6/sql-project/index.html"> <span>SQL Project</span> <small>Stage-by-stage project journey</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 12</span> <small>Units 1–6</small> </summary> <ul> <li> <a href="/ib-2027/sl/unit-1/index.html"> <span>Unit 1. Computational Thinking</span>  </a> </li><li> <a href="/ib-2027/sl/unit-2/index.html"> <span>Unit 2. Programming Fundamentals</span>  </a> </li><li> <a href="/ib-2027/sl/unit-3/index.html"> <span>Unit 3. Data Structures &amp; Logic</span>  </a> </li><li> <a href="/ib-2027/sl/unit-4/index.html"> <span>Unit 4. Algorithmic Control</span>  </a> </li><li> <a href="/ib-2027/sl/unit-5/index.html"> <span>Unit 5. The OOP Paradigm</span>  </a> </li><li> <a href="/ib-2027/sl/unit-6/index.html"> <span>Unit 6. Data &amp; Information</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 13</span> <small>Units 7–12</small> </summary> <ul> <li> <a href="/ib-2027/sl/unit-7/index.html"> <span>Unit 7. Machine Intelligence</span>  </a> </li><li> <a href="/ib-2027/sl/unit-8/index.html"> <span>Unit 8. The IA Cycle</span>  </a> </li><li> <a href="/ib-2027/sl/unit-9/index.html"> <span>Unit 9. Computer Systems</span>  </a> </li><li> <a href="/ib-2027/sl/unit-10/index.html"> <span>Unit 10. Binary Logic &amp; Circuits</span>  </a> </li><li> <a href="/ib-2027/sl/unit-11/index.html"> <span>Unit 11. Global Networking</span>  </a> </li><li> <a href="/ib-2027/sl/unit-12/index.html"> <span>Unit 12. Case Study Inquiry</span>  </a> </li> </ul> </details> </div> </div> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB 2027</a></li><li><a href="/ib-2027/sl/index.html">SL</a></li><li><span aria-current="page">Unit 6</span></li></ol></nav>  <section class="ib-project-sequence"> <header class="ib-project-sequence-header"> <a class="ib-project-sequence-back" href="/ib-2027/sl/unit-6/index.html"> <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> <span>Back to SL Unit 6</span> </a> <div class="ib-project-sequence-copy"> <p class="ib-project-sequence-kicker">SQL Project</p> <h1>Build the SQL Schema</h1> <p class="ib-project-sequence-intro">This is where the planned tables become real SQL. Use the table planner and ERD to decide what each table must store and what each constraint must protect.</p> </div> <div class="ib-project-sequence-meta"> <span>Stage 3: Build Foundations</span> <span>Page 9 of 23</span> <span>3 of 5 in this stage</span> <span>Working `schema.sql` draft</span> </div> </header> <details class="ib-project-roadmap" aria-label="Project roadmap"> <summary class="ib-project-roadmap-summary"> <div class="ib-project-roadmap-summary-copy"> <p class="ib-project-sequence-sidebar-label">Project roadmap</p> <h2>Full-Stack SQL Project</h2> </div> <div class="ib-project-roadmap-summary-current"> <span class="ib-project-roadmap-summary-stage">Stage 3: Build Foundations</span> <strong>SQL schema build</strong> <small>Page 9 of 23</small> </div> <span class="ib-project-roadmap-toggle"> <span class="is-closed">Expand roadmap</span> <span class="is-open">Collapse roadmap</span> <i class="fa-solid fa-chevron-down" aria-hidden="true"></i> </span> </summary> <div class="ib-project-roadmap-panel"> <p class="ib-project-roadmap-copy">
+Use the roadmap when you want to jump to another stage. Otherwise keep moving with the next and previous controls so the build stays in order.
+</p> <nav class="ib-project-stage-track" aria-label="Stage roadmap"> <a class="ib-project-stage-card" href="/ib-2027/sl/unit-6/sql-project/index.html"> <span class="ib-project-stage-card-kicker">Stage 1</span> <strong>Problem Specification</strong> <small>Read the client problem as a real brief and turn it into a set of success criteria.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/sl/unit-6/sql-project/planning-documents/index.html"> <span class="ib-project-stage-card-kicker">Stage 2</span> <strong>Planning and Database Design</strong> <small>Move from interface planning into tables, fields, normalisation, relationships, and testing.</small> <span class="ib-project-stage-card-count">5 pages</span> </a><a class="ib-project-stage-card is-current" href="/ib-2027/sl/unit-6/sql-project/implementation-foundations/index.html" aria-current="step"> <span class="ib-project-stage-card-kicker">Stage 3</span> <strong>Build Foundations</strong> <small>Set up the stack, learn the syntax families, and write schema.sql and init_db.py before the live features begin.</small> <span class="ib-project-stage-card-count">5 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/sl/unit-6/sql-project/feature-1-html-shell/index.html"> <span class="ib-project-stage-card-kicker">Stage 4</span> <strong>Feature Build Sequence</strong> <small>Implement the project in a strict feature order, one controlled change at a time.</small> <span class="ib-project-stage-card-count">10 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/sl/unit-6/sql-project/tagging-algorithm/index.html"> <span class="ib-project-stage-card-kicker">Stage 5</span> <strong>Non-Standard Algorithm</strong> <small>Design the tagging logic in plain English before you attempt any code.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/sl/unit-6/sql-project/database-extension/index.html"> <span class="ib-project-stage-card-kicker">Stage 6</span> <strong>Database Extension</strong> <small>Extend the data model for many-to-many tagging and verify that the design still holds.</small> <span class="ib-project-stage-card-count">1 pages</span> </a> </nav> <nav class="ib-project-step-track" aria-label="Build Foundations pages"> <a class="ib-project-step-card" href="/ib-2027/sl/unit-6/sql-project/implementation-foundations/index.html"> <span class="ib-project-step-card-index">1</span> <span class="ib-project-step-card-copy"> <strong>Implementation foundations</strong> <small>Project map, technology roles, client criteria links, and real build order.</small> </span> </a><a class="ib-project-step-card" href="/ib-2027/sl/unit-6/sql-project/html-bootstrap-toolkit/index.html"> <span class="ib-project-step-card-index">2</span> <span class="ib-project-step-card-copy"> <strong>HTML and Bootstrap toolkit</strong> <small>HTML tags, class vs id, Bootstrap layout, and box-model visuals.</small> </span> </a><a class="ib-project-step-card is-current" href="/ib-2027/sl/unit-6/sql-project/sql-schema-build/index.html" aria-current="page"> <span class="ib-project-step-card-index">3</span> <span class="ib-project-step-card-copy"> <strong>SQL schema build</strong> <small>SQL commands, constraints, table decisions, and the first real schema build.</small> </span> </a><a class="ib-project-step-card" href="/ib-2027/sl/unit-6/sql-project/init-db-build/index.html"> <span class="ib-project-step-card-index">4</span> <span class="ib-project-step-card-copy"> <strong>Database setup script</strong> <small>Python + SQLite setup, placeholders, tuples, trailing comma, and seed data.</small> </span> </a><a class="ib-project-step-card" href="/ib-2027/sl/unit-6/sql-project/js-flask-toolkit/index.html"> <span class="ib-project-step-card-index">5</span> <span class="ib-project-step-card-copy"> <strong>JavaScript and Flask toolkit</strong> <small>DOM methods, fetch, Flask routes, request/response flow, and validation layers.</small> </span> </a> </nav> </div> </details> <article class="ib-project-sequence-article">  <div class="ib-project-lesson-body">
+  <section class="ib-project-section ib-project-section--lead">
+    <h3>Build the database the brief actually needs</h3>
+    <p>At this point the client brief, field mapping, table planner, and ERD all come together. The schema should not be invented from scratch on this page; it should be the written version of decisions you already made.</p><p>Keep the first version narrow: `users` and `tasks` first. The tagging extension comes later.</p>
+  </section>
+<div class="ib-project-doc-grid">
+  <section class="ib-project-doc-panel">
+    <h4>SQL words you need for this page</h4>
+    
+  <div class="ib-project-table-wrap">
+    <table class="ib-project-table">
+      <thead>
+        <tr><th>Command / keyword</th><th>What it does</th><th>How to use it here</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CREATE TABLE</code></td><td>Starts a table definition.</td><td>You will use it once for `users` and once for `tasks`.</td></tr><tr><td><code>INTEGER PRIMARY KEY AUTOINCREMENT</code></td><td>Creates a numeric id that grows automatically.</td><td>Use it for the main table identifiers.</td></tr><tr><td><code>TEXT</code></td><td>Stores text values.</td><td>Suitable for fields like names and titles.</td></tr><tr><td><code>NOT NULL</code></td><td>Prevents blanks for fields that must always exist.</td><td>Use it where missing data would break the task system.</td></tr><tr><td><code>DEFAULT</code></td><td>Supplies a value when none is given.</td><td>Useful for status on new tasks.</td></tr><tr><td><code>FOREIGN KEY</code></td><td>Connects one table to another.</td><td>Use it to link tasks back to users.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+
+  <section class="ib-project-doc-panel">
+    <h4>Questions to ask while writing the schema</h4>
+    
+  <div class="ib-project-table-wrap">
+    <table class="ib-project-table">
+      <thead>
+        <tr><th>Question</th><th>Why it matters</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Which field uniquely identifies each user?</td><td>That field will become the primary key.</td></tr><tr><td>Which task fields must never be empty?</td><td>Those fields likely need `NOT NULL`.</td></tr><tr><td>Which task field points back to `users`?</td><td>That becomes the foreign key.</td></tr><tr><td>Which value should appear automatically on new tasks?</td><td>That is a candidate for `DEFAULT`.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+</div><div class="ib-project-figure-grid">
+  <section class="ib-project-figure-panel">
+    <h4>Read the relationship before you write the SQL</h4>
+    <p>The SQL should match this relationship picture exactly: one user can be linked to many tasks.</p>
+    
+  <svg class="ib-project-doc-svg" viewBox="0 0 620 260" role="img" aria-label="Users and tasks table relationship">
+    <rect x="54" y="42" width="180" height="152" rx="18" fill="#ffffff" stroke="#c7d3ea" stroke-width="2"></rect>
+    <rect x="386" y="42" width="180" height="152" rx="18" fill="#ffffff" stroke="#c7d3ea" stroke-width="2"></rect>
+    <text x="144" y="72" text-anchor="middle" fill="#0e214b" font-size="20" font-family="Arial" font-weight="700">users</text>
+    <text x="476" y="72" text-anchor="middle" fill="#0e214b" font-size="20" font-family="Arial" font-weight="700">tasks</text>
+    <text x="84" y="104" fill="#25457b" font-size="15" font-family="Arial">user_id (PK)</text>
+    <text x="84" y="132" fill="#51627f" font-size="15" font-family="Arial">username</text>
+    <text x="416" y="104" fill="#25457b" font-size="15" font-family="Arial">task_id (PK)</text>
+    <text x="416" y="132" fill="#51627f" font-size="15" font-family="Arial">title</text>
+    <text x="416" y="160" fill="#c49c58" font-size="15" font-family="Arial">user_id (FK)</text>
+    <text x="416" y="188" fill="#51627f" font-size="15" font-family="Arial">priority / due_date / status</text>
+    <path d="M234 108 C294 108, 326 108, 386 108" stroke="#0e214b" stroke-width="3" fill="none"></path>
+    <circle cx="234" cy="108" r="5" fill="#0e214b"></circle>
+    <circle cx="386" cy="108" r="5" fill="#0e214b"></circle>
+    <text x="310" y="92" text-anchor="middle" fill="#7d5b21" font-size="16" font-family="Arial" font-weight="700">1 : many</text>
+  </svg>
+
+  </section>
+
+  <section class="ib-project-doc-panel">
+    <h4>Constraints are part of the teaching, not just decoration</h4>
+    <ul><li><code>AUTOINCREMENT</code> matters because the app needs stable identifiers for update and delete actions.</li><li><code>NOT NULL</code> matters because blank titles or missing assignees would weaken the client system.</li><li><code>FOREIGN KEY</code> matters because a task must point to a real user.</li></ul>
+  </section>
+</div>
+  <section class="ib-project-doc-code">
+    <h4>Generic SQL table pattern</h4>
+    <pre><code class="language-sql">CREATE TABLE example_items (
+  item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  item_name TEXT NOT NULL,
+  owner_id INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT &#39;open&#39;,
+  FOREIGN KEY (owner_id) REFERENCES owners(owner_id)
+);</code></pre>
+    <div class="ib-project-code-notes">
+        <div class="ib-project-code-note">
+          <strong>PRIMARY KEY</strong>
+          <p>The unique identifier for one row.</p>
+        </div>
+      
+        <div class="ib-project-code-note">
+          <strong>AUTOINCREMENT</strong>
+          <p>The database creates the next id for you.</p>
+        </div>
+      
+        <div class="ib-project-code-note">
+          <strong>FOREIGN KEY</strong>
+          <p>This links one table to another.</p>
+        </div>
+      </div>
+  </section>
+
+  <section class="ib-project-section ib-project-section--default">
+    <h3>Write `schema.sql` in this order</h3>
+    <p>Move from the simpler table to the linked table, then review the constraints against the brief.</p><div class="ib-project-build-grid">
+  <section class="ib-project-build-card">
+    <div class="ib-project-build-card-head">
+      <span class="ib-project-build-card-index">Step 1</span>
+      <span class="ib-project-build-card-file">schema.sql</span>
+    </div>
+    <h4>Write the users table first</h4>
+    <ul><li>Start with the table that does not depend on any other table.</li><li>Decide the primary key and the minimum fields needed for version one.</li></ul>
+    
+          <div class="ib-project-build-card-prompts">
+            <p><strong>Ask yourself</strong></p>
+            <ul><li>Why is `username` a better field than a vague field like `details`?</li><li>Which part of the brief proves the user table is needed?</li></ul>
+          </div>
+        
+  </section>
+
+  <section class="ib-project-build-card">
+    <div class="ib-project-build-card-head">
+      <span class="ib-project-build-card-index">Step 2</span>
+      <span class="ib-project-build-card-file">schema.sql</span>
+    </div>
+    <h4>Write the tasks table from the field mapping</h4>
+    <ul><li>Use the planning documents to decide the task fields.</li><li>Choose data types and `NOT NULL` rules deliberately.</li><li>Add a default for status because every new task needs an initial state.</li></ul>
+    
+  </section>
+
+  <section class="ib-project-build-card">
+    <div class="ib-project-build-card-head">
+      <span class="ib-project-build-card-index">Step 3</span>
+      <span class="ib-project-build-card-file">schema.sql</span>
+    </div>
+    <h4>Add the relationship and review the whole file</h4>
+    <ul><li>Write the foreign key so tasks point to real users.</li><li>Check that the final schema still matches the ERD and the client brief.</li></ul>
+    
+  </section>
+</div>
+  </section>
+
+  <section class="ib-project-section ib-project-section--checks">
+    <h3>What should be true before the database setup script</h3>
+    <ul class="ib-project-checklist"><li>The schema defines `users` and `tasks` clearly.</li><li>You can explain why the key constraints exist.</li><li>The schema still matches the table planner and ERD.</li></ul>
+  </section>
+</div> <footer class="ib-project-sequence-footer"> <a class="ib-project-nav-link" href="/ib-2027/sl/unit-6/sql-project/html-bootstrap-toolkit/index.html"> <span class="ib-project-nav-label">Previous</span> <strong>HTML and Bootstrap toolkit</strong> </a> <a class="ib-project-nav-link is-next" href="/ib-2027/sl/unit-6/sql-project/init-db-build/index.html"> <span class="ib-project-nav-label">Next</span> <strong>Database setup script</strong> </a> </footer> </article> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" defer></script> <script src="/js/ib-project-highlight.js" defer></script>  </section>   </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> 
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body> </html>

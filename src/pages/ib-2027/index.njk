@@ -8,23 +8,109 @@ breadcrumbs:
   - { label: "IB 2027" }
 hero:
   title: IB Computer Science 2027
-  subtitle: Choose your pathway to begin your learning journey.
+  subtitle: Select your level, then choose a unit to begin.
 extraStyles:
   - "css/resource-style.css"
 ---
 
-<div class="cards-container pathway-cards">
-    <a href="sl/index.html" class="card pathway-card" id="card-sl">
-        <div class="card-icon"><i class="fa-solid fa-book"></i></div>
-        <h2 class="card-title">Standard Level (SL)</h2>
-        <p class="card-desc">12 units covering core computational thinking, programming, and system design.</p>
-    </a>
-    
-    <a href="hl/index.html" class="card pathway-card" id="card-hl">
-        <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
-        <h2 class="card-title">Higher Level (HL)</h2>
-        <p class="card-desc">11 advanced units including ADTs, recursion, machine learning, and systems control.</p>
-    </a>
+<div class="ib-level-tabs">
+    <div class="tab-bar" role="tablist" aria-label="IB level">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-sl" id="btn-sl">
+            <i class="fa-solid fa-book" aria-hidden="true"></i> Standard Level
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-hl" id="btn-hl">
+            <i class="fa-solid fa-brain" aria-hidden="true"></i> Higher Level
+        </button>
+    </div>
+
+    <!-- Standard Level -->
+    <div class="tab-panel" id="tab-sl" role="tabpanel" aria-labelledby="btn-sl">
+        {% for section in site.listings["ib-2027-sl"].sections %}
+        <div class="ib-year-group">
+            <h2 class="ib-year-title">{{ section.title }} <span class="ib-year-sub">{{ section.subtitle }}</span></h2>
+            <div class="resource-grid ib-unit-grid">
+                {% for item in section.items %}
+                <a href="sl/{{ item.href }}" class="resource-btn">
+                    <span class="resource-number">{{ item.number }}</span>
+                    <div class="resource-info">
+                        <span class="resource-name">{{ item.name }}</span>
+                        <span class="resource-type">SL Unit {{ item.number }}</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Higher Level -->
+    <div class="tab-panel hidden" id="tab-hl" role="tabpanel" aria-labelledby="btn-hl">
+        {% for section in site.listings["ib-2027-hl"].sections %}
+        <div class="ib-year-group">
+            <h2 class="ib-year-title">{{ section.title }} <span class="ib-year-sub">{{ section.subtitle }}</span></h2>
+            <div class="resource-grid ib-unit-grid">
+                {% for item in section.items %}
+                <a href="hl/{{ item.href }}" class="resource-btn">
+                    <span class="resource-number">{{ item.number }}</span>
+                    <div class="resource-info">
+                        <span class="resource-name">{{ item.name }}</span>
+                        <span class="resource-type">HL Unit {{ item.number }}</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
+<style>
+.ib-level-tabs { width: 100%; max-width: 900px; }
+.tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.75rem; border-bottom: 2px solid var(--border-default); padding-bottom: 0; }
+.tab-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    border: 1px solid var(--border-default);
+    border-bottom: none;
+    background: var(--background-warm);
+    color: var(--text-muted);
+    font-family: var(--font-display); font-weight: 600; font-size: 0.95rem;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    position: relative; bottom: -2px;
+}
+.tab-btn:hover { background: var(--card-bg); color: var(--primary-color); }
+.tab-btn.active {
+    background: var(--card-bg);
+    color: var(--primary-color);
+    border-color: var(--border-default);
+    border-bottom-color: var(--card-bg);
+    box-shadow: 0 -2px 0 var(--accent-color);
+}
+.tab-panel { display: block; }
+.tab-panel.hidden { display: none; }
+.ib-year-group { margin-bottom: 2rem; }
+.ib-year-title { font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 0.85rem; display: flex; align-items: baseline; gap: 0.6rem; }
+.ib-year-sub { font-size: 0.82rem; font-weight: 500; color: var(--text-muted); }
+.ib-unit-grid { display: flex; flex-direction: column; gap: 0.6rem; }
+</style>
 
+<script>
+(function () {
+    var btns = document.querySelectorAll('.tab-btn');
+    var panels = document.querySelectorAll('.tab-panel');
+    btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var target = btn.getAttribute('aria-controls');
+            btns.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+            panels.forEach(function (p) { p.classList.add('hidden'); });
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            document.getElementById(target).classList.remove('hidden');
+        });
+    });
+}());
+</script>

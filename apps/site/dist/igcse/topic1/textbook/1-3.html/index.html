@@ -1,0 +1,434 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="IGCSE Computer Science Topic 1 1.3 (Data Storage &#38; Compression) reading."><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="/css/reader.css"><title>IGCSE Topic 1 1.3: Data Storage &amp; Compression</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css">
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head> <body class="site-body reader-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html" class="active" aria-current="page"> IGCSE </a><a href="/ib-2027/index.html"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html" class="active" aria-current="page"> IGCSE </a> </li><li> <a href="/ib-2027/index.html"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--reading page-shell--with-sidebar reader-main"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div class="course-explorer"> <div class="course-explorer__header"> <p class="course-explorer__title">Topic 1</p> <p class="course-explorer__meta">1. Data Representation</p> </div> <div class="course-explorer__groups"> <details class="course-explorer__group" open> <summary> <span>Overview</span>  </summary> <ul> <li> <a href="/igcse/topic1/index.html"> <span>Topic overview</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>1.1 Number Representation</span>  </summary> <ul> <li> <a href="/igcse/topic1/textbook/1-1.html"> <span>Read chapter</span> <small>Number Representation</small> </a> </li><li> <a href="/igcse/topic1/1.1_number_representation.html"> <span>Slide deck</span> <small>Number Representation</small> </a> </li><li> <a href="/igcse/topic1/1.1_assessment.html"> <span>Mini-assessment</span> <small>1.1 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>1.2 Text, Sound &amp; Images</span>  </summary> <ul> <li> <a href="/igcse/topic1/textbook/1-2.html"> <span>Read chapter</span> <small>Text, Sound &amp; Images</small> </a> </li><li> <a href="/igcse/topic1/1.2_text_sound_images.html"> <span>Slide deck</span> <small>Text, Sound &amp; Images</small> </a> </li><li> <a href="/igcse/topic1/1.2_assessment.html"> <span>Mini-assessment</span> <small>1.2 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>1.3 Data Storage &amp; Compression</span>  </summary> <ul> <li> <a href="/igcse/topic1/textbook/1-3.html"> <span>Read chapter</span> <small>Data Storage &amp; Compression</small> </a> </li><li> <a href="/igcse/topic1/1.3_data_storage_compression.html"> <span>Slide deck</span> <small>Data Storage &amp; Compression</small> </a> </li><li> <a href="/igcse/topic1/1.3_assessment.html"> <span>Mini-assessment</span> <small>1.3 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>1.1 Practice</span>  </summary> <ul> <li> <a href="/igcse/topic1/binary_game.html"> <span>Binary Game</span>  </a> </li><li> <a href="/igcse/topic1/binary-addition-game.html"> <span>Binary Addition Quest</span>  </a> </li><li> <a href="/igcse/topic1/negative-numbers.html"> <span>Bit Stacker</span>  </a> </li> </ul> </details><details class="course-explorer__group" open> <summary> <span>Revision &amp; Reading</span>  </summary> <ul> <li> <a href="/igcse/topic1/flashcards.html"> <span>Flashcards</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Paper 1</span> <small>Computer Systems</small> </summary> <ul> <li> <a href="/igcse/topic1/index.html"> <span>1. Data Representation</span>  </a> </li><li> <a href="/igcse/topic2/index.html"> <span>2. Data Transmission</span>  </a> </li><li> <a href="/igcse/topic3/index.html"> <span>3. Hardware</span>  </a> </li><li> <a href="/igcse/topic4/index.html"> <span>4. Software</span>  </a> </li><li> <a href="/igcse/topic5/index.html"> <span>5. The Internet and its Uses</span>  </a> </li><li> <a href="/igcse/topic6/index.html"> <span>6. Automated and Emerging Technologies</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Paper 2</span> <small>Algorithms, Programming and Logic</small> </summary> <ul> <li> <a href="/igcse/topic7/index.html"> <span>7. Algorithm Design and Problem-Solving</span>  </a> </li><li> <a href="/igcse/topic8/index.html"> <span>8. Programming</span>  </a> </li><li> <a href="/igcse/topic9/index.html"> <span>9. Databases</span>  </a> </li><li> <a href="/igcse/topic10/index.html"> <span>10. Boolean Logic</span>  </a> </li> </ul> </details> </div> </div> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/igcse/index.html">IGCSE</a></li><li><a href="/igcse/topic1/index.html">Topic 1</a></li><li><span>1.3 Data Storage &amp; Compression</span></li><li><span aria-current="page">Read chapter</span></li></ol></nav>  <div class="reader-shell reader-shell--textbook" data-sgs-reader> <div class="sr-only" aria-live="polite" data-reader-announcer></div> <div class="reader-drawer-overlay" data-reader-drawer-overlay aria-hidden="true"></div> <aside class="reader-rail reader-rail--toc" id="reader-toc" aria-label="Table of contents"> <div class="reader-rail__header"> <p class="reader-rail__title">Contents</p> <button type="button" class="reader-icon-btn reader-icon-btn--sm reader-rail__mobile-close" data-reader-action="toc-toggle" aria-expanded="false" aria-controls="reader-toc" aria-label="Close table of contents"> <i class="fa-solid fa-xmark" aria-hidden="true"></i> </button> </div> <div class="reader-rail__body"> <div class="reader-search"> <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> <input type="search" placeholder="Search contents" aria-label="Search table of contents" data-reader-toc-search> </div> <nav class="reader-toc" aria-label="On this page" data-reader-toc> <p class="reader-empty">Loading contents...</p> </nav> </div> </aside> <section class="reader-stage"> <div class="reader-mobilebar"> <button type="button" class="reader-mobiletoggle" data-reader-action="toc-toggle" aria-controls="reader-toc" aria-expanded="false"> <i class="fa-solid fa-list" aria-hidden="true"></i> <span>Contents</span> </button> </div> <article class="reader-article"> <div class="reader-dochead"> <p class="reader-kicker">IGCSE 0478 · Topic 1 · 1.3</p> <h1 class="reader-title">1.3 Data Storage &amp; Compression</h1> <p class="reader-subtitle">Data Representation reading</p> </div> <div class="reader-content"> <div class="reader-prose" data-reader-content>  <div><h2>Key Terms and Definitions</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody><tr><td>bit</td><td>The smallest unit of data, with value <code>0</code> or <code>1</code>.</td></tr><tr><td>nibble</td><td>Four bits.</td></tr><tr><td>byte</td><td>Eight bits.</td></tr><tr><td>binary number system</td><td>Base-2 number system using only <code>0</code> and <code>1</code>.</td></tr><tr><td>denary number system</td><td>Base-10 number system used in everyday counting.</td></tr><tr><td>hexadecimal number system</td><td>Base-16 number system using <code>0-9</code> and <code>A-F</code>.</td></tr><tr><td>overflow error</td><td>A result that is too large for the fixed bit-width available.</td></tr><tr><td>logical shift</td><td>Bit movement left or right, with <code>0</code> shifted into empty positions.</td></tr><tr><td>two's complement</td><td>Method for representing negative binary integers.</td></tr><tr><td>MAC address</td><td>Device identifier often written in hexadecimal pairs.</td></tr><tr><td>error code</td><td>Numeric/hex code used by systems to report faults.</td></tr><tr><td>character set</td><td>A defined mapping between characters and numeric codes.</td></tr><tr><td>ASCII</td><td>A 7-bit character set (128 codes) for letters, digits, symbols, and control codes.</td></tr><tr><td>Unicode</td><td>A universal character set that supports world languages and symbols.</td></tr><tr><td>sampling rate</td><td>Number of sound samples taken each second.</td></tr><tr><td>sampling resolution (bit depth)</td><td>Number of bits used to represent each sound sample.</td></tr><tr><td>bitmap image</td><td>An image made from pixels arranged in a grid.</td></tr><tr><td>pixel</td><td>Short for picture element: the smallest unit in a bitmap image.</td></tr><tr><td>image resolution</td><td>The number of pixels across width and height.</td></tr><tr><td>colour depth</td><td>Number of bits used to represent one pixel's colour.</td></tr><tr><td>compression</td><td>File-size reduction by removing redundancy or less-important data.</td></tr><tr><td>lossy compression</td><td>Compression where some original data is permanently removed.</td></tr><tr><td>lossless compression</td><td>Compression where the original data can be reconstructed exactly.</td></tr><tr><td>run length encoding (RLE)</td><td>Lossless compression that stores repeated values as a value-count pair.</td></tr><tr><td>bandwidth</td><td>The maximum data transfer rate over a network.</td></tr></tbody></table>
+<h2>1.3 Data Storage &#x26; Compression</h2>
+<h3>Overview</h3>
+<div class="reader-section-body reader-section-body--apply">
+<p>This subtopic combines arithmetic discipline with judgement.
+Students are expected to calculate sizes accurately and choose sensible compression approaches for different file types.</p>
+<p>The question to keep asking is:
+what must stay exact, and what can be reduced to save space or bandwidth?</p>
+</div>
+<h3>Storage units and binary prefixes</h3>
+<div class="reader-section-body reader-section-body--concept">
+<p>IGCSE file-size questions use binary multiples for computer memory and storage.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Unit</th><th>Exact value</th></tr></thead><tbody><tr><td>bit</td><td>0 or 1</td></tr><tr><td>nibble</td><td>4 bits</td></tr><tr><td>byte</td><td>8 bits</td></tr><tr><td>KiB</td><td>1024 bytes</td></tr><tr><td>MiB</td><td>1024 KiB = 1,048,576 bytes</td></tr><tr><td>GiB</td><td>1024 MiB = 1,073,741,824 bytes</td></tr></tbody></table>
+<p>Do not mix decimal and binary prefixes:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Label</th><th>Multiplier</th></tr></thead><tbody><tr><td>KB, MB, GB</td><td>powers of 1000</td></tr><tr><td>KiB, MiB, GiB</td><td>powers of 1024</td></tr></tbody></table>
+<p>Method habit that avoids dropped marks:</p>
+<ol>
+<li>write units on every line</li>
+<li>convert one step at a time</li>
+<li>round only at the final step, if the question asks</li>
+</ol>
+<figure>
+  <img src="/igcse/topic1/1.3 images/Data units 1024.png" alt="Binary data unit ladder using powers of 1024 between bytes and larger units." loading="lazy" decoding="async">
+  <figcaption>Binary-prefix unit ladder used in IGCSE file-size questions.</figcaption>
+</figure>
+<figure>
+  <img src="/igcse/topic1/1.3 images/data units decimal.png" alt="Decimal data unit ladder using powers of 1000 for KB MB and GB." loading="lazy" decoding="async">
+  <figcaption>Decimal-prefix ladder for contrast: do not confuse with KiB/MiB/GiB.</figcaption>
+</figure>
+</div>
+<h3>File-size workflow: image and sound questions</h3>
+<div class="reader-section-body reader-section-body--apply">
+<p>Core formulas:</p>
+<ul>
+<li>bitmap bits = width x height x colour depth</li>
+<li>sound bits = sample rate x sample resolution x channels x duration</li>
+<li>bytes = bits / 8</li>
+</ul>
+<p>Image example: 1024 x 1080 at 32-bit</p>
+<ol>
+<li>pixels = 1024 x 1080 = 1,105,920</li>
+<li>bits = 1,105,920 x 32 = 35,389,440 bits</li>
+<li>bytes = 35,389,440 / 8 = 4,423,680 bytes</li>
+<li>MiB = 4,423,680 / 1,048,576 = 4.22 MiB (approx)</li>
+</ol>
+<p>Audio example: 44,100 Hz, 16-bit, stereo, 60 minutes</p>
+<ol>
+<li>seconds = 60 x 60 = 3600</li>
+<li>bits = 44,100 x 16 x 2 x 3600 = 5,080,320,000 bits</li>
+<li>bytes = 5,080,320,000 / 8 = 635,040,000 bytes</li>
+<li>MiB = 635,040,000 / 1,048,576 = 605 MiB (approx)</li>
+</ol>
+<p>Common exam error to avoid: forgetting to multiply by channels for stereo.</p>
+<figure>
+  <img src="/igcse/topic1/1.3 images/file size formula.png" alt="File-size formula reference for image and sound calculations." loading="lazy" decoding="async">
+  <figcaption>File-size formula sheet: keep method constant, substitute question values carefully.</figcaption>
+</figure>
+</div>
+<h3>Why compression matters in real systems</h3>
+<div class="reader-section-body reader-section-body--apply">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Context</th><th>Without compression</th><th>With compression</th></tr></thead><tbody><tr><td>Emailing a photo pack</td><td>Large attachments, slow upload</td><td>Smaller transfer size</td></tr><tr><td>Streaming music/video</td><td>More buffering and data usage</td><td>Smoother playback</td></tr><tr><td>Backing up files to cloud</td><td>Fewer files fit, higher cost</td><td>More files fit in same storage</td></tr><tr><td>Downloading on mobile data</td><td>High data usage</td><td>Lower data usage</td></tr></tbody></table>
+<p>Compression changes stored/transmitted size.
+It does not change the original capture formula that produced the raw data.</p>
+</div>
+<h3>Lossless and lossy: choosing the right approach</h3>
+<div class="reader-section-body reader-section-body--apply">
+<p>Choose compression based on whether exact restoration is required.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Type</th><th>What happens to original data</th><th>Typical formats</th><th>Best used for</th></tr></thead><tbody><tr><td>Lossless</td><td>Fully recoverable after decompression</td><td>RLE, ZIP, PNG</td><td>Text, source code, archives, technical diagrams</td></tr><tr><td>Lossy</td><td>Some information is removed permanently</td><td>JPEG, MP3, MP4</td><td>Photos, music, video where smaller size matters more than perfect recovery</td></tr></tbody></table>
+<p>Compression ratio = original size / compressed size.
+A ratio of 5:1 means the compressed file is one fifth of the original size.</p>
+<figure>
+  <img src="/igcse/topic1/1.3 images/lossy vs lossless.png" alt="Comparison of lossy and lossless compression approaches and outcomes." loading="lazy" decoding="async">
+  <figcaption>Lossy versus lossless: trade-off between exact recovery and file-size reduction.</figcaption>
+</figure>
+</div>
+<h3>Run Length Encoding (RLE) method walkthrough</h3>
+<div class="reader-section-body reader-section-body--concept">
+<p>RLE is lossless and works best when the same value repeats many times.</p>
+<p>Example string: <strong>AAAABBBCCDAA</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Run</th><th>Symbol</th><th>Count</th><th>RLE chunk</th></tr></thead><tbody><tr><td>1</td><td>A</td><td>4</td><td>4A</td></tr><tr><td>2</td><td>B</td><td>3</td><td>3B</td></tr><tr><td>3</td><td>C</td><td>2</td><td>2C</td></tr><tr><td>4</td><td>D</td><td>1</td><td>1D</td></tr><tr><td>5</td><td>A</td><td>2</td><td>2A</td></tr></tbody></table>
+<p>Encoded result: <strong>4A3B2C1D2A</strong></p>
+<p>Exam note: RLE is not always efficient.
+If data has little repetition, encoded form can be similar size or even larger.</p>
+<figure>
+  <img src="/igcse/topic1/1.3 images/RLE.png" alt="Run Length Encoding example converting repeated symbols into count-value pairs." loading="lazy" decoding="async">
+  <figcaption>RLE visual: repeated runs become shorter count-symbol tokens.</figcaption>
+</figure>
+</div>
+<h3>Interactive RLE demonstrator</h3>
+<div class="reader-section-body reader-section-body--example">
+<div class="igcse-widget" data-igcse-rle-demo="">
+  <p class="igcse-widget__title">Run Length Encoding (RLE) demo</p>
+  <p class="igcse-widget__hint">Enter a repeated pattern and compare original symbols to RLE output.</p>
+  <div class="igcse-widget__controls">
+    <label>
+      Input pattern
+      <input type="text" value="AAAAABBBCCDAA" data-rle-input="">
+    </label>
+  </div>
+  <div class="igcse-widget__board" data-rle-board=""></div>
+  <p class="igcse-widget__result" data-rle-result=""></p>
+</div>
+</div>
+<h3>Exam response scaffold for compression questions</h3>
+<div class="reader-section-body reader-section-body--apply">
+<p>Use this 4-line structure:</p>
+<ol>
+<li>identify file type and usage (archive, stream, edit, publish)</li>
+<li>decide whether exact restoration is needed</li>
+<li>choose lossy or lossless</li>
+<li>justify using quality, storage, and transfer-time trade-off</li>
+</ol>
+<p>Typical calls:</p>
+<ul>
+<li>source code backup -> lossless</li>
+<li>photo gallery for web -> lossy usually acceptable</li>
+<li>archived legal or medical records -> lossless required</li>
+<li>music streaming -> lossy often acceptable</li>
+</ul>
+</div></div>   </div> </div> </article> </section> </div> <div class="reader-modal-overlay" data-reader-modal-overlay aria-hidden="true"></div> <div class="reader-modal reader-modal--definition" id="reader-def-modal" role="dialog" aria-modal="true" aria-labelledby="reader-def-modal-title" aria-hidden="true"> <div class="reader-modal__header"> <h2 class="reader-modal__title" id="reader-def-modal-title" data-reader-def-title>Definition</h2> <button class="reader-modal__close" type="button" data-reader-close-modal aria-label="Close"> <i class="fa-solid fa-xmark" aria-hidden="true"></i> </button> </div> <div class="reader-modal__body"> <p class="reader-empty" data-reader-def-body></p> </div> </div> <script src="/js/reader.js"></script>  <script src="/js/igcse-pseudocode-highlighter.js"></script> <script src="/js/igcse-topic1-interactive.js"></script>  <nav class="prev-next-nav" aria-label="Page sequence"><a href="/igcse/topic1/1.2_assessment.html" class="prev-next-nav__link prev-next-nav__link--prev"><span class="prev-next-nav__label">Previous</span><strong>Mini-assessment</strong></a><a href="/igcse/topic1/1.3_data_storage_compression.html" class="prev-next-nav__link prev-next-nav__link--next"><span class="prev-next-nav__label">Next</span><strong>Slide deck</strong></a></nav> </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> 
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body> </html>

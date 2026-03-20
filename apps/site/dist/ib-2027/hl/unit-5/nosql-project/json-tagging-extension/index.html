@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Finish the HL path by reusing the same tagging algorithm idea from SL and then deciding how that result should be stored in the JSON version."><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark-reasonable.min.css"><link rel="stylesheet" href="/css/ib-project-sequence.css"><title>JSON Tagging Extension | Parallel JSON Project</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css">
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html"> IGCSE </a><a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html"> IGCSE </a> </li><li> <a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace page-shell--with-sidebar"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div class="course-explorer"> <div class="course-explorer__header"> <p class="course-explorer__title">HL Unit 5</p> <p class="course-explorer__meta">Scalable Data Systems</p> </div> <div class="course-explorer__groups"> <details class="course-explorer__group" open> <summary> <span>Overview</span>  </summary> <ul> <li> <a href="/ib-2027/hl/unit-5/index.html"> <span>Unit overview</span>  </a> </li><li> <a href="/ib-2027/hl/unit-5/unit-plan.html"> <span>Unit plan</span>  </a> </li><li> <a href="/ib-2027/hl/unit-5/textbook.html"> <span>Textbook</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Slides</span>  </summary> <ul> <li> <a href="/ib-2027/hl/unit-5/slides/A3.3_database_programming.html"> <span>Database Programming</span>  </a> </li><li> <a href="/ib-2027/hl/unit-5/slides/A3.4_alternative_databases_and_data_warehouses.html"> <span>Alternative Databases &amp; Data Warehouses (HL)</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Activities</span>  </summary> <ul> <li> <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html"> <span>SQL Worksheets</span> <small>HL-only aggregate functions plus an optional build-and-report challenge</small> </a> </li><li> <a href="/ib-2027/hl/unit-5/sql-playground.html?dataset=course-enrolment"> <span>SQL Playground</span> <small>HL reporting dataset for COUNT, AVG, SUM, MAX, MIN, GROUP BY, and HAVING</small> </a> </li><li> <a href="/ib-2027/hl/unit-5/nosql-project/index.html"> <span>NoSQL Project</span> <small>Stage-by-stage project journey</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 12</span> <small>Units 1–6</small> </summary> <ul> <li> <a href="/ib-2027/hl/unit-1/index.html"> <span>Unit 1. Advanced Architecture</span>  </a> </li><li> <a href="/ib-2027/hl/unit-2/index.html"> <span>Unit 2. Systems Control</span>  </a> </li><li> <a href="/ib-2027/hl/unit-3/index.html"> <span>Unit 3. Recursive Problem Solving</span>  </a> </li><li> <a href="/ib-2027/hl/unit-4/index.html"> <span>Unit 4. Professional OOP Design</span>  </a> </li><li> <a href="/ib-2027/hl/unit-5/index.html"> <span>Unit 5. Scalable Data Systems</span>  </a> </li><li> <a href="/ib-2027/hl/unit-6/index.html"> <span>Unit 6. Abstract Data Types</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 13</span> <small>Units 7–11</small> </summary> <ul> <li> <a href="/ib-2027/hl/unit-7/index.html"> <span>Unit 7. ML Preprocessing &amp; Math</span>  </a> </li><li> <a href="/ib-2027/hl/unit-8/index.html"> <span>Unit 8. Supervised &amp; Unsupervised</span>  </a> </li><li> <a href="/ib-2027/hl/unit-9/index.html"> <span>Unit 9. Agents &amp; Neural Computing</span>  </a> </li><li> <a href="/ib-2027/hl/unit-10/index.html"> <span>Unit 10. The HL Case Study</span>  </a> </li><li> <a href="/ib-2027/hl/unit-11/index.html"> <span>Unit 11. Advanced Networking</span>  </a> </li> </ul> </details> </div> </div> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB 2027</a></li><li><a href="/ib-2027/hl/index.html">HL</a></li><li><span aria-current="page">Unit 5</span></li></ol></nav>  <section class="ib-project-sequence"> <header class="ib-project-sequence-header"> <a class="ib-project-sequence-back" href="/ib-2027/hl/unit-5/index.html"> <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> <span>Back to HL Unit 5</span> </a> <div class="ib-project-sequence-copy"> <p class="ib-project-sequence-kicker">NoSQL Project</p> <h1>JSON Tagging Extension</h1> <p class="ib-project-sequence-intro">Finish the HL path by reusing the same tagging algorithm idea from SL and then deciding how that result should be stored in the JSON version.</p> </div> <div class="ib-project-sequence-meta"> <span>Stage 6: JSON Algorithm Extension</span> <span>Page 11 of 11</span> <span>1 of 1 in this stage</span> <span>HL tagging plan</span> </div> </header> <details class="ib-project-roadmap" aria-label="Project roadmap"> <summary class="ib-project-roadmap-summary"> <div class="ib-project-roadmap-summary-copy"> <p class="ib-project-sequence-sidebar-label">Project roadmap</p> <h2>Parallel JSON Project</h2> </div> <div class="ib-project-roadmap-summary-current"> <span class="ib-project-roadmap-summary-stage">Stage 6: JSON Algorithm Extension</span> <strong>JSON tagging extension</strong> <small>Page 11 of 11</small> </div> <span class="ib-project-roadmap-toggle"> <span class="is-closed">Expand roadmap</span> <span class="is-open">Collapse roadmap</span> <i class="fa-solid fa-chevron-down" aria-hidden="true"></i> </span> </summary> <div class="ib-project-roadmap-panel"> <p class="ib-project-roadmap-copy">
+Use the roadmap when you want to jump to another stage. Otherwise keep moving with the next and previous controls so the build stays in order.
+</p> <nav class="ib-project-stage-track" aria-label="Stage roadmap"> <a class="ib-project-stage-card" href="/ib-2027/hl/unit-5/nosql-project/index.html"> <span class="ib-project-stage-card-kicker">Stage 1</span> <strong>JSON and NoSQL Theory</strong> <small>Build the theory first so the JSON approach is chosen deliberately rather than copied blindly.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/hl/unit-5/nosql-project/python-json-lab/index.html"> <span class="ib-project-stage-card-kicker">Stage 2</span> <strong>Python JSON Exploration</strong> <small>Use small Python experiments to understand how document data is read, updated, and saved.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/hl/unit-5/nosql-project/modelling-comparison/index.html"> <span class="ib-project-stage-card-kicker">Stage 3</span> <strong>SQL vs NoSQL Modelling</strong> <small>Compare how the same task system looks as a relational design and as a document model.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/hl/unit-5/nosql-project/json-backend-setup/index.html"> <span class="ib-project-stage-card-kicker">Stage 4</span> <strong>JSON Backend Foundations</strong> <small>Keep the frontend familiar, set up the JSON files and helpers, and prepare the backend before the live features begin.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/hl/unit-5/nosql-project/feature-1-fetch-render/index.html"> <span class="ib-project-stage-card-kicker">Stage 5</span> <strong>JSON Feature Build Sequence</strong> <small>Rebuild the same client features with JSON storage, one controlled change at a time.</small> <span class="ib-project-stage-card-count">6 pages</span> </a><a class="ib-project-stage-card is-current" href="/ib-2027/hl/unit-5/nosql-project/json-tagging-extension/index.html" aria-current="step"> <span class="ib-project-stage-card-kicker">Stage 6</span> <strong>JSON Algorithm Extension</strong> <small>Apply the same tagging algorithm and see how the JSON storage outcome differs from the SQL extension.</small> <span class="ib-project-stage-card-count">1 pages</span> </a> </nav> <nav class="ib-project-step-track" aria-label="JSON Algorithm Extension pages"> <a class="ib-project-step-card is-current" href="/ib-2027/hl/unit-5/nosql-project/json-tagging-extension/index.html" aria-current="page"> <span class="ib-project-step-card-index">1</span> <span class="ib-project-step-card-copy"> <strong>JSON tagging extension</strong> <small>Same algorithm idea, different storage outcome in the JSON track.</small> </span> </a> </nav> </div> </details> <article class="ib-project-sequence-article">  <div class="ib-project-lesson-body">
+  <section class="ib-project-section ib-project-section--lead">
+    <h3>Same feature goal, different model consequence</h3>
+    <p>The tagging goal has not changed: read task text, remove common words, keep useful unique words, and limit the number of generated tags.</p><p>What changes in HL is the storage outcome. In the SQL version, the extension needed new tables and a junction table. In the JSON version, the generated tags can live directly inside each task object as an array.</p>
+  </section>
+
+  <section class="ib-project-section ib-project-section--table">
+    <h3>Key words and definitions</h3>
+    
+  <div class="ib-project-table-wrap">
+    <table class="ib-project-table">
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Algorithm step</td><td>One ordered action in the tagging process.</td></tr><tr><td>Embedded array</td><td>A list stored directly inside one JSON object.</td></tr><tr><td>Model consequence</td><td>What a data model forces you to do when a new feature appears.</td></tr><tr><td>Storage outcome</td><td>The final shape of the saved data after the feature is added.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+<div class="ib-project-doc-grid">
+  <section class="ib-project-doc-panel">
+    <h4>Keep the algorithm thinking the same</h4>
+    <ol><li>Read the task title text.</li><li>Convert it into words.</li><li>Remove common stop words.</li><li>Keep useful unique words.</li><li>Limit the final tag list.</li></ol>
+  </section>
+
+  <section class="ib-project-doc-panel">
+    <h4>How the storage outcome differs</h4>
+    <ul><li><strong>SQL:</strong> new `tags` and `task_tags` structures are needed.</li><li><strong>JSON:</strong> the generated tags can be stored directly in a `tags` array inside each task object.</li><li>The feature goal is the same, but the data model changes how the result is saved.</li></ul>
+  </section>
+</div>
+  <aside class="ib-project-callout ib-project-callout--soft">
+    <h3>Flow of the JSON tagging extension</h3>
+    
+  <div class="ib-project-flow">
+    <span>Title text</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span>Algorithm</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span>Tag list</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span>Task object</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span>Saved JSON</span>
+  </div>
+
+  </aside>
+<div class="ib-project-doc-grid">
+  <section class="ib-project-doc-code">
+    <h4>Generic algorithm pseudocode</h4>
+    <pre><code class="language-text">words = split(title)
+remove common words
+keep useful unique words
+limit to 3 tags
+return tag list</code></pre>
+    <div class="ib-project-code-notes">
+        <div class="ib-project-code-note">
+          <strong>return tag list</strong>
+          <p>The algorithm output is still a list, no matter how it will later be stored.</p>
+        </div>
+      </div>
+  </section>
+
+  <section class="ib-project-doc-panel">
+    <h4>Questions this stage answers</h4>
+    
+  <div class="ib-project-table-wrap">
+    <table class="ib-project-table">
+      <thead>
+        <tr><th>Question</th><th>Direction</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Does the algorithm itself change?</td><td>No. Keep the logic as similar as possible to the SQL version.</td></tr><tr><td>Does JSON need a junction table?</td><td>No. The tags can be embedded directly in each task object.</td></tr><tr><td>What must be retested?</td><td>Create flow, saved structure, and any display or retrieval logic affected by tags.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+</div>
+  <section class="ib-project-section ib-project-section--default">
+    <h3>Work through the extension in this order</h3>
+    <p>Treat this as an algorithm page first and a storage page second.</p><div class="ib-project-build-grid">
+  <section class="ib-project-build-card">
+    <div class="ib-project-build-card-head">
+      <span class="ib-project-build-card-index">Step 1</span>
+      <span class="ib-project-build-card-file">Algorithm notes</span>
+    </div>
+    <h4>Reuse the plain-English algorithm and flowchart first</h4>
+    <ul><li>Before any code changes, make sure the class can still explain the tagging steps in order.</li><li>Keep the algorithm reasoning separate from the storage model.</li></ul>
+    
+  </section>
+
+  <section class="ib-project-build-card">
+    <div class="ib-project-build-card-head">
+      <span class="ib-project-build-card-index">Step 2</span>
+      <span class="ib-project-build-card-file">Backend create flow</span>
+    </div>
+    <h4>Decide where the generated tags will be attached</h4>
+    <ul><li>The natural place is in the create flow, after the title is known and before the object is saved.</li><li>Store the resulting tags inside the task object rather than building a relational link structure.</li></ul>
+    
+          <div class="ib-project-build-card-prompts">
+            <p><strong>Ask yourself</strong></p>
+            <ul><li>Why can JSON store the tags directly in the object while SQL needed more schema work?</li><li>What test would prove the tag list was saved correctly?</li></ul>
+          </div>
+        
+  </section>
+
+  <section class="ib-project-build-card">
+    <div class="ib-project-build-card-head">
+      <span class="ib-project-build-card-index">Step 3</span>
+      <span class="ib-project-build-card-file">Evaluation notes</span>
+    </div>
+    <h4>Explain the model consequence clearly</h4>
+    <ul><li>Write one comparison note about how the same algorithm created different storage consequences in SQL and JSON.</li><li>Use that difference to strengthen the HL comparison, not to declare one model “best” by default.</li></ul>
+    
+  </section>
+</div>
+  </section>
+
+  <section class="ib-project-section ib-project-section--checks">
+    <h3>What should be true by the end of the HL extension</h3>
+    <ul class="ib-project-checklist"><li>The class can explain the tagging algorithm in plain English.</li><li>Everyone understands why JSON can store the generated tags directly in each object.</li><li>The final HL comparison now includes one clear algorithm-related model difference.</li></ul>
+  </section>
+</div> <footer class="ib-project-sequence-footer"> <a class="ib-project-nav-link" href="/ib-2027/hl/unit-5/nosql-project/feature-6-evaluation-check/index.html"> <span class="ib-project-nav-label">Previous</span> <strong>Feature 6: Evaluation and evidence check</strong> </a> <div class="ib-project-nav-link is-disabled is-next"> <span class="ib-project-nav-label">Next</span> <strong>Final page</strong> </div> </footer> </article> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" defer></script> <script src="/js/ib-project-highlight.js" defer></script>  </section>   </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> 
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body> </html>

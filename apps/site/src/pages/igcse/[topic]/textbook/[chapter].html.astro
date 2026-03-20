@@ -100,7 +100,7 @@ export async function getStaticPaths() {
   });
 }
 
-const { topic, topicNumber, topicName, chapterCode, chapterTitle, chapterSlug } =
+const { topicNumber, topicName, chapterCode, chapterTitle } =
   Astro.props as IgcseTopicTextbookChapterPathProps;
 const textbookEntry = (await getCollection('igcse-textbooks', ({ data }) => data.topicNumber === topicNumber))[0];
 const textbookSections = textbookEntry ? splitTopLevelSections(textbookEntry.body) : [];
@@ -120,7 +120,6 @@ const availableChapters = textbookEntry?.data.subtopics || [];
 <ReaderShell
   title={`IGCSE Topic ${topicNumber} ${chapterCode}: ${chapterTitle}`}
   description={`IGCSE Computer Science Topic ${topicNumber} ${chapterCode} (${chapterTitle}) reading.`}
-  storageKey={`sgs-reader-igcse-${topic}-${chapterSlug}-settings-v1`}
   kicker={`IGCSE 0478 · Topic ${topicNumber} · ${chapterCode}`}
   heading={`${chapterCode} ${chapterTitle}`}
   subtitle={`${topicName} reading`}

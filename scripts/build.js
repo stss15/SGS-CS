@@ -43,6 +43,10 @@ const env = new nunjucks.Environment(
 
 env.addGlobal('buildTime', buildTimestamp);
 env.addFilter('json', (value, spaces = 0) => JSON.stringify(value, null, spaces));
+env.addFilter('withoutPlaceholders', (items) => {
+    if (!Array.isArray(items)) return items;
+    return items.filter(i => !i.href || !i.href.includes('coming-soon'));
+});
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -298,7 +302,7 @@ const injectAuthGate = (html) => {
     }
 
     if (/<\/body>/i.test(updated)) {
-        updated = updated.replace(/<\/body>/i, `${AUTH_BODY_SNIPPET}\n</body>`);
+        updated = injectBeforeLastBodyClose(updated, AUTH_BODY_SNIPPET);
     } else {
         updated = `${updated}\n${AUTH_BODY_SNIPPET}`;
     }
@@ -312,6 +316,17 @@ const injectHeadMeta = (html, metaTag) => {
     }
 
     return `${metaTag}\n${html}`;
+};
+
+const injectBeforeLastBodyClose = (html, snippet) => {
+    const lowerHtml = html.toLowerCase();
+    const closingBodyIndex = lowerHtml.lastIndexOf('</body>');
+
+    if (closingBodyIndex === -1) {
+        return `${html}${snippet}`;
+    }
+
+    return `${html.slice(0, closingBodyIndex)}${snippet}\n${html.slice(closingBodyIndex)}`;
 };
 
 const escapeHtmlAttribute = (value) =>
@@ -372,7 +387,7 @@ const injectLegacyInlineEventsRuntime = (html) => {
     <script src="${LEGACY_INLINE_EVENTS_SCRIPT}"></script>`;
 
     if (/<\/body>/i.test(html)) {
-        return html.replace(/<\/body>/i, `${snippet}\n</body>`);
+        return injectBeforeLastBodyClose(html, snippet);
     }
 
     return `${html}${snippet}`;

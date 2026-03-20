@@ -12,6 +12,15 @@ const { context, currentPath } = Astro.props as Props;
 const groupIsActive = (group: ShellContext['groups'][number]) =>
   group.items.some((item) => hrefMatchesCurrentPath(item.href, currentPath));
 
+const hasActiveLocalGroup = context.groups.some((group) => !group.courseLevel && groupIsActive(group));
+
+const shouldOpen = (group: ShellContext['groups'][number]): boolean => {
+  if (group.open) return true;
+  if (!groupIsActive(group)) return false;
+  if (group.courseLevel && hasActiveLocalGroup) return false;
+  return true;
+};
+
 const isGenericMeta = (value?: string): boolean => {
   if (!value) {
     return false;
@@ -43,7 +52,7 @@ const isGenericMeta = (value?: string): boolean => {
 
   <div class="course-explorer__groups">
     {context.groups.map((group) => (
-      <details class="course-explorer__group" open={group.open || groupIsActive(group)}>
+      <details class="course-explorer__group" open={shouldOpen(group)}>
         <summary>
           <span>{group.label}</span>
           {group.meta && !isGenericMeta(group.meta) && <small>{group.meta}</small>}

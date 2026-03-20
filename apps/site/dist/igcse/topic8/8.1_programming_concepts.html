@@ -1,0 +1,807 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="8.1 Programming Concepts | SGS Education"><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><title>8.1 Programming Concepts | SGS Education</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css"></head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html" class="active" aria-current="page"> IGCSE </a><a href="/ib-2027/index.html"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html" class="active" aria-current="page"> IGCSE </a> </li><li> <a href="/ib-2027/index.html"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace page-shell--with-sidebar"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div class="course-explorer"> <div class="course-explorer__header"> <p class="course-explorer__title">Topic 8</p> <p class="course-explorer__meta">8. Programming</p> </div> <div class="course-explorer__groups"> <details class="course-explorer__group" open> <summary> <span>Overview</span>  </summary> <ul> <li> <a href="/igcse/topic8/index.html"> <span>Topic overview</span>  </a> </li> </ul> </details><details class="course-explorer__group" open> <summary> <span>8.1 Programming Concepts</span>  </summary> <ul> <li> <a href="/igcse/topic8/textbook/8-1.html"> <span>Read chapter</span> <small>Programming Concepts</small> </a> </li><li> <a href="/igcse/topic8/8.1_programming_concepts.html" aria-current="page" class="current"> <span>Slide deck</span> <small>Programming Concepts</small> </a> </li><li> <a href="/igcse/topic8/8.1_assessment.html"> <span>Mini-assessment</span> <small>8.1 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>8.2 Arrays</span>  </summary> <ul> <li> <a href="/igcse/topic8/textbook/8-2.html"> <span>Read chapter</span> <small>Arrays</small> </a> </li><li> <a href="/igcse/topic8/8.2_arrays.html"> <span>Slide deck</span> <small>Arrays</small> </a> </li><li> <a href="/igcse/topic8/8.2_assessment.html"> <span>Mini-assessment</span> <small>8.2 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>8.3 File Handling</span>  </summary> <ul> <li> <a href="/igcse/topic8/textbook/8-3.html"> <span>Read chapter</span> <small>File Handling</small> </a> </li><li> <a href="/igcse/topic8/8.3_file_handling.html"> <span>Slide deck</span> <small>File Handling</small> </a> </li><li> <a href="/igcse/topic8/8.3_assessment.html"> <span>Mini-assessment</span> <small>8.3 Assessment</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Practice</span>  </summary> <ul> <li> <a href="/igcse/topic8/IGCSE_Pseudocode_IDE/dist/index.html"> <span>Pseudocode IDE</span> <small>Interactive Coding Tool</small> </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Revision &amp; Reading</span>  </summary> <ul> <li> <a href="/igcse/topic8/textbook.html"> <span>Open Topic Textbook</span>  </a> </li><li> <a href="/igcse/topic8/flashcards.html"> <span>Flashcards</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Paper 1</span> <small>Computer Systems</small> </summary> <ul> <li> <a href="/igcse/topic1/index.html"> <span>1. Data Representation</span>  </a> </li><li> <a href="/igcse/topic2/index.html"> <span>2. Data Transmission</span>  </a> </li><li> <a href="/igcse/topic3/index.html"> <span>3. Hardware</span>  </a> </li><li> <a href="/igcse/topic4/index.html"> <span>4. Software</span>  </a> </li><li> <a href="/igcse/topic5/index.html"> <span>5. The Internet and its Uses</span>  </a> </li><li> <a href="/igcse/topic6/index.html"> <span>6. Automated and Emerging Technologies</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Paper 2</span> <small>Algorithms, Programming and Logic</small> </summary> <ul> <li> <a href="/igcse/topic7/index.html"> <span>7. Algorithm Design and Problem-Solving</span>  </a> </li><li> <a href="/igcse/topic8/index.html"> <span>8. Programming</span>  </a> </li><li> <a href="/igcse/topic9/index.html"> <span>9. Databases</span>  </a> </li><li> <a href="/igcse/topic10/index.html"> <span>10. Boolean Logic</span>  </a> </li> </ul> </details> </div> </div> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/igcse/index.html">IGCSE</a></li><li><a href="/igcse/topic8/index.html">Topic 8</a></li><li><span>8.1 Programming Concepts</span></li><li><span aria-current="page">Slide deck</span></li></ol></nav>  <section class="page-panel page-panel--flush"> <section class="legacy-frame legacy-frame--slides"> <div class="legacy-frame__actions"> <button type="button" class="legacy-frame__fullscreen" data-legacy-frame-fullscreen="igcse-topic8-8-1-programming-concepts">
+Present Fullscreen
+</button> </div> <iframe title="8.1 Programming Concepts | SGS Education" class="legacy-frame__iframe" data-legacy-frame-id="igcse-topic8-8-1-programming-concepts" srcdoc="<!DOCTYPE html>
+<html lang=&#34;en&#34;>
+
+<head>
+    <meta charset=&#34;utf-8&#34;>
+    <meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;>
+    <title>8.1 Programming Concepts | SGS Education</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css&#34;>
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css&#34;>
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css&#34;>
+
+    <!-- Highlight.js -->
+    <link rel=&#34;stylesheet&#34;
+        href=&#34;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css&#34;>
+
+    <!-- Font Awesome -->
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&#34;>
+
+    <link rel=&#34;stylesheet&#34; href=&#34;/css/slide-deck.css&#34;>
+
+
+    <!-- data-sgs-auth-gate -->
+    <link rel=&#34;stylesheet&#34; href=&#34;/css/auth-gate.css&#34;>
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name=&#34;description&#34; content=&#34;SGS Education resources for KS3, IGCSE, and IB students and teachers.&#34;>
+<base href=&#34;/igcse/topic8/8.1_programming_concepts/&#34; target=&#34;_top&#34;>
+  <style>
+    html.auth-pending body,
+    html.auth-ready body {
+      visibility: visible !important;
+    }
+    #back-btn, #sg-logo, .footer-text, .standalone-nav { display: none !important; }
+    .site-header,
+    .main-header,
+    .feedback-modals,
+    .site-feedback,
+    .feedback-trigger,
+    [data-feedback-open],
+    body > footer,
+    .sgs-auth-overlay,
+    #sgs-auth-overlay {
+      display: none !important;
+    }
+    html, body { margin: 0 !important; }
+  </style>
+</head>
+
+<body>
+    <a href=&#34;/igcse/topic8/index.html&#34; id=&#34;back-btn&#34; title=&#34;Back&#34; class=&#34;back-nav&#34;>
+        <i class=&#34;fa-solid fa-circle-arrow-left&#34;></i>
+    </a>
+    <img src=&#34;/images/Logo.png&#34; id=&#34;sg-logo&#34; alt=&#34;Logo&#34;
+        data-sgs-onerror=&#34;this.src='https://via.placeholder.com/80/003366/ffffff?text=LOGO'&#34; decoding=&#34;async&#34; decoding="async">
+    <div class=&#34;footer-text live-date&#34; id=&#34;live-date-display&#34;></div>
+    <div class=&#34;footer-text course-footer&#34;>IGCSE Computer Science</div>
+
+    <div class=&#34;reveal&#34;>
+        <div class=&#34;slides&#34;>
+
+            <!-- ============================================
+                 TITLE SLIDE
+                 ============================================ -->
+            <section>
+                <div class=&#34;title-container&#34;>
+                    <div class=&#34;title-line-top&#34;></div>
+                    <div>
+                        <h1 class=&#34;main-title&#34;>8.1 Programming Concepts</h1>
+                        <h3 class=&#34;sub-title&#34;>The Building Blocks of Code</h3>
+                    </div>
+                    <div class=&#34;title-line-bottom&#34;></div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 RETRIEVAL PRACTICE
+                 ============================================ -->
+            <section>
+                <h2><i class=&#34;fa-solid fa-brain&#34;></i> Quick Recall (Topic 7)</h2>
+                <div class=&#34;cols&#34; style=&#34;margin-top:20px;&#34;>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>Q1:</strong> What is an algorithm?</p>
+                        <p class=&#34;fragment small-text&#34; style=&#34;color: var(--primary-blue);&#34;>An ordered set of steps to solve a problem</p>
+                    </div>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>Q2:</strong> What symbol is used for assignment in pseudocode?</p>
+                        <p class=&#34;fragment small-text&#34; style=&#34;color: var(--primary-blue);&#34;>← (arrow)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE HOOK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>The Big Question</h2>
+                    <div class=&#34;r-stack&#34;>
+                        <div class=&#34;fragment fade-in-then-out&#34;>
+                            <div class=&#34;question-box&#34;>
+                                <p style=&#34;font-size:1.2em; margin:0;&#34;>How does a computer remember things?</p>
+                            </div>
+                        </div>
+                        <div class=&#34;fragment fade-in-then-out&#34;>
+                            <div class=&#34;box&#34; style=&#34;background: #ffebee; padding: 30px;&#34;>
+                                <p class=&#34;small-text&#34; style=&#34;margin:0;&#34;>When you play a game, how does it know your score?</p>
+                                <p class=&#34;small-text&#34; style=&#34;margin-top:10px;&#34;>When you type your name, where does it go?</p>
+                                <p class=&#34;small-text&#34; style=&#34;margin-top:15px;&#34;><em>It has to store the values somewhere.</em></p>
+                            </div>
+                        </div>
+                        <div class=&#34;fragment fade-in&#34;>
+                            <div class=&#34;box-blue&#34; style=&#34;padding: 30px;&#34;>
+                                <p class=&#34;small-text&#34;>✅ Computers use <strong><span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>variables</span></strong> — named storage containers that hold data.</p>
+                                <p class=&#34;small-text&#34;>And <strong><span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>constants</span></strong> for values that should never change.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>Learn about <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>variables</span></span>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3><i class=&#34;fa-solid fa-lightbulb&#34;></i> Did You Know?</h3>
+                <div class=&#34;cols&#34;>
+                    <div class=&#34;box&#34;>
+                        <h4><i class=&#34;fa-solid fa-microchip&#34;></i> It’s All Bits Underneath</h4>
+                        <p class=&#34;small-text fragment&#34;>In memory, everything is stored in binary.</p>
+                        <p class=&#34;small-text fragment&#34;>A <strong>data type</strong> tells the computer how to interpret those bits (number, text, TRUE/FALSE).</p>
+                    </div>
+                    <div class=&#34;box-blue&#34;>
+                        <h4><i class=&#34;fa-solid fa-lock&#34;></i> <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>Constants</span> Reduce Bugs</h4>
+                        <p class=&#34;small-text fragment&#34;>Using a <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>constant</span> avoids “magic numbers” scattered through code.</p>
+                        <p class=&#34;small-text fragment&#34;>If the value changes, you update it in one place.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 VARIABLES AND CONSTANTS
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>Variables</span> &#38; <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>Constants</span></h2>
+                    <div class=&#34;cols&#34; style=&#34;margin-top:20px;&#34;>
+                        <div class=&#34;box fragment&#34;>
+                            <h4><i class=&#34;fa-solid fa-pen&#34;></i> <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>Variable</span></h4>
+                            <p class=&#34;small-text&#34;>A named storage location whose value <strong>can change</strong>.</p>
+                            <p class=&#34;small-text&#34;><em>Like a whiteboard – you can erase and rewrite.</em></p>
+                            <p class=&#34;small-text&#34;>Example: <code>Score</code>, <code>Name</code></p>
+                        </div>
+                        <div class=&#34;box box-blue fragment&#34;>
+                            <h4><i class=&#34;fa-solid fa-lock&#34;></i> <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>Constant</span></h4>
+                            <p class=&#34;small-text&#34;>A named storage location whose value <strong>never changes</strong>.</p>
+                            <p class=&#34;small-text&#34;><em>Like carving in stone – fixed forever.</em></p>
+                            <p class=&#34;small-text&#34;>Example: <code>Pi = 3.142</code></p>
+                        </div>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>How to <span class=&#34;keyword&#34; data-def=&#34;define the value and data type of a variable or constant&#34;>declare</span> them</span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>Declaring &#38; Assigning</h3>
+                    <div class=&#34;cols&#34;>
+                        <div class=&#34;box&#34;>
+                            <h4>Declaration</h4>
+                            <p class=&#34;small-text&#34;>Tell the computer what name and type.</p>
+                            <pre style=&#34;font-size:0.85em; margin:0;&#34;><code class=&#34;language-plaintext&#34;><span class=&#34;keyword&#34; data-def=&#34;define the value and data type of a variable or constant&#34;>DECLARE</span> Score : <span class=&#34;keyword&#34; data-def=&#34;a positive or negative whole number that can be used with mathematical operators&#34;>INTEGER</span>
+<span class=&#34;keyword&#34; data-def=&#34;define the value and data type of a variable or constant&#34;>DECLARE</span> Name : <span class=&#34;keyword&#34; data-def=&#34;a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol&#34;>STRING</span>
+<span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>CONSTANT</span> Pi = 3.142</code></pre>
+                        </div>
+                        <div class=&#34;box box-blue fragment&#34;>
+                            <h4>Assignment</h4>
+                            <p class=&#34;small-text&#34;>Put a value into the <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>variable</span>.</p>
+                            <pre style=&#34;font-size:0.85em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>Score ← 10
+Name ← &#34;Ali&#34;</code></pre>
+                            <p class=&#34;small-text&#34;>Use ← (not =) for assignment!</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class=&#34;question-box&#34;>Which should be a <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>variable</span> and which should be a <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>constant</span>?</div>
+                <div class=&#34;cols&#34;>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>A.</strong> PlayerScore</p>
+                        <p class=&#34;small-text&#34;><strong>B.</strong> Pi = 3.142</p>
+                    </div>
+                    <div class=&#34;box-blue fragment&#34;>
+                        <p class=&#34;small-text&#34;><strong>Answers:</strong></p>
+                        <p class=&#34;small-text&#34;>A = <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>Variable</span> (changes)</p>
+                        <p class=&#34;small-text&#34;>B = <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>Constant</span> (fixed)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 DATA TYPES
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2>Data Types</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>What kinds of data can we store?</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;>Different types of data need different &#34;containers&#34;.</p>
+                        <p class=&#34;small-text&#34;><em>You wouldn't put water in a cardboard box!</em></p>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>The 5 main types</span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>The 5 Data Types</h3>
+                    <table style=&#34;width:100%; font-size:0.85em;&#34;>
+                        <tr>
+                            <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Type</th>
+                            <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Description</th>
+                            <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Example</th>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:8px;&#34;><strong><span class=&#34;keyword&#34; data-def=&#34;a positive or negative whole number that can be used with mathematical operators&#34;>INTEGER</span></strong></td>
+                            <td style=&#34;padding:8px;&#34;>Whole numbers</td>
+                            <td style=&#34;padding:8px;&#34;><code>42</code>, <code>-7</code>, <code>0</code></td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:8px;&#34;><strong>REAL</strong></td>
+                            <td style=&#34;padding:8px;&#34;>Decimal numbers</td>
+                            <td style=&#34;padding:8px;&#34;><code>3.14</code>, <code>-2.5</code></td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:8px;&#34;><strong><span class=&#34;keyword&#34; data-def=&#34;a variable or constant that is a single character&#34;>CHAR</span></strong></td>
+                            <td style=&#34;padding:8px;&#34;>Single character</td>
+                            <td style=&#34;padding:8px;&#34;><code>'A'</code>, <code>'7'</code>, <code>'#'</code></td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:8px;&#34;><strong><span class=&#34;keyword&#34; data-def=&#34;a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol&#34;>STRING</span></strong></td>
+                            <td style=&#34;padding:8px;&#34;>Text (multiple characters)</td>
+                            <td style=&#34;padding:8px;&#34;><code>&#34;Hello&#34;</code>, <code>&#34;123&#34;</code></td>
+                        </tr>
+                        <tr class=&#34;fragment&#34;>
+                            <td style=&#34;padding:8px;&#34;><strong>BOOLEAN</strong></td>
+                            <td style=&#34;padding:8px;&#34;>TRUE or FALSE only</td>
+                            <td style=&#34;padding:8px;&#34;><code>TRUE</code>, <code>FALSE</code></td>
+                        </tr>
+                    </table>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 INPUT AND OUTPUT
+                 ============================================ -->
+            <section>
+                <h2>Input &#38; Output</h2>
+                <div class=&#34;cols&#34; style=&#34;margin-top:20px;&#34;>
+                    <div class=&#34;box fragment&#34;>
+                        <h4><i class=&#34;fa-solid fa-keyboard&#34;></i> INPUT</h4>
+                        <p class=&#34;small-text&#34;>Get data FROM the user</p>
+                        <pre style=&#34;font-size:0.9em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>INPUT Name
+INPUT Age</code></pre>
+                    </div>
+                    <div class=&#34;box box-blue fragment&#34;>
+                        <h4><i class=&#34;fa-solid fa-desktop&#34;></i> OUTPUT</h4>
+                        <p class=&#34;small-text&#34;>Display data TO the user</p>
+                        <pre style=&#34;font-size:0.9em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>OUTPUT &#34;Hello&#34;
+OUTPUT Name
+OUTPUT &#34;You are &#34;, Age</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 THE THREE CONSTRUCTS
+                 ============================================ -->
+            <section>
+                <h2>The Three Programming Constructs</h2>
+                <div class=&#34;question-box&#34;>
+                    <p style=&#34;font-size:1.2em; margin:0;&#34;>Every program is built from just <strong>three</strong> things:</p>
+                </div>
+                <div class=&#34;cols&#34; style=&#34;margin-top:20px;&#34;>
+                    <div class=&#34;box fragment&#34;>
+                        <h4><i class=&#34;fa-solid fa-arrow-down&#34;></i> <span class=&#34;keyword&#34; data-def=&#34;the order in which the steps in a program are executed&#34;>Sequence</span></h4>
+                        <p class=&#34;small-text&#34;>Lines run one after another, in order.</p>
+                    </div>
+                    <div class=&#34;box fragment&#34;>
+                        <h4><i class=&#34;fa-solid fa-code-branch&#34;></i> <span class=&#34;keyword&#34; data-def=&#34;allowing the selection of different paths through the steps of a program&#34;>Selection</span></h4>
+                        <p class=&#34;small-text&#34;>Make decisions (IF/ELSE).</p>
+                    </div>
+                    <div class=&#34;box box-blue fragment&#34;>
+                        <h4><i class=&#34;fa-solid fa-repeat&#34;></i> <span class=&#34;keyword&#34; data-def=&#34;a section of programming code that can be repeated under certain conditions&#34;>Iteration</span></h4>
+                        <p class=&#34;small-text&#34;>Repeat code (loops).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 SEQUENCE
+                 ============================================ -->
+            <section>
+                <h2><span class=&#34;keyword&#34; data-def=&#34;the order in which the steps in a program are executed&#34;>Sequence</span></h2>
+                <div class=&#34;box&#34;>
+                    <p class=&#34;small-text&#34;>Code runs line by line, top to bottom.</p>
+                </div>
+                <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                    <pre style=&#34;font-size:1em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>OUTPUT &#34;What is your name?&#34;
+INPUT Name
+OUTPUT &#34;Hello, &#34;, Name</code></pre>
+                </div>
+                <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                    <p class=&#34;small-text&#34;><strong>Line 1</strong> runs first, then <strong>Line 2</strong>, then <strong>Line 3</strong>.</p>
+                    <p class=&#34;small-text&#34;>Simple but essential!</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 SELECTION - IF/ELSE
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class=&#34;keyword&#34; data-def=&#34;allowing the selection of different paths through the steps of a program&#34;>Selection</span> (IF)</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>What if we need to make a decision?</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Analogy:</strong> A fork in the road – which path do you take?</p>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>IF statements</span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>IF...THEN...ELSE</h3>
+                    <div class=&#34;box&#34;>
+                        <pre style=&#34;font-size:0.95em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>IF condition THEN
+    statements
+ELSE
+    statements
+ENDIF</code></pre>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <h4>Example: Pass or Fail</h4>
+                        <pre style=&#34;font-size:0.9em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>INPUT Mark
+IF Mark >= 50 THEN
+    OUTPUT &#34;Pass&#34;
+ELSE
+    OUTPUT &#34;Fail&#34;
+ENDIF</code></pre>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Key:</strong> Always close with <code>ENDIF</code></p>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>Nested IF</h3>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;>Sometimes you need multiple conditions:</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <pre style=&#34;font-size:0.85em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>INPUT Mark
+IF Mark >= 70 THEN
+    OUTPUT &#34;Distinction&#34;
+ELSE
+    IF Mark >= 50 THEN
+        OUTPUT &#34;Pass&#34;
+    ELSE
+        OUTPUT &#34;Fail&#34;
+    ENDIF
+ENDIF</code></pre>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 SELECTION - CASE
+                 ============================================ -->
+            <section>
+                <h2>CASE Statements</h2>
+                <div class=&#34;box&#34;>
+                    <p class=&#34;small-text&#34;>When you have <strong>many options</strong>, use CASE instead of nested IF:</p>
+                </div>
+                <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                    <pre style=&#34;font-size:0.85em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>INPUT Day
+CASE OF Day
+    &#34;Monday&#34;: OUTPUT &#34;Start of week&#34;
+    &#34;Friday&#34;: OUTPUT &#34;Nearly weekend!&#34;
+    &#34;Saturday&#34;, &#34;Sunday&#34;: OUTPUT &#34;Weekend!&#34;
+    OTHERWISE: OUTPUT &#34;Mid-week&#34;
+ENDCASE</code></pre>
+                </div>
+                <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                    <p class=&#34;small-text&#34;><strong>Key:</strong> More readable than many IF statements. Use <code>OTHERWISE</code> for default.</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 ITERATION - FOR LOOP
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><span class=&#34;keyword&#34; data-def=&#34;a section of programming code that can be repeated under certain conditions&#34;>Iteration</span> (Loops)</h2>
+                    <div class=&#34;question-box&#34;>
+                        <p style=&#34;font-size:1.2em; margin:0;&#34;>What if we need to repeat something?</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;>Imagine writing &#34;Hello&#34; 100 times without loops...</p>
+                        <p class=&#34;small-text&#34;><strong>Loops let us repeat code automatically!</strong></p>
+                    </div>
+                    <div style=&#34;margin-top: 20px; text-align: center;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down blue&#34;></i> <span class=&#34;small-text blue&#34;>Three types of loops</span>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>FOR Loop</h3>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>Use when:</strong> You know <strong>exactly how many times</strong> to repeat.</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <pre style=&#34;font-size:1em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>FOR Count ← 1 TO 5
+    OUTPUT Count
+NEXT Count</code></pre>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Output:</strong> 1, 2, 3, 4, 5</p>
+                        <p class=&#34;small-text&#34;>Repeats 5 times, Count increases by 1 each time.</p>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>WHILE Loop</h3>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>Use when:</strong> You repeat <strong>while a condition is true</strong>.</p>
+                        <p class=&#34;small-text&#34;>Checks condition <strong>before</strong> each loop.</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <pre style=&#34;font-size:0.95em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>Count ← 1
+WHILE Count <= 5
+    OUTPUT Count
+    Count ← Count + 1
+ENDWHILE</code></pre>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Key:</strong> Might run <strong>zero times</strong> if condition is false from the start!</p>
+                    </div>
+                </section>
+
+                <section data-background=&#34;#f4f6f8&#34;>
+                    <h3>REPEAT...UNTIL Loop</h3>
+                    <div class=&#34;box&#34;>
+                        <p class=&#34;small-text&#34;><strong>Use when:</strong> You repeat <strong>until a condition becomes true</strong>.</p>
+                        <p class=&#34;small-text&#34;>Checks condition <strong>after</strong> each loop.</p>
+                    </div>
+                    <div class=&#34;fragment box&#34; style=&#34;margin-top:20px;&#34;>
+                        <pre style=&#34;font-size:0.95em; margin:0;&#34;><code class=&#34;language-plaintext&#34;>REPEAT
+    OUTPUT &#34;Enter password:&#34;
+    INPUT Password
+UNTIL Password = &#34;secret123&#34;</code></pre>
+                    </div>
+                    <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                        <p class=&#34;small-text&#34;><strong>Key:</strong> Always runs <strong>at least once</strong>!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ============================================
+                 LOOP COMPARISON
+                 ============================================ -->
+            <section>
+                <h2>Choosing the Right Loop</h2>
+                <table style=&#34;width:100%; font-size:0.85em; margin-top:20px;&#34;>
+                    <tr>
+                        <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Loop</th>
+                        <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>When to Use</th>
+                        <th style=&#34;background:var(--primary-blue); color:white; padding:8px;&#34;>Minimum Runs</th>
+                    </tr>
+                    <tr class=&#34;fragment&#34;>
+                        <td style=&#34;padding:8px;&#34;><strong>FOR</strong></td>
+                        <td style=&#34;padding:8px;&#34;>Know exact number of times</td>
+                        <td style=&#34;padding:8px;&#34;>0 (if range is invalid)</td>
+                    </tr>
+                    <tr class=&#34;fragment&#34;>
+                        <td style=&#34;padding:8px;&#34;><strong>WHILE</strong></td>
+                        <td style=&#34;padding:8px;&#34;>Condition checked first</td>
+                        <td style=&#34;padding:8px;&#34;>0</td>
+                    </tr>
+                    <tr class=&#34;fragment&#34;>
+                        <td style=&#34;padding:8px;&#34;><strong>REPEAT</strong></td>
+                        <td style=&#34;padding:8px;&#34;>Must run at least once</td>
+                        <td style=&#34;padding:8px;&#34;>1</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h3>Quick Check</h3>
+                <div class=&#34;question-box&#34;>Which loop guarantees it runs at least once?</div>
+                <div class=&#34;fragment box-blue&#34; style=&#34;margin-top:20px;&#34;>
+                    <p><strong>REPEAT...UNTIL</strong> (it checks the condition after the loop).</p>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 OPERATORS
+                 ============================================ -->
+            <section>
+                <h2><span class=&#34;keyword&#34; data-def=&#34;a special character or word in a programming language that identifies an action to be performed&#34;>Operators</span></h2>
+                <div class=&#34;cols&#34; style=&#34;margin-top:20px;&#34;>
+                    <div class=&#34;box fragment&#34;>
+                        <h4>Arithmetic</h4>
+                        <p class=&#34;small-text&#34;><code>+</code> Add</p>
+                        <p class=&#34;small-text&#34;><code>-</code> Subtract</p>
+                        <p class=&#34;small-text&#34;><code>*</code> Multiply</p>
+                        <p class=&#34;small-text&#34;><code>/</code> Divide</p>
+                    </div>
+                    <div class=&#34;box fragment&#34;>
+                        <h4>Comparison</h4>
+                        <p class=&#34;small-text&#34;><code>=</code> Equal to</p>
+                        <p class=&#34;small-text&#34;><code><></code> Not equal</p>
+                        <p class=&#34;small-text&#34;><code>></code> <code><</code> Greater/Less</p>
+                        <p class=&#34;small-text&#34;><code>>=</code> <code><=</code> Greater/Less or equal</p>
+                    </div>
+                    <div class=&#34;box box-blue fragment&#34;>
+                        <h4>Logical</h4>
+                        <p class=&#34;small-text&#34;><code>AND</code> Both true</p>
+                        <p class=&#34;small-text&#34;><code>OR</code> Either true</p>
+                        <p class=&#34;small-text&#34;><code>NOT</code> Opposite</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 KEY TAKEAWAYS
+                 ============================================ -->
+            <section>
+                <h3>Connections</h3>
+                <div class=&#34;cols&#34;>
+                    <div class=&#34;box&#34;>
+                        <p><strong>🔗 Link to Topic 7:</strong></p>
+                        <p class=&#34;small-text&#34;>Algorithms become real programs using <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>variables</span>, <span class=&#34;keyword&#34; data-def=&#34;allowing the selection of different paths through the steps of a program&#34;>selection</span>, and loops.</p>
+                    </div>
+                    <div class=&#34;box-blue&#34;>
+                        <p><strong>🔮 Coming up in 8.2:</strong></p>
+                        <p class=&#34;small-text&#34;><span class=&#34;keyword&#34; data-def=&#34;a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name&#34;>Arrays</span> — storing many values under one name (often with loops).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================
+                 TRUE/FALSE CHECK
+                 ============================================ -->
+            <section>
+                <section>
+                    <h2><i class=&#34;fa-solid fa-check-double&#34;></i> True or False?</h2>
+                    <div class=&#34;box-blue&#34;>
+                        <p style=&#34;margin:0;&#34;>Check Your Understanding</p>
+                    </div>
+                    <ol style=&#34;font-size:1.1em; line-height:1.6; margin-top: 20px;&#34;>
+                        <li>A <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>constant</span> can change its value during the program.</li>
+                        <li>A WHILE loop always runs at least once.</li>
+                        <li>BOOLEAN can only be TRUE or FALSE.</li>
+                    </ol>
+                    <p class=&#34;small-text&#34; style=&#34;margin-top: 20px; color: #666;&#34;>
+                        <i class=&#34;fa-solid fa-arrow-down&#34;></i> Press Down to reveal answers
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Question 1</h3>
+                    <div class=&#34;question-box&#34;>A <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>constant</span> can change its value during the program.</div>
+                    <div class=&#34;fragment box-blue&#34;>
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style=&#34;border-color: rgba(255,255,255,0.3);&#34;>
+                        <p>A <span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>constant</span> is fixed and <strong>cannot change</strong>. That's the whole point!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 2</h3>
+                    <div class=&#34;question-box&#34;>A WHILE loop always runs at least once.</div>
+                    <div class=&#34;fragment box-blue&#34;>
+                        <p><strong>Answer: FALSE</strong></p>
+                        <hr style=&#34;border-color: rgba(255,255,255,0.3);&#34;>
+                        <p>WHILE checks the condition <strong>before</strong> running. If false from the start, it runs <strong>zero times</strong>. REPEAT runs at least once.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Question 3</h3>
+                    <div class=&#34;question-box&#34;>BOOLEAN can only be TRUE or FALSE.</div>
+                    <div class=&#34;fragment box-blue&#34;>
+                        <p><strong>Answer: TRUE</strong></p>
+                        <hr style=&#34;border-color: rgba(255,255,255,0.3);&#34;>
+                        <p>BOOLEAN data type has exactly two possible values: TRUE and FALSE. Nothing else!</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SUMMARY SLIDE -->
+            <section data-background=&#34;linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)&#34;>
+                <h2 style=&#34;color: white;&#34;>Key Takeaways</h2>
+                <div class=&#34;cols&#34; style=&#34;color: white;&#34;>
+                    <div class=&#34;box&#34; style=&#34;background: rgba(255,255,255,0.1);&#34;>
+                        <p class=&#34;small-text&#34;>🧺 <strong><span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that may change during the execution of a program&#34;>Variables</span></strong> can change; <strong><span class=&#34;keyword&#34; data-def=&#34;a named data store that contains a value that does not change during the execution of a program&#34;>constants</span></strong> don’t</p>
+                        <p class=&#34;small-text&#34;>🔤 Data types include <span class=&#34;keyword&#34; data-def=&#34;a positive or negative whole number that can be used with mathematical operators&#34;>INTEGER</span>, REAL, <span class=&#34;keyword&#34; data-def=&#34;a variable or constant that is a single character&#34;>CHAR</span>, <span class=&#34;keyword&#34; data-def=&#34;a variable or constant that is several characters in length. Strings vary in length and may even have no characters (an empty string); the characters can be letters and/or digits and/or any other printable symbol&#34;>STRING</span>, BOOLEAN</p>
+                    </div>
+                    <div class=&#34;box&#34; style=&#34;background: rgba(255,255,255,0.1);&#34;>
+                        <p class=&#34;small-text&#34;>🧱 3 constructs: <span class=&#34;keyword&#34; data-def=&#34;the order in which the steps in a program are executed&#34;>sequence</span>, <span class=&#34;keyword&#34; data-def=&#34;allowing the selection of different paths through the steps of a program&#34;>selection</span>, <span class=&#34;keyword&#34; data-def=&#34;a section of programming code that can be repeated under certain conditions&#34;>iteration</span></p>
+                        <p class=&#34;small-text&#34;>🔁 Loops: FOR (counted), WHILE (pre‑check), REPEAT (post‑check)</p>
+                    </div>
+                </div>
+                <div class=&#34;box&#34; style=&#34;margin-top:20px; background: rgba(255,255,255,0.1); color: white;&#34;>
+                    <p><strong>Next:</strong> 8.2 <span class=&#34;keyword&#34; data-def=&#34;a data structure containing several elements of the same data type; these elements can be accessed using the same identifier name&#34;>Arrays</span></p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js&#34;></script>
+    <script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js&#34;></script>
+
+    <script src=&#34;/js/slide-deck.js&#34;></script>
+
+    
+    <script src=&#34;/js/live-date-display.js&#34;></script>
+
+
+    <!-- data-sgs-auth-gate -->
+    <script src=&#34;/__/firebase/10.13.2/firebase-app-compat.js&#34;></script>
+    <script src=&#34;/__/firebase/10.13.2/firebase-auth-compat.js&#34;></script>
+    <script src=&#34;/__/firebase/init.js&#34;></script>
+    <script src=&#34;/js/auth-gate.js&#34;></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src=&#34;/js/legacy-inline-events.js&#34;></script>
+
+  <script>
+    (() => {
+      const cleanupLegacyChrome = () => {
+        const removeSelectors = [
+          '.site-header',
+          '.main-header',
+          '.feedback-modals',
+          '.site-feedback',
+          '.feedback-trigger',
+          '[data-feedback-open]',
+          'body > footer',
+          '#sgs-auth-overlay',
+          '.sgs-auth-overlay',
+          'link[href*=&#34;/css/auth-gate.css&#34;]',
+          'script[src*=&#34;/__/firebase/&#34;]',
+          'script[src*=&#34;/js/auth-gate.js&#34;]'
+        ];
+
+        removeSelectors.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => node.remove());
+        });
+
+        document.documentElement.classList.remove('auth-pending');
+        document.documentElement.classList.add('auth-ready');
+        document.body.classList.remove('sgs-auth-locked');
+        document.body.style.visibility = 'visible';
+        document.body.style.overflow = '';
+
+        const placeholderLinks = [
+          'a[href=&#34;/coming-soon.html&#34;]',
+          'a[href=&#34;coming-soon.html&#34;]',
+          'a[href=&#34;./coming-soon.html&#34;]'
+        ];
+
+        placeholderLinks.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => {
+            const removableParent =
+              node.closest('.resource-btn, .activity-card, .feature-card, .feature-link, li, article') || node;
+            removableParent.remove();
+          });
+        });
+      };
+
+      const sendHeight = () => {
+        const height = Math.max(
+          document.documentElement.scrollHeight,
+          document.body ? document.body.scrollHeight : 0,
+          document.documentElement.offsetHeight,
+          document.body ? document.body.offsetHeight : 0
+        );
+        parent.postMessage({ type: 'sgs-legacy-frame-height', id: 'igcse-topic8-8-1-programming-concepts', height }, '*');
+      };
+
+      window.addEventListener('load', () => {
+        cleanupLegacyChrome();
+        sendHeight();
+        setTimeout(sendHeight, 250);
+      });
+      window.addEventListener('resize', sendHeight);
+
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(sendHeight).observe(document.documentElement);
+      }
+
+      setInterval(sendHeight, 1200);
+    })();
+  </script>
+</body>
+
+</html>
+" loading="eager" allowfullscreen></iframe> </section> <script data-frame-id="igcse-topic8-8-1-programming-concepts">
+  (() => {
+    const activeScript = document.currentScript;
+    const activeFrameId = activeScript?.getAttribute('data-frame-id');
+    if (!activeFrameId) return;
+
+    const selector = `iframe[data-legacy-frame-id="${activeFrameId}"]`;
+    const frame = document.querySelector(selector);
+    if (!frame) return;
+
+    const fullscreenButton = document.querySelector(`[data-legacy-frame-fullscreen="${activeFrameId}"]`);
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          await frame.requestFullscreen();
+        } catch {
+          // Ignore fullscreen failures triggered by browser policy.
+        }
+      });
+    }
+
+    window.addEventListener('message', (event) => {
+      if (!event.data || event.data.type !== 'sgs-legacy-frame-height' || event.data.id !== activeFrameId) {
+        return;
+      }
+
+      const nextHeight = Number(event.data.height);
+      if (!Number.isFinite(nextHeight) || nextHeight <= 0) {
+        return;
+      }
+
+      if (!frame.closest('.legacy-frame--document')) {
+        return;
+      }
+
+      frame.style.height = `${Math.max(880, nextHeight)}px`;
+    });
+  })();
+</script> </section>  <nav class="prev-next-nav" aria-label="Page sequence"><a href="/igcse/topic8/textbook/8-1.html" class="prev-next-nav__link prev-next-nav__link--prev"><span class="prev-next-nav__label">Previous</span><strong>Read chapter</strong></a><a href="/igcse/topic8/8.1_assessment.html" class="prev-next-nav__link prev-next-nav__link--next"><span class="prev-next-nav__label">Next</span><strong>Mini-assessment</strong></a></nav> </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> </body> </html>

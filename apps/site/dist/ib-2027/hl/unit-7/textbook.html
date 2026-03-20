@@ -1,0 +1,434 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="IB Computer Science HL Unit 7 reading mode."><meta name="theme-color" content="#0E214B"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="/css/reader.css"><title>HL Unit 7: ML Preprocessing &amp; Math</title><link rel="stylesheet" href="/_astro/index.B-8q-NKP.css">
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head> <body class="site-body reader-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/Logo.png" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/index.html"> KS3 </a><a href="/igcse/index.html"> IGCSE </a><a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </nav> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/index.html"> KS3 </a> </li><li> <a href="/igcse/index.html"> IGCSE </a> </li><li> <a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--reading page-shell--with-sidebar reader-main"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div class="course-explorer"> <div class="course-explorer__header"> <p class="course-explorer__title">HL Unit 7</p> <p class="course-explorer__meta">ML Preprocessing &amp; Math</p> </div> <div class="course-explorer__groups"> <details class="course-explorer__group" open> <summary> <span>Overview</span>  </summary> <ul> <li> <a href="/ib-2027/hl/unit-7/index.html"> <span>Unit overview</span>  </a> </li><li> <a href="/ib-2027/hl/unit-7/unit-plan.html"> <span>Unit plan</span>  </a> </li><li> <a href="/ib-2027/hl/unit-7/textbook.html" aria-current="page" class="current"> <span>Textbook</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Slides</span>  </summary> <ul> <li> <a href="/ib-2027/hl/unit-7/slides/A4.2_data_preprocessing.html"> <span>Data Preprocessing (HL)</span>  </a> </li><li> <a href="/ib-2027/hl/unit-7/slides/A4.3_machine_learning_approaches.html"> <span>Machine Learning Approaches (HL)</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 12</span> <small>Units 1–6</small> </summary> <ul> <li> <a href="/ib-2027/hl/unit-1/index.html"> <span>Unit 1. Advanced Architecture</span>  </a> </li><li> <a href="/ib-2027/hl/unit-2/index.html"> <span>Unit 2. Systems Control</span>  </a> </li><li> <a href="/ib-2027/hl/unit-3/index.html"> <span>Unit 3. Recursive Problem Solving</span>  </a> </li><li> <a href="/ib-2027/hl/unit-4/index.html"> <span>Unit 4. Professional OOP Design</span>  </a> </li><li> <a href="/ib-2027/hl/unit-5/index.html"> <span>Unit 5. Scalable Data Systems</span>  </a> </li><li> <a href="/ib-2027/hl/unit-6/index.html"> <span>Unit 6. Abstract Data Types</span>  </a> </li> </ul> </details><details class="course-explorer__group"> <summary> <span>Year 13</span> <small>Units 7–11</small> </summary> <ul> <li> <a href="/ib-2027/hl/unit-7/index.html"> <span>Unit 7. ML Preprocessing &amp; Math</span>  </a> </li><li> <a href="/ib-2027/hl/unit-8/index.html"> <span>Unit 8. Supervised &amp; Unsupervised</span>  </a> </li><li> <a href="/ib-2027/hl/unit-9/index.html"> <span>Unit 9. Agents &amp; Neural Computing</span>  </a> </li><li> <a href="/ib-2027/hl/unit-10/index.html"> <span>Unit 10. The HL Case Study</span>  </a> </li><li> <a href="/ib-2027/hl/unit-11/index.html"> <span>Unit 11. Advanced Networking</span>  </a> </li> </ul> </details> </div> </div> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB 2027</a></li><li><a href="/ib-2027/hl/index.html">HL</a></li><li><a href="/ib-2027/hl/unit-7/index.html">Unit 7</a></li><li><span aria-current="page">Textbook</span></li></ol></nav>  <div class="reader-shell reader-shell--textbook" data-sgs-reader> <div class="sr-only" aria-live="polite" data-reader-announcer></div> <div class="reader-drawer-overlay" data-reader-drawer-overlay aria-hidden="true"></div> <aside class="reader-rail reader-rail--toc" id="reader-toc" aria-label="Table of contents"> <div class="reader-rail__header"> <p class="reader-rail__title">Contents</p> <button type="button" class="reader-icon-btn reader-icon-btn--sm reader-rail__mobile-close" data-reader-action="toc-toggle" aria-expanded="false" aria-controls="reader-toc" aria-label="Close table of contents"> <i class="fa-solid fa-xmark" aria-hidden="true"></i> </button> </div> <div class="reader-rail__body"> <div class="reader-search"> <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> <input type="search" placeholder="Search contents" aria-label="Search table of contents" data-reader-toc-search> </div> <nav class="reader-toc" aria-label="On this page" data-reader-toc> <p class="reader-empty">Loading contents...</p> </nav> </div> </aside> <section class="reader-stage"> <div class="reader-mobilebar"> <button type="button" class="reader-mobiletoggle" data-reader-action="toc-toggle" aria-controls="reader-toc" aria-expanded="false"> <i class="fa-solid fa-list" aria-hidden="true"></i> <span>Contents</span> </button> </div> <article class="reader-article"> <div class="reader-dochead"> <p class="reader-kicker">IB 2027 · HL · Unit 7</p> <h1 class="reader-title">Unit 7: ML Preprocessing &amp; Math</h1>  </div> <div class="reader-content"> <div class="reader-prose" data-reader-content>  <h2 id="key-terms-and-definitions">Key Terms and Definitions</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody><tr><td>imputation</td><td>Replacing missing values with estimated values (for example mean/median).</td></tr><tr><td>outlier</td><td>Data point that is far from the rest of the distribution.</td></tr><tr><td>normalization</td><td>Scaling values to a fixed range, commonly 0 to 1.</td></tr><tr><td>standardization</td><td>Rescaling values to zero mean and unit variance.</td></tr><tr><td>one-hot encoding</td><td>Representing categories as binary indicator columns.</td></tr><tr><td>linear regression</td><td>Model predicting a continuous value with a linear function of inputs.</td></tr><tr><td>residual</td><td>Difference between actual value and predicted value.</td></tr><tr><td>mean squared error (MSE)</td><td>Average squared residual used as a regression error metric.</td></tr><tr><td>hyperparameter</td><td>Model configuration chosen before training (for example <code>k</code>, max depth, learning rate).</td></tr><tr><td>overfitting</td><td>Model captures noise and performs poorly on unseen data.</td></tr></tbody></table>
+<h2 id="a421-data-cleaning">A4.2.1 Data Cleaning</h2>
+<h3 id="overview">Overview</h3>
+<div class="reader-section-body reader-section-body--concept">
+<p><strong>Command term:</strong> Describe</p>
+<p>Data cleaning description should cover why quality defects directly affect model behavior.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Data issue</th><th>Typical handling approach</th></tr></thead><tbody><tr><td>Missing values</td><td>Imputation or row removal</td></tr><tr><td>Duplicates</td><td>Deduplicate repeated records</td></tr><tr><td>Outliers</td><td>Investigate, cap, transform, or remove if invalid</td></tr><tr><td>Inconsistent formats</td><td>Normalize units/date formats before modeling</td></tr></tbody></table>
+<p>Dirty inputs produce unstable patterns, regardless of algorithm sophistication.</p>
+</div>
+<h3 id="common-misconceptions">Common misconceptions</h3>
+<div class="reader-section-body reader-section-body--apply">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Misconception</th><th>Accurate view</th></tr></thead><tbody><tr><td>”More rows always helps.”</td><td>Low-quality rows can reduce model reliability.</td></tr><tr><td>”Imputation is always neutral.”</td><td>Imputation changes distribution and can introduce bias.</td></tr><tr><td>”Cleaning is one step at the start.”</td><td>Cleaning is iterative across data updates and validation cycles.</td></tr></tbody></table>
+</div>
+<h3 id="worked-example-cleaning-a-small-housing-dataset">Worked example: cleaning a small housing dataset</h3>
+<div class="reader-section-body reader-section-body--example">
+<p>Raw rows (<code>size_m2</code>, <code>price_k</code>):</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>row</th><th>size_m2</th><th>price_k</th></tr></thead><tbody><tr><td>1</td><td>60</td><td>220</td></tr><tr><td>2</td><td>75</td><td>260</td></tr><tr><td>3</td><td>75</td><td>260</td></tr><tr><td>4</td><td>90</td><td></td></tr><tr><td>5</td><td>4000</td><td>950</td></tr></tbody></table>
+<p>Cleaning decisions:</p>
+<ul>
+<li>Row 3 removed as duplicate of row 2.</li>
+<li>Row 4 <code>price_k</code> imputed with median (<code>260</code>).</li>
+<li>Row 5 flagged as likely outlier for typical urban apartment scope.</li>
+</ul>
+<p>Result: model training sees more consistent signal and lower variance from erroneous extremes.</p>
+</div>
+<h2 id="a424-scaling-and-encoding">A4.2.4 Scaling and Encoding</h2>
+<h3 id="overview-1">Overview</h3>
+<div class="reader-section-body reader-section-body--concept">
+<p><strong>Command term:</strong> Apply</p>
+<p>Applying scaling/encoding means performing concrete transformations that make features numerically compatible for model training.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Transformation</th><th>When useful</th></tr></thead><tbody><tr><td>Normalization (<code>0..1</code>)</td><td>Features with bounded interpretation</td></tr><tr><td>Standardization (z-score)</td><td>Features with different units/scales</td></tr><tr><td>One-hot encoding</td><td>Categorical fields such as city/type</td></tr></tbody></table>
+<p>These steps change representation, not the real-world meaning of the data.</p>
+</div>
+<h3 id="applied-in-context">Applied in context</h3>
+<div class="reader-section-body reader-section-body--apply">
+<p>Suppose a model uses features <code>age</code> (years), <code>salary</code> (USD), and <code>department</code> (category).</p>
+<ul>
+<li>Without scaling, large salary values dominate distance-based algorithms.</li>
+<li>Without encoding, category labels cannot be interpreted numerically in a meaningful way.</li>
+</ul>
+<p>Correct application keeps each feature usable without distorting relationships.</p>
+</div>
+<h3 id="worked-example-concrete-feature-transformation">Worked example: concrete feature transformation</h3>
+<div class="reader-section-body reader-section-body--example">
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># Raw values</span></span>
+<span class="line"><span style="color:#E1E4E8">age </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">20</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">40</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">60</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">salary </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">30000</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">80000</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">130000</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">team </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#9ECBFF">"sales"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"engineering"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"sales"</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Simple normalization example for age</span></span>
+<span class="line"><span style="color:#E1E4E8">age_norm </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [(x </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 20</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">/</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">60</span><span style="color:#F97583"> -</span><span style="color:#79B8FF"> 20</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> age]  </span><span style="color:#6A737D"># [0.0, 0.5, 1.0]</span></span></code></pre>
+<p>One-hot encoding for <code>team</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>team</th><th>sales</th><th>engineering</th></tr></thead><tbody><tr><td>sales</td><td>1</td><td>0</td></tr><tr><td>engineering</td><td>0</td><td>1</td></tr><tr><td>sales</td><td>1</td><td>0</td></tr></tbody></table>
+</div>
+<h2 id="a431-linear-regression">A4.3.1 Linear Regression</h2>
+<h3 id="overview-2">Overview</h3>
+<div class="reader-section-body reader-section-body--concept">
+<p><strong>Command term:</strong> Explain</p>
+<p>Linear regression explains continuous prediction using a line (or hyperplane) fitted to data.</p>
+<p>For one feature:</p>
+<p><code>prediction = b0 + b1 * x</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Component</th><th>Meaning</th></tr></thead><tbody><tr><td><code>b0</code></td><td>Intercept</td></tr><tr><td><code>b1</code></td><td>Slope (effect of one-unit increase in <code>x</code>)</td></tr><tr><td>residual</td><td><code>actual - predicted</code></td></tr></tbody></table>
+<p>Explain not only formula but also fit quality and residual behavior.</p>
+</div>
+<h3 id="in-real-systems">In real systems</h3>
+<div class="reader-section-body reader-section-body--apply">
+<p>Linear regression is suitable when relationship is approximately linear and prediction target is numeric (for example energy demand, price estimate, temperature).</p>
+<p>It is less suitable when relationships are strongly nonlinear unless feature engineering transforms the input space.</p>
+</div>
+<h3 id="worked-example-predict-rent-from-floor-area">Worked example: predict rent from floor area</h3>
+<div class="reader-section-body reader-section-body--example">
+<p>Given fitted model:</p>
+<p><code>rent = 350 + 12 * area_m2</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>area_m2</th><th>predicted rent</th></tr></thead><tbody><tr><td>40</td><td>830</td></tr><tr><td>55</td><td>1010</td></tr><tr><td>70</td><td>1190</td></tr></tbody></table>
+<p>If actual rent for <code>55 m2</code> is <code>980</code>, residual is <code>980 - 1010 = -30</code>.</p>
+<p>A large pattern of residuals can indicate model mismatch or missing features.</p>
+</div>
+<h2 id="a433-hyperparameter-tuning">A4.3.3 Hyperparameter Tuning</h2>
+<h3 id="overview-3">Overview</h3>
+<div class="reader-section-body reader-section-body--concept">
+<p><strong>Command term:</strong> Explain</p>
+<p>Hyperparameter tuning explains how pre-training settings influence generalization.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Hyperparameter example</th><th>Effect</th></tr></thead><tbody><tr><td><code>k</code> in K-NN</td><td>Small <code>k</code> can overfit; large <code>k</code> can oversmooth boundaries</td></tr><tr><td>tree depth</td><td>Deep trees can memorize noise</td></tr><tr><td>learning rate</td><td>Too high may diverge; too low may converge too slowly</td></tr></tbody></table>
+<p>Good tuning balances bias and variance rather than maximizing one metric blindly.</p>
+</div>
+<h3 id="applied-in-context-1">Applied in context</h3>
+<div class="reader-section-body reader-section-body--apply">
+<p>Use validation data to compare settings with multiple metrics:</p>
+<ul>
+<li>Accuracy alone can hide minority-class failure.</li>
+<li>Precision and recall expose different error costs.</li>
+<li>F1 balances precision and recall for asymmetric problems.</li>
+</ul>
+<p>Explanation quality improves when metric choice is justified by problem risk.</p>
+</div>
+<h3 id="worked-example-selecting-k-for-k-nn">Worked example: selecting <code>k</code> for K-NN</h3>
+<div class="reader-section-body reader-section-body--example">
+<p>Validation results on the same dataset:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>k</th><th>accuracy</th><th>precision</th><th>recall</th><th>F1</th></tr></thead><tbody><tr><td>1</td><td>0.94</td><td>0.90</td><td>0.71</td><td>0.79</td></tr><tr><td>5</td><td>0.92</td><td>0.86</td><td>0.83</td><td>0.84</td></tr><tr><td>15</td><td>0.88</td><td>0.81</td><td>0.76</td><td>0.78</td></tr></tbody></table>
+<p>Even though <code>k=1</code> has the highest accuracy, <code>k=5</code> gives stronger balance by improving recall and F1.</p>
+</div>  </div> </div> </article> </section> </div> <div class="reader-modal-overlay" data-reader-modal-overlay aria-hidden="true"></div> <div class="reader-modal reader-modal--definition" id="reader-def-modal" role="dialog" aria-modal="true" aria-labelledby="reader-def-modal-title" aria-hidden="true"> <div class="reader-modal__header"> <h2 class="reader-modal__title" id="reader-def-modal-title" data-reader-def-title>Definition</h2> <button class="reader-modal__close" type="button" data-reader-close-modal aria-label="Close"> <i class="fa-solid fa-xmark" aria-hidden="true"></i> </button> </div> <div class="reader-modal__body"> <p class="reader-empty" data-reader-def-body></p> </div> </div> <script src="/js/reader.js"></script>   <nav class="prev-next-nav" aria-label="Page sequence"><a href="/ib-2027/hl/unit-7/unit-plan.html" class="prev-next-nav__link prev-next-nav__link--prev"><span class="prev-next-nav__label">Previous</span><strong>Unit plan</strong></a><a href="/ib-2027/hl/unit-7/slides/A4.2_data_preprocessing.html" class="prev-next-nav__link prev-next-nav__link--next"><span class="prev-next-nav__label">Next</span><strong>Data Preprocessing (HL)</strong></a></nav> </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> 
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body> </html>

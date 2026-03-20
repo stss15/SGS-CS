@@ -33,6 +33,7 @@
     
 
     
+    
 
     <!-- data-sgs-auth-gate -->
     <link rel="stylesheet" href="/css/auth-gate.css">
@@ -54,28 +55,126 @@
             </div>
 
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
-                <a href="/ai-prompt-generator/index.html" class="nav-link ">AI Prompt</a>
                 <a href="/ks3/index.html" class="nav-link ">KS3</a>
                 <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
                 <a href="/ib-2027/index.html" class="nav-link active">IB</a>
             </nav>
 
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
             <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
         </div>
     </header>
 
-    <main id="main-content" class="">
-        
-            <div class="hero-text">
-                <h1 class="hero-title">Unit 5: Scalable Data Systems</h1>
-                
-                    <p class="hero-subtitle">Themes A3.3-A3.4 | 3 Weeks</p>
-                
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
             </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/index.html" class="">KS3</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
         
 
-        
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/hl/index.html">HL</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Unit 5</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+                <div class="hero-text">
+                    <h1 class="hero-title">Unit 5: Scalable Data Systems</h1>
+                    
+                        <p class="hero-subtitle">Themes A3.3-A3.4 | 3 Weeks</p>
+                    
+                </div>
+            
+
+            
     
+    <div class="app-layout has-sidebar">
+        <aside class="course-sidebar" aria-label="Topic navigation">
+            <div class="sidebar-header">
+                <span class="sidebar-heading">Unit 5: Scalable Data Systems</span>
+            </div>
+            <ul class="sidebar-links" role="list">
+                
+                
+                
+                
+                <li><a href="#student-activities" class="sidebar-link" data-section="student-activities">
+                    <i class="fa-solid fa-laptop-code" aria-hidden="true"></i> Activities
+                </a></li>
+                
+                
+                
+                
+            </ul>
+        </aside>
+        <div class="arcade-sections">
+
         
 
         
@@ -167,12 +266,17 @@
 
 
         
+
+        </div>
+    </div>
+    <script src="/js/section-nav.js"></script>
     
 
     
 
 
-    </main>
+        </main>
+    </div>
 
     <footer>
         <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>

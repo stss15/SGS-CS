@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blockchain Deep Dive — How a Block is Created</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.11.0/sha256.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f8ff;
+      --surface: #ffffff;
+      --surface2: #f2f6ff;
+      --surface3: #e8efff;
+      --border: #c8d5ee;
+      --primary: #3366cc;
+      --primary-dim: #3366cc22;
+      --accent: #7c5ce0;
+      --accent-dim: #7c5ce022;
+      --success: #1f8a54;
+      --success-dim: #1f8a5422;
+      --danger: #c94242;
+      --danger-dim: #c9424222;
+      --warning: #c98911;
+      --warning-dim: #c9891122;
+      --gold: #d68400;
+      --text: #273449;
+      --text-dim: #5d6b82;
+      --text-bright: #152033;
+      --white: #0f172a;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      min-height: 100vh;
+      font-size: 18px;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(180deg, #eaf1ff 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 1rem 1.5rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      font-weight: 800;
+    }
+    header p { color: var(--text-dim); font-size: 0.9rem; margin-top: 0.25rem; }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    /* NAV TABS */
+    .step-nav {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    .step-tab {
+      flex-shrink: 0;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .step-tab:hover { border-color: var(--primary); color: var(--text); }
+    .step-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .step-tab.visited { border-color: var(--success); color: var(--success); }
+
+    /* PANELS */
+    .panel { display: none; animation: fadeSlide 0.35s ease; }
+    .panel.visible { display: block; }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel-header { margin-bottom: 1.5rem; }
+    .panel-header h2 { font-size: 1.45rem; color: var(--text-bright); font-weight: 700; }
+    .panel-header p { color: var(--text-dim); font-size: 0.9rem; margin-top: 0.2rem; }
+
+    /* INFO BOXES */
+    .info { background: var(--surface2); border-left: 4px solid var(--primary); padding: 1rem 1.2rem; border-radius: 0 10px 10px 0; margin-bottom: 1.2rem; font-size: 0.9rem; }
+    .info strong { color: var(--primary); }
+    .info.accent { border-color: var(--accent); }
+    .info.accent strong { color: var(--accent); }
+    .info.green { border-color: var(--success); }
+    .info.green strong { color: var(--success); }
+    .info.warn { border-color: var(--warning); }
+    .info.warn strong { color: var(--warning); }
+    .info.red { border-color: var(--danger); }
+    .info.red strong { color: var(--danger); }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1.2rem 0;
+    }
+    .concept-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+      text-align: center;
+    }
+    .concept-card .icon { font-size: 2rem; margin-bottom: 0.4rem; }
+    .concept-card h4 { color: var(--text-bright); font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .concept-card p { font-size: 0.82rem; color: var(--text-dim); }
+
+    /* COMPARE LAYOUT */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin: 1.2rem 0;
+    }
+    .compare-box {
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .compare-box h4 { font-size: 1rem; margin-bottom: 0.7rem; color: var(--text-bright); }
+    .compare-box.bad { border-color: var(--danger); }
+    .compare-box.bad h4 { color: var(--danger); }
+    .compare-box.good { border-color: var(--success); }
+    .compare-box.good h4 { color: var(--success); }
+
+    /* NODE NETWORK VISUAL */
+    .network-visual {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin: 1.2rem 0;
+      overflow: hidden;
+    }
+    .node {
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.5s;
+      z-index: 2;
+    }
+    .node .node-label {
+      position: absolute;
+      bottom: -20px;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .node.broadcasting { border-color: var(--warning); box-shadow: 0 0 20px var(--warning-dim); }
+    .node.validating { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-dim); }
+    .node.accepted { border-color: var(--success); box-shadow: 0 0 20px var(--success-dim); }
+    .node.rejected { border-color: var(--danger); box-shadow: 0 0 20px var(--danger-dim); }
+
+    .net-lines { position: absolute; inset: 0; z-index: 1; }
+
+    .net-status {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface2);
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      z-index: 3;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    /* MEMPOOL */
+    .mempool-box {
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      min-height: 60px;
+    }
+    .mempool-box h4 { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.7rem; }
+    .mempool-tx {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.8rem;
+      margin: 0.2rem;
+      transition: all 0.3s;
+    }
+    .mempool-tx.selected { border-color: var(--primary); background: var(--primary-dim); }
+    .mempool-tx .arrow { color: var(--primary); font-weight: 700; }
+    .mempool-tx .amt { color: var(--success); font-weight: 700; }
+
+    /* FORMS */
+    .form-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.6rem; align-items: flex-end; }
+    .form-group { flex: 1; min-width: 100px; }
+    .form-group label { display: block; font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
+    input, select { width: 100%; padding: 0.55rem 0.7rem; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--text); font-size: 0.9rem; outline: none; }
+    input:focus { border-color: var(--primary); }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.6rem 1.2rem; border: none; border-radius: 9px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.15); box-shadow: 0 0 14px var(--primary-dim); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover:not(:disabled) { filter: brightness(1.1); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover:not(:disabled) { filter: brightness(1.15); }
+    .btn-gold { background: var(--gold); color: #fff; }
+    .btn-gold:hover:not(:disabled) { filter: brightness(1.1); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover:not(:disabled) { filter: brightness(1.1); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-group { display: flex; gap: 0.6rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+
+    /* BLOCK CARD */
+    .block-card {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 1.3rem;
+      margin: 1rem 0;
+      transition: all 0.4s;
+    }
+    .block-card.mined { border-color: var(--success); box-shadow: 0 0 24px var(--success-dim); }
+    .block-card.invalid { border-color: var(--danger); box-shadow: 0 0 24px var(--danger-dim); }
+    .block-card .btitle { font-weight: 700; color: var(--text-bright); margin-bottom: 0.6rem; font-size: 1rem; }
+    .bfield { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid #dce6fb; font-size: 0.85rem; gap: 1rem; }
+    .bfield:last-child { border-bottom: none; }
+    .bfield .lbl { color: var(--text-dim); flex-shrink: 0; }
+    .bfield .val { text-align: right; word-break: break-all; font-family: 'Courier New', monospace; font-size: 0.78rem; }
+    .bfield .val.gold { color: var(--gold); }
+    .bfield .val.blue { color: var(--primary); }
+    .bfield .val.green { color: var(--success); }
+    .bfield .val.red { color: var(--danger); }
+    .bfield .val.purple { color: var(--accent); }
+
+    /* MINING */
+    .mine-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    .mine-nonce { font-size: 2.8rem; font-weight: 800; color: var(--warning); font-family: 'Courier New', monospace; }
+    .mine-hash { font-family: 'Courier New', monospace; font-size: 0.78rem; color: var(--text-dim); margin-top: 0.5rem; word-break: break-all; min-height: 1.5em; }
+    .mine-hash.found { color: var(--success); font-weight: 700; }
+    .mine-target { margin-top: 0.5rem; font-size: 0.82rem; color: var(--text-dim); }
+    .mine-target strong { color: var(--warning); }
+    .progress-bar { width: 100%; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-top: 0.8rem; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 3px; transition: width 0.05s; }
+
+    .diff-btns { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 0.8rem 0; }
+    .diff-btn { padding: 0.35rem 0.9rem; border-radius: 7px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; font-size: 0.82rem; transition: all 0.2s; }
+    .diff-btn:hover { border-color: var(--warning); }
+    .diff-btn.active { background: var(--warning); color: #fff; border-color: var(--warning); font-weight: 700; }
+
+    /* CHAIN */
+    .chain-scroll { display: flex; gap: 0; overflow-x: auto; padding: 1rem 0; align-items: stretch; }
+    .chain-block {
+      min-width: 220px; max-width: 240px; flex-shrink: 0;
+      background: var(--surface); border: 2px solid var(--success); border-radius: 12px; padding: 1rem;
+      font-size: 0.78rem; transition: all 0.4s;
+    }
+    .chain-block.genesis { border-color: var(--gold); }
+    .chain-block.tampered { border-color: var(--danger); box-shadow: 0 0 16px var(--danger-dim); }
+    .chain-block .cbt { font-weight: 700; color: var(--text-bright); margin-bottom: 0.4rem; font-size: 0.85rem; }
+    .chain-block .cbf { display: flex; justify-content: space-between; padding: 0.15rem 0; gap: 0.3rem; }
+    .chain-block .cbl { color: var(--text-dim); }
+    .chain-block .cbv { font-family: 'Courier New', monospace; font-size: 0.68rem; text-align: right; word-break: break-all; }
+    .chain-block .cbv.gold { color: var(--gold); }
+    .chain-link { display: flex; align-items: center; justify-content: center; min-width: 44px; font-size: 1.4rem; color: var(--success); }
+    .chain-link.broken { color: var(--danger); }
+    .tamper-input { width: 100%; margin-top: 0.4rem; padding: 0.3rem 0.5rem; font-size: 0.75rem; background: #fff; border: 1px solid var(--border); color: var(--text); border-radius: 5px; }
+    .tamper-input:focus { border-color: var(--danger); }
+
+    .validation-box { padding: 1rem; border-radius: 10px; margin-top: 1rem; font-size: 0.9rem; display: none; }
+    .validation-box.valid { display: block; background: var(--success-dim); border: 1px solid var(--success); color: var(--success); }
+    .validation-box.invalid { display: block; background: var(--danger-dim); border: 1px solid var(--danger); color: var(--danger); }
+
+    /* CONSENSUS BAR */
+    .consensus-bar-container { margin: 1rem 0; }
+    .consensus-bar-bg { width: 100%; height: 40px; background: var(--surface2); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid var(--border); }
+    .consensus-bar-fill { height: 100%; border-radius: 10px 0 0 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; transition: width 0.6s, background 0.6s; }
+    .consensus-bar-fill.accept { background: var(--success); color: #fff; }
+    .consensus-bar-fill.reject { background: var(--danger); color: #fff; }
+    .consensus-threshold { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #fff; z-index: 2; }
+    .consensus-threshold::after { content: '51%'; position: absolute; top: -18px; left: -10px; font-size: 0.7rem; color: var(--text-bright); font-weight: 700; }
+
+    /* SMART CONTRACT */
+    .contract-box {
+      background: #f7f2ff;
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+      line-height: 1.8;
+      position: relative;
+    }
+    .contract-box .tag { position: absolute; top: -10px; left: 12px; background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 4px; font-family: 'Segoe UI', sans-serif; }
+    .contract-output {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 40px;
+    }
+
+    /* 51% attack visual */
+    .attack-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin: 1rem 0;
+    }
+    .attack-node {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      transition: all 0.3s;
+    }
+    .attack-node.honest { border-color: var(--success); background: var(--success-dim); }
+    .attack-node.malicious { border-color: var(--danger); background: var(--danger-dim); }
+
+    @media (max-width: 640px) {
+      .compare { grid-template-columns: 1fr; }
+      .network-visual { height: 280px; }
+      header h1 { font-size: 1.3rem; }
+      .node { width: 50px; height: 50px; font-size: 1.2rem; }
+    }
+  </style>
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Education resources for KS3, IGCSE, and IB students and teachers.">
+</head>
+<body>
+
+<header>
+  <h1>⛓️ How a Block is Added to a Blockchain</h1>
+  <p>A complete interactive guide — IGCSE Computer Science</p>
+</header>
+
+<div class="container">
+  <div class="step-nav" id="stepNav"></div>
+
+  <!-- ========== 0: CENTRALISED vs DECENTRALISED ========== -->
+  <div class="panel visible" id="panel-0">
+    <div class="panel-header">
+      <h2>🏛️ Centralised vs Decentralised Systems</h2>
+      <p>Understanding why blockchain was invented</p>
+    </div>
+
+    <div class="info">
+      Before we build a block, we need to understand the <strong>problem blockchain solves</strong>. Today, when you send money online, a <strong>central authority</strong> (like a bank) verifies and records the transaction. But what if that bank makes an error, gets hacked, or censors your transaction?
+    </div>
+
+    <div class="compare">
+      <div class="compare-box bad">
+        <h4>🏦 Centralised</h4>
+        <div style="font-size:2.5rem;margin:0.5rem 0">🏦</div>
+        <div style="font-size:1.5rem;margin-bottom:0.5rem">⬆️⬆️⬆️⬆️</div>
+        <div style="font-size:1.5rem">👤👤👤👤</div>
+        <p style="font-size:0.82rem;color:var(--text-dim);margin-top:0.7rem">
+          One central server controls everything.<br />
+          <strong style="color:var(--danger)">Single point of failure.</strong><br />
+          The bank can be hacked, go offline, or refuse your transaction. You must <strong style="color:var(--danger)">trust</strong> them completely.
+        </p>
+      </div>
+      <div class="compare-box good">
+        <h4>🌐 Decentralised (Blockchain)</h4>
+        <div style="font-size:1.5rem;margin:0.5rem 0">💻 — 💻 — 💻</div>
+        <div style="font-size:1rem">| &nbsp;&nbsp;✕ &nbsp;&nbsp;|</div>
+        <div style="font-size:1.5rem">💻 — 💻 — 💻</div>
+        <p style="font-size:0.82rem;color:var(--text-dim);margin-top:0.7rem">
+          <strong style="color:var(--success)">Thousands of computers (nodes)</strong> each hold an identical copy of the ledger.<br />
+          No single point of failure. No single entity in control.<br />
+          To hack it, you'd need to attack <strong style="color:var(--success)">more than half the network simultaneously</strong>.
+        </p>
+      </div>
+    </div>
+
+    <div class="info green">
+      <strong>Key principle:</strong> In a blockchain, <strong>no one is in charge</strong>. Every participant (node) has an equal copy of the entire transaction history. They all follow the same rules (protocol) to agree on what's valid. This agreement process is called <strong>consensus</strong>.
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="icon">📒</div>
+        <h4>Distributed Ledger</h4>
+        <p>Every node stores a complete copy of all transactions ever made</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🤝</div>
+        <h4>Trustless</h4>
+        <p>You don't need to trust any person — you trust the mathematics and the protocol</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🔒</div>
+        <h4>Immutable</h4>
+        <p>Once data is written, it practically cannot be changed or deleted</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">👁️</div>
+        <h4>Transparent</h4>
+        <p>Anyone can view the entire blockchain and verify any transaction</p>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" data-sgs-onclick="goTo(1)">Next: The Network of Nodes →</button>
+    </div>
+  </div>
+
+  <!-- ========== 1: THE NETWORK ========== -->
+  <div class="panel" id="panel-1">
+    <div class="panel-header">
+      <h2>🌐 The Peer-to-Peer Network</h2>
+      <p>Every node holds an identical copy of the blockchain</p>
+    </div>
+
+    <div class="info">
+      A blockchain network is made up of <strong>nodes</strong> — computers run by volunteers, companies, or miners around the world. Each node independently stores, validates, and relays data. There is <strong>no master server</strong>. When one node receives new information, it shares it with its neighbours, who share it with theirs, until the entire network is updated.
+    </div>
+
+    <div class="network-visual" id="networkVisual">
+      <svg class="net-lines" id="netLines"></svg>
+      <div class="net-status" id="netStatus">Click "Broadcast a Transaction" to see how data spreads</div>
+    </div>
+
+    <div class="btn-group" style="justify-content:center;margin-top:0.5rem;">
+      <button class="btn btn-primary btn-sm" id="broadcastBtn" data-sgs-onclick="animateBroadcast()">📡 Broadcast a Transaction</button>
+      <button class="btn btn-outline btn-sm" data-sgs-onclick="resetNetwork()">↺ Reset</button>
+    </div>
+
+    <div class="info accent" style="margin-top:1.2rem;">
+      <strong>How does data spread?</strong> This is called <strong>gossip protocol</strong>. When Alice sends a transaction, her node tells its connected peers, those peers tell their peers, and within seconds the entire network knows about it. Each node <strong>independently verifies</strong> that the transaction is valid before passing it on.
+    </div>
+
+    <div class="info warn">
+      <strong>What happens if a node lies?</strong> Every other node checks the data against the protocol rules. If a node sends invalid data, the other nodes simply <strong>reject it and ignore that node</strong>. The honest majority always wins — this is the foundation of blockchain security.
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(0)">← Back</button>
+      <button class="btn btn-primary" data-sgs-onclick="goTo(2)">Next: Transaction Pool →</button>
+    </div>
+  </div>
+
+  <!-- ========== 2: TRANSACTIONS & MEMPOOL ========== -->
+  <div class="panel" id="panel-2">
+    <div class="panel-header">
+      <h2>💸 Transactions &amp; The Mempool</h2>
+      <p>Where transactions wait before being included in a block</p>
+    </div>
+
+    <div class="info">
+      When you send cryptocurrency, your transaction doesn't go into a block immediately. It first enters a waiting area called the <strong>mempool (memory pool)</strong>. Think of it as a queue. Miners select transactions from the mempool to include in the next block they're trying to mine.
+    </div>
+
+    <div class="info accent">
+      <strong>Digital signatures:</strong> Every transaction is <strong>digitally signed</strong> using the sender's <strong>private key</strong>. Nodes verify it using the sender's <strong>public key</strong>. This proves the sender authorised the transaction without revealing their private key — the same public-key cryptography you study in IGCSE.
+    </div>
+
+    <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:0.5rem;">Create transactions to fill the mempool (add at least 3):</p>
+
+    <div class="form-row">
+      <div class="form-group"><label>From</label><input id="txFrom" placeholder="e.g. Alice" maxlength="15" /></div>
+      <div class="form-group"><label>To</label><input id="txTo" placeholder="e.g. Bob" maxlength="15" /></div>
+      <div class="form-group"><label>Amount</label><input id="txAmount" type="number" placeholder="e.g. 25" min="1" max="9999" /></div>
+      <div class="form-group" style="flex:0;">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary btn-sm" data-sgs-onclick="addTx()" style="white-space:nowrap">+ Add</button>
+      </div>
+    </div>
+
+    <div class="mempool-box" id="mempool">
+      <h4>📥 Mempool — Unconfirmed Transactions</h4>
+      <div id="mempoolTxs"><span style="font-size:0.82rem;color:var(--text-dim)">No transactions yet...</span></div>
+    </div>
+
+    <div class="info warn" style="margin-top:1rem;">
+      <strong>Why do miners choose which transactions to include?</strong> In real blockchains, each transaction includes a small <strong>fee</strong>. Miners prioritise transactions with higher fees because they get to keep those fees as a reward. This is why transactions can be slow when the network is busy — your low-fee transaction stays in the mempool longer.
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(1)">← Back</button>
+      <button class="btn btn-primary" id="buildBlockBtn" disabled data-sgs-onclick="goTo(3)">Next: Build the Block →</button>
+    </div>
+  </div>
+
+  <!-- ========== 3: BLOCK STRUCTURE ========== -->
+  <div class="panel" id="panel-3">
+    <div class="panel-header">
+      <h2>🧱 Block Structure</h2>
+      <p>What's actually inside a block?</p>
+    </div>
+
+    <div class="info">
+      A miner takes transactions from the mempool and packages them into a <strong>candidate block</strong>. Before it can be added to the chain, the miner must fill in all the required fields. Here's what a block contains:
+    </div>
+
+    <div class="concept-grid" style="grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));">
+      <div class="concept-card">
+        <div class="icon" style="color:var(--primary)">#</div>
+        <h4>Block Index</h4>
+        <p>The block's position in the chain (0 = genesis block)</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon" style="color:var(--accent)">🕐</div>
+        <h4>Timestamp</h4>
+        <p>Exact time the block was created</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon" style="color:var(--success)">💳</div>
+        <h4>Transactions</h4>
+        <p>The actual data — who sent what to whom</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon" style="color:var(--primary)">🔗</div>
+        <h4>Previous Hash</h4>
+        <p>Hash of the block before — this creates the "chain"</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon" style="color:var(--warning)">🎲</div>
+        <h4>Nonce</h4>
+        <p>"Number used once" — the miner changes this during mining</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon" style="color:var(--gold)">🔐</div>
+        <h4>Hash</h4>
+        <p>Unique digital fingerprint of ALL the above data combined</p>
+      </div>
+    </div>
+
+    <div id="candidateBlock"></div>
+
+    <div class="info warn">
+      <strong>The critical field: Previous Hash.</strong> This is what links blocks together into a chain. Block #5's "Previous Hash" field contains the hash of Block #4. Block #4 contains the hash of Block #3, and so on, all the way back to the <strong>Genesis Block</strong> (block #0). If anyone changes Block #3's data, its hash changes, which means Block #4's "Previous Hash" no longer matches — <strong>breaking the entire chain from that point forward</strong>.
+    </div>
+
+    <div class="info">
+      <strong>What is SHA-256 hashing?</strong> SHA-256 is a <strong>one-way mathematical function</strong> that takes any input (a single letter, an entire book) and produces a <strong>fixed 64-character hexadecimal string</strong>. Even changing one character in the input produces a <strong>completely different hash</strong>. It's impossible to reverse — you cannot figure out the input from the hash. Try it below:
+    </div>
+
+    <div class="form-row" style="align-items:stretch">
+      <div class="form-group" style="flex:2">
+        <label>Type anything:</label>
+        <input id="hashDemoInput" placeholder="Try typing here and watch the hash change..." data-sgs-oninput="demoHash()" />
+      </div>
+    </div>
+    <div style="background:#fff;padding:0.7rem 1rem;border-radius:8px;border:1px solid var(--border);font-family:'Courier New',monospace;font-size:0.78rem;color:var(--gold);word-break:break-all;min-height:2em;margin-bottom:1rem;" id="hashDemoOutput">SHA-256 hash will appear here...</div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(2)">← Back</button>
+      <button class="btn btn-gold" data-sgs-onclick="goTo(4)">Next: Mine the Block (Proof of Work) →</button>
+    </div>
+  </div>
+
+  <!-- ========== 4: PROOF OF WORK MINING ========== -->
+  <div class="panel" id="panel-4">
+    <div class="panel-header">
+      <h2>⛏️ Proof of Work — Mining the Block</h2>
+      <p>The computational race to find a valid hash</p>
+    </div>
+
+    <div class="info">
+      The block is assembled, but it can't be added to the chain yet. The miner must <strong>prove they did computational work</strong> — this is called <strong>Proof of Work (PoW)</strong>. The rule is: the block's hash must start with a certain number of <strong>leading zeros</strong>. The miner has no shortcut — they must try different <strong>nonce</strong> values over and over until they find one that produces a hash meeting the target.
+    </div>
+
+    <div class="info accent">
+      <strong>Why does this matter?</strong> Proof of Work makes it <strong>expensive and time-consuming to create a block</strong>, but <strong>instant to verify one</strong>. Any node can hash the block once to check if it's valid. This asymmetry (hard to create, easy to check) is what secures the network. An attacker would need enormous computing power to outpace the honest miners.
+    </div>
+
+    <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:0.3rem;">Choose difficulty — more leading zeros = exponentially harder:</p>
+    <div class="diff-btns">
+      <button class="diff-btn active" data-sgs-onclick="setDiff(1)">1 zero (Easy)</button>
+      <button class="diff-btn" data-sgs-onclick="setDiff(2)">2 zeros (Medium)</button>
+      <button class="diff-btn" data-sgs-onclick="setDiff(3)">3 zeros (Hard)</button>
+      <button class="diff-btn" data-sgs-onclick="setDiff(4)">4 zeros (Very Hard)</button>
+    </div>
+
+    <div class="mine-box">
+      <div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;">Nonce Attempts</div>
+      <div class="mine-nonce" id="mineNonce">0</div>
+      <div class="mine-target">Target: hash must start with <strong id="targetDisplay">"0"</strong></div>
+      <div style="font-size:0.75rem;color:var(--text-dim);margin-top:0.8rem;">Current Hash:</div>
+      <div class="mine-hash" id="mineHash">Press "Start Mining" to begin...</div>
+      <div class="progress-bar"><div class="progress-fill" id="mineProgress"></div></div>
+    </div>
+
+    <div id="mineResult" style="display:none"></div>
+
+    <div class="btn-group" style="justify-content:center">
+      <button class="btn btn-gold" id="startMineBtn" data-sgs-onclick="startMining()">⛏️ Start Mining</button>
+    </div>
+
+    <div class="info warn" id="mineExplain" style="display:none;margin-top:1rem;"></div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(3)">← Back</button>
+      <button class="btn btn-success" id="toConsensusBtn" style="display:none" data-sgs-onclick="goTo(5)">Next: Broadcast &amp; Consensus →</button>
+    </div>
+  </div>
+
+  <!-- ========== 5: CONSENSUS ========== -->
+  <div class="panel" id="panel-5">
+    <div class="panel-header">
+      <h2>🤝 Broadcasting &amp; Consensus</h2>
+      <p>How the network agrees the block is valid</p>
+    </div>
+
+    <div class="info">
+      The miner found a valid hash! But the block isn't on the chain yet. The miner now <strong>broadcasts the block to every node</strong> in the network. Each node <strong>independently verifies</strong>:
+    </div>
+
+    <div class="concept-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+      <div class="concept-card">
+        <div class="icon">✅</div>
+        <h4>Valid Transactions?</h4>
+        <p>Does the sender have enough funds? Are signatures valid?</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🔗</div>
+        <h4>Correct Previous Hash?</h4>
+        <p>Does it reference the real last block in the chain?</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">⛏️</div>
+        <h4>Valid Proof of Work?</h4>
+        <p>Does the hash actually start with the required zeros?</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">📏</div>
+        <h4>Follows All Rules?</h4>
+        <p>Block size, format, reward amount — everything checked</p>
+      </div>
+    </div>
+
+    <div class="info green">
+      <strong>Consensus means agreement.</strong> If the <strong>majority of nodes</strong> (more than 50%) accept the block as valid, it becomes the accepted truth. This is the <strong>consensus mechanism</strong>. No single entity decides — the <strong>network collectively agrees</strong>.
+    </div>
+
+    <p style="font-size:0.85rem;color:var(--text-dim);margin:1rem 0 0.5rem;">Watch the nodes validate your mined block:</p>
+
+    <div class="network-visual" id="consensusVisual" style="height:300px;">
+      <svg class="net-lines" id="consensusLines"></svg>
+      <div class="net-status" id="consensusStatus">Click "Broadcast Block" to begin</div>
+    </div>
+
+    <div class="consensus-bar-container" id="consensusBarWrap" style="display:none;">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-dim);margin-bottom:0.3rem;">
+        <span>0%</span>
+        <span>Network Acceptance</span>
+        <span>100%</span>
+      </div>
+      <div class="consensus-bar-bg">
+        <div class="consensus-threshold"></div>
+        <div class="consensus-bar-fill accept" id="consensusFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="justify-content:center">
+      <button class="btn btn-primary" id="broadcastBlockBtn" data-sgs-onclick="animateConsensus()">📡 Broadcast Block to Network</button>
+    </div>
+
+    <div id="consensusResult" style="display:none;margin-top:1rem;"></div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(4)">← Back</button>
+      <button class="btn btn-success" id="toChainBtn" style="display:none" data-sgs-onclick="goTo(6)">Next: View the Chain →</button>
+    </div>
+  </div>
+
+  <!-- ========== 6: THE CHAIN ========== -->
+  <div class="panel" id="panel-6">
+    <div class="panel-header">
+      <h2>🔗 The Complete Blockchain</h2>
+      <p>Your block is now permanently part of the chain</p>
+    </div>
+
+    <div class="info green">
+      <strong>Block confirmed!</strong> The majority of the network accepted your block. It is now part of the permanent, immutable blockchain. Every node has updated their copy. The transactions inside are now <strong>confirmed</strong> and the recipients can spend their funds.
+    </div>
+
+    <div class="chain-scroll" id="chainView"></div>
+
+    <div class="info">
+      <strong>Notice the chain linking:</strong> Each block's <strong style="color:var(--primary)">Previous Hash</strong> (blue) matches the <strong style="color:var(--gold)">Hash</strong> (gold) of the block before it. This is what creates the unbreakable chain. The Genesis Block (Block #0) has a previous hash of "0" because there's nothing before it.
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(5)">← Back</button>
+      <button class="btn btn-primary" data-sgs-onclick="mineAnother()">+ Mine Another Block</button>
+      <button class="btn btn-danger" data-sgs-onclick="goTo(7)">Next: Why Tampering Fails →</button>
+    </div>
+  </div>
+
+  <!-- ========== 7: TAMPERING & 51% ATTACK ========== -->
+  <div class="panel" id="panel-7">
+    <div class="panel-header">
+      <h2>🔓 Why You Can't Tamper With a Blockchain</h2>
+      <p>Try it yourself — and learn about the 51% attack</p>
+    </div>
+
+    <div class="info red">
+      <strong>Imagine a fraudster</strong> wants to change a past transaction — maybe to take back money they already sent. Try editing the transaction data in any block below, then click "Validate Chain" to see what happens.
+    </div>
+
+    <div class="chain-scroll" id="tamperChain"></div>
+
+    <div class="btn-group" style="justify-content:center">
+      <button class="btn btn-primary" data-sgs-onclick="validateTamper()">🔍 Validate Chain</button>
+      <button class="btn btn-outline" data-sgs-onclick="renderTamperChain()">↺ Reset</button>
+    </div>
+
+    <div class="validation-box" id="tamperResult"></div>
+
+    <div class="info warn" style="margin-top:1.5rem;">
+      <strong>Why tampering fails — step by step:</strong>
+      <br />1. The attacker changes data in Block #2.
+      <br />2. Block #2's hash changes (because the data changed).
+      <br />3. Block #3 still stores the <strong>old</strong> hash of Block #2 as its "Previous Hash" — <strong>mismatch!</strong>
+      <br />4. The attacker would need to re-mine Block #3 (find a new valid nonce), but then Block #4 breaks too.
+      <br />5. They'd need to re-mine <strong>every single block</strong> after the tampered one.
+      <br />6. While doing this, honest miners are <strong>still adding new blocks</strong>. The attacker can never catch up unless they control more computing power than the entire rest of the network.
+    </div>
+
+    <div class="info red" style="margin-top:1rem;">
+      <strong>The 51% Attack — the only theoretical weakness:</strong>
+      <br /><br />If a single entity controlled <strong>more than 50% of the network's computing power</strong>, they could theoretically create a longer chain faster than the honest miners and trick the network into accepting their tampered version.
+      <br /><br />
+      The interactive visualisation below shows 10 nodes. Toggle them to see what happens when a malicious actor gains majority control:
+    </div>
+
+    <div class="attack-grid" id="attackGrid"></div>
+    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.5rem;">
+      <span id="honestCount" style="color:var(--success)">✅ Honest: 10</span>
+      <span id="maliciousCount" style="color:var(--danger)">❌ Malicious: 0</span>
+    </div>
+    <div class="consensus-bar-bg" style="margin-bottom:0.5rem;">
+      <div class="consensus-threshold"></div>
+      <div class="consensus-bar-fill accept" id="attackFill" style="width:100%">100% Honest</div>
+    </div>
+    <div id="attackResult" style="font-size:0.88rem;min-height:2em;margin-bottom:1rem;"></div>
+
+    <div class="info green">
+      <strong>In practice, a 51% attack is virtually impossible</strong> on large blockchains like Bitcoin. The network has so much computing power that gaining majority control would cost billions of pounds in hardware and electricity — far more than any potential gain. This economic disincentive is part of the security model.
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(6)">← Back</button>
+      <button class="btn btn-accent" data-sgs-onclick="goTo(8)">Next: Smart Contracts →</button>
+    </div>
+  </div>
+
+  <!-- ========== 8: SMART CONTRACTS ========== -->
+  <div class="panel" id="panel-8">
+    <div class="panel-header">
+      <h2>📜 Smart Contracts</h2>
+      <p>Self-executing code stored on the blockchain</p>
+    </div>
+
+    <div class="info accent">
+      A <strong>smart contract</strong> is a small program stored on the blockchain that <strong>automatically executes</strong> when predefined conditions are met. Think of it as an <strong>"if-then" agreement</strong> that runs itself — no lawyers, no banks, no middlemen needed.
+    </div>
+
+    <div class="compare">
+      <div class="compare-box bad">
+        <h4>📄 Traditional Contract</h4>
+        <p style="font-size:0.82rem;color:var(--text-dim);">
+          Written in English. Requires lawyers to interpret. Enforced by courts (slow, expensive). Either party can break the agreement.
+        </p>
+      </div>
+      <div class="compare-box good">
+        <h4>📜 Smart Contract</h4>
+        <p style="font-size:0.82rem;color:var(--text-dim);">
+          Written in code. Executes automatically. Enforced by the blockchain (instant, trustless). <strong style="color:var(--success)">Cannot be broken or altered once deployed.</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="info">
+      <strong>Real-world examples of smart contracts:</strong>
+      <br />• <strong>Insurance:</strong> Flight delayed by 2+ hours? The contract automatically pays your claim.
+      <br />• <strong>Supply chain:</strong> Package scanned at destination? Payment automatically released to the supplier.
+      <br />• <strong>Gaming:</strong> You win the match? Prize tokens are automatically sent to your wallet.
+      <br />• <strong>Crowdfunding:</strong> Target amount reached by deadline? Funds released to the project. If not? Everyone is automatically refunded.
+    </div>
+
+    <p style="font-size:0.9rem;color:var(--text-dim);margin: 1rem 0 0.5rem;">Try a simulated smart contract — an escrow agreement:</p>
+
+    <div class="contract-box">
+      <div class="tag">SMART CONTRACT</div>
+      <br />
+      <span style="color:var(--text-dim)">// Escrow: Buyer pays, goods confirmed, seller receives payment</span><br />
+      <span style="color:#f472b6">contract</span> <span style="color:var(--success)">Escrow</span> {<br />
+      &nbsp;&nbsp;buyer &nbsp;= <span style="color:var(--warning)" id="scBuyer">"Alice"</span><br />
+      &nbsp;&nbsp;seller = <span style="color:var(--warning)" id="scSeller">"Bob"</span><br />
+      &nbsp;&nbsp;amount = <span style="color:var(--success)" id="scAmt">100</span> coins<br />
+      &nbsp;&nbsp;status = <span style="color:var(--primary)" id="scStatus">"AWAITING_PAYMENT"</span><br /><br />
+      &nbsp;&nbsp;<span style="color:#f472b6">function</span> <span style="color:var(--text-bright)">deposit</span>() {<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text-dim)">// Buyer sends funds to contract</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#f472b6">if</span> (msg.sender == buyer) → hold funds<br />
+      &nbsp;&nbsp;}<br /><br />
+      &nbsp;&nbsp;<span style="color:#f472b6">function</span> <span style="color:var(--text-bright)">confirmDelivery</span>() {<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text-dim)">// Buyer confirms goods received</span><br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#f472b6">if</span> (msg.sender == buyer) → send funds to seller<br />
+      &nbsp;&nbsp;}<br />
+      }
+    </div>
+
+    <div class="btn-group" style="justify-content:center;flex-wrap:wrap;gap:0.5rem;">
+      <button class="btn btn-primary btn-sm" id="scDepositBtn" data-sgs-onclick="scDeposit()">💰 Alice: Deposit 100 coins</button>
+      <button class="btn btn-success btn-sm" id="scConfirmBtn" data-sgs-onclick="scConfirm()" disabled>📦 Alice: Confirm Delivery</button>
+      <button class="btn btn-outline btn-sm" data-sgs-onclick="scReset()">↺ Reset</button>
+    </div>
+
+    <div class="contract-output" id="scOutput">Waiting for actions...</div>
+
+    <div class="info accent" style="margin-top:1rem;">
+      <strong>Key point:</strong> Smart contracts are stored on the blockchain, so they are <strong>immutable and transparent</strong>. Once deployed, nobody (not even the creator) can change the rules. Both parties can read the code and verify exactly what will happen. The contract executes <strong>automatically</strong> — there's no way for either party to cheat.
+    </div>
+
+    <div class="info green" style="margin-top:1rem;">
+      <strong>Blockchains that support smart contracts:</strong> Ethereum is the most well-known, using a language called <strong>Solidity</strong>. Others include Cardano, Solana, and Polkadot. Bitcoin's blockchain is mainly for simple transactions and doesn't support complex smart contracts.
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(7)">← Back</button>
+      <button class="btn btn-success" data-sgs-onclick="goTo(9)">Final Summary →</button>
+    </div>
+  </div>
+
+  <!-- ========== 9: SUMMARY ========== -->
+  <div class="panel" id="panel-9">
+    <div class="panel-header">
+      <h2>🎓 Complete Summary</h2>
+      <p>The full lifecycle of a block — everything in one place</p>
+    </div>
+
+    <div class="info green">
+      You've now walked through every stage of how a block is created and added to a blockchain. Here's the complete process:
+    </div>
+
+    <div style="position:relative;padding-left:2rem;margin:1.5rem 0;">
+      <div style="position:absolute;left:0.65rem;top:0;bottom:0;width:3px;background:var(--border);border-radius:2px;"></div>
+
+      <div style="position:relative;margin-bottom:1.5rem;">
+        <div style="position:absolute;left:-1.65rem;top:0.15rem;width:22px;height:22px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;">1</div>
+        <div style="background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--primary)">Transaction Created &amp; Signed</strong>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;">A user creates a transaction (e.g. "Alice sends 50 coins to Bob") and signs it with their private key. The transaction is broadcast to the peer-to-peer network via gossip protocol.</p>
+        </div>
+      </div>
+
+      <div style="position:relative;margin-bottom:1.5rem;">
+        <div style="position:absolute;left:-1.65rem;top:0.15rem;width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;">2</div>
+        <div style="background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--accent)">Transaction Enters the Mempool</strong>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;">Nodes validate the transaction (correct signature, sufficient funds) and place it in their mempool — a waiting area of unconfirmed transactions.</p>
+        </div>
+      </div>
+
+      <div style="position:relative;margin-bottom:1.5rem;">
+        <div style="position:absolute;left:-1.65rem;top:0.15rem;width:22px;height:22px;border-radius:50%;background:var(--warning);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;">3</div>
+        <div style="background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--warning)">Miner Builds a Candidate Block</strong>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;">A miner selects transactions from the mempool (usually prioritising higher fees) and assembles them into a block with: index, timestamp, transactions, previous hash, and nonce.</p>
+        </div>
+      </div>
+
+      <div style="position:relative;margin-bottom:1.5rem;">
+        <div style="position:absolute;left:-1.65rem;top:0.15rem;width:22px;height:22px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;">4</div>
+        <div style="background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--gold)">Proof of Work — Mining</strong>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;">The miner repeatedly changes the nonce and hashes the entire block using SHA-256, trying to find a hash that starts with the required number of leading zeros (the difficulty target). This takes enormous computational effort but is trivial to verify.</p>
+        </div>
+      </div>
+
+      <div style="position:relative;margin-bottom:1.5rem;">
+        <div style="position:absolute;left:-1.65rem;top:0.15rem;width:22px;height:22px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;">5</div>
+        <div style="background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--primary)">Block Broadcast to Network</strong>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;">The miner broadcasts the completed block to all nodes. Each node independently verifies: valid transactions, correct previous hash, valid proof of work, and compliance with all protocol rules.</p>
+        </div>
+      </div>
+
+      <div style="position:relative;margin-bottom:1.5rem;">
+        <div style="position:absolute;left:-1.65rem;top:0.15rem;width:22px;height:22px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;">6</div>
+        <div style="background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--success)">Consensus — Majority Accepts</strong>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;">If more than 50% of the network's nodes validate and accept the block, it achieves consensus. It becomes the agreed-upon truth. The miner receives a block reward (newly created coins + transaction fees).</p>
+        </div>
+      </div>
+
+      <div style="position:relative;margin-bottom:0.5rem;">
+        <div style="position:absolute;left:-1.65rem;top:0.15rem;width:22px;height:22px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;">7</div>
+        <div style="background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--success)">Block Added Permanently to Chain</strong>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;">Every node appends the block to their copy of the blockchain. The transactions are now confirmed and immutable. The block's hash will be stored as "Previous Hash" in the next block, extending the unbreakable chain. Tampering with any block would require re-mining every subsequent block while outpacing the entire network — which is computationally infeasible.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept-grid" style="margin-top:1.5rem;">
+      <div class="concept-card" style="border-color:var(--primary);">
+        <div class="icon">🔑</div>
+        <h4>Decentralisation</h4>
+        <p>No central authority — thousands of equal nodes share control</p>
+      </div>
+      <div class="concept-card" style="border-color:var(--gold);">
+        <div class="icon">⛏️</div>
+        <h4>Proof of Work</h4>
+        <p>Computational puzzle that's hard to solve but easy to verify</p>
+      </div>
+      <div class="concept-card" style="border-color:var(--success);">
+        <div class="icon">🤝</div>
+        <h4>Consensus (>50%)</h4>
+        <p>The network collectively agrees on truth — majority rules</p>
+      </div>
+      <div class="concept-card" style="border-color:var(--danger);">
+        <div class="icon">🛡️</div>
+        <h4>Immutability</h4>
+        <p>Changing one block breaks every block after it — tampering is detectable and infeasible</p>
+      </div>
+      <div class="concept-card" style="border-color:var(--accent);">
+        <div class="icon">📜</div>
+        <h4>Smart Contracts</h4>
+        <p>Self-executing code on the blockchain — no middlemen needed</p>
+      </div>
+      <div class="concept-card" style="border-color:var(--warning);">
+        <div class="icon">🔐</div>
+        <h4>SHA-256 Hashing</h4>
+        <p>One-way fingerprint — any change in input creates a completely different output</p>
+      </div>
+    </div>
+
+    <div class="info" style="margin-top:1.5rem;">
+      <strong>Key exam vocabulary:</strong>
+      <br />• <strong>Block</strong> — a container of transaction data linked to the previous block
+      <br />• <strong>Hash</strong> — a fixed-length digital fingerprint produced by a one-way function (SHA-256)
+      <br />• <strong>Nonce</strong> — "number used once" — the value miners change to find a valid hash
+      <br />• <strong>Proof of Work</strong> — the process of finding a nonce that produces a hash meeting the difficulty target
+      <br />• <strong>Consensus</strong> — agreement among more than 50% of nodes that a block is valid
+      <br />• <strong>Mempool</strong> — the pool of unconfirmed transactions waiting to be included in a block
+      <br />• <strong>Genesis Block</strong> — the very first block in a blockchain (index 0)
+      <br />• <strong>51% Attack</strong> — a theoretical attack where one entity controls majority computing power
+      <br />• <strong>Immutable</strong> — cannot be changed after being written
+      <br />• <strong>Decentralised</strong> — no single point of control; distributed across many nodes
+      <br />• <strong>Smart Contract</strong> — self-executing program stored on the blockchain
+      <br />• <strong>Distributed Ledger</strong> — a database shared and synchronised across multiple nodes
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" data-sgs-onclick="goTo(8)">← Back</button>
+      <button class="btn btn-primary" data-sgs-onclick="goTo(0)">🔄 Restart from Beginning</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const STEP_NAMES = [
+  "Centralised vs Decentralised",
+  "P2P Network",
+  "Transactions & Mempool",
+  "Block Structure",
+  "Proof of Work",
+  "Consensus",
+  "The Chain",
+  "Tampering & 51%",
+  "Smart Contracts",
+  "Summary"
+];
+const TOTAL = STEP_NAMES.length;
+let step = 0;
+let visited = new Set([0]);
+let txs = [];
+let chain = [];
+let diff = 1;
+let mining = false;
+let minedBlock = null;
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function buildNav() {
+  const nav = document.getElementById("stepNav");
+  nav.innerHTML = "";
+  STEP_NAMES.forEach((name, i) => {
+    const btn = document.createElement("button");
+    btn.className = "step-tab";
+    if (i === step) btn.classList.add("active");
+    else if (visited.has(i)) btn.classList.add("visited");
+    btn.textContent = `${i + 1}. ${name}`;
+    btn.onclick = () => {
+      if (visited.has(i)) goTo(i);
+    };
+    nav.appendChild(btn);
+  });
+}
+
+function goTo(n) {
+  document.getElementById(`panel-${step}`).classList.remove("visible");
+  step = n;
+  visited.add(n);
+  document.getElementById(`panel-${step}`).classList.add("visible");
+  buildNav();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // triggers
+  if (n === 1) initNetwork();
+  if (n === 3) buildCandidate();
+  if (n === 5) initConsensusNetwork();
+  if (n === 6) renderChainView();
+  if (n === 7) { renderTamperChain(); initAttackGrid(); }
+}
+
+// ============================================================
+// GENESIS
+// ============================================================
+function createGenesis() {
+  const ts = "2025-01-01T00:00:00.000Z";
+  const h = sha256(`0${ts}Genesis Block00`);
+  return { index: 0, timestamp: ts, data: "Genesis Block", previousHash: "0", nonce: 0, hash: h };
+}
+if (!chain.length) chain.push(createGenesis());
+
+function calcHash(b) {
+  return sha256(`${b.index}${b.timestamp}${JSON.stringify(b.data)}${b.previousHash}${b.nonce}`);
+}
+
+// ============================================================
+// NETWORK VISUAL (Step 1)
+// ============================================================
+const nodePositions = [
+  { x: 50, y: 40 }, { x: 20, y: 30 }, { x: 80, y: 25 },
+  { x: 15, y: 65 }, { x: 50, y: 70 }, { x: 85, y: 65 },
+  { x: 35, y: 15 }, { x: 65, y: 15 }
+];
+const nodeEdges = [
+  [0,1],[0,2],[0,4],[1,3],[1,6],[2,5],[2,7],[3,4],[4,5],[6,7],[6,0],[7,2],[3,6],[5,7]
+];
+
+function initNetwork() {
+  const vis = document.getElementById("networkVisual");
+  const svg = document.getElementById("netLines");
+  // clear old nodes (keep svg)
+  vis.querySelectorAll(".node").forEach(n => n.remove());
+  svg.innerHTML = "";
+
+  const w = vis.offsetWidth;
+  const h = vis.offsetHeight - 40;
+
+  // draw lines
+  nodeEdges.forEach(([a, b]) => {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", nodePositions[a].x / 100 * w);
+    line.setAttribute("y1", nodePositions[a].y / 100 * h);
+    line.setAttribute("x2", nodePositions[b].x / 100 * w);
+    line.setAttribute("y2", nodePositions[b].y / 100 * h);
+    line.setAttribute("stroke", "#2a3f6b");
+    line.setAttribute("stroke-width", "1.5");
+    line.id = `net-line-${a}-${b}`;
+    svg.appendChild(line);
+  });
+
+  // draw nodes
+  nodePositions.forEach((pos, i) => {
+    const node = document.createElement("div");
+    node.className = "node";
+    node.id = `net-node-${i}`;
+    node.style.left = `${pos.x / 100 * w - 32}px`;
+    node.style.top = `${pos.y / 100 * h - 32}px`;
+    node.innerHTML = `💻<span class="node-label">Node ${i + 1}</span>`;
+    vis.appendChild(node);
+  });
+
+  document.getElementById("netStatus").textContent = 'Click "Broadcast a Transaction" to see how data spreads';
+  document.getElementById("broadcastBtn").disabled = false;
+}
+
+function resetNetwork() { initNetwork(); }
+
+function animateBroadcast() {
+  document.getElementById("broadcastBtn").disabled = true;
+  // Reset
+  nodePositions.forEach((_, i) => {
+    document.getElementById(`net-node-${i}`).className = "node";
+  });
+  nodeEdges.forEach(([a, b]) => {
+    const l = document.getElementById(`net-line-${a}-${b}`);
+    if (l) { l.setAttribute("stroke", "#2a3f6b"); l.setAttribute("stroke-width", "1.5"); }
+  });
+
+  const status = document.getElementById("netStatus");
+  const origin = 0;
+  const visited = new Set();
+  const queue = [{ node: origin, time: 0 }];
+  visited.add(origin);
+
+  status.textContent = "Node 1 creates a transaction and broadcasts...";
+  document.getElementById(`net-node-${origin}`).className = "node broadcasting";
+
+  function process() {
+    if (!queue.length) {
+      status.innerHTML = '✅ All nodes have received and validated the transaction!';
+      document.getElementById("broadcastBtn").disabled = false;
+      return;
+    }
+    const { node, time } = queue.shift();
+    setTimeout(() => {
+      document.getElementById(`net-node-${node}`).className = "node accepted";
+      // find neighbours
+      nodeEdges.forEach(([a, b]) => {
+        let neighbour = -1;
+        if (a === node && !visited.has(b)) neighbour = b;
+        if (b === node && !visited.has(a)) neighbour = a;
+        if (neighbour >= 0) {
+          visited.add(neighbour);
+          // highlight line
+          const lid = document.getElementById(`net-line-${a}-${b}`);
+          if (lid) { lid.setAttribute("stroke", "#34d399"); lid.setAttribute("stroke-width", "2.5"); }
+          document.getElementById(`net-node-${neighbour}`).className = "node validating";
+          queue.push({ node: neighbour, time: 0 });
+        }
+      });
+      status.textContent = `Node ${node + 1} validated ✓ — forwarding to ${queue.length} peer(s)...`;
+      process();
+    }, 500);
+  }
+  setTimeout(process, 600);
+}
+
+// ============================================================
+// TRANSACTIONS & MEMPOOL (Step 2)
+// ============================================================
+function addTx() {
+  const from = document.getElementById("txFrom").value.trim();
+  const to = document.getElementById("txTo").value.trim();
+  const amt = parseFloat(document.getElementById("txAmount").value);
+  if (!from || !to || !amt || amt <= 0) return alert("Please fill all fields.");
+  txs.push({ from, to, amount: amt });
+  document.getElementById("txFrom").value = "";
+  document.getElementById("txTo").value = "";
+  document.getElementById("txAmount").value = "";
+  renderMempool();
+}
+
+function renderMempool() {
+  const el = document.getElementById("mempoolTxs");
+  if (!txs.length) { el.innerHTML = '<span style="font-size:0.82rem;color:var(--text-dim)">No transactions yet...</span>'; return; }
+  el.innerHTML = txs.map((t, i) =>
+    `<div class="mempool-tx"><span>${t.from}</span><span class="arrow">→</span><span>${t.to}</span><span class="amt">${t.amount}</span>
+     <button onclick="txs.splice(${i},1);renderMempool();" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.9rem;padding:0 0.2rem;opacity:0.6;">✕</button></div>`
+  ).join("");
+  document.getElementById("buildBlockBtn").disabled = txs.length < 3;
+}
+
+// ============================================================
+// BLOCK STRUCTURE (Step 3)
+// ============================================================
+function buildCandidate() {
+  const prev = chain[chain.length - 1];
+  const idx = prev.index + 1;
+  const ts = new Date().toISOString();
+  const h = sha256(`${idx}${ts}${JSON.stringify(txs)}${prev.hash}0`);
+
+  document.getElementById("candidateBlock").innerHTML = `
+    <div class="block-card">
+      <div class="btitle">📦 Candidate Block #${idx} (Unmined)</div>
+      <div class="bfield"><span class="lbl">Index</span><span class="val">${idx}</span></div>
+      <div class="bfield"><span class="lbl">Timestamp</span><span class="val">${ts}</span></div>
+      <div class="bfield"><span class="lbl">Transactions</span><span class="val green">${txs.length} transactions</span></div>
+      ${txs.map(t => `<div class="bfield"><span class="lbl" style="opacity:0.4">↳</span><span class="val" style="font-size:0.76rem">${t.from} → ${t.to}: ${t.amount} coins</span></div>`).join("")}
+      <div class="bfield"><span class="lbl">Previous Hash</span><span class="val blue">${prev.hash}</span></div>
+      <div class="bfield"><span class="lbl">Nonce</span><span class="val purple">? (needs mining)</span></div>
+      <div class="bfield"><span class="lbl">Hash</span><span class="val" style="color:var(--text-dim)">${h.substring(0, 32)}... ❌ doesn't meet target</span></div>
+    </div>
+  `;
+}
+
+function demoHash() {
+  const input = document.getElementById("hashDemoInput").value;
+  document.getElementById("hashDemoOutput").textContent = input ? sha256(input) : "SHA-256 hash will appear here...";
+}
+
+// ============================================================
+// MINING (Step 4)
+// ============================================================
+function setDiff(d) {
+  diff = d;
+  document.querySelectorAll(".diff-btn").forEach((b, i) => b.classList.toggle("active", i + 1 === d));
+  document.getElementById("targetDisplay").textContent = `"${"0".repeat(d)}..."`;
+  // reset
+  document.getElementById("mineNonce").textContent = "0";
+  document.getElementById("mineHash").textContent = 'Press "Start Mining" to begin...';
+  document.getElementById("mineHash").className = "mine-hash";
+  document.getElementById("mineProgress").style.width = "0%";
+  document.getElementById("mineExplain").style.display = "none";
+  document.getElementById("mineResult").style.display = "none";
+  document.getElementById("toConsensusBtn").style.display = "none";
+  document.getElementById("startMineBtn").disabled = false;
+  document.getElementById("startMineBtn").textContent = "⛏️ Start Mining";
+  mining = false;
+  minedBlock = null;
+}
+
+function startMining() {
+  if (mining) return;
+  mining = true;
+  document.getElementById("startMineBtn").disabled = true;
+  document.getElementById("startMineBtn").textContent = "⛏️ Mining...";
+
+  const prev = chain[chain.length - 1];
+  const idx = prev.index + 1;
+  const ts = new Date().toISOString();
+  const prevHash = prev.hash;
+  const target = "0".repeat(diff);
+  const est = Math.pow(16, diff) * 0.7;
+  let nonce = 0;
+  const startTime = performance.now();
+
+  function step() {
+    const batch = 150;
+    for (let i = 0; i < batch; i++) {
+      const h = sha256(`${idx}${ts}${JSON.stringify(txs)}${prevHash}${nonce}`);
+      if (h.startsWith(target)) {
+        // found
+        document.getElementById("mineNonce").textContent = nonce.toLocaleString();
+        const el = document.getElementById("mineHash");
+        el.textContent = h;
+        el.className = "mine-hash found";
+        document.getElementById("mineProgress").style.width = "100%";
+
+        const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+
+        minedBlock = { index: idx, timestamp: ts, data: JSON.parse(JSON.stringify(txs)), previousHash: prevHash, nonce, hash: h };
+        mining = false;
+        document.getElementById("startMineBtn").textContent = "✅ Block Mined!";
+
+        // Result block
+        document.getElementById("mineResult").style.display = "block";
+        document.getElementById("mineResult").innerHTML = `
+          <div class="block-card mined">
+            <div class="btitle">✅ Mined Block #${idx}</div>
+            <div class="bfield"><span class="lbl">Index</span><span class="val">${idx}</span></div>
+            <div class="bfield"><span class="lbl">Timestamp</span><span class="val">${ts}</span></div>
+            <div class="bfield"><span class="lbl">Transactions</span><span class="val green">${txs.length} transactions</span></div>
+            <div class="bfield"><span class="lbl">Previous Hash</span><span class="val blue">${prevHash}</span></div>
+            <div class="bfield"><span class="lbl">Nonce</span><span class="val purple">${nonce}</span></div>
+            <div class="bfield"><span class="lbl">Hash</span><span class="val gold">${h}</span></div>
+          </div>`;
+
+        const explainEl = document.getElementById("mineExplain");
+        explainEl.style.display = "block";
+        explainEl.className = "info green";
+        explainEl.innerHTML = `<strong>Success!</strong> After <strong>${nonce.toLocaleString()}</strong> attempts in <strong>${elapsed} seconds</strong>, nonce <strong>${nonce}</strong> produced a hash starting with <strong>"${target}"</strong>.<br /><br />
+          <strong>Why is this significant?</strong> Finding this nonce required real computational work (energy and time). But any other node can verify it with a <strong>single hash calculation</strong> — instant! This asymmetry is the core of Proof of Work security.<br /><br />
+          In real Bitcoin (difficulty ≈ 80+ leading zero bits), miners use specialised ASIC hardware performing <strong>trillions of hashes per second</strong>, and it still takes ~10 minutes on average for the entire network to find a valid block.`;
+
+        document.getElementById("toConsensusBtn").style.display = "inline-flex";
+        return;
+      }
+      nonce++;
+    }
+
+    document.getElementById("mineNonce").textContent = nonce.toLocaleString();
+    document.getElementById("mineHash").textContent = sha256(`${idx}${ts}${JSON.stringify(txs)}${prevHash}${nonce - 1}`);
+    document.getElementById("mineProgress").style.width = Math.min((nonce / est) * 100, 95) + "%";
+    requestAnimationFrame(step);
+  }
+  step();
+}
+
+// ============================================================
+// CONSENSUS NETWORK (Step 5)
+// ============================================================
+function initConsensusNetwork() {
+  const vis = document.getElementById("consensusVisual");
+  const svg = document.getElementById("consensusLines");
+  vis.querySelectorAll(".node").forEach(n => n.remove());
+  svg.innerHTML = "";
+
+  const w = vis.offsetWidth;
+  const h = vis.offsetHeight - 40;
+
+  nodeEdges.forEach(([a, b]) => {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", nodePositions[a].x / 100 * w);
+    line.setAttribute("y1", nodePositions[a].y / 100 * h);
+    line.setAttribute("x2", nodePositions[b].x / 100 * w);
+    line.setAttribute("y2", nodePositions[b].y / 100 * h);
+    line.setAttribute("stroke", "#2a3f6b");
+    line.setAttribute("stroke-width", "1.5");
+    line.id = `cons-line-${a}-${b}`;
+    svg.appendChild(line);
+  });
+
+  nodePositions.forEach((pos, i) => {
+    const node = document.createElement("div");
+    node.className = "node";
+    node.id = `cons-node-${i}`;
+    node.style.left = `${pos.x / 100 * w - 32}px`;
+    node.style.top = `${pos.y / 100 * h - 32}px`;
+    node.innerHTML = `💻<span class="node-label">Node ${i + 1}</span>`;
+    vis.appendChild(node);
+  });
+
+  document.getElementById("consensusStatus").textContent = 'Click "Broadcast Block to Network"';
+  document.getElementById("consensusBarWrap").style.display = "none";
+  document.getElementById("consensusResult").style.display = "none";
+  document.getElementById("toChainBtn").style.display = "none";
+  document.getElementById("broadcastBlockBtn").disabled = false;
+}
+
+function animateConsensus() {
+  document.getElementById("broadcastBlockBtn").disabled = true;
+  document.getElementById("consensusBarWrap").style.display = "block";
+  document.getElementById("consensusFill").style.width = "0%";
+
+  const status = document.getElementById("consensusStatus");
+  const total = nodePositions.length;
+  let accepted = 0;
+  let processed = 0;
+
+  // miner is node 0
+  document.getElementById("cons-node-0").className = "node broadcasting";
+  status.textContent = "Miner (Node 1) broadcasts the mined block...";
+
+  const order = [0, 1, 6, 2, 7, 3, 4, 5]; // BFS-ish
+
+  function processNode(idx) {
+    if (idx >= order.length) {
+      // done
+      const pct = (accepted / total * 100).toFixed(0);
+      status.innerHTML = `✅ Consensus reached! ${accepted}/${total} nodes accepted the block (${pct}%)`;
+
+      document.getElementById("consensusResult").style.display = "block";
+      document.getElementById("consensusResult").innerHTML = `
+        <div class="info green">
+          <strong>${accepted} out of ${total} nodes</strong> (${pct}%) validated and accepted the block. Since this exceeds the <strong>51% threshold</strong>, the network has reached <strong>consensus</strong>. The block is now part of the official chain on every node.
+          <br /><br /><strong>What each node checked:</strong>
+          <br />✅ All transaction signatures are valid
+          <br />✅ No double-spending (sender has sufficient funds)
+          <br />✅ Previous hash matches the actual last block
+          <br />✅ Hash meets the difficulty target (starts with required zeros)
+          <br />✅ Block structure follows protocol rules
+        </div>`;
+      document.getElementById("toChainBtn").style.display = "inline-flex";
+      return;
+    }
+
+    const n = order[idx];
+    setTimeout(() => {
+      document.getElementById(`cons-node-${n}`).className = "node validating";
+      status.textContent = `Node ${n + 1} is verifying the block...`;
+
+      setTimeout(() => {
+        // All accept in this simulation
+        accepted++;
+        processed++;
+        document.getElementById(`cons-node-${n}`).className = "node accepted";
+        const pct = (accepted / total * 100).toFixed(0);
+        document.getElementById("consensusFill").style.width = pct + "%";
+        document.getElementById("consensusFill").textContent = `${pct}%`;
+
+        // highlight edges
+        nodeEdges.forEach(([a, b]) => {
+          if (a === n || b === n) {
+            const l = document.getElementById(`cons-line-${a}-${b}`);
+            if (l) { l.setAttribute("stroke", "#34d399"); l.setAttribute("stroke-width", "2.5"); }
+          }
+        });
+
+        status.textContent = `Node ${n + 1} accepted ✓ (${accepted}/${total} — ${pct}%)`;
+        processNode(idx + 1);
+      }, 400);
+    }, 350);
+  }
+
+  setTimeout(() => processNode(0), 600);
+}
+
+// ============================================================
+// CHAIN VIEW (Step 6)
+// ============================================================
+function renderChainView() {
+  // finalise mined block
+  if (minedBlock) {
+    chain.push(minedBlock);
+    txs = [];
+    minedBlock = null;
+  }
+
+  const el = document.getElementById("chainView");
+  el.innerHTML = "";
+  chain.forEach((block, i) => {
+    if (i > 0) {
+      const link = document.createElement("div");
+      link.className = "chain-link";
+      link.innerHTML = "🔗";
+      el.appendChild(link);
+    }
+    const card = document.createElement("div");
+    card.className = "chain-block" + (i === 0 ? " genesis" : "");
+    const dataStr = i === 0 ? "Genesis Block" : block.data.map(t => `${t.from}→${t.to}: ${t.amount}`).join(", ");
+    card.innerHTML = `
+      <div class="cbt">${i === 0 ? "🌟 Genesis" : "📦 Block #" + block.index}</div>
+      <div class="cbf"><span class="cbl">Nonce:</span><span class="cbv">${block.nonce}</span></div>
+      <div class="cbf"><span class="cbl">Data:</span><span class="cbv">${dataStr}</span></div>
+      <div class="cbf"><span class="cbl">Prev Hash:</span><span class="cbv" style="color:var(--primary)">${block.previousHash.substring(0, 16)}...</span></div>
+      <div class="cbf"><span class="cbl">Hash:</span><span class="cbv gold">${block.hash.substring(0, 16)}...</span></div>
+    `;
+    el.appendChild(card);
+  });
+}
+
+function mineAnother() {
+  // reset mining UI
+  setDiff(diff);
+  txs = [];
+  renderMempool();
+  goTo(2);
+}
+
+// ============================================================
+// TAMPER CHAIN (Step 7)
+// ============================================================
+function renderTamperChain() {
+  const el = document.getElementById("tamperChain");
+  el.innerHTML = "";
+  document.getElementById("tamperResult").className = "validation-box";
+  document.getElementById("tamperResult").style.display = "none";
+
+  chain.forEach((block, i) => {
+    if (i > 0) {
+      const link = document.createElement("div");
+      link.className = "chain-link";
+      link.id = `tl-${i}`;
+      link.innerHTML = "🔗";
+      el.appendChild(link);
+    }
+    const card = document.createElement("div");
+    card.className = "chain-block" + (i === 0 ? " genesis" : "");
+    card.id = `tb-${i}`;
+    const dataStr = i === 0 ? "Genesis Block" : block.data.map(t => `${t.from}→${t.to}: ${t.amount}`).join(", ");
+
+    let editHtml = "";
+    if (i !== 0) {
+      editHtml = `<label style="font-size:0.68rem;color:var(--text-dim);margin-top:0.4rem;display:block;">✏️ Try editing this data:</label>
+        <input class="tamper-input" data-idx="${i}" value="${dataStr}" oninput="document.getElementById('tb-${i}').classList.add('tampered')" />`;
+    }
+
+    card.innerHTML = `
+      <div class="cbt">${i === 0 ? "🌟 Genesis" : "📦 Block #" + block.index}</div>
+      <div class="cbf"><span class="cbl">Nonce:</span><span class="cbv">${block.nonce}</span></div>
+      <div class="cbf"><span class="cbl">Data:</span><span class="cbv" id="td-${i}">${dataStr}</span></div>
+      <div class="cbf"><span class="cbl">Prev Hash:</span><span class="cbv" style="color:var(--primary)">${block.previousHash.substring(0, 16)}...</span></div>
+      <div class="cbf"><span class="cbl">Hash:</span><span class="cbv gold" id="th-${i}">${block.hash.substring(0, 16)}...</span></div>
+      ${editHtml}
+    `;
+    el.appendChild(card);
+  });
+}
+
+function validateTamper() {
+  let valid = true;
+  let issues = [];
+
+  for (let i = 1; i < chain.length; i++) {
+    const input = document.querySelector(`.tamper-input[data-idx="${i}"]`);
+    if (!input) continue;
+    const block = chain[i];
+    const origStr = block.data.map(t => `${t.from}→${t.to}: ${t.amount}`).join(", ");
+    const curVal = input.value;
+
+    if (curVal !== origStr) {
+      const badHash = sha256(`${block.index}${block.timestamp}${curVal}${block.previousHash}${block.nonce}`);
+      document.getElementById(`th-${i}`).textContent = badHash.substring(0, 16) + "... ❌";
+      document.getElementById(`th-${i}`).style.color = "var(--danger)";
+      document.getElementById(`tb-${i}`).classList.add("tampered");
+      issues.push(`Block #${block.index}: Data changed → hash is now ${badHash.substring(0, 12)}... which does NOT start with the required zeros. Block is invalid!`);
+      valid = false;
+
+      for (let j = i + 1; j < chain.length; j++) {
+        document.getElementById(`tb-${j}`).classList.add("tampered");
+        const lnk = document.getElementById(`tl-${j}`);
+        if (lnk) { lnk.classList.add("broken"); lnk.innerHTML = "💥"; }
+        issues.push(`Block #${chain[j].index}: Previous Hash no longer matches Block #${chain[j].index - 1}'s hash — chain is BROKEN from here onwards!`);
+      }
+      break;
+    } else {
+      document.getElementById(`tb-${i}`).classList.remove("tampered");
+      document.getElementById(`th-${i}`).textContent = block.hash.substring(0, 16) + "...";
+      document.getElementById(`th-${i}`).style.color = "var(--gold)";
+    }
+  }
+
+  const res = document.getElementById("tamperResult");
+  if (valid) {
+    res.className = "validation-box valid";
+    res.innerHTML = "✅ <strong>Chain is valid!</strong> All hashes match. No tampering detected. Every block correctly links to the one before it.";
+  } else {
+    res.className = "validation-box invalid";
+    res.innerHTML = `❌ <strong>TAMPERING DETECTED!</strong> The chain is invalid.<br /><br />${issues.map(s => `• ${s}`).join("<br /><br />")}
+      <br /><br /><strong>To fix this, the attacker would need to:</strong><br />
+      1. Re-mine Block #${chain.findIndex((_, i) => i > 0 && document.querySelector(`.tamper-input[data-idx="${i}"]`)?.value !== chain[i].data.map(t => t.from + "→" + t.to + ": " + t.amount).join(", "))} with new data (find a new valid nonce)<br />
+      2. Re-mine EVERY subsequent block (each needs a new valid nonce)<br />
+      3. Do all this faster than the entire honest network is adding new blocks<br />
+      4. This is <strong>computationally impossible</strong> without controlling >50% of network power!`;
+  }
+  res.style.display = "block";
+}
+
+// ============================================================
+// 51% ATTACK GRID (Step 7)
+// ============================================================
+let attackNodes = [];
+
+function initAttackGrid() {
+  attackNodes = new Array(10).fill("honest");
+  renderAttackGrid();
+}
+
+function renderAttackGrid() {
+  const grid = document.getElementById("attackGrid");
+  grid.innerHTML = "";
+  attackNodes.forEach((state, i) => {
+    const div = document.createElement("div");
+    div.className = `attack-node ${state}`;
+    div.innerHTML = state === "honest" ? "✅" : "❌";
+    div.style.cursor = "pointer";
+    div.onclick = () => {
+      attackNodes[i] = attackNodes[i] === "honest" ? "malicious" : "honest";
+      renderAttackGrid();
+    };
+    grid.appendChild(div);
+  });
+
+  const honest = attackNodes.filter(n => n === "honest").length;
+  const malicious = 10 - honest;
+  document.getElementById("honestCount").textContent = `✅ Honest: ${honest}`;
+  document.getElementById("maliciousCount").textContent = `❌ Malicious: ${malicious}`;
+
+  const fill = document.getElementById("attackFill");
+  const honestPct = honest * 10;
+  fill.style.width = `${honestPct}%`;
+  fill.textContent = `${honestPct}% Honest`;
+
+  const res = document.getElementById("attackResult");
+  if (malicious === 0) {
+    fill.className = "consensus-bar-fill accept";
+    res.innerHTML = `<span style="color:var(--success)">🟢 Network is fully honest. All blocks are valid. The blockchain is completely secure.</span>`;
+  } else if (malicious <= 5) {
+    fill.className = "consensus-bar-fill accept";
+    res.innerHTML = `<span style="color:var(--success)">🟢 <strong>Network is secure.</strong> The ${malicious} malicious node(s) cannot override the ${honest} honest nodes. Any invalid blocks they propose will be rejected by the honest majority. The attacker is wasting electricity for nothing.</span>`;
+  } else {
+    fill.className = "consensus-bar-fill reject";
+    fill.style.width = `${malicious * 10}%`;
+    fill.textContent = `${malicious * 10}% Malicious`;
+    res.innerHTML = `<span style="color:var(--danger)">🔴 <strong>51% ATTACK!</strong> With ${malicious}/10 nodes, the attacker controls ${malicious * 10}% of the network. They could potentially:<br />
+      • Reverse their own transactions (double-spend)<br />
+      • Prevent other transactions from being confirmed<br />
+      • Exclude other miners' blocks<br /><br />
+      However, they still <strong>cannot</strong>: steal other people's coins, create coins out of thin air, or change the protocol rules. And on a real network with thousands of nodes and massive computing power, achieving 51% would cost billions.</span>`;
+  }
+}
+
+// ============================================================
+// SMART CONTRACT (Step 8)
+// ============================================================
+let scState = "awaiting";
+
+function scReset() {
+  scState = "awaiting";
+  document.getElementById("scStatus").textContent = '"AWAITING_PAYMENT"';
+  document.getElementById("scOutput").textContent = "Waiting for actions...";
+  document.getElementById("scOutput").style.borderColor = "var(--border)";
+  document.getElementById("scDepositBtn").disabled = false;
+  document.getElementById("scConfirmBtn").disabled = true;
+}
+
+function scDeposit() {
+  if (scState !== "awaiting") return;
+  scState = "funded";
+  document.getElementById("scStatus").textContent = '"FUNDED — AWAITING DELIVERY"';
+  document.getElementById("scOutput").innerHTML = `<span style="color:var(--warning)">💰 Alice deposited 100 coins into the smart contract.</span><br />
+    The funds are now <strong>locked in the contract</strong> — neither Alice nor Bob can touch them until Alice confirms delivery.
+    <br /><span style="color:var(--text-dim);font-size:0.82rem">This is trustless: Bob knows the money exists and is locked. Alice knows Bob can't take it until she confirms.</span>`;
+  document.getElementById("scOutput").style.borderColor = "var(--warning)";
+  document.getElementById("scDepositBtn").disabled = true;
+  document.getElementById("scConfirmBtn").disabled = false;
+}
+
+function scConfirm() {
+  if (scState !== "funded") return;
+  scState = "complete";
+  document.getElementById("scStatus").textContent = '"COMPLETE ✅"';
+  document.getElementById("scOutput").innerHTML = `<span style="color:var(--success)">📦 Alice confirmed delivery. The smart contract automatically sent 100 coins to Bob! ✅</span><br /><br />
+    <strong>No bank, no escrow company, no lawyer.</strong> The code executed exactly as written — automatically and irreversibly. Both parties got what they wanted, enforced purely by mathematics and code on the blockchain.
+    <br /><br /><span style="color:var(--text-dim);font-size:0.82rem">This transaction is now permanently recorded on the blockchain as part of a block, verified by the network through the same mining and consensus process you learned about.</span>`;
+  document.getElementById("scOutput").style.borderColor = "var(--success)";
+  document.getElementById("scConfirmBtn").disabled = true;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildNav();
+</script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body>
+</html>

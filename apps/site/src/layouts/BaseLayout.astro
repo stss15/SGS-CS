@@ -94,7 +94,6 @@ const normalizeStyleHref = (stylePath: string): string => {
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="/css/style.css" />
     {extraStyles.map((stylePath) => (
       <link rel="stylesheet" href={normalizeStyleHref(stylePath)} />
     ))}
@@ -110,11 +109,15 @@ const normalizeStyleHref = (stylePath: string): string => {
 
       {resolvedCourseShell && (
         <aside class="course-shell__sidebar" id="course-shell-sidebar">
+          <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button>
           <CourseExplorer context={resolvedCourseShell} currentPath={Astro.url.pathname} />
         </aside>
       )}
 
       <div class="page-shell__content">
+        {resolvedCourseShell && (
+          <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button>
+        )}
         {resolvedCourseShell && sidebarToggleId && (
           <div class="page-shell__mobilebar">
             <label for={sidebarToggleId} class="page-shell__mobiletoggle">
@@ -131,5 +134,26 @@ const normalizeStyleHref = (stylePath: string): string => {
     <footer class="site-footer">
       <p>&copy; {currentYear} SGS Education &middot; SG Stewart. All rights reserved.</p>
     </footer>
+    <script is:inline>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script>
   </body>
 </html>

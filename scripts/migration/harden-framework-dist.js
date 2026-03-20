@@ -50,7 +50,7 @@ const injectAuthGate = (html) => {
   }
 
   if (/<\/body>/i.test(updated)) {
-    updated = updated.replace(/<\/body>/i, `${AUTH_BODY_SNIPPET}\n</body>`);
+    updated = injectBeforeLastBodyClose(updated, AUTH_BODY_SNIPPET);
   } else {
     updated = `${updated}\n${AUTH_BODY_SNIPPET}`;
   }
@@ -64,6 +64,17 @@ const injectHeadMeta = (html, metaTag) => {
   }
 
   return `${metaTag}\n${html}`;
+};
+
+const injectBeforeLastBodyClose = (html, snippet) => {
+  const lowerHtml = html.toLowerCase();
+  const closingBodyIndex = lowerHtml.lastIndexOf('</body>');
+
+  if (closingBodyIndex === -1) {
+    return `${html}${snippet}`;
+  }
+
+  return `${html.slice(0, closingBodyIndex)}${snippet}\n${html.slice(closingBodyIndex)}`;
 };
 
 const getActiveSectionFromRoute = (relativePath) => {
@@ -282,7 +293,7 @@ const injectLegacyInlineEventsRuntime = (html) => {
     <script src="${LEGACY_INLINE_EVENTS_SCRIPT}"></script>`;
 
   if (/<\/body>/i.test(html)) {
-    return html.replace(/<\/body>/i, `${snippet}\n</body>`);
+    return injectBeforeLastBodyClose(html, snippet);
   }
 
   return `${html}${snippet}`;
