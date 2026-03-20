@@ -1,35 +1,34 @@
 ---
 layout: layouts/base.njk
 title: "IB Computer Science 2027 - SGS Computer Science"
-description: "IB Computer Science curriculum for first assessment 2027. Choose your pathway: Standard Level or Higher Level."
+description: "IB Computer Science curriculum for first assessment 2027. Choose your year group, then pick a unit."
 activeSection: "ib"
 breadcrumbs:
   - { label: "Home", href: "index.html" }
   - { label: "IB 2027" }
 hero:
   title: IB Computer Science 2027
-  subtitle: Select your level, then choose a unit to begin.
+  subtitle: Choose your year group, then pick a unit.
 extraStyles:
   - "css/resource-style.css"
 ---
 
 <div class="ib-level-tabs">
-    <div class="tab-bar" role="tablist" aria-label="IB level">
-        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-sl" id="btn-sl">
-            <i class="fa-solid fa-book" aria-hidden="true"></i> Standard Level
+    <div class="tab-bar" role="tablist" aria-label="Year group">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-y12" id="btn-y12">
+            <i class="fa-solid fa-calendar" aria-hidden="true"></i> Year 12
         </button>
-        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-hl" id="btn-hl">
-            <i class="fa-solid fa-brain" aria-hidden="true"></i> Higher Level
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-y13" id="btn-y13">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Year 13
         </button>
     </div>
 
-    <!-- Standard Level -->
-    <div class="tab-panel" id="tab-sl" role="tabpanel" aria-labelledby="btn-sl">
-        {% for section in site.listings["ib-2027-sl"].sections %}
+    <!-- Year 12 -->
+    <div class="tab-panel" id="tab-y12" role="tabpanel" aria-labelledby="btn-y12">
         <div class="ib-year-group">
-            <h2 class="ib-year-title">{{ section.title }} <span class="ib-year-sub">{{ section.subtitle }}</span></h2>
+            <h2 class="ib-year-title">Standard Level <span class="ib-year-sub">Units 1–6</span></h2>
             <div class="resource-grid ib-unit-grid">
-                {% for item in section.items %}
+                {% for item in site.listings["ib-2027-sl"].sections[0].items %}
                 <a href="sl/{{ item.href }}" class="resource-btn">
                     <span class="resource-number">{{ item.number }}</span>
                     <div class="resource-info">
@@ -41,16 +40,10 @@ extraStyles:
                 {% endfor %}
             </div>
         </div>
-        {% endfor %}
-    </div>
-
-    <!-- Higher Level -->
-    <div class="tab-panel hidden" id="tab-hl" role="tabpanel" aria-labelledby="btn-hl">
-        {% for section in site.listings["ib-2027-hl"].sections %}
         <div class="ib-year-group">
-            <h2 class="ib-year-title">{{ section.title }} <span class="ib-year-sub">{{ section.subtitle }}</span></h2>
+            <h2 class="ib-year-title">Higher Level <span class="ib-year-sub">Units 1–6</span></h2>
             <div class="resource-grid ib-unit-grid">
-                {% for item in section.items %}
+                {% for item in site.listings["ib-2027-hl"].sections[0].items %}
                 <a href="hl/{{ item.href }}" class="resource-btn">
                     <span class="resource-number">{{ item.number }}</span>
                     <div class="resource-info">
@@ -62,7 +55,40 @@ extraStyles:
                 {% endfor %}
             </div>
         </div>
-        {% endfor %}
+    </div>
+
+    <!-- Year 13 -->
+    <div class="tab-panel hidden" id="tab-y13" role="tabpanel" aria-labelledby="btn-y13">
+        <div class="ib-year-group">
+            <h2 class="ib-year-title">Standard Level <span class="ib-year-sub">Units 7–12</span></h2>
+            <div class="resource-grid ib-unit-grid">
+                {% for item in site.listings["ib-2027-sl"].sections[1].items %}
+                <a href="sl/{{ item.href }}" class="resource-btn">
+                    <span class="resource-number">{{ item.number }}</span>
+                    <div class="resource-info">
+                        <span class="resource-name">{{ item.name }}</span>
+                        <span class="resource-type">SL Unit {{ item.number }}</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="ib-year-group">
+            <h2 class="ib-year-title">Higher Level <span class="ib-year-sub">Units 7–11</span></h2>
+            <div class="resource-grid ib-unit-grid">
+                {% for item in site.listings["ib-2027-hl"].sections[1].items %}
+                <a href="hl/{{ item.href }}" class="resource-btn">
+                    <span class="resource-number">{{ item.number }}</span>
+                    <div class="resource-info">
+                        <span class="resource-name">{{ item.name }}</span>
+                        <span class="resource-type">HL Unit {{ item.number }}</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right resource-arrow" aria-hidden="true"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 

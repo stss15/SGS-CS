@@ -1,20 +1,31 @@
 ---
 import CompactList from '../../components/CompactList.astro';
 import CurriculumShell from '../../layouts/CurriculumShell.astro';
-import { getIb2027PathwayIndex } from '@sgs/content-schema';
+import { getIb2027PathwayIndex, getIbSlCurriculumIndex, getIbHlCurriculumIndex } from '@sgs/content-schema';
 
 const page = await getIb2027PathwayIndex();
-const sections = [
-  {
-    title: 'Pathways',
-    summary: 'Choose your pathway and stay inside the same navigation system from the first page onwards.',
-    items: (page.pathways || []).map((pathway) => ({
-      label: pathway.title,
-      href: pathway.href,
-      meta: pathway.desc
-    }))
-  }
-];
+const slIndex = await getIbSlCurriculumIndex();
+const hlIndex = await getIbHlCurriculumIndex();
+
+const yearSections = (slIndex.sections || []).map((slSection, i) => {
+  const hlSection = (hlIndex.sections || [])[i];
+  return {
+    title: slSection.title,
+    subtitle: slSection.subtitle,
+    sl: (slSection.items || []).map((item) => ({
+      label: item.name,
+      href: `/ib-2027/sl/${item.href}`,
+      meta: `SL Unit ${item.number}`
+    })),
+    hl: hlSection
+      ? (hlSection.items || []).map((item) => ({
+          label: item.name,
+          href: `/ib-2027/hl/${item.href}`,
+          meta: `HL Unit ${item.number}`
+        }))
+      : []
+  };
+});
 ---
 
 <CurriculumShell
@@ -25,8 +36,26 @@ const sections = [
   breadcrumbs={page.breadcrumbs}
   eyebrow="IB 2027"
   heroTitle={page.hero.title}
-  heroSubtitle={page.hero.subtitle}
+  heroSubtitle="Choose your year group, then pick a unit."
   heroVariant="feature"
 >
-  <CompactList sections={sections} />
+  {yearSections.map((year) => (
+    <CompactList
+      sections={[
+        {
+          title: `${year.title} — Standard Level`,
+          summary: year.subtitle,
+          items: year.sl
+        },
+        ...(year.hl.length > 0
+          ? [
+              {
+                title: `${year.title} — Higher Level`,
+                items: year.hl
+              }
+            ]
+          : [])
+      ]}
+    />
+  ))}
 </CurriculumShell>

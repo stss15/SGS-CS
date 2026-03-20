@@ -727,20 +727,41 @@ const buildIbShell = async (pathname: string): Promise<{
 }> => {
   const routeParts = getIbRouteParts(pathname);
   if (!routeParts) {
+    const [slListing, hlListing] = await Promise.all([
+      getIb2027LevelListing('sl'),
+      getIb2027LevelListing('hl')
+    ]);
+    const yearGroups: ShellNavGroup[] = [];
+    const slSections = slListing.sections || [];
+    for (let i = 0; i < slSections.length; i++) {
+      const slSection = slSections[i];
+      const hlSection = (hlListing.sections || [])[i];
+      yearGroups.push({
+        id: `year-sl-${slSection.title.toLowerCase().replace(/\s+/g, '-')}`,
+        label: `${slSection.title} — SL`,
+        meta: slSection.subtitle,
+        items: (slSection.items || []).map((item) => ({
+          label: `Unit ${item.number}. ${item.name}`,
+          href: `/ib-2027/sl/${item.href}`
+        }))
+      });
+      if (hlSection) {
+        yearGroups.push({
+          id: `year-hl-${hlSection.title.toLowerCase().replace(/\s+/g, '-')}`,
+          label: `${hlSection.title} — HL`,
+          meta: hlSection.subtitle,
+          items: (hlSection.items || []).map((item) => ({
+            label: `Unit ${item.number}. ${item.name}`,
+            href: `/ib-2027/hl/${item.href}`
+          }))
+        });
+      }
+    }
     return {
       shellContext: {
         title: 'IB 2027',
-        meta: 'SL and HL pathways',
-        groups: [
-          {
-            id: 'ib-pathways',
-            label: 'Pathways',
-            items: [
-              { label: 'Standard Level (SL)', href: '/ib-2027/sl/index.html' },
-              { label: 'Higher Level (HL)', href: '/ib-2027/hl/index.html' }
-            ]
-          }
-        ]
+        meta: 'Year-first curriculum overview',
+        groups: yearGroups
       },
       layoutMode: 'worksheet',
       breadcrumbs: [{ label: 'IB 2027' }]

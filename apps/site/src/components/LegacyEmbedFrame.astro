@@ -122,13 +122,18 @@ const injectBeforeLastTag = (documentHtml: string, tagName: string, injection: s
   return `${documentHtml.slice(0, insertAt)}${injection}${documentHtml.slice(insertAt)}`;
 };
 
+const preAddImgDecoding = (documentHtml: string): string =>
+  documentHtml.replace(/<img\b(?![^>]*\bdecoding\b)/gi, '<img decoding="async"');
+
 const buildSrcdoc = (documentHtml: string) => {
-  if (/<\/head>/i.test(documentHtml)) {
-    const documentWithHead = documentHtml.replace(/<\/head>/i, `<base href="${baseHref}" target="_top">${injectedStyles}</head>`);
+  const safeHtml = preAddImgDecoding(documentHtml);
+
+  if (/<\/head>/i.test(safeHtml)) {
+    const documentWithHead = safeHtml.replace(/<\/head>/i, `<base href="${baseHref}" target="_top">${injectedStyles}</head>`);
     return injectBeforeLastTag(documentWithHead, 'body', resizeScript);
   }
 
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8" /><base href="${baseHref}" target="_top">${injectedStyles}</head><body>${documentHtml}${resizeScript}</body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8" /><base href="${baseHref}" target="_top">${injectedStyles}</head><body>${safeHtml}${resizeScript}</body></html>`;
 };
 
 const srcdoc = buildSrcdoc(html);
