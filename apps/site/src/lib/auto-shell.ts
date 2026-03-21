@@ -1,13 +1,6 @@
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
-import type { UnitIndexFrontmatter, UnitPlanFrontmatter } from '@sgs/content-schema';
-import {
-  getIb2027LevelListing,
-  getIb2027UnitIndexData,
-  getIb2027UnitPlanData
-} from './ib2027-routes';
-import { getFlashcardsHref } from './ib2027-unit-index';
 import {
   decodeHtmlEntities,
   getListingByKey,
@@ -15,7 +8,7 @@ import {
   readSourceFrontmatter,
   repoRoot
 } from './source-content';
-import { rewriteIgcseCourseHref, rewriteIbCourseHref } from './course-links';
+import { rewriteIgcseCourseHref } from './course-links';
 import {
   buildPrevNextLinks,
   hrefMatchesCurrentPath,
@@ -164,16 +157,28 @@ const getKs3RouteParts = (pathname: string) => {
 };
 
 const getIbRouteParts = (pathname: string) => {
-  const match = normalizeShellPath(pathname).match(/^\/ib-2027\/(sl|hl)(?:\/(unit-\d+)(?:\/(.+))?)?$/i);
-  if (!match) {
+  const norm = normalizeShellPath(pathname);
+
+  // Match syllabus paths: /ib-2027/A1, /ib-2027/B2/B2.3/slides/...
+  const syllabusMatch = norm.match(/^\/ib-2027\/([AB]\d)(?:\/(.+))?$/i);
+  if (syllabusMatch) {
+    const unitCode = syllabusMatch[1].toUpperCase(); // e.g. "A1", "B2"
+    const rest = syllabusMatch[2] || null;            // e.g. "B2.3/slides/foo"
+    const subtopicMatch = rest?.match(/^([AB]\d\.\d+)(?:\/(.+))?$/i);
+    return {
+      unitCode,
+      subtopic: subtopicMatch ? subtopicMatch[1].toUpperCase() : null,
+      leaf: subtopicMatch ? (subtopicMatch[2] || null) : rest
+    };
+  }
+
+  // Legacy SL/HL paths — sidebar falls through to default IB shell
+  const legacyMatch = norm.match(/^\/ib-2027\/(sl|hl)(?:\/(unit-\d+)(?:\/(.+))?)?$/i);
+  if (legacyMatch) {
     return null;
   }
 
-  return {
-    level: match[1].toLowerCase() as 'sl' | 'hl',
-    unit: match[2] || null,
-    leaf: match[3] || null
-  };
+  return null;
 };
 
 const findNumberedResource = (resources: TopicResourceLink[] = [], code: string): TopicResourceLink | undefined =>
@@ -800,20 +805,25 @@ const buildKs3Shell = async (pathname: string): Promise<{
   };
 };
 
-const buildIbCourseGroups = async (level: 'sl' | 'hl'): Promise<ShellNavGroup[]> => {
-  const listing = await getIb2027LevelListing(level);
-  const basePath = `/ib-2027/${level}`;
+const buildIbCourseGroups = async (): Promise<ShellNavGroup[]> => {
+  const listing = await getListingByKey<ListingRecord>('ib-2027');
+  const basePath = '/ib-2027';
 
-  return (listing.sections || []).map((section) => ({
-    id: `${level}-${section.title.toLowerCase().replace(/\s+/g, '-')}`,
-    label: section.title,
-    meta: section.subtitle,
-    courseLevel: true,
-    items: (section.items || []).map((item) => ({
-      label: `Unit ${item.number}. ${item.name}`,
-      href: ensureAbsoluteHref(basePath, item.href)
-    }))
-  }));
+  return (listing.sections || []).map((section) => {
+    const isAssessment = section.title === 'Assessment';
+    return {
+      id: section.title.toLowerCase().replace(/\s+/g, '-'),
+      label: isAssessment ? 'Assessment' : `${section.title}: ${section.subtitle}`,
+      courseLevel: true,
+      open: true,
+      items: (section.items || []).map((item: any) => ({
+        label: `${item.number} ${item.name}`,
+        href: ensureAbsoluteHref(basePath, item.href),
+        meta: isAssessment ? undefined : item.meta,
+        disabled: Boolean(item.disabled)
+      }))
+    };
+  });
 };
 
 const readDirectoryLinks = async (absoluteDir: string, routeBasePath: string): Promise<ShellNavItem[]> => {
@@ -838,105 +848,121 @@ const readDirectoryLinks = async (absoluteDir: string, routeBasePath: string): P
 };
 
 const buildIbLocalGroups = async (
-  level: 'sl' | 'hl',
-  unitNumber: number,
-  currentPath: string,
-  unitIndex: UnitIndexFrontmatter,
-  _unitPlan: UnitPlanFrontmatter
+  unitCode: string,
+  currentPath: string
 ): Promise<ShellNavGroup[]> => {
-  const unitBasePath = `/ib-2027/${level}/unit-${unitNumber}`;
-  const rewriteUnitHref = (href: string) => rewriteIbCourseHref(level, unitNumber, href);
+  const unitBasePath = `/ib-2027/${unitCode}`;
+
+  // Read the unit index frontmatter to get subtopic listing
+  const unitIndexPath = `src/pages/ib-2027/${unitCode}/index.njk`;
+  let unitFrontmatter: LegacyTopicFrontmatter = { title: unitCode };
+  try {
+    unitFrontmatter = await readSourceFrontmatter<LegacyTopicFrontmatter>(unitIndexPath);
+  } catch { /* unit page may not exist yet */ }
 
   const overviewItems: ShellNavItem[] = [
-    { label: 'Unit overview', href: `${unitBasePath}/index.html` },
-    { label: 'Unit plan', href: `${unitBasePath}/unit-plan.html` },
-    { label: 'Textbook', href: `${unitBasePath}/textbook.html` }
+    { label: 'Overview', href: `${unitBasePath}/index.html` }
   ];
 
-  const slides = (unitIndex.resources || [])
-    .filter((resource) => isValidStudentHref(resource.href))
-    .map((resource) => ({
-      label: resource.name,
-      href: rewriteUnitHref(ensureAbsoluteHref(unitBasePath, resource.href)),
-      meta: resource.type
+  const overviewGroup = buildSectionGroup('unit-overview', 'Overview', overviewItems, {
+    sequence: true,
+    open: true,
+    collapsible: false
+  });
+
+  // Build subtopic links from resources (which list subtopics)
+  const subtopicItems: ShellNavItem[] = ((unitFrontmatter as any).resources || [])
+    .filter((resource: any) => isValidStudentHref(resource.href))
+    .map((resource: any) => ({
+      label: `${resource.number} ${resource.name}`,
+      href: ensureAbsoluteHref(unitBasePath, resource.href)
     }));
 
-  const activities = (unitIndex.studentActivitiesResources || [])
-    .filter((resource) => isValidStudentHref(resource.href))
-    .map((resource) => ({
-      label: resource.name,
-      href: rewriteUnitHref(ensureAbsoluteHref(unitBasePath, resource.href)),
-      meta: resource.type
-    }));
+  const subtopicGroup = buildSectionGroup('subtopics', 'Subtopics', subtopicItems, {
+    sequence: true,
+    open: true
+  });
 
-  const revisionHref = getFlashcardsHref(unitIndex.cards || []);
-  const revisionItems = isValidStudentHref(revisionHref)
-    ? [
-        {
-          label: 'Flashcards',
-          href: rewriteUnitHref(ensureAbsoluteHref(unitBasePath, revisionHref))
-        }
-      ]
-    : [];
+  // Build resource links (textbook, specification, student resources)
+  const resourceItems: ShellNavItem[] = [];
 
-  const supportItems = (unitIndex.resourcesSecondary || [])
-    .filter((resource) => isValidStudentHref(resource.href))
-    .map((resource) => ({
-      label: resource.name,
-      href: rewriteUnitHref(ensureAbsoluteHref(unitBasePath, resource.href)),
-      meta: resource.type
-    }));
+  // Textbook
+  const textbookPath = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/textbook.njk`);
+  if (existsSync(textbookPath)) {
+    resourceItems.push({
+      label: 'Textbook',
+      href: `${unitBasePath}/textbook.html`,
+      icon: 'fa-solid fa-book'
+    });
+  }
 
+  // Specification
+  const specPath = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/specification.njk`);
+  if (existsSync(specPath)) {
+    resourceItems.push({
+      label: 'Specification',
+      href: `${unitBasePath}/specification.html`,
+      icon: 'fa-solid fa-clipboard-list'
+    });
+  }
+
+  // Student resources
+  const studentResourcesPath = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/student-resources.njk`);
+  if (existsSync(studentResourcesPath)) {
+    resourceItems.push({
+      label: 'Student Resources',
+      href: `${unitBasePath}/student-resources.html`,
+      icon: 'fa-solid fa-graduation-cap'
+    });
+  }
+
+  const resourceGroup = buildSectionGroup('unit-resources', 'Resources', resourceItems, {
+    open: currentPath.includes('/textbook') || currentPath.includes('/specification')
+  });
+
+  // Special route groups (OOP project, SQL worksheets, scenarios)
   const specialGroups: ShellNavGroup[] = [];
-  const specialRoutePatterns = [
-    'oop-project',
-    'sql-project',
-    'nosql-project',
-    'sql-worksheets',
-    'scenarios'
-  ];
+  const specialRoutePatterns = ['oop-project', 'sql-worksheets', 'sql-project', 'nosql-project', 'scenarios'];
 
   for (const pattern of specialRoutePatterns) {
-    if (!currentPath.includes(`/${pattern}`)) {
-      continue;
-    }
+    if (!currentPath.includes(`/${pattern}`)) continue;
 
-    const projectLinks = await readDirectoryLinks(
-      path.join(repoRoot, `src/pages/ib-2027/${level}/unit-${unitNumber}/${pattern}`),
-      `${unitBasePath}/${pattern}`
-    );
+    // Search in unit-level OR subtopic-level directories
+    const searchPaths = [
+      path.join(repoRoot, `src/pages/ib-2027/${unitCode}/${pattern}`),
+      // Check subtopics too (e.g. B3/B3.1/oop-project)
+      ...(((unitFrontmatter as any).resources || []) as any[]).map((r: any) => {
+        const subtopicDir = r.href?.replace(/\/index\.html$/i, '');
+        return subtopicDir ? path.join(repoRoot, `src/pages/ib-2027/${unitCode}/${subtopicDir}/${pattern}`) : '';
+      }).filter(Boolean)
+    ];
 
-    const projectGroup = buildSectionGroup(
-      `${pattern}-links`,
-      humanizeRouteLabel(pattern),
-      projectLinks.filter((link) => !link.href.includes('/teacher/')),
-      { sequence: true, open: true }
-    );
+    for (const searchPath of searchPaths) {
+      if (!existsSync(searchPath)) continue;
 
-    if (projectGroup) {
-      specialGroups.push(projectGroup);
-    }
+      const routeBase = searchPath.replace(path.join(repoRoot, 'src/pages'), '').replace(/\.njk$/i, '');
+      const projectLinks = await readDirectoryLinks(searchPath, routeBase);
+      const projectGroup = buildSectionGroup(
+        `${pattern}-links`,
+        humanizeRouteLabel(pattern),
+        projectLinks.filter((link) => !link.href.includes('/teacher/')),
+        { sequence: true, open: true }
+      );
+      if (projectGroup) specialGroups.push(projectGroup);
 
-    const teacherLinks = await readDirectoryLinks(
-      path.join(repoRoot, `src/pages/ib-2027/${level}/unit-${unitNumber}/${pattern}/teacher`),
-      `${unitBasePath}/${pattern}/teacher`
-    );
-
-    const teacherGroup = buildSectionGroup('teacher-links', 'Teacher', teacherLinks, {
-      open: currentPath.includes('/teacher/')
-    });
-
-    if (teacherGroup) {
-      specialGroups.push(teacherGroup);
+      const teacherLinks = await readDirectoryLinks(path.join(searchPath, 'teacher'), `${routeBase}/teacher`);
+      const teacherGroup = buildSectionGroup('teacher-links', 'Teacher', teacherLinks, {
+        open: currentPath.includes('/teacher/')
+      });
+      if (teacherGroup) specialGroups.push(teacherGroup);
+      break; // Found it, stop searching
     }
   }
 
   return [
-    buildSectionGroup('unit-overview', 'Overview', overviewItems, { sequence: true, open: true }),
-    buildSectionGroup('unit-slides', 'Slides', slides, { sequence: true }),
-    buildSectionGroup('unit-activities', 'Activities', activities, { sequence: true }),
-    buildSectionGroup('unit-revision', 'Revision', revisionItems),
-    buildSectionGroup('unit-support', 'Teacher & Extension', supportItems),
+    overviewGroup,
+    subtopicGroup,
+    resourceGroup,
     ...specialGroups
   ].filter((group): group is ShellNavGroup => Boolean(group));
 };
@@ -949,72 +975,23 @@ const buildIbShell = async (pathname: string): Promise<{
   nextLink?: ShellPageLink;
 }> => {
   const routeParts = getIbRouteParts(pathname);
-  if (!routeParts) {
-    const [slListing, hlListing] = await Promise.all([
-      getIb2027LevelListing('sl'),
-      getIb2027LevelListing('hl')
-    ]);
-    const yearGroups: ShellNavGroup[] = [];
-    const slSections = slListing.sections || [];
-    for (let i = 0; i < slSections.length; i++) {
-      const slSection = slSections[i];
-      const hlSection = (hlListing.sections || [])[i];
-      yearGroups.push({
-        id: `year-sl-${slSection.title.toLowerCase().replace(/\s+/g, '-')}`,
-        label: `${slSection.title} — SL`,
-        meta: slSection.subtitle,
-        items: (slSection.items || []).map((item) => ({
-          label: `Unit ${item.number}. ${item.name}`,
-          href: `/ib-2027/sl/${item.href}`
-        }))
-      });
-      if (hlSection) {
-        yearGroups.push({
-          id: `year-hl-${hlSection.title.toLowerCase().replace(/\s+/g, '-')}`,
-          label: `${hlSection.title} — HL`,
-          meta: hlSection.subtitle,
-          items: (hlSection.items || []).map((item) => ({
-            label: `Unit ${item.number}. ${item.name}`,
-            href: `/ib-2027/hl/${item.href}`
-          }))
-        });
-      }
-    }
-    return {
-      shellContext: {
-        title: 'IB 2027',
-        meta: 'Year-first curriculum overview',
-        groups: yearGroups
-      },
-      layoutMode: 'worksheet',
-      breadcrumbs: [{ label: 'IB 2027' }]
-    };
-  }
+  const courseGroups = await buildIbCourseGroups();
 
-  const courseGroups = await buildIbCourseGroups(routeParts.level);
-  if (!routeParts.unit) {
+  // Landing page or unrecognised IB path — show just course groups
+  if (!routeParts) {
     return {
       shellContext: {
-        title: routeParts.level.toUpperCase(),
-        meta: 'IB Computer Science',
+        title: 'IB Computer Science',
         groups: courseGroups
       },
       layoutMode: 'worksheet',
-      breadcrumbs: [
-        { label: 'IB 2027', href: '/ib-2027/index.html' },
-        { label: routeParts.level.toUpperCase() }
-      ]
+      breadcrumbs: [{ label: 'IB Computer Science' }]
     };
   }
 
-  const unitNumber = Number(routeParts.unit.replace('unit-', ''));
-  const [unitIndex, unitPlan] = await Promise.all([
-    getIb2027UnitIndexData(routeParts.level, unitNumber),
-    getIb2027UnitPlanData(routeParts.level, unitNumber)
-  ]);
-
+  // Unit page (e.g. /ib-2027/A1/ or /ib-2027/B2/B2.3/slides/...)
   const currentPath = normalizeShellPath(pathname);
-  const localGroups = await buildIbLocalGroups(routeParts.level, unitNumber, currentPath, unitIndex, unitPlan);
+  const localGroups = await buildIbLocalGroups(routeParts.unitCode, currentPath);
   const { prevLink, nextLink } = buildPrevNextLinks(localGroups, currentPath);
   const currentLocation = findCurrentLocation(localGroups, currentPath);
 
@@ -1022,24 +999,32 @@ const buildIbShell = async (pathname: string): Promise<{
     ? 'reading'
     : /(slides|sql|scenario|oop-project|project|worksheet)/i.test(currentPath)
     ? 'workspace'
-    : currentPath.endsWith('/unit-plan')
-    ? 'worksheet'
     : 'worksheet';
-  const unitOverviewHref = `/ib-2027/${routeParts.level}/unit-${unitNumber}/index.html`;
+
+  const unitOverviewHref = `/ib-2027/${routeParts.unitCode}/index.html`;
   const breadcrumbs: ShellBreadcrumb[] = [
-    { label: 'IB 2027', href: '/ib-2027/index.html' },
-    { label: routeParts.level.toUpperCase(), href: `/ib-2027/${routeParts.level}/index.html` },
-    { label: `Unit ${unitNumber}`, href: unitOverviewHref }
+    { label: 'IB Computer Science', href: '/ib-2027/index.html' },
+    { label: routeParts.unitCode, href: unitOverviewHref }
   ];
 
+  if (routeParts.subtopic) {
+    breadcrumbs.push({
+      label: routeParts.subtopic,
+      href: `/ib-2027/${routeParts.unitCode}/${routeParts.subtopic}/index.html`
+    });
+  }
+
   if (currentLocation.item && !hrefMatchesCurrentPath(unitOverviewHref, currentPath)) {
-    breadcrumbs.push({ label: currentLocation.item.label });
+    const lastBreadcrumbHref = breadcrumbs[breadcrumbs.length - 1]?.href;
+    if (!lastBreadcrumbHref || !hrefMatchesCurrentPath(lastBreadcrumbHref, currentPath)) {
+      breadcrumbs.push({ label: currentLocation.item.label });
+    }
   }
 
   return {
     shellContext: {
-      title: `${routeParts.level.toUpperCase()} Unit ${unitNumber}`,
-      meta: unitPlan.unitName,
+      title: routeParts.unitCode,
+      meta: undefined,
       groups: [...localGroups, ...courseGroups]
     },
     layoutMode,

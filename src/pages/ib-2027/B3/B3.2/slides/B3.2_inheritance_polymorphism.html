@@ -1,0 +1,332 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B3.2 Inheritance & Polymorphism (HL) | IB Computer Science</title>
+    <meta name="description" content="HL: inheritance, overriding, polymorphism, abstraction/interfaces, and composition vs aggregation.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B3.2 Inheritance &amp; Polymorphism <span class="hl-badge">HL</span></h1>
+            <h3 class="sub-title">Topic B3: Object‑Oriented Programming | Relationships Between Classes</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM B3.1) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall B3.1 before we move to multiple classes.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What is the difference between a class and an object?</li>
+            <li>Why do we use encapsulation?</li>
+            <li>How many copies of a class variable exist?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What is the difference between a class and an object?</div>
+        <div class="fragment box-blue">
+            <p>A class is a blueprint; an object is an instance with its own state and behaviour.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">Why do we use encapsulation?</div>
+        <div class="fragment box-blue">
+            <p>To protect internal state, enforce invariants, and expose a controlled interface.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">How many copies of a class variable exist?</div>
+        <div class="fragment box-blue">
+            <p>One shared copy at the class level.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 In real life, a "Dog" is an "Animal".</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">Can our code capture this relationship without duplicating everything?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> "Inheritance is just copying code."</p>
+                <p class="small-text">The goal is modelling relationships and enabling reuse with safe substitution.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Key idea:</strong> OOP models <strong>is‑a</strong> and <strong>has‑a</strong> relationships.</p>
+                <p class="small-text">Inheritance supports is‑a; composition/aggregation support has‑a.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. INHERITANCE -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Inheritance: an is-a relationship where a subclass derives attributes/methods from a superclass.">Inheritance</span></h3>
+    <div class="question-box">How do we avoid repeating the same attributes/methods in many classes?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Superclass: a parent class that provides shared attributes/methods.">superclass</span> defines shared features.</p>
+            <p class="fragment">A <span class="keyword" data-def="Subclass: a child class that inherits from a superclass and can extend/override behaviour.">subclass</span> inherits and specialises.</p>
+            <p class="fragment">This is an <strong>is‑a</strong> relationship (Dog is‑a Animal).</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-code"></i> Python</h4>
+<pre class="fragment"><code class="python">class Animal:
+    def speak(self):
+        return "..."
+
+class Dog(Animal):
+    def speak(self):
+        return "woof"</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 5. SUPER + CONSTRUCTORS (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3><span class="hl-badge">HL</span> Calling the Parent Constructor</h3>
+        <div class="question-box">If the parent sets up shared state, how does the child reuse it?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment">Use <span class="keyword" data-def="super(): used to call a superclass method or constructor from a subclass.">super()</span> to access the superclass constructor/methods.</p>
+                <p class="fragment">This prevents duplicating initialisation logic across subclasses.</p>
+            </div>
+            <div class="box-blue">
+                <h4><i class="fa-solid fa-code"></i> Python</h4>
+<pre class="fragment"><code class="python">class Animal:
+    def __init__(self, name):
+        self.name = name
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)
+        self.breed = breed</code></pre>
+            </div>
+        </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">What function is used to call the parent class constructor in Python?</div>
+        <div class="fragment box-blue">
+            <p><strong>super()</strong></p>
+        </div>
+    </section>
+</section>
+
+<!-- 6. OVERRIDING -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Overriding: a subclass provides a specific implementation of a method defined in its superclass.">Overriding</span></h3>
+    <div class="question-box">What if different subclasses should respond differently to the same method call?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">The subclass replaces the inherited method with a specialised version.</p>
+            <p class="fragment">The runtime selects the correct version based on the actual object type.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-code"></i> Python</h4>
+<pre class="fragment"><code class="python">class Animal:
+    def speak(self):
+        return "Some sound"
+
+class Cat(Animal):
+    def speak(self):  # overrides Animal.speak
+        return "Meow"</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 7. POLYMORPHISM (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Polymorphism: treating different classes through a shared interface/superclass so the same code works with multiple types.">Polymorphism</span></h3>
+        <div class="question-box">How can one piece of code work with many related types?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment">We write code against a shared superclass/interface.</p>
+                <p class="fragment">Different subclasses can be substituted safely.</p>
+            </div>
+            <div class="box-blue">
+                <h4><i class="fa-solid fa-code"></i> Python</h4>
+<pre class="fragment"><code class="python">def make_it_speak(animal):
+    return animal.speak()
+
+# Works with any Animal subclass!
+make_it_speak(Dog("Rex", "Labrador"))
+make_it_speak(Cat("Whiskers"))</code></pre>
+            </div>
+        </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">What is the core idea of polymorphism?</div>
+        <div class="fragment box-blue">
+            <p>Different object types can be treated through the same interface, and the correct behaviour is selected at runtime.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 8. ABSTRACTION + INTERFACES -->
+<section>
+    <h3><span class="hl-badge">HL</span> Abstract Classes in Python</h3>
+    <div class="question-box">How can we enforce "you must implement these methods"?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Abstract class: class that cannot be instantiated and may define abstract methods to be implemented by subclasses.">Abstract class</span>: defines a template; cannot be instantiated directly.</p>
+            <p class="fragment">Subclasses <strong>must</strong> implement abstract methods.</p>
+        </div>
+        <div class="box-blue">
+            <h4><i class="fa-solid fa-code"></i> Python</h4>
+<pre class="fragment"><code class="python">from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Circle(Shape):
+    def area(self):
+        return 3.14 * self.radius ** 2</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 9. COMPOSITION VS AGGREGATION (VERTICAL STACK) -->
+<section>
+    <section>
+        <h3><span class="hl-badge">HL</span> Has‑a Relationships</h3>
+        <div class="question-box">Should we build a system by inheriting… or by assembling parts?</div>
+        <div class="cols">
+            <div class="box">
+                <h4><i class="fa-solid fa-puzzle-piece"></i> <span class="keyword" data-def="Composition: strong has-a relationship where the part's lifetime depends on the whole.">Composition</span></h4>
+                <p class="small-text fragment">Strong ownership: if the whole is destroyed, the parts are too.</p>
+                <p class="small-text fragment">Example: Human and Heart.</p>
+            </div>
+            <div class="box-blue">
+                <h4><i class="fa-solid fa-link"></i> <span class="keyword" data-def="Aggregation: weak has-a relationship where the part can exist independently of the whole.">Aggregation</span></h4>
+                <p class="small-text fragment">Weak ownership: parts can exist independently.</p>
+                <p class="small-text fragment">Example: Library and Book.</p>
+            </div>
+        </div>
+        <p class="small-text" style="margin-top:0.5em;"><i class="fa-solid fa-arrow-down"></i> Quick Check</p>
+    </section>
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">A "Car has an Engine" where the engine's lifetime depends on the car. Which relationship fits best?</div>
+        <div class="fragment box-blue">
+            <p><strong>Composition</strong> — strong ownership relationship.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 10. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Inheritance models a has‑a relationship.</p>
+            <p class="fragment"><strong>B.</strong> Overriding allows a subclass to replace a superclass method implementation.</p>
+            <p class="fragment"><strong>C.</strong> Polymorphism means one function can work with multiple object types via a shared interface.</p>
+            <p class="fragment"><strong>D.</strong> Aggregation is a stronger relationship than composition.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Inheritance is is‑a; composition/aggregation are has‑a.</p>
+            <p class="fragment"><strong>B: True.</strong> Subclasses can provide specialised behaviour.</p>
+            <p class="fragment"><strong>C: True.</strong> That's the core benefit of polymorphism.</p>
+            <p class="fragment"><strong>D: False.</strong> Composition is stronger; aggregation is weaker.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 11. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li><span class="hl-badge">HL</span> Inheritance models <strong>is‑a</strong> and enables reuse.</li>
+            <li>Overriding + polymorphism enable substitution and flexible code.</li>
+            <li>Abstract classes (using <code>ABC</code>) enforce contracts in Python.</li>
+            <li>Composition/aggregation model <strong>has‑a</strong> relationships with different ownership strength.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> B3.3 Design Patterns <span class="hl-badge">HL</span> — reusable solutions to common design problems.</p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>

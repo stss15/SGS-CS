@@ -1,61 +1,36 @@
 ---
 import CompactList from '../../components/CompactList.astro';
 import CurriculumShell from '../../layouts/CurriculumShell.astro';
-import { getIb2027PathwayIndex, getIbSlCurriculumIndex, getIbHlCurriculumIndex } from '@sgs/content-schema';
+import { getIb2027SyllabusListing } from '@sgs/content-schema';
 
-const page = await getIb2027PathwayIndex();
-const slIndex = await getIbSlCurriculumIndex();
-const hlIndex = await getIbHlCurriculumIndex();
+const syllabus = await getIb2027SyllabusListing();
 
-const yearSections = (slIndex.sections || []).map((slSection, i) => {
-  const hlSection = (hlIndex.sections || [])[i];
-  return {
-    title: slSection.title,
-    subtitle: slSection.subtitle,
-    sl: (slSection.items || []).map((item) => ({
-      label: item.name,
-      href: `/ib-2027/sl/${item.href}`,
-      meta: `SL Unit ${item.number}`
-    })),
-    hl: hlSection
-      ? (hlSection.items || []).map((item) => ({
-          label: item.name,
-          href: `/ib-2027/hl/${item.href}`,
-          meta: `HL Unit ${item.number}`
-        }))
-      : []
-  };
-});
+const sections = (syllabus.sections || []).map((section) => ({
+  title: section.title.includes('Theme')
+    ? `${section.title}: ${section.subtitle}`
+    : section.title,
+  summary: section.subtitle,
+  items: (section.items || []).map((item) => ({
+    label: item.name,
+    href: `/ib-2027/${item.href}`,
+    meta: (item as any).disabled ? 'Coming Soon' : ((item as any).meta || `${item.number}`),
+    disabled: (item as any).disabled
+  }))
+}));
 ---
 
 <CurriculumShell
-  title={page.title}
-  description={page.description || 'IB Computer Science curriculum for first assessment 2027.'}
+  title="IB Computer Science - SGS Computer Science"
+  description="IB Computer Science course — organised by the official IB syllabus structure."
   extraStyles={['css/resource-style.css']}
-  activeSection={page.activeSection}
-  breadcrumbs={page.breadcrumbs}
-  eyebrow="IB 2027"
-  heroTitle={page.hero.title}
-  heroSubtitle="Choose your year group, then pick a unit."
+  activeSection="ib"
+  breadcrumbs={[{ label: 'Home', href: '/index.html' }, { label: 'IB Computer Science' }]}
+  eyebrow="IB"
+  heroTitle="IB Computer Science"
+  heroSubtitle="Explore the course by theme, topic, and subtopic."
   heroVariant="feature"
 >
-  {yearSections.map((year) => (
-    <CompactList
-      sections={[
-        {
-          title: `${year.title} — Standard Level`,
-          summary: year.subtitle,
-          items: year.sl
-        },
-        ...(year.hl.length > 0
-          ? [
-              {
-                title: `${year.title} — Higher Level`,
-                items: year.hl
-              }
-            ]
-          : [])
-      ]}
-    />
+  {sections.map((section) => (
+    <CompactList sections={[section]} />
   ))}
 </CurriculumShell>

@@ -1,0 +1,350 @@
+---
+layout: layouts/base.njk
+title: "Worksheet 1: School Library | SQL Worksheets"
+description: "First SQL worksheet for the School Library dataset."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "A3", href: "ib-2027/A3/index.html" }
+  - { label: "SQL Worksheets", href: "ib-2027/A3/sql-worksheets/index.html" }
+  - { label: "School Library" }
+extraStyles:
+  - "css/sql-worksheet.css"
+scripts:
+  - "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"
+  - "js/sql-worksheet.js"
+---
+
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 1 | SL Core</p>
+            <h1 class="sql-sheet-title">School Library</h1>
+            <p class="sql-sheet-summary">
+                Use this first. The database is deliberately simple so students can read the schema, identify
+                keys and relationships, and practise <code>SELECT</code>, <code>FROM</code>,
+                <code>WHERE</code>, <code>AND</code>, and <code>OR</code> before moving on to sorting,
+                pattern matching, joins, or grouped reports.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">SELECT</span>
+                <span class="sql-chip">FROM</span>
+                <span class="sql-chip">WHERE</span>
+                <span class="sql-chip">AND</span>
+                <span class="sql-chip">OR</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=school-library" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open SQL Playground
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/A3/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-meta-strip">
+        <div class="sql-meta-cell">
+            <h2>Dataset</h2>
+            <ul>
+                <li>3 tables: <code>STUDENT</code>, <code>BOOK</code>, <code>LOAN</code></li>
+                <li>Two one-to-many relationships through foreign keys</li>
+                <li>Clean enough for first schema and integrity questions</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>A3.1.1 relational features, benefits, and limitations</li>
+                <li>A3.2.1 conceptual, logical, and physical schema</li>
+                <li>A3.3.2 core retrieval with filtering conditions</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Open the table list and schema view before Section 1.</li>
+                <li>Stay with single-table queries on this worksheet.</li>
+                <li>Do not worry about joins yet. That comes next.</li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Read the Database</h2>
+                <p>Start by reading the structure, not by writing queries.</p>
+            </div>
+        </div>
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Primary keys</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Name the three tables and identify the primary key in each one.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Foreign keys</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Which table stores the foreign keys back to <code>STUDENT</code> and <code>BOOK</code>, and what do those links represent in the real world?</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.2.1</span>
+                    <span class="sql-task-focus">Schema levels</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>State which schema level would show the ERD, which would show the field names and data types, and which would show storage or indexing choices.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Evaluation</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Give one benefit and one limitation of storing this library system in a relational database rather than across separate spreadsheets.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Retrieve the Right Columns</h2>
+                <p>Build the habit of selecting only the table and columns you need.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — SELECT and FROM</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Every column from one table
+SELECT *
+FROM table_name;
+
+-- Only the columns you need
+SELECT column_a, column_b
+FROM table_name;
+
+-- Rename a column in the result set
+SELECT column_a AS useful_label
+FROM table_name;</code></pre>
+                <p><code>SELECT</code> chooses the columns to return. <code>FROM</code> chooses the table those columns come from.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">SELECT *</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Display every row and column from <code>STUDENT</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Specific columns</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show only <code>Title</code> and <code>Author</code> from <code>BOOK</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Chosen fields</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return <code>StudentID</code>, <code>FirstName</code>, and <code>LastName</code> for every student.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Book details</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show <code>Title</code>, <code>Genre</code>, and <code>PublishedYear</code> from <code>BOOK</code>.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Filter Rows</h2>
+                <p>Now narrow the result set using conditions.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — WHERE, AND, OR</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Match one value exactly
+SELECT *
+FROM table_name
+WHERE status_column = 'Open';
+
+-- AND means both conditions must be true
+SELECT *
+FROM table_name
+WHERE group_column = 'A'
+  AND score_column >= 80;
+
+-- OR means either condition can be true
+SELECT *
+FROM table_name
+WHERE type_column = 'Science'
+   OR type_column = 'Technology';</code></pre>
+                <p><code>WHERE</code> filters rows. <code>AND</code> makes the query stricter; <code>OR</code> widens it to allow either condition.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show the first name, last name, and tutor group for students in <code>12B</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">OR</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>List the titles and genres of books where the genre is <code>Science</code> or <code>Technology</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">WHERE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Find every loan row where <code>ReturnStatus</code> is <code>Overdue</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">AND</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return the loan record for student <code>1003</code> where the book is still <code>On Loan</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.1.1</span>
+                    <span class="sql-task-focus">Integrity</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Explain why a new loan row with <code>StudentID = 9999</code> should be rejected when referential integrity is enforced.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-answers-gate" data-answer-gate="dGVhY2hlcjE=">
+        <div class="sql-answers-lock" data-answer-lock>
+            <div class="sql-answers-lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <h2>Teacher Answers</h2>
+            <p>Enter the teacher password to reveal model answers for this worksheet.</p>
+            <div class="sql-answers-lock-row">
+                <input type="password" placeholder="Password…" autocomplete="off" data-answer-input>
+                <button type="button" data-answer-button>Unlock</button>
+            </div>
+            <p class="sql-answers-err" data-answer-error></p>
+        </div>
+        <div class="sql-answers-content" data-answer-content hidden>
+            <h2><i class="fa-solid fa-unlock"></i> Model Answers — School Library</h2>
+
+            <h3>Section 1</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">1</span>
+                <div class="sql-answer-body">
+                    <strong>Keys and structure</strong>
+                    <code>STUDENT(StudentID)</code>, <code>BOOK(BookID)</code>, and <code>LOAN(LoanID)</code>.
+                    <code>LOAN.StudentID</code> and <code>LOAN.BookID</code> are foreign keys.
+                </div>
+            </div>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">2</span>
+                <div class="sql-answer-body">
+                    <strong>Schema levels</strong>
+                    ERD = conceptual schema. Field names, data types, and keys = logical schema. Storage and indexing = physical schema.
+                </div>
+            </div>
+
+            <h3>Section 2</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">3</span>
+                <div class="sql-answer-body">
+                    <strong>Example retrieval</strong>
+                    <pre><code>SELECT *
+FROM STUDENT;
+
+SELECT Title, Author
+FROM BOOK;</code></pre>
+                </div>
+            </div>
+
+            <h3>Section 3</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">4</span>
+                <div class="sql-answer-body">
+                    <strong>Filtering examples</strong>
+                    <pre><code>SELECT FirstName, LastName, TutorGroup
+FROM STUDENT
+WHERE TutorGroup = '12B';
+
+SELECT Title, Genre
+FROM BOOK
+WHERE Genre = 'Science' OR Genre = 'Technology';
+
+SELECT *
+FROM LOAN
+WHERE StudentID = 1003
+  AND ReturnStatus = 'On Loan';</code></pre>
+                </div>
+            </div>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">5</span>
+                <div class="sql-answer-body">
+                    <strong>Referential integrity</strong>
+                    The foreign key in <code>LOAN</code> must match an existing primary key in <code>STUDENT</code>. If student <code>9999</code> does not exist, the row would create an orphan record and should be rejected.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/A3/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> SQL worksheet hub</a>
+        <a href="/ib-2027/A3/sql-worksheets/campus-clubs.html">Next: Campus Clubs <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>

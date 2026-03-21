@@ -12,8 +12,11 @@ interface SlidePageProps {
 export async function getStaticPaths() {
   const routes = await getIb2027UnitSlideRoutes();
 
+  // Filter to only legacy teaching-order routes (unitSegment like "unit-N", no slashes)
+  const legacyRoutes = routes.filter((r) => !r.unitSegment.includes('/'));
+
   return Promise.all(
-    routes.map(async (route) => ({
+    legacyRoutes.map(async (route) => ({
       params: {
         level: route.level,
         unit: route.unitSegment,

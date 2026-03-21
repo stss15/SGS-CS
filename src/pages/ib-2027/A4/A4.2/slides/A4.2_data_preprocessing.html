@@ -1,0 +1,238 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A4.2 Data Preprocessing (HL) | IB Computer Science</title>
+    <meta name="description" content="HL: data cleaning, feature selection, and dimensionality reduction to improve machine learning performance.">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A4.2 Data Preprocessing <span class="hl-badge">HL</span></h1>
+            <h3 class="sub-title">Topic A4: Machine Learning | Cleaning &amp; Shaping the Data</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A4.1) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall A4.1 (fundamentals) before going HL.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What is the difference between <em>training</em> and <em>inference</em>?</li>
+            <li>What’s the difference between <em>regression</em> and <em>classification</em>?</li>
+            <li>Why are GPUs useful for ML?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What is the difference between training and inference?</div>
+        <div class="fragment box-blue">
+            <p><strong>Training:</strong> learning/updating model weights using data. <strong>Inference:</strong> using a trained model to predict on new data.</p>
+        </div>
+    </section>
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What’s the difference between regression and classification?</div>
+        <div class="fragment box-blue">
+            <p><strong>Regression:</strong> predicts a number. <strong>Classification:</strong> chooses a category.</p>
+        </div>
+    </section>
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">Why are GPUs useful for ML?</div>
+        <div class="fragment box-blue">
+            <p>They can perform many calculations in parallel (useful for matrix operations).</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question <span class="hl-badge">HL</span></h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 Why do ML projects spend so long on <strong>data</strong>…</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">instead of “just choosing an algorithm”?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Common misconception:</strong> “The algorithm will handle messy data.”</p>
+                <p class="small-text">Bad inputs often produce bad predictions — confidently.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> <span class="hl-badge">HL</span> preprocessing improves accuracy, efficiency, and fairness.</p>
+                <p class="small-text">Garbage in → garbage out.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. DATA CLEANING -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Fixing issues like missing values, duplicates, incorrect formats, and outliers.">Data cleaning</span></h3>
+    <div class="question-box">What problems in raw data can distort a model?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Missing values</strong> (null/blank fields)</p>
+            <p class="fragment"><strong>Duplicates</strong> (over-representing some records)</p>
+            <p class="fragment"><strong>Incorrect data</strong> (impossible dates, negative ages)</p>
+            <p class="fragment"><strong>Outliers</strong> (extreme values that may be errors or rare cases)</p>
+        </div>
+        <div class="box-blue">
+            <h4>Common strategies</h4>
+            <p class="small-text fragment"><strong>Remove</strong> bad records (when justified).</p>
+            <p class="small-text fragment"><strong>Impute</strong> missing values (mean/median, or model-based).</p>
+            <p class="small-text fragment"><strong>Cap/transform</strong> outliers (depends on context).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment">A dataset for predicting exam grades contains:</p>
+        <p class="fragment">- missing attendance values</p>
+        <p class="fragment">- duplicate student records</p>
+        <p class="fragment">- an outlier score of <code>999</code></p>
+        <p class="fragment"><strong>Outline</strong> two cleaning steps you would take.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p>Remove or merge duplicates to avoid bias from over-represented records.</p>
+        <p>Handle missing values (impute or remove) and investigate the outlier (<code>999</code>) to correct/remove it.</p>
+    </div>
+</section>
+
+<!-- 6. FEATURE SELECTION -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Choosing the most useful input features to improve performance/efficiency.">Feature selection</span></h3>
+    <div class="question-box">Why might fewer input variables produce a better model?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Removes irrelevant/noisy inputs → reduces overfitting risk.</p>
+            <p class="fragment">Speeds up training and improves interpretability.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Two common approaches</h4>
+            <p class="small-text fragment"><strong>Filter:</strong> choose features using statistics (e.g., correlation).</p>
+            <p class="small-text fragment"><strong>Wrapper/embedded:</strong> choose features based on model performance.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 7. DIMENSIONALITY REDUCTION -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Reducing number of features while preserving useful structure (often via feature extraction).">Dimensionality reduction</span></h3>
+    <div class="question-box">What if your data has hundreds of features?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">Reduces model complexity and training time.</p>
+            <p class="fragment">Can improve generalization by removing noise.</p>
+            <p class="fragment">Helps visualization by reducing data to 2D/3D.</p>
+        </div>
+        <div class="box-blue">
+            <h4>Key distinction</h4>
+            <p class="small-text fragment"><strong>Feature selection:</strong> keeps some original features.</p>
+            <p class="small-text fragment"><strong>Dimensionality reduction:</strong> creates new, fewer features (e.g., <span class="keyword" data-def="Common dimensionality reduction technique that finds directions of maximum variance.">PCA</span> components).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 8. QUICK CHECK 2 -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment">You have <strong>500 features</strong> from sensors in a smart building.</p>
+        <p class="fragment"><strong>Explain</strong> one reason to use feature selection and one reason to use dimensionality reduction.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>Feature selection:</strong> remove irrelevant sensors to reduce noise/overfitting and speed training.</p>
+        <p><strong>Dimensionality reduction:</strong> compress many correlated sensor readings into fewer components.</p>
+    </div>
+</section>
+
+<!-- 9. MISCONCEPTION CHECK -->
+<section>
+    <h3>Misconception Check <span class="hl-badge">HL</span></h3>
+    <div class="question-box">True or False: “Dimensionality reduction always improves accuracy.”</div>
+    <div class="fragment box-red">
+        <p><strong>False.</strong> Reducing dimensions can remove useful signal if done poorly.</p>
+    </div>
+    <div class="fragment box">
+        <p>The goal is to balance simplicity with keeping information that matters for prediction.</p>
+    </div>
+</section>
+
+<!-- 10. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color:white;">Key Takeaways <span class="hl-badge">HL</span></h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color:white;">
+        <ul style="line-height:1.5;">
+            <li><span class="hl-badge">HL</span> Data cleaning fixes missing values, duplicates, incorrect data and outliers.</li>
+            <li><span class="hl-badge">HL</span> Feature selection keeps useful variables and reduces noise/overfitting.</li>
+            <li><span class="hl-badge">HL</span> Dimensionality reduction compresses features to simplify models and speed training.</li>
+            <li>Preprocessing often has a major impact on performance and fairness.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color:white;">
+        <p><strong>Next:</strong> A4.3 <span class="hl-badge">HL</span> Machine Learning Approaches — regression, classification, clustering, ANNs and more.</p>
+    </div>
+</section>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>

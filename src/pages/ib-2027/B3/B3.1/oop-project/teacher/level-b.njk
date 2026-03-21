@@ -1,0 +1,77 @@
+---
+layout: layouts/base.njk
+title: "Teacher Guide: Level B | OOP Project"
+description: "Solutions and notes for Level B: Specialisation."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "B3", href: "ib-2027/B3/index.html" }
+  - { label: "B3.1", href: "ib-2027/B3/B3.1/index.html" }
+  - { label: "OOP Project", href: "ib-2027/B3/B3.1/oop-project/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/B3/B3.1/oop-project/teacher/index.html" }
+  - { label: "Level B Guide" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
+        <p style="margin-bottom: 0;">Solutions for Level B: Inheritance.</p>
+    </div>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Concept Overview</h2>
+        <ul style="list-style-type: disc; margin-left: 1.5rem;">
+            <li><strong>Inheritance</strong>: Creating specialised versions (`class Brute(Player)`) of a base class.</li>
+            <li><strong>Super</strong>: Calling the parent constructor (`super().__init__`) to set up basic stats before customising.</li>
+            <li><strong>Polymorphism (Preview)</strong>: Treating Butes and Scouts as "Players".</li>
+        </ul>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Common Misconceptions</h2>
+        <div class="info-content">
+            <p><strong>1. Forgetting `super().__init__(name)`</strong></p>
+            <p>If they don't call super, `self.name` and other base stats won't be set, causing crashes. It's crucial to "build the parent first".</p>
+            
+            <p><strong>2. Redefining methods unnecessarily</strong></p>
+            <p>Students might copy-paste `take_damage` into Brute. Explain that they <em>inherit</em> it for free!</p>
+        </div>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Solution Code</h2>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+            <pre><code>from .player import Player
+
+class Brute(Player):
+    """Start with high HP, low accuracy."""
+    def __init__(self, name):
+        super().__init__(name)  # CRITICAL
+        self.health = 120
+        self.max_health = 120   # Must match
+        self.armour = 3
+        self.accuracy = 70
+
+    def describe_specialty(self):
+        return "Brute: Tanky but clumsy."
+
+
+class Scout(Player):
+    """Start with low HP, high accuracy."""
+    def __init__(self, name):
+        super().__init__(name)  # CRITICAL
+        self.health = 80
+        self.max_health = 80
+        self.armour = 1
+        self.accuracy = 95
+
+    def describe_specialty(self):
+        return "Scout: Agile glass cannon."</code></pre>
+        </div>
+    </section>
+
+</div>

@@ -1,0 +1,305 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A2.4 Network Security | IB Computer Science</title>
+    <meta name="description" content="HL depth: common vulnerabilities (DDoS, SQL injection, MitM) and security mechanisms (encryption, certificates, Diffie–Hellman, firewalls).">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">A2.4 Network Security</h1>
+            <h3 class="sub-title">Topic A2: Networks | Threats, Trust &amp; Encryption</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM A2.3) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall A2.3 (Data Transmission) before we discuss security.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What is encapsulation?</li>
+            <li>When would you choose UDP over TCP?</li>
+            <li>What does NAT do in a home network?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What is encapsulation?</div>
+        <div class="fragment box-blue">
+            <p>Wrapping data with protocol headers as it moves down the network stack (segments → packets → frames).</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">When would you choose UDP over TCP?</div>
+        <div class="fragment box-blue">
+            <p>When low overhead and real-time delivery matter more than perfect reliability (e.g., streaming/gaming).</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What does NAT do in a home network?</div>
+        <div class="fragment box-blue">
+            <p>Maps many private IP addresses to one public IP address (often using ports) to conserve IPv4 space.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 You log into your bank using a public Wi‑Fi network.</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">How do you know your password isn’t being intercepted?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> “The padlock means the website is safe.”</p>
+                <p class="small-text">HTTPS helps, but it doesn’t guarantee the website itself is trustworthy.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> security combines <strong>threat awareness</strong> with <strong>mechanisms</strong>.</p>
+                <p class="small-text">We need to defend against attacks and establish trust using encryption and certificates.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. HL: COMMON VULNERABILITIES -->
+<section>
+    <section>
+        <h3><span class="hl-badge">HL</span> Common Vulnerabilities</h3>
+        <div class="question-box">If networks enable communication, what new opportunities do attackers get?</div>
+        <div class="cols">
+            <div class="box">
+                <h4><i class="fa-solid fa-cloud-showers-heavy"></i> <span class="keyword" data-def="DDoS (Distributed Denial of Service): overwhelming a target with traffic from many compromised sources.">DDoS</span></h4>
+                <p class="small-text fragment">Overwhelm a service with traffic (often via a <span class="keyword" data-def="Botnet: a network of compromised devices controlled by an attacker.">botnet</span>).</p>
+            </div>
+            <div class="box-blue">
+                <h4><i class="fa-solid fa-database"></i> <span class="keyword" data-def="SQL injection: inserting malicious SQL into inputs to manipulate a database query.">SQL Injection</span></h4>
+                <p class="small-text fragment">Exploit unsafe input handling to read/modify database contents.</p>
+            </div>
+        </div>
+        <div class="box fragment">
+            <h4><i class="fa-solid fa-user-secret"></i> <span class="keyword" data-def="Man-in-the-Middle (MitM): intercepting and potentially altering communication between two parties.">MitM</span></h4>
+            <p class="small-text">An attacker positions themselves between two parties to eavesdrop or alter traffic.</p>
+        </div>
+    
+    </section>
+<section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">Which attack aims to make a service unavailable by flooding it with traffic?</div>
+        <div class="fragment box-blue">
+            <p><strong>DDoS</strong> — distributed traffic overwhelms capacity and resources.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 5. DEFENCES OVERVIEW -->
+<section>
+    <h3>Defences (High-Level)</h3>
+    <div class="question-box">How do we reduce risk without breaking usability?</div>
+    <div class="box">
+        <p class="fragment"><strong>DDoS:</strong> rate limiting, traffic scrubbing, CDNs, overprovisioning.</p>
+        <p class="fragment"><strong>SQL injection:</strong> input validation + parameterised queries.</p>
+        <p class="fragment"><strong>MitM:</strong> encryption + certificate validation.</p>
+    </div>
+</section>
+
+<!-- 6. HL: ENCRYPTION (VERTICAL) -->
+<section>
+    <section>
+        <h2><span class="hl-badge">HL</span> Encryption Mechanics</h2>
+        <div class="question-box">How can we share information publicly while keeping the content private?</div>
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Encryption: transforming plaintext into ciphertext using a key so only authorised parties can recover it.">Encryption</span> converts plaintext into ciphertext using a key.</p>
+            <p class="fragment">The key question is: <strong>how do both sides get the right keys securely?</strong></p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for symmetric vs asymmetric
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Symmetric Encryption</h3>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><span class="keyword" data-def="Symmetric encryption: the same secret key is used for encryption and decryption.">Symmetric</span> uses the <strong>same key</strong> to encrypt and decrypt.</p>
+                <p class="fragment"><strong>Strength:</strong> fast.</p>
+            </div>
+            <div class="box-blue">
+                <p class="fragment"><strong>Problem:</strong> key exchange — how do you share the secret key safely?</p>
+            </div>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Asymmetric (Public Key) Encryption</h3>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><span class="keyword" data-def="Asymmetric encryption: uses a public key for encryption and a private key for decryption (key pair).">Asymmetric</span> uses a <strong>key pair</strong>.</p>
+                <p class="small-text fragment"><strong>Public key</strong> encrypts; <strong>private key</strong> decrypts.</p>
+            </div>
+            <div class="box-blue">
+                <p class="fragment"><strong>Benefit:</strong> solves the distribution problem for encryption keys.</p>
+                <p class="small-text fragment"><strong>Cost:</strong> slower than symmetric, so often used to exchange a symmetric session key.</p>
+            </div>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Digital Certificates &amp; CAs</h3>
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Digital certificate: signed data that binds a public key to an identity (e.g., a domain).">Digital certificates</span> prove who owns a public key.</p>
+            <p class="fragment">A <span class="keyword" data-def="Certificate Authority (CA): trusted organisation that issues/signs digital certificates.">Certificate Authority (CA)</span> signs certificates so clients can verify trust.</p>
+            <p class="fragment">This underpins HTTPS (TLS).</p>
+        </div>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Diffie–Hellman (Key Agreement)</h3>
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Diffie–Hellman: method for two parties to establish a shared secret over an insecure channel without sending the secret directly.">Diffie–Hellman</span> lets two parties agree a shared secret over an insecure channel.</p>
+            <p class="fragment"><strong>Key idea:</strong> you exchange values, not the secret key itself.</p>
+        </div>
+    </section>
+
+    <section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">Which type of encryption uses the same key for encryption and decryption?</div>
+        <div class="fragment box-blue">
+            <p><strong>Symmetric encryption</strong> — one shared secret key.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 7. FIREWALLS -->
+<section>
+    <section>
+        <h3>Firewalls</h3>
+        <div class="question-box">What can we block at the boundary of a network?</div>
+        <div class="cols">
+            <div class="box">
+                <p class="fragment"><span class="keyword" data-def="Packet filtering firewall: filters traffic based on header information (IP/ports/protocol).">Packet filtering</span> checks headers (IP/ports/protocol) against rules.</p>
+                <p class="fragment">Fast, but limited visibility into connection state.</p>
+            </div>
+            <div class="box-blue">
+                <p class="fragment"><span class="keyword" data-def="Stateful inspection firewall: tracks active connections and filters traffic based on connection state as well as headers.">Stateful inspection</span> tracks active connections.</p>
+                <p class="small-text fragment">Better at distinguishing legitimate responses vs unsolicited traffic.</p>
+            </div>
+        </div>
+    
+    </section>
+<section data-background="#fff3e0">
+        <h3>🧠 Quick Check</h3>
+        <div class="question-box">What is the main purpose of a firewall?</div>
+        <div class="fragment box-blue">
+            <p>To enforce network security rules by allowing/denying traffic based on policy.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 8. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> HTTPS guarantees a website is trustworthy and malware-free.</p>
+            <p class="fragment"><strong>B.</strong> Asymmetric encryption is typically faster than symmetric encryption.</p>
+            <p class="fragment"><strong>C.</strong> SQL injection targets backend databases through unsafe input handling.</p>
+            <p class="fragment"><strong>D.</strong> Certificates help prove ownership of a public key.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> HTTPS provides encrypted transport and identity checks, not content trustworthiness.</p>
+            <p class="fragment"><strong>B: False.</strong> Symmetric encryption is typically faster; asymmetric is used for key exchange/identity.</p>
+            <p class="fragment"><strong>C: True.</strong> It manipulates queries if inputs aren’t handled safely.</p>
+            <p class="fragment"><strong>D: True.</strong> Certificates bind a public key to an identity via a CA signature.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 9. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li><span class="hl-badge">HL</span> Security threats include DDoS, SQL injection, and MitM.</li>
+            <li>Encryption is central: symmetric for speed, asymmetric for key exchange and identity.</li>
+            <li>Certificates + CAs help establish trust in public keys (TLS/HTTPS).</li>
+            <li>Firewalls enforce policy using packet filtering or stateful inspection.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> B3 Object‑Oriented Programming — modelling complex systems with classes and objects.</p>
+    </div>
+</section>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+</body>
+
+</html>
