@@ -531,7 +531,7 @@ const buildKs3Shell = async (pathname: string): Promise<{
         groups
       },
       layoutMode: 'worksheet',
-      breadcrumbs: [{ label: 'KS3' }]
+      breadcrumbs: [{ label: 'Home', href: '/index.html' }, { label: 'Key Stage 3' }]
     };
   }
 
@@ -552,7 +552,7 @@ const buildKs3Shell = async (pathname: string): Promise<{
         },
         layoutMode: 'worksheet',
         breadcrumbs: [
-          { label: 'KS3', href: '/ks3/index.html' },
+          { label: 'Home', href: '/index.html' },
           { label: yearTitle }
         ]
       };
@@ -579,7 +579,7 @@ const buildKs3Shell = async (pathname: string): Promise<{
     const { prevLink, nextLink } = buildPrevNextLinks(localGroups, currentPath);
     const currentLocation = findCurrentLocation(localGroups, currentPath);
     const breadcrumbs: ShellBreadcrumb[] = [
-      { label: 'KS3', href: '/ks3/index.html' },
+      { label: 'Home', href: '/index.html' },
       { label: yearTitle, href: yearOverviewRoute }
     ];
 
@@ -655,7 +655,7 @@ const buildKs3Shell = async (pathname: string): Promise<{
     ? 'workspace'
     : 'worksheet';
   const breadcrumbs: ShellBreadcrumb[] = [
-    { label: 'KS3', href: '/ks3/index.html' },
+    { label: 'Home', href: '/index.html' },
     { label: yearTitle, href: yearOverviewRoute },
     { label: routeParts.unit.replace(/^unit/i, 'Unit '), href: unitOverviewRoute }
   ];
