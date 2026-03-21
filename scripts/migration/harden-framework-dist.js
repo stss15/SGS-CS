@@ -77,10 +77,32 @@ const injectBeforeLastBodyClose = (html, snippet) => {
   return `${html.slice(0, closingBodyIndex)}${snippet}\n${html.slice(closingBodyIndex)}`;
 };
 
+const protectSrcdocAttributes = (html) => {
+  const placeholders = [];
+  const protectedHtml = html.replace(/\ssrcdoc=(["'])([\s\S]*?)\1/gi, (_, quote, value) => {
+    const token = `__SGS_SRCDOC_${placeholders.length}__`;
+    placeholders.push({ token, value });
+    return ` srcdoc=${quote}${token}${quote}`;
+  });
+
+  return {
+    html: protectedHtml,
+    restore(nextHtml) {
+      return placeholders.reduce(
+        (restoredHtml, { token, value }) => restoredHtml.replace(token, value),
+        nextHtml
+      );
+    }
+  };
+};
+
 const getActiveSectionFromRoute = (relativePath) => {
   const normalizedPath = toPosix(relativePath).toLowerCase();
 
   if (normalizedPath.startsWith('ai-prompt-generator/')) return 'ai-prompt';
+  if (normalizedPath.startsWith('ks3/year7/')) return 'year7';
+  if (normalizedPath.startsWith('ks3/year8/')) return 'year8';
+  if (normalizedPath.startsWith('ks3/year9/')) return 'year9';
   if (normalizedPath.startsWith('ks3/')) return 'ks3';
   if (normalizedPath.startsWith('igcse/')) return 'igcse';
   if (normalizedPath.startsWith('ib-2027/') || normalizedPath.startsWith('ib/')) return 'ib';
@@ -99,7 +121,7 @@ const buildUnifiedHeader = (activeSection) => {
         <div class="header-primary">
             <div class="logo-container">
                 <a href="/index.html">
-                    <img src="/images/Logo.png" alt="SGS Education logo" class="logo-img" decoding="async">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
                 </a>
                 <a href="/index.html" class="site-title-link">
                     <span class="site-title">${DEFAULT_SITE_TITLE}</span>
@@ -107,8 +129,9 @@ const buildUnifiedHeader = (activeSection) => {
             </div>
 
             <nav class="main-nav main-nav-simple" aria-label="Main navigation">
-                ${navItem('AI Prompt', '/ai-prompt-generator/index.html', 'ai-prompt')}
-                ${navItem('KS3', '/ks3/index.html', 'ks3')}
+                ${navItem('Year 7', '/ks3/year7/index.html', 'year7')}
+                ${navItem('Year 8', '/ks3/year8/index.html', 'year8')}
+                ${navItem('Year 9', '/ks3/year9/index.html', 'year9')}
                 ${navItem('IGCSE', '/igcse/index.html', 'igcse')}
                 ${navItem('IB', '/ib-2027/index.html', 'ib')}
             </nav>
@@ -211,10 +234,17 @@ const ensureBlankTargetRelSecurity = (html) =>
   });
 
 const ensureImageDecoding = (html) => {
+  const srcdocPlaceholders = [];
+  const withoutSrcdoc = html.replace(/\ssrcdoc=(["'])([\s\S]*?)\1/gi, (_, quote, value) => {
+    const token = `__SGS_SRCDOC_${srcdocPlaceholders.length}__`;
+    srcdocPlaceholders.push({ token, value });
+    return ` srcdoc=${quote}${token}${quote}`;
+  });
+
   const nonTransformBlocks = /<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>/gi;
   let output = '';
   let lastIndex = 0;
-  let match = nonTransformBlocks.exec(html);
+  let match = nonTransformBlocks.exec(withoutSrcdoc);
 
   const transformFragment = (fragment) =>
     fragment.replace(/<img\b[^>]*>/gi, (tag) => {
@@ -223,14 +253,18 @@ const ensureImageDecoding = (html) => {
     });
 
   while (match) {
-    output += transformFragment(html.slice(lastIndex, match.index));
+    output += transformFragment(withoutSrcdoc.slice(lastIndex, match.index));
     output += match[0];
     lastIndex = match.index + match[0].length;
-    match = nonTransformBlocks.exec(html);
+    match = nonTransformBlocks.exec(withoutSrcdoc);
   }
 
-  output += transformFragment(html.slice(lastIndex));
-  return output;
+  output += transformFragment(withoutSrcdoc.slice(lastIndex));
+
+  return srcdocPlaceholders.reduce(
+    (restoredHtml, { token, value }) => restoredHtml.replace(token, value),
+    output
+  );
 };
 
 const escapeHtmlAttribute = (value) =>
@@ -315,7 +349,8 @@ const run = async () => {
     htmlFiles.map(async (relativePath) => {
       const filePath = path.join(options.target, relativePath);
       const source = await fs.readFile(filePath, 'utf8');
-      let updated = normalizeMainHeaderShell(source, relativePath);
+      const srcdocProtection = protectSrcdocAttributes(source);
+      let updated = normalizeMainHeaderShell(srcdocProtection.html, relativePath);
       updated = ensureSkipLink(updated);
       updated = ensureMainContentId(updated);
       updated = injectAuthGate(updated);
@@ -328,6 +363,7 @@ const run = async () => {
         inlineHandlerReplacements += converted.replacements;
         updated = injectLegacyInlineEventsRuntime(updated);
       }
+      updated = srcdocProtection.restore(updated);
       if (updated !== source) {
         updatedFiles += 1;
         await fs.writeFile(filePath, updated);

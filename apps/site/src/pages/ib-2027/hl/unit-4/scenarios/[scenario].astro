@@ -6,6 +6,7 @@ import { extractHtmlTitle } from '../../../../../lib/source-content';
 
 interface ScenarioAliasPageProps {
   html: string;
+  routePath: string;
 }
 
 export async function getStaticPaths() {
@@ -30,18 +31,19 @@ export async function getStaticPaths() {
           scenario: route.scenario
         },
         props: {
-          html: await getIb2027AliasRouteHtml(route.routePath)
+          html: await getIb2027AliasRouteHtml(route.routePath),
+          routePath: route.routePath
         }
       }))
   );
 }
 
-const { html } = Astro.props as ScenarioAliasPageProps;
+const { html, routePath } = Astro.props as ScenarioAliasPageProps;
 const title = extractHtmlTitle(html, 'IB Scenario');
 ---
 
 <BaseLayout title={title} description={title}>
   <section class="page-panel page-panel--flush">
-    <LegacyEmbedFrame title={title} html={html} variant="workspace" />
+    <LegacyEmbedFrame title={title} html={html} routePath={routePath} variant="workspace" />
   </section>
 </BaseLayout>

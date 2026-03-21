@@ -1,5 +1,5 @@
 ---
-type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
+type NavSection = 'ai-prompt' | 'ks3' | 'year7' | 'year8' | 'year9' | 'igcse' | 'ib';
 
 interface Props {
   activeSection?: NavSection;
@@ -8,7 +8,9 @@ interface Props {
 const { activeSection } = Astro.props;
 
 const sections = [
-  { key: 'ks3' as const, label: 'KS3', href: '/ks3/index.html' },
+  { key: 'year7' as const, label: 'Year 7', href: '/ks3/year7/index.html' },
+  { key: 'year8' as const, label: 'Year 8', href: '/ks3/year8/index.html' },
+  { key: 'year9' as const, label: 'Year 9', href: '/ks3/year9/index.html' },
   { key: 'igcse' as const, label: 'IGCSE', href: '/igcse/index.html' },
   { key: 'ib' as const, label: 'IB', href: '/ib-2027/index.html' }
 ];
@@ -18,7 +20,7 @@ const sections = [
   <div class="site-header-inner">
     <a href="/index.html" class="site-brand" aria-label="SGS Education home">
       <img
-        src="/images/Logo.png"
+        src="/images/logo-mark.svg"
         alt="SGS Education logo"
         class="site-brand-logo"
         width="40"
@@ -29,31 +31,35 @@ const sections = [
       <span>SGS Education</span>
     </a>
 
-    <nav class="site-primary-nav" aria-label="Main navigation">
-      {sections.map((section) => (
-        <a
-          href={section.href}
-          class:list={{ active: activeSection === section.key }}
-          aria-current={activeSection === section.key ? 'page' : undefined}
-        >
-          {section.label}
-        </a>
-      ))}
-    </nav>
+    <div class="site-header-tools">
+      <nav class="site-primary-nav" aria-label="Main navigation">
+        {sections.map((section) => (
+          <a
+            href={section.href}
+            class:list={{ active: activeSection === section.key }}
+            aria-current={activeSection === section.key ? 'page' : undefined}
+          >
+            {section.label}
+          </a>
+        ))}
+      </nav>
 
-    <button
-      class="site-mobile-toggle"
-      type="button"
-      aria-label="Open menu"
-      aria-expanded="false"
-      aria-controls="site-mobile-drawer"
-    >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-        <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6" />
-        <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12" />
-        <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18" />
-      </svg>
-    </button>
+      <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+
+      <button
+        class="site-mobile-toggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="site-mobile-drawer"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6" />
+          <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12" />
+          <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </div>
   </div>
 </header>
 

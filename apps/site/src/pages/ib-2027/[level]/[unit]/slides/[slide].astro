@@ -6,6 +6,7 @@ import { extractHtmlTitle } from '../../../../../lib/source-content';
 
 interface SlidePageProps {
   html: string;
+  routePath: string;
 }
 
 export async function getStaticPaths() {
@@ -19,13 +20,14 @@ export async function getStaticPaths() {
         slide: route.slideSlug
       },
       props: {
-        html: await getIb2027UnitSlideHtml(route.level, route.unitSegment, route.slideSlug)
+        html: await getIb2027UnitSlideHtml(route.level, route.unitSegment, route.slideSlug),
+        routePath: route.routePath
       }
     }))
   );
 }
 
-const { html } = Astro.props as SlidePageProps;
+const { html, routePath } = Astro.props as SlidePageProps;
 const title = extractHtmlTitle(html, 'IB Slide Deck');
 ---
 
@@ -34,6 +36,7 @@ const title = extractHtmlTitle(html, 'IB Slide Deck');
     <LegacyEmbedFrame
       title={title}
       html={html}
+      routePath={routePath}
       variant="slides"
       hideSelectors={['#back-btn', '#sg-logo', '.footer-text', '.standalone-nav']}
     />

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 
-type NavSection = 'ai-prompt' | 'ks3' | 'igcse' | 'ib';
+type NavSection = 'ai-prompt' | 'ks3' | 'year7' | 'year8' | 'year9' | 'igcse' | 'ib';
 
 export interface LegacyBreadcrumbItem {
   label: string;

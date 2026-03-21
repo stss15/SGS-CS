@@ -73,6 +73,35 @@ const routeToNestedHtmlIndexPath = (targetDir, route) => {
   return routeToFilePath(targetDir, fallbackRoute);
 };
 
+const AUTO_HTML_ALIAS_SEGMENTS = ['textbook', 'unit-plan'];
+
+const discoverAstroHtmlRoutes = async (targetDir) => {
+  const routes = new Set();
+  const htmlSegmentIndexFiles = await fg('**/*.html/index.html', {
+    cwd: targetDir,
+    onlyFiles: true,
+    dot: true
+  });
+  const aliasSegmentIndexFiles = await fg(
+    `**/{${AUTO_HTML_ALIAS_SEGMENTS.join(',')}}/index.html`,
+    {
+      cwd: targetDir,
+      onlyFiles: true,
+      dot: true
+    }
+  );
+
+  htmlSegmentIndexFiles.forEach((relativePath) => {
+    routes.add(`/${toPosix(relativePath).replace(/\/index\.html$/i, '')}`);
+  });
+
+  aliasSegmentIndexFiles.forEach((relativePath) => {
+    routes.add(`/${toPosix(relativePath).replace(/\/index\.html$/i, '.html')}`);
+  });
+
+  return routes;
+};
+
 const collapseHtmlDirectoryRoute = async (expectedPath) => {
   const routeStat = await fs.stat(expectedPath);
   if (!routeStat.isDirectory()) {
@@ -165,6 +194,9 @@ const run = async () => {
     const routes = Array.isArray(routeConfig.routes) ? routeConfig.routes : [];
     routes.forEach((route) => routeSet.add(route));
   }
+
+  const discoveredRoutes = await discoverAstroHtmlRoutes(options.target);
+  discoveredRoutes.forEach((route) => routeSet.add(route));
 
   const pilotRoutes = Array.from(routeSet);
   let createdFromAstro = 0;

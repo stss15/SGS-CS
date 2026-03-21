@@ -8,4 +8,6 @@ export const isIgcseWorkspaceRoute = (routePath: string): boolean =>
   );
 
 export const isKs3WorkspaceRoute = (routePath: string): boolean =>
-  /(activity|quiz|game|slide|simulator|simulation|playground|project|worksheet|tool|assessment|\/l\d)/i.test(routePath);
+  /(activity|quiz|game|slide|simulator|simulation|playground|project|worksheet|tool|assessment|mission-control|planet-x|\/l\d)/i.test(
+    routePath
+  );

@@ -2,9 +2,10 @@
 interface Props {
   html: string;
   fallbackLang?: string;
+  baseHref?: string;
 }
 
-const { html, fallbackLang = 'en' } = Astro.props as Props;
+const { html, fallbackLang = 'en', baseHref } = Astro.props as Props;
 
 const htmlMatch = html.match(/<html([^>]*)>/i);
 const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
@@ -33,13 +34,15 @@ const bodyAttributes = parseAttributes(bodyMatch?.[1] || '');
 const headInner = headMatch?.[1] || '';
 const bodyInner = bodyMatch?.[2] || html;
 const isFullHtmlDocument = Boolean(headMatch && bodyMatch);
+const hasBaseTag = /<base\b/i.test(headInner);
+const nextHeadInner = baseHref && !hasBaseTag ? `<base href="${baseHref}">${headInner}` : headInner;
 ---
 
 {
   isFullHtmlDocument ? (
     <html {...htmlAttributes}>
       <head>
-        <Fragment set:html={headInner} />
+        <Fragment set:html={nextHeadInner} />
       </head>
       <body {...bodyAttributes}>
         <Fragment set:html={bodyInner} />

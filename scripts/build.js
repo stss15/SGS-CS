@@ -415,10 +415,17 @@ const ensureBlankTargetRelSecurity = (html) =>
     });
 
 const ensureImageDecoding = (html) => {
+    const srcdocPlaceholders = [];
+    const withoutSrcdoc = html.replace(/\ssrcdoc=(["'])([\s\S]*?)\1/gi, (_, quote, value) => {
+        const token = `__SGS_SRCDOC_${srcdocPlaceholders.length}__`;
+        srcdocPlaceholders.push({ token, value });
+        return ` srcdoc=${quote}${token}${quote}`;
+    });
+
     const nonTransformBlocks = /<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>/gi;
     let output = '';
     let lastIndex = 0;
-    let match = nonTransformBlocks.exec(html);
+    let match = nonTransformBlocks.exec(withoutSrcdoc);
 
     const transformFragment = (fragment) =>
         fragment.replace(/<img\b[^>]*>/gi, (tag) => {
@@ -427,14 +434,18 @@ const ensureImageDecoding = (html) => {
         });
 
     while (match) {
-        output += transformFragment(html.slice(lastIndex, match.index));
+        output += transformFragment(withoutSrcdoc.slice(lastIndex, match.index));
         output += match[0];
         lastIndex = match.index + match[0].length;
-        match = nonTransformBlocks.exec(html);
+        match = nonTransformBlocks.exec(withoutSrcdoc);
     }
 
-    output += transformFragment(html.slice(lastIndex));
-    return output;
+    output += transformFragment(withoutSrcdoc.slice(lastIndex));
+
+    return srcdocPlaceholders.reduce(
+        (restoredHtml, { token, value }) => restoredHtml.replace(token, value),
+        output
+    );
 };
 
 const ensureCoreMetaTags = (html) => {

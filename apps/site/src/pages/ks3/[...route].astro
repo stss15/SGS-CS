@@ -1,13 +1,18 @@
 ---
 import LegacyEmbedFrame from '../../components/LegacyEmbedFrame.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getKs3LegacyRouteHtml, getKs3LegacyRoutes } from '@sgs/content-schema';
+import {
+  getKs3LegacyRouteHtml,
+  getKs3LegacyRoutes,
+  resolveKs3LegacySourceRoutePath
+} from '@sgs/content-schema';
 import { isKs3WorkspaceRoute } from '../../lib/legacy-route-classification';
 import { extractHtmlTitle } from '../../lib/source-content';
 
 interface Ks3LegacyPageProps {
   html: string;
   routePath: string;
+  sourceRoutePath: string;
 }
 
 export async function getStaticPaths() {
@@ -20,15 +25,16 @@ export async function getStaticPaths() {
       },
       props: {
         html: await getKs3LegacyRouteHtml(route.routePath),
-        routePath: route.routePath
+        routePath: route.routePath,
+        sourceRoutePath: resolveKs3LegacySourceRoutePath(route.routePath)
       }
     }))
   );
 }
 
-const { html, routePath } = Astro.props as Ks3LegacyPageProps;
+const { html, routePath, sourceRoutePath } = Astro.props as Ks3LegacyPageProps;
 const title = extractHtmlTitle(html, 'KS3 Resource');
-const variant = isKs3WorkspaceRoute(routePath) ? 'workspace' : 'document';
+const variant = isKs3WorkspaceRoute(routePath) || isKs3WorkspaceRoute(sourceRoutePath) ? 'workspace' : 'document';
 ---
 
 <BaseLayout title={title} description={title}>
@@ -36,6 +42,7 @@ const variant = isKs3WorkspaceRoute(routePath) ? 'workspace' : 'document';
     <LegacyEmbedFrame
       title={title}
       html={html}
+      routePath={sourceRoutePath}
       variant={variant}
       hideSelectors={['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay']}
     />

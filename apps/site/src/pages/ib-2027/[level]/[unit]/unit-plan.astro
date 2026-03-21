@@ -19,6 +19,8 @@ export const getStaticPaths = getIb2027UnitStaticPaths;
 
 const { level, unitNumber } = Astro.props as UnitPlanPageProps;
 const unitPlan = await getIb2027UnitPlanData(level, unitNumber);
+const unitBasePath = `/ib-2027/${level}/unit-${unitPlan.unitNumber}`;
+const resolveUnitPlanHref = (href: string) => (href.startsWith('/') ? href : `${unitBasePath}/${href.replace(/^\.?\//, '')}`);
 ---
 
 <UnitPlanShell
@@ -65,7 +67,7 @@ const unitPlan = await getIb2027UnitPlanData(level, unitNumber);
       <SideCard title="View Slides">
         <ul class="link-list">
           {(unitPlan.viewSlidesButtons || []).map((button) => (
-            <li><a href={button.href}>{button.label}</a></li>
+            <li><a href={resolveUnitPlanHref(button.href)}>{button.label}</a></li>
           ))}
         </ul>
       </SideCard>

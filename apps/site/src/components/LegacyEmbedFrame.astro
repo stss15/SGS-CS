@@ -4,19 +4,37 @@ interface Props {
   html: string;
   variant?: 'document' | 'workspace' | 'slides';
   hideSelectors?: string[];
+  routePath?: string;
 }
 
 const {
   title,
   html,
   variant = 'document',
-  hideSelectors = ['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay']
+  hideSelectors = ['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay'],
+  routePath
 } = Astro.props as Props;
 
 const frameId = Astro.url.pathname.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') || 'legacy-frame';
-const baseHref = Astro.url.pathname.endsWith('/')
-  ? Astro.url.pathname
-  : Astro.url.pathname.replace(/[^/]+$/, '');
+
+const resolveBaseHref = (sourcePath: string) => {
+  const normalizedPath = sourcePath.startsWith('/') ? sourcePath : `/${sourcePath}`;
+
+  if (/\/index\.html$/i.test(normalizedPath)) {
+    return normalizedPath.replace(/index\.html$/i, '');
+  }
+
+  if (/\/[^/]+\.[a-z0-9]+$/i.test(normalizedPath)) {
+    return normalizedPath.replace(/[^/]+$/i, '');
+  }
+
+  return normalizedPath.endsWith('/') ? normalizedPath : `${normalizedPath}/`;
+};
+
+const fallbackSourcePath = Astro.url.pathname.endsWith('/')
+  ? `${Astro.url.pathname}index.html`
+  : Astro.url.pathname;
+const baseHref = resolveBaseHref(routePath || fallbackSourcePath);
 
 const resizeScript = `
   <script>
@@ -25,6 +43,7 @@ const resizeScript = `
         const removeSelectors = [
           '.site-header',
           '.main-header',
+          '.breadcrumb-nav',
           '.feedback-modals',
           '.site-feedback',
           '.feedback-trigger',
@@ -97,6 +116,7 @@ const injectedStyles = `
     ${hideSelectors.join(', ')} { display: none !important; }
     .site-header,
     .main-header,
+    .breadcrumb-nav,
     .feedback-modals,
     .site-feedback,
     .feedback-trigger,
@@ -125,11 +145,25 @@ const injectBeforeLastTag = (documentHtml: string, tagName: string, injection: s
 const preAddImgDecoding = (documentHtml: string): string =>
   documentHtml.replace(/<img\b(?![^>]*\bdecoding\b)/gi, '<img decoding="async"');
 
-const buildSrcdoc = (documentHtml: string) => {
-  const safeHtml = preAddImgDecoding(documentHtml);
+const stripEmbeddedAuthGate = (documentHtml: string): string =>
+  documentHtml
+    .replace(/<!--\s*data-sgs-auth-gate\s*-->\s*/gi, '')
+    .replace(/<link\b[^>]*href=["'][^"']*\/css\/auth-gate\.css[^"']*["'][^>]*>\s*/gi, '')
+    .replace(
+      /<script\b[^>]*>\s*document\.documentElement\.classList\.add\((['"])auth-pending\1\);\s*<\/script>\s*/gi,
+      ''
+    )
+    .replace(/<script\b[^>]*src=["'][^"']*\/__\/firebase\/[^"']*["'][^>]*><\/script>\s*/gi, '')
+    .replace(/<script\b[^>]*src=["'][^"']*\/js\/auth-gate\.js[^"']*["'][^>]*><\/script>\s*/gi, '');
 
-  if (/<\/head>/i.test(safeHtml)) {
-    const documentWithHead = safeHtml.replace(/<\/head>/i, `<base href="${baseHref}" target="_top">${injectedStyles}</head>`);
+const buildSrcdoc = (documentHtml: string) => {
+  const safeHtml = preAddImgDecoding(stripEmbeddedAuthGate(documentHtml));
+
+  if (/<head\b[^>]*>/i.test(safeHtml)) {
+    const documentWithHead = safeHtml.replace(
+      /<head\b([^>]*)>/i,
+      `<head$1><base href="${baseHref}" target="_top">${injectedStyles}`
+    );
     return injectBeforeLastTag(documentWithHead, 'body', resizeScript);
   }
 

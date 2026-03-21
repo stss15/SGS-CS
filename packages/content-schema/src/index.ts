@@ -220,6 +220,12 @@ const IB_2027_SL_OOP_PROJECT_DIR = path.join(ROOT_DIR, 'src/pages/ib-2027/sl/uni
 
 const fileCache = new Map<string, unknown>();
 const IB_LEVEL_ORDER: IbCourseLevel[] = ['sl', 'hl'];
+const KS3_LEGACY_ROUTE_ALIASES = new Map<string, string>([
+  ['/ks3/year8/mission-control-repair.html', '/ks3/cover/year8.html'],
+  ['/ks3/year8/quiz.html', '/ks3/cover/year8-quiz.html'],
+  ['/ks3/year9/mission-to-planet-x.html', '/ks3/cover/year9.html'],
+  ['/ks3/year9/quiz.html', '/ks3/cover/year9-quiz.html']
+]);
 
 const ensureLeadingSlash = (href: string) => (href.startsWith('/') ? href : `/${href}`);
 const getIbSlUnitIndexPath = (unitNumber: number) => path.join(ROOT_DIR, `src/pages/ib-2027/sl/unit-${unitNumber}/index.njk`);
@@ -268,8 +274,40 @@ const readDocumentCached = async <T>(filePath: string): Promise<{ data: T; conte
   return result;
 };
 
-const normalizeLegacyBodyHtml = (bodyHtml: string): string => {
-  return bodyHtml.replace(/\{\{\s*basePath\s*\}\}/g, '/');
+const isRelativeAssetPath = (value: string): boolean =>
+  !/^(?:[a-z]+:)?\/\//i.test(value) &&
+  !value.startsWith('/') &&
+  !value.startsWith('#') &&
+  !value.startsWith('?') &&
+  !value.startsWith('data:') &&
+  !value.startsWith('javascript:');
+
+const absolutizeLegacyAssetPath = (routePath: string, assetPath: string): string => {
+  const normalizedRoutePath = normalizeRoutePath(routePath.startsWith('/') ? routePath : `/${routePath}`);
+  const baseDirectory = /\/index\.html$/i.test(normalizedRoutePath)
+    ? normalizedRoutePath
+    : normalizedRoutePath.replace(/[^/]+$/i, '');
+  const resolvedUrl = new URL(assetPath, `https://sgs.local${baseDirectory}`);
+  return `${resolvedUrl.pathname}${resolvedUrl.search}${resolvedUrl.hash}`;
+};
+
+const normalizeLegacyBodyHtml = (bodyHtml: string, routePath?: string): string => {
+  const withBasePath = bodyHtml.replace(/\{\{\s*basePath\s*\}\}/g, '/');
+
+  if (!routePath) {
+    return withBasePath;
+  }
+
+  return withBasePath.replace(/\b(href|src)=("([^"]*)"|'([^']*)')/gi, (match, attribute, quotedValue, doubleQuotedValue, singleQuotedValue) => {
+    const rawValue = typeof doubleQuotedValue === 'string' ? doubleQuotedValue : singleQuotedValue;
+    if (!rawValue || !isRelativeAssetPath(rawValue)) {
+      return match;
+    }
+
+    const nextValue = absolutizeLegacyAssetPath(routePath, rawValue);
+    const quote = quotedValue.startsWith('"') ? '"' : "'";
+    return `${attribute}=${quote}${nextValue}${quote}`;
+  });
 };
 
 const parseUnitNumber = (unitSegment: string): number | null => {
@@ -343,6 +381,8 @@ const toRouteEntries = (baseRoutePath: string, slugs: string[]): LegacyAliasRout
   }));
 
 const normalizeRoutePath = (routePath: string): string => routePath.replace(/\\/g, '/');
+const resolveLegacyAliasRoutePath = (routePath: string, aliasMap: Map<string, string>): string =>
+  aliasMap.get(normalizeRoutePath(routePath)) || normalizeRoutePath(routePath);
 
 const getLegacyPublicPathForRoute = (
   routePath: string,
@@ -480,7 +520,7 @@ export const getIbSlUnit5Scenario = async (scenarioSlug: string): Promise<Legacy
   return {
     ...document.data,
     extraStyles: document.data.extraStyles || [],
-    bodyHtml: normalizeLegacyBodyHtml(document.content)
+    bodyHtml: normalizeLegacyBodyHtml(document.content, `/ib-2027/sl/unit-5/scenarios/${scenarioSlug}.html`)
   };
 };
 
@@ -499,7 +539,7 @@ export const getIbSlUnit5OopProjectPage = async (pagePath: string): Promise<Lega
   return {
     ...document.data,
     extraStyles: document.data.extraStyles || [],
-    bodyHtml: normalizeLegacyBodyHtml(document.content)
+    bodyHtml: normalizeLegacyBodyHtml(document.content, `/ib-2027/sl/unit-5/oop-project/${normalizedPath}.html`)
   };
 };
 
@@ -674,8 +714,18 @@ export const getIgcseLegacyRouteHtml = async (routePath: string): Promise<string
 };
 
 export const getKs3LegacyRoutes = async (): Promise<LegacyAliasRoute[]> => {
-  return getLegacyHtmlRoutes(KS3_LEGACY_DIR, '/ks3');
+  const discoveredRoutes = await getLegacyHtmlRoutes(KS3_LEGACY_DIR, '/ks3');
+  const routeMap = new Map(discoveredRoutes.map((route) => [route.routePath, route]));
+
+  KS3_LEGACY_ROUTE_ALIASES.forEach((_sourceRoutePath, routePath) => {
+    routeMap.set(routePath, { routePath });
+  });
+
+  return Array.from(routeMap.values()).sort((a, b) => a.routePath.localeCompare(b.routePath));
 };
+
+export const resolveKs3LegacySourceRoutePath = (routePath: string): string =>
+  resolveLegacyAliasRoutePath(routePath, KS3_LEGACY_ROUTE_ALIASES);
 
 export const getKs3LegacyRouteHtml = async (routePath: string): Promise<string> => {
   const normalizedRoutePath = normalizeRoutePath(routePath);
@@ -683,7 +733,8 @@ export const getKs3LegacyRouteHtml = async (routePath: string): Promise<string> 
     throw new Error(`Legacy KS3 route must end with .html: ${routePath}`);
   }
 
-  const sourcePath = getLegacyPublicPathForRoute(normalizedRoutePath, ['/ks3/']);
+  const sourceRoutePath = resolveKs3LegacySourceRoutePath(normalizedRoutePath);
+  const sourcePath = getLegacyPublicPathForRoute(sourceRoutePath, ['/ks3/']);
   if (!existsSync(sourcePath)) {
     throw new Error(`Unknown legacy KS3 route source: ${normalizedRoutePath}`);
   }
@@ -705,18 +756,31 @@ export const getRootLegacyRouteHtml = async (routePath: string): Promise<string>
   return readFile(sourcePath, 'utf8');
 };
 
+const UNIT_PLAN_TITLE_PLACEHOLDER_PATTERN = /\{\{\s*unit(?:Number|Name)\s*\}\}/i;
+
+const normalizeUnitPlanFrontmatter = (frontmatter: UnitPlanFrontmatter): UnitPlanFrontmatter => {
+  if (!UNIT_PLAN_TITLE_PLACEHOLDER_PATTERN.test(frontmatter.title)) {
+    return frontmatter;
+  }
+
+  return {
+    ...frontmatter,
+    title: `Unit ${frontmatter.unitNumber}: ${frontmatter.unitName} - SGS Computer Science`
+  };
+};
+
 export const getIbSlUnitPlan = async (unitNumber: number): Promise<UnitPlanFrontmatter> => {
   if (!Number.isInteger(unitNumber) || unitNumber < 1) {
     throw new Error(`Invalid IB SL unit number: ${unitNumber}`);
   }
-  return readFrontmatterCached<UnitPlanFrontmatter>(getIbSlUnitPlanPath(unitNumber));
+  return normalizeUnitPlanFrontmatter(await readFrontmatterCached<UnitPlanFrontmatter>(getIbSlUnitPlanPath(unitNumber)));
 };
 
 export const getIbHlUnitPlan = async (unitNumber: number): Promise<UnitPlanFrontmatter> => {
   if (!Number.isInteger(unitNumber) || unitNumber < 1) {
     throw new Error(`Invalid IB HL unit number: ${unitNumber}`);
   }
-  return readFrontmatterCached<UnitPlanFrontmatter>(getIbHlUnitPlanPath(unitNumber));
+  return normalizeUnitPlanFrontmatter(await readFrontmatterCached<UnitPlanFrontmatter>(getIbHlUnitPlanPath(unitNumber)));
 };
 
 export const getIbSlUnit1Plan = async (): Promise<UnitPlanFrontmatter> => {
