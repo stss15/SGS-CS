@@ -7,6 +7,7 @@ import {
   resolveKs3LegacySourceRoutePath
 } from '@sgs/content-schema';
 import { isKs3WorkspaceRoute } from '../../lib/legacy-route-classification';
+import { getKs3YearOverview } from '../../lib/ks3-year-overview';
 import { extractHtmlTitle } from '../../lib/source-content';
 
 interface Ks3LegacyPageProps {
@@ -35,16 +36,51 @@ export async function getStaticPaths() {
 const { html, routePath, sourceRoutePath } = Astro.props as Ks3LegacyPageProps;
 const title = extractHtmlTitle(html, 'KS3 Resource');
 const variant = isKs3WorkspaceRoute(routePath) || isKs3WorkspaceRoute(sourceRoutePath) ? 'workspace' : 'document';
+const yearIndexMatch = routePath.match(/^\/ks3\/(year7|year8|year9)\/index\.html$/i);
+const yearIndexKey = yearIndexMatch?.[1]?.toLowerCase() ?? null;
+const yearOverview = getKs3YearOverview(yearIndexKey);
 ---
 
-<BaseLayout title={title} description={title}>
-  <section class="page-panel page-panel--flush">
-    <LegacyEmbedFrame
-      title={title}
-      html={html}
-      routePath={sourceRoutePath}
-      variant={variant}
-      hideSelectors={['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay']}
-    />
-  </section>
+<BaseLayout
+  title={title}
+  description={title}
+  shellPath={routePath}
+  bodyClass={yearOverview ? 'site-body--year-overview' : ''}
+  mainClass={yearOverview ? 'page-shell--year-overview' : ''}
+>
+  {yearOverview ? (
+    <section class="page-panel year-index-panel">
+      <div class="year-index-panel__hero">
+        <p class="year-index-panel__kicker">{yearOverview.kicker}</p>
+        <h1 class="year-index-panel__headline">
+          <span>{yearOverview.headline}</span>
+          <span class="year-index-panel__highlight">{yearOverview.highlight}</span>
+        </h1>
+        <p class="year-index-panel__intro">{yearOverview.intro}</p>
+      </div>
+
+      <div class="year-index-grid" role="list">
+        {yearOverview.units.map((unit) => (
+          <article class:list={['year-index-card', unit.tone && `year-index-card--${unit.tone}`]} role="listitem">
+            <div class="year-index-card__topline">
+              <span class="year-index-card__unit">Unit {unit.number}</span>
+              {unit.badge && <span class="year-index-card__badge">{unit.badge}</span>}
+            </div>
+            <h2>{unit.title}</h2>
+            <p>{unit.summary}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  ) : (
+    <section class="page-panel page-panel--flush">
+      <LegacyEmbedFrame
+        title={title}
+        html={html}
+        routePath={sourceRoutePath}
+        variant={variant}
+        hideSelectors={['#back-btn', '#sg-logo', '.standalone-nav', '.nav-overlay', '.course-sidebar']}
+      />
+    </section>
+  )}
 </BaseLayout>

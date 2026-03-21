@@ -1,5 +1,5 @@
 ---
-import type { ShellContext } from '../lib/curriculum-shell';
+import type { ShellContext, ShellNavGroup, ShellNavItem } from '../lib/curriculum-shell';
 import { hrefMatchesCurrentPath } from '../lib/curriculum-shell';
 
 interface Props {
@@ -8,18 +8,24 @@ interface Props {
 }
 
 const { context, currentPath } = Astro.props as Props;
+const isRailVariant = context.variant === 'rail';
+const railItems = context.groups.flatMap((group) => group.items);
+const explorerId = `course-explorer-${currentPath.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') || 'root'}`;
 
-const groupIsActive = (group: ShellContext['groups'][number]) =>
+const groupIsActive = (group: ShellNavGroup) =>
   group.items.some((item) => hrefMatchesCurrentPath(item.href, currentPath));
 
 const hasActiveLocalGroup = context.groups.some((group) => !group.courseLevel && groupIsActive(group));
 
-const shouldOpen = (group: ShellContext['groups'][number]): boolean => {
+const shouldOpen = (group: ShellNavGroup): boolean => {
   if (group.open) return true;
   if (!groupIsActive(group)) return false;
   if (group.courseLevel && hasActiveLocalGroup) return false;
   return true;
 };
+
+const isDirectGroup = (group: ShellNavGroup): boolean => group.collapsible === false;
+const itemIsDisabled = (item: ShellNavItem): boolean => Boolean(item.disabled || !item.href || item.href === '#');
 
 const isGenericMeta = (value?: string): boolean => {
   if (!value) {
@@ -44,33 +50,186 @@ const isGenericMeta = (value?: string): boolean => {
 };
 ---
 
-<div class="course-explorer">
+<div
+  id={explorerId}
+  class:list={['course-explorer', isRailVariant && 'course-explorer--rail']}
+  data-exclusive-groups={context.exclusiveGroups ? 'true' : undefined}
+>
   <div class="course-explorer__header">
-    <p class="course-explorer__title">{context.title}</p>
-    {context.meta && <p class="course-explorer__meta">{context.meta}</p>}
+    {context.icon && (
+      <span class="course-explorer__badge" aria-hidden="true">
+        <i class={context.icon}></i>
+      </span>
+    )}
+    <div class="course-explorer__header-copy">
+      <p class="course-explorer__title">{context.title}</p>
+      {context.meta && <p class="course-explorer__meta">{context.meta}</p>}
+    </div>
   </div>
 
-  <div class="course-explorer__groups">
-    {context.groups.map((group) => (
-      <details class="course-explorer__group" open={shouldOpen(group)}>
-        <summary>
-          <span>{group.label}</span>
-          {group.meta && !isGenericMeta(group.meta) && <small>{group.meta}</small>}
-        </summary>
-        <ul>
-          {group.items.map((item) => {
-            const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
-            return (
-              <li>
-                <a href={item.href} aria-current={isCurrent ? 'page' : undefined} class:list={{ current: isCurrent }}>
-                  <span>{item.label}</span>
-                  {item.meta && !isGenericMeta(item.meta) && <small>{item.meta}</small>}
+  {isRailVariant ? (
+    <ul class="course-explorer__rail" role="list">
+      {railItems.map((item) => {
+        const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
+        return (
+          <li>
+            <a href={item.href} aria-current={isCurrent ? 'page' : undefined} class:list={{ current: isCurrent }}>
+              <span class="course-explorer__rail-main">
+                {item.number && <span class="course-explorer__rail-number">{item.number}</span>}
+                {item.icon && (
+                  <span class="course-explorer__rail-icon" aria-hidden="true">
+                    <i class={item.icon}></i>
+                  </span>
+                )}
+                <span class="course-explorer__rail-label">{item.label}</span>
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  ) : (
+    <div class="course-explorer__groups">
+      {context.groups.map((group) => {
+        const isActive = groupIsActive(group);
+        const directItem = group.items[0];
+
+        if (isDirectGroup(group) && directItem) {
+          const isCurrent = hrefMatchesCurrentPath(directItem.href, currentPath);
+          const isDisabled = itemIsDisabled(directItem);
+
+          return (
+            <div class:list={['course-explorer__group', 'course-explorer__group--direct', isCurrent && 'is-active']}>
+              {isDisabled ? (
+                <span class:list={['course-explorer__direct-link', 'is-disabled', isCurrent && 'current']}>
+                  {group.icon && (
+                    <span class="course-explorer__group-icon" aria-hidden="true">
+                      <i class={group.icon}></i>
+                    </span>
+                  )}
+                  <span class="course-explorer__entry-copy">
+                    <span>{group.label}</span>
+                    {group.meta && !isGenericMeta(group.meta) && <small>{group.meta}</small>}
+                  </span>
+                </span>
+              ) : (
+                <a
+                  href={directItem.href}
+                  aria-current={isCurrent ? 'page' : undefined}
+                  class:list={['course-explorer__direct-link', isCurrent && 'current']}
+                >
+                  {group.icon && (
+                    <span class="course-explorer__group-icon" aria-hidden="true">
+                      <i class={group.icon}></i>
+                    </span>
+                  )}
+                  <span class="course-explorer__entry-copy">
+                    <span>{group.label}</span>
+                    {group.meta && !isGenericMeta(group.meta) && <small>{group.meta}</small>}
+                  </span>
                 </a>
-              </li>
-            );
-          })}
-        </ul>
-      </details>
-    ))}
-  </div>
+              )}
+            </div>
+          );
+        }
+
+        return (
+          <details
+            class:list={['course-explorer__group', isActive && 'is-active', group.items.length === 0 && 'is-empty']}
+            open={shouldOpen(group)}
+            data-accordion-group
+            data-active={isActive ? 'true' : undefined}
+          >
+            <summary>
+              <span class="course-explorer__summary-main">
+                {group.icon && (
+                  <span class="course-explorer__group-icon" aria-hidden="true">
+                    <i class={group.icon}></i>
+                  </span>
+                )}
+                <span class="course-explorer__entry-copy">
+                  <span>{group.label}</span>
+                  {group.meta && !isGenericMeta(group.meta) && <small>{group.meta}</small>}
+                </span>
+              </span>
+            </summary>
+            {group.items.length > 0 && (
+              <ul>
+                {group.items.map((item) => {
+                  const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
+                  const isDisabled = itemIsDisabled(item);
+                  return (
+                    <li>
+                      {isDisabled ? (
+                        <span class:list={['course-explorer__item-link', 'is-disabled', isCurrent && 'current']}>
+                          <span class="course-explorer__item-main">
+                            {item.number && <span class="course-explorer__item-number">{item.number}</span>}
+                            <span class="course-explorer__entry-copy">
+                              <span>{item.label}</span>
+                              {item.meta && !isGenericMeta(item.meta) && <small>{item.meta}</small>}
+                            </span>
+                          </span>
+                        </span>
+                      ) : (
+                        <a
+                          href={item.href}
+                          aria-current={isCurrent ? 'page' : undefined}
+                          class:list={['course-explorer__item-link', isCurrent && 'current']}
+                        >
+                          <span class="course-explorer__item-main">
+                            {item.number && <span class="course-explorer__item-number">{item.number}</span>}
+                            <span class="course-explorer__entry-copy">
+                              <span>{item.label}</span>
+                              {item.meta && !isGenericMeta(item.meta) && <small>{item.meta}</small>}
+                            </span>
+                          </span>
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </details>
+        );
+      })}
+    </div>
+  )}
 </div>
+
+<script is:inline define:vars={{ explorerId }}>
+  (() => {
+    const root = document.getElementById(explorerId);
+    if (!root || root.dataset.exclusiveGroups !== 'true') {
+      return;
+    }
+
+    const groups = Array.from(root.querySelectorAll('details[data-accordion-group]'));
+    if (groups.length === 0) {
+      return;
+    }
+
+    const closeSiblings = (activeGroup) => {
+      groups.forEach((group) => {
+        if (group !== activeGroup) {
+          group.open = false;
+        }
+      });
+    };
+
+    const initiallyOpen = groups.filter((group) => group.open);
+    const preferredGroup = initiallyOpen.find((group) => group.dataset.active === 'true') || initiallyOpen[0];
+    if (preferredGroup) {
+      closeSiblings(preferredGroup);
+    }
+
+    groups.forEach((group) => {
+      group.addEventListener('toggle', () => {
+        if (!group.open) {
+          return;
+        }
+        closeSiblings(group);
+      });
+    });
+  })();
+</script>

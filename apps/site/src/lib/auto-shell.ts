@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
-import type { TopicSection, UnitIndexFrontmatter, UnitPlanFrontmatter } from '@sgs/content-schema';
+import type { UnitIndexFrontmatter, UnitPlanFrontmatter } from '@sgs/content-schema';
 import {
   getIb2027LevelListing,
   getIb2027UnitIndexData,
@@ -12,10 +12,8 @@ import {
   decodeHtmlEntities,
   getListingByKey,
   readMarkdownDocument,
-  readPublicHtml,
   readSourceFrontmatter,
-  repoRoot,
-  stripHtmlTags
+  repoRoot
 } from './source-content';
 import { rewriteIgcseCourseHref, rewriteIbCourseHref } from './course-links';
 import {
@@ -77,8 +75,21 @@ interface TextbookFrontmatter {
   }>;
 }
 
+interface ListingItemRecord {
+  href: string;
+  number?: string;
+  name: string;
+  icon?: string;
+}
+
+interface ListingSectionRecord {
+  title: string;
+  subtitle?: string;
+  items: ListingItemRecord[];
+}
+
 interface ListingRecord {
-  sections: TopicSection[];
+  sections: ListingSectionRecord[];
 }
 
 interface ShellBreadcrumb {
@@ -180,9 +191,16 @@ const buildSectionGroup = (
   id: string,
   label: string,
   items: ShellNavItem[],
-  options: { meta?: string; sequence?: boolean; open?: boolean } = {}
+  options: {
+    meta?: string;
+    sequence?: boolean;
+    open?: boolean;
+    collapsible?: boolean;
+    icon?: string;
+    allowEmpty?: boolean;
+  } = {}
 ): ShellNavGroup | null => {
-  if (items.length === 0) {
+  if (items.length === 0 && !options.allowEmpty) {
     return null;
   }
 
@@ -192,7 +210,9 @@ const buildSectionGroup = (
     items,
     meta: options.meta,
     sequence: options.sequence,
-    open: options.open
+    open: options.open,
+    collapsible: options.collapsible,
+    icon: options.icon
   };
 };
 
@@ -433,22 +453,17 @@ const KS3_YEAR_LISTING_KEYS: Record<string, string> = {
   year9: 'ks3-year9'
 };
 
-const formatKs3YearLabel = (year: string): string => year.replace(/^year/i, 'Year ');
-
-const formatKs3CourseItemLabel = (
-  item: ListingRecord['sections'][number]['items'][number],
-  year?: string
-) => {
-  if (year === 'year7' && /\/ks3\/year7\/unit\d+/i.test(item.href)) {
-    return `Unit ${item.number}. ${item.name}`;
-  }
-
-  return item.name;
+const KS3_YEAR_SHELL_ICONS: Record<string, string> = {
+  year7: 'fa-solid fa-laptop-code',
+  year8: 'fa-solid fa-laptop-code',
+  year9: 'fa-solid fa-laptop-code'
 };
+
+const formatKs3YearLabel = (year: string): string => year.replace(/^year/i, 'Year ');
+const formatKs3ShellMeta = (year: string): string => `${formatKs3YearLabel(year)} Curriculum`;
 
 const buildKs3CourseGroups = async (
   listingKey: string,
-  year?: string
 ): Promise<{ listing: ListingRecord; groups: ShellNavGroup[] }> => {
   const listing = await getListingByKey<ListingRecord>(listingKey);
 
@@ -460,58 +475,138 @@ const buildKs3CourseGroups = async (
       meta: section.subtitle,
       courseLevel: true,
       items: (section.items || []).map((item) => ({
-        label: formatKs3CourseItemLabel(item, year),
-        href: item.href
+        label: item.name,
+        href: item.href,
+        number: item.number,
+        icon: item.icon
       }))
     }))
   };
 };
 
-const extractAnchorLinks = (html: string, basePath: string): ShellNavItem[] => {
-  const anchorRegex = /<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
-  const links: ShellNavItem[] = [];
-  let match: RegExpExecArray | null;
+const KS3_UNIT_SECTION_ICONS = {
+  overview: 'fa-solid fa-binoculars',
+  lessons: 'fa-solid fa-book-open',
+  activities: 'fa-solid fa-laptop-code',
+  homework: 'fa-solid fa-house',
+  assessment: 'fa-solid fa-file-pen',
+  textbook: 'fa-solid fa-book-open-reader',
+  revision: 'fa-solid fa-rotate-left'
+} as const;
 
-  while ((match = anchorRegex.exec(html))) {
-    const href = decodeHtmlEntities(match[1].trim());
-    const label = stripHtmlTags(match[2]);
-
-    if (!label || !isValidStudentHref(href)) {
-      continue;
-    }
-
-    const absoluteHref = ensureAbsoluteHref(basePath, href);
-    if (!absoluteHref.startsWith(basePath) && absoluteHref !== `${basePath}.html`) {
-      continue;
-    }
-
-    links.push({
-      label,
-      href: absoluteHref
-    });
-  }
-
-  return links.filter(
-    (link, index, list) =>
-      list.findIndex((candidate) => normalizeShellPath(candidate.href) === normalizeShellPath(link.href)) === index
-  );
+const KS3_RESOURCE_LABEL_OVERRIDES: Record<string, string> = {
+  '/ks3/year7/unit2/L1_digital_you.html': 'Digital You',
+  '/ks3/year7/unit2/L2_the_trail_you_leave_behind.html': 'The Trail You Leave Behind',
+  '/ks3/year7/unit2/L3_what_will_people_think.html': 'What Will People Think?',
+  '/ks3/year7/unit2/L4_public_vs_private_data.html': 'Public vs Private Data Online',
+  '/ks3/year7/unit2/L5_who_is_watching.html': 'Who Is Watching?',
+  '/ks3/year7/unit2/L6_the_cost_of_free.html': 'The Cost of Free',
+  '/ks3/year7/unit2/L7_cyberbullying_and_harmful_contact.html': 'Cyberbullying & Harmful Contact',
+  '/ks3/year7/unit2/L8_digital_citizenship_pledge.html': 'Digital Citizenship Pledge',
+  '/ks3/year7/unit2/activity1.html': 'Who Is John Doe',
+  '/ks3/year7/unit2/activity2.html': 'Data Detective',
+  '/ks3/year7/unit2/activity3.html': 'Swipe Scenarios',
+  '/ks3/year7/unit2/assessment-l1-l3-comprehensive.html': 'Mid-Unit Assessment',
+  '/ks3/year7/unit2/quiz-l1-mcq.html': 'Lesson 1 Quiz',
+  '/ks3/year7/unit2/quiz-l2-mcq.html': 'Lesson 2 Quiz',
+  '/ks3/year7/unit2/quiz-l3-mcq.html': 'Lesson 3 Quiz'
 };
 
-const classifyKs3Link = (href: string, label: string): 'textbook' | 'lessons' | 'activities' | 'assessment' | 'other' => {
-  const signature = `${href} ${label}`.toLowerCase();
-  if (signature.includes('textbook')) {
-    return 'textbook';
+const getKs3UnitNumber = (unitSlug: string): string =>
+  unitSlug.replace(/^unit/i, '').trim();
+
+const findKs3UnitItem = (listing: ListingRecord, unitSlug: string): ListingItemRecord | undefined => {
+  const unitNumber = getKs3UnitNumber(unitSlug);
+  const normalizedUnitPath = normalizeShellPath(`/ks3/${unitSlug}.html`);
+
+  return (listing.sections || [])
+    .flatMap((section) => section.items || [])
+    .find((item) => item.number === unitNumber || normalizeShellPath(item.href).endsWith(`/${unitSlug}`) || normalizeShellPath(item.href) === normalizedUnitPath);
+};
+
+const buildDisabledShellItem = (label: string, number?: string): ShellNavItem => ({
+  label,
+  href: '#',
+  disabled: true,
+  ...(number ? { number } : {})
+});
+
+const getKs3ResourceLabel = (href: string, filename: string): string =>
+  KS3_RESOURCE_LABEL_OVERRIDES[href] || humanizeRouteLabel(filename);
+
+const getLeadingNumber = (value: string, pattern: RegExp): number => {
+  const match = value.match(pattern);
+  return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
+};
+
+const readPublicKs3UnitItems = async (
+  year: string,
+  unit: string,
+  matcher: (filename: string) => boolean,
+  numberPattern: RegExp,
+  sortValue: (filename: string) => number = (filename) => getLeadingNumber(filename, numberPattern)
+): Promise<ShellNavItem[]> => {
+  const absoluteDir = path.join(repoRoot, 'public', 'ks3', year, unit);
+  if (!existsSync(absoluteDir)) {
+    return [];
   }
-  if (/\/l\d|lesson|slide deck/.test(signature)) {
-    return 'lessons';
+
+  const entries = await readdir(absoluteDir, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.html') && matcher(entry.name))
+    .sort((left, right) => sortValue(left.name) - sortValue(right.name) || left.name.localeCompare(right.name))
+    .map((entry) => {
+      const href = `/ks3/${year}/${unit}/${entry.name}`;
+      const numberMatch = entry.name.match(numberPattern);
+      return {
+        label: getKs3ResourceLabel(href, entry.name),
+        href,
+        ...(numberMatch?.[1] ? { number: String(Number(numberMatch[1])) } : {})
+      };
+    });
+};
+
+const findFirstExistingKs3Resource = (year: string, unit: string, candidates: string[]): string | null => {
+  for (const candidate of candidates) {
+    if (existsSync(path.join(repoRoot, 'public', 'ks3', year, unit, candidate))) {
+      return `/ks3/${year}/${unit}/${candidate}`;
+    }
   }
-  if (/activity|quiz|game/.test(signature)) {
-    return 'activities';
-  }
-  if (/assessment|homework|flashcard|revision/.test(signature)) {
-    return 'assessment';
-  }
-  return 'other';
+
+  return null;
+};
+
+const buildKs3UnitResources = async (year: string, unit: string) => {
+  const lessons = await readPublicKs3UnitItems(year, unit, (filename) => /^L\d+.*\.html$/i.test(filename), /^L(\d+)/i);
+  const activities = await readPublicKs3UnitItems(
+    year,
+    unit,
+    (filename) => /^activity\d+\.html$/i.test(filename),
+    /^activity(\d+)/i
+  );
+  const assessment = await readPublicKs3UnitItems(
+    year,
+    unit,
+    (filename) => /^(assessment.*|quiz.*)\.html$/i.test(filename),
+    /(\d+)/,
+    (filename) => (/^assessment/i.test(filename) ? 0 : 100 + getLeadingNumber(filename, /l(\d+)/i))
+  );
+
+  const textbookHref = findFirstExistingKs3Resource(year, unit, ['textbook.html']);
+  const revisionHref = findFirstExistingKs3Resource(year, unit, ['revision.html', 'flashcards.html']);
+  const homework =
+    year === 'year7' && unit === 'unit2'
+      ? ['1', '2', '3'].map((number) => buildDisabledShellItem(`Homework ${number}`, number))
+      : [];
+
+  return {
+    lessons,
+    activities,
+    homework,
+    assessment,
+    textbook: textbookHref ? { label: 'Textbook', href: textbookHref } : buildDisabledShellItem('Textbook'),
+    revision: revisionHref ? { label: 'Revision', href: revisionHref } : buildDisabledShellItem('Revision')
+  };
 };
 
 const buildKs3Shell = async (pathname: string): Promise<{
@@ -536,19 +631,25 @@ const buildKs3Shell = async (pathname: string): Promise<{
   }
 
   const listingKey = KS3_YEAR_LISTING_KEYS[routeParts.year] || 'ks3';
-  const { listing, groups: courseGroups } = await buildKs3CourseGroups(listingKey, routeParts.year);
+  const { listing, groups: courseGroups } = await buildKs3CourseGroups(listingKey);
   const yearTitle = formatKs3YearLabel(routeParts.year);
   const yearOverviewRoute = `/ks3/${routeParts.year}/index.html`;
   const yearMeta = listing.sections[0]?.subtitle;
   const currentPath = normalizeShellPath(pathname);
+  const yearShellIcon = KS3_YEAR_SHELL_ICONS[routeParts.year];
+  const yearShellMeta = formatKs3ShellMeta(routeParts.year);
+  const unitItem = routeParts.unit ? findKs3UnitItem(listing, routeParts.unit) : undefined;
 
   if (!routeParts.unit) {
     if (!routeParts.leaf) {
       return {
         shellContext: {
-          title: yearTitle,
-          meta: yearMeta,
-          groups: courseGroups
+          title: 'Computer Science',
+          meta: yearShellMeta,
+          groups: courseGroups,
+          icon: yearShellIcon,
+          variant: 'rail',
+          collapsible: true
         },
         layoutMode: 'worksheet',
         breadcrumbs: [
@@ -560,9 +661,11 @@ const buildKs3Shell = async (pathname: string): Promise<{
 
     const yearItems = (listing.sections || []).flatMap((section) =>
       (section.items || []).map((item) => ({
-        label: formatKs3CourseItemLabel(item, routeParts.year),
+        label: item.name,
         href: item.href,
-        meta: section.subtitle
+        meta: section.subtitle,
+        number: item.number,
+        icon: item.icon
       }))
     );
 
@@ -593,9 +696,11 @@ const buildKs3Shell = async (pathname: string): Promise<{
 
     return {
       shellContext: {
-        title: yearTitle,
-        meta: yearMeta,
-        groups: localGroups
+        title: 'Computer Science',
+        meta: yearShellMeta,
+        groups: localGroups,
+        icon: yearShellIcon,
+        collapsible: true
       },
       layoutMode: isKs3WorkspaceRoute(currentPath) ? 'workspace' : 'worksheet',
       breadcrumbs,
@@ -605,46 +710,61 @@ const buildKs3Shell = async (pathname: string): Promise<{
   }
 
   const unitOverviewRoute = `/ks3/${routeParts.year}/${routeParts.unit}.html`;
-  const basePath = `/ks3/${routeParts.year}`;
-  let unitLinks: ShellNavItem[] = [];
-
-  try {
-    const html = await readPublicHtml(unitOverviewRoute);
-    unitLinks = extractAnchorLinks(html, basePath);
-  } catch {
-    unitLinks = [];
-  }
-
-  const sequenceLinks: ShellNavItem[] = [
-    {
-      label: 'Unit overview',
-      href: unitOverviewRoute
-    },
-    ...unitLinks.filter((item) => normalizeShellPath(item.href) !== normalizeShellPath(unitOverviewRoute))
-  ];
-
-  const buckets = {
-    textbook: [] as ShellNavItem[],
-    lessons: [] as ShellNavItem[],
-    activities: [] as ShellNavItem[],
-    assessment: [] as ShellNavItem[],
-    other: [] as ShellNavItem[]
-  };
-
-  sequenceLinks.forEach((item) => {
-    if (normalizeShellPath(item.href) === normalizeShellPath(unitOverviewRoute)) {
-      buckets.other.push(item);
-      return;
-    }
-    buckets[classifyKs3Link(item.href, item.label)].push(item);
-  });
+  const unitResources = await buildKs3UnitResources(routeParts.year, routeParts.unit);
+  const unitNumber = getKs3UnitNumber(routeParts.unit);
+  const unitLabel = `Unit ${unitNumber}`;
+  const unitName = unitItem?.name || unitLabel;
+  const unitIcon = unitItem?.icon || yearShellIcon;
 
   const localGroups = [
-    buildSectionGroup('unit-overview', 'Overview', buckets.other.slice(0, 1), { sequence: true, open: true }),
-    buildSectionGroup('unit-textbook', 'Textbook', buckets.textbook, { sequence: false }),
-    buildSectionGroup('unit-lessons', 'Lessons', buckets.lessons, { sequence: true }),
-    buildSectionGroup('unit-activities', 'Activities', buckets.activities, { sequence: true }),
-    buildSectionGroup('unit-assessment', 'Assessment & Revision', buckets.assessment, { sequence: true })
+    buildSectionGroup(
+      'unit-overview',
+      'Overview',
+      [{ label: 'Overview', href: unitOverviewRoute }],
+      {
+        sequence: true,
+        open: true,
+        collapsible: false,
+        icon: KS3_UNIT_SECTION_ICONS.overview
+      }
+    ),
+    buildSectionGroup('unit-lessons', 'Lessons', unitResources.lessons, {
+      sequence: true,
+      icon: KS3_UNIT_SECTION_ICONS.lessons,
+      allowEmpty: true
+    }),
+    buildSectionGroup('unit-activities', 'Activities', unitResources.activities, {
+      sequence: true,
+      icon: KS3_UNIT_SECTION_ICONS.activities,
+      allowEmpty: true
+    }),
+    buildSectionGroup('unit-homework', 'Homework', unitResources.homework, {
+      icon: KS3_UNIT_SECTION_ICONS.homework,
+      allowEmpty: true
+    }),
+    buildSectionGroup('unit-assessment', 'Assessment', unitResources.assessment, {
+      sequence: true,
+      icon: KS3_UNIT_SECTION_ICONS.assessment,
+      allowEmpty: true
+    }),
+    buildSectionGroup(
+      'unit-textbook',
+      'Textbook',
+      [unitResources.textbook],
+      {
+        collapsible: false,
+        icon: KS3_UNIT_SECTION_ICONS.textbook
+      }
+    ),
+    buildSectionGroup(
+      'unit-revision',
+      'Revision',
+      [unitResources.revision],
+      {
+        collapsible: false,
+        icon: KS3_UNIT_SECTION_ICONS.revision
+      }
+    )
   ].filter((group): group is ShellNavGroup => Boolean(group));
 
   const { prevLink, nextLink } = buildPrevNextLinks(localGroups, currentPath);
@@ -666,9 +786,12 @@ const buildKs3Shell = async (pathname: string): Promise<{
 
   return {
     shellContext: {
-      title: yearTitle,
-      meta: routeParts.unit.replace(/^unit/i, 'Unit '),
-      groups: [...localGroups, ...courseGroups]
+      title: unitLabel,
+      meta: unitName,
+      groups: localGroups,
+      icon: unitIcon,
+      collapsible: true,
+      exclusiveGroups: true
     },
     layoutMode,
     breadcrumbs,

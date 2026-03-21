@@ -4,6 +4,9 @@ export interface ShellNavItem {
   label: string;
   href: string;
   meta?: string;
+  icon?: string;
+  number?: string;
+  disabled?: boolean;
 }
 
 export interface ShellNavGroup {
@@ -14,12 +17,18 @@ export interface ShellNavGroup {
   open?: boolean;
   sequence?: boolean;
   courseLevel?: boolean;
+  collapsible?: boolean;
+  icon?: string;
 }
 
 export interface ShellContext {
   title: string;
   meta?: string;
   groups: ShellNavGroup[];
+  icon?: string;
+  variant?: 'accordion' | 'rail';
+  collapsible?: boolean;
+  exclusiveGroups?: boolean;
 }
 
 export interface ShellPageLink {

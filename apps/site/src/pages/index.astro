@@ -5,14 +5,16 @@ const priorityCards = [
   {
     href: '/igcse/index.html',
     title: 'IGCSE Computer Science',
-    desc: 'Dive deeper into algorithms, data representation, and hardware. Prepare for your exams with comprehensive resources.',
-    icon: 'fa-solid fa-microchip'
+    desc: 'Master the principles of computational thinking and programming with the Cambridge curriculum.',
+    icon: 'fa-solid fa-code',
+    tone: 'igcse'
   },
   {
     href: '/ib-2027/index.html',
     title: 'IB Computer Science',
-    desc: 'New unit-based learning for Standard Level and Higher Level students. First assessment 2027.',
-    icon: 'fa-solid fa-graduation-cap'
+    desc: 'Advance into systems architecture, algorithms, and data structures at Higher or Standard Level for the IB Diploma.',
+    icon: 'fa-solid fa-microchip',
+    tone: 'ib'
   }
 ];
 
@@ -20,20 +22,23 @@ const ks3Cards = [
   {
     href: '/ks3/year7/index.html',
     title: 'Year 7',
-    desc: 'Foundations of computing, logic, and digital confidence.',
-    icon: 'fa-solid fa-rocket'
+    meta: 'Lower Secondary Transition',
+    icon: 'fa-solid fa-cube',
+    number: '07'
   },
   {
     href: '/ks3/year8/index.html',
     title: 'Year 8',
-    desc: 'Developing skills through challenge routes and assessments.',
-    icon: 'fa-solid fa-satellite-dish'
+    meta: 'Core Competency Development',
+    icon: 'fa-solid fa-diagram-project',
+    number: '08'
   },
   {
     href: '/ks3/year9/index.html',
     title: 'Year 9',
-    desc: 'Advanced concepts, mission-style tasks, and deeper problem solving.',
-    icon: 'fa-solid fa-compass-drafting'
+    meta: 'IGCSE Preparation Path',
+    icon: 'fa-solid fa-flag',
+    number: '09'
   }
 ];
 ---
@@ -47,34 +52,54 @@ const ks3Cards = [
   heroVariant="feature"
 >
   <section class="home-curriculum">
-    <div class="home-curriculum__priority">
-      {priorityCards.map((card) => (
-        <a href={card.href} class="feature-link feature-link--priority">
-          <div class="feature-link__icon" aria-hidden="true">
-            <i class={card.icon} aria-hidden="true"></i>
-          </div>
-          <h2 class="feature-link__title">{card.title}</h2>
-          <p class="feature-link__desc">{card.desc}</p>
-        </a>
-      ))}
-    </div>
-
-    <section class="home-curriculum__ks3" aria-labelledby="home-ks3-title">
-      <div class="home-curriculum__heading">
-        <p class="home-curriculum__kicker">Key Stage 3</p>
-        <h2 id="home-ks3-title">Key Stage 3 Computer Science</h2>
+    <section class="home-panel home-panel--years" aria-labelledby="home-ks3-title">
+      <div class="home-panel__heading">
+        <p class="home-panel__kicker">Foundation Years</p>
+        <h2 id="home-ks3-title">Key Stage 3</h2>
       </div>
 
-      <div class="home-curriculum__years">
+      <div class="home-panel__stack">
         {ks3Cards.map((card) => (
-          <a href={card.href} class="feature-link feature-link--year">
-            <div class="feature-link__icon" aria-hidden="true">
-              <i class={card.icon} aria-hidden="true"></i>
+          <a href={card.href} class="home-track home-track--year">
+            <span class="home-track__number" aria-hidden="true">{card.number}</span>
+            <div class="home-track__copy home-track__copy--year">
+              <h3>{card.title}</h3>
+              <p class="home-track__meta">
+                <i class={card.icon} aria-hidden="true"></i>
+                <span>{card.meta}</span>
+              </p>
             </div>
-            <h3 class="feature-link__title">{card.title}</h3>
-            <p class="feature-link__desc">{card.desc}</p>
+            <span class="home-track__cta home-track__cta--solid">
+              Explore curriculum
+              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </span>
           </a>
         ))}
+      </div>
+    </section>
+
+    <section class="home-panel home-panel--courses" aria-labelledby="home-cs-title">
+      <div class="home-panel__heading">
+        <p class="home-panel__kicker">Advanced Studies</p>
+        <h2 id="home-cs-title">Computer Science</h2>
+      </div>
+
+      <div class="home-panel__stack home-panel__stack--courses">
+      {priorityCards.map((card) => (
+        <a href={card.href} class={`home-track home-track--course home-track--${card.tone}`}>
+          <div class="home-track__course-top">
+            <div class="home-track__icon home-track__icon--course" aria-hidden="true">
+              <i class={card.icon} aria-hidden="true"></i>
+            </div>
+            <h3>{card.title}</h3>
+          </div>
+          <p class="home-track__desc">{card.desc}</p>
+          <span class="home-track__cta home-track__cta--link">
+            Explore curriculum
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </span>
+        </a>
+      ))}
       </div>
     </section>
   </section>

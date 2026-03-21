@@ -202,6 +202,7 @@ const showFullscreen = variant === 'slides';
     const selector = `iframe[data-legacy-frame-id="${activeFrameId}"]`;
     const frame = document.querySelector(selector);
     if (!frame) return;
+    let lastHeight = 0;
 
     const fullscreenButton = document.querySelector(`[data-legacy-frame-fullscreen="${activeFrameId}"]`);
     if (fullscreenButton) {
@@ -228,7 +229,13 @@ const showFullscreen = variant === 'slides';
         return;
       }
 
-      frame.style.height = `${Math.max(880, nextHeight)}px`;
+      const frameHeight = Math.max(360, Math.ceil(nextHeight));
+      if (Math.abs(frameHeight - lastHeight) < 2) {
+        return;
+      }
+
+      lastHeight = frameHeight;
+      frame.style.height = `${frameHeight}px`;
     });
   })();
 </script>

@@ -22,6 +22,7 @@ interface Props {
   bodyClass?: string;
   mainClass?: string;
   extraStyles?: string[];
+  shellPath?: string;
   courseShell?: ShellContext;
   layoutMode?: ShellMode;
   prevLink?: ShellPageLink;
@@ -36,6 +37,7 @@ const {
   bodyClass = '',
   mainClass = '',
   extraStyles = [],
+  shellPath,
   courseShell,
   layoutMode,
   prevLink,
@@ -59,12 +61,14 @@ const inferredActiveSection: NavSection | undefined = Astro.url.pathname.startsW
   : undefined;
 
 const resolvedActiveSection = activeSection || inferredActiveSection;
-const autoShellState = await getAutoShellState(Astro.url.pathname);
+const resolvedShellPath = shellPath || Astro.url.pathname;
+const autoShellState = await getAutoShellState(resolvedShellPath);
 const resolvedCourseShell = courseShell ?? autoShellState.courseShell;
 const resolvedLayoutMode = layoutMode ?? autoShellState.layoutMode ?? 'worksheet';
 const resolvedPrevLink = prevLink ?? autoShellState.prevLink;
 const resolvedNextLink = nextLink ?? autoShellState.nextLink;
 const resolvedBreadcrumbs = breadcrumbs.length > 0 ? breadcrumbs : autoShellState.breadcrumbs ?? [];
+const sidebarIsCollapsible = resolvedCourseShell?.collapsible !== false;
 const currentYear = new Date().getFullYear();
 const bodyClasses = ['site-body', bodyClass].filter(Boolean);
 const mainClasses = [
@@ -115,13 +119,15 @@ const normalizeStyleHref = (stylePath: string): string => {
 
       {resolvedCourseShell && (
         <aside class="course-shell__sidebar" id="course-shell-sidebar">
-          <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button>
-          <CourseExplorer context={resolvedCourseShell} currentPath={Astro.url.pathname} />
+          {sidebarIsCollapsible && (
+            <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button>
+          )}
+          <CourseExplorer context={resolvedCourseShell} currentPath={resolvedShellPath} />
         </aside>
       )}
 
       <div class="page-shell__content">
-        {resolvedCourseShell && (
+        {resolvedCourseShell && sidebarIsCollapsible && (
           <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button>
         )}
         {resolvedCourseShell && sidebarToggleId && (
