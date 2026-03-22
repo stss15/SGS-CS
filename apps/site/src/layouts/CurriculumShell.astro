@@ -21,6 +21,8 @@ interface Props {
   heroSubtitle?: string;
   pills?: string[];
   heroVariant?: 'feature' | 'compact';
+  heroImage?: string;
+  heroImageAlt?: string;
 }
 
 const {
@@ -34,7 +36,9 @@ const {
   heroTitle,
   heroSubtitle,
   pills = [],
-  heroVariant = 'compact'
+  heroVariant = 'compact',
+  heroImage,
+  heroImageAlt
 } = Astro.props as Props;
 
 const shellMainClass = ['curriculum-shell', mainClass].filter(Boolean).join(' ');
@@ -48,7 +52,7 @@ const shellMainClass = ['curriculum-shell', mainClass].filter(Boolean).join(' ')
   mainClass={shellMainClass}
   extraStyles={extraStyles}
 >
-  <HeroPanel eyebrow={eyebrow} title={heroTitle} subtitle={heroSubtitle} pills={pills} variant={heroVariant}>
+  <HeroPanel eyebrow={eyebrow} title={heroTitle} subtitle={heroSubtitle} pills={pills} variant={heroVariant} heroImage={heroImage} heroImageAlt={heroImageAlt}>
     <slot />
   </HeroPanel>
 </BaseLayout>

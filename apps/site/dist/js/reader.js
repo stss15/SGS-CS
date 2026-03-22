@@ -117,15 +117,17 @@
       return;
     }
 
+    const isGroupHeader = (h) => h.tagName === 'H2' && !!h.closest('.ib-syllabus-reader-block__header');
+
     const container = document.createDocumentFragment();
     let currentDetails = null;
     let currentSubList = null;
 
     headings.forEach((heading) => {
-      const level = heading.tagName === 'H3' ? 3 : 2;
       const headingText = (heading.textContent || '').trim() || 'Untitled';
 
-      if (level === 2) {
+      if (isGroupHeader(heading)) {
+        // Group header H2 → collapsible <details> section
         currentDetails = document.createElement('details');
         currentDetails.className = 'toc-section';
         currentDetails.dataset.tocText = headingText.toLowerCase();
@@ -147,8 +149,9 @@
         container.appendChild(currentDetails);
         tocLinkById.set(heading.id, link);
       } else {
+        // Content H2 or H3 → list item inside current section
         const item = document.createElement('li');
-        item.className = 'toc-level-3';
+        item.className = heading.tagName === 'H3' ? 'toc-level-3' : 'toc-level-2';
         item.dataset.tocText = headingText.toLowerCase();
 
         const link = document.createElement('a');
@@ -156,14 +159,15 @@
         link.dataset.readerTocLink = 'true';
         link.dataset.targetId = heading.id;
 
-        const dot = document.createElement('span');
-        dot.className = 'toc-dot';
-        dot.setAttribute('aria-hidden', 'true');
+        if (heading.tagName === 'H3') {
+          const dot = document.createElement('span');
+          dot.className = 'toc-dot';
+          dot.setAttribute('aria-hidden', 'true');
+          link.appendChild(dot);
+        }
 
         const text = document.createElement('span');
         text.textContent = headingText;
-
-        link.appendChild(dot);
         link.appendChild(text);
         item.appendChild(link);
 
@@ -217,7 +221,7 @@
   buildToc();
 
   // Wrap H2 content sections in collapsible <details> elements
-  const h2Headings = headings.filter((h) => h.tagName === 'H2');
+  const h2Headings = headings.filter((h) => h.tagName === 'H2' && !h.closest('.ib-syllabus-reader-block__header'));
   h2Headings.forEach((h2) => {
     const details = document.createElement('details');
     details.className = 'reader-chapter';
@@ -226,10 +230,12 @@
     summary.className = 'reader-chapter__summary';
     summary.appendChild(h2.cloneNode(true));
 
-    h2.parentNode.insertBefore(details, h2);
+    const parent = h2.parentNode;
+    let next = h2.nextSibling;
+    parent.insertBefore(details, h2);
+    h2.remove();
     details.appendChild(summary);
 
-    let next = details.nextSibling;
     while (next) {
       if (next.nodeType === 1 && next.tagName === 'H2') break;
       if (next.nodeType === 1 && next.classList && next.classList.contains('reader-chapter')) break;
@@ -237,8 +243,6 @@
       next = next.nextSibling;
       details.appendChild(toMove);
     }
-
-    h2.remove();
   });
 
   // When navigating to a heading, expand its chapter

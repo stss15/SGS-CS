@@ -5,6 +5,8 @@ interface Props {
   subtitle?: string;
   pills?: string[];
   variant?: 'feature' | 'compact';
+  heroImage?: string;
+  heroImageAlt?: string;
 }
 
 const {
@@ -12,14 +14,20 @@ const {
   title,
   subtitle,
   pills = [],
-  variant = 'feature'
+  variant = 'feature',
+  heroImage,
+  heroImageAlt = title
 } = Astro.props;
 ---
 
 <section class:list={['hero', `hero--${variant}`]}>
   <div class="hero-copy">
     {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-    <h1 class="hero-title">{title}</h1>
+    {heroImage ? (
+      <img src={heroImage} alt={heroImageAlt} class="hero-logo" loading="eager" fetchpriority="high" />
+    ) : (
+      <h1 class="hero-title">{title}</h1>
+    )}
     {subtitle && <p class="hero-subtitle">{subtitle}</p>}
     {pills.length > 0 && (
       <div class="pill-info hero-pill-row">
