@@ -14,7 +14,7 @@ export async function getStaticPaths() {
   return Promise.all(
     allFiles.map(async (relativePath) => {
       const routePath = `/ib-2027/${relativePath}`;
-      const restParam = relativePath.replace(/\.html$/, '');
+      const restParam = relativePath.toLowerCase().replace(/\.html$/, '');
       const html = await readPublicHtml(routePath);
       return {
         params: { rest: restParam },

@@ -889,10 +889,13 @@ const readPublicHtmlItems = async (
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith('.html') && !exclude.test(entry.name.replace('.html', '')))
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map((entry) => ({
-      label: humanizeRouteLabel(entry.name),
-      href: `${routeBasePath}/${entry.name}`
-    }));
+    .map((entry) => {
+      const slug = entry.name.replace(/\.html$/i, '').toLowerCase();
+      return {
+        label: humanizeRouteLabel(entry.name),
+        href: `${routeBasePath.toLowerCase()}/${slug}/index.html`
+      };
+    });
 };
 
 const readPublicOopProjectItems = async (unitCode: string): Promise<ShellNavItem[]> => {
@@ -907,10 +910,13 @@ const readPublicOopProjectItems = async (unitCode: string): Promise<ShellNavItem
       const bi = order.findIndex((p) => b.name.startsWith(p));
       return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
     })
-    .map((e) => ({
-      label: humanizeRouteLabel(e.name),
-      href: `/ib-2027/B3/B3.1/oop-project/${e.name}`
-    }));
+    .map((e) => {
+      const slug = e.name.replace(/\.html$/i, '').toLowerCase();
+      return {
+        label: humanizeRouteLabel(e.name),
+        href: `/ib-2027/b3/b3.1/oop-project/${slug}/index.html`
+      };
+    });
 };
 
 const buildIbLocalGroups = async (
@@ -942,7 +948,7 @@ const buildIbLocalGroups = async (
         if (slides.length > 0) {
           // Astro generates routes as /slideSlug/index.html, not /slideSlug.html
           const slideSlug = slides[0].replace(/\.html$/i, '');
-          slideHref = `/ib-2027/${unitCode}/${dir.name}/slides/${slideSlug}/index.html`;
+          slideHref = `/ib-2027/${unitCode.toLowerCase()}/${dir.name.toLowerCase()}/slides/${slideSlug.toLowerCase()}/index.html`;
         }
       }
       const subtopicName = IB_SUBTOPIC_NAMES[dir.name.toUpperCase()] || dir.name;
@@ -953,7 +959,7 @@ const buildIbLocalGroups = async (
     }
   }
   const lessonsGroup = buildSectionGroup('unit-lessons', 'Lessons', lessonItems, {
-    sequence: true, icon: 'fa-solid fa-book-open'
+    sequence: true, icon: 'fa-solid fa-book-open', allowEmpty: true
   });
 
   // ── Activities (collapsible — worksheets, projects, visualisers) ─
@@ -966,10 +972,13 @@ const buildIbLocalGroups = async (
     wsEntries
       .filter((f) => f.endsWith('.html') && f !== 'index.html')
       .sort()
-      .forEach((f) => activityItems.push({
-        label: `SQL: ${humanizeRouteLabel(f)}`,
-        href: `/ib-2027/${unitCode}/sql-worksheets/${f}`
-      }));
+      .forEach((f) => {
+        const slug = f.replace(/\.html$/i, '').toLowerCase();
+        activityItems.push({
+          label: `SQL: ${humanizeRouteLabel(f)}`,
+          href: `/ib-2027/${unitCode.toLowerCase()}/sql-worksheets/${slug}/index.html`
+        });
+      });
   }
 
   // SQL playground (A3)
@@ -1001,7 +1010,7 @@ const buildIbLocalGroups = async (
         .filter((e) => e.isFile() && e.name.endsWith('.html'))
         .sort()
         .forEach((e) => {
-          const slug = e.name.replace(/\.html$/i, '');
+          const slug = e.name.replace(/\.html$/i, '').toLowerCase();
           activityItems.push({
             label: humanizeRouteLabel(e.name),
             href: `/ib-2027/scenarios/${slug}/index.html`
@@ -1011,7 +1020,7 @@ const buildIbLocalGroups = async (
     // Design patterns (B3.2)
     const dpFile = path.join(publicUnitDir, 'B3.2/design-patterns.html');
     if (existsSync(dpFile)) {
-      activityItems.push({ label: 'Design Patterns', href: `/ib-2027/B3/B3.2/design-patterns.html` });
+      activityItems.push({ label: 'Design Patterns', href: `/ib-2027/b3/b3.2/design-patterns/index.html` });
     }
   }
 
@@ -1021,13 +1030,13 @@ const buildIbLocalGroups = async (
     const subtopicDirs = unitEntries.filter((e) => e.isDirectory() && /^[AB]\d\.\d+$/i.test(e.name));
     for (const dir of subtopicDirs) {
       const subDir = path.join(publicUnitDir, dir.name);
-      const extras = await readPublicHtmlItems(subDir, `/ib-2027/${unitCode}/${dir.name}`, /^(index|slides|revision|specification|textbook)$/i);
+      const extras = await readPublicHtmlItems(subDir, `/ib-2027/${unitCode.toLowerCase()}/${dir.name.toLowerCase()}`, /^(index|slides|revision|specification|textbook)$/i);
       activityItems.push(...extras);
     }
   }
 
   const activitiesGroup = buildSectionGroup('unit-activities', 'Activities', activityItems, {
-    sequence: true, icon: 'fa-solid fa-laptop-code'
+    sequence: true, icon: 'fa-solid fa-laptop-code', allowEmpty: true
   });
 
   // ── Textbook (non-collapsible) ───────────────────────────────
@@ -1038,7 +1047,7 @@ const buildIbLocalGroups = async (
 
   // ── Homework (collapsible — empty for now) ───────────────────
   const homeworkGroup = buildSectionGroup('unit-homework', 'Homework', [], {
-    icon: 'fa-solid fa-house'
+    icon: 'fa-solid fa-house', allowEmpty: true
   });
 
   // ── Revision (collapsible — discover from public/) ───────────
@@ -1052,7 +1061,7 @@ const buildIbLocalGroups = async (
         const subtopicName = IB_SUBTOPIC_NAMES[dir.name.toUpperCase()] || dir.name;
         revisionItems.push({
           label: `${dir.name} Revision`,
-          href: `/ib-2027/${unitCode}/${dir.name}/revision.html`
+          href: `/ib-2027/${unitCode.toLowerCase()}/${dir.name.toLowerCase()}/revision/index.html`
         });
       }
     }
@@ -1060,20 +1069,20 @@ const buildIbLocalGroups = async (
   // Student resources (B2)
   const studentResourcesFile = path.join(publicUnitDir, 'student-resources.html');
   if (existsSync(studentResourcesFile)) {
-    revisionItems.push({ label: 'Student Resources', href: `/ib-2027/${unitCode}/student-resources.html` });
+    revisionItems.push({ label: 'Student Resources', href: `/ib-2027/${unitCode.toLowerCase()}/student-resources/index.html` });
   }
   // Specification files
   const specFile = path.join(publicUnitDir, 'specification.html');
   if (existsSync(specFile)) {
-    revisionItems.push({ label: 'Specification', href: `/ib-2027/${unitCode}/specification.html` });
+    revisionItems.push({ label: 'Specification', href: `/ib-2027/${unitCode.toLowerCase()}/specification/index.html` });
   }
   const revisionGroup = buildSectionGroup('unit-revision', 'Revision', revisionItems, {
-    icon: 'fa-solid fa-rotate-left'
+    icon: 'fa-solid fa-rotate-left', allowEmpty: true
   });
 
   // ── Assessment (collapsible — empty for now) ─────────────────
   const assessmentGroup = buildSectionGroup('unit-assessment', 'Assessment', [], {
-    sequence: true, icon: 'fa-solid fa-file-pen'
+    sequence: true, icon: 'fa-solid fa-file-pen', allowEmpty: true
   });
 
   return [
