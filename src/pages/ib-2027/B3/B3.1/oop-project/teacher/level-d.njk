@@ -1,0 +1,65 @@
+---
+layout: layouts/base.njk
+title: "Teacher Guide: Level D | OOP Project"
+description: "Solutions and notes for Level D: Item Usage."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "B3", href: "ib-2027/B3/index.html" }
+  - { label: "B3.1", href: "ib-2027/B3/B3.1/index.html" }
+  - { label: "OOP Project", href: "ib-2027/B3/B3.1/oop-project/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/B3/B3.1/oop-project/teacher/index.html" }
+  - { label: "Level D Guide" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
+        <p style="margin-bottom: 0;">Solutions for Level D: Item Usage.</p>
+    </div>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Concept Overview</h2>
+        <ul style="list-style-type: disc; margin-left: 1.5rem;">
+            <li><strong>Polymorphism</strong>: Different items have different effects, but use the same `use_item` method signature.</li>
+            <li><strong>Conditional Logic</strong>: `if item_id == "med_patch":` checks.</li>
+        </ul>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Common Misconceptions</h2>
+        <div class="info-content">
+            <p><strong>1. String Comparison</strong></p>
+            <p>Ensure they match the item ID exactly ("med_patch", not "MedPatch").</p>
+            
+            <p><strong>2. Target Validation</strong></p>
+            <p>The spec says `if target == "self"`. Students often forget this check, allowing them to heal enemies!</p>
+        </div>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Solution Code</h2>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+            <pre><code>    # Inside Player class
+    
+    def use_item(self, item_id, target):
+        # 1. Check possession
+        if not self.inventory.has_item(item_id):
+            return f"You don't have '{item_id}'."
+
+        # 2. Handle Med Patch
+        if item_id == "med_patch" and target == "self":
+            self.heal(20)  # Reuses existing method!
+            self.inventory.consume(item_id)
+            return "You apply the med patch. +20 HP."
+
+        # 3. Default fallback
+        return f"You use the {item_id} on the {target}."</code></pre>
+        </div>
+    </section>
+
+</div>

@@ -1,0 +1,505 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level G: Threat Response - Security Bot | OOP Project</title>
+    <meta name="description" content="Implement combat hooks for action selection and damage calculation.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/oop-worksheet.css">
+            
+        
+            
+                <link rel="stylesheet" href="/css/sigma7-map.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B3/index.html">B3</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B3/B3.1/index.html">B3.1</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B3/B3.1/oop-project/index.html">OOP Project</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Level G</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            
+<!-- HERO SECTION -->
+<div class="oop-hero">
+    <img src="../../../../ib-2027/sl/unit-5/OOP%20Project/images/level_g_hero.png" alt="Combat with a Sentry Droid" class="oop-hero-image" decoding="async">
+    <div class="oop-hero-overlay">
+        <span class="oop-hero-level">Level G</span>
+        <h1 class="oop-hero-title">Threat Response: Security Bot</h1>
+        <p class="oop-hero-subtitle">Implement combat hooks to survive the Sentry Droid</p>
+    </div>
+</div>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <h2 class="oop-section-title">What You'll Learn</h2>
+    </div>
+    
+    <div class="objectives-grid">
+        <div class="objective-card">
+            <span class="objective-number">1</span>
+            <span class="objective-text">Implement action selection from a list of options</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">2</span>
+            <span class="objective-text">Write a damage calculation formula</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">3</span>
+            <span class="objective-text">Understand how the engine drives combat loops</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">4</span>
+            <span class="objective-text">Apply arithmetic operations in a game context</span>
+        </div>
+    </div>
+</section>
+
+<!-- KEYWORDS -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-book"></i>
+        </div>
+        <h2 class="oop-section-title">Key Terms</h2>
+    </div>
+    
+    <div class="keywords-table">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Term</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="keyword-term">Encounter</span></td>
+                    <td>A combat sequence between player and enemy</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Action Selection</span></td>
+                    <td>Choosing what to do in combat (Attack, Defend, etc.)</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Damage Calculation</span></td>
+                    <td>The formula for computing actual damage dealt (Base - Armour)</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Combat Loop</span></td>
+                    <td>The turn-by-turn flow of combat controlled by the engine</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- UML DIAGRAM -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <h2 class="oop-section-title">Combat Hooks</h2>
+    </div>
+    
+    <div class="uml-svg-container">
+        <svg viewBox="0 0 420 180" class="uml-svg" preserveAspectRatio="xMidYMid meet">
+            <!-- Player Class Box -->
+            <rect x="80" y="10" width="260" height="75" class="uml-svg-class" rx="4" style="stroke: #28a745;"/>
+            <line x1="80" y1="40" x2="340" y2="40" style="stroke: #28a745;"/>
+            <text x="210" y="30" class="uml-svg-text title" style="fill: #28a745;">Player</text>
+            <text x="90" y="58" class="uml-svg-text method"><tspan fill="#28a745">+</tspan> choose_action(options) → int</text>
+            <text x="90" y="74" class="uml-svg-text method"><tspan fill="#28a745">+</tspan> compute_damage(base, armour) → int</text>
+            
+            <!-- Note connector line -->
+            <line x1="210" y1="85" x2="210" y2="110" class="uml-svg-line" stroke-dasharray="4,2"/>
+            
+            <!-- Note box -->
+            <rect x="40" y="110" width="340" height="60" fill="#f8f9fa" stroke="#6c757d" stroke-width="1" rx="4"/>
+            <text x="210" y="128" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">Called by Engine during combat:</text>
+            <text x="210" y="144" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">1. choose_action decides what you do</text>
+            <text x="210" y="160" class="uml-svg-text" style="font-size: 11px; text-anchor: middle;">2. compute_damage calculates how much it hurts</text>
+        </svg>
+    </div>
+</section>
+
+<!-- CONTEXT: THE COMBAT LOOP -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-arrows-spin"></i>
+        </div>
+        <h2 class="oop-section-title">How It Works: The Combat Loop</h2>
+    </div>
+    
+    <div class="info-content">
+        <p>You are implementing the logic for <strong>your turn</strong>. The Engine handles the rest of the battle loop:</p>
+        <div class="code-block" style="background: #f1f3f5; padding: 1rem; border-radius: 8px; font-family: monospace; color: #333;">
+            <p style="margin: 0;"><strong>WHILE</strong> (Everyone is alive):</p>
+            <p style="margin: 0; padding-left: 1rem;">1. Engine asks YOU: choose_action()</p>
+            <p style="margin: 0; padding-left: 1rem;">2. Engine asks ENEMY: choose_action()</p>
+            <p style="margin: 0; padding-left: 1rem;">3. Engine calculates speed & order</p>
+            <p style="margin: 0; padding-left: 1rem;">4. <strong>ATTACKER:</strong> compute_damage() is called</p>
+            <p style="margin: 0; padding-left: 1rem;">5. Engine subtracts HP and prints results</p>
+        </div>
+        <p style="margin-top: 1rem;">The Engine takes care of the loop, the printing, and the enemy AI. You just need to say <strong>what you do</strong> and <strong>how hard you hit</strong>.</p>
+    </div>
+</section>
+
+<!-- STRUCTURE GUIDE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-code"></i>
+        </div>
+        <h2 class="oop-section-title">Structure Guide</h2>
+    </div>
+    
+    <p class="section-intro">Add these two methods to your Player class.</p>
+    
+    <!-- 1. choose_action -->
+    <details class="skeleton-block" open>
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">1</span>
+            <span class="skeleton-title">choose_action (Selection Hook)</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">METHOD choose_action(options_list) → integer:</div>
+            <div class="skeleton-desc">
+                <strong>Purpose:</strong> Let the player pick a combat move.<br>
+                <strong>Logic:</strong> This works exactly like <code>respond_to_npc</code>!
+                <ul>
+                    <li>The engine already displays the numbered options</li>
+                    <li>Ask the user for input</li>
+                    <li>Validate it's a number and in range</li>
+                    <li>Return the 0-based index</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+    
+    <!-- 2. compute_damage -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">2</span>
+            <span class="skeleton-title">compute_damage(base, armour) → int</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                <strong>Formula:</strong> Damage = Base − Armour<br>
+                <strong>Constraint:</strong> Result must not be negative (minimum 0)
+            </div>
+        </div>
+    </details>
+</section>
+
+<!-- STATION MAP -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-map"></i>
+        </div>
+        <h2 class="oop-section-title">Station Map</h2>
+    </div>
+    
+    <p class="section-intro">View the Sigma-7 station layout. Fog of war reveals as you progress through levels.</p>
+    
+    <button type="button" class="show-map-btn" data-sgs-onclick="sigma7Map.open()">
+        <i class="fa-solid fa-map"></i> Show Station Map
+    </button>
+</section>
+<script src="../../../../js/sigma7-map.js"></script>
+
+<!-- CHALLENGE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h2 class="oop-section-title">Your Mission</h2>
+    </div>
+    
+    <div class="challenge-box">
+        <div class="challenge-title">
+            <i class="fa-solid fa-shield-halved"></i>
+            Defeat the Sentry
+        </div>
+        
+        <div class="challenge-description">
+            <p>A Sentry Droid blocks the Airlock. To defeat it, you need to be able to fight.</p>
+            <p>Implement <strong>choose_action</strong> and <strong>compute_damage</strong> so the game engine can run the combat loop.</p>
+            <p><strong>Bonus (optional):</strong> Add <code>calculate_critical_hit</code> to introduce critical hits.</p>
+        </div>
+        
+        <div class="challenge-actions">
+            <a href="../../../../ib-2027/sl/unit-5/OOP%20Project/downloads/level_g_encounters.zip" class="download-btn" download>
+                <i class="fa-solid fa-download"></i>
+                Download Level G Files
+            </a>
+            <code class="validate-command">python3 validate.py</code>
+        </div>
+    </div>
+</section>
+
+<!-- LEVEL NAVIGATION -->
+<nav class="level-nav">
+    <a href="level-f-npcs.html" class="level-nav-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Level F: NPCs
+    </a>
+    <a href="level-h-save-load.html" class="level-nav-btn">
+        Level H: Save/Load
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+</nav>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+---
+import LegacyEmbedFrame from '../../../../components/LegacyEmbedFrame.astro';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getIb2027AliasRouteHtml, getIb2027ScenarioAliasRoutes } from '@sgs/content-schema';
+import { extractHtmlTitle } from '../../../../lib/source-content';
+
+interface ScenarioAliasPageProps {
+  html: string;
+  routePath: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getIb2027ScenarioAliasRoutes();
+
+  return Promise.all(
+    routes
+      .map((route) => {
+        const match = route.routePath.match(/^\/ib-2027\/hl\/unit-4\/scenarios\/([^/]+)\.html$/);
+        if (!match) {
+          return null;
+        }
+
+        return {
+          routePath: route.routePath,
+          scenario: match[1]
+        };
+      })
+      .filter((route): route is { routePath: string; scenario: string } => route !== null)
+      .map(async (route) => ({
+        params: {
+          scenario: route.scenario
+        },
+        props: {
+          html: await getIb2027AliasRouteHtml(route.routePath),
+          routePath: route.routePath
+        }
+      }))
+  );
+}
+
+const { html, routePath } = Astro.props as ScenarioAliasPageProps;
+const title = extractHtmlTitle(html, 'IB Scenario');
+---
+
+<BaseLayout title={title} description={title}>
+  <section class="page-panel page-panel--flush">
+    <LegacyEmbedFrame title={title} html={html} routePath={routePath} variant="workspace" />
+  </section>
+</BaseLayout>

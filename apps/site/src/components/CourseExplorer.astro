@@ -24,7 +24,8 @@ const shouldOpen = (group: ShellNavGroup): boolean => {
   return true;
 };
 
-const isDirectGroup = (group: ShellNavGroup): boolean => group.collapsible === false;
+const isDirectGroup = (group: ShellNavGroup): boolean => group.collapsible === false && group.items.length <= 1;
+const isHeadingGroup = (group: ShellNavGroup): boolean => group.collapsible === false && group.items.length > 1;
 const itemIsDisabled = (item: ShellNavItem): boolean => Boolean(item.disabled || !item.href || item.href === '#');
 
 const isGenericMeta = (value?: string): boolean => {
@@ -129,6 +130,54 @@ const isGenericMeta = (value?: string): boolean => {
                   </span>
                 </a>
               )}
+            </div>
+          );
+        }
+
+        if (isHeadingGroup(group)) {
+          return (
+            <div class:list={['course-explorer__group', 'course-explorer__group--heading', group.divider && 'course-explorer__group--divider', isActive && 'is-active']}>
+              <div class="course-explorer__heading-title">
+                <span class="course-explorer__entry-copy">
+                  <span>{group.label}</span>
+                  {group.meta && !isGenericMeta(group.meta) && <small>{group.meta}</small>}
+                </span>
+              </div>
+              <ul>
+                {group.items.map((item) => {
+                  const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
+                  const isDisabled = itemIsDisabled(item);
+                  return (
+                    <li>
+                      {isDisabled ? (
+                        <span class:list={['course-explorer__item-link', 'is-disabled', isCurrent && 'current']}>
+                          <span class="course-explorer__item-main">
+                            {item.number && <span class="course-explorer__item-number">{item.number}</span>}
+                            <span class="course-explorer__entry-copy">
+                              <span>{item.label}</span>
+                              {item.meta && !isGenericMeta(item.meta) && <small>{item.meta}</small>}
+                            </span>
+                          </span>
+                        </span>
+                      ) : (
+                        <a
+                          href={item.href}
+                          aria-current={isCurrent ? 'page' : undefined}
+                          class:list={['course-explorer__item-link', isCurrent && 'current']}
+                        >
+                          <span class="course-explorer__item-main">
+                            {item.number && <span class="course-explorer__item-number">{item.number}</span>}
+                            <span class="course-explorer__entry-copy">
+                              <span>{item.label}</span>
+                              {item.meta && !isGenericMeta(item.meta) && <small>{item.meta}</small>}
+                            </span>
+                          </span>
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           );
         }

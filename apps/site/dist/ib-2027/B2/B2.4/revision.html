@@ -1,0 +1,519 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2.4 programming algorithms | Study Guide</title>
+    <meta name="description" content="IB Computer Science Topic B2.4 Algorithms: Big O, Searching, Sorting, Recursion.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css">
+            
+        
+            
+                <link rel="stylesheet" href="/css/revision-guide-b2-4-algorithms.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link ">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B2/index.html">B2</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B2/B2.4/index.html">B2.4</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Revision</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            <!-- Header -->
+<header class="hero">
+    <div class="nav-container">
+        <h1>Programming Algorithms</h1>
+        <p>Complexity, Search, Sort & Recursion</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- 1. BIG O NOTATION (Teal) -->
+    <section id="big-o" class="card theme-teal">
+        <div class="card-header">
+            <i class="fa-solid fa-chart-line"></i> Big O Notation
+        </div>
+        <div class="card-body">
+            <p class="mb-4"><strong>Big O</strong> notation describes the <em>worst-case</em> performance of an algorithm as the input size (n) grows. It measures scalability.</p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Notation</th>
+                            <th>Name</th>
+                            <th>Speed</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>O(1)</code></td>
+                            <td>Constant</td>
+                            <td style="color: green;">Excellent</td>
+                            <td>Accessing an array index.</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(log n)</code></td>
+                            <td>Logarithmic</td>
+                            <td style="color: olive;">Good</td>
+                            <td>Binary Search.</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(n)</code></td>
+                            <td>Linear</td>
+                            <td style="color: orange;">Fair</td>
+                            <td>Linear Search (looping once).</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(n²)</code></td>
+                            <td>Quadratic</td>
+                            <td style="color: red;">Poor</td>
+                            <td>Bubble Sort (nested loops).</td>
+                        </tr>
+                        <tr>
+                            <td><code>O(2ⁿ)</code></td>
+                            <td>Exponential</td>
+                            <td style="color: darkred;">Terrible</td>
+                            <td>Recursive Fibonacci (naive).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Time Complexity</h3>
+                    <p>How <strong>fast</strong> the algorithm is. We care about the number of steps.</p>
+                </div>
+                <div>
+                    <h3>Space Complexity</h3>
+                    <p>How much <strong>memory</strong> the algorithm needs. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. SEARCHING (Green) -->
+    <section id="searching" class="card theme-green">
+        <div class="card-header">
+            <i class="fa-solid fa-magnifying-glass"></i> Searching Algorithms
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Linear Search O(n)</h3>
+                    <p>Checks every element one by one. Works on unsorted data.</p>
+                    <pre><code class="python">def linear_search(arr, key):
+    for i in range(len(arr)):
+        if arr[i] == key:
+            return i
+    return -1</code></pre>
+                </div>
+                <div>
+                    <h3>Binary Search O(log n)</h3>
+                    <p>Divide and conquer. <strong>Data must be sorted!</strong></p>
+                    <pre><code class="python">def binary_search(arr, key):
+    lower = 0
+    upper = len(arr) - 1
+    
+    while lower <= upper:
+        mid = (lower + upper) // 2
+        if arr[mid] == key:
+            return mid
+        elif arr[mid] < key:
+            lower = mid + 1
+        else:
+            upper = mid - 1
+    return -1</code></pre>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> Exam Tip</span>
+                <p>Always check if the array is <strong>sorted</strong>. If it is, Binary Search is preferred for large datasets. If not, you must use Linear Search (or sort it first).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SORTING (Red) -->
+    <section id="sorting" class="card theme-red">
+        <div class="card-header">
+            <i class="fa-solid fa-arrow-down-az"></i> Sorting Algorithms
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Bubble Sort O(n²)</h3>
+                    <p>Repeatedly swaps adjacent elements if they are wrong. "Bubbles" largest to the end.</p>
+                    <pre><code class="python">def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        swapped = False
+        # Last i elements are already sorted
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                swapped = True
+        if not swapped:
+            break</code></pre>
+                </div>
+                <div>
+                    <h3>Selection Sort O(n²)</h3>
+                    <p>Finds the minimum element and moves it to the sorted part.</p>
+                    <pre><code class="python">def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        # Swap found min with first
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]</code></pre>
+                </div>
+            </div>
+
+            <h3>Quick Sort O(n log n)</h3>
+            <p>Divide and conquer using a pivot. Much faster for large datasets.</p>
+            <pre><code class="python">def quick_sort(arr):
+    if len(arr) <= 1: return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)</code></pre>
+        </div>
+    </section>
+
+    <!-- 4. RECURSION (Blue) -->
+    <section id="recursion" class="card theme-blue">
+        <div class="card-header">
+            <i class="fa-solid fa-infinity"></i> Recursion (HL)
+        </div>
+        <div class="card-body">
+            <p class="mb-4"><strong>Recursion</strong> is when a function calls itself. It must have:</p>
+            <ul>
+                <li><strong>Base Case</strong>: Stops the recursion.</li>
+                <li><strong>General Case</strong>: Calls itself continuously moving towards the base case.</li>
+            </ul>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Factorial (n!)</h3>
+                    <pre><code class="python">def factorial(n):
+    if n == 1:
+        return 1
+    else:
+        return n * factorial(n-1)</code></pre>
+                </div>
+                <div>
+                    <h3>Fibonacci Sequence</h3>
+                    <pre><code class="python">def fib(n):
+    if n <= 0: return 0
+    elif n == 1: return 1
+    else:
+        return fib(n-1) + fib(n-2)</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GLOSSARY (Dark) -->
+    <section id="keywords" class="card theme-dark">
+        <div class="card-header">
+            <i class="fa-solid fa-book"></i> Keyword Glossary
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Keyword</th>
+                            <th style="width: 70%;">Definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Time Complexity</strong></td>
+                            <td>A measure of how many steps an algorithm takes to run based on input size.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Space Complexity</strong></td>
+                            <td>A measure of how much standard memory an algorithm needs to run.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Linear Search</strong></td>
+                            <td>Sequential search, checking every element (O(n)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Binary Search</strong></td>
+                            <td>Efficient search on stored data, halving the search space each time (O(log n)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bubble Sort</strong></td>
+                            <td>Sorts by comparing adjacent items and swapping them (O(n²)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Selection Sort</strong></td>
+                            <td>Sorts by repeatedly finding the minimum element (O(n²)).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recursion</strong></td>
+                            <td>A function calling itself until a base case is met.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Base Case</strong></td>
+                            <td>The condition that stops the recursion.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+            
+        
+            
+                <script src="/js/highlight-init.js"></script>
+            
+        
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body>
+
+</html>

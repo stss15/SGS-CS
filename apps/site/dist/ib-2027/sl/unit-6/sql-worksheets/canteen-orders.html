@@ -1,0 +1,853 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 3: Build the Canteen Orders Database | SQL Worksheets</title>
+    <meta name="description" content="Build-from-scratch SQL worksheet for the Canteen Orders database.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/sql-worksheet.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/index.html">SL</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/unit-6/index.html">Unit 6</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/unit-6/sql-worksheets/index.html">SQL Worksheets</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Build the Canteen Orders Database</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 3 | SL Build</p>
+            <h1 class="sql-sheet-title">Build the Canteen Orders Database</h1>
+            <p class="sql-sheet-summary">
+                Open a blank workspace and build the whole database yourself. This worksheet gives you the
+                schema, the ERD, and a small starter dataset. You then create the tables in the correct
+                order, load rows in batches, and finish with <code>UPDATE</code> and <code>DELETE</code>.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">CREATE TABLE</span>
+                <span class="sql-chip">Composite key</span>
+                <span class="sql-chip">INSERT</span>
+                <span class="sql-chip">UPDATE</span>
+                <span class="sql-chip">DELETE</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=__blank_workspace__" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open Blank Workspace
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/sl/unit-6/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-meta-strip">
+        <div class="sql-meta-cell">
+            <h2>Build Goal</h2>
+            <ul>
+                <li>Create <code>CUSTOMER</code>, <code>PRODUCT</code>, <code>ORDER_HEADER</code>, and <code>ORDER_ITEM</code></li>
+                <li>Use a composite key in <code>ORDER_ITEM</code></li>
+                <li>Load only a small starter dataset, then test it</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>A3.2.4 table construction with keys and relationships</li>
+                <li>A3.2.6 building a normalized database structure</li>
+                <li>A3.3.1 DDL and A3.3.3 DML</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Use the blank workspace, not a preloaded dataset.</li>
+                <li>Create parent tables before child tables.</li>
+                <li>When deleting linked rows, remove the child row before the parent row.</li>
+                <li><code>DDL</code> defines the structure; <code>DML</code> adds, changes, or removes rows.</li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Blueprint</h2>
+                <p>Use this schema and ERD as the design brief for the database you are about to build.</p>
+            </div>
+        </div>
+
+        <div class="sql-blueprint-layout">
+            <div class="sql-schema-grid">
+                <section class="sql-schema-card">
+                    <h3>CUSTOMER</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>CustomerID</span><span>INTEGER PK</span></li>
+                        <li><span>CustomerName</span><span>TEXT</span></li>
+                        <li><span>House</span><span>TEXT</span></li>
+                    </ul>
+                </section>
+                <section class="sql-schema-card">
+                    <h3>PRODUCT</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>ProductID</span><span>INTEGER PK</span></li>
+                        <li><span>ProductName</span><span>TEXT</span></li>
+                        <li><span>Category</span><span>TEXT</span></li>
+                        <li><span>Price</span><span>REAL</span></li>
+                    </ul>
+                </section>
+                <section class="sql-schema-card">
+                    <h3>ORDER_HEADER</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>OrderID</span><span>INTEGER PK</span></li>
+                        <li><span>CustomerID</span><span>INTEGER FK</span></li>
+                        <li><span>OrderDate</span><span>TEXT</span></li>
+                        <li><span>PaymentMethod</span><span>TEXT</span></li>
+                    </ul>
+                </section>
+                <section class="sql-schema-card">
+                    <h3>ORDER_ITEM</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>OrderID</span><span>INTEGER FK</span></li>
+                        <li><span>ProductID</span><span>INTEGER FK</span></li>
+                        <li><span>Quantity</span><span>INTEGER</span></li>
+                        <li><span>Primary key</span><span>(OrderID, ProductID)</span></li>
+                    </ul>
+                </section>
+            </div>
+
+            <figure class="sql-erd-frame">
+                <h3>ERD</h3>
+                <p>Read the cardinality before you write the <code>CREATE TABLE</code> statements.</p>
+                <svg viewBox="0 0 920 360" role="img" aria-label="ERD for the canteen orders database">
+                    <rect x="30" y="30" width="220" height="120"></rect>
+                    <text class="sql-erd-title" x="50" y="62">CUSTOMER</text>
+                    <text class="sql-erd-meta" x="50" y="92">CustomerID (PK)</text>
+                    <text class="sql-erd-meta" x="50" y="114">CustomerName</text>
+                    <text class="sql-erd-meta" x="50" y="136">House</text>
+
+                    <rect x="350" y="30" width="220" height="140"></rect>
+                    <text class="sql-erd-title" x="370" y="62">ORDER_HEADER</text>
+                    <text class="sql-erd-meta" x="370" y="92">OrderID (PK)</text>
+                    <text class="sql-erd-meta" x="370" y="114">CustomerID (FK)</text>
+                    <text class="sql-erd-meta" x="370" y="136">OrderDate</text>
+                    <text class="sql-erd-meta" x="370" y="158">PaymentMethod</text>
+
+                    <rect x="670" y="30" width="220" height="140"></rect>
+                    <text class="sql-erd-title" x="690" y="62">PRODUCT</text>
+                    <text class="sql-erd-meta" x="690" y="92">ProductID (PK)</text>
+                    <text class="sql-erd-meta" x="690" y="114">ProductName</text>
+                    <text class="sql-erd-meta" x="690" y="136">Category</text>
+                    <text class="sql-erd-meta" x="690" y="158">Price</text>
+
+                    <rect x="350" y="220" width="220" height="110"></rect>
+                    <text class="sql-erd-title" x="370" y="252">ORDER_ITEM</text>
+                    <text class="sql-erd-meta" x="370" y="282">OrderID (FK)</text>
+                    <text class="sql-erd-meta" x="370" y="304">ProductID (FK)</text>
+                    <text class="sql-erd-meta" x="370" y="326">Quantity</text>
+
+                    <line x1="250" y1="90" x2="350" y2="90"></line>
+                    <text class="sql-erd-cardinality" x="272" y="78">1</text>
+                    <text class="sql-erd-cardinality" x="326" y="78">many</text>
+
+                    <line x1="460" y1="170" x2="460" y2="220"></line>
+                    <text class="sql-erd-cardinality" x="474" y="196">1</text>
+                    <text class="sql-erd-cardinality" x="474" y="216">many</text>
+
+                    <path d="M670 100 C620 100, 600 120, 570 230"></path>
+                    <text class="sql-erd-cardinality" x="628" y="90">1</text>
+                    <text class="sql-erd-cardinality" x="584" y="180">many</text>
+                </svg>
+            </figure>
+        </div>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">DDL vs DML</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>State why <code>CREATE TABLE</code> is <code>DDL</code>, while <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> are <code>DML</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Build order</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Write down the order in which the four tables should be created so the foreign keys can be added without errors.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Composite key</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Explain why <code>ORDER_ITEM</code> uses a composite primary key instead of a single field from the design above.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Create the Tables</h2>
+                <p>Use DDL to build the structure before you add any rows.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — CREATE TABLE with primary and foreign keys</summary>
+            <div class="sql-syntax-body">
+                <pre><code>CREATE TABLE child_table (
+    child_id   INTEGER,
+    parent_id  INTEGER,
+    note_text  TEXT,
+    PRIMARY KEY (child_id),
+    FOREIGN KEY (parent_id) REFERENCES parent_table(parent_id)
+);
+
+CREATE TABLE link_table (
+    first_id   INTEGER,
+    second_id  INTEGER,
+    quantity   INTEGER,
+    PRIMARY KEY (first_id, second_id),
+    FOREIGN KEY (first_id) REFERENCES first_table(first_id),
+    FOREIGN KEY (second_id) REFERENCES second_table(second_id)
+);</code></pre>
+                <p>Parent tables should exist before child tables. A junction table often needs a composite key made from the two linked foreign keys.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">DDL</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Create <code>CUSTOMER</code> and <code>PRODUCT</code> first.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">Foreign key</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Create <code>ORDER_HEADER</code> with a foreign key back to <code>CUSTOMER</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">Composite key</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Create <code>ORDER_ITEM</code> with the composite primary key <code>(OrderID, ProductID)</code> and two foreign keys.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Load Starter Data</h2>
+                <p>Use multi-row inserts so students see that data entry can happen in batches.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — INSERT several rows in one statement</summary>
+            <div class="sql-syntax-body">
+                <pre><code>INSERT INTO table_name (column_a, column_b, column_c)
+VALUES
+    (1, 'First row', 10),
+    (2, 'Second row', 20),
+    (3, 'Third row', 30);
+
+INSERT INTO link_table (first_id, second_id, quantity)
+VALUES
+    (101, 501, 1),
+    (101, 502, 2),
+    (102, 503, 1);</code></pre>
+                <p>One <code>INSERT INTO</code> statement can add multiple rows at once. This is much faster to write and read than repeating one-row inserts.</p>
+            </div>
+        </details>
+
+        <div class="sql-data-pack">
+            <section class="sql-data-panel">
+                <h3>Starter rows for <code>CUSTOMER</code></h3>
+                <table>
+                    <thead>
+                        <tr><th>CustomerID</th><th>CustomerName</th><th>House</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>6101</td><td>Mina Patel</td><td>Ash</td></tr>
+                        <tr><td>6103</td><td>Lina Chen</td><td>Oak</td></tr>
+                        <tr><td>6106</td><td>Aisha Rahman</td><td>Oak</td></tr>
+                        <tr><td>6112</td><td>Zara Ahmed</td><td>Ash</td></tr>
+                    </tbody>
+                </table>
+            </section>
+            <section class="sql-data-panel">
+                <h3>Starter rows for <code>PRODUCT</code></h3>
+                <table>
+                    <thead>
+                        <tr><th>ProductID</th><th>ProductName</th><th>Category</th><th>Price</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>8301</td><td>Panini</td><td>Lunch</td><td>3.8</td></tr>
+                        <tr><td>8303</td><td>Orange Juice</td><td>Drink</td><td>1.4</td></tr>
+                        <tr><td>8306</td><td>Still Water</td><td>Drink</td><td>1.0</td></tr>
+                        <tr><td>8310</td><td>Wrap</td><td>Lunch</td><td>3.9</td></tr>
+                        <tr><td>8312</td><td>Muffin</td><td>Snack</td><td>1.4</td></tr>
+                    </tbody>
+                </table>
+            </section>
+            <section class="sql-data-panel">
+                <h3>Starter rows for <code>ORDER_HEADER</code></h3>
+                <table>
+                    <thead>
+                        <tr><th>OrderID</th><th>CustomerID</th><th>OrderDate</th><th>PaymentMethod</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>7201</td><td>6101</td><td>2026-03-03</td><td>Card</td></tr>
+                        <tr><td>7206</td><td>6106</td><td>2026-03-05</td><td>Card</td></tr>
+                        <tr><td>7212</td><td>6112</td><td>2026-03-08</td><td>Card</td></tr>
+                    </tbody>
+                </table>
+            </section>
+            <section class="sql-data-panel">
+                <h3>Starter rows for <code>ORDER_ITEM</code></h3>
+                <table>
+                    <thead>
+                        <tr><th>OrderID</th><th>ProductID</th><th>Quantity</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>7201</td><td>8301</td><td>1</td></tr>
+                        <tr><td>7201</td><td>8303</td><td>1</td></tr>
+                        <tr><td>7206</td><td>8310</td><td>1</td></tr>
+                        <tr><td>7206</td><td>8306</td><td>1</td></tr>
+                        <tr><td>7212</td><td>8301</td><td>1</td></tr>
+                        <tr><td>7212</td><td>8312</td><td>1</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">Batch INSERT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Insert all four <code>CUSTOMER</code> rows in one statement, then insert all five <code>PRODUCT</code> rows in one statement.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">Related data</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Insert the three <code>ORDER_HEADER</code> rows, then the six matching <code>ORDER_ITEM</code> rows.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">4</span>
+            <div>
+                <h2>Test the Database</h2>
+                <p>Use queries to prove that the structure and the rows were created correctly.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — SELECT after you build</summary>
+            <div class="sql-syntax-body">
+                <pre><code>SELECT *
+FROM table_name;
+
+SELECT h.record_id, o.name_column, i.item_column, l.quantity_column
+FROM header_table AS h
+JOIN owner_table AS o
+    ON h.owner_id = o.owner_id
+JOIN link_table AS l
+    ON h.record_id = l.record_id
+JOIN item_table AS i
+    ON l.item_id = i.item_id;</code></pre>
+                <p>Once the structure exists, use simple <code>SELECT</code> queries first, then a join to confirm the relationships are working.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">Check rows</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show every row in <code>CUSTOMER</code> to confirm the first insert worked.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">JOIN check</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Join the four tables so the result shows <code>OrderID</code>, customer name, product name, and quantity.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.2</span>
+                    <span class="sql-task-focus">DISTINCT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return every distinct payment method currently stored in <code>ORDER_HEADER</code>.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">5</span>
+            <div>
+                <h2>Edit Safely</h2>
+                <p>Finish by changing the data with DML commands.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — UPDATE and DELETE</summary>
+            <div class="sql-syntax-body">
+                <pre><code>UPDATE table_name
+SET value_column = 'Updated value'
+WHERE primary_key_column = 101;
+
+DELETE FROM child_table
+WHERE parent_id = 101;
+
+DELETE FROM parent_table
+WHERE primary_key_column = 101;</code></pre>
+                <p>Use a <code>WHERE</code> clause every time you change or remove rows. If a child row depends on a parent row, remove the child first. In larger systems, changing an indexed column can slow an update because the index also has to change; after major data changes, indexes may need rebuilding or reorganizing.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">UPDATE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Update the price of <code>Still Water</code> from <code>1.0</code> to <code>1.1</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">INSERT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Add one new order header for customer <code>6101</code>, then add one matching <code>ORDER_ITEM</code> row for that order.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">DELETE</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Delete the practice <code>ORDER_ITEM</code> row you just added, then delete the practice <code>ORDER_HEADER</code> row.</p>
+                </div>
+            </li>
+        </ol>
+        <p class="sql-sheet-note">If you want to start again, reopen the worksheet launch link so the playground loads a blank workspace.</p>
+    </section>
+
+    <section class="sql-answers-gate" data-answer-gate="dGVhY2hlcjE=">
+        <div class="sql-answers-lock" data-answer-lock>
+            <div class="sql-answers-lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <h2>Teacher Answers</h2>
+            <p>Enter the teacher password to reveal model answers for this worksheet.</p>
+            <div class="sql-answers-lock-row">
+                <input type="password" placeholder="Password…" autocomplete="off" data-answer-input>
+                <button type="button" data-answer-button>Unlock</button>
+            </div>
+            <p class="sql-answers-err" data-answer-error></p>
+        </div>
+        <div class="sql-answers-content" data-answer-content hidden>
+            <h2><i class="fa-solid fa-unlock"></i> Model Answers — Build the Canteen Orders Database</h2>
+
+            <h3>Section 1</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">1</span>
+                <div class="sql-answer-body">
+                    <strong>Recommended table order</strong>
+                    <code>CREATE TABLE</code> is <code>DDL</code> because it defines the database structure. <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> are <code>DML</code> because they add, change, or remove rows. Create <code>CUSTOMER</code> and <code>PRODUCT</code> first, then <code>ORDER_HEADER</code>, then <code>ORDER_ITEM</code>. The composite key in <code>ORDER_ITEM</code> stops the same product being duplicated within the same order row.
+                </div>
+            </div>
+
+            <h3>Section 2</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">2</span>
+                <div class="sql-answer-body">
+                    <strong>Core DDL</strong>
+                    <pre><code>CREATE TABLE CUSTOMER (
+    CustomerID INTEGER PRIMARY KEY,
+    CustomerName TEXT,
+    House TEXT
+);
+
+CREATE TABLE PRODUCT (
+    ProductID INTEGER PRIMARY KEY,
+    ProductName TEXT,
+    Category TEXT,
+    Price REAL
+);
+
+CREATE TABLE ORDER_HEADER (
+    OrderID INTEGER PRIMARY KEY,
+    CustomerID INTEGER,
+    OrderDate TEXT,
+    PaymentMethod TEXT,
+    FOREIGN KEY (CustomerID) REFERENCES CUSTOMER(CustomerID)
+);
+
+CREATE TABLE ORDER_ITEM (
+    OrderID INTEGER,
+    ProductID INTEGER,
+    Quantity INTEGER,
+    PRIMARY KEY (OrderID, ProductID),
+    FOREIGN KEY (OrderID) REFERENCES ORDER_HEADER(OrderID),
+    FOREIGN KEY (ProductID) REFERENCES PRODUCT(ProductID)
+);</code></pre>
+                </div>
+            </div>
+
+            <h3>Section 3</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">3</span>
+                <div class="sql-answer-body">
+                    <strong>Example batch insert</strong>
+                    <pre><code>INSERT INTO CUSTOMER (CustomerID, CustomerName, House)
+VALUES
+    (6101, 'Mina Patel', 'Ash'),
+    (6103, 'Lina Chen', 'Oak'),
+    (6106, 'Aisha Rahman', 'Oak'),
+    (6112, 'Zara Ahmed', 'Ash');</code></pre>
+                </div>
+            </div>
+
+            <h3>Section 4</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">4</span>
+                <div class="sql-answer-body">
+                    <strong>Join check</strong>
+                    <pre><code>SELECT oh.OrderID, c.CustomerName, p.ProductName, oi.Quantity
+FROM ORDER_HEADER AS oh
+JOIN CUSTOMER AS c
+    ON oh.CustomerID = c.CustomerID
+JOIN ORDER_ITEM AS oi
+    ON oh.OrderID = oi.OrderID
+JOIN PRODUCT AS p
+    ON oi.ProductID = p.ProductID;</code></pre>
+                </div>
+            </div>
+
+            <h3>Section 5</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">5</span>
+                <div class="sql-answer-body">
+                    <strong>Update and delete pattern</strong>
+                    <pre><code>UPDATE PRODUCT
+SET Price = 1.1
+WHERE ProductName = 'Still Water';
+
+DELETE FROM ORDER_ITEM
+WHERE OrderID = 7300;
+
+DELETE FROM ORDER_HEADER
+WHERE OrderID = 7300;</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/sl/unit-6/sql-worksheets/campus-clubs.html"><i class="fa-solid fa-arrow-left"></i> Previous: Campus Clubs</a>
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html">Next: HL worksheets <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+            
+        
+            
+                <script src="/js/sql-worksheet.js"></script>
+            
+        
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body>
+
+</html>

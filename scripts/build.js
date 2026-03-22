@@ -186,7 +186,8 @@ const buildMissionControlPlaceholder = () => `<!DOCTYPE html>
 const createLegacySlideAliases = async () => {
     const patterns = [
         'ib-2027/sl/unit-*/slides/*.html',
-        'ib-2027/hl/unit-*/slides/*.html'
+        'ib-2027/hl/unit-*/slides/*.html',
+        'ib-2027/[AB][1-4]/[AB][1-4].*/slides/*.html'
     ];
     const slideFiles = (await fg(patterns, { cwd: OUTPUT_DIR })).sort();
     if (!slideFiles.length) {
@@ -199,25 +200,41 @@ const createLegacySlideAliases = async () => {
     slideFiles.forEach((file) => {
         const normalized = toPosix(file);
         const parts = normalized.split('/');
-        const level = parts[1];
+        const segment = parts[1]; // 'sl', 'hl', or syllabus code like 'A1'
         const filename = path.posix.basename(normalized);
-        const alias = `ib-2027/${level}/slides/${filename}`;
-        const overrideTarget = LEGACY_SLIDE_OVERRIDES.get(alias);
-        const target = overrideTarget || `/${normalized}`;
+        const target = `/${normalized}`;
 
-        if (overrideTarget) {
-            aliasTargets.set(alias, target);
+        // For new syllabus paths (e.g. ib-2027/A1/A1.1/slides/file.html),
+        // create aliases at both sl/slides/ and hl/slides/ for backward compat
+        if (/^[AB]\d$/.test(segment)) {
+            // New syllabus structure — create legacy sl + hl aliases pointing here
+            for (const level of ['sl', 'hl']) {
+                const alias = `ib-2027/${level}/slides/${filename}`;
+                if (!aliasTargets.has(alias)) {
+                    aliasTargets.set(alias, target);
+                }
+            }
             return;
         }
 
-        if (aliasTargets.has(alias) && aliasTargets.get(alias) !== target) {
+        // Legacy sl/hl paths
+        const alias = `ib-2027/${segment}/slides/${filename}`;
+        const overrideTarget = LEGACY_SLIDE_OVERRIDES.get(alias);
+        const finalTarget = overrideTarget || target;
+
+        if (overrideTarget) {
+            aliasTargets.set(alias, finalTarget);
+            return;
+        }
+
+        if (aliasTargets.has(alias) && aliasTargets.get(alias) !== finalTarget) {
             const existing = duplicates.get(alias) || new Set([aliasTargets.get(alias)]);
-            existing.add(target);
+            existing.add(finalTarget);
             duplicates.set(alias, existing);
             return;
         }
 
-        aliasTargets.set(alias, target);
+        aliasTargets.set(alias, finalTarget);
     });
 
     for (const [alias, targets] of duplicates.entries()) {
@@ -243,7 +260,8 @@ const createLegacySlideAliases = async () => {
 const createLegacyScenarioAliases = async () => {
     const patterns = [
         'ib-2027/sl/unit-*/scenarios/*.html',
-        'ib-2027/hl/unit-*/scenarios/*.html'
+        'ib-2027/hl/unit-*/scenarios/*.html',
+        'ib-2027/scenarios/*.html'
     ];
     const scenarioFiles = (await fg(patterns, { cwd: OUTPUT_DIR })).sort();
     if (!scenarioFiles.length) {
@@ -555,6 +573,56 @@ const buildFile = async (relativePath) => {
     console.log(`Built ${permalink}`);
 };
 
+/**
+ * Create redirect stubs from old teaching-sequence unit paths to new syllabus paths.
+ * Maps /ib-2027/sl/unit-N/ and /ib-2027/hl/unit-N/ to the appropriate A1-B4 destinations.
+ */
+const createIb2027UnitRedirects = async () => {
+    const redirectMap = [
+        // SL units → syllabus destinations
+        ['ib-2027/sl/unit-1/index.html', '/ib-2027/B1/index.html'],
+        ['ib-2027/sl/unit-2/index.html', '/ib-2027/B2/B2.1/index.html'],
+        ['ib-2027/sl/unit-3/index.html', '/ib-2027/B2/B2.2/index.html'],
+        ['ib-2027/sl/unit-4/index.html', '/ib-2027/B2/B2.3/index.html'],
+        ['ib-2027/sl/unit-5/index.html', '/ib-2027/B3/B3.1/index.html'],
+        ['ib-2027/sl/unit-6/index.html', '/ib-2027/A3/index.html'],
+        ['ib-2027/sl/unit-7/index.html', '/ib-2027/A4/index.html'],
+        ['ib-2027/sl/unit-8/index.html', '/ib-2027/ia/index.html'],
+        ['ib-2027/sl/unit-9/index.html', '/ib-2027/A1/A1.1/index.html'],
+        ['ib-2027/sl/unit-10/index.html', '/ib-2027/A1/A1.2/index.html'],
+        ['ib-2027/sl/unit-11/index.html', '/ib-2027/A2/index.html'],
+        ['ib-2027/sl/unit-12/index.html', '/ib-2027/case-study/index.html'],
+        ['ib-2027/sl/index.html', '/ib-2027/index.html'],
+        // HL units → syllabus destinations
+        ['ib-2027/hl/unit-1/index.html', '/ib-2027/A1/A1.1/index.html'],
+        ['ib-2027/hl/unit-2/index.html', '/ib-2027/A1/A1.3/index.html'],
+        ['ib-2027/hl/unit-3/index.html', '/ib-2027/B2/B2.4/index.html'],
+        ['ib-2027/hl/unit-4/index.html', '/ib-2027/B3/B3.2/index.html'],
+        ['ib-2027/hl/unit-5/index.html', '/ib-2027/A3/A3.4/index.html'],
+        ['ib-2027/hl/unit-6/index.html', '/ib-2027/B4/B4.1/index.html'],
+        ['ib-2027/hl/unit-7/index.html', '/ib-2027/A4/A4.2/index.html'],
+        ['ib-2027/hl/unit-8/index.html', '/ib-2027/A4/A4.3/index.html'],
+        ['ib-2027/hl/unit-9/index.html', '/ib-2027/A4/A4.3/index.html'],
+        ['ib-2027/hl/unit-10/index.html', '/ib-2027/case-study/index.html'],
+        ['ib-2027/hl/unit-11/index.html', '/ib-2027/A2/index.html'],
+        ['ib-2027/hl/index.html', '/ib-2027/index.html'],
+    ];
+
+    let created = 0;
+    await Promise.all(
+        redirectMap.map(async ([source, destination]) => {
+            const outPath = path.join(OUTPUT_DIR, source);
+            // Only create redirect if the page already exists (was built from old .njk)
+            // — overwrite it with a redirect to the new location
+            await fs.ensureDir(path.dirname(outPath));
+            await fs.writeFile(outPath, buildRedirectHtml(destination));
+            created++;
+        })
+    );
+
+    console.log(`Created ${created} IB 2027 unit redirect stubs.`);
+};
+
 const buildAll = async () => {
     await emptyDirWithRetries(OUTPUT_DIR);
     if (await fs.pathExists(STATIC_DIR)) {
@@ -574,6 +642,7 @@ const buildAll = async () => {
     await writeManifest();
     await createLegacySlideAliases();
     await createLegacyScenarioAliases();
+    await createIb2027UnitRedirects();
     await applyAuthGateToOutput();
 };
 

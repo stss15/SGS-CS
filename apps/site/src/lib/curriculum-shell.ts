@@ -18,6 +18,7 @@ export interface ShellNavGroup {
   sequence?: boolean;
   courseLevel?: boolean;
   collapsible?: boolean;
+  divider?: boolean;
   icon?: string;
 }
 

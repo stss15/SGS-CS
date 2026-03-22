@@ -1,0 +1,296 @@
+---
+layout: layouts/slide-deck.njk
+title: "B3.3 Design Patterns (HL) | IB Computer Science"
+description: "HL: design patterns as reusable solutions — Singleton, Factory, and Observer."
+backHref: ib-2027/B3/index.html
+courseFooter: IB Computer Science
+activeSection: ib
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "B3", href: "ib-2027/B3/index.html" }
+  - { label: "B3.2", href: "ib-2027/B3/B3.2/index.html" }
+  - { label: "Design Patterns" }
+---
+
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B3.3 Design Patterns <span class="hl-badge">HL</span></h1>
+            <h3 class="sub-title">Topic B3: Object‑Oriented Programming | Reusable Design Solutions</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE (FROM B3.2) -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall B3.2 (Inheritance &amp; Polymorphism) before patterns.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What is polymorphism in OOP?</li>
+            <li>What is the difference between composition and aggregation?</li>
+            <li>What does <code>super()</code> do in Python?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What is polymorphism in OOP?</div>
+        <div class="fragment box-blue">
+            <p>Treating different object types through a shared interface/superclass so the same code works for multiple types.</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What is the difference between composition and aggregation?</div>
+        <div class="fragment box-blue">
+            <p>Composition = strong ownership (part depends on whole). Aggregation = weaker (part can exist independently).</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What does <code>super()</code> do in Python?</div>
+        <div class="fragment box-blue">
+            <p>Calls the parent class constructor or method, allowing reuse of inherited behaviour.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 Why do software teams keep solving the same design problems?</p>
+                <p style="font-size:1.1em; margin-top:0.8em;">Creating objects, managing shared resources, reacting to events…</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Misconception:</strong> "A design pattern is copy‑paste code."</p>
+                <p class="small-text">Patterns are reusable ideas and structures, not a single fixed implementation.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Key idea:</strong> a <span class="keyword" data-def="Design pattern: reusable general solution/structure to a commonly occurring design problem.">design pattern</span> is a proven solution template.</p>
+                <p class="small-text">It improves clarity, consistency, and maintainability across a codebase.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. SINGLETON CONCEPT -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Singleton pattern: restricts a class to a single instance and provides global access to it.">Singleton</span></h3>
+    <div class="question-box">What if your program must have exactly one instance of something?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Goal:</strong> ensure only one instance exists.</p>
+            <p class="fragment"><strong>Use cases:</strong></p>
+            <ul class="small-text fragment">
+                <li>Configuration manager</li>
+                <li>Logging service</li>
+                <li>Database connection pool</li>
+            </ul>
+        </div>
+        <div class="box-blue fragment">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> Trade-offs</h4>
+            <p class="small-text">Can become "global state" (harder to test).</p>
+            <p class="small-text">Thread safety can be tricky.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. SINGLETON CODE -->
+<section>
+    <h3><span class="hl-badge">HL</span> Singleton in Python</h3>
+    <div class="box-blue">
+<pre><code class="python">class Logger:
+    _instance = None  # Class variable holds the single instance
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    def log(self, message):
+        print(f"[LOG] {message}")
+
+# Usage
+log1 = Logger()
+log2 = Logger()
+print(log1 is log2)  # True — same instance!</code></pre>
+    </div>
+    <div class="fragment box">
+        <p class="small-text"><strong>Key:</strong> <code>__new__</code> controls object creation, returning the existing instance if one exists.</p>
+    </div>
+</section>
+
+<!-- 6. FACTORY CONCEPT -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Factory pattern: creates objects through a common interface without specifying the exact class in client code.">Factory</span></h3>
+    <div class="question-box">How can we create objects without hard-coding concrete classes?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Goal:</strong> centralise object creation.</p>
+            <p class="fragment">Client code depends on an interface.</p>
+            <p class="fragment">Easy to add new types without changing client code.</p>
+        </div>
+        <div class="box-blue fragment">
+            <h4><i class="fa-solid fa-gears"></i> Use cases</h4>
+            <ul class="small-text">
+                <li>Creating shapes based on user input</li>
+                <li>Payment method selection</li>
+                <li>Game character creation</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- 7. FACTORY CODE -->
+<section>
+    <h3><span class="hl-badge">HL</span> Factory in Python</h3>
+    <div class="box-blue">
+<pre><code class="python">class Shape:
+    def draw(self): pass
+
+class Circle(Shape):
+    def draw(self): return "Drawing circle"
+
+class Square(Shape):
+    def draw(self): return "Drawing square"
+
+def shape_factory(shape_type):
+    shapes = {"circle": Circle, "square": Square}
+    return shapes.get(shape_type, Shape)()
+
+# Usage — client doesn't know concrete class
+shape = shape_factory("circle")
+print(shape.draw())  # "Drawing circle"</code></pre>
+    </div>
+    <div class="fragment box">
+        <p class="small-text"><strong>Benefit:</strong> Adding <code>Triangle</code> only requires updating the factory, not client code.</p>
+    </div>
+</section>
+
+<!-- 8. OBSERVER CONCEPT -->
+<section>
+    <h3><span class="hl-badge">HL</span> <span class="keyword" data-def="Observer pattern: a subscription mechanism where observers are notified automatically when a subject's state changes.">Observer</span></h3>
+    <div class="question-box">How can many parts of a program react to one event without tight coupling?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><strong>Subject</strong> maintains a list of observers.</p>
+            <p class="fragment">When state changes, it <strong>notifies</strong> all observers.</p>
+            <p class="fragment">Observers can subscribe/unsubscribe dynamically.</p>
+        </div>
+        <div class="box-blue fragment">
+            <h4><i class="fa-solid fa-bell"></i> Where you see it</h4>
+            <ul class="small-text">
+                <li>UI events (button click → many handlers)</li>
+                <li>Real-time dashboards</li>
+                <li>Social media notifications</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- 9. OBSERVER CODE -->
+<section>
+    <h3><span class="hl-badge">HL</span> Observer in Python</h3>
+    <div class="box-blue">
+<pre><code class="python">class Subject:
+    def __init__(self):
+        self._observers = []
+    
+    def subscribe(self, observer):
+        self._observers.append(observer)
+    
+    def notify(self, message):
+        for obs in self._observers:
+            obs.update(message)
+
+class EmailAlert:
+    def update(self, msg): print(f"📧 Email: {msg}")
+
+class PushNotification:
+    def update(self, msg): print(f"📱 Push: {msg}")
+
+# Usage
+news = Subject()
+news.subscribe(EmailAlert())
+news.subscribe(PushNotification())
+news.notify("Breaking news!")  # Both get notified</code></pre>
+    </div>
+</section>
+
+<!-- 10. QUICK CHECKS -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Checks</h3>
+    <div class="box">
+        <p class="fragment"><strong>1.</strong> You want one shared database connection. Which pattern?</p>
+        <p class="fragment answer" style="color: var(--sg-blue);"><strong>Singleton</strong></p>
+    </div>
+    <div class="box" style="margin-top:1rem;">
+        <p class="fragment"><strong>2.</strong> Create different enemy types based on a level string. Which pattern?</p>
+        <p class="fragment answer" style="color: var(--sg-blue);"><strong>Factory</strong></p>
+    </div>
+    <div class="box" style="margin-top:1rem;">
+        <p class="fragment"><strong>3.</strong> Multiple UI panels update when data changes. Which pattern?</p>
+        <p class="fragment answer" style="color: var(--sg-blue);"><strong>Observer</strong></p>
+    </div>
+</section>
+
+<!-- 11. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Design patterns are mandatory rules for all programs.</p>
+            <p class="fragment"><strong>B.</strong> Singleton always creates a new instance when called.</p>
+            <p class="fragment"><strong>C.</strong> Factory reduces coupling by hiding concrete class construction.</p>
+            <p class="fragment"><strong>D.</strong> In Observer, the subject notifies all registered observers.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Patterns are optional tools; use them when appropriate.</p>
+            <p class="fragment"><strong>B: False.</strong> Singleton returns the existing instance, ensuring only one exists.</p>
+            <p class="fragment"><strong>C: True.</strong> Creation is centralised behind an interface.</p>
+            <p class="fragment"><strong>D: True.</strong> That's the core mechanism of the Observer pattern.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 12. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li><span class="hl-badge">HL</span> Design patterns are reusable solution templates for recurring problems.</li>
+            <li><strong>Singleton</strong>: one instance via <code>__new__</code> — shared access.</li>
+            <li><strong>Factory</strong>: centralised object creation — returns different types based on input.</li>
+            <li><strong>Observer</strong>: subscribe/notify mechanism — decoupled event handling.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Connection:</strong> These patterns build on B3.1/B3.2 concepts: classes, inheritance, and polymorphism.</p>
+    </div>
+</section>

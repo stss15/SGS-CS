@@ -1,0 +1,81 @@
+---
+layout: layouts/base.njk
+title: "Teacher Guide: Level H | OOP Project"
+description: "Solutions and notes for Level H: Save & Load."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "B3", href: "ib-2027/B3/index.html" }
+  - { label: "B3.1", href: "ib-2027/B3/B3.1/index.html" }
+  - { label: "OOP Project", href: "ib-2027/B3/B3.1/oop-project/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/B3/B3.1/oop-project/teacher/index.html" }
+  - { label: "Level H Guide" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
+        <p style="margin-bottom: 0;">Solutions for Level H: Serialization.</p>
+    </div>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Concept Overview</h2>
+        <ul style="list-style-type: disc; margin-left: 1.5rem;">
+            <li><strong>Serialization</strong>: Converting a live object into a JSON-compatible dictionary (`to_save_data`).</li>
+            <li><strong>Deserialization</strong>: Creating a new object from a dictionary (`from_save_data`).</li>
+            <li><strong>Factory Method</strong>: `from_save_data` is a `@classmethod` because we don't have an object yet! We are <em>making</em> one.</li>
+        </ul>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Common Misconceptions</h2>
+        <div class="info-content">
+            <p><strong>1. `cls` vs `self`</strong></p>
+            <p>In `from_save_data`, `self` doesn't exist. We use `cls(...)` to call the constructor. This is often the hardest concept for students.</p>
+            
+            <p><strong>2. Restoring Inventory</strong></p>
+            <p>The saved data is a list of strings (`["key", "map"]`). The new player needs a <em>new</em> `Inventory` object, and we must loop through the list to `add()` them back.</p>
+        </div>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Solution Code</h2>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+            <pre><code>    def to_save_data(self):
+        return {
+            "name": self.name,
+            "player_type": "player", # or "brute"/"scout" (super call handles this)
+            "health": self.health,
+            "max_health": self.max_health,
+            "armour": self.armour,
+            "accuracy": self.accuracy,
+            "inventory": self.inventory.list_items() # Extract string list
+        }
+
+    @classmethod
+    def from_save_data(cls, data):
+        # 1. Create instance using name
+        player = cls(data.get("name", "Unknown"))
+        
+        # 2. Restore Stats
+        player.health = data.get("health", 100)
+        player.max_health = data.get("max_health", 100)
+        player.armour = data.get("armour", 2)
+        player.accuracy = data.get("accuracy", 85)
+        
+        # 3. Restore Inventory
+        # Ensure imports are handled or Inventory is available
+        from .inventory import Inventory
+        player.inventory = Inventory()
+        for item_id in data.get("inventory", []):
+            player.inventory.add(item_id)
+            
+        return player</code></pre>
+        </div>
+    </section>
+
+</div>

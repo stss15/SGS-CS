@@ -1,0 +1,472 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2.5 File Processing | Study Guide</title>
+    <meta name="description" content="IB Computer Science Topic B2.5 File Processing: Reading, Writing, Parallel Arrays.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark-reasonable.min.css">
+            
+        
+            
+                <link rel="stylesheet" href="/css/revision-guide-b2-5-file-processing.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link ">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B2/index.html">B2</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B2/B2.5/index.html">B2.5</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Revision</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            <!-- Header -->
+<header class="hero">
+    <div class="nav-container">
+        <h1>File Processing</h1>
+        <p>Persistence, I/O Operations, and Data Handling</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- 1. CONCEPTS (Slate) -->
+    <section id="concepts" class="card theme-slate">
+        <div class="card-header">
+            <i class="fa-solid fa-database"></i> Core Concepts
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Persistence</h3>
+                    <p>When a program closes, variables in RAM are lost. <strong>Files</strong> provide persistence, allowing data to be saved (written) and reloaded (read) later.</p>
+                </div>
+                <div>
+                    <h3>File & Buffers</h3>
+                    <p>A <strong>Text File</strong> is a sequence of characters structured in lines. A <strong>Buffer</strong> is a temporary memory area used to move data between the program and the file system.</p>
+                </div>
+            </div>
+
+            <h3>File Modes</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mode</th>
+                            <th>Description</th>
+                            <th>Behavior if file exists</th>
+                            <th>Behavior if file doesn't exist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>'r'</code></td>
+                            <td><strong>Read</strong></td>
+                            <td>Reads from start.</td>
+                            <td style="color: red;">Error (File Not Found)</td>
+                        </tr>
+                        <tr>
+                            <td><code>'w'</code></td>
+                            <td><strong>Write</strong></td>
+                            <td style="color: red;">OVERWRITES (deletes content).</td>
+                            <td>Creates new file.</td>
+                        </tr>
+                        <tr>
+                            <td><code>'a'</code></td>
+                            <td><strong>Append</strong></td>
+                            <td>Adds to end.</td>
+                            <td>Creates new file.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. READING (Sky) -->
+    <section id="reading" class="card theme-sky">
+        <div class="card-header">
+            <i class="fa-solid fa-glasses"></i> Reading Files
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Using the <code>with open()</code> statement is best practice. It automatically closes the file, preventing resource leaks.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Line by Line (Preferred)</h3>
+                    <pre><code class="python"># Efficient for big files
+with open("data.txt", "r") as f:
+    for line in f:
+        print(line.strip())</code></pre>
+                </div>
+                <div>
+                    <h3>Read All Lines</h3>
+                    <pre><code class="python"># Loads entire file into a list
+with open("data.txt", "r") as f:
+    lines = f.readlines()
+    
+# Process list
+print(lines[0]) </code></pre>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-title"><i class="fa-solid fa-lightbulb"></i> The newline character</span>
+                <p>Lines in a file end with <code>\n</code>. Use <code>.strip()</code> to remove it when reading strings.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. WRITING (Emerald) -->
+    <section id="writing" class="card theme-emerald">
+        <div class="card-header">
+            <i class="fa-solid fa-pen-nib"></i> Writing & Appending
+        </div>
+        <div class="card-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Writing (Overwriting)</h3>
+                    <pre><code class="python"># CAUTION: Deletes old content!
+with open("output.txt", "w") as f:
+    f.write("First Line\n")
+    f.write("Second Line\n")</code></pre>
+                </div>
+                <div>
+                    <h3>Appending</h3>
+                    <pre><code class="python"># Safe: Add to end
+with open("log.txt", "a") as f:
+    f.write("New Log Entry\n")</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. PARALLEL ARRAYS (Rose) -->
+    <section id="parallel" class="card theme-rose">
+        <div class="card-header">
+            <i class="fa-solid fa-table"></i> Processing Parallel Arrays
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Often data is stored in separate files (e.g., <code>names.txt</code> and <code>scores.txt</code>) or columns that relate to each other by index.</p>
+
+            <h3>Scenario: Loading Sales Data</h3>
+            <pre><code class="python">names = []
+sales = []
+
+# Assuming a CSV format: "Name,Sales"
+with open("sales_data.txt", "r") as file:
+    for line in file:
+        parts = line.strip().split(",")
+        names.append(parts[0])
+        sales.append(int(parts[1]))
+
+# Now we can process them together
+for i in range(len(names)):
+    print(f"{names[i]} sold {sales[i]} units")</code></pre>
+
+            <h3>Scenario: Finding the Top Seller</h3>
+            <pre><code class="python">max_sales = -1
+winner_index = -1
+
+for i in range(len(sales)):
+    if sales[i] > max_sales:
+        max_sales = sales[i]
+        winner_index = i
+
+print(f"Winner: {names[winner_index]}")</code></pre>
+        </div>
+    </section>
+
+    <!-- GLOSSARY (Dark) -->
+    <section id="keywords" class="card theme-dark">
+        <div class="card-header">
+            <i class="fa-solid fa-book"></i> Keyword Glossary
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Keyword</th>
+                            <th style="width: 70%;">Definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>File Processing</strong></td>
+                            <td>The manipulation of data stored in a file (Reading, Writing, Appending).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Persistence</strong></td>
+                            <td>Data remaining available in storage after the program terminates.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Buffer</strong></td>
+                            <td>Temporary memory used to move data between program and file system.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Text File</strong></td>
+                            <td>A structured sequence of lines of electronic text.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Open Mode</strong></td>
+                            <td>Permission setting ('r', 'w', 'a') used when opening a file.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Parallel Arrays</strong></td>
+                            <td>Two or more arrays of the same size where data at the same index is related.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CSV</strong></td>
+                            <td>Comma Separated Values - a common plain text format.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+            
+        
+            
+                <script src="/js/highlight-init.js"></script>
+            
+        
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+---
+layout: layouts/base.njk
+title: "Teacher Guide: Level E | OOP Project"
+description: "Solutions and notes for Level E: Exploration & Logbook."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "B3", href: "ib-2027/B3/index.html" }
+  - { label: "B3.1", href: "ib-2027/B3/B3.1/index.html" }
+  - { label: "OOP Project", href: "ib-2027/B3/B3.1/oop-project/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/B3/B3.1/oop-project/teacher/index.html" }
+  - { label: "Level E Guide" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
+        <p style="margin-bottom: 0;">Solutions for Level E: Logbook Aggregation.</p>
+    </div>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Concept Overview</h2>
+        <ul style="list-style-type: disc; margin-left: 1.5rem;">
+            <li><strong>Aggregation</strong>: The Player <em>may have</em> a Logbook (it can exist independently), unlike Composition (Inventory) which dies with the player.</li>
+            <li><strong>Dependency Injection</strong>: We create the Logbook outside and pass it in (`attach_logbook`).</li>
+        </ul>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Common Misconceptions</h2>
+        <div class="info-content">
+            <p><strong>1. `self.logbook` initialization</strong></p>
+            <p>It must start as `None` in `__init__`. We only set it when `attach_logbook` is called.</p>
+            
+            <p><strong>2. Defensive Programming</strong></p>
+            <p>In `record_event`, students must check `if self.logbook is None`. If they don't, the game will crash if they try to log something before obtaining the device.</p>
+        </div>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Solution Code</h2>
+        
+        <h3>logbook.py</h3>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto; margin-bottom: 1rem;">
+            <pre><code>class Logbook:
+    def __init__(self):
+        self._entries = []
+
+    def add_entry(self, entry):
+        self._entries.append(entry)
+
+    def list_entries(self):
+        return list(self._entries)  # Copy</code></pre>
+        </div>
+        
+        <h3>player.py (additions)</h3>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+            <pre><code>    def attach_logbook(self, logbook):
+        self.logbook = logbook
+
+    def record_event(self, entry):
+        if self.logbook is None:
+            return "No logbook attached."
+            
+        self.logbook.add_entry(entry)
+        return "Logbook updated."</code></pre>
+        </div>
+    </section>
+
+</div>

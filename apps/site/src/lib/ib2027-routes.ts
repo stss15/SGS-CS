@@ -27,8 +27,36 @@ export const normalizeIb2027Level = (value: string): IbCourseLevel =>
 
 export const getIb2027LevelLabel = (level: IbCourseLevel): string => level.toUpperCase();
 
+// --- New syllabus breadcrumb builder ---
+
+export const buildIb2027Breadcrumbs = (
+  unitCode?: string,
+  subtopic?: string,
+  currentLabel?: string
+): BreadcrumbItem[] => {
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: 'IB Computer Science', href: '/ib-2027/index.html' }
+  ];
+
+  if (unitCode) {
+    breadcrumbs.push({ label: unitCode, href: `/ib-2027/${unitCode}/index.html` });
+  }
+
+  if (subtopic) {
+    breadcrumbs.push({ label: subtopic, href: `/ib-2027/${unitCode}/${subtopic}/index.html` });
+  }
+
+  if (currentLabel) {
+    breadcrumbs.push({ label: currentLabel });
+  }
+
+  return breadcrumbs;
+};
+
+// --- Legacy SL/HL breadcrumb builders (kept for backward compat with [level]/[unit] routes) ---
+
 export const buildIb2027LevelBreadcrumbs = (level: IbCourseLevel): BreadcrumbItem[] => [
-  { label: 'IB 2027', href: '/ib-2027/index.html' },
+  { label: 'IB Computer Science', href: '/ib-2027/index.html' },
   { label: getIb2027LevelLabel(level) }
 ];
 
@@ -38,13 +66,15 @@ export const buildIb2027UnitBreadcrumbs = (
   currentLabel?: string
 ): BreadcrumbItem[] => {
   const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'IB 2027', href: '/ib-2027/index.html' },
+    { label: 'IB Computer Science', href: '/ib-2027/index.html' },
     { label: getIb2027LevelLabel(level), href: `/ib-2027/${level}/index.html` },
     { label: `Unit ${unitNumber}`, href: `/ib-2027/${level}/unit-${unitNumber}/index.html` }
   ];
 
   return currentLabel ? [...breadcrumbs, { label: currentLabel }] : breadcrumbs;
 };
+
+// --- Legacy SL/HL static path and data helpers ---
 
 const extractUnitNumbers = (listing: CurriculumListingPage): number[] =>
   Array.from(

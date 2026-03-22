@@ -1,0 +1,50 @@
+---
+import LegacyEmbedFrame from '../../../../../components/LegacyEmbedFrame.astro';
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
+import { getIb2027UnitSlideRoutes, getIb2027UnitSlideHtml } from '@sgs/content-schema';
+import { extractHtmlTitle } from '../../../../../lib/source-content';
+
+interface SlidePageProps {
+  html: string;
+  routePath: string;
+}
+
+export async function getStaticPaths() {
+  const routes = await getIb2027UnitSlideRoutes();
+
+  // Filter to only syllabus-aligned routes (unitSegment contains '/')
+  const syllabusRoutes = routes.filter((r) => r.unitSegment.includes('/'));
+
+  return Promise.all(
+    syllabusRoutes.map(async (route) => {
+      const [topic, subtopic] = route.unitSegment.split('/');
+      return {
+        params: {
+          topic,
+          subtopic,
+          slide: route.slideSlug
+        },
+        props: {
+          html: await getIb2027UnitSlideHtml('sl', route.unitSegment, route.slideSlug),
+          routePath: route.routePath
+        }
+      };
+    })
+  );
+}
+
+const { html, routePath } = Astro.props as SlidePageProps;
+const title = extractHtmlTitle(html, 'IB Slide Deck');
+---
+
+<BaseLayout title={title} description={title}>
+  <section class="page-panel page-panel--flush">
+    <LegacyEmbedFrame
+      title={title}
+      html={html}
+      routePath={routePath}
+      variant="slides"
+      hideSelectors={['#back-btn', '#sg-logo', '.footer-text', '.standalone-nav']}
+    />
+  </section>
+</BaseLayout>

@@ -69,9 +69,7 @@ export interface PathwayCard {
   id?: string;
 }
 
-export interface Ib2027PathwayIndex extends CurriculumIndexFrontmatter {
-  pathways: PathwayCard[];
-}
+
 
 export interface LegacyContentPage {
   title: string;
@@ -432,20 +430,7 @@ interface LegacyHomeFrontmatter {
   cards: FeatureCard[];
 }
 
-const IB_2027_PATHWAY_CARDS: PathwayCard[] = [
-  {
-    href: 'sl/index.html',
-    id: 'card-sl',
-    title: 'Standard Level (SL)',
-    desc: '12 units covering core computational thinking, programming, and system design.'
-  },
-  {
-    href: 'hl/index.html',
-    id: 'card-hl',
-    title: 'Higher Level (HL)',
-    desc: '11 advanced units including ADTs, recursion, machine learning, and systems control.'
-  }
-];
+
 
 const mapListingSections = (listing: IGCSEListing, makeAbsolute: boolean): TopicSection[] => {
   return (listing.sections || []).map((section) => ({
@@ -491,12 +476,10 @@ export const getIgcseListing = async (): Promise<IGCSEListing> => {
   return getListingByKey('igcse', true);
 };
 
-export const getIb2027PathwayIndex = async (): Promise<Ib2027PathwayIndex> => {
-  const frontmatter = await readFrontmatterCached<CurriculumIndexFrontmatter>(IB_2027_INDEX_PATH);
-  return {
-    ...frontmatter,
-    pathways: IB_2027_PATHWAY_CARDS
-  };
+
+
+export const getIb2027SyllabusListing = async (): Promise<CurriculumListingPage> => {
+  return getListingByKey('ib-2027', false) as Promise<CurriculumListingPage>;
 };
 
 export const getIbSlCurriculumIndex = async (): Promise<CurriculumListingPage> => {
@@ -548,7 +531,45 @@ const getIb2027SlidePath = (level: IbCourseLevel, unitSegment: string, slideSlug
 
 export const getIb2027UnitSlideRoutes = async (): Promise<Ib2027SlideRoute[]> => {
   const routes: Ib2027SlideRoute[] = [];
+  const seenSlugs = new Set<string>();
 
+  // 1. Discover slides from the new syllabus-aligned directories (A1/A1.1/slides/, etc.)
+  const syllabusPattern = /^[AB]\d$/;
+  const subtopicPattern = /^[AB]\d\.\d$/;
+  const topLevelEntries = existsSync(IB_2027_ROOT_DIR)
+    ? (await readdir(IB_2027_ROOT_DIR, { withFileTypes: true }))
+        .filter((e) => e.isDirectory() && syllabusPattern.test(e.name))
+    : [];
+
+  for (const topicEntry of topLevelEntries) {
+    const topicDir = path.join(IB_2027_ROOT_DIR, topicEntry.name);
+    const subtopicDirs = (await readdir(topicDir, { withFileTypes: true }))
+      .filter((e) => e.isDirectory() && subtopicPattern.test(e.name))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    for (const subtopicEntry of subtopicDirs) {
+      const slidesDir = path.join(topicDir, subtopicEntry.name, 'slides');
+      if (!existsSync(slidesDir)) continue;
+
+      const slideFiles = (await readdir(slidesDir, { withFileTypes: true }))
+        .filter((e) => e.isFile() && e.name.endsWith('.html'))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      for (const slideFile of slideFiles) {
+        const slideSlug = slideFile.name.replace(/\.html$/, '');
+        seenSlugs.add(slideSlug);
+        routes.push({
+          level: 'sl' as IbCourseLevel, // syllabus slides are level-neutral
+          unitSegment: `${topicEntry.name}/${subtopicEntry.name}`,
+          unitNumber: 0,
+          slideSlug,
+          routePath: `/ib-2027/${topicEntry.name}/${subtopicEntry.name}/slides/${slideSlug}.html`
+        });
+      }
+    }
+  }
+
+  // 2. Discover slides from legacy teaching-order directories (sl/unit-N/slides/, hl/unit-N/slides/)
   for (const level of IB_LEVEL_ORDER) {
     const levelDir = path.join(IB_2027_ROOT_DIR, level);
     if (!existsSync(levelDir)) {
@@ -585,6 +606,10 @@ export const getIb2027UnitSlideRoutes = async (): Promise<Ib2027SlideRoute[]> =>
 
       for (const slideFileName of slideFiles) {
         const slideSlug = slideFileName.replace(/\.html$/, '');
+        // Skip if already discovered from syllabus structure (dedup)
+        if (seenSlugs.has(slideSlug)) continue;
+        seenSlugs.add(slideSlug);
+
         routes.push({
           level,
           unitSegment,
@@ -604,16 +629,26 @@ export const getIb2027UnitSlideHtml = async (
   unitSegment: string,
   slideSlug: string
 ): Promise<string> => {
+  if (!/^[a-zA-Z0-9._\/-]+$/.test(slideSlug)) {
+    throw new Error(`Invalid IB slide slug: ${slideSlug}`);
+  }
+
+  // Support syllabus-aligned paths (unitSegment like "A1/A1.1")
+  if (/^[AB]\d\/[AB]\d\.\d$/.test(unitSegment)) {
+    const slidePath = path.join(IB_2027_ROOT_DIR, unitSegment, 'slides', `${slideSlug}.html`);
+    if (!existsSync(slidePath)) {
+      throw new Error(`Unknown IB slide route: /ib-2027/${unitSegment}/slides/${slideSlug}.html`);
+    }
+    return readFile(slidePath, 'utf8');
+  }
+
+  // Legacy teaching-order paths
   if (!IB_LEVEL_ORDER.includes(level)) {
     throw new Error(`Invalid IB level for slide route: ${level}`);
   }
 
   if (!/^unit-\d+$/.test(unitSegment)) {
     throw new Error(`Invalid IB unit segment for slide route: ${unitSegment}`);
-  }
-
-  if (!/^[a-zA-Z0-9._-]+$/.test(slideSlug)) {
-    throw new Error(`Invalid IB slide slug: ${slideSlug}`);
   }
 
   const slidePath = getIb2027SlidePath(level, unitSegment, slideSlug);

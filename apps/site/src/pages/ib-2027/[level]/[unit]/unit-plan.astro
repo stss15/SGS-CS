@@ -1,96 +1,43 @@
 ---
-import type { IbCourseLevel } from '@sgs/content-schema';
-import DetailSection from '../../../../components/DetailSection.astro';
-import SideCard from '../../../../components/SideCard.astro';
-import UnitPlanShell from '../../../../layouts/UnitPlanShell.astro';
-import {
-  buildIb2027UnitBreadcrumbs,
-  getIb2027LevelLabel,
-  getIb2027UnitPlanData,
-  getIb2027UnitStaticPaths
-} from '../../../../lib/ib2027-routes';
+/**
+ * Redirect: /ib-2027/{sl,hl}/unit-N/unit-plan → /ib-2027/{target}/unit-plan-{level}-N.html
+ */
 
-interface UnitPlanPageProps {
-  level: IbCourseLevel;
-  unitNumber: number;
+export function getStaticPaths() {
+  const SL: Record<string, string> = {
+    'unit-1': 'B1', 'unit-2': 'B2', 'unit-3': 'B2', 'unit-4': 'B2',
+    'unit-5': 'B3', 'unit-6': 'A3', 'unit-7': 'A4', 'unit-8': 'ia',
+    'unit-9': 'A1', 'unit-10': 'A1', 'unit-11': 'A2', 'unit-12': 'case-study'
+  };
+  const HL: Record<string, string> = {
+    'unit-1': 'A1', 'unit-2': 'A1', 'unit-3': 'B2', 'unit-4': 'B3',
+    'unit-5': 'A3', 'unit-6': 'B4', 'unit-7': 'A4', 'unit-8': 'A4',
+    'unit-9': 'A4', 'unit-10': 'case-study', 'unit-11': 'A2'
+  };
+  const paths: Array<{ params: { level: string; unit: string }; props: { redirectUrl: string } }> = [];
+  for (const [unit, target] of Object.entries(SL)) {
+    const num = unit.replace('unit-', '');
+    paths.push({ params: { level: 'sl', unit }, props: { redirectUrl: `/ib-2027/${target}/unit-plan-sl-${num}.html` } });
+  }
+  for (const [unit, target] of Object.entries(HL)) {
+    const num = unit.replace('unit-', '');
+    paths.push({ params: { level: 'hl', unit }, props: { redirectUrl: `/ib-2027/${target}/unit-plan-hl-${num}.html` } });
+  }
+  return paths;
 }
 
-export const getStaticPaths = getIb2027UnitStaticPaths;
-
-const { level, unitNumber } = Astro.props as UnitPlanPageProps;
-const unitPlan = await getIb2027UnitPlanData(level, unitNumber);
-const unitBasePath = `/ib-2027/${level}/unit-${unitPlan.unitNumber}`;
-const resolveUnitPlanHref = (href: string) => (href.startsWith('/') ? href : `${unitBasePath}/${href.replace(/^\.?\//, '')}`);
+const { redirectUrl } = Astro.props as { redirectUrl: string };
 ---
 
-<UnitPlanShell
-  title={unitPlan.title}
-  description={unitPlan.description || 'IB Computer Science unit plan.'}
-  level={level}
-  unitNumber={unitPlan.unitNumber}
-  breadcrumbs={buildIb2027UnitBreadcrumbs(level, unitPlan.unitNumber, 'Unit Plan')}
-  heroTitle={`Unit ${unitPlan.unitNumber}: ${unitPlan.unitName}`}
-  heroSubtitle={`${getIb2027LevelLabel(level)} curriculum overview and structured learning plan.`}
->
-  <DetailSection title="Introduction" open>
-    {unitPlan.introduction?.bigQuestion && <p><strong>{unitPlan.introduction.bigQuestion}</strong></p>}
-    {unitPlan.introduction?.overview && <p set:html={unitPlan.introduction.overview} />}
-    {unitPlan.introduction?.journey && <p set:html={unitPlan.introduction.journey} />}
-  </DetailSection>
-
-  {(unitPlan.concepts || []).map((concept) => (
-    <DetailSection title={concept.title}>
-      <div set:html={concept.content} />
-    </DetailSection>
-  ))}
-
-  {(unitPlan.terminology || []).length > 0 && (
-    <DetailSection title="Key Terminology">
-      <table class="term-table">
-        <thead>
-          <tr><th>Term</th><th>Definition</th></tr>
-        </thead>
-        <tbody>
-          {(unitPlan.terminology || []).map((item) => (
-            <tr>
-              <td>{item.term}</td>
-              <td>{item.definition}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </DetailSection>
-  )}
-
-  <Fragment slot="side">
-    {(unitPlan.viewSlidesButtons || []).length > 0 && (
-      <SideCard title="View Slides">
-        <ul class="link-list">
-          {(unitPlan.viewSlidesButtons || []).map((button) => (
-            <li><a href={resolveUnitPlanHref(button.href)}>{button.label}</a></li>
-          ))}
-        </ul>
-      </SideCard>
-    )}
-
-    {(unitPlan.syllabusPoints || []).length > 0 && (
-      <SideCard title="Syllabus Coverage">
-        <ul class="link-list">
-          {(unitPlan.syllabusPoints || []).map((point) => (
-            <li><strong>{point.code}</strong> {point.topic}</li>
-          ))}
-        </ul>
-      </SideCard>
-    )}
-
-    {(unitPlan.applications || []).length > 0 && (
-      <SideCard title="Applications">
-        <ul class="link-list">
-          {(unitPlan.applications || []).map((application) => (
-            <li>{application}</li>
-          ))}
-        </ul>
-      </SideCard>
-    )}
-  </Fragment>
-</UnitPlanShell>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content={`0;url=${redirectUrl}`}>
+  <title>Redirecting</title>
+  <link rel="canonical" href={redirectUrl}>
+</head>
+<body>
+  <p>This page has moved. <a href={redirectUrl}>Go to new location</a>.</p>
+</body>
+</html>

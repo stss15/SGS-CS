@@ -1,0 +1,606 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level C: Carrying Capacity - Inventory | OOP Project</title>
+    <meta name="description" content="Create an Inventory class and integrate it with Player using composition.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/oop-worksheet.css">
+            
+        
+            
+                <link rel="stylesheet" href="/css/sigma7-map.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/index.html">SL</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/unit-5/index.html">Unit 5</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/sl/unit-5/oop-project/index.html">OOP Project</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Level C</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            
+<!-- HERO SECTION -->
+<div class="oop-hero">
+    <img src="../../../../ib-2027/sl/unit-5/OOP%20Project/images/level_c_hero.png" alt="Space station storage room with inventory display" class="oop-hero-image" decoding="async">
+    <div class="oop-hero-overlay">
+        <span class="oop-hero-level">Level C</span>
+        <h1 class="oop-hero-title">Carrying Capacity: Inventory</h1>
+        <p class="oop-hero-subtitle">Create a container class and integrate it with Player</p>
+    </div>
+</div>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <h2 class="oop-section-title">What You'll Learn</h2>
+    </div>
+    
+    <div class="objectives-grid">
+        <div class="objective-card">
+            <span class="objective-number">1</span>
+            <span class="objective-text">Implement composition — Player "has-a" Inventory</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">2</span>
+            <span class="objective-text">Use a class variable as a static constraint</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">3</span>
+            <span class="objective-text">Apply encapsulation with protected attributes</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">4</span>
+            <span class="objective-text">Write accessor methods that protect internal data</span>
+        </div>
+    </div>
+</section>
+
+<!-- KEYWORDS -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-book"></i>
+        </div>
+        <h2 class="oop-section-title">Key Terms</h2>
+    </div>
+    
+    <div class="keywords-table">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Term</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="keyword-term">Composition</span></td>
+                    <td>A "has-a" relationship where one object contains another</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Encapsulation</span></td>
+                    <td>Bundling data with methods that operate on it, hiding internals</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Class Variable</span></td>
+                    <td>A variable shared by all instances of a class</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Accessor Method</span></td>
+                    <td>A method that provides controlled access to internal data</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Protected Attribute</span></td>
+                    <td>An attribute prefixed with _ to indicate it's internal</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- OOP SPOTLIGHT -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-lightbulb"></i>
+        </div>
+        <h2 class="oop-section-title">OOP Spotlight: Encapsulation + Access Modifiers</h2>
+    </div>
+    
+    <div class="concept-explanation" style="background: #f8f9fa; border-left: 4px solid var(--primary-color); padding: 1.5rem; border-radius: 0 8px 8px 0;">
+        <p><strong>Python does not enforce access modifiers</strong> like Java or C#, so we use conventions:</p>
+        <ul style="margin-top: 0.5rem;">
+            <li><strong>Public:</strong> <code>health</code> (no underscore)</li>
+            <li><strong>Protected (convention):</strong> <code>_items</code> (single underscore)</li>
+            <li><strong>Private-ish:</strong> <code>__items</code> (name mangling)</li>
+        </ul>
+        <p style="margin-top: 0.75rem;">Encapsulation means: access data through methods like <code>add()</code> and <code>list_items()</code>, not by modifying <code>_items</code> directly.</p>
+        <p style="margin-top: 0.75rem;"><strong>Composition vs Aggregation:</strong> Inventory is composed inside Player (owned). Aggregation is when an object uses another object without owning its lifetime.</p>
+    </div>
+</section>
+
+<!-- UML DIAGRAM -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <h2 class="oop-section-title">Class Design (UML)</h2>
+    </div>
+    
+    <div class="uml-svg-container" style="max-width: 750px;">
+        <svg viewBox="0 0 700 190" class="uml-svg" preserveAspectRatio="xMidYMid meet">
+            <!-- Player Class Box -->
+            <rect x="20" y="50" width="180" height="80" class="uml-svg-class" rx="4"/>
+            <line x1="20" y1="82" x2="200" y2="82" class="uml-svg-line"/>
+            <text x="110" y="72" class="uml-svg-text title">Player</text>
+            <text x="30" y="105" class="uml-svg-text attribute">- inventory: Inventory</text>
+            
+            <!-- Composition Line with Filled Diamond -->
+            <line x1="200" y1="90" x2="360" y2="90" class="uml-svg-line"/>
+            <!-- Filled diamond at Player end (composition) -->
+            <polygon points="200,90 215,82 230,90 215,98" class="uml-svg-diamond composition"/>
+            <!-- "has-a" label -->
+            <text x="280" y="82" class="uml-svg-text" style="font-size: 11px; fill: #6c757d;">has-a</text>
+            
+            <!-- Inventory Class Box -->
+            <rect x="360" y="10" width="320" height="170" class="uml-svg-class" rx="4"/>
+            <line x1="360" y1="42" x2="680" y2="42" class="uml-svg-line"/>
+            <line x1="360" y1="82" x2="680" y2="82" class="uml-svg-line"/>
+            <text x="520" y="32" class="uml-svg-text title">Inventory</text>
+            <!-- Attributes -->
+            <text x="370" y="60" class="uml-svg-text attribute">+ MAX_CAPACITY = 10</text>
+            <text x="370" y="74" class="uml-svg-text attribute">- _items: list</text>
+            <!-- Methods -->
+            <text x="370" y="100" class="uml-svg-text method">+ add(item_id) → bool</text>
+            <text x="370" y="116" class="uml-svg-text method">+ remove(item_id) → bool</text>
+            <text x="370" y="132" class="uml-svg-text method">+ list_items() → list</text>
+            <text x="370" y="148" class="uml-svg-text method">+ has_item(item_id) → bool</text>
+            <text x="370" y="164" class="uml-svg-text method">+ is_full() → bool</text>
+        </svg>
+        
+        <div class="uml-legend" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+            <div class="uml-legend-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--primary-color);">◆</span>
+                <span>Composition (owns the object)</span>
+            </div>
+            <div class="uml-legend-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-family: monospace;">_</span>
+                <span>Protected/internal attribute</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STRUCTURE GUIDE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-code"></i>
+        </div>
+        <h2 class="oop-section-title">Structure Guide</h2>
+    </div>
+    
+    <p class="section-intro">Click each section to expand. Build the Inventory class first, then integrate it with Player.</p>
+    
+    <!-- 1. Class Variable -->
+    <details class="skeleton-block" open>
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">1</span>
+            <span class="skeleton-title">Class Definition & Class Variable</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">CLASS Inventory:</div>
+            <div class="skeleton-line code" style="margin-top: 0.5rem;">    MAX_CAPACITY = 10</div>
+            <div class="skeleton-desc">
+                This is a <strong>class variable</strong> — shared by all Inventory instances, not unique to each one. It defines the maximum number of items any inventory can hold.
+            </div>
+        </div>
+    </details>
+    
+    <!-- 2. Constructor -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">2</span>
+            <span class="skeleton-title">Constructor</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">CONSTRUCTOR():</div>
+            <div class="skeleton-desc">
+                <strong>Must do:</strong>
+                <ul>
+                    <li>Create an empty list called <code>_items</code></li>
+                </ul>
+                The underscore prefix indicates this is a protected attribute — accessed through methods, not directly.
+            </div>
+        </div>
+    </details>
+    
+    <!-- 3. add -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">3</span>
+            <span class="skeleton-title">add</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">METHOD add(item_id) → boolean:</div>
+            <div class="skeleton-desc">
+                <strong>Returns:</strong> True if item was added, False otherwise<br><br>
+                <strong>Must check:</strong>
+                <ul>
+                    <li>Is the inventory already full?</li>
+                    <li>Is this item already in the inventory?</li>
+                </ul>
+                Only add the item if both checks pass.
+            </div>
+        </div>
+    </details>
+    
+    <!-- 4. remove -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">4</span>
+            <span class="skeleton-title">remove</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">METHOD remove(item_id) → boolean:</div>
+            <div class="skeleton-desc">
+                <strong>Returns:</strong> True if item was removed, False if not found
+            </div>
+        </div>
+    </details>
+    
+    <!-- 5. Accessor Methods -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">5</span>
+            <span class="skeleton-title">Accessor Methods</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">METHOD list_items() → list:</div>
+            <div class="skeleton-desc" style="margin-bottom: 1rem;">
+                Returns a <strong>copy</strong> of _items, not the list itself. This protects encapsulation.
+            </div>
+            <div class="skeleton-line code">METHOD has_item(item_id) → boolean:</div>
+            <div class="skeleton-desc" style="margin-bottom: 1rem;">
+                Returns True if item_id is in the inventory.
+            </div>
+            <div class="skeleton-line code">METHOD is_full() → boolean:</div>
+            <div class="skeleton-desc" style="margin-bottom: 1rem;">
+                Returns True if count equals MAX_CAPACITY.
+            </div>
+            <div class="skeleton-line code">METHOD count() → integer:</div>
+            <div class="skeleton-desc">
+                Returns the number of items currently held.
+            </div>
+        </div>
+    </details>
+    
+    <!-- 6. Integration -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">6</span>
+            <span class="skeleton-title">Integrate with Player</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                Update your <strong>Player</strong> class constructor to create an Inventory:
+                <div class="skeleton-line code" style="margin-top: 1rem;">this.inventory = NEW Inventory()</div>
+                <p style="margin-top: 1rem;">This is <strong>composition</strong> — the Player now "has-a" Inventory.</p>
+            </div>
+        </div>
+    </details>
+</section>
+
+<!-- STATION MAP -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-map"></i>
+        </div>
+        <h2 class="oop-section-title">Station Map</h2>
+    </div>
+    
+    <p class="section-intro">View the Sigma-7 station layout. Fog of war reveals as you progress through levels.</p>
+    
+    <button type="button" class="show-map-btn" data-sgs-onclick="sigma7Map.open()">
+        <i class="fa-solid fa-map"></i> Show Station Map
+    </button>
+</section>
+<script src="../../../../js/sigma7-map.js"></script>
+
+<!-- CHALLENGE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h2 class="oop-section-title">Your Mission</h2>
+    </div>
+    
+    <div class="challenge-box">
+        <div class="challenge-title">
+            <i class="fa-solid fa-terminal"></i>
+            Create the Inventory System
+        </div>
+        
+        <div class="challenge-description">
+            <p>The station's supply room has items you can collect — but you can only carry so much.</p>
+            <p>Create <strong>student/inventory.py</strong> with the Inventory class, then update your Player to have an inventory attribute.</p>
+        </div>
+        
+        <div class="challenge-actions">
+            <a href="../../../../ib-2027/sl/unit-5/OOP%20Project/downloads/level_c_inventory.zip" class="download-btn" download>
+                <i class="fa-solid fa-download"></i>
+                Download Level C Files
+            </a>
+            <code class="validate-command">python3 validate.py</code>
+        </div>
+    </div>
+</section>
+
+<!-- LEVEL NAVIGATION -->
+<nav class="level-nav">
+    <a href="level-b-specialisation.html" class="level-nav-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Level B: Specialisation
+    </a>
+    <a href="level-d-item-use.html" class="level-nav-btn">
+        Level D: Item Use
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+</nav>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body>
+
+</html>

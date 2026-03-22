@@ -1,0 +1,82 @@
+---
+layout: layouts/base.njk
+title: "Teacher Guide: Level A | OOP Project"
+description: "Solutions and notes for Level A: The Player."
+activeSection: "ib"
+breadcrumbs:
+  - { label: "Home", href: "index.html" }
+  - { label: "IB 2027", href: "ib-2027/index.html" }
+  - { label: "B3", href: "ib-2027/B3/index.html" }
+  - { label: "B3.1", href: "ib-2027/B3/B3.1/index.html" }
+  - { label: "OOP Project", href: "ib-2027/B3/B3.1/oop-project/index.html" }
+  - { label: "Teacher Portal", href: "ib-2027/B3/B3.1/oop-project/teacher/index.html" }
+  - { label: "Level A Guide" }
+extraStyles:
+  - "css/oop-worksheet.css"
+---
+
+<div class="oop-content-container">
+
+    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
+        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
+        <p style="margin-bottom: 0;">Solutions for Level A: The Player.</p>
+    </div>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Concept Overview</h2>
+        <ul style="list-style-type: disc; margin-left: 1.5rem;">
+            <li><strong>Class Definition</strong>: Creating a blueprint (`class Player:`).</li>
+            <li><strong>Attributes</strong>: Storing data (`self.health`, `self.name`).</li>
+            <li><strong>Constructor</strong>: Initializing state (`__init__`).</li>
+            <li><strong>Methods</strong>: Defining behavior (`take_damage`, `heal`).</li>
+        </ul>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Common Misconceptions</h2>
+        <div class="info-content">
+            <p><strong>1. Forgetting `self`</strong></p>
+            <p>Students often write `health = 100` instead of `self.health = 100`. Explain that `self` attaches the variable to the <em>specific object</em>, whereas a plain variable dies when the function ends.</p>
+            
+            <p><strong>2. Indentation Errors</strong></p>
+            <p>Ensure methods are indented <em>inside</em> the class. If `def __init__` is flush with `class Player`, it won't work.</p>
+        </div>
+    </section>
+
+    <section class="oop-section">
+        <h2 class="oop-section-title">Solution Code</h2>
+        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+            <pre><code>class Player:
+    def __init__(self, name):
+        self.name = name
+        self.health = 100
+        self.max_health = 100
+        self.armour = 2
+        self.accuracy = 85
+        self.inventory = None  # technically Inventory() in later levels
+        self.logbook = None
+
+    def get_status(self):
+        return f"{self.name}: {self.health}/{self.max_health} HP"
+
+    def take_damage(self, amount):
+        # Prevent negative health
+        self.health -= amount
+        if self.health < 0:
+            self.health = 0
+            
+        # OR use max()
+        # self.health = max(0, self.health - amount)
+
+    def heal(self, amount):
+        # Prevent overheal
+        self.health += amount
+        if self.health > self.max_health:
+            self.health = self.max_health
+            
+        # OR use min()
+        # self.health = min(self.max_health, self.health + amount)</code></pre>
+        </div>
+    </section>
+
+</div>
