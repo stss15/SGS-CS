@@ -124,6 +124,9 @@
     let currentSubList = null;
 
     headings.forEach((heading) => {
+      // Skip H3s from TOC entirely — only show H2 subheadings
+      if (heading.tagName === 'H3') return;
+
       const headingText = (heading.textContent || '').trim() || 'Untitled';
 
       if (isGroupHeader(heading)) {
@@ -149,22 +152,15 @@
         container.appendChild(currentDetails);
         tocLinkById.set(heading.id, link);
       } else {
-        // Content H2 or H3 → list item inside current section
+        // Content H2 → list item inside current section
         const item = document.createElement('li');
-        item.className = heading.tagName === 'H3' ? 'toc-level-3' : 'toc-level-2';
+        item.className = 'toc-level-2';
         item.dataset.tocText = headingText.toLowerCase();
 
         const link = document.createElement('a');
         link.href = `#${heading.id}`;
         link.dataset.readerTocLink = 'true';
         link.dataset.targetId = heading.id;
-
-        if (heading.tagName === 'H3') {
-          const dot = document.createElement('span');
-          dot.className = 'toc-dot';
-          dot.setAttribute('aria-hidden', 'true');
-          link.appendChild(dot);
-        }
 
         const text = document.createElement('span');
         text.textContent = headingText;
