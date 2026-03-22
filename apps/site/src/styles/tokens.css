@@ -10,6 +10,8 @@
   --gold-400: #d4b078;
   --gold-300: #e8c99a;
   --gold-glow: rgba(190, 154, 94, 0.35);
+  --gold-100: #faf5eb;
+  --navy-50: #f0f2f7;
   --color-bg: #f8f6f2;
   --color-surface: #ffffff;
   --color-surface-muted: #eef2f6;
@@ -38,7 +40,7 @@
   --space-3: 1.5rem;
   --space-4: 2rem;
   --sidebar-width: 15rem;
-  --header-height: 3.25rem;
+  --header-height: 3.5rem;
   --content-reading: 60rem;
   --content-worksheet: 100%;
   --primary-color: var(--navy-800);
@@ -179,6 +181,16 @@ ol {
   background: rgba(255, 255, 255, 0.98);
 }
 
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--navy-800) 0%, var(--gold-500) 50%, var(--navy-800) 100%);
+}
+
 .site-header-inner {
   height: 100%;
   max-width: 100%;
@@ -223,19 +235,33 @@ ol {
   padding: 0 0.9rem;
   color: var(--color-text-muted);
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 700;
+  border-radius: var(--radius-md);
+  position: relative;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .site-primary-nav a:hover {
-  background: rgba(14, 33, 75, 0.06);
+  background: var(--navy-50);
   color: var(--navy-800);
 }
 
 .site-primary-nav a.active {
   color: var(--navy-800);
-  background: transparent;
+  background: var(--navy-50);
+}
+
+.site-primary-nav a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.2rem;
+  height: 2px;
+  background: var(--gold-500);
+  border-radius: 1px;
 }
 
 /* ── Mobile menu toggle ─────────────────────────── */
@@ -424,17 +450,19 @@ ol {
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 0.6rem;
-    right: 0.5rem;
-    width: 1.6rem;
-    height: 1.6rem;
+    top: 0.75rem;
+    right: -0.65rem;
+    width: 1.3rem;
+    height: 1.3rem;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
+    border-radius: 50%;
     background: var(--color-surface);
     color: var(--color-text-muted);
-    font-size: 1rem;
+    font-size: 0.7rem;
     cursor: pointer;
     z-index: 2;
+    box-shadow: var(--shadow-soft);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
   }
 
   .sidebar-collapse-btn:hover {
@@ -447,22 +475,26 @@ ol {
     align-items: center;
     justify-content: center;
     position: fixed;
-    top: calc(var(--header-height) + 0.5rem);
-    left: 0.5rem;
-    width: 1.6rem;
-    height: 1.6rem;
+    top: calc(var(--header-height) + 1rem);
+    left: 0;
+    width: 1.5rem;
+    height: 2.5rem;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
+    border-left: none;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
     background: var(--color-surface);
     color: var(--color-text-muted);
-    font-size: 1rem;
+    font-size: 0.7rem;
     cursor: pointer;
     z-index: 121;
+    box-shadow: var(--shadow-soft);
+    transition: color var(--transition-fast), border-color var(--transition-fast), width var(--transition-fast);
   }
 
   .sidebar-expand-btn:hover {
     color: var(--color-accent);
     border-color: var(--color-border-strong);
+    width: 1.75rem;
   }
 
   .page-shell--sidebar-collapsed {
@@ -499,9 +531,9 @@ ol {
 
 .course-explorer {
   min-height: 100%;
-  padding: 1.2rem 1rem 1.1rem;
+  padding: 0.85rem 1rem 1.1rem;
   display: grid;
-  gap: 1rem;
+  gap: 0.85rem;
   align-content: start;
 }
 
@@ -515,20 +547,20 @@ ol {
 }
 
 .course-explorer__badge {
-  width: 4.25rem;
-  height: 4.25rem;
+  width: 3rem;
+  height: 3rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 1.15rem;
+  border-radius: 0.75rem;
   background: var(--navy-900);
   color: #ffffff;
-  box-shadow: 0 18px 32px rgba(10, 22, 40, 0.12);
+  box-shadow: 0 12px 24px rgba(10, 22, 40, 0.1);
   flex: 0 0 auto;
 }
 
 .course-explorer__badge i {
-  font-size: 1.5rem;
+  font-size: 1.15rem;
 }
 
 .course-explorer__header-copy {
@@ -539,9 +571,9 @@ ol {
 .course-explorer__title {
   color: var(--navy-900);
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: 1.25rem;
   font-weight: 800;
-  line-height: 1.04;
+  line-height: 1.1;
 }
 
 .course-explorer__meta {
@@ -1122,12 +1154,17 @@ ol {
 }
 
 .site-footer {
+  margin-top: auto;
   border-top: 1px solid var(--color-border);
-  padding: 0.75rem 1rem;
+  padding: 1.25rem 1.5rem;
   background: var(--color-bg);
   color: var(--color-text-muted);
   font-size: 0.82rem;
   text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
 }
 
 .curriculum-shell {
@@ -2808,22 +2845,14 @@ ol {
 }
 
 .site-footer {
-  border-top: 0;
-  background: transparent;
-  padding: 1.2rem 1rem 1.6rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+  padding: 1.25rem 1.5rem;
   text-align: center;
 }
 
 .site-footer p {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.5rem;
-  padding: 0 0.95rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.76);
-  box-shadow:
-    inset 0 0 0 1px rgba(0, 49, 101, 0.05),
-    0 12px 22px rgba(17, 27, 45, 0.04);
+  margin: 0;
 }
 
 .site-body--year-overview .site-footer {
