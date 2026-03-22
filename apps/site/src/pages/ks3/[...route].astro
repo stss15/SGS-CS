@@ -6,7 +6,7 @@ import {
   getKs3LegacyRoutes,
   resolveKs3LegacySourceRoutePath
 } from '@sgs/content-schema';
-import { isKs3WorkspaceRoute } from '../../lib/legacy-route-classification';
+import { isKs3WorkspaceRoute, isKs3SlideRoute } from '../../lib/legacy-route-classification';
 import { getKs3YearOverview } from '../../lib/ks3-year-overview';
 import { extractHtmlTitle } from '../../lib/source-content';
 
@@ -35,7 +35,8 @@ export async function getStaticPaths() {
 
 const { html, routePath, sourceRoutePath } = Astro.props as Ks3LegacyPageProps;
 const title = extractHtmlTitle(html, 'KS3 Resource');
-const variant = isKs3WorkspaceRoute(routePath) || isKs3WorkspaceRoute(sourceRoutePath) ? 'workspace' : 'document';
+const isSlide = isKs3SlideRoute(routePath) || isKs3SlideRoute(sourceRoutePath);
+const variant = isSlide ? 'slides' : (isKs3WorkspaceRoute(routePath) || isKs3WorkspaceRoute(sourceRoutePath) ? 'workspace' : 'document');
 const yearIndexMatch = routePath.match(/^\/ks3\/(year7|year8|year9)\/index\.html$/i);
 const yearIndexKey = yearIndexMatch?.[1]?.toLowerCase() ?? null;
 const yearOverview = getKs3YearOverview(yearIndexKey);

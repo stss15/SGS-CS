@@ -7,6 +7,9 @@ export const isIgcseWorkspaceRoute = (routePath: string): boolean =>
     routePath
   );
 
+export const isKs3SlideRoute = (routePath: string): boolean =>
+  /slides?\//i.test(routePath) || /slides?\.html/i.test(routePath);
+
 export const isKs3WorkspaceRoute = (routePath: string): boolean =>
   /(activity|quiz|game|slide|simulator|simulation|playground|project|worksheet|tool|assessment|mission-control|planet-x|\/l\d)/i.test(
     routePath

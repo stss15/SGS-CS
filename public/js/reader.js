@@ -117,34 +117,69 @@
       return;
     }
 
-    const list = document.createElement('ul');
+    const container = document.createDocumentFragment();
+    let currentDetails = null;
+    let currentSubList = null;
+
     headings.forEach((heading) => {
       const level = heading.tagName === 'H3' ? 3 : 2;
-      const item = document.createElement('li');
-      item.className = `toc-level-${level}`;
-      item.dataset.tocText = (heading.textContent || '').trim().toLowerCase();
+      const headingText = (heading.textContent || '').trim() || 'Untitled';
 
-      const link = document.createElement('a');
-      link.href = `#${heading.id}`;
-      link.dataset.readerTocLink = 'true';
-      link.dataset.targetId = heading.id;
+      if (level === 2) {
+        currentDetails = document.createElement('details');
+        currentDetails.className = 'toc-section';
+        currentDetails.dataset.tocText = headingText.toLowerCase();
 
-      const dot = document.createElement('span');
-      dot.className = 'toc-dot';
-      dot.setAttribute('aria-hidden', 'true');
+        const summary = document.createElement('summary');
+        summary.className = 'toc-section__summary';
 
-      const text = document.createElement('span');
-      text.textContent = (heading.textContent || '').trim() || 'Untitled';
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.dataset.readerTocLink = 'true';
+        link.dataset.targetId = heading.id;
+        link.textContent = headingText;
+        summary.appendChild(link);
 
-      link.appendChild(dot);
-      link.appendChild(text);
-      item.appendChild(link);
-      list.appendChild(item);
-      tocLinkById.set(heading.id, link);
+        currentDetails.appendChild(summary);
+        currentSubList = document.createElement('ul');
+        currentSubList.className = 'toc-section__children';
+        currentDetails.appendChild(currentSubList);
+        container.appendChild(currentDetails);
+        tocLinkById.set(heading.id, link);
+      } else {
+        const item = document.createElement('li');
+        item.className = 'toc-level-3';
+        item.dataset.tocText = headingText.toLowerCase();
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.dataset.readerTocLink = 'true';
+        link.dataset.targetId = heading.id;
+
+        const dot = document.createElement('span');
+        dot.className = 'toc-dot';
+        dot.setAttribute('aria-hidden', 'true');
+
+        const text = document.createElement('span');
+        text.textContent = headingText;
+
+        link.appendChild(dot);
+        link.appendChild(text);
+        item.appendChild(link);
+
+        if (currentSubList) {
+          currentSubList.appendChild(item);
+        } else {
+          const standaloneList = document.createElement('ul');
+          standaloneList.appendChild(item);
+          container.appendChild(standaloneList);
+        }
+        tocLinkById.set(heading.id, link);
+      }
     });
 
     tocEl.innerHTML = '';
-    tocEl.appendChild(list);
+    tocEl.appendChild(container);
   };
 
   const setActiveTocLink = (id) => {
@@ -161,7 +196,7 @@
     window.scrollTo({ top: Math.max(0, top), behavior });
   };
 
-  const navigateToId = (id, { updateHistory = true, closeTocOnNavigate = true, behavior } = {}) => {
+  let navigateToId = (id, { updateHistory = true, closeTocOnNavigate = true, behavior } = {}) => {
     const heading = document.getElementById(id);
     if (!heading) return;
 
@@ -180,6 +215,54 @@
   };
 
   buildToc();
+
+  // Wrap H2 content sections in collapsible <details> elements
+  const h2Headings = headings.filter((h) => h.tagName === 'H2');
+  h2Headings.forEach((h2) => {
+    const details = document.createElement('details');
+    details.className = 'reader-chapter';
+
+    const summary = document.createElement('summary');
+    summary.className = 'reader-chapter__summary';
+    summary.appendChild(h2.cloneNode(true));
+
+    h2.parentNode.insertBefore(details, h2);
+    details.appendChild(summary);
+
+    let next = details.nextSibling;
+    while (next) {
+      if (next.nodeType === 1 && next.tagName === 'H2') break;
+      if (next.nodeType === 1 && next.classList && next.classList.contains('reader-chapter')) break;
+      const toMove = next;
+      next = next.nextSibling;
+      details.appendChild(toMove);
+    }
+
+    h2.remove();
+  });
+
+  // When navigating to a heading, expand its chapter
+  const expandChapterForId = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const chapter = el.closest('details.reader-chapter');
+    if (chapter) chapter.open = true;
+  };
+
+  // Also open the matching TOC section when a heading is activated
+  const expandTocForId = (id) => {
+    const link = tocLinkById.get(id);
+    if (!link) return;
+    const section = link.closest('details.toc-section');
+    if (section) section.open = true;
+  };
+
+  const originalNavigateToId = navigateToId;
+  navigateToId = (id, opts) => {
+    expandChapterForId(id);
+    expandTocForId(id);
+    originalNavigateToId(id, opts);
+  };
 
   tocEl?.addEventListener('click', (event) => {
     const link = event.target.closest('a[data-reader-toc-link]');
