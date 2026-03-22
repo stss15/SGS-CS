@@ -39,11 +39,11 @@ export const buildIb2027Breadcrumbs = (
   ];
 
   if (unitCode) {
-    breadcrumbs.push({ label: unitCode, href: `/ib-2027/${unitCode}/index.html` });
+    breadcrumbs.push({ label: unitCode, href: `/ib-2027/${unitCode.toLowerCase()}/index.html` });
   }
 
-  if (subtopic) {
-    breadcrumbs.push({ label: subtopic, href: `/ib-2027/${unitCode}/${subtopic}/index.html` });
+  if (subtopic && unitCode) {
+    breadcrumbs.push({ label: subtopic, href: `/ib-2027/${unitCode.toLowerCase()}/${subtopic.toLowerCase().replace('.', '-')}/index.html` });
   }
 
   if (currentLabel) {

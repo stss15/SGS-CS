@@ -121,7 +121,7 @@ const buildUnifiedHeader = (activeSection) => {
         <div class="header-primary">
             <div class="logo-container">
                 <a href="/index.html">
-                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" width="40" height="40" decoding="async">
                 </a>
                 <a href="/index.html" class="site-title-link">
                     <span class="site-title">${DEFAULT_SITE_TITLE}</span>

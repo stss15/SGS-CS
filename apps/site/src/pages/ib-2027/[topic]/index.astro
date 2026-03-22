@@ -1,133 +1,349 @@
 ---
-import CurriculumShell from '../../../layouts/CurriculumShell.astro';
-import { IB_UNITS, getUnitFrontmatter, getSubtopicFrontmatter, type UnitFrontmatter } from '../../../lib/ib-subtopic-data';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { IB_UNITS } from '../../../lib/ib-subtopic-data';
+
+interface UnitOverview {
+  summary: string;
+  objectives: string[];
+  outcomes: string[];
+  subtopics: Array<{ code: string; description: string }>;
+}
+
+const UNIT_OVERVIEWS: Record<string, UnitOverview> = {
+  A1: {
+    summary: 'In this unit, you learn how a computer actually works at system level. You study CPU components and how they interact, the role of GPUs, different types of memory, the fetch\u2013decode\u2013execute cycle, storage, compression, operating systems, scheduling, control systems, and, at HL, translation processes such as interpretation and compilation.',
+    objectives: [
+      'how the main CPU components work together',
+      'what GPUs do and how they differ from CPUs',
+      'how primary and secondary memory are used',
+      'how instructions move through the fetch\u2013decode\u2013execute cycle',
+      'how compression and cloud service models work',
+      'what operating systems do, including scheduling and resource management',
+      'how control systems operate',
+      'at HL, how interpreters and compilers translate code',
+    ],
+    outcomes: [
+      'describe CPU components and the fetch\u2013decode\u2013execute cycle',
+      'explain the role of GPUs and compare them with CPUs',
+      'explain the purposes of different memory types',
+      'describe storage types, compression methods and cloud service models',
+      'describe and compare operating-system processes such as scheduling and interrupt handling',
+      'explain how control systems work in real-world contexts',
+      'at HL, evaluate interpreter and compiler translation processes',
+    ],
+    subtopics: [
+      { code: 'A1.1', description: 'Computer hardware and operation \u2014 CPU structure, GPU use, memory, storage, pipelining, compression and cloud services' },
+      { code: 'A1.2', description: 'Data representation and computer logic \u2014 binary and hexadecimal representation, stored data, logic gates, truth tables and logic diagrams' },
+      { code: 'A1.3', description: 'Operating systems and control systems \u2014 OS functions, scheduling, interrupts, multitasking, deadlock and control systems' },
+      { code: 'A1.4', description: 'Translation (HL only) \u2014 interpreters, compilers and translation approaches' },
+    ],
+  },
+  A2: {
+    summary: 'In this unit, you learn how data moves between devices and how networks are designed, structured and protected. You study network types, devices, protocols, architectures, addressing, transmission methods, routing, and network security.',
+    objectives: [
+      'the different types and purposes of networks',
+      'how network devices and protocols support communication',
+      'how networks are structured, segmented and managed',
+      'how data is transmitted and routed',
+      'how common network-security methods, vulnerabilities and countermeasures work',
+    ],
+    outcomes: [
+      'describe network types, devices and protocols',
+      'compare network models and topologies',
+      'explain addressing, routing and packet switching',
+      'compare transmission media',
+      'discuss firewalls, encryption, vulnerabilities and countermeasures',
+    ],
+    subtopics: [
+      { code: 'A2.1', description: 'Network fundamentals \u2014 LANs, WANs, infrastructure, devices, protocols and the TCP/IP model' },
+      { code: 'A2.2', description: 'Network architecture \u2014 topologies, client-server and peer-to-peer models, servers, segmentation and VLANs' },
+      { code: 'A2.3', description: 'Data transmissions \u2014 IP addressing, transmission media, packet switching and routing' },
+      { code: 'A2.4', description: 'Network security \u2014 firewalls, vulnerabilities, countermeasures, encryption and certificates' },
+    ],
+  },
+  A3: {
+    summary: 'In this unit, you learn how structured data is stored, organised and queried. You study relational databases, schema design, entity\u2013relationship diagrams, keys, referential integrity, normalization, SQL, transactions, views, and, at HL, alternative databases and data warehouses.',
+    objectives: [
+      'what makes a relational database useful and where its limits are',
+      'how databases are modelled and designed',
+      'how keys, relationships and integrity rules work',
+      'how normalization improves database structure',
+      'how SQL is used to define, query and update data',
+      'at HL, how non-relational models, data warehouses, data mining and distributed databases work',
+    ],
+    outcomes: [
+      'explain the features, benefits and limitations of relational databases',
+      'construct ER diagrams and apply key design principles',
+      'explain referential integrity and normalization',
+      'outline DDL and DML',
+      'construct SQL queries and calculations',
+      'describe views, transactions and data-warehouse concepts',
+      'compare relational and non-relational databases',
+    ],
+    subtopics: [
+      { code: 'A3.1', description: 'Database fundamentals \u2014 relational structure, advantages and limitations' },
+      { code: 'A3.2', description: 'Database design \u2014 schemas, ERDs, data types, keys, referential integrity, normalization and denormalization' },
+      { code: 'A3.3', description: 'Database programming \u2014 SQL language types, joins, filtering, updates, aggregates, views and transactions' },
+      { code: 'A3.4', description: 'Alternative databases and data warehouses (HL only) \u2014 non-relational models, warehouses, mining and distributed systems' },
+    ],
+  },
+  A4: {
+    summary: 'In this unit, you learn what machine learning is, how models are trained, how data is prepared, and what ethical issues come with ML systems. At HL, you go further into preprocessing and a wider range of machine-learning approaches.',
+    objectives: [
+      'the main types of machine learning and where they are used',
+      'how data quality affects model performance',
+      'at HL, how feature selection and dimensionality reduction support ML',
+      'how different ML approaches work, including regression, classification, clustering, reinforcement learning, genetic algorithms and neural networks',
+      'how to think critically about ethical issues such as bias, privacy and accountability',
+    ],
+    outcomes: [
+      'describe the main types of machine learning',
+      'explain why preprocessing matters',
+      'explain and compare a range of ML approaches',
+      'describe neural networks and convolutional neural networks at a basic level',
+      'discuss ethical implications of machine learning in real-world contexts',
+    ],
+    subtopics: [
+      { code: 'A4.1', description: 'Machine learning fundamentals \u2014 types of ML and basic applications' },
+      { code: 'A4.2', description: 'Data preprocessing (HL only) \u2014 cleaning data, feature selection and dimensionality reduction' },
+      { code: 'A4.3', description: 'Machine learning approaches (HL only) \u2014 regression, classification, clustering, reinforcement learning, genetic algorithms and neural networks' },
+      { code: 'A4.4', description: 'Ethical considerations \u2014 fairness, bias, privacy, transparency, consent and societal impact' },
+    ],
+  },
+  B1: {
+    summary: 'In this unit, you learn how to define problems clearly and how to approach them in a computational way. This unit underpins the whole course and helps you think like a computer scientist, not just write code.',
+    objectives: [
+      'how to write a clear problem specification',
+      'the core ideas of computational thinking, including abstraction, decomposition, pattern recognition and algorithmic design',
+      'how computational thinking is used to solve real problems',
+      'how to read and trace flowcharts',
+    ],
+    outcomes: [
+      'construct a problem specification',
+      'describe the fundamental concepts of computational thinking',
+      'explain how computational thinking is used to solve problems',
+      'trace flowcharts for a range of algorithms',
+    ],
+    subtopics: [
+      { code: 'B1.1', description: 'Approaches to computational thinking \u2014 problem specification, core computational-thinking concepts, problem-solving strategies and flowcharts' },
+      { code: 'B1.2', description: 'Computational thinking \u2014 abstraction, decomposition, pattern recognition' },
+      { code: 'B1.3', description: 'Flowcharts and pseudocode \u2014 reading, tracing and constructing flowcharts' },
+      { code: 'B1.4', description: 'Algorithm design \u2014 designing step-by-step solutions to problems' },
+    ],
+  },
+  B2: {
+    summary: 'In this unit, you learn how to program effectively to solve problems. This is the largest practical part of the course. You work with variables, strings, exceptions, debugging, data structures, control structures, algorithms and file processing.',
+    objectives: [
+      'how to write and trace programs using different data types and variable scope',
+      'how to manipulate strings and substrings',
+      'how exception handling and debugging work',
+      'how to use arrays, lists, stacks and queues',
+      'how to use sequence, selection, iteration and modularization',
+      'how searching, sorting and recursion work',
+      'how to read from and write to text files',
+    ],
+    outcomes: [
+      'construct and trace programs using variables and data types',
+      'construct programs that manipulate strings',
+      'describe exception-handling techniques and use debugging methods',
+      'compare and use different data structures',
+      'construct programs using sequence, selection, iteration and functions',
+      'construct and trace search, sort and recursive algorithms',
+      'construct code for file-processing operations',
+    ],
+    subtopics: [
+      { code: 'B2.1', description: 'Programming fundamentals \u2014 variables, data types, substrings, exceptions and debugging' },
+      { code: 'B2.2', description: 'Data structures \u2014 arrays, lists, stacks and queues' },
+      { code: 'B2.3', description: 'Programming constructs \u2014 sequence, selection, iteration and modularization' },
+      { code: 'B2.4', description: 'Programming algorithms \u2014 Big O, searching, sorting and recursion' },
+      { code: 'B2.5', description: 'File processing \u2014 opening, reading, writing, appending and closing text files' },
+    ],
+  },
+  B3: {
+    summary: 'In this unit, you learn how object-oriented programming is used to model real systems. You study classes, objects, methods, constructors, encapsulation, inheritance, polymorphism and class relationships.',
+    objectives: [
+      'the key ideas behind object-oriented programming',
+      'how to design and build classes',
+      'how objects are instantiated and how methods behave',
+      'how encapsulation and information hiding protect data',
+      'at HL, how inheritance, polymorphism, abstraction, composition, aggregation and design patterns work across multiple classes',
+    ],
+    outcomes: [
+      'evaluate the fundamentals of OOP',
+      'construct class designs and define objects',
+      'distinguish between static and non-static members',
+      'apply encapsulation and information hiding',
+      'at HL, explain and apply inheritance, polymorphism, abstraction, composition and aggregation',
+      'explain common design patterns',
+    ],
+    subtopics: [
+      { code: 'B3.1', description: 'Fundamentals of OOP for a single class \u2014 classes, objects, methods, constructors, static and instance members, encapsulation' },
+      { code: 'B3.2', description: 'Fundamentals of OOP for multiple classes (HL only) \u2014 inheritance, polymorphism, abstraction, composition, aggregation and design patterns' },
+    ],
+  },
+  B4: {
+    summary: 'In this HL-only unit, you learn how more advanced abstract data types are used to organise and access data efficiently. You study linked lists, binary search trees, sets and hashing.',
+    objectives: [
+      'what an abstract data type is and why ADTs matter',
+      'how linked lists are structured and manipulated',
+      'how binary search trees support efficient searching',
+      'how sets and hash-based structures work',
+      'how these structures compare in terms of use, performance and implementation',
+    ],
+    outcomes: [
+      'explain the properties and purpose of ADTs',
+      'evaluate and apply linked lists',
+      'explain binary search trees',
+      'construct and apply sets',
+      'explain core hashing ideas and the principles behind ADT implementation',
+    ],
+    subtopics: [
+      { code: 'B4.1', description: 'Fundamentals of ADTs \u2014 ADT principles, linked lists, binary search trees, sets and hashing' },
+    ],
+  },
+};
 
 export async function getStaticPaths() {
-  return Promise.all(Object.keys(IB_UNITS).map(async (code) => {
-    const fm = await getUnitFrontmatter(code);
-    const subtopics = (fm.resources || []).filter((r) => r.href && !r.href.includes('coming-soon'));
-    const subtopicDetails = await Promise.all(
-      subtopics.map(async (st) => {
-        const subtopicCode = st.number || st.href.replace(/\/index\.html$/i, '');
-        const sfm = await getSubtopicFrontmatter(code, subtopicCode);
-        return { number: st.number, name: st.name, description: sfm.description || '' };
-      })
-    );
-    return { params: { topic: code }, props: { code, fm, subtopicDetails } };
+  return Object.keys(IB_UNITS).map((code) => ({
+    params: { topic: code.toLowerCase() },
+    props: { code }
   }));
 }
 
-interface SubtopicDetail { number?: string; name?: string; description: string; }
-const { code, fm, subtopicDetails } = Astro.props as { code: string; fm: UnitFrontmatter; subtopicDetails: SubtopicDetail[] };
+const { code } = Astro.props as { code: string };
 const unit = IB_UNITS[code];
-const spec = fm.specification;
+const overview = UNIT_OVERVIEWS[code];
 ---
 
-<CurriculumShell
+<BaseLayout
   title={`${code} ${unit.name} - SGS Computer Science`}
-  description={spec?.unitSummary || `${code} ${unit.name} — IB Computer Science`}
-  extraStyles={['css/resource-style.css']}
+  description={overview?.summary || `${code} ${unit.name} — IB Computer Science`}
   activeSection="ib"
-  eyebrow={code}
-  heroTitle={`${code} ${unit.name}`}
-  heroSubtitle={unit.meta}
-  heroVariant="feature"
 >
-  <div class="unit-overview">
-    {spec?.unitSummary && (
-      <p class="unit-summary">{spec.unitSummary}</p>
-    )}
+  <section class="unit-overview-page">
+    <header class="unit-overview-header">
+      <span class="unit-overview-eyebrow">{code}</span>
+      <h1 class="unit-overview-title">{unit.name}</h1>
+      <p class="unit-overview-hours">{unit.meta}</p>
+    </header>
 
-    {subtopicDetails.length > 0 && (
-      <div class="subtopic-grid" role="list">
-        {subtopicDetails.map((st) => (
-          <article class="subtopic-card" role="listitem">
-            <div class="subtopic-card__topline">
-              <span class="subtopic-card__code">{st.number}</span>
-            </div>
-            <h2 class="subtopic-card__title">{st.name}</h2>
-            {st.description && <p class="subtopic-card__desc">{st.description}</p>}
-          </article>
-        ))}
+    {overview && (
+      <div class="unit-overview-body">
+        <div class="unit-overview-section">
+          <h2>Summary</h2>
+          <p>{overview.summary}</p>
+        </div>
+
+        <div class="unit-overview-section">
+          <h2>Objectives</h2>
+          <p>You will learn:</p>
+          <ul>
+            {overview.objectives.map((obj) => <li>{obj}</li>)}
+          </ul>
+        </div>
+
+        <div class="unit-overview-section">
+          <h2>Outcomes</h2>
+          <p>By the end of this unit, you should be able to:</p>
+          <ul>
+            {overview.outcomes.map((out) => <li>{out}</li>)}
+          </ul>
+        </div>
+
+        <div class="unit-overview-section">
+          <h2>Subtopics</h2>
+          <p>You cover:</p>
+          <ul class="subtopic-list">
+            {overview.subtopics.map((st) => (
+              <li><strong>{st.code}</strong> {st.description}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     )}
-  </div>
+  </section>
 
   <style>
-    .unit-overview {
-      width: 100%;
+    .unit-overview-page {
+      max-width: 52rem;
+      padding: 2rem 1.5rem 3rem;
     }
 
-    .unit-summary {
-      font-size: 1.05rem;
-      line-height: 1.75;
-      color: var(--text-color, #444);
-      margin: 0 0 1.5rem;
+    .unit-overview-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid rgba(10, 22, 40, 0.08);
     }
 
-    .subtopic-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 0.8rem;
-    }
-
-    .subtopic-card {
-      position: relative;
-      min-height: 8rem;
-      padding: 0.95rem 1rem 0.9rem;
-      border-radius: 1.15rem;
-      background: linear-gradient(168deg, #ffffff 60%, #faf8f4 100%);
-      box-shadow:
-        inset 0 0 0 1px rgba(10, 22, 40, 0.06),
-        0 8px 18px rgba(17, 27, 45, 0.04);
-      overflow: hidden;
-    }
-
-    .subtopic-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--navy-900, #0a1628);
-    }
-
-    .subtopic-card__topline {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.35rem;
-    }
-
-    .subtopic-card__code {
+    .unit-overview-eyebrow {
       font-family: var(--font-display);
-      font-size: 0.74rem;
+      font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--color-text-muted, #556476);
+      letter-spacing: 0.1em;
+      color: rgba(135, 96, 29, 0.85);
     }
 
-    .subtopic-card__title {
+    .unit-overview-title {
       font-family: var(--font-display);
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 1.65rem;
+      font-weight: 800;
       color: var(--navy-900, #0a1628);
+      margin: 0.3rem 0 0.4rem;
       line-height: 1.2;
-      margin: 0 0 0.35rem;
     }
 
-    .subtopic-card__desc {
-      font-size: 0.88rem;
-      line-height: 1.55;
+    .unit-overview-hours {
+      font-size: 0.92rem;
       color: var(--color-text-muted, #556476);
       margin: 0;
     }
 
+    .unit-overview-body {
+      display: grid;
+      gap: 1.8rem;
+    }
+
+    .unit-overview-section h2 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy-900, #0a1628);
+      margin: 0 0 0.6rem;
+    }
+
+    .unit-overview-section p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--color-text, #2c3e50);
+      margin: 0 0 0.5rem;
+    }
+
+    .unit-overview-section ul {
+      margin: 0;
+      padding-left: 1.3rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .unit-overview-section li {
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: var(--color-text, #2c3e50);
+    }
+
+    .subtopic-list li {
+      margin-bottom: 0.25rem;
+    }
+
+    .subtopic-list strong {
+      color: rgba(135, 96, 29, 0.85);
+      font-weight: 700;
+    }
+
     @media (max-width: 600px) {
-      .subtopic-grid { grid-template-columns: 1fr; }
-      .subtopic-card { min-height: auto; }
+      .unit-overview-page { padding: 1.2rem 1rem 2rem; }
+      .unit-overview-title { font-size: 1.35rem; }
     }
   </style>
-</CurriculumShell>
+</BaseLayout>

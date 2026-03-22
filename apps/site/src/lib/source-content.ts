@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
@@ -98,4 +98,24 @@ export const stripHtmlTags = (value: string): string =>
 export const extractHtmlTitle = (html: string, fallback: string = 'SGS Education'): string => {
   const match = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   return match ? stripHtmlTags(match[1]) : fallback;
+};
+
+export const collectPublicHtmlFiles = async (subDir: string): Promise<string[]> => {
+  const baseDir = path.join(repoRoot, 'public', subDir);
+  if (!existsSync(baseDir)) return [];
+
+  const results: string[] = [];
+  const walk = async (dir: string): Promise<void> => {
+    const entries = await readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(fullPath);
+      } else if (entry.isFile() && entry.name.endsWith('.html')) {
+        results.push(path.relative(baseDir, fullPath));
+      }
+    }
+  };
+  await walk(baseDir);
+  return results;
 };

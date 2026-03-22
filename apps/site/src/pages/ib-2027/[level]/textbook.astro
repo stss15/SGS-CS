@@ -1,0 +1,86 @@
+---
+import { getCollection, render } from 'astro:content';
+import ReaderShell from '../../../layouts/ReaderShell.astro';
+import {
+  getIbPointIndex,
+  getIbThemeBreadcrumbs,
+  getIbThemeOrThrow,
+  getIbThemePrevNext,
+  getIbThemeShell,
+  getIbThemeStaticPaths,
+  type IbThemeId
+} from '../../../lib/ib2027-syllabus';
+
+interface ThemeTextbookPageProps {
+  themeId: IbThemeId;
+}
+
+export function getStaticPaths() {
+  return getIbThemeStaticPaths().map((entry) => ({
+    params: {
+      level: entry.params.theme
+    },
+    props: {
+      themeId: entry.props.themeId
+    }
+  }));
+}
+
+const { themeId } = Astro.props as ThemeTextbookPageProps;
+const theme = getIbThemeOrThrow(themeId);
+const courseShell = getIbThemeShell(themeId);
+const { prevLink, nextLink } = getIbThemePrevNext(themeId, Astro.url.pathname);
+const entries = (
+  await getCollection('ib-textbooks', ({ data }) =>
+    data.subtopics.some((subtopic) => subtopic.code.toUpperCase().startsWith(theme.code))
+  )
+).sort((left, right) => {
+  const leftCodes = left.data.subtopics.map((subtopic) => getIbPointIndex(theme, subtopic.code)).filter((index) => index >= 0);
+  const rightCodes = right.data.subtopics.map((subtopic) => getIbPointIndex(theme, subtopic.code)).filter((index) => index >= 0);
+  const leftIndex = leftCodes.length > 0 ? Math.min(...leftCodes) : Number.MAX_SAFE_INTEGER;
+  const rightIndex = rightCodes.length > 0 ? Math.min(...rightCodes) : Number.MAX_SAFE_INTEGER;
+  return leftIndex - rightIndex;
+});
+
+const renderedEntries = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    rendered: await render(entry)
+  }))
+);
+---
+
+<ReaderShell
+  title={`IB ${theme.code} Textbook - SGS Computer Science`}
+  description={`Combined ${theme.code} textbook reader for the syllabus-first IB route.`}
+  activeSection="ib"
+  breadcrumbs={getIbThemeBreadcrumbs(themeId, 'Textbook')}
+  shellPath={Astro.url.pathname}
+  courseShell={courseShell}
+  prevLink={prevLink}
+  nextLink={nextLink}
+  kicker={`${theme.themeLabel} · ${theme.code}`}
+  heading={`${theme.code} textbook`}
+  subtitle={`Combined reading view for ${theme.title}`}
+>
+  <section class="ib-syllabus-reader-block">
+    <p><strong>Unit overview:</strong> {theme.overview}</p>
+    <p>This reader assembles the currently published textbook coverage already mapped to {theme.code}. It keeps the material in one place while the remaining revision and assessment resources are rebuilt.</p>
+  </section>
+
+  {renderedEntries.map(({ entry, rendered }) => {
+    const Content = rendered.Content;
+    const codeLabel = entry.data.subtopics.map((subtopic) => subtopic.code).join(', ');
+    const levelLabel = entry.data.level === 'hl' ? 'HL extension' : 'SL core';
+
+    return (
+      <section class="ib-syllabus-reader-block">
+        <div class="ib-syllabus-reader-block__header">
+          <p class="ib-syllabus-kicker">{levelLabel}</p>
+          <h2>{codeLabel}</h2>
+        </div>
+        <Content />
+      </section>
+    );
+  })}
+</ReaderShell>

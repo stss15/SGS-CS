@@ -1,0 +1,122 @@
+---
+import type { ShellContext, ShellPageLink } from '../lib/curriculum-shell';
+import CurriculumShell from '../layouts/CurriculumShell.astro';
+import {
+  getIbLevelLabel,
+  getIbThemeBreadcrumbs,
+  getIbThemeResourceLinks,
+  getIbSectionPath,
+  type IbTheme
+} from '../lib/ib2027-syllabus';
+
+interface Props {
+  theme: IbTheme;
+  courseShell: ShellContext;
+  prevLink?: ShellPageLink;
+  nextLink?: ShellPageLink;
+}
+
+const { theme, courseShell, prevLink, nextLink } = Astro.props as Props;
+const resourceLinks = getIbThemeResourceLinks(theme.id);
+---
+
+<CurriculumShell
+  title={`IB ${theme.code}: ${theme.title} - SGS Computer Science`}
+  description={theme.overview}
+  activeSection="ib"
+  breadcrumbs={getIbThemeBreadcrumbs(theme.id)}
+  courseShell={courseShell}
+  layoutMode="worksheet"
+  prevLink={prevLink}
+  nextLink={nextLink}
+  eyebrow={theme.themeLabel}
+  heroTitle={`${theme.code} ${theme.title}`}
+  heroSubtitle={`${theme.hours} · ${getIbLevelLabel(theme.level)}`}
+  pills={[getIbLevelLabel(theme.level)]}
+>
+  <div class="page-stack">
+    <div class="spec-grid">
+      <section class="spec-card">
+        <h2>Unit overview</h2>
+        <p><strong>Guiding question:</strong> {theme.guidingQuestion}</p>
+        <p>{theme.overview}</p>
+      </section>
+
+      <section class="spec-card">
+        <h2>Unit objectives</h2>
+        <ul>
+          {theme.objectives.map((objective) => (
+            <li>{objective}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="spec-card">
+        <h2>Unit outcomes</h2>
+        <ul>
+          {theme.outcomes.map((outcome) => (
+            <li>{outcome}</li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <section class="page-panel">
+      <h2>Subtopics</h2>
+      <div class="ib-syllabus-grid">
+        {theme.sections.map((section) => (
+          <a href={getIbSectionPath(theme.id, section.id)} class="ib-syllabus-card">
+            <div class="ib-syllabus-card__header">
+              <p class="ib-syllabus-kicker">{section.code}</p>
+              <div class="ib-syllabus-pills">
+                <span class:list={['ib-syllabus-pill', section.level === 'hl' && 'ib-syllabus-pill--hl']}>
+                  {getIbLevelLabel(section.level)}
+                </span>
+              </div>
+            </div>
+            <h3>{section.title}</h3>
+            <p>{section.overview}</p>
+            <p class="ib-syllabus-meta">{section.points.length} syllabus points</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="page-panel">
+      <h2>Resources</h2>
+      <div class="ib-syllabus-grid">
+        {resourceLinks.map((item) =>
+          item.disabled ? (
+            <article class:list={['ib-syllabus-card', 'ib-syllabus-card--disabled']}>
+              <div class="ib-syllabus-card__header">
+                <p class="ib-syllabus-kicker">Resource</p>
+                <div class="ib-syllabus-pills">
+                  <span class="ib-syllabus-pill ib-syllabus-pill--muted">Coming soon</span>
+                </div>
+              </div>
+              <h3>{item.label}</h3>
+              <p>This resource slot is reserved in the new syllabus-first layout.</p>
+            </article>
+          ) : (
+            <a href={item.href} class="ib-syllabus-card">
+              <div class="ib-syllabus-card__header">
+                <p class="ib-syllabus-kicker">Resource</p>
+                <div class="ib-syllabus-pills">
+                  <span class="ib-syllabus-pill">Available</span>
+                </div>
+              </div>
+              <h3>{item.label}</h3>
+              <p>Open the assembled {theme.code} reader without dropping back into the legacy unit structure.</p>
+            </a>
+          )
+        )}
+      </div>
+    </section>
+
+    <section class="page-panel">
+      <h2>Full course map</h2>
+      <p>The syllabus-first IB landing page remains the home base for moving between Theme A, Theme B, and the assessment strand.</p>
+      <p><a href="/ib-2027/index.html" class="ib-syllabus-inline-link">Return to the IB course map</a></p>
+    </section>
+  </div>
+</CurriculumShell>

@@ -1,96 +1,184 @@
-<!-- GENERATED FILE - Edit source in src/pages/ instead -->
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Guide: Level C | OOP Project</title>
-    <meta name="description" content="Solutions and notes for Level C: Inventory.">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/images/Logo.png">
-    <link rel="apple-touch-icon" href="/images/Logo.png">
-
-    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="/css/style.css">
-    
-        
-            
-                <link rel="stylesheet" href="/css/oop-worksheet.css">
-            
-        
-    
-
-    
-    
-
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Teacher Guide: Level C | OOP Project"><meta name="theme-color" content="#003165"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><title>Teacher Guide: Level C | OOP Project</title><link rel="stylesheet" href="/_astro/index.Nu3n8vVc.css">
     <!-- data-sgs-auth-gate -->
     <link rel="stylesheet" href="/css/auth-gate.css">
     <script>document.documentElement.classList.add('auth-pending');</script>
-</head>
+</head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/logo-mark.svg" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high" decoding="async"> <span>SGS Education</span> </a> <div class="site-header-tools"> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/year7/index.html"> Year 7 </a><a href="/ks3/year8/index.html"> Year 8 </a><a href="/ks3/year9/index.html"> Year 9 </a><a href="/igcse/index.html"> IGCSE </a><a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </nav> <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/year7/index.html"> Year 7 </a> </li><li> <a href="/ks3/year8/index.html"> Year 8 </a> </li><li> <a href="/ks3/year9/index.html"> Year 9 </a> </li><li> <a href="/igcse/index.html"> IGCSE </a> </li><li> <a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
 
-<body class="">
-    <a class="skip-link" href="#main-content">Skip to main content</a>
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
 
-    <header class="main-header">
-        <div class="header-primary">
-            <div class="logo-container">
-                <a href="/index.html">
-                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace page-shell--with-sidebar"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div id="course-explorer-ib-2027-B3-B3-1-oop-project-teacher-level-c" class="course-explorer" data-exclusive-groups="true"> <div class="course-explorer__header">  <div class="course-explorer__header-copy"> <p class="course-explorer__title">B3</p>  </div> </div> <div class="course-explorer__groups"> <div class="course-explorer__group course-explorer__group--direct"> <a href="/ib-2027/b3/index.html" class="course-explorer__direct-link"> <span class="course-explorer__group-icon" aria-hidden="true"> <i class="fa-solid fa-binoculars"></i> </span> <span class="course-explorer__entry-copy"> <span>Overview</span>  </span> </a> </div><details class="course-explorer__group" data-accordion-group> <summary> <span class="course-explorer__summary-main"> <span class="course-explorer__group-icon" aria-hidden="true"> <i class="fa-solid fa-book-open"></i> </span> <span class="course-explorer__entry-copy"> <span>Lessons</span>  </span> </span> </summary> <ul> <li> <a href="/ib-2027/B3/B3.1/slides/B3.1_oop_fundamentals/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>B3.1 Fundamentals of OOP</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.2/slides/B3.2_inheritance_polymorphism/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>B3.2 Inheritance and polymorphism (HL)</span>  </span> </span> </a> </li> </ul> </details><details class="course-explorer__group" data-accordion-group> <summary> <span class="course-explorer__summary-main"> <span class="course-explorer__group-icon" aria-hidden="true"> <i class="fa-solid fa-laptop-code"></i> </span> <span class="course-explorer__entry-copy"> <span>Activities</span>  </span> </span> </summary> <ul> <li> <a href="/ib-2027/B3/B3.1/oop-project/preflight-oop-foundations.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Preflight OOP Foundations</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-a-player.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level A Player</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-b-specialisation.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level B Specialisation</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-c-inventory.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level C Inventory</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-d-item-use.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level D Item Use</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-e-exploring.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level E Exploring</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-f-npcs.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level F Npcs</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-g-encounters.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level G Encounters</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-h-save-load.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level H Save Load</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-i-final-playthrough.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level I Final Playthrough</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-p1-stacks-queues.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level P1 Stacks Queues</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.1/oop-project/level-p2-log-search.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Level P2 Log Search</span>  </span> </span> </a> </li><li> <a href="/ib-2027/scenarios/scenario-1-animals/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Scenario 1 Animals</span>  </span> </span> </a> </li><li> <a href="/ib-2027/scenarios/scenario-2-university/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Scenario 2 University</span>  </span> </span> </a> </li><li> <a href="/ib-2027/scenarios/scenario-3-themepark/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Scenario 3 Themepark</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.2/design-patterns.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Design Patterns</span>  </span> </span> </a> </li><li> <a href="/ib-2027/B3/B3.2/design-patterns.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Design Patterns</span>  </span> </span> </a> </li> </ul> </details><div class="course-explorer__group course-explorer__group--direct"> <a href="/ib-2027/b3/textbook/index.html" class="course-explorer__direct-link"> <span class="course-explorer__group-icon" aria-hidden="true"> <i class="fa-solid fa-book-open-reader"></i> </span> <span class="course-explorer__entry-copy"> <span>Textbook</span>  </span> </a> </div><details class="course-explorer__group" data-accordion-group> <summary> <span class="course-explorer__summary-main"> <span class="course-explorer__group-icon" aria-hidden="true"> <i class="fa-solid fa-rotate-left"></i> </span> <span class="course-explorer__entry-copy"> <span>Revision</span>  </span> </span> </summary> <ul> <li> <a href="/ib-2027/B3/specification.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Specification</span>  </span> </span> </a> </li> </ul> </details> </div> </div> <script>(function(){const explorerId = "course-explorer-ib-2027-B3-B3-1-oop-project-teacher-level-c";
+
+  (() => {
+    const root = document.getElementById(explorerId);
+    if (!root || root.dataset.exclusiveGroups !== 'true') {
+      return;
+    }
+
+    const groups = Array.from(root.querySelectorAll('details[data-accordion-group]'));
+    if (groups.length === 0) {
+      return;
+    }
+
+    const closeSiblings = (activeGroup) => {
+      groups.forEach((group) => {
+        if (group !== activeGroup) {
+          group.open = false;
+        }
+      });
+    };
+
+    const initiallyOpen = groups.filter((group) => group.open);
+    const preferredGroup = initiallyOpen.find((group) => group.dataset.active === 'true') || initiallyOpen[0];
+    if (preferredGroup) {
+      closeSiblings(preferredGroup);
+    }
+
+    groups.forEach((group) => {
+      group.addEventListener('toggle', () => {
+        if (!group.open) {
+          return;
+        }
+        closeSiblings(group);
+      });
+    });
+  })();
+})();</script> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB Computer Science</a></li><li><span aria-current="page">B3</span></li></ol></nav>  <section class="page-panel page-panel--flush"> <section class="legacy-frame legacy-frame--workspace">  <iframe title="Teacher Guide: Level C | OOP Project" class="legacy-frame__iframe" data-legacy-frame-id="ib-2027-B3-B3-1-oop-project-teacher-level-c" srcdoc="<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang=&#34;en&#34;>
+
+<head><base href=&#34;/ib-2027/B3/B3.1/oop-project/teacher/&#34; target=&#34;_top&#34;>
+  <style>
+    html.auth-pending body,
+    html.auth-ready body {
+      visibility: visible !important;
+    }
+    #back-btn, #sg-logo, .footer-text, .standalone-nav, .nav-overlay, .course-sidebar { display: none !important; }
+    .site-header,
+    .main-header,
+    .breadcrumb-nav,
+    .feedback-modals,
+    .site-feedback,
+    .feedback-trigger,
+    [data-feedback-open],
+    body > footer,
+    .sgs-auth-overlay,
+    #sgs-auth-overlay {
+      display: none !important;
+    }
+    html, body { margin: 0 !important; }
+  </style>
+
+    <meta charset=&#34;UTF-8&#34;>
+    <meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;>
+    <title>Teacher Guide: Level C | OOP Project</title>
+    <meta name=&#34;description&#34; content=&#34;Solutions and notes for Level C: Inventory.&#34;>
+
+    <!-- Favicon -->
+    <link rel=&#34;icon&#34; type=&#34;image/png&#34; href=&#34;/images/Logo.png&#34;>
+    <link rel=&#34;apple-touch-icon&#34; href=&#34;/images/Logo.png&#34;>
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel=&#34;preconnect&#34; href=&#34;https://fonts.googleapis.com&#34;>
+    <link rel=&#34;preconnect&#34; href=&#34;https://fonts.gstatic.com&#34; crossorigin>
+    <link
+        href=&#34;https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&#38;family=Source+Sans+3:wght@300;400;500;600;700&#38;display=swap&#34;
+        rel=&#34;stylesheet&#34;>
+
+    <!-- Icons -->
+    <link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&#34;>
+
+    <!-- Styles -->
+    <link rel=&#34;stylesheet&#34; href=&#34;/css/style.css&#34;>
+    
+        
+            
+                <link rel=&#34;stylesheet&#34; href=&#34;/css/oop-worksheet.css&#34;>
+            
+        
+    
+
+    
+    
+
+    </head>
+
+<body class=&#34;&#34;>
+    <a class=&#34;skip-link&#34; href=&#34;#main-content&#34;>Skip to main content</a>
+
+    <header class=&#34;main-header&#34;>
+        <div class=&#34;header-primary&#34;>
+            <div class=&#34;logo-container&#34;>
+                <a href=&#34;/index.html&#34;>
+                    <img src=&#34;/images/logo-mark.svg&#34; alt=&#34;SGS Education logo&#34; class=&#34;logo-img&#34; width=&#34;40&#34; height=&#34;40&#34; decoding=&#34;async&#34;>
                 </a>
-                <a href="/index.html" class="site-title-link">
-                    <span class="site-title">SGS Education</span>
+                <a href=&#34;/index.html&#34; class=&#34;site-title-link&#34;>
+                    <span class=&#34;site-title&#34;>SGS Education</span>
                 </a>
             </div>
 
-            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
-                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
-                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
-                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
-                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
-                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            <nav class=&#34;main-nav main-nav-simple&#34; aria-label=&#34;Main navigation&#34;>
+                <a href=&#34;/ks3/year7/index.html&#34; class=&#34;nav-link &#34;>Year 7</a>
+                <a href=&#34;/ks3/year8/index.html&#34; class=&#34;nav-link &#34;>Year 8</a>
+                <a href=&#34;/ks3/year9/index.html&#34; class=&#34;nav-link &#34;>Year 9</a>
+                <a href=&#34;/igcse/index.html&#34; class=&#34;nav-link &#34;>IGCSE</a>
+                <a href=&#34;/ib-2027/index.html&#34; class=&#34;nav-link active&#34;>IB</a>
             </nav>
 
-            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
+            <button class=&#34;mobile-menu-toggle&#34; type=&#34;button&#34; aria-label=&#34;Open menu&#34; aria-expanded=&#34;false&#34; aria-controls=&#34;mobile-drawer&#34;>
+                <svg width=&#34;22&#34; height=&#34;22&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2.5&#34; stroke-linecap=&#34;round&#34;>
+                    <line x1=&#34;3&#34; y1=&#34;6&#34; x2=&#34;21&#34; y2=&#34;6&#34;></line>
+                    <line x1=&#34;3&#34; y1=&#34;12&#34; x2=&#34;21&#34; y2=&#34;12&#34;></line>
+                    <line x1=&#34;3&#34; y1=&#34;18&#34; x2=&#34;21&#34; y2=&#34;18&#34;></line>
                 </svg>
             </button>
 
-            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+            <div class=&#34;site-auth-slot&#34; data-auth-slot aria-label=&#34;Account actions&#34;></div>
         </div>
     </header>
 
-    <div class="mobile-drawer" id="mobile-drawer" hidden>
-        <div class="mobile-drawer__overlay" data-close-mobile></div>
-        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
-            <div class="mobile-drawer__header">
-                <span class="mobile-drawer__brand">SGS Education</span>
-                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+    <div class=&#34;mobile-drawer&#34; id=&#34;mobile-drawer&#34; hidden>
+        <div class=&#34;mobile-drawer__overlay&#34; data-close-mobile></div>
+        <nav class=&#34;mobile-drawer__panel&#34; aria-label=&#34;Mobile navigation&#34;>
+            <div class=&#34;mobile-drawer__header&#34;>
+                <span class=&#34;mobile-drawer__brand&#34;>SGS Education</span>
+                <button class=&#34;mobile-drawer__close&#34; type=&#34;button&#34; aria-label=&#34;Close menu&#34; data-close-mobile>
+                    <svg width=&#34;20&#34; height=&#34;20&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2.5&#34; stroke-linecap=&#34;round&#34;>
+                        <line x1=&#34;18&#34; y1=&#34;6&#34; x2=&#34;6&#34; y2=&#34;18&#34;></line><line x1=&#34;6&#34; y1=&#34;6&#34; x2=&#34;18&#34; y2=&#34;18&#34;></line>
                     </svg>
                 </button>
             </div>
-            <ul class="mobile-drawer__links">
-                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
-                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
-                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
-                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
-                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            <ul class=&#34;mobile-drawer__links&#34;>
+                <li><a href=&#34;/ks3/year7/index.html&#34; class=&#34;&#34;>Year 7</a></li>
+                <li><a href=&#34;/ks3/year8/index.html&#34; class=&#34;&#34;>Year 8</a></li>
+                <li><a href=&#34;/ks3/year9/index.html&#34; class=&#34;&#34;>Year 9</a></li>
+                <li><a href=&#34;/igcse/index.html&#34; class=&#34;&#34;>IGCSE</a></li>
+                <li><a href=&#34;/ib-2027/index.html&#34; class=&#34;active&#34;>IB</a></li>
             </ul>
         </nav>
     </div>
@@ -104,61 +192,61 @@
         function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
         btn.addEventListener('click',function(){drawer.hidden?open():close()});
         drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
-        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&#38;&#38;!drawer.hidden)close()});
     })();
     </script>
 
-    <div class="app-layout">
+    <div class=&#34;app-layout&#34;>
         
 
-        <main id="main-content" class="">
+        <main id=&#34;main-content&#34; class=&#34;&#34;>
             
-            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                <ol class="breadcrumb-list">
+            <nav class=&#34;breadcrumb-nav&#34; aria-label=&#34;Breadcrumb&#34;>
+                <ol class=&#34;breadcrumb-list&#34;>
                     
-                    <li class="breadcrumb-item ">
+                    <li class=&#34;breadcrumb-item &#34;>
                         
-                        <a href="/index.html">Home</a>
-                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        <a href=&#34;/index.html&#34;>Home</a>
+                        <span class=&#34;breadcrumb-sep&#34; aria-hidden=&#34;true&#34;>›</span>
                         
                     </li>
                     
-                    <li class="breadcrumb-item ">
+                    <li class=&#34;breadcrumb-item &#34;>
                         
-                        <a href="/ib-2027/index.html">IB 2027</a>
-                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
-                        
-                    </li>
-                    
-                    <li class="breadcrumb-item ">
-                        
-                        <a href="/ib-2027/B3/index.html">B3</a>
-                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        <a href=&#34;/ib-2027/index.html&#34;>IB 2027</a>
+                        <span class=&#34;breadcrumb-sep&#34; aria-hidden=&#34;true&#34;>›</span>
                         
                     </li>
                     
-                    <li class="breadcrumb-item ">
+                    <li class=&#34;breadcrumb-item &#34;>
                         
-                        <a href="/ib-2027/B3/B3.1/index.html">B3.1</a>
-                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
-                        
-                    </li>
-                    
-                    <li class="breadcrumb-item ">
-                        
-                        <a href="/ib-2027/B3/B3.1/oop-project/index.html">OOP Project</a>
-                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        <a href=&#34;/ib-2027/B3/index.html&#34;>B3</a>
+                        <span class=&#34;breadcrumb-sep&#34; aria-hidden=&#34;true&#34;>›</span>
                         
                     </li>
                     
-                    <li class="breadcrumb-item ">
+                    <li class=&#34;breadcrumb-item &#34;>
                         
-                        <a href="/ib-2027/B3/B3.1/oop-project/teacher/index.html">Teacher Portal</a>
-                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        <a href=&#34;/ib-2027/B3/B3.1/index.html&#34;>B3.1</a>
+                        <span class=&#34;breadcrumb-sep&#34; aria-hidden=&#34;true&#34;>›</span>
                         
                     </li>
                     
-                    <li class="breadcrumb-item current">
+                    <li class=&#34;breadcrumb-item &#34;>
+                        
+                        <a href=&#34;/ib-2027/B3/B3.1/oop-project/index.html&#34;>OOP Project</a>
+                        <span class=&#34;breadcrumb-sep&#34; aria-hidden=&#34;true&#34;>›</span>
+                        
+                    </li>
+                    
+                    <li class=&#34;breadcrumb-item &#34;>
+                        
+                        <a href=&#34;/ib-2027/B3/B3.1/oop-project/teacher/index.html&#34;>Teacher Portal</a>
+                        <span class=&#34;breadcrumb-sep&#34; aria-hidden=&#34;true&#34;>›</span>
+                        
+                    </li>
+                    
+                    <li class=&#34;breadcrumb-item current&#34;>
                         
                         <span>Level C Guide</span>
                         
@@ -171,36 +259,36 @@
             
 
             
-<div class="oop-content-container">
+<div class=&#34;oop-content-container&#34;>
 
-    <div class="alert alert-danger" role="alert" style="margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;">
-        <h4 style="color: #dc3545; margin-top: 0;"><i class="fa-solid fa-lock"></i> Teacher Eyes Only</h4>
-        <p style="margin-bottom: 0;">Solutions for Level C: Inventory.</p>
+    <div class=&#34;alert alert-danger&#34; role=&#34;alert&#34; style=&#34;margin-bottom: 2rem; border-left: 5px solid #dc3545; background: #fff5f5; padding: 1rem;&#34;>
+        <h4 style=&#34;color: #dc3545; margin-top: 0;&#34;><i class=&#34;fa-solid fa-lock&#34;></i> Teacher Eyes Only</h4>
+        <p style=&#34;margin-bottom: 0;&#34;>Solutions for Level C: Inventory.</p>
     </div>
 
-    <section class="oop-section">
-        <h2 class="oop-section-title">Concept Overview</h2>
-        <ul style="list-style-type: disc; margin-left: 1.5rem;">
-            <li><strong>Composition</strong>: The Player "has a" Inventory (not "is a").</li>
+    <section class=&#34;oop-section&#34;>
+        <h2 class=&#34;oop-section-title&#34;>Concept Overview</h2>
+        <ul style=&#34;list-style-type: disc; margin-left: 1.5rem;&#34;>
+            <li><strong>Composition</strong>: The Player &#34;has a&#34; Inventory (not &#34;is a&#34;).</li>
             <li><strong>Encapsulation</strong>: The list `_items` is hidden. We interact via `add()`, `remove()`.</li>
             <li><strong>Static/Class Variables</strong>: `MAX_CAPACITY` belongs to the blueprint.</li>
         </ul>
     </section>
 
-    <section class="oop-section">
-        <h2 class="oop-section-title">Common Misconceptions</h2>
-        <div class="info-content">
+    <section class=&#34;oop-section&#34;>
+        <h2 class=&#34;oop-section-title&#34;>Common Misconceptions</h2>
+        <div class=&#34;info-content&#34;>
             <p><strong>1. `self._items` vs `item`</strong></p>
             <p>Students confuse the <em>list</em> with the <em>single item</em>. `add(item)` appends to `self._items`.</p>
             
             <p><strong>2. Returning True/False</strong></p>
-            <p>The spec requires boolean returns. Students often just `print("Added")` which breaks the logical tests.</p>
+            <p>The spec requires boolean returns. Students often just `print(&#34;Added&#34;)` which breaks the logical tests.</p>
         </div>
     </section>
 
-    <section class="oop-section">
-        <h2 class="oop-section-title">Solution Code</h2>
-        <div class="code-block" style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+    <section class=&#34;oop-section&#34;>
+        <h2 class=&#34;oop-section-title&#34;>Solution Code</h2>
+        <div class=&#34;code-block&#34; style=&#34;background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto;&#34;>
             <pre><code>class Inventory:
     MAX_CAPACITY = 10  # Class variable
 
@@ -235,91 +323,227 @@
     </div>
 
     <footer>
-        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+        <p>&#38;copy; 2026 SGS Education &#38;middot; SG Stewart. All rights reserved.</p>
     </footer>
 
     
     
 
     
-    <div class="feedback-modals" data-feedback-default-level="General">
-        <div class="feedback-overlay" data-feedback-overlay></div>
+    <div class=&#34;feedback-modals&#34; data-feedback-default-level=&#34;General&#34;>
+        <div class=&#34;feedback-overlay&#34; data-feedback-overlay></div>
 
-        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close">
-                <i class="fa-solid fa-xmark"></i>
+        <div class=&#34;feedback-modal&#34; id=&#34;bug-modal&#34; role=&#34;dialog&#34; aria-modal=&#34;true&#34; aria-labelledby=&#34;bug-modal-title&#34;>
+            <button class=&#34;modal-close&#34; type=&#34;button&#34; data-close-modal aria-label=&#34;Close&#34;>
+                <i class=&#34;fa-solid fa-xmark&#34;></i>
             </button>
-            <p class="modal-kicker">Something broken?</p>
-            <h2 id="bug-modal-title">Report a bug</h2>
-            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+            <p class=&#34;modal-kicker&#34;>Something broken?</p>
+            <h2 id=&#34;bug-modal-title&#34;>Report a bug</h2>
+            <p class=&#34;modal-lede&#34;>Tell us exactly where the issue appears so we can fix it quickly.</p>
 
-            <form id="bug-form" class="feedback-form" data-form-type="bug">
-                <label for="bug-level">Course area</label>
-                <select id="bug-level" name="level" required>
-                    <option value="">Select a course</option>
-                    <option value="KS3">KS3</option>
-                    <option value="IGCSE">IGCSE</option>
-                    <option value="IB">IB</option>
-                    <option value="General">General</option>
+            <form id=&#34;bug-form&#34; class=&#34;feedback-form&#34; data-form-type=&#34;bug&#34;>
+                <label for=&#34;bug-level&#34;>Course area</label>
+                <select id=&#34;bug-level&#34; name=&#34;level&#34; required>
+                    <option value=&#34;&#34;>Select a course</option>
+                    <option value=&#34;KS3&#34;>KS3</option>
+                    <option value=&#34;IGCSE&#34;>IGCSE</option>
+                    <option value=&#34;IB&#34;>IB</option>
+                    <option value=&#34;General&#34;>General</option>
                 </select>
 
-                <label for="bug-category">Resource type</label>
-                <select id="bug-category" name="category" required>
-                    <option value="">Choose a resource type</option>
-                    <option value="Slide deck">Slide deck</option>
-                    <option value="Game">Game</option>
-                    <option value="Image">Image</option>
-                    <option value="Simulation">Simulation</option>
-                    <option value="Misc">Misc</option>
+                <label for=&#34;bug-category&#34;>Resource type</label>
+                <select id=&#34;bug-category&#34; name=&#34;category&#34; required>
+                    <option value=&#34;&#34;>Choose a resource type</option>
+                    <option value=&#34;Slide deck&#34;>Slide deck</option>
+                    <option value=&#34;Game&#34;>Game</option>
+                    <option value=&#34;Image&#34;>Image</option>
+                    <option value=&#34;Simulation&#34;>Simulation</option>
+                    <option value=&#34;Misc&#34;>Misc</option>
                 </select>
 
-                <label for="bug-title">Title (be specific)</label>
-                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+                <label for=&#34;bug-title&#34;>Title (be specific)</label>
+                <input id=&#34;bug-title&#34; name=&#34;title&#34; type=&#34;text&#34; placeholder=&#34;Topic 1.1 slide deck — slide 9 video freezes…&#34; autocomplete=&#34;off&#34; required>
 
-                <label for="bug-details">What happened?</label>
-                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
-                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+                <label for=&#34;bug-details&#34;>What happened?</label>
+                <textarea id=&#34;bug-details&#34; name=&#34;details&#34; rows=&#34;4&#34; placeholder=&#34;Describe the issue and where it shows up…&#34; autocomplete=&#34;off&#34; required></textarea>
+                <p class=&#34;form-note&#34;>Give the topic, resource type, and slide/page number to avoid vague reports.</p>
 
-                <button type="submit" class="submit-btn">Submit bug report</button>
-                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+                <button type=&#34;submit&#34; class=&#34;submit-btn&#34;>Submit bug report</button>
+                <p class=&#34;form-feedback&#34; data-feedback-message=&#34;bug&#34; aria-live=&#34;polite&#34;></p>
             </form>
         </div>
 
-        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
-            <button class="modal-close" type="button" data-close-modal aria-label="Close">
-                <i class="fa-solid fa-xmark"></i>
+        <div class=&#34;feedback-modal&#34; id=&#34;feature-modal&#34; role=&#34;dialog&#34; aria-modal=&#34;true&#34; aria-labelledby=&#34;feature-modal-title&#34;>
+            <button class=&#34;modal-close&#34; type=&#34;button&#34; data-close-modal aria-label=&#34;Close&#34;>
+                <i class=&#34;fa-solid fa-xmark&#34;></i>
             </button>
-            <p class="modal-kicker">Have an idea?</p>
-            <h2 id="feature-modal-title">Request a feature</h2>
-            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+            <p class=&#34;modal-kicker&#34;>Have an idea?</p>
+            <h2 id=&#34;feature-modal-title&#34;>Request a feature</h2>
+            <p class=&#34;modal-lede&#34;>Tell us which course you are in and what you would like added.</p>
 
-            <form id="feature-form" class="feedback-form" data-form-type="feature">
-                <label for="feature-level">Course area</label>
-                <select id="feature-level" name="level" required>
-                    <option value="">Select a course</option>
-                    <option value="KS3">KS3</option>
-                    <option value="IGCSE">IGCSE</option>
-                    <option value="IB">IB</option>
-                    <option value="General">General</option>
+            <form id=&#34;feature-form&#34; class=&#34;feedback-form&#34; data-form-type=&#34;feature&#34;>
+                <label for=&#34;feature-level&#34;>Course area</label>
+                <select id=&#34;feature-level&#34; name=&#34;level&#34; required>
+                    <option value=&#34;&#34;>Select a course</option>
+                    <option value=&#34;KS3&#34;>KS3</option>
+                    <option value=&#34;IGCSE&#34;>IGCSE</option>
+                    <option value=&#34;IB&#34;>IB</option>
+                    <option value=&#34;General&#34;>General</option>
                 </select>
 
-                <label for="feature-details">What should we add?</label>
-                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
-                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+                <label for=&#34;feature-details&#34;>What should we add?</label>
+                <textarea id=&#34;feature-details&#34; name=&#34;details&#34; rows=&#34;5&#34; placeholder=&#34;e.g. Add a revision game for Topic 2.1…&#34; autocomplete=&#34;off&#34; required></textarea>
+                <p class=&#34;form-note&#34;>Share enough detail so teachers can understand the request.</p>
 
-                <button type="submit" class="submit-btn">Submit feature request</button>
-                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+                <button type=&#34;submit&#34; class=&#34;submit-btn&#34;>Submit feature request</button>
+                <p class=&#34;form-feedback&#34; data-feedback-message=&#34;feature&#34; aria-live=&#34;polite&#34;></p>
             </form>
         </div>
     </div>
 
-    <script src="/js/feedback.js"></script>
+    <script src=&#34;/js/feedback.js&#34;></script>
 
+    <script>
+
+    (() => {
+      const cleanupLegacyChrome = () => {
+        const removeSelectors = [
+          '.site-header',
+          '.main-header',
+          '.breadcrumb-nav',
+          '.feedback-modals',
+          '.site-feedback',
+          '.feedback-trigger',
+          '[data-feedback-open]',
+          'body > footer',
+          '#sgs-auth-overlay',
+          '.sgs-auth-overlay',
+          'link[href*=&#34;/css/auth-gate.css&#34;]',
+          'script[src*=&#34;/__/firebase/&#34;]',
+          'script[src*=&#34;/js/auth-gate.js&#34;]'
+        ];
+
+        removeSelectors.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => node.remove());
+        });
+
+        document.documentElement.classList.remove('auth-pending');
+        document.documentElement.classList.add('auth-ready');
+        document.body.classList.remove('sgs-auth-locked');
+        document.body.style.visibility = 'visible';
+        document.body.style.overflow = '';
+
+        const placeholderLinks = [
+          'a[href=&#34;/coming-soon.html&#34;]',
+          'a[href=&#34;coming-soon.html&#34;]',
+          'a[href=&#34;./coming-soon.html&#34;]'
+        ];
+
+        placeholderLinks.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((node) => {
+            const removableParent =
+              node.closest('.resource-btn, .activity-card, .feature-card, .feature-link, li, article') || node;
+            removableParent.remove();
+          });
+        });
+      };
+
+      const sendHeight = () => {
+        const height = Math.max(
+          document.documentElement.scrollHeight,
+          document.body ? document.body.scrollHeight : 0,
+          document.documentElement.offsetHeight,
+          document.body ? document.body.offsetHeight : 0
+        );
+        parent.postMessage({ type: 'sgs-legacy-frame-height', id: 'ib-2027-B3-B3-1-oop-project-teacher-level-c', height }, '*');
+      };
+
+      window.addEventListener('load', () => {
+        cleanupLegacyChrome();
+        sendHeight();
+        setTimeout(sendHeight, 250);
+      });
+      window.addEventListener('resize', sendHeight);
+
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(sendHeight).observe(document.documentElement);
+      }
+
+      setInterval(sendHeight, 1200);
+    })();
+
+</script></body>
+
+</html>
+" loading="eager" allowfullscreen></iframe> </section> <script data-frame-id="ib-2027-B3-B3-1-oop-project-teacher-level-c">
+  (() => {
+    const activeScript = document.currentScript;
+    const activeFrameId = activeScript?.getAttribute('data-frame-id');
+    if (!activeFrameId) return;
+
+    const selector = `iframe[data-legacy-frame-id="${activeFrameId}"]`;
+    const frame = document.querySelector(selector);
+    if (!frame) return;
+    let lastHeight = 0;
+
+    const fullscreenButton = document.querySelector(`[data-legacy-frame-fullscreen="${activeFrameId}"]`);
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          await frame.requestFullscreen();
+        } catch {
+          // Ignore fullscreen failures triggered by browser policy.
+        }
+      });
+    }
+
+    window.addEventListener('message', (event) => {
+      if (!event.data || event.data.type !== 'sgs-legacy-frame-height' || event.data.id !== activeFrameId) {
+        return;
+      }
+
+      const nextHeight = Number(event.data.height);
+      if (!Number.isFinite(nextHeight) || nextHeight <= 0) {
+        return;
+      }
+
+      if (!frame.closest('.legacy-frame--document')) {
+        return;
+      }
+
+      const frameHeight = Math.max(360, Math.ceil(nextHeight));
+      if (Math.abs(frameHeight - lastHeight) < 2) {
+        return;
+      }
+
+      lastHeight = frameHeight;
+      frame.style.height = `${frameHeight}px`;
+    });
+  })();
+</script> </section>   </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> 
     <!-- data-sgs-auth-gate -->
     <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
     <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
     <script src="/__/firebase/init.js"></script>
     <script src="/js/auth-gate.js"></script>
-</body>
-
-</html>
+</body> </html>

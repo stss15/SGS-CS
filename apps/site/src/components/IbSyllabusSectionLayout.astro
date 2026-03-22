@@ -1,0 +1,115 @@
+---
+import CompactList from './CompactList.astro';
+import type { ShellContext, ShellPageLink } from '../lib/curriculum-shell';
+import CurriculumShell from '../layouts/CurriculumShell.astro';
+import {
+  getIbLevelLabel,
+  getIbSectionBreadcrumbs,
+  type IbTheme,
+  type IbThemeSection
+} from '../lib/ib2027-syllabus';
+
+interface Props {
+  theme: IbTheme;
+  section: IbThemeSection;
+  courseShell: ShellContext;
+  prevLink?: ShellPageLink;
+  nextLink?: ShellPageLink;
+}
+
+const { theme, section, courseShell, prevLink, nextLink } = Astro.props as Props;
+
+const compactSections = [
+  {
+    title: 'Lessons',
+    summary: 'Open the current lesson decks already published for this part of the syllabus.',
+    items: section.lessons.map((item) => ({
+      label: item.label,
+      href: item.href,
+      meta: item.meta
+    }))
+  },
+  ...(section.activities.length > 0
+    ? [
+        {
+          title: 'Activities',
+          summary: 'Worksheets, projects, and practical tasks currently mapped to this subtopic.',
+          items: section.activities.map((item) => ({
+            label: item.label,
+            href: item.href,
+            meta: item.meta
+          }))
+        }
+      ]
+    : [])
+];
+---
+
+<CurriculumShell
+  title={`IB ${section.code}: ${section.title} - SGS Computer Science`}
+  description={section.overview}
+  activeSection="ib"
+  breadcrumbs={getIbSectionBreadcrumbs(theme.id, section.id)}
+  courseShell={courseShell}
+  layoutMode="worksheet"
+  prevLink={prevLink}
+  nextLink={nextLink}
+  eyebrow={`${theme.code} · ${theme.title}`}
+  heroTitle={`${section.code} ${section.title}`}
+  heroSubtitle={section.level === 'hl' ? 'Higher-level subtopic' : 'Syllabus subtopic'}
+  pills={[getIbLevelLabel(section.level)]}
+>
+  <div class="page-stack">
+    <div class="spec-grid">
+      <section class="spec-card">
+        <h2>Subtopic overview</h2>
+        <p>{section.overview}</p>
+        <p><strong>Context:</strong> This sits inside {theme.code} {theme.title}.</p>
+      </section>
+
+      <section class="spec-card">
+        <h2>What this section covers</h2>
+        <ul>
+          {section.points.map((point) => (
+            <li>{point.code} {point.title}</li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <section class="page-panel">
+      <h2>Syllabus coverage</h2>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Code</th>
+              <th scope="col">Command term</th>
+              <th scope="col">Expected focus</th>
+              <th scope="col">Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            {section.points.map((point) => (
+              <tr>
+                <td><strong>{point.code}</strong></td>
+                <td>{point.command}</td>
+                <td>{point.title}</td>
+                <td>{point.level === 'hl' ? 'HL only' : 'SL core'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <CompactList sections={compactSections} />
+
+    {section.activities.length === 0 && (
+      <section class="page-panel">
+        <h2>Activities</h2>
+        <p class="ib-syllabus-empty">No rebuilt activity set is attached to this subtopic yet. The lesson decks and textbook mapping are ready first.</p>
+      </section>
+    )}
+  </div>
+</CurriculumShell>

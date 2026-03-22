@@ -1,78 +1,33 @@
 ---
-import CurriculumShell from '../../../../layouts/CurriculumShell.astro';
-import {
-  IB_SUBTOPICS,
-  getSubtopicFrontmatter,
-  getSubtopicSlides,
-  type SubtopicFrontmatter,
-  type SlideInfo
-} from '../../../../lib/ib-subtopic-data';
+import { IB_SUBTOPICS, getSubtopicSlides } from '../../../../lib/ib-subtopic-data';
 
 export async function getStaticPaths() {
   return Promise.all(IB_SUBTOPICS.map(async ({ topic, subtopic }) => {
-    const fm = await getSubtopicFrontmatter(topic, subtopic);
     const slides = await getSubtopicSlides(topic, subtopic);
+    const firstSlide = slides.length > 0 ? slides[0].href : null;
     return {
-      params: { topic, subtopic },
-      props: { topic, subtopic, fm, slides }
+      params: {
+        topic: topic.toLowerCase(),
+        subtopic: subtopic.toLowerCase().replace('.', '-')
+      },
+      props: { topic, firstSlide }
     };
   }));
 }
 
-const { topic, subtopic, fm, slides } = Astro.props as {
-  topic: string;
-  subtopic: string;
-  fm: SubtopicFrontmatter;
-  slides: SlideInfo[];
-};
-
-const heroTitle = fm.hero?.title || subtopic;
-const heroSubtitle = fm.hero?.subtitle || '';
-const description = fm.description || `${subtopic} — IB Computer Science`;
+const { topic, firstSlide } = Astro.props as { topic: string; firstSlide: string | null };
+const unitHref = `/ib-2027/${topic.toLowerCase()}/index.html`;
+const redirectTarget = firstSlide || unitHref;
 ---
 
-<CurriculumShell
-  title={fm.title || `${subtopic} - SGS Computer Science`}
-  description={description}
-  extraStyles={['css/resource-style.css']}
-  activeSection="ib"
-  eyebrow={subtopic}
-  heroTitle={heroTitle}
-  heroSubtitle={heroSubtitle}
-  heroVariant="compact"
->
-  <div class="subtopic-content">
-    {description && (
-      <section class="subtopic-overview">
-        <h2 class="section-heading"><i class="fa-solid fa-circle-info"></i> Overview</h2>
-        <p class="overview-text">{description}</p>
-      </section>
-    )}
-
-    {slides.length === 0 && !description && (
-      <div class="empty-state">
-        <i class="fa-solid fa-wrench"></i>
-        <p>Content for {subtopic} is being prepared.</p>
-      </div>
-    )}
-  </div>
-
-  <style>
-    .subtopic-content { width: 100%; max-width: 100%; }
-    .resource-section { margin-bottom: 2rem; }
-    .resource-heading { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--primary-dark, #1a2332); margin: 0 0 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
-    .resource-heading i { color: var(--accent-color, #c9a84c); font-size: 0.9rem; }
-    .resource-list { display: flex; flex-direction: column; gap: 0.4rem; }
-    .resource-link { display: flex; align-items: center; gap: 0.65rem; padding: 0.65rem 0.9rem; border-radius: 6px; border: 1px solid var(--border-light, #e5e5e5); background: var(--surface, #fff); text-decoration: none; color: var(--primary-dark, #1a2332); font-size: 0.9rem; transition: border-color 0.2s, box-shadow 0.2s; }
-    .resource-link:hover { border-color: var(--accent-color, #c9a84c); box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-    .resource-link i:first-child { color: var(--accent-color, #c9a84c); font-size: 0.85rem; width: 1.2rem; text-align: center; }
-    .resource-external { margin-left: auto; font-size: 0.7rem; color: var(--text-muted, #888); }
-    .subtopic-overview { margin-bottom: 1.5rem; }
-    .section-heading { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--primary-dark, #1a2332); margin: 0 0 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
-    .section-heading i { color: var(--accent-color, #c9a84c); font-size: 0.9rem; }
-    .overview-text { font-size: 1rem; line-height: 1.75; color: var(--text-color, #444); margin: 0; }
-    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted, #888); }
-    .empty-state i { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
-    .empty-state p { font-size: 0.95rem; }
-  </style>
-</CurriculumShell>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content={`0;url=${redirectTarget}`} />
+    <link rel="canonical" href={redirectTarget} />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={redirectTarget}>{redirectTarget}</a>…</p>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegacyEmbedFrame from '../../components/LegacyEmbedFrame.astro';
+import { readPublicHtml, extractHtmlTitle, collectPublicHtmlFiles } from '../../lib/source-content';
+
+interface StaticContentPageProps {
+  html: string;
+  routePath: string;
+}
+
+export async function getStaticPaths() {
+  const allFiles = await collectPublicHtmlFiles('ib-2027');
+
+  return Promise.all(
+    allFiles.map(async (relativePath) => {
+      const routePath = `/ib-2027/${relativePath}`;
+      const restParam = relativePath.replace(/\.html$/, '');
+      const html = await readPublicHtml(routePath);
+      return {
+        params: { rest: restParam },
+        props: { html, routePath }
+      };
+    })
+  );
+}
+
+const { html, routePath } = Astro.props as StaticContentPageProps;
+const title = extractHtmlTitle(html, 'IB Computer Science');
+const isWorkspace = routePath.includes('sql-worksheet') ||
+  routePath.includes('oop-project') ||
+  routePath.includes('Big_0') ||
+  routePath.includes('recursion-visualizer') ||
+  routePath.includes('BST_') ||
+  routePath.includes('LL_') ||
+  routePath.includes('design-patterns') ||
+  routePath.includes('scenario');
+const variant = isWorkspace ? 'workspace' : 'document';
+---
+
+<BaseLayout title={title} description={title}>
+  <section class="page-panel page-panel--flush">
+    <LegacyEmbedFrame
+      title={title}
+      html={html}
+      routePath={routePath}
+      variant={variant}
+      hideSelectors={['#back-btn', '#sg-logo', '.footer-text', '.standalone-nav', '.nav-overlay', '.course-sidebar']}
+    />
+  </section>
+</BaseLayout>

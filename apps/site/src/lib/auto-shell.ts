@@ -821,7 +821,6 @@ const buildIbCourseGroups = async (): Promise<ShellNavGroup[]> => {
       items: (section.items || []).map((item: any) => ({
         label: `${item.number} ${item.name}`,
         href: ensureAbsoluteHref(basePath, item.href),
-        meta: isAssessment ? undefined : item.meta,
         disabled: Boolean(item.disabled)
       }))
     };
@@ -835,7 +834,7 @@ const readDirectoryLinks = async (absoluteDir: string, routeBasePath: string): P
 
   const entries = await readdir(absoluteDir, { withFileTypes: true });
   const files = entries
-    .filter((entry) => entry.isFile() && (entry.name.endsWith('.astro') || entry.name.endsWith('.njk')))
+    .filter((entry) => entry.isFile() && (entry.name.endsWith('.astro') || entry.name.endsWith('.njk')) && !entry.name.startsWith('['))
     .map((entry) => entry.name.replace(/\.(astro|njk)$/i, ''))
     .sort((left, right) => {
       if (left === 'index') return -1;
@@ -849,110 +848,242 @@ const readDirectoryLinks = async (absoluteDir: string, routeBasePath: string): P
   }));
 };
 
+const IB_SUBTOPIC_NAMES: Record<string, string> = {
+  'A1.1': 'Computer hardware and operation',
+  'A1.2': 'Data representation and computer logic',
+  'A1.3': 'Operating systems and control systems',
+  'A1.4': 'Translation (HL)',
+  'A2.1': 'Network fundamentals',
+  'A2.2': 'Network architecture',
+  'A2.3': 'Data transmissions',
+  'A2.4': 'Network security',
+  'A3.1': 'Database fundamentals',
+  'A3.2': 'Database design',
+  'A3.3': 'Database programming',
+  'A3.4': 'Alternative databases and data warehouses (HL)',
+  'A4.1': 'Machine learning fundamentals',
+  'A4.2': 'Data preprocessing (HL)',
+  'A4.3': 'Machine learning approaches (HL)',
+  'A4.4': 'Ethical considerations',
+  'B1.1': 'Approaches to computational thinking',
+  'B1.2': 'Computational thinking',
+  'B1.3': 'Flowcharts and pseudocode',
+  'B1.4': 'Algorithm design',
+  'B2.1': 'Programming fundamentals',
+  'B2.2': 'Data structures',
+  'B2.3': 'Programming constructs',
+  'B2.4': 'Programming algorithms',
+  'B2.5': 'File processing',
+  'B3.1': 'Fundamentals of OOP',
+  'B3.2': 'Inheritance and polymorphism (HL)',
+  'B4.1': 'Fundamentals of ADTs',
+};
+
+const readPublicHtmlItems = async (
+  absoluteDir: string,
+  routeBasePath: string,
+  exclude: RegExp = /^(index|slides)$/i
+): Promise<ShellNavItem[]> => {
+  if (!existsSync(absoluteDir)) return [];
+  const entries = await readdir(absoluteDir, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.html') && !exclude.test(entry.name.replace('.html', '')))
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((entry) => ({
+      label: humanizeRouteLabel(entry.name),
+      href: `${routeBasePath}/${entry.name}`
+    }));
+};
+
+const readPublicOopProjectItems = async (unitCode: string): Promise<ShellNavItem[]> => {
+  const dir = path.join(repoRoot, `public/ib-2027/${unitCode}/B3.1/oop-project`);
+  if (!existsSync(dir)) return [];
+  const entries = await readdir(dir, { withFileTypes: true });
+  return entries
+    .filter((e) => e.isFile() && e.name.endsWith('.html') && e.name !== 'index.html' && !e.name.startsWith('teacher'))
+    .sort((a, b) => {
+      const order = ['preflight', 'level-a', 'level-b', 'level-c', 'level-d', 'level-e', 'level-f', 'level-g', 'level-h', 'level-i', 'level-p1', 'level-p2'];
+      const ai = order.findIndex((p) => a.name.startsWith(p));
+      const bi = order.findIndex((p) => b.name.startsWith(p));
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    })
+    .map((e) => ({
+      label: humanizeRouteLabel(e.name),
+      href: `/ib-2027/B3/B3.1/oop-project/${e.name}`
+    }));
+};
+
 const buildIbLocalGroups = async (
   unitCode: string,
   currentPath: string
 ): Promise<ShellNavGroup[]> => {
-  const unitBasePath = `/ib-2027/${unitCode}`;
+  const unitBasePath = `/ib-2027/${unitCode.toLowerCase()}`;
+  const publicUnitDir = path.join(repoRoot, `public/ib-2027/${unitCode}`);
 
-  // Read the unit index frontmatter to get subtopic listing
-  const unitIndexPath = `src/pages/ib-2027/${unitCode}/index.njk`;
-  let unitFrontmatter: LegacyTopicFrontmatter = { title: unitCode };
-  try {
-    unitFrontmatter = await readSourceFrontmatter<LegacyTopicFrontmatter>(unitIndexPath);
-  } catch { /* unit page may not exist yet */ }
-
-  const overviewItems: ShellNavItem[] = [
-    { label: 'Overview', href: `${unitBasePath}/index.html` }
-  ];
-
-  const overviewGroup = buildSectionGroup('unit-overview', 'Overview', overviewItems, {
-    sequence: true,
-    open: true,
-    collapsible: false
-  });
-
-  // Build subtopic links from resources (which list subtopics)
-  const subtopicItems: ShellNavItem[] = ((unitFrontmatter as any).resources || [])
-    .filter((resource: any) => isValidStudentHref(resource.href))
-    .map((resource: any) => ({
-      label: `${resource.number} ${resource.name}`,
-      href: ensureAbsoluteHref(unitBasePath, resource.href)
-    }));
-
-  const subtopicGroup = buildSectionGroup('subtopics', 'Subtopics', subtopicItems, {
-    sequence: true,
-    collapsible: false
-  });
-
-  // Build resource links — always show Textbook (active if exists), plus greyed-out items
-  const resourceItems: ShellNavItem[] = [];
-
-  const textbookPath = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/textbook.njk`);
-  if (existsSync(textbookPath)) {
-    resourceItems.push({
-      label: 'Textbook',
-      href: `${unitBasePath}/textbook.html`,
-      icon: 'fa-solid fa-book'
-    });
-  }
-
-  // Always show these as disabled/coming-soon
-  resourceItems.push(
-    { label: 'Homework', href: '#', icon: 'fa-solid fa-house', disabled: true },
-    { label: 'Revision', href: '#', icon: 'fa-solid fa-layer-group', disabled: true },
-    { label: 'Assessment', href: '#', icon: 'fa-solid fa-file-pen', disabled: true }
+  // ── Overview (non-collapsible) ───────────────────────────────
+  const overviewGroup = buildSectionGroup('unit-overview', 'Overview',
+    [{ label: 'Overview', href: `${unitBasePath}/index.html` }],
+    { sequence: true, open: true, collapsible: false, icon: 'fa-solid fa-binoculars' }
   );
 
-  const resourceGroup = buildSectionGroup('unit-resources', 'Resources', resourceItems, {
-    collapsible: false,
-    divider: true
+  // ── Lessons (collapsible — subtopics linking to their slide) ─
+  const lessonItems: ShellNavItem[] = [];
+  if (existsSync(publicUnitDir)) {
+    const unitEntries = await readdir(publicUnitDir, { withFileTypes: true });
+    const subtopicDirs = unitEntries
+      .filter((e) => e.isDirectory() && /^[AB]\d\.\d+$/i.test(e.name))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    for (const dir of subtopicDirs) {
+      const slidesDir = path.join(publicUnitDir, dir.name, 'slides');
+      let slideHref: string | null = null;
+      if (existsSync(slidesDir)) {
+        const slides = (await readdir(slidesDir)).filter((f) => f.endsWith('.html')).sort();
+        if (slides.length > 0) {
+          // Astro generates routes as /slideSlug/index.html, not /slideSlug.html
+          const slideSlug = slides[0].replace(/\.html$/i, '');
+          slideHref = `/ib-2027/${unitCode}/${dir.name}/slides/${slideSlug}/index.html`;
+        }
+      }
+      const subtopicName = IB_SUBTOPIC_NAMES[dir.name.toUpperCase()] || dir.name;
+      lessonItems.push({
+        label: `${dir.name} ${subtopicName}`,
+        href: slideHref || `${unitBasePath}/index.html`,
+      });
+    }
+  }
+  const lessonsGroup = buildSectionGroup('unit-lessons', 'Lessons', lessonItems, {
+    sequence: true, icon: 'fa-solid fa-book-open'
   });
 
-  // Special route groups (OOP project, SQL worksheets, scenarios)
-  const specialGroups: ShellNavGroup[] = [];
-  const specialRoutePatterns = ['oop-project', 'sql-worksheets', 'sql-project', 'nosql-project', 'scenarios'];
+  // ── Activities (collapsible — worksheets, projects, visualisers) ─
+  const activityItems: ShellNavItem[] = [];
 
-  for (const pattern of specialRoutePatterns) {
-    if (!currentPath.includes(`/${pattern}`)) continue;
+  // SQL worksheets (A3)
+  const sqlWorksheetsDir = path.join(publicUnitDir, 'sql-worksheets');
+  if (existsSync(sqlWorksheetsDir)) {
+    const wsEntries = await readdir(sqlWorksheetsDir);
+    wsEntries
+      .filter((f) => f.endsWith('.html') && f !== 'index.html')
+      .sort()
+      .forEach((f) => activityItems.push({
+        label: `SQL: ${humanizeRouteLabel(f)}`,
+        href: `/ib-2027/${unitCode}/sql-worksheets/${f}`
+      }));
+  }
 
-    // Search in unit-level OR subtopic-level directories
-    const searchPaths = [
-      path.join(repoRoot, `src/pages/ib-2027/${unitCode}/${pattern}`),
-      // Check subtopics too (e.g. B3/B3.1/oop-project)
-      ...(((unitFrontmatter as any).resources || []) as any[]).map((r: any) => {
-        const subtopicDir = r.href?.replace(/\/index\.html$/i, '');
-        return subtopicDir ? path.join(repoRoot, `src/pages/ib-2027/${unitCode}/${subtopicDir}/${pattern}`) : '';
-      }).filter(Boolean)
-    ];
+  // SQL playground (A3)
+  if (unitCode === 'A3') {
+    activityItems.push({ label: 'SQL Playground', href: '/tools/sql-playground.html' });
+  }
 
-    for (const searchPath of searchPaths) {
-      if (!existsSync(searchPath)) continue;
-
-      const routeBase = searchPath.replace(path.join(repoRoot, 'src/pages'), '').replace(/\.njk$/i, '');
-      const projectLinks = await readDirectoryLinks(searchPath, routeBase);
-      const projectGroup = buildSectionGroup(
-        `${pattern}-links`,
-        humanizeRouteLabel(pattern),
-        projectLinks.filter((link) => !link.href.includes('/teacher/')),
-        { sequence: true, open: true }
-      );
-      if (projectGroup) specialGroups.push(projectGroup);
-
-      const teacherLinks = await readDirectoryLinks(path.join(searchPath, 'teacher'), `${routeBase}/teacher`);
-      const teacherGroup = buildSectionGroup('teacher-links', 'Teacher', teacherLinks, {
-        open: currentPath.includes('/teacher/')
-      });
-      if (teacherGroup) specialGroups.push(teacherGroup);
-      break; // Found it, stop searching
+  // SQL project and NoSQL project (A3) — from src pages
+  for (const projPattern of ['sql-project', 'nosql-project']) {
+    const projDir = path.join(repoRoot, `apps/site/src/pages/ib-2027/${unitCode}/${projPattern}`);
+    if (existsSync(projDir)) {
+      const links = await readDirectoryLinks(projDir, `/ib-2027/${unitCode.toLowerCase()}/${projPattern}`);
+      activityItems.push(...links.filter((l) => !l.href.includes('/teacher/')));
     }
   }
 
+  // OOP project (B3 → B3.1/oop-project in public/)
+  if (unitCode === 'B3') {
+    const oopItems = await readPublicOopProjectItems(unitCode);
+    activityItems.push(...oopItems);
+  }
+
+  // Scenarios (B3, public/ib-2027/scenarios/)
+  if (unitCode === 'B3') {
+    const scenariosDir = path.join(repoRoot, 'public/ib-2027/scenarios');
+    if (existsSync(scenariosDir)) {
+      const sEntries = await readdir(scenariosDir, { withFileTypes: true });
+      sEntries
+        .filter((e) => e.isFile() && e.name.endsWith('.html'))
+        .sort()
+        .forEach((e) => {
+          const slug = e.name.replace(/\.html$/i, '');
+          activityItems.push({
+            label: humanizeRouteLabel(e.name),
+            href: `/ib-2027/scenarios/${slug}/index.html`
+          });
+        });
+    }
+    // Design patterns (B3.2)
+    const dpFile = path.join(publicUnitDir, 'B3.2/design-patterns.html');
+    if (existsSync(dpFile)) {
+      activityItems.push({ label: 'Design Patterns', href: `/ib-2027/B3/B3.2/design-patterns.html` });
+    }
+  }
+
+  // Subtopic-level extras (visualisers etc. — B2.4, B4.1)
+  if (existsSync(publicUnitDir)) {
+    const unitEntries = await readdir(publicUnitDir, { withFileTypes: true });
+    const subtopicDirs = unitEntries.filter((e) => e.isDirectory() && /^[AB]\d\.\d+$/i.test(e.name));
+    for (const dir of subtopicDirs) {
+      const subDir = path.join(publicUnitDir, dir.name);
+      const extras = await readPublicHtmlItems(subDir, `/ib-2027/${unitCode}/${dir.name}`, /^(index|slides|revision|specification|textbook)$/i);
+      activityItems.push(...extras);
+    }
+  }
+
+  const activitiesGroup = buildSectionGroup('unit-activities', 'Activities', activityItems, {
+    sequence: true, icon: 'fa-solid fa-laptop-code'
+  });
+
+  // ── Textbook (non-collapsible) ───────────────────────────────
+  const textbookGroup = buildSectionGroup('unit-textbook', 'Textbook',
+    [{ label: 'Textbook', href: `${unitBasePath}/textbook/index.html` }],
+    { collapsible: false, icon: 'fa-solid fa-book-open-reader' }
+  );
+
+  // ── Homework (collapsible — empty for now) ───────────────────
+  const homeworkGroup = buildSectionGroup('unit-homework', 'Homework', [], {
+    icon: 'fa-solid fa-house'
+  });
+
+  // ── Revision (collapsible — discover from public/) ───────────
+  const revisionItems: ShellNavItem[] = [];
+  if (existsSync(publicUnitDir)) {
+    const unitEntries = await readdir(publicUnitDir, { withFileTypes: true });
+    const subtopicDirs = unitEntries.filter((e) => e.isDirectory() && /^[AB]\d\.\d+$/i.test(e.name));
+    for (const dir of subtopicDirs) {
+      const revFile = path.join(publicUnitDir, dir.name, 'revision.html');
+      if (existsSync(revFile)) {
+        const subtopicName = IB_SUBTOPIC_NAMES[dir.name.toUpperCase()] || dir.name;
+        revisionItems.push({
+          label: `${dir.name} Revision`,
+          href: `/ib-2027/${unitCode}/${dir.name}/revision.html`
+        });
+      }
+    }
+  }
+  // Student resources (B2)
+  const studentResourcesFile = path.join(publicUnitDir, 'student-resources.html');
+  if (existsSync(studentResourcesFile)) {
+    revisionItems.push({ label: 'Student Resources', href: `/ib-2027/${unitCode}/student-resources.html` });
+  }
+  // Specification files
+  const specFile = path.join(publicUnitDir, 'specification.html');
+  if (existsSync(specFile)) {
+    revisionItems.push({ label: 'Specification', href: `/ib-2027/${unitCode}/specification.html` });
+  }
+  const revisionGroup = buildSectionGroup('unit-revision', 'Revision', revisionItems, {
+    icon: 'fa-solid fa-rotate-left'
+  });
+
+  // ── Assessment (collapsible — empty for now) ─────────────────
+  const assessmentGroup = buildSectionGroup('unit-assessment', 'Assessment', [], {
+    sequence: true, icon: 'fa-solid fa-file-pen'
+  });
+
   return [
     overviewGroup,
-    subtopicGroup,
-    resourceGroup,
-    ...specialGroups
+    lessonsGroup,
+    activitiesGroup,
+    textbookGroup,
+    homeworkGroup,
+    revisionGroup,
+    assessmentGroup,
   ].filter((group): group is ShellNavGroup => Boolean(group));
 };
 
@@ -961,7 +1092,7 @@ const buildIbSubtopicGroups = async (
   subtopicCode: string,
   currentPath: string
 ): Promise<ShellNavGroup[]> => {
-  const subtopicBasePath = `/ib-2027/${unitCode}/${subtopicCode}`;
+  const subtopicBasePath = `/ib-2027/${unitCode.toLowerCase()}/${subtopicCode.toLowerCase().replace('.', '-')}`;
 
   // Overview — link to subtopic index
   const overviewGroup = buildSectionGroup('subtopic-overview', 'Overview', [
@@ -1005,7 +1136,7 @@ const buildIbSubtopicGroups = async (
   for (const pattern of activityPatterns) {
     const unitActivityDir = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/${pattern}`);
     if (!existsSync(unitActivityDir)) continue;
-    const links = await readDirectoryLinks(unitActivityDir, `/ib-2027/${unitCode}/${pattern}`);
+    const links = await readDirectoryLinks(unitActivityDir, `/ib-2027/${unitCode.toLowerCase()}/${pattern}`);
     activityItems.push(...links.filter((link) => !link.href.includes('/teacher/')));
   }
   const activitiesGroup = buildSectionGroup('subtopic-activities', 'Activities', activityItems, {
@@ -1041,43 +1172,33 @@ const buildIbShell = async (pathname: string): Promise<{
 
   const currentPath = normalizeShellPath(pathname);
 
-  // Subtopic page gets its own sidebar groups; unit page uses the standard local groups
-  const localGroups = routeParts.subtopic
-    ? await buildIbSubtopicGroups(routeParts.unitCode, routeParts.subtopic, currentPath)
-    : await buildIbLocalGroups(routeParts.unitCode, currentPath);
+  // Always use unit-level sidebar — subtopics, slides, activities all share the same sidebar
+  const localGroups = await buildIbLocalGroups(routeParts.unitCode, currentPath);
   const currentLocation = findCurrentLocation(localGroups, currentPath);
 
   const layoutMode: ShellMode = /textbook/i.test(currentPath)
     ? 'reading'
-    : /(slides|sql|scenario|oop-project|project|worksheet)/i.test(currentPath)
+    : /(slides|sql|scenario|oop-project|project|worksheet|visualis|Big_0)/i.test(currentPath)
     ? 'workspace'
     : 'worksheet';
 
-  const unitOverviewHref = `/ib-2027/${routeParts.unitCode}/index.html`;
+  const unitOverviewHref = `/ib-2027/${routeParts.unitCode.toLowerCase()}/index.html`;
   const breadcrumbs: ShellBreadcrumb[] = [
     { label: 'IB Computer Science', href: '/ib-2027/index.html' },
     { label: routeParts.unitCode, href: unitOverviewHref }
   ];
 
-  if (routeParts.subtopic) {
-    breadcrumbs.push({
-      label: routeParts.subtopic,
-      href: `/ib-2027/${routeParts.unitCode}/${routeParts.subtopic}/index.html`
-    });
-  }
-
   if (currentLocation.item && !hrefMatchesCurrentPath(unitOverviewHref, currentPath)) {
-    const lastBreadcrumbHref = breadcrumbs[breadcrumbs.length - 1]?.href;
-    if (!lastBreadcrumbHref || !hrefMatchesCurrentPath(lastBreadcrumbHref, currentPath)) {
-      breadcrumbs.push({ label: currentLocation.item.label });
-    }
+    breadcrumbs.push({ label: currentLocation.item.label });
   }
 
   return {
     shellContext: {
-      title: routeParts.subtopic || routeParts.unitCode,
-      meta: undefined,
-      groups: localGroups
+      title: routeParts.unitCode,
+      meta: IB_SUBTOPIC_NAMES[routeParts.unitCode] || undefined,
+      groups: localGroups,
+      collapsible: true,
+      exclusiveGroups: true
     },
     layoutMode,
     breadcrumbs
