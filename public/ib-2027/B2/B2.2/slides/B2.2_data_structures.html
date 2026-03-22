@@ -1,0 +1,406 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2.2 Data Structures | IB Computer Science</title>
+    
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+    <meta name="description" content="SGS Education resources for KS3, IGCSE, and IB students and teachers.">
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B2.2 Data Structures</h1>
+            <h3 class="sub-title">Topic B2: Programming | Arrays, Stacks & Queues</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall B2.1 before we move on.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What data type stores True/False values?</li>
+            <li>What does <code>10 % 3</code> return?</li>
+            <li>What is a trace table used for?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What data type stores True/False values?</div>
+        <div class="fragment box-blue"><p><strong>Boolean</strong></p></div>
+    </section>
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What does <code>10 % 3</code> return?</div>
+        <div class="fragment box-blue"><p><strong>1</strong> — the modulus operator returns the remainder.</p></div>
+    </section>
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What is a trace table used for?</div>
+        <div class="fragment box-blue"><p>To track variable values step-by-step when tracing/debugging code.</p></div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK MYTH BUSTING) -->
+<section>
+    <h2>The Big Question</h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 You need to store gym kits for <strong>100 students</strong>.</p>
+                <p style="font-size:1.1em; margin-top:0.6em;">Would you create 100 separate variables?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Bad approach:</strong> <code>kit1, kit2, kit3... kit100</code></p>
+                <p class="small-text">Chaos. Hard to loop through. Can't easily add more.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Solution:</strong> Use a <strong>data structure</strong>!</p>
+                <p class="small-text"><code>kits = ["Alice", "Bob", ..., "Zoe"]</code> — one name, many values.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. ARRAYS: POST OFFICE ANALOGY -->
+<section>
+    <h3>Arrays (1D)</h3>
+    <div class="box">
+        <p>Think of a row of <span class="keyword" data-def="A data structure that stores elements of the same data type under one single identifier.">Post Office Boxes</span>.</p>
+    </div>
+    <div class="cols">
+        <div class="box-blue">
+            <pre><code class="python"># Index:  0      1      2      3
+prices = [10.50, 5.00, 20.00, 7.50]</code></pre>
+        </div>
+        <div class="box">
+            <ul>
+                <li><strong>Identifier</strong>: <code>prices</code> (The Address)</li>
+                <li><strong>Index</strong>: <code>0, 1, 2, 3</code> (Box Number)</li>
+                <li><strong>Element</strong>: <code>10.50</code> (The Content)</li>
+            </ul>
+        </div>
+    </div>
+    <div class="fragment box-red">
+        <p><strong><i class="fa-solid fa-triangle-exclamation"></i> Warning:</strong> Computers count from 0!</p>
+    </div>
+</section>
+
+<!-- 4. ACTIVE LEARNING: PREDICT THE INDEX -->
+<section>
+    <h3><i class="fa-solid fa-magnifying-glass"></i> Predict the Output</h3>
+    <div class="box-blue">
+        <pre><code class="python">scores = [98, 55, 72, 88, 41]</code></pre>
+    </div>
+    <div class="cols">
+        <div class="box fragment">
+            <p><code>scores[2]</code></p>
+            <p class="fragment answer"><code>72</code></p>
+        </div>
+        <div class="box fragment">
+            <p><code>scores[0]</code></p>
+            <p class="fragment answer"><code>98</code></p>
+        </div>
+        <div class="box fragment">
+            <p><code>scores[-1]</code></p>
+            <p class="fragment answer"><code>41</code> (Last item!)</p>
+        </div>
+        <div class="box fragment">
+            <p><code>scores[5]</code></p>
+            <p class="fragment answer box-red">IndexError!</p>
+        </div>
+    </div>
+</section>
+
+<!-- 5. 2D ARRAYS: CINEMA SEATING -->
+<section>
+    <h3>2D Arrays: The Grid</h3>
+    <div class="box">
+        <p>Just like cinema seats. row, then column.</p>
+    </div>
+    <div class="cols">
+        <div class="box-blue">
+            <h4>Concept</h4>
+            <table class="small-table" style="text-align:center;">
+                <tr><td></td><td>Col 0</td><td>Col 1</td></tr>
+                <tr><td>Row 0</td><td>A</td><td>B</td></tr>
+                <tr><td>Row 1</td><td>C</td><td>D</td></tr>
+            </table>
+        </div>
+        <div class="box fragment">
+            <h4>Code</h4>
+            <pre><code class="python">seats = [
+  ["A", "B"],
+  ["C", "D"]
+]
+print(seats[1][0]) # "C"</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 6. PARALLEL ARRAYS -->
+<section>
+    <h3><span class="keyword" data-def="Two or more arrays of the same size, where elements at the same index are related.">Parallel Arrays</span></h3>
+    <div class="box">
+        <p>Connecting data using the index.</p>
+    </div>
+    <div class="cols">
+        <div class="box">
+            <pre><code class="python">names = ["Alice", "Bob"]
+ages  = [17, 18]</code></pre>
+        </div>
+        <div class="box-blue">
+            <p>Index <code>1</code> represents <strong>Bob</strong> (Name) AND <strong>18</strong> (Age).</p>
+        </div>
+    </div>
+</section>
+
+<!-- 7. STACKS & QUEUES: THE ANALOGY BATTLE -->
+<section>
+    <h3>Abstract Data Structures</h3>
+    <p>How we <strong>behave</strong> vs How we store things.</p>
+    <div class="cols">
+        <div class="box-blue fragment">
+            <h4><i class="fa-solid fa-layer-group"></i> Stack</h4>
+            <p><strong>Analogy:</strong> Pancake Stack 🥞</p>
+            <p><strong>LIFO:</strong> Last In, First Out.</p>
+            <p>You eat the top pancake first.</p>
+        </div>
+        <div class="box-green fragment">
+            <h4><i class="fa-solid fa-people-line"></i> Queue</h4>
+            <p><strong>Analogy:</strong> Bus Stop Line 🚌</p>
+            <p><strong>FIFO:</strong> First In, First Out.</p>
+            <p>First person waits longest.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 8. TRACING A STACK -->
+<section>
+    <section>
+        <h3>Tracing a Stack</h3>
+        <p>Follow the operations step-by-step.</p>
+        <div class="box-blue">
+            <pre><code class="python">s = Stack()
+s.push(5)
+s.push(8)
+s.pop()
+s.push(3)</code></pre>
+        </div>
+        <p class="small-text"><i class="fa-solid fa-arrow-down"></i> Press Down to Trace</p>
+    </section>
+    <section>
+        <h4>1. push(5)</h4>
+        <div class="box">
+            <p>Stack: <code>[5]</code></p>
+        </div>
+    </section>
+    <section>
+        <h4>2. push(8)</h4>
+        <div class="box">
+            <p>Stack: <code>[5, 8]</code> (8 is top)</p>
+        </div>
+    </section>
+    <section>
+        <h4>3. pop()</h4>
+        <div class="box">
+            <p>Removes top (8).</p>
+            <p>Stack: <code>[5]</code></p>
+        </div>
+    </section>
+    <section>
+        <h4>4. push(3)</h4>
+        <div class="box-blue">
+            <p>Adds 3 to top.</p>
+            <p><strong>Final Stack:</strong> <code>[5, 3]</code></p>
+        </div>
+    </section>
+</section>
+
+<!-- 9. TRACING A QUEUE -->
+<section>
+    <section>
+        <h3>Tracing a Queue</h3>
+        <p>Linear Queue: Join back, Leave front.</p>
+        <div class="box-green">
+            <pre><code class="python">q = Queue()
+q.enqueue("A")
+q.enqueue("B")
+q.dequeue()
+q.enqueue("C")</code></pre>
+        </div>
+        <p class="small-text"><i class="fa-solid fa-arrow-down"></i> Press Down to Trace</p>
+    </section>
+    <section>
+        <h4>1. enqueue("A")</h4>
+        <div class="box">
+            <p>Queue: <code>[A]</code></p>
+        </div>
+    </section>
+    <section>
+        <h4>2. enqueue("B")</h4>
+        <div class="box">
+            <p>Queue: <code>[A, B]</code></p>
+        </div>
+    </section>
+    <section>
+        <h4>3. dequeue()</h4>
+        <div class="box">
+            <p>Removes front ("A").</p>
+            <p>Queue: <code>[B]</code></p>
+        </div>
+    </section>
+    <section>
+        <h4>4. enqueue("C")</h4>
+        <div class="box-green">
+            <p>Adds to back ("C").</p>
+            <p><strong>Final Queue:</strong> <code>[B, C]</code></p>
+        </div>
+    </section>
+</section>
+
+<!-- 10. STATIC VS DYNAMIC -->
+<section>
+    <h3>Static vs Dynamic</h3>
+    <div class="cols">
+        <div class="box-blue">
+            <h4>Static (The Bus)</h4>
+            <p><strong>Fixed Seats.</strong></p>
+            <p>Once built, you can't add more seats. Fast to find your seat (index).</p>
+            <p class="small-text">Example: Array</p>
+        </div>
+        <div class="box-green">
+            <h4>Dynamic (The Train)</h4>
+            <p><strong>Add Carriages.</strong></p>
+            <p>Can grow as needed. Harder to walk to the back.</p>
+            <p class="small-text">Example: Linked List / Python List</p>
+        </div>
+    </div>
+</section>
+
+<!-- 11. QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check</h3>
+    <div class="box">
+        <p class="fragment"><strong>State</strong> the access order for a Stack.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>LIFO</strong> — Last In, First Out</p>
+    </div>
+    <div class="box" style="margin-top:1rem;">
+        <p class="fragment"><strong>State</strong> the access order for a Queue.</p>
+    </div>
+    <div class="fragment box-blue">
+        <p><strong>FIFO</strong> — First In, First Out</p>
+    </div>
+</section>
+
+<!-- 12. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Arrays always start indexing at 1.</p>
+            <p class="fragment"><strong>B.</strong> A static data structure cannot change size after creation.</p>
+            <p class="fragment"><strong>C.</strong> <code>pop()</code> removes from the bottom of a stack.</p>
+            <p class="fragment"><strong>D.</strong> A 2D array uses [row][column] indexing.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top: 0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Arrays index from 0 in most languages.</p>
+            <p class="fragment"><strong>B: True.</strong> Static structures have fixed size at creation.</p>
+            <p class="fragment"><strong>C: False.</strong> <code>pop()</code> removes from the TOP (LIFO).</p>
+            <p class="fragment"><strong>D: True.</strong> Row first, then column.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 13. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color: white;">Key Takeaways</h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color: white;">
+        <ul style="line-height:1.5;">
+            <li><strong>Arrays</strong> store multiple values under one identifier; index from <strong>0</strong>.</li>
+            <li><strong>2D arrays</strong> are grids: <code>[row][column]</code>.</li>
+            <li><strong>Stacks</strong> = LIFO (push/pop); <strong>Queues</strong> = FIFO (enqueue/dequeue).</li>
+            <li><strong>Static</strong> = fixed size; <strong>Dynamic</strong> = can grow/shrink.</li>
+            <li><strong>Parallel arrays</strong> link related data by index position.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color: white;">
+        <p><strong>Coming up:</strong> B2.3 Programming Constructs — selection and iteration.</p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body>
+
+</html>

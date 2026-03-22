@@ -72,6 +72,29 @@
                     <i class="fa-solid fa-layer-group" aria-hidden="true"></i> Revision
                 </a></li>
                 {% endif %}
+                {% if realResources and realResources.length %}
+                <li class="sidebar-separator"></li>
+                {% for item in realResources %}
+                <li><a href="{{ item.href }}" class="sidebar-link sidebar-link--subtopic">
+                    <span class="sidebar-link-number">{{ item.number }}</span> {{ item.name }}
+                </a></li>
+                {% endfor %}
+                {% endif %}
+                {% if realResourcesSecondary and realResourcesSecondary.length %}
+                <li class="sidebar-separator"></li>
+                {% for item in realResourcesSecondary %}
+                {% if item.disabled %}
+                <li><span class="sidebar-link sidebar-link--disabled">
+                    {% if item.icon %}<i class="{{ item.icon }}" aria-hidden="true"></i> {% endif %}{{ item.name }}
+                    <span class="sidebar-link-soon">Soon</span>
+                </span></li>
+                {% else %}
+                <li><a href="{{ item.href }}" class="sidebar-link">
+                    {% if item.icon %}<i class="{{ item.icon }}" aria-hidden="true"></i> {% endif %}{{ item.name }}
+                </a></li>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
             </ul>
         </aside>
         <div class="arcade-sections">
@@ -115,7 +138,7 @@
                     </div>
                 {% endif %}
 
-                {% if specification.subtopics and specification.subtopics.length %}
+                {% if specification.subtopics and specification.subtopics.length and not specification.hideSubtopicPills %}
                     <div class="content-box igcse-spec-subtopics">
                         <h3 class="content-title"><i class="fa-solid fa-list-check"></i> Subtopic Focus</h3>
                         <div class="igcse-spec-pills">

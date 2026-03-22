@@ -36,8 +36,7 @@ const fallbackSourcePath = Astro.url.pathname.endsWith('/')
   : Astro.url.pathname;
 const baseHref = resolveBaseHref(routePath || fallbackSourcePath);
 
-const resizeScript = `
-  <script>
+const resizeScript = '<scr' + 'ipt>\n' + `
     (() => {
       const cleanupLegacyChrome = () => {
         const removeSelectors = [
@@ -104,8 +103,7 @@ const resizeScript = `
 
       setInterval(sendHeight, 1200);
     })();
-  <\/script>
-`;
+` + '\n</scr' + 'ipt>';
 
 const injectedStyles = `
   <style>

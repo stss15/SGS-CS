@@ -1,62 +1,27 @@
 ---
-import ToolShell from '../../../../layouts/ToolShell.astro';
-import SqlPlaygroundApp from '../../../../components/SqlPlaygroundApp.astro';
-import {
-  getIb2027UnitIndexData,
-  getIb2027UnitStaticPaths,
-  getIb2027UnitPlanData
-} from '../../../../lib/ib2027-routes';
+/**
+ * Redirect: /ib-2027/{sl,hl}/unit-N/sql-playground.html → /tools/sql-playground.html
+ */
 
-interface SqlPlaygroundRouteProps {
-  level: 'sl' | 'hl';
-  unitNumber: number;
+export function getStaticPaths() {
+  const SL_UNITS = ['unit-1','unit-2','unit-3','unit-4','unit-5','unit-6','unit-7','unit-8','unit-9','unit-10','unit-11','unit-12'];
+  const HL_UNITS = ['unit-1','unit-2','unit-3','unit-4','unit-5','unit-6','unit-7','unit-8','unit-9','unit-10','unit-11'];
+  return [
+    ...SL_UNITS.map(unit => ({ params: { level: 'sl', unit } })),
+    ...HL_UNITS.map(unit => ({ params: { level: 'hl', unit } }))
+  ];
 }
-
-export async function getStaticPaths() {
-  const sqlPlaygroundPattern = /\/tools\/sql-playground\.html(?:[?#]|$)/i;
-  const unitPaths = await getIb2027UnitStaticPaths();
-  const matches = await Promise.all(
-    unitPaths.map(async (entry: Awaited<ReturnType<typeof getIb2027UnitStaticPaths>>[number]) => {
-      const level = entry.props.level;
-      const unitNumber = entry.props.unitNumber;
-      const unitIndex = await getIb2027UnitIndexData(level, unitNumber);
-      const resources = [
-        ...(unitIndex.resources || []),
-        ...(unitIndex.studentActivitiesResources || []),
-        ...(unitIndex.resourcesSecondary || [])
-      ];
-
-      if (!resources.some((resource) => sqlPlaygroundPattern.test(String(resource.href || '')))) {
-        return null;
-      }
-
-      return {
-        params: entry.params,
-        props: {
-          level,
-          unitNumber
-        }
-      };
-    })
-  );
-
-  return matches.flatMap((entry) => (entry ? [entry] : []));
-}
-
-const { level, unitNumber } = Astro.props as SqlPlaygroundRouteProps;
-const unitPlan = await getIb2027UnitPlanData(level, unitNumber);
-const title = `SQL Playground | ${level.toUpperCase()} Unit ${unitNumber}`;
-const description = `SQL workspace for ${unitPlan.unitName}.`;
 ---
 
-<ToolShell
-  title={title}
-  description={description}
-  activeSection="ib"
-  extraStyles={[
-    'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css',
-    'css/tool-sql-playground.css'
-  ]}
->
-  <SqlPlaygroundApp />
-</ToolShell>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0;url=/tools/sql-playground.html">
+  <title>Redirecting</title>
+  <link rel="canonical" href="/tools/sql-playground.html">
+</head>
+<body>
+  <p>This page has moved. <a href="/tools/sql-playground.html">Go to SQL Playground</a>.</p>
+</body>
+</html>

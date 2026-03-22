@@ -201,6 +201,7 @@ const buildSectionGroup = (
     sequence?: boolean;
     open?: boolean;
     collapsible?: boolean;
+    divider?: boolean;
     icon?: string;
     allowEmpty?: boolean;
   } = {}
@@ -217,6 +218,7 @@ const buildSectionGroup = (
     sequence: options.sequence,
     open: options.open,
     collapsible: options.collapsible,
+    divider: options.divider,
     icon: options.icon
   };
 };
@@ -815,7 +817,7 @@ const buildIbCourseGroups = async (): Promise<ShellNavGroup[]> => {
       id: section.title.toLowerCase().replace(/\s+/g, '-'),
       label: isAssessment ? 'Assessment' : `${section.title}: ${section.subtitle}`,
       courseLevel: true,
-      open: true,
+      collapsible: false,
       items: (section.items || []).map((item: any) => ({
         label: `${item.number} ${item.name}`,
         href: ensureAbsoluteHref(basePath, item.href),
@@ -880,13 +882,12 @@ const buildIbLocalGroups = async (
 
   const subtopicGroup = buildSectionGroup('subtopics', 'Subtopics', subtopicItems, {
     sequence: true,
-    open: true
+    collapsible: false
   });
 
-  // Build resource links (textbook, specification, student resources)
+  // Build resource links — always show Textbook (active if exists), plus greyed-out items
   const resourceItems: ShellNavItem[] = [];
 
-  // Textbook
   const textbookPath = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/textbook.njk`);
   if (existsSync(textbookPath)) {
     resourceItems.push({
@@ -896,28 +897,16 @@ const buildIbLocalGroups = async (
     });
   }
 
-  // Specification
-  const specPath = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/specification.njk`);
-  if (existsSync(specPath)) {
-    resourceItems.push({
-      label: 'Specification',
-      href: `${unitBasePath}/specification.html`,
-      icon: 'fa-solid fa-clipboard-list'
-    });
-  }
-
-  // Student resources
-  const studentResourcesPath = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/student-resources.njk`);
-  if (existsSync(studentResourcesPath)) {
-    resourceItems.push({
-      label: 'Student Resources',
-      href: `${unitBasePath}/student-resources.html`,
-      icon: 'fa-solid fa-graduation-cap'
-    });
-  }
+  // Always show these as disabled/coming-soon
+  resourceItems.push(
+    { label: 'Homework', href: '#', icon: 'fa-solid fa-house', disabled: true },
+    { label: 'Revision', href: '#', icon: 'fa-solid fa-layer-group', disabled: true },
+    { label: 'Assessment', href: '#', icon: 'fa-solid fa-file-pen', disabled: true }
+  );
 
   const resourceGroup = buildSectionGroup('unit-resources', 'Resources', resourceItems, {
-    open: currentPath.includes('/textbook') || currentPath.includes('/specification')
+    collapsible: false,
+    divider: true
   });
 
   // Special route groups (OOP project, SQL worksheets, scenarios)
@@ -967,6 +956,67 @@ const buildIbLocalGroups = async (
   ].filter((group): group is ShellNavGroup => Boolean(group));
 };
 
+const buildIbSubtopicGroups = async (
+  unitCode: string,
+  subtopicCode: string,
+  currentPath: string
+): Promise<ShellNavGroup[]> => {
+  const subtopicBasePath = `/ib-2027/${unitCode}/${subtopicCode}`;
+
+  // Overview — link to subtopic index
+  const overviewGroup = buildSectionGroup('subtopic-overview', 'Overview', [
+    { label: 'Overview', href: `${subtopicBasePath}/index.html` }
+  ], { sequence: true, open: true, collapsible: false });
+
+  // Lessons — slide decks from public/
+  const slidesDir = path.join(repoRoot, `public/ib-2027/${unitCode}/${subtopicCode}/slides`);
+  const slideItems: ShellNavItem[] = [];
+  if (existsSync(slidesDir)) {
+    const entries = await readdir(slidesDir);
+    entries
+      .filter((e) => e.endsWith('.html'))
+      .sort()
+      .forEach((e) => {
+        const name = e
+          .replace('.html', '')
+          .replace(/_/g, ' ')
+          .replace(/^[AB]\d\.\d\s*/i, '');
+        slideItems.push({
+          label: name,
+          href: `${subtopicBasePath}/slides/${e}`
+        });
+      });
+  }
+  const lessonsGroup = buildSectionGroup('subtopic-lessons', 'Lessons', slideItems, {
+    open: currentPath.includes('/slides'),
+    allowEmpty: true
+  });
+
+  // Activities — OOP project, SQL worksheets, scenarios, etc.
+  const activityItems: ShellNavItem[] = [];
+  const activityPatterns = ['oop-project', 'sql-worksheets', 'sql-project', 'nosql-project', 'scenarios', 'design-patterns'];
+  for (const pattern of activityPatterns) {
+    const activityDir = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/${subtopicCode}/${pattern}`);
+    if (!existsSync(activityDir)) continue;
+    const links = await readDirectoryLinks(activityDir, `${subtopicBasePath}/${pattern}`);
+    activityItems.push(...links.filter((link) => !link.href.includes('/teacher/')));
+  }
+  // Also check unit-level activities (e.g. A3/sql-worksheets)
+  for (const pattern of activityPatterns) {
+    const unitActivityDir = path.join(repoRoot, `src/pages/ib-2027/${unitCode}/${pattern}`);
+    if (!existsSync(unitActivityDir)) continue;
+    const links = await readDirectoryLinks(unitActivityDir, `/ib-2027/${unitCode}/${pattern}`);
+    activityItems.push(...links.filter((link) => !link.href.includes('/teacher/')));
+  }
+  const activitiesGroup = buildSectionGroup('subtopic-activities', 'Activities', activityItems, {
+    open: activityPatterns.some((p) => currentPath.includes(`/${p}`)),
+    allowEmpty: true
+  });
+
+  return [overviewGroup, lessonsGroup, activitiesGroup]
+    .filter((group): group is ShellNavGroup => Boolean(group));
+};
+
 const buildIbShell = async (pathname: string): Promise<{
   shellContext: ShellContext;
   layoutMode: ShellMode;
@@ -975,10 +1025,10 @@ const buildIbShell = async (pathname: string): Promise<{
   nextLink?: ShellPageLink;
 }> => {
   const routeParts = getIbRouteParts(pathname);
-  const courseGroups = await buildIbCourseGroups();
 
   // Landing page or unrecognised IB path — show just course groups
   if (!routeParts) {
+    const courseGroups = await buildIbCourseGroups();
     return {
       shellContext: {
         title: 'IB Computer Science',
@@ -989,10 +1039,12 @@ const buildIbShell = async (pathname: string): Promise<{
     };
   }
 
-  // Unit page (e.g. /ib-2027/A1/ or /ib-2027/B2/B2.3/slides/...)
   const currentPath = normalizeShellPath(pathname);
-  const localGroups = await buildIbLocalGroups(routeParts.unitCode, currentPath);
-  const { prevLink, nextLink } = buildPrevNextLinks(localGroups, currentPath);
+
+  // Subtopic page gets its own sidebar groups; unit page uses the standard local groups
+  const localGroups = routeParts.subtopic
+    ? await buildIbSubtopicGroups(routeParts.unitCode, routeParts.subtopic, currentPath)
+    : await buildIbLocalGroups(routeParts.unitCode, currentPath);
   const currentLocation = findCurrentLocation(localGroups, currentPath);
 
   const layoutMode: ShellMode = /textbook/i.test(currentPath)
@@ -1023,14 +1075,12 @@ const buildIbShell = async (pathname: string): Promise<{
 
   return {
     shellContext: {
-      title: routeParts.unitCode,
+      title: routeParts.subtopic || routeParts.unitCode,
       meta: undefined,
-      groups: [...localGroups, ...courseGroups]
+      groups: localGroups
     },
     layoutMode,
-    breadcrumbs,
-    prevLink,
-    nextLink
+    breadcrumbs
   };
 };
 

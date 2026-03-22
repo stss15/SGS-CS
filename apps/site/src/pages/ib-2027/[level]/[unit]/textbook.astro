@@ -1,58 +1,42 @@
 ---
-import { getCollection, render } from 'astro:content';
-import ReaderShell from '../../../../layouts/ReaderShell.astro';
-import { buildSyllabusRows } from '../../../../lib/ib2027-unit-index';
-import {
-  buildIb2027UnitBreadcrumbs,
-  getIb2027LevelLabel,
-  getIb2027UnitPlanData,
-  getIb2027UnitStaticPaths
-} from '../../../../lib/ib2027-routes';
+/**
+ * Redirect: /ib-2027/{sl,hl}/unit-N/textbook → /ib-2027/{target}/textbook.html
+ */
 
-type Level = 'sl' | 'hl';
-
-interface TextbookPathProps {
-  level: Level;
-  unitNumber: number;
+export function getStaticPaths() {
+  const SL: Record<string, string> = {
+    'unit-1': 'B1', 'unit-2': 'B2', 'unit-3': 'B2', 'unit-4': 'B2',
+    'unit-5': 'B3', 'unit-6': 'A3', 'unit-7': 'A4', 'unit-8': 'ia',
+    'unit-9': 'A1', 'unit-10': 'A1', 'unit-11': 'A2', 'unit-12': 'case-study'
+  };
+  const HL: Record<string, string> = {
+    'unit-1': 'A1', 'unit-2': 'A1', 'unit-3': 'B2', 'unit-4': 'B3',
+    'unit-5': 'A3', 'unit-6': 'B4', 'unit-7': 'A4', 'unit-8': 'A4',
+    'unit-9': 'A4', 'unit-10': 'case-study', 'unit-11': 'A2'
+  };
+  const paths: Array<{ params: { level: string; unit: string }; props: { target: string } }> = [];
+  for (const [unit, target] of Object.entries(SL)) {
+    paths.push({ params: { level: 'sl', unit }, props: { target } });
+  }
+  for (const [unit, target] of Object.entries(HL)) {
+    paths.push({ params: { level: 'hl', unit }, props: { target } });
+  }
+  return paths;
 }
 
-export async function getStaticPaths() {
-  return getIb2027UnitStaticPaths();
-}
-
-const { level, unitNumber } = Astro.props as TextbookPathProps;
-const unitPlan = await getIb2027UnitPlanData(level, unitNumber);
-const syllabusRows = buildSyllabusRows(unitPlan);
-const levelLabel = level.toUpperCase();
-const textbookEntry = (
-  await getCollection('ib-textbooks', ({ data }) => data.level === level && data.unitNumber === unitNumber)
-)[0];
-const textbookRendered = textbookEntry ? await render(textbookEntry) : null;
-const TextbookContent = textbookRendered?.Content;
+const { target } = Astro.props as { target: string };
+const redirectUrl = `/ib-2027/${target}/textbook.html`;
 ---
 
-<ReaderShell
-  title={`${levelLabel} Unit ${unitPlan.unitNumber}: ${unitPlan.unitName}`}
-  description={`IB Computer Science ${levelLabel} Unit ${unitPlan.unitNumber} reading mode.`}
-  activeSection="ib"
-  breadcrumbs={buildIb2027UnitBreadcrumbs(level, unitPlan.unitNumber, 'Textbook')}
-  kicker={`IB CS · ${getIb2027LevelLabel(level)} · Unit ${unitPlan.unitNumber}`}
-  heading={`Unit ${unitPlan.unitNumber}: ${unitPlan.unitName}`}
->
-  {TextbookContent ? (
-    <>
-      <TextbookContent />
-    </>
-  ) : (
-    <>
-      <h2>Chapters</h2>
-      <ul>
-        {syllabusRows.map((row) => (
-          <li>
-            <strong>{row.code}</strong> {row.topic}
-          </li>
-        ))}
-      </ul>
-    </>
-  )}
-</ReaderShell>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content={`0;url=${redirectUrl}`}>
+  <title>Redirecting</title>
+  <link rel="canonical" href={redirectUrl}>
+</head>
+<body>
+  <p>This page has moved. <a href={redirectUrl}>Go to new location</a>.</p>
+</body>
+</html>

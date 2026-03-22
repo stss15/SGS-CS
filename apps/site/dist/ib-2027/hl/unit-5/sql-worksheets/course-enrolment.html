@@ -1,0 +1,598 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1: Course Enrolment Reporting | HL SQL</title>
+    <meta name="description" content="Higher Level SQL worksheet focused on aggregate functions and grouped reporting.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/sql-worksheet.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/hl/index.html">HL</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/hl/unit-5/index.html">Unit 5</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html">SQL Worksheets</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Course Enrolment Reporting</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 1 | HL Focus</p>
+            <h1 class="sql-sheet-title">Course Enrolment Reporting</h1>
+            <p class="sql-sheet-summary">
+                This worksheet is only about the HL aggregate content. Use the prepared course enrolment
+                dataset to write grouped queries with <code>COUNT</code>, <code>AVG</code>,
+                <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>GROUP BY</code>, and
+                <code>HAVING</code>.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">COUNT</span>
+                <span class="sql-chip">AVG</span>
+                <span class="sql-chip">SUM</span>
+                <span class="sql-chip">MAX</span>
+                <span class="sql-chip">MIN</span>
+                <span class="sql-chip">HAVING</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=course-enrolment" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open HL Dataset
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/hl/unit-5/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All HL SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-meta-strip">
+        <div class="sql-meta-cell">
+            <h2>Dataset</h2>
+            <ul>
+                <li>4 linked tables with 36 enrollment rows</li>
+                <li>Enough data for grouped summaries by department, course, level, and semester</li>
+                <li>Designed for reporting queries rather than basic retrieval practice</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>HL Focus</h2>
+            <ul>
+                <li>A3.3.4 aggregate functions on grouped data</li>
+                <li>Reporting and decision-making from summarized results</li>
+                <li>Choosing the right grouping column and threshold</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Assume the SL query skills are already secure.</li>
+                <li>Focus on what each group represents before writing the SQL.</li>
+                <li>Remember: <code>WHERE</code> filters rows and <code>HAVING</code> filters groups.</li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Count the Groups</h2>
+                <p>Start with row counts so you can see how the data is distributed.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — COUNT and GROUP BY</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Count rows in each group
+SELECT group_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY group_column;
+
+-- Count after a join
+SELECT category_column, COUNT(*) AS row_count
+FROM first_table AS a
+JOIN second_table AS b
+    ON a.primary_key = b.foreign_key
+GROUP BY category_column
+ORDER BY row_count DESC;</code></pre>
+                <p><code>GROUP BY</code> creates one summary row per group. <code>COUNT(*)</code> tells you how many source rows ended up in each summary.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">COUNT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Count how many courses each department offers.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">COUNT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Count how many enrollment rows each course has.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">COUNT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Count how many enrollment rows fall in each semester.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Average, Total, Highest, and Lowest</h2>
+                <p>Move from raw counts into richer summary measures.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — AVG, SUM, MAX, MIN</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Average a numeric value in each group
+SELECT group_column, AVG(number_column) AS average_value
+FROM table_name
+GROUP BY group_column;
+
+-- Add up a numeric value in each group
+SELECT group_column, SUM(number_column) AS total_value
+FROM table_name
+GROUP BY group_column;
+
+-- Find the largest and smallest value in each group
+SELECT group_column,
+       MAX(number_column) AS highest_value,
+       MIN(number_column) AS lowest_value
+FROM table_name
+GROUP BY group_column;</code></pre>
+                <p>Aggregate functions collapse many rows into one summary. Choose the grouping column first, then decide which measure helps answer the reporting question.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">AVG</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Calculate the average score for each department.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">AVG</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Calculate the average score for each course.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">SUM</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Sum the course credits by level so you end up with one total for <code>SL</code> and one total for <code>HL</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">MAX / MIN</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return the maximum and minimum score in each course.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Filter Groups with HAVING</h2>
+                <p>Now add thresholds to the grouped results.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — HAVING after aggregation</summary>
+            <div class="sql-syntax-body">
+                <pre><code>-- Keep only the groups that meet a threshold
+SELECT group_column, COUNT(*) AS row_count
+FROM table_name
+GROUP BY group_column
+HAVING COUNT(*) >= 4;
+
+-- HAVING can also test averages or totals
+SELECT group_column, AVG(score_column) AS average_score
+FROM table_name
+GROUP BY group_column
+HAVING AVG(score_column) > 85
+ORDER BY average_score DESC;</code></pre>
+                <p><code>HAVING</code> is for group-level conditions. If the condition is about the summary, it belongs after <code>GROUP BY</code>, not in <code>WHERE</code>.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">HAVING</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show only departments with at least <code>9</code> enrollment rows.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">HAVING</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return only courses whose average score is above <code>85</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">Report query</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Produce a department report showing department name, enrollment count, and rounded average score, ordered from highest average to lowest.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">Decision-making</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Write one sentence explaining how a head of department could use your final report to support a planning decision.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-answers-gate" data-answer-gate="dGVhY2hlcjE=">
+        <div class="sql-answers-lock" data-answer-lock>
+            <div class="sql-answers-lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <h2>Teacher Answers</h2>
+            <p>Enter the teacher password to reveal model answers for this worksheet.</p>
+            <div class="sql-answers-lock-row">
+                <input type="password" placeholder="Password…" autocomplete="off" data-answer-input>
+                <button type="button" data-answer-button>Unlock</button>
+            </div>
+            <p class="sql-answers-err" data-answer-error></p>
+        </div>
+        <div class="sql-answers-content" data-answer-content hidden>
+            <h2><i class="fa-solid fa-unlock"></i> Model Answers — Course Enrolment Reporting</h2>
+
+            <h3>Section 1</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">1</span>
+                <div class="sql-answer-body">
+                    <strong>Example count query</strong>
+                    <pre><code>SELECT d.DepartmentName, COUNT(*) AS CourseCount
+FROM COURSE AS c
+JOIN DEPARTMENT AS d
+    ON c.DepartmentID = d.DepartmentID
+GROUP BY d.DepartmentName
+ORDER BY d.DepartmentName;</code></pre>
+                </div>
+            </div>
+
+            <h3>Section 2</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">2</span>
+                <div class="sql-answer-body">
+                    <strong>Average and total examples</strong>
+                    <pre><code>SELECT d.DepartmentName, ROUND(AVG(e.Score), 1) AS AverageScore
+FROM ENROLLMENT AS e
+JOIN COURSE AS c
+    ON e.CourseID = c.CourseID
+JOIN DEPARTMENT AS d
+    ON c.DepartmentID = d.DepartmentID
+GROUP BY d.DepartmentName;
+
+SELECT Level, SUM(Credits) AS TotalCredits
+FROM COURSE
+GROUP BY Level;</code></pre>
+                </div>
+            </div>
+
+            <h3>Section 3</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">3</span>
+                <div class="sql-answer-body">
+                    <strong>HAVING example</strong>
+                    <pre><code>SELECT d.DepartmentName, COUNT(*) AS EnrollmentCount
+FROM ENROLLMENT AS e
+JOIN COURSE AS c
+    ON e.CourseID = c.CourseID
+JOIN DEPARTMENT AS d
+    ON c.DepartmentID = d.DepartmentID
+GROUP BY d.DepartmentName
+HAVING COUNT(*) >= 9
+ORDER BY EnrollmentCount DESC;</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html"><i class="fa-solid fa-arrow-left"></i> HL SQL worksheet hub</a>
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/house-competition.html">Next: Build the House Competition Database <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+            
+        
+            
+                <script src="/js/sql-worksheet.js"></script>
+            
+        
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,506 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level D: Making Things Happen - Item Use | OOP Project</title>
+    <meta name="description" content="Implement item interactions with conditional logic and method integration.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/oop-worksheet.css">
+            
+        
+            
+                <link rel="stylesheet" href="/css/sigma7-map.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B3/index.html">B3</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B3/B3.1/index.html">B3.1</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/B3/B3.1/oop-project/index.html">OOP Project</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Level D</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            
+<!-- HERO SECTION -->
+<div class="oop-hero">
+    <img src="../../../../ib-2027/sl/unit-5/OOP%20Project/images/level_d_hero.png" alt="Using items in a space station" class="oop-hero-image" decoding="async">
+    <div class="oop-hero-overlay">
+        <span class="oop-hero-level">Level D</span>
+        <h1 class="oop-hero-title">Making Things Happen: Item Use</h1>
+        <p class="oop-hero-subtitle">Add conditional logic to make items interactive</p>
+    </div>
+</div>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <h2 class="oop-section-title">What You'll Learn</h2>
+    </div>
+    
+    <div class="objectives-grid">
+        <div class="objective-card">
+            <span class="objective-number">1</span>
+            <span class="objective-text">Implement conditional logic for different item behaviours</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">2</span>
+            <span class="objective-text">Return descriptive strings based on outcomes</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">3</span>
+            <span class="objective-text">Integrate item use with healing</span>
+        </div>
+        <div class="objective-card">
+            <span class="objective-number">4</span>
+            <span class="objective-text">Handle edge cases and invalid inputs</span>
+        </div>
+    </div>
+</section>
+
+<!-- KEYWORDS -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-book"></i>
+        </div>
+        <h2 class="oop-section-title">Key Terms</h2>
+    </div>
+    
+    <div class="keywords-table">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Term</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="keyword-term">Conditional Logic</span></td>
+                    <td>Using if/elif/else to choose between actions</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Method Integration</span></td>
+                    <td>Calling other methods from within a method</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Consumable</span></td>
+                    <td>An item that is removed from inventory after use</td>
+                </tr>
+                <tr>
+                    <td><span class="keyword-term">Return Value</span></td>
+                    <td>The string result that describes what happened</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- UML DIAGRAM -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <h2 class="oop-section-title">New Methods</h2>
+    </div>
+    
+    <div class="uml-svg-container" style="max-width: 650px;">
+        <svg viewBox="0 0 600 90" class="uml-svg" preserveAspectRatio="xMidYMid meet">
+            <!-- Player Class Box -->
+            <rect x="20" y="10" width="250" height="70" class="uml-svg-class" rx="4" style="stroke: #28a745;"/>
+            <line x1="20" y1="40" x2="270" y2="40" style="stroke: #28a745;"/>
+            <text x="145" y="30" class="uml-svg-text title" style="fill: #28a745;">Player</text>
+            <text x="30" y="62" class="uml-svg-text method"><tspan fill="#28a745">+</tspan> use_item(item_id, target) → str</text>
+            
+            <!-- Inventory Class Box -->
+            <rect x="330" y="10" width="250" height="70" class="uml-svg-class" rx="4" style="stroke: #28a745;"/>
+            <line x1="330" y1="40" x2="580" y2="40" style="stroke: #28a745;"/>
+            <text x="455" y="30" class="uml-svg-text title" style="fill: #28a745;">Inventory</text>
+            <text x="340" y="62" class="uml-svg-text method"><tspan fill="#28a745">+</tspan> consume(item_id) → bool</text>
+        </svg>
+        
+        <div class="uml-legend" style="display: flex; justify-content: center; margin-top: 1rem;">
+            <div class="uml-legend-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: #28a745; font-weight: bold; border: 2px solid #28a745; padding: 0 6px; border-radius: 4px; font-size: 0.8rem;">NEW</span>
+                <span>Methods to add this level</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STRUCTURE GUIDE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-code"></i>
+        </div>
+        <h2 class="oop-section-title">Structure Guide</h2>
+    </div>
+    
+    <p class="section-intro">Click each section to expand. Add new methods to your existing classes.</p>
+    
+    <!-- 1. consume in Inventory -->
+    <details class="skeleton-block" open>
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">1</span>
+            <span class="skeleton-title">consume (in Inventory)</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-line code">METHOD consume(item_id) → boolean:</div>
+            <div class="skeleton-desc">
+                <strong>Purpose:</strong> Remove a consumable item from inventory<br><br>
+                Works the same as <code>remove()</code> — the engine decides what's consumable.
+            </div>
+        </div>
+    </details>
+    
+    <!-- 2. use_item -->
+    <details class="skeleton-block">
+        <summary class="skeleton-summary">
+            <span class="skeleton-step">2</span>
+            <span class="skeleton-title">use_item(item_id, target) → str</span>
+            <i class="fa-solid fa-chevron-down skeleton-chevron"></i>
+        </summary>
+        <div class="skeleton-content">
+            <div class="skeleton-desc">
+                <strong>Called when:</strong> Player types <code>use keycard</code> or <code>use med_patch self</code><br><br>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <thead>
+                        <tr style="background: #f1f3f5; border-bottom: 2px solid #dee2e6;">
+                            <th style="padding: 0.5rem; text-align: left;">Check / Item</th>
+                            <th style="padding: 0.5rem; text-align: left;">Action</th>
+                            <th style="padding: 0.5rem; text-align: left;">Return Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 0.5rem;">Item not in inventory</td>
+                            <td style="padding: 0.5rem;">—</td>
+                            <td style="padding: 0.5rem;"><code>"You don't have '{item_id}'."</code></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 0.5rem;"><code>med_patch</code> + <code>self</code></td>
+                            <td style="padding: 0.5rem;">heal(20), consume it</td>
+                            <td style="padding: 0.5rem;"><code>"You apply the med patch. +20 HP."</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;">Any other item</td>
+                            <td style="padding: 0.5rem;">—</td>
+                            <td style="padding: 0.5rem;"><code>"You use the {item_id} on the {target}."</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; color: #6c757d; font-size: 0.85rem;">
+                    <strong>Method integration:</strong> use_item calls <code>self.heal()</code> and <code>self.inventory.consume()</code> — methods working together.
+                </p>
+            </div>
+        </div>
+    </details>
+</section>
+
+<!-- STATION MAP -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-map"></i>
+        </div>
+        <h2 class="oop-section-title">Station Map</h2>
+    </div>
+    
+    <p class="section-intro">View the Sigma-7 station layout. Fog of war reveals as you progress through levels.</p>
+    
+    <button type="button" class="show-map-btn" data-sgs-onclick="sigma7Map.open()">
+        <i class="fa-solid fa-map"></i> Show Station Map
+    </button>
+</section>
+<script src="../../../../js/sigma7-map.js"></script>
+
+<!-- CHALLENGE -->
+<section class="oop-section">
+    <div class="oop-section-header">
+        <div class="oop-section-icon">
+            <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h2 class="oop-section-title">Your Mission</h2>
+    </div>
+    
+    <div class="challenge-box">
+        <div class="challenge-title">
+            <i class="fa-solid fa-terminal"></i>
+            Make Items Interactive
+        </div>
+        
+        <div class="challenge-description">
+            <p>The items in your inventory are useless unless you can do something with them.</p>
+            <p>Add <strong>consume()</strong> to Inventory and <strong>use_item()</strong> to Player.</p>
+        </div>
+        
+        <div class="challenge-actions">
+            <a href="../../../../ib-2027/sl/unit-5/OOP%20Project/downloads/level_d_item_use.zip" class="download-btn" download>
+                <i class="fa-solid fa-download"></i>
+                Download Level D Files
+            </a>
+            <code class="validate-command">python3 validate.py</code>
+        </div>
+    </div>
+</section>
+
+<!-- LEVEL NAVIGATION -->
+<nav class="level-nav">
+    <a href="level-c-inventory.html" class="level-nav-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Level C: Inventory
+    </a>
+    <a href="level-e-exploring.html" class="level-nav-btn">
+        Level E: Exploring
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+</nav>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+
+    <!-- data-sgs-inline-events -->
+    <script src="/js/legacy-inline-events.js"></script>
+</body>
+
+</html>

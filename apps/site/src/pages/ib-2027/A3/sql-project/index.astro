@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import IbProjectSequencePage from '../../../../components/IbProjectSequencePage.astro';
+import { getProjectStep, sqlProjectSequence } from '../../../../lib/ib-project-content';
+
+const currentStep = getProjectStep(sqlProjectSequence, '');
+---
+
+<BaseLayout
+  title={`${currentStep.title} | ${sqlProjectSequence.projectTitle}`}
+  description={currentStep.intro}
+  activeSection="ib"
+  extraStyles={[
+    'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark-reasonable.min.css',
+    'css/ib-project-sequence.css'
+  ]}
+>
+  <IbProjectSequencePage sequence={sqlProjectSequence} currentSlug="" />
+</BaseLayout>

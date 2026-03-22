@@ -1,0 +1,427 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B4.1 Fundamentals of ADTs (HL) | IB Computer Science</title>
+    <meta name="description" content="HL: Abstract data types, linked lists, BSTs, sets, and hash tables (including collisions and load factor).">
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../../../../css/slide-deck.css">
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body>
+    <a href="../index.html" id="back-btn" title="Back" class="back-nav">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+    </a>
+    <img src="../../../../images/Logo.png" id="sg-logo" alt="Logo"
+        data-fallback-src="https://via.placeholder.com/80/003366/ffffff?text=LOGO" decoding="async">
+    <div class="footer-text live-date" id="live-date-display"></div>
+    <div class="footer-text course-footer">IB Computer Science</div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+<!-- 1. TITLE SLIDE -->
+<section>
+    <div class="title-container">
+        <div class="title-line-top"></div>
+        <div>
+            <h1 class="main-title">B4.1 Fundamentals of ADTs <span class="hl-badge">HL</span></h1>
+            <h3 class="sub-title">Topic B4: Abstract Data Types | Structure = Speed</h3>
+        </div>
+        <div class="title-line-bottom"></div>
+    </div>
+</section>
+
+<!-- 2. RETRIEVAL PRACTICE -->
+<section>
+    <section data-background="#e6f0fa">
+        <h3><i class="fa-solid fa-brain"></i> Retrieval Practice</h3>
+        <div class="box-blue">
+            <p class="small-text" style="margin:0;">Recall B2 concepts before we go deeper.</p>
+        </div>
+        <ol style="font-size:1.1em; line-height:1.6; margin-top:1rem;">
+            <li>What is the access pattern of a stack?</li>
+            <li>What is the time complexity of binary search?</li>
+            <li>What does Big O notation measure?</li>
+        </ol>
+        <p class="small-text" style="margin-top: 20px; color: #666;">
+            <i class="fa-solid fa-arrow-down"></i> Press Down for answers
+        </p>
+    </section>
+    <section>
+        <h3>Answer 1</h3>
+        <div class="question-box">What is the access pattern of a stack?</div>
+        <div class="fragment box-blue"><p><strong>LIFO</strong> — Last In, First Out</p></div>
+    </section>
+    <section>
+        <h3>Answer 2</h3>
+        <div class="question-box">What is the time complexity of binary search?</div>
+        <div class="fragment box-blue"><p><strong>O(log n)</strong> — logarithmic time</p></div>
+    </section>
+    <section>
+        <h3>Answer 3</h3>
+        <div class="question-box">What does Big O notation measure?</div>
+        <div class="fragment box-blue"><p>The <strong>worst-case growth rate</strong> of time or space as input size increases.</p></div>
+    </section>
+</section>
+
+<!-- 3. THE HOOK (R-STACK) -->
+<section>
+    <h2>The Big Question <span class="hl-badge">HL</span></h2>
+    <div class="r-stack">
+        <div class="fragment fade-in-then-out">
+            <div class="question-box">
+                <p style="font-size:1.25em;">🤔 How can a website find a username in a database of <strong>millions</strong>…</p>
+                <p style="font-size:1.25em; margin-top:0.6em;">in a fraction of a second?</p>
+            </div>
+        </div>
+        <div class="fragment fade-in-then-out">
+            <div class="box" style="background:#ffebee;">
+                <p style="font-size:1.15em;"><strong>❌ Common misconception:</strong> "It's just faster computers."</p>
+                <p class="small-text">Hardware helps, but data structure choices often matter more.</p>
+            </div>
+        </div>
+        <div class="fragment fade-in">
+            <div class="box-blue">
+                <p style="font-size:1.15em;"><strong>✅ Reality:</strong> the right <strong>abstract data type</strong> can reduce work from O(n) to O(1) or O(log n).</p>
+                <p class="small-text">That's the difference between "scan everything" and "jump straight to it".</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. WHAT IS AN ADT? -->
+<section>
+    <h3><span class="hl-badge">HL</span> What is an <span class="keyword" data-def="A data type defined by its operations/behaviour, not by its implementation.">ADT</span>?</h3>
+    <div class="question-box">Why describe "what it does" separately from "how it's built"?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">An ADT is defined by its <span class="keyword" data-def="The set of operations a data structure provides.">interface</span> (operations).</p>
+            <p class="fragment">You can change the <span class="keyword" data-def="The internal way a data structure is built.">implementation</span> without changing how users interact with it.</p>
+            <p class="fragment">This is <span class="keyword" data-def="Hiding implementation details and exposing only essential features.">abstraction</span>.</p>
+        </div>
+        <div class="box-blue fragment">
+            <h4>Example: Set ADT</h4>
+<pre><code class="python"># Interface (what it does)
+set.add(item)
+set.remove(item)
+set.contains(item)
+
+# Implementation could be:
+# - Hash table (fast)
+# - Balanced tree (ordered)</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 5. LINKED LIST CONCEPT -->
+<section>
+    <h3><span class="hl-badge">HL</span> Linked Lists</h3>
+    <div class="question-box">What if you need a structure that can grow and shrink efficiently?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Collection of nodes connected by pointers.">linked list</span> is made of <span class="keyword" data-def="A unit storing data and pointer(s) to other nodes.">nodes</span>.</p>
+            <p class="fragment">Each node stores <strong>data</strong> + a <strong>pointer</strong> to the next node.</p>
+            <p class="fragment">The <span class="keyword" data-def="Pointer to the first node.">head</span> points to the first node.</p>
+        </div>
+        <div class="box-blue fragment">
+            <h4>Visual</h4>
+            <p style="font-family: monospace; font-size: 0.9em;">
+                head → [A|→] → [B|→] → [C|→] → None
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- 6. LINKED LIST CODE -->
+<section>
+    <h3><span class="hl-badge">HL</span> Linked List in Python</h3>
+    <div class="box-blue">
+<pre><code class="python">class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+    
+    def insert_at_head(self, data):
+        new_node = Node(data)
+        new_node.next = self.head  # Point to old head
+        self.head = new_node       # Update head</code></pre>
+    </div>
+    <div class="fragment box">
+        <p class="small-text"><strong>Key:</strong> Insertion at head is O(1) — no traversal needed!</p>
+    </div>
+</section>
+
+<!-- 7. LINKED LIST TYPES -->
+<section>
+    <section>
+        <h3><span class="hl-badge">HL</span> Types of Linked Lists</h3>
+        <div class="cols">
+            <div class="box">
+                <h4>Singly Linked</h4>
+                <p class="small-text">Each node points to <strong>next</strong> only.</p>
+                <p style="font-family: monospace; font-size: 0.8em;">A → B → C → None</p>
+            </div>
+            <div class="box-blue">
+                <h4>Doubly Linked</h4>
+                <p class="small-text">Each node has <strong>next</strong> and <strong>prev</strong> pointers.</p>
+                <p style="font-family: monospace; font-size: 0.8em;">None ← A ⇄ B ⇄ C → None</p>
+            </div>
+        </div>
+        <p class="small-text" style="margin-top:1rem;"><i class="fa-solid fa-arrow-down"></i> Press Down for Circular</p>
+    </section>
+    <section data-background="#f4f6f8">
+        <h3><span class="keyword" data-def="The tail node points back to the head.">Circular Linked List</span></h3>
+        <div class="box">
+            <p>Tail points back to head → continuous traversal.</p>
+            <p style="font-family: monospace;">A → B → C → (back to A)</p>
+        </div>
+        <div class="fragment box-blue">
+            <p><strong>Use case:</strong> Round-robin scheduling, circular buffers.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 8. LINKED LIST OPERATIONS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Linked List Complexity</h3>
+    <div class="box">
+        <table style="width:100%; font-size:0.85em;">
+            <tr>
+                <th>Operation</th>
+                <th>Time</th>
+                <th>Why?</th>
+            </tr>
+            <tr>
+                <td>Insert at head</td>
+                <td><strong>O(1)</strong></td>
+                <td>Just update head pointer</td>
+            </tr>
+            <tr>
+                <td>Insert at tail</td>
+                <td>O(n)</td>
+                <td>Must traverse to find tail</td>
+            </tr>
+            <tr>
+                <td>Search</td>
+                <td>O(n)</td>
+                <td>Must traverse node-by-node</td>
+            </tr>
+            <tr>
+                <td>Delete (with pointer)</td>
+                <td><strong>O(1)</strong></td>
+                <td>Just redirect pointers</td>
+            </tr>
+        </table>
+    </div>
+    <div class="fragment box-red">
+        <p class="small-text"><strong>Trade-off:</strong> No random access like arrays (<code>arr[5]</code>), but efficient insertion/deletion.</p>
+    </div>
+</section>
+
+<!-- 9. BST STRUCTURE -->
+<section>
+    <h3><span class="hl-badge">HL</span> Binary Search Trees (BSTs)</h3>
+    <div class="question-box">How can a tree make searching faster than O(n)?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Tree where left < node < right.">BST</span> organises data so:</p>
+            <p class="fragment"><strong>Left</strong> subtree &lt; node &lt; <strong>Right</strong> subtree</p>
+            <p class="fragment">Each comparison eliminates half the tree!</p>
+        </div>
+        <div class="box-blue fragment">
+            <h4>Example BST</h4>
+            <pre style="text-align:center; font-size:0.8em;">      8
+     / \
+    3   10
+   / \    \
+  1   6   14</pre>
+        </div>
+    </div>
+</section>
+
+<!-- 10. BST CODE -->
+<section>
+    <h3><span class="hl-badge">HL</span> BST Search in Python</h3>
+    <div class="box-blue">
+<pre><code class="python">class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def search_bst(root, target):
+    if root is None:
+        return False
+    if target == root.value:
+        return True
+    elif target < root.value:
+        return search_bst(root.left, target)
+    else:
+        return search_bst(root.right, target)</code></pre>
+    </div>
+    <div class="fragment box">
+        <p class="small-text"><strong>Complexity:</strong> O(log n) average, O(n) worst-case (if unbalanced).</p>
+    </div>
+</section>
+
+<!-- 11. HASH TABLES -->
+<section>
+    <h3><span class="hl-badge">HL</span> Hash Tables</h3>
+    <div class="question-box">How can we look up values in O(1) average time?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment">A <span class="keyword" data-def="Key–value structure using a hash function to map keys to indices.">hash table</span> converts keys to array indices.</p>
+            <p class="fragment">Key → <span class="keyword" data-def="Function that maps a key to an index.">hash function</span> → index → value</p>
+        </div>
+        <div class="box-blue fragment">
+<pre><code class="python"># Python dict is a hash table
+phonebook = {}
+phonebook["Alice"] = "555-1234"
+phonebook["Bob"] = "555-5678"
+
+# O(1) average lookup
+print(phonebook["Alice"])</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 12. COLLISIONS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Collisions &amp; Resolution</h3>
+    <div class="question-box">What if two keys hash to the same index?</div>
+    <div class="cols">
+        <div class="box">
+            <h4><span class="keyword" data-def="Store a list at each index.">Chaining</span></h4>
+            <p class="small-text fragment">Each slot holds a linked list.</p>
+            <p class="small-text fragment">Multiple items at same index.</p>
+        </div>
+        <div class="box-blue">
+            <h4><span class="keyword" data-def="Find another slot when collision occurs.">Open Addressing</span></h4>
+            <p class="small-text fragment">Probe for next empty slot.</p>
+            <p class="small-text fragment">Linear probing: check slot+1, +2, ...</p>
+        </div>
+    </div>
+    <div class="fragment box">
+        <p class="small-text"><span class="keyword" data-def="items ÷ table size — triggers rehashing when high.">Load factor</span> = items ÷ table size. When high, <span class="keyword" data-def="Resize table and redistribute items.">rehash</span> to restore O(1).</p>
+    </div>
+</section>
+
+<!-- 13. SETS -->
+<section>
+    <h3><span class="hl-badge">HL</span> Sets in Python</h3>
+    <div class="question-box">What makes a set different from a list?</div>
+    <div class="cols">
+        <div class="box">
+            <p class="fragment"><span class="keyword" data-def="Collection of unique elements.">Sets</span> contain <strong>unique</strong> elements only.</p>
+            <p class="fragment">No duplicates, no ordering.</p>
+        </div>
+        <div class="box-blue fragment">
+<pre><code class="python">A = {1, 2, 3}
+B = {3, 4}
+
+print(A | B)  # Union: {1, 2, 3, 4}
+print(A & B)  # Intersection: {3}
+print(A - B)  # Difference: {1, 2}
+print(3 in A) # Membership: True</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- 14. QUICK CHECK -->
+<section data-background="#fff3e0">
+    <h3>🧠 Quick Check <span class="hl-badge">HL</span></h3>
+    <div class="box">
+        <p class="fragment"><strong>1.</strong> What is the average time complexity of hash table lookup?</p>
+        <p class="fragment answer" style="color: var(--sg-blue);"><strong>O(1)</strong> — constant time</p>
+    </div>
+    <div class="box" style="margin-top:0.8rem;">
+        <p class="fragment"><strong>2.</strong> When would a BST degrade to O(n) search?</p>
+        <p class="fragment answer" style="color: var(--sg-blue);">When the tree is <strong>unbalanced</strong> (e.g., all nodes to one side)</p>
+    </div>
+</section>
+
+<!-- 15. MISCONCEPTION CHECK -->
+<section>
+    <section>
+        <h2><i class="fa-solid fa-check-double"></i> Misconception Check</h2>
+        <div class="box">
+            <p class="fragment"><strong>A.</strong> Linked lists allow O(1) random access like arrays.</p>
+            <p class="fragment"><strong>B.</strong> Hash table operations are always O(1).</p>
+            <p class="fragment"><strong>C.</strong> A balanced BST provides O(log n) search.</p>
+            <p class="fragment"><strong>D.</strong> Sets automatically remove duplicate elements.</p>
+        </div>
+        <p class="small-text" style="text-align:center; margin-top:0.6em;">
+            <i class="fa-solid fa-arrow-down blue"></i> <span class="blue">Press Down</span> for answers
+        </p>
+    </section>
+    <section data-background="#f4f6f8">
+        <h3>Answers</h3>
+        <div class="box">
+            <p class="fragment"><strong>A: False.</strong> Linked lists require O(n) traversal — no direct indexing.</p>
+            <p class="fragment"><strong>B: False.</strong> Collisions can degrade to O(n); average is O(1).</p>
+            <p class="fragment"><strong>C: True.</strong> Balanced trees halve search space each step.</p>
+            <p class="fragment"><strong>D: True.</strong> Sets enforce uniqueness by definition.</p>
+        </div>
+    </section>
+</section>
+
+<!-- 16. SUMMARY -->
+<section data-background="linear-gradient(135deg, #0E214B 0%, #1a3a7a 100%)">
+    <h2 style="color:white;">Key Takeaways <span class="hl-badge">HL</span></h2>
+    <div class="box" style="background: rgba(255,255,255,0.1); color:white;">
+        <ul style="line-height:1.4; font-size:0.9em;">
+            <li><strong>ADT</strong> = interface (what) vs implementation (how).</li>
+            <li><strong>Linked list</strong>: O(1) insert at head, O(n) search — dynamic size.</li>
+            <li><strong>BST</strong>: O(log n) operations when balanced.</li>
+            <li><strong>Hash table</strong>: O(1) average — handle collisions with chaining/probing.</li>
+            <li><strong>Set</strong>: unique elements, union/intersection/difference operations.</li>
+        </ul>
+    </div>
+    <div class="box" style="background: rgba(255,255,255,0.12); color:white;">
+        <p><strong>Exam tip:</strong> Always justify data structure choices with operation needs + complexity.</p>
+    </div>
+</section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script src="../../../../js/slide-deck.js"></script>
+    
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Compare the same task system in two shapes: a relational model and a document model. You are not picking favourites here; you are learning to justify trade-offs."><meta name="theme-color" content="#003165"><link rel="icon" type="image/png" href="/images/Logo.png"><link rel="apple-touch-icon" href="/images/Logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark-reasonable.min.css"><link rel="stylesheet" href="/css/ib-project-sequence.css"><title>SQL vs NoSQL Modelling Comparison | Parallel JSON Project</title><link rel="stylesheet" href="/_astro/index.B_1T9uxE.css"></head> <body class="site-body"> <a class="skip-link" href="#main-content">Skip to main content</a> <header class="site-header"> <div class="site-header-inner"> <a href="/index.html" class="site-brand" aria-label="SGS Education home"> <img src="/images/logo-mark.svg" alt="SGS Education logo" class="site-brand-logo" width="40" height="40" loading="eager" fetchpriority="high"> <span>SGS Education</span> </a> <div class="site-header-tools"> <nav class="site-primary-nav" aria-label="Main navigation"> <a href="/ks3/year7/index.html"> Year 7 </a><a href="/ks3/year8/index.html"> Year 8 </a><a href="/ks3/year9/index.html"> Year 9 </a><a href="/igcse/index.html"> IGCSE </a><a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </nav> <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div> <button class="site-mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-mobile-drawer"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line class="hamburger-top" x1="3" y1="6" x2="21" y2="6"></line> <line class="hamburger-mid" x1="3" y1="12" x2="21" y2="12"></line> <line class="hamburger-bot" x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </div> </header> <div class="site-mobile-drawer" id="site-mobile-drawer" hidden> <div class="site-mobile-drawer__overlay" data-close-drawer></div> <nav class="site-mobile-drawer__panel" aria-label="Mobile navigation"> <div class="site-mobile-drawer__header"> <span class="site-mobile-drawer__brand">SGS Education</span> <button class="site-mobile-drawer__close" type="button" aria-label="Close menu" data-close-drawer> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"> <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line> </svg> </button> </div> <ul class="site-mobile-drawer__links"> <li> <a href="/ks3/year7/index.html"> Year 7 </a> </li><li> <a href="/ks3/year8/index.html"> Year 8 </a> </li><li> <a href="/ks3/year9/index.html"> Year 9 </a> </li><li> <a href="/igcse/index.html"> IGCSE </a> </li><li> <a href="/ib-2027/index.html" class="active" aria-current="page"> IB </a> </li> </ul> </nav> </div> <script>
+  (() => {
+    const toggle = document.querySelector('.site-mobile-toggle');
+    const drawer = document.getElementById('site-mobile-drawer');
+    if (!toggle || !drawer) return;
+
+    const open = () => {
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      });
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      drawer.addEventListener('transitionend', () => {
+        if (!drawer.classList.contains('open')) drawer.hidden = true;
+      }, { once: true });
+    };
+
+    toggle.addEventListener('click', () => drawer.hidden ? open() : close());
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !drawer.hidden) close(); });
+  })();
+</script> <main id="main-content" class="page-shell page-shell--workspace page-shell--with-sidebar"> <input id="course-explorer-toggle" class="course-shell__toggle" type="checkbox" hidden> <aside class="course-shell__sidebar" id="course-shell-sidebar"> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn">&lsaquo;</button> <div id="course-explorer-ib-2027-A3-nosql-project-modelling-comparison" class="course-explorer"> <div class="course-explorer__header">  <div class="course-explorer__header-copy"> <p class="course-explorer__title">A3</p>  </div> </div> <div class="course-explorer__groups"> <div class="course-explorer__group course-explorer__group--direct"> <a href="/ib-2027/A3/index.html" class="course-explorer__direct-link">  <span class="course-explorer__entry-copy"> <span>Overview</span>  </span> </a> </div><div class="course-explorer__group course-explorer__group--heading"> <div class="course-explorer__heading-title"> <span class="course-explorer__entry-copy"> <span>Subtopics</span>  </span> </div> <ul> <li> <a href="/ib-2027/A3/A3.1/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>A3.1 Database Fundamentals</span>  </span> </span> </a> </li><li> <a href="/ib-2027/A3/A3.2/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>A3.2 Database Design</span>  </span> </span> </a> </li><li> <a href="/ib-2027/A3/A3.3/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>A3.3 Database Programming</span>  </span> </span> </a> </li><li> <a href="/ib-2027/A3/A3.4/index.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>A3.4 Alternative Databases and Data Warehouses</span>  </span> </span> </a> </li> </ul> </div><div class="course-explorer__group course-explorer__group--heading course-explorer__group--divider"> <div class="course-explorer__heading-title"> <span class="course-explorer__entry-copy"> <span>Resources</span>  </span> </div> <ul> <li> <a href="/ib-2027/A3/textbook.html" class="course-explorer__item-link"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Textbook</span>  </span> </span> </a> </li><li> <span class="course-explorer__item-link is-disabled"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Homework</span>  </span> </span> </span> </li><li> <span class="course-explorer__item-link is-disabled"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Revision</span>  </span> </span> </span> </li><li> <span class="course-explorer__item-link is-disabled"> <span class="course-explorer__item-main">  <span class="course-explorer__entry-copy"> <span>Assessment</span>  </span> </span> </span> </li> </ul> </div> </div> </div> <script>(function(){const explorerId = "course-explorer-ib-2027-A3-nosql-project-modelling-comparison";
+
+  (() => {
+    const root = document.getElementById(explorerId);
+    if (!root || root.dataset.exclusiveGroups !== 'true') {
+      return;
+    }
+
+    const groups = Array.from(root.querySelectorAll('details[data-accordion-group]'));
+    if (groups.length === 0) {
+      return;
+    }
+
+    const closeSiblings = (activeGroup) => {
+      groups.forEach((group) => {
+        if (group !== activeGroup) {
+          group.open = false;
+        }
+      });
+    };
+
+    const initiallyOpen = groups.filter((group) => group.open);
+    const preferredGroup = initiallyOpen.find((group) => group.dataset.active === 'true') || initiallyOpen[0];
+    if (preferredGroup) {
+      closeSiblings(preferredGroup);
+    }
+
+    groups.forEach((group) => {
+      group.addEventListener('toggle', () => {
+        if (!group.open) {
+          return;
+        }
+        closeSiblings(group);
+      });
+    });
+  })();
+})();</script> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn">&rsaquo;</button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
+Browse Course
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB Computer Science</a></li><li><span aria-current="page">A3</span></li></ol></nav>  <section class="ib-project-sequence"> <header class="ib-project-sequence-header"> <a class="ib-project-sequence-back" href="/ib-2027/A3/index.html"> <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> <span>Back to A3 Databases</span> </a> <div class="ib-project-sequence-copy"> <p class="ib-project-sequence-kicker">NoSQL Project</p> <h1>SQL vs NoSQL Modelling Comparison</h1> <p class="ib-project-sequence-intro">Compare the same task system in two shapes: a relational model and a document model. You are not picking favourites here; you are learning to justify trade-offs.</p> </div> <div class="ib-project-sequence-meta"> <span>Stage 3: SQL vs NoSQL Modelling</span> <span>Page 3 of 11</span> <span>1 of 1 in this stage</span> <span>Model comparison notes</span> </div> </header> <details class="ib-project-roadmap" aria-label="Project roadmap"> <summary class="ib-project-roadmap-summary"> <div class="ib-project-roadmap-summary-copy"> <p class="ib-project-sequence-sidebar-label">Project roadmap</p> <h2>Parallel JSON Project</h2> </div> <div class="ib-project-roadmap-summary-current"> <span class="ib-project-roadmap-summary-stage">Stage 3: SQL vs NoSQL Modelling</span> <strong>Modelling comparison</strong> <small>Page 3 of 11</small> </div> <span class="ib-project-roadmap-toggle"> <span class="is-closed">Expand roadmap</span> <span class="is-open">Collapse roadmap</span> <i class="fa-solid fa-chevron-down" aria-hidden="true"></i> </span> </summary> <div class="ib-project-roadmap-panel"> <p class="ib-project-roadmap-copy">
+Use the roadmap when you want to jump to another stage. Otherwise keep moving with the next and previous controls so the build stays in order.
+</p> <nav class="ib-project-stage-track" aria-label="Stage roadmap"> <a class="ib-project-stage-card" href="/ib-2027/A3/nosql-project/index.html"> <span class="ib-project-stage-card-kicker">Stage 1</span> <strong>JSON and NoSQL Theory</strong> <small>Build the theory first so the JSON approach is chosen deliberately rather than copied blindly.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/A3/nosql-project/python-json-lab/index.html"> <span class="ib-project-stage-card-kicker">Stage 2</span> <strong>Python JSON Exploration</strong> <small>Use small Python experiments to understand how document data is read, updated, and saved.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card is-current" href="/ib-2027/A3/nosql-project/modelling-comparison/index.html" aria-current="step"> <span class="ib-project-stage-card-kicker">Stage 3</span> <strong>SQL vs NoSQL Modelling</strong> <small>Compare how the same task system looks as a relational design and as a document model.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/A3/nosql-project/json-backend-setup/index.html"> <span class="ib-project-stage-card-kicker">Stage 4</span> <strong>JSON Backend Foundations</strong> <small>Keep the frontend familiar, set up the JSON files and helpers, and prepare the backend before the live features begin.</small> <span class="ib-project-stage-card-count">1 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/A3/nosql-project/feature-1-fetch-render/index.html"> <span class="ib-project-stage-card-kicker">Stage 5</span> <strong>JSON Feature Build Sequence</strong> <small>Rebuild the same client features with JSON storage, one controlled change at a time.</small> <span class="ib-project-stage-card-count">6 pages</span> </a><a class="ib-project-stage-card" href="/ib-2027/A3/nosql-project/json-tagging-extension/index.html"> <span class="ib-project-stage-card-kicker">Stage 6</span> <strong>JSON Algorithm Extension</strong> <small>Apply the same tagging algorithm and see how the JSON storage outcome differs from the SQL extension.</small> <span class="ib-project-stage-card-count">1 pages</span> </a> </nav> <nav class="ib-project-step-track" aria-label="SQL vs NoSQL Modelling pages"> <a class="ib-project-step-card is-current" href="/ib-2027/A3/nosql-project/modelling-comparison/index.html" aria-current="page"> <span class="ib-project-step-card-index">1</span> <span class="ib-project-step-card-copy"> <strong>Modelling comparison</strong> <small>Model A vs Model B for the same task-tracking problem.</small> </span> </a> </nav> </div> </details> <article class="ib-project-sequence-article">  <div class="ib-project-lesson-body">
+  <section class="ib-project-section ib-project-section--lead">
+    <h3>Compare the same client problem in two storage models</h3>
+    <p>The task system has not changed. What changes here is the way the data is shaped and maintained.</p><p>Use this page to decide what each model makes easier, what it makes harder, and why the trade-offs matter.</p>
+  </section>
+
+  <section class="ib-project-section ib-project-section--table">
+    <h3>Key words and definitions</h3>
+    
+  <div class="ib-project-table-wrap">
+    <table class="ib-project-table">
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Redundancy</td><td>The same data being stored in multiple places.</td></tr><tr><td>Embedded data</td><td>Related information stored directly inside one document.</td></tr><tr><td>Reference by ID</td><td>Linking one structure to another using identifiers.</td></tr><tr><td>Update difficulty</td><td>How awkward it is to keep related data consistent over time.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+<div class="ib-project-doc-grid">
+  <section class="ib-project-doc-code">
+    <h4>Model A: separate-file reference pattern</h4>
+    <pre><code class="language-json">records.json
+[
+  { &quot;record_id&quot;: 1, &quot;owner_id&quot;: 2, &quot;status&quot;: &quot;open&quot; }
+]
+
+owners.json
+[
+  { &quot;owner_id&quot;: 2, &quot;display_name&quot;: &quot;Sam&quot; }
+]</code></pre>
+    <div class="ib-project-code-notes">
+        <div class="ib-project-code-note">
+          <strong>Separate files</strong>
+          <p>This keeps owner data in one place, more like the relational habit.</p>
+        </div>
+      
+        <div class="ib-project-code-note">
+          <strong>owner_id</strong>
+          <p>The link still exists, but code has to match the ids later.</p>
+        </div>
+      </div>
+  </section>
+
+  <section class="ib-project-doc-code">
+    <h4>Model B: embedded-data pattern</h4>
+    <pre><code class="language-json">[
+  {
+    &quot;record_id&quot;: 1,
+    &quot;owner&quot;: {
+      &quot;owner_id&quot;: 2,
+      &quot;display_name&quot;: &quot;Sam&quot;
+    },
+    &quot;status&quot;: &quot;open&quot;
+  }
+]</code></pre>
+    <div class="ib-project-code-notes">
+        <div class="ib-project-code-note">
+          <strong>Embedded owner object</strong>
+          <p>This can make one read simpler, but repeated owner data can drift later.</p>
+        </div>
+      
+        <div class="ib-project-code-note">
+          <strong>Nested structure</strong>
+          <p>One document contains more of the story, but updates may become heavier.</p>
+        </div>
+      </div>
+  </section>
+</div>
+  <section class="ib-project-section ib-project-section--table">
+    <h3>Trade-off table</h3>
+    
+  <div class="ib-project-table-wrap">
+    <table class="ib-project-table">
+      <thead>
+        <tr><th>Decision point</th><th>Reference pattern</th><th>Embedded pattern</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Redundancy</td><td>Lower duplication of related data</td><td>Higher risk of duplicated nested data</td></tr><tr><td>Read convenience</td><td>May require joining logic in Python</td><td>One document can contain more of what the UI needs</td></tr><tr><td>Update difficulty</td><td>Clear source of truth for related data</td><td>Repeated nested data can become inconsistent</td></tr><tr><td>Flexibility</td><td>More structured and explicit</td><td>Can feel faster to change early on</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  </section>
+
+  <section class="ib-project-section ib-project-section--reference">
+    <h3>Decision for this HL build</h3>
+    <ul class="ib-project-reference-list"><li>Keep the frontend aligned with the SQL version so the comparison stays fair.</li><li>Use separate JSON files with ids for users and tasks.</li><li>Reserve the embedded tags idea for the later algorithm extension where it becomes meaningful.</li></ul>
+  </section>
+
+  <section class="ib-project-section ib-project-section--checks">
+    <h3>What should be clear before the parallel JSON build</h3>
+    <ul class="ib-project-checklist"><li>The class can compare separate-ID models with embedded-document models using real trade-offs.</li><li>Redundancy and update difficulty are both visible in the comparison.</li><li>The move into the JSON implementation track is now based on reasoning rather than guesswork.</li></ul>
+  </section>
+</div> <footer class="ib-project-sequence-footer"> <a class="ib-project-nav-link" href="/ib-2027/A3/nosql-project/python-json-lab/index.html"> <span class="ib-project-nav-label">Previous</span> <strong>Python JSON practice</strong> </a> <a class="ib-project-nav-link is-next" href="/ib-2027/A3/nosql-project/json-backend-setup/index.html"> <span class="ib-project-nav-label">Next</span> <strong>JSON backend setup</strong> </a> </footer> </article> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" defer></script> <script src="/js/ib-project-highlight.js" defer></script>  </section>   </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
+      (() => {
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn = document.getElementById('sidebar-expand-btn');
+        const shell = document.querySelector('.page-shell--with-sidebar');
+        if (!collapseBtn || !expandBtn || !shell) return;
+
+        const STORAGE_KEY = 'sgs-sidebar-collapsed';
+        const isCollapsed = localStorage.getItem(STORAGE_KEY) === '1';
+        if (isCollapsed) shell.classList.add('page-shell--sidebar-collapsed');
+
+        collapseBtn.addEventListener('click', () => {
+          shell.classList.add('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '1');
+        });
+        expandBtn.addEventListener('click', () => {
+          shell.classList.remove('page-shell--sidebar-collapsed');
+          localStorage.setItem(STORAGE_KEY, '0');
+        });
+      })();
+    </script> </body> </html>

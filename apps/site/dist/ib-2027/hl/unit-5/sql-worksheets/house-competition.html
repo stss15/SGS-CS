@@ -1,0 +1,798 @@
+<!-- GENERATED FILE - Edit source in src/pages/ instead -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 2: Build the House Competition Database | HL SQL</title>
+    <meta name="description" content="Optional HL synthesis worksheet combining database construction with aggregate reporting.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/Logo.png">
+    <link rel="apple-touch-icon" href="/images/Logo.png">
+
+    <!-- Fonts - Outfit (display) + Source Sans 3 (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+        
+            
+                <link rel="stylesheet" href="/css/sql-worksheet.css">
+            
+        
+    
+
+    
+    
+
+    <!-- data-sgs-auth-gate -->
+    <link rel="stylesheet" href="/css/auth-gate.css">
+    <script>document.documentElement.classList.add('auth-pending');</script>
+</head>
+
+<body class="">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="main-header">
+        <div class="header-primary">
+            <div class="logo-container">
+                <a href="/index.html">
+                    <img src="/images/logo-mark.svg" alt="SGS Education logo" class="logo-img" decoding="async">
+                </a>
+                <a href="/index.html" class="site-title-link">
+                    <span class="site-title">SGS Education</span>
+                </a>
+            </div>
+
+            <nav class="main-nav main-nav-simple" aria-label="Main navigation">
+                <a href="/ks3/year7/index.html" class="nav-link ">Year 7</a>
+                <a href="/ks3/year8/index.html" class="nav-link ">Year 8</a>
+                <a href="/ks3/year9/index.html" class="nav-link ">Year 9</a>
+                <a href="/igcse/index.html" class="nav-link ">IGCSE</a>
+                <a href="/ib-2027/index.html" class="nav-link active">IB</a>
+            </nav>
+
+            <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="site-auth-slot" data-auth-slot aria-label="Account actions"></div>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobile-drawer" hidden>
+        <div class="mobile-drawer__overlay" data-close-mobile></div>
+        <nav class="mobile-drawer__panel" aria-label="Mobile navigation">
+            <div class="mobile-drawer__header">
+                <span class="mobile-drawer__brand">SGS Education</span>
+                <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-close-mobile>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer__links">
+                <li><a href="/ks3/year7/index.html" class="">Year 7</a></li>
+                <li><a href="/ks3/year8/index.html" class="">Year 8</a></li>
+                <li><a href="/ks3/year9/index.html" class="">Year 9</a></li>
+                <li><a href="/igcse/index.html" class="">IGCSE</a></li>
+                <li><a href="/ib-2027/index.html" class="active">IB</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+    (function(){
+        var btn=document.querySelector('.mobile-menu-toggle'),
+            drawer=document.getElementById('mobile-drawer');
+        if(!btn||!drawer) return;
+        function open(){drawer.hidden=false;requestAnimationFrame(function(){drawer.classList.add('open');btn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});}
+        function close(){drawer.classList.remove('open');btn.setAttribute('aria-expanded','false');document.body.style.overflow='';drawer.addEventListener('transitionend',function(){if(!drawer.classList.contains('open'))drawer.hidden=true},{once:true});}
+        btn.addEventListener('click',function(){drawer.hidden?open():close()});
+        drawer.querySelectorAll('[data-close-mobile]').forEach(function(el){el.addEventListener('click',close)});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+    })();
+    </script>
+
+    <div class="app-layout">
+        
+
+        <main id="main-content" class="">
+            
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/index.html">Home</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/index.html">IB 2027</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/hl/index.html">HL</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/hl/unit-5/index.html">Unit 5</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item ">
+                        
+                        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html">SQL Worksheets</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        
+                    </li>
+                    
+                    <li class="breadcrumb-item current">
+                        
+                        <span>Build the House Competition Database</span>
+                        
+                    </li>
+                    
+                </ol>
+            </nav>
+            
+
+            
+
+            
+<div class="sql-sheet-shell">
+    <section class="sql-sheet-hero">
+        <div>
+            <p class="sql-sheet-kicker">Worksheet 2 | HL Synthesis</p>
+            <h1 class="sql-sheet-title">Build the House Competition Database</h1>
+            <p class="sql-sheet-summary">
+                This is the optional synthesis worksheet. Start from a blank workspace, build the database
+                from the schema and ERD, batch-load the starter rows, and then use HL aggregate functions to
+                produce competition reports.
+            </p>
+            <div class="sql-chip-row">
+                <span class="sql-chip">CREATE TABLE</span>
+                <span class="sql-chip">INSERT</span>
+                <span class="sql-chip">COUNT</span>
+                <span class="sql-chip">AVG</span>
+                <span class="sql-chip">SUM</span>
+                <span class="sql-chip">HAVING</span>
+            </div>
+        </div>
+        <div class="sql-sheet-actions">
+            <a class="sql-launch" href="/tools/sql-playground.html?dataset=__blank_workspace__" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open Blank Workspace
+            </a>
+            <a class="sql-secondary-link" href="/ib-2027/hl/unit-5/sql-worksheets/index.html">
+                <i class="fa-solid fa-list"></i>
+                All HL SQL worksheets
+            </a>
+        </div>
+    </section>
+
+    <div class="sql-meta-strip">
+        <div class="sql-meta-cell">
+            <h2>Build Goal</h2>
+            <ul>
+                <li>Create a four-table reporting database from scratch</li>
+                <li>Use a composite key in the results table</li>
+                <li>Finish with grouped reporting queries</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Syllabus Links</h2>
+            <ul>
+                <li>SL structure work: keys, relationships, DDL, and batch inserts</li>
+                <li>HL extension: <code>COUNT</code>, <code>AVG</code>, <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>GROUP BY</code>, and <code>HAVING</code></li>
+                <li>One synthesis task instead of another preloaded practice sheet</li>
+            </ul>
+        </div>
+        <div class="sql-meta-cell">
+            <h2>Before You Start</h2>
+            <ul>
+                <li>Use the blank workspace, not the course enrolment dataset.</li>
+                <li>Create the parent tables before the child tables.</li>
+                <li>Get the structure correct before you run the aggregate queries.</li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">1</span>
+            <div>
+                <h2>Blueprint</h2>
+                <p>Use this schema and ERD as the design brief for the database you are about to build.</p>
+            </div>
+        </div>
+
+        <div class="sql-blueprint-layout">
+            <div class="sql-schema-grid">
+                <section class="sql-schema-card">
+                    <h3>HOUSE</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>HouseID</span><span>TEXT PK</span></li>
+                        <li><span>HouseName</span><span>TEXT</span></li>
+                        <li><span>StaffLead</span><span>TEXT</span></li>
+                    </ul>
+                </section>
+                <section class="sql-schema-card">
+                    <h3>EVENT</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>EventID</span><span>INTEGER PK</span></li>
+                        <li><span>EventName</span><span>TEXT</span></li>
+                        <li><span>Category</span><span>TEXT</span></li>
+                    </ul>
+                </section>
+                <section class="sql-schema-card">
+                    <h3>STUDENT</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>StudentID</span><span>INTEGER PK</span></li>
+                        <li><span>FirstName</span><span>TEXT</span></li>
+                        <li><span>LastName</span><span>TEXT</span></li>
+                        <li><span>HouseID</span><span>TEXT FK</span></li>
+                    </ul>
+                </section>
+                <section class="sql-schema-card">
+                    <h3>RESULT</h3>
+                    <ul class="sql-schema-list">
+                        <li><span>StudentID</span><span>INTEGER FK</span></li>
+                        <li><span>EventID</span><span>INTEGER FK</span></li>
+                        <li><span>Score</span><span>INTEGER</span></li>
+                        <li><span>Position</span><span>INTEGER</span></li>
+                        <li><span>Primary key</span><span>(StudentID, EventID)</span></li>
+                    </ul>
+                </section>
+            </div>
+
+            <figure class="sql-erd-frame">
+                <h3>ERD</h3>
+                <p>Read the relationship route before you write any <code>CREATE TABLE</code> statements.</p>
+                <svg viewBox="0 0 920 380" role="img" aria-label="ERD for the house competition database">
+                    <rect x="30" y="30" width="220" height="120"></rect>
+                    <text class="sql-erd-title" x="50" y="62">HOUSE</text>
+                    <text class="sql-erd-meta" x="50" y="92">HouseID (PK)</text>
+                    <text class="sql-erd-meta" x="50" y="114">HouseName</text>
+                    <text class="sql-erd-meta" x="50" y="136">StaffLead</text>
+
+                    <rect x="350" y="30" width="220" height="140"></rect>
+                    <text class="sql-erd-title" x="370" y="62">STUDENT</text>
+                    <text class="sql-erd-meta" x="370" y="92">StudentID (PK)</text>
+                    <text class="sql-erd-meta" x="370" y="114">FirstName</text>
+                    <text class="sql-erd-meta" x="370" y="136">LastName</text>
+                    <text class="sql-erd-meta" x="370" y="158">HouseID (FK)</text>
+
+                    <rect x="670" y="30" width="220" height="120"></rect>
+                    <text class="sql-erd-title" x="690" y="62">EVENT</text>
+                    <text class="sql-erd-meta" x="690" y="92">EventID (PK)</text>
+                    <text class="sql-erd-meta" x="690" y="114">EventName</text>
+                    <text class="sql-erd-meta" x="690" y="136">Category</text>
+
+                    <rect x="350" y="230" width="220" height="120"></rect>
+                    <text class="sql-erd-title" x="370" y="262">RESULT</text>
+                    <text class="sql-erd-meta" x="370" y="292">StudentID (FK)</text>
+                    <text class="sql-erd-meta" x="370" y="314">EventID (FK)</text>
+                    <text class="sql-erd-meta" x="370" y="336">Score / Position</text>
+
+                    <line x1="250" y1="92" x2="350" y2="92"></line>
+                    <text class="sql-erd-cardinality" x="272" y="80">1</text>
+                    <text class="sql-erd-cardinality" x="326" y="80">many</text>
+
+                    <line x1="460" y1="170" x2="460" y2="230"></line>
+                    <text class="sql-erd-cardinality" x="474" y="200">1</text>
+                    <text class="sql-erd-cardinality" x="474" y="222">many</text>
+
+                    <path d="M670 92 C620 92, 600 118, 570 248"></path>
+                    <text class="sql-erd-cardinality" x="628" y="82">1</text>
+                    <text class="sql-erd-cardinality" x="584" y="190">many</text>
+                </svg>
+            </figure>
+        </div>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Build order</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Write down the order in which the four tables should be created so the foreign keys can be added without errors.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.2.4</span>
+                    <span class="sql-task-focus">Composite key</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Explain why <code>RESULT</code> needs a composite primary key rather than a single field from the schema above.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">2</span>
+            <div>
+                <h2>Create the Tables</h2>
+                <p>Build the structure first, then load the data.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — CREATE TABLE for reporting databases</summary>
+            <div class="sql-syntax-body">
+                <pre><code>CREATE TABLE parent_table (
+    parent_id   TEXT PRIMARY KEY,
+    label_text  TEXT
+);
+
+CREATE TABLE child_table (
+    child_id    INTEGER PRIMARY KEY,
+    parent_id   TEXT,
+    value_text  TEXT,
+    FOREIGN KEY (parent_id) REFERENCES parent_table(parent_id)
+);
+
+CREATE TABLE result_table (
+    first_id    INTEGER,
+    second_id   INTEGER,
+    score_value INTEGER,
+    PRIMARY KEY (first_id, second_id),
+    FOREIGN KEY (first_id) REFERENCES first_table(first_id),
+    FOREIGN KEY (second_id) REFERENCES second_table(second_id)
+);</code></pre>
+                <p>A reporting table often combines two foreign keys into one composite key so each relationship appears only once.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">DDL</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Create <code>HOUSE</code> and <code>EVENT</code> first.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">Foreign key</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Create <code>STUDENT</code> with a foreign key back to <code>HOUSE</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.1</span>
+                    <span class="sql-task-focus">Composite key</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Create <code>RESULT</code> with the composite primary key <code>(StudentID, EventID)</code> plus both foreign keys.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">3</span>
+            <div>
+                <h2>Load the Starter Data</h2>
+                <p>Use multi-row inserts so the build does not become a typing exercise.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — batch INSERT</summary>
+            <div class="sql-syntax-body">
+                <pre><code>INSERT INTO table_name (column_a, column_b, column_c)
+VALUES
+    ('A', 'First row', 10),
+    ('B', 'Second row', 20),
+    ('C', 'Third row', 30);
+
+INSERT INTO result_table (first_id, second_id, score_value, rank_value)
+VALUES
+    (101, 501, 18, 1),
+    (102, 501, 16, 2),
+    (103, 501, 14, 3);</code></pre>
+                <p>One statement can add several rows. That keeps the worksheet focused on the database logic, not repetitive typing.</p>
+            </div>
+        </details>
+
+        <div class="sql-data-pack">
+            <section class="sql-data-panel">
+                <h3>HOUSE</h3>
+                <table>
+                    <thead>
+                        <tr><th>HouseID</th><th>HouseName</th><th>StaffLead</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>ASH</td><td>Ash</td><td>Ms Patel</td></tr>
+                        <tr><td>OAK</td><td>Oak</td><td>Mr Jones</td></tr>
+                        <tr><td>CED</td><td>Cedar</td><td>Ms Khan</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="sql-data-panel">
+                <h3>EVENT</h3>
+                <table>
+                    <thead>
+                        <tr><th>EventID</th><th>EventName</th><th>Category</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>501</td><td>Sprint</td><td>Track</td></tr>
+                        <tr><td>502</td><td>Long Jump</td><td>Field</td></tr>
+                        <tr><td>503</td><td>Code Quiz</td><td>Academic</td></tr>
+                        <tr><td>504</td><td>Relay</td><td>Track</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="sql-data-panel">
+                <h3>STUDENT</h3>
+                <table>
+                    <thead>
+                        <tr><th>StudentID</th><th>FirstName</th><th>LastName</th><th>HouseID</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>7101</td><td>Mia</td><td>Patel</td><td>ASH</td></tr>
+                        <tr><td>7102</td><td>Noah</td><td>Brown</td><td>OAK</td></tr>
+                        <tr><td>7103</td><td>Lina</td><td>Chen</td><td>CED</td></tr>
+                        <tr><td>7104</td><td>Ava</td><td>Reed</td><td>ASH</td></tr>
+                        <tr><td>7105</td><td>Yusuf</td><td>Khan</td><td>OAK</td></tr>
+                        <tr><td>7106</td><td>Erin</td><td>Walsh</td><td>CED</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="sql-data-panel">
+                <h3>RESULT</h3>
+                <table>
+                    <thead>
+                        <tr><th>StudentID</th><th>EventID</th><th>Score</th><th>Position</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>7101</td><td>501</td><td>8</td><td>2</td></tr>
+                        <tr><td>7101</td><td>503</td><td>18</td><td>1</td></tr>
+                        <tr><td>7102</td><td>501</td><td>7</td><td>3</td></tr>
+                        <tr><td>7102</td><td>504</td><td>14</td><td>2</td></tr>
+                        <tr><td>7103</td><td>502</td><td>6</td><td>2</td></tr>
+                        <tr><td>7103</td><td>503</td><td>15</td><td>3</td></tr>
+                        <tr><td>7104</td><td>502</td><td>9</td><td>1</td></tr>
+                        <tr><td>7105</td><td>503</td><td>17</td><td>2</td></tr>
+                        <tr><td>7106</td><td>504</td><td>16</td><td>1</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">Batch INSERT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Insert the <code>HOUSE</code> and <code>EVENT</code> rows using one statement for each table.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.3</span>
+                    <span class="sql-task-focus">Batch INSERT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Insert the <code>STUDENT</code> and <code>RESULT</code> rows using one statement for each table.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-sheet-section">
+        <div class="sql-section-heading">
+            <span class="sql-section-number">4</span>
+            <div>
+                <h2>Aggregate Reports</h2>
+                <p>Use the database you built to answer grouped-report questions.</p>
+            </div>
+        </div>
+
+        <details class="sql-syntax-ref">
+            <summary><i class="fa-solid fa-code"></i> Reference pattern — aggregate reporting</summary>
+            <div class="sql-syntax-body">
+                <pre><code>SELECT category_column, COUNT(*) AS item_count
+FROM table_name
+GROUP BY category_column;
+
+SELECT category_column, ROUND(AVG(score_column), 1) AS average_score
+FROM table_name
+GROUP BY category_column;
+
+SELECT category_column, SUM(score_column) AS total_score
+FROM table_name
+GROUP BY category_column
+HAVING SUM(score_column) >= 30;</code></pre>
+                <p>Once the schema and rows are correct, the HL part is the reporting: choose the right group, the right aggregate function, and the right threshold.</p>
+            </div>
+        </details>
+
+        <ol class="sql-task-list">
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">COUNT</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Count how many result rows each event has.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">AVG</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Calculate the average score for each event.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">SUM</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Sum the total score for each house by joining <code>HOUSE</code>, <code>STUDENT</code>, and <code>RESULT</code>.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">MAX / MIN</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Return the highest and lowest score in each event.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">HAVING</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Show only houses with at least <code>3</code> recorded results.</p>
+                </div>
+            </li>
+            <li class="sql-task">
+                <div class="sql-task-left">
+                    <span class="sql-task-tag">A3.3.4</span>
+                    <span class="sql-task-focus">Report query</span>
+                </div>
+                <div class="sql-task-body">
+                    <p>Produce a house report showing house name, result count, total score, and rounded average score, ordered from highest total score to lowest.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="sql-answers-gate" data-answer-gate="dGVhY2hlcjE=">
+        <div class="sql-answers-lock" data-answer-lock>
+            <div class="sql-answers-lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <h2>Teacher Answers</h2>
+            <p>Enter the teacher password to reveal model answers for this worksheet.</p>
+            <div class="sql-answers-lock-row">
+                <input type="password" placeholder="Password…" autocomplete="off" data-answer-input>
+                <button type="button" data-answer-button>Unlock</button>
+            </div>
+            <p class="sql-answers-err" data-answer-error></p>
+        </div>
+        <div class="sql-answers-content" data-answer-content hidden>
+            <h2><i class="fa-solid fa-unlock"></i> Model Answers — Build the House Competition Database</h2>
+
+            <h3>Section 1</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">1</span>
+                <div class="sql-answer-body">
+                    <strong>Recommended table order</strong>
+                    Create <code>HOUSE</code> and <code>EVENT</code> first, then <code>STUDENT</code>, then <code>RESULT</code>. The composite key <code>(StudentID, EventID)</code> prevents duplicate result rows for the same student-event pair.
+                </div>
+            </div>
+
+            <h3>Section 2</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">2</span>
+                <div class="sql-answer-body">
+                    <strong>Core DDL pattern</strong>
+                    <pre><code>CREATE TABLE HOUSE (
+    HouseID TEXT PRIMARY KEY,
+    HouseName TEXT,
+    StaffLead TEXT
+);
+
+CREATE TABLE EVENT (
+    EventID INTEGER PRIMARY KEY,
+    EventName TEXT,
+    Category TEXT
+);
+
+CREATE TABLE STUDENT (
+    StudentID INTEGER PRIMARY KEY,
+    FirstName TEXT,
+    LastName TEXT,
+    HouseID TEXT,
+    FOREIGN KEY (HouseID) REFERENCES HOUSE(HouseID)
+);
+
+CREATE TABLE RESULT (
+    StudentID INTEGER,
+    EventID INTEGER,
+    Score INTEGER,
+    Position INTEGER,
+    PRIMARY KEY (StudentID, EventID),
+    FOREIGN KEY (StudentID) REFERENCES STUDENT(StudentID),
+    FOREIGN KEY (EventID) REFERENCES EVENT(EventID)
+);</code></pre>
+                </div>
+            </div>
+
+            <h3>Section 4</h3>
+            <div class="sql-answer-item">
+                <span class="sql-answer-num">3</span>
+                <div class="sql-answer-body">
+                    <strong>House report example</strong>
+                    <pre><code>SELECT h.HouseName,
+       COUNT(*) AS ResultCount,
+       SUM(r.Score) AS TotalScore,
+       ROUND(AVG(r.Score), 1) AS AverageScore
+FROM RESULT AS r
+JOIN STUDENT AS s
+    ON r.StudentID = s.StudentID
+JOIN HOUSE AS h
+    ON s.HouseID = h.HouseID
+GROUP BY h.HouseName
+HAVING COUNT(*) >= 3
+ORDER BY TotalScore DESC, h.HouseName;</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sql-sheet-nav">
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/course-enrolment.html"><i class="fa-solid fa-arrow-left"></i> Previous: Course Enrolment Reporting</a>
+        <a href="/ib-2027/hl/unit-5/sql-worksheets/index.html">Back to HL SQL worksheet hub <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+</div>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p>
+    </footer>
+
+    
+        
+            
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+            
+        
+            
+                <script src="/js/sql-worksheet.js"></script>
+            
+        
+    
+    
+
+    
+    <div class="feedback-modals" data-feedback-default-level="General">
+        <div class="feedback-overlay" data-feedback-overlay></div>
+
+        <div class="feedback-modal" id="bug-modal" role="dialog" aria-modal="true" aria-labelledby="bug-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Something broken?</p>
+            <h2 id="bug-modal-title">Report a bug</h2>
+            <p class="modal-lede">Tell us exactly where the issue appears so we can fix it quickly.</p>
+
+            <form id="bug-form" class="feedback-form" data-form-type="bug">
+                <label for="bug-level">Course area</label>
+                <select id="bug-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="bug-category">Resource type</label>
+                <select id="bug-category" name="category" required>
+                    <option value="">Choose a resource type</option>
+                    <option value="Slide deck">Slide deck</option>
+                    <option value="Game">Game</option>
+                    <option value="Image">Image</option>
+                    <option value="Simulation">Simulation</option>
+                    <option value="Misc">Misc</option>
+                </select>
+
+                <label for="bug-title">Title (be specific)</label>
+                <input id="bug-title" name="title" type="text" placeholder="Topic 1.1 slide deck — slide 9 video freezes…" autocomplete="off" required>
+
+                <label for="bug-details">What happened?</label>
+                <textarea id="bug-details" name="details" rows="4" placeholder="Describe the issue and where it shows up…" autocomplete="off" required></textarea>
+                <p class="form-note">Give the topic, resource type, and slide/page number to avoid vague reports.</p>
+
+                <button type="submit" class="submit-btn">Submit bug report</button>
+                <p class="form-feedback" data-feedback-message="bug" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="feedback-modal" id="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="modal-kicker">Have an idea?</p>
+            <h2 id="feature-modal-title">Request a feature</h2>
+            <p class="modal-lede">Tell us which course you are in and what you would like added.</p>
+
+            <form id="feature-form" class="feedback-form" data-form-type="feature">
+                <label for="feature-level">Course area</label>
+                <select id="feature-level" name="level" required>
+                    <option value="">Select a course</option>
+                    <option value="KS3">KS3</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="General">General</option>
+                </select>
+
+                <label for="feature-details">What should we add?</label>
+                <textarea id="feature-details" name="details" rows="5" placeholder="e.g. Add a revision game for Topic 2.1…" autocomplete="off" required></textarea>
+                <p class="form-note">Share enough detail so teachers can understand the request.</p>
+
+                <button type="submit" class="submit-btn">Submit feature request</button>
+                <p class="form-feedback" data-feedback-message="feature" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/feedback.js"></script>
+
+    <!-- data-sgs-auth-gate -->
+    <script src="/__/firebase/10.13.2/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.13.2/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/js/auth-gate.js"></script>
+</body>
+
+</html>
