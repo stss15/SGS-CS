@@ -1,0 +1,17 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  credit?: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const { src, alt, caption, credit, loading = 'lazy' } = Astro.props as Props;
+const captionText = [caption, credit].filter(Boolean).join(' · ');
+---
+
+<figure class="textbook-figure">
+  <img src={src} alt={alt} loading={loading} decoding="async" />
+  {captionText && <figcaption>{captionText}</figcaption>}
+</figure>

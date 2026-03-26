@@ -1,0 +1,821 @@
+---
+import TextbookCallout from '../TextbookCallout.astro';
+import TextbookChunk from '../TextbookChunk.astro';
+import TextbookPageIntro from '../TextbookPageIntro.astro';
+import TextbookSectionBlock from '../TextbookSectionBlock.astro';
+import type { TextbookChapterModel, TextbookSectionModel } from '../../../lib/textbook-model';
+
+interface Props {
+  chapter: TextbookChapterModel;
+}
+
+const { chapter } = Astro.props as Props;
+
+const requireSection = (code: string): TextbookSectionModel => {
+  const section = chapter.sections.find((candidate) => candidate.code === code);
+  if (!section) {
+    throw new Error(`Missing textbook section "${code}" for rebuilt chapter ${chapter.code}.`);
+  }
+  return section;
+};
+
+const a11 = requireSection('A1.1');
+const a12 = requireSection('A1.2');
+const a13 = requireSection('A1.3');
+const a14 = requireSection('A1.4');
+---
+
+<TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+  <p>
+    This chapter builds a system-level view of how computers store data, execute instructions, manage
+    resources, and translate programs into executable behaviour. Read it as a connected model rather than
+    as isolated definitions: the strongest exam answers explain how components interact and why one design
+    choice is more suitable than another in a given context.
+  </p>
+  <TextbookCallout tone="note" label="Reading pattern">
+    <p>
+      Standard level students should focus on the core explanation in each section first. Higher level
+      students should then use the labelled HL extensions to compare architectures, explain resource
+      allocation issues, and evaluate translation choices with justified criteria.
+    </p>
+  </TextbookCallout>
+</TextbookPageIntro>
+
+<TextbookSectionBlock section={a11}>
+  <TextbookChunk
+    label="A1.1.1, A1.1.2, A1.1.4, A1.1.5"
+    summary="Build a joined picture of CPU components, GPU purpose, primary memory, and the fetch-decode-execute cycle."
+    visibility="sl"
+  >
+    <p>
+      A computer works because several components cooperate in a fixed sequence. The CPU controls the
+      process, primary memory keeps instructions and active data close to the processor, and the GPU takes
+      over highly parallel graphics or numerical workloads that would otherwise slow the CPU down.
+    </p>
+
+    <h3 id="overview-cpu-components-and-memory">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Component</th>
+          <th scope="col">Main purpose</th>
+          <th scope="col">Why the interaction matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Control unit (CU)</td>
+          <td>Directs the instruction cycle and sends control signals.</td>
+          <td>It coordinates memory access, ALU activity, and data movement on the buses.</td>
+        </tr>
+        <tr>
+          <td>Arithmetic logic unit (ALU)</td>
+          <td>Performs arithmetic and logical operations.</td>
+          <td>It turns decoded instructions into results that can be stored or used immediately.</td>
+        </tr>
+        <tr>
+          <td>Registers</td>
+          <td>Hold addresses, instructions, data, and intermediate values at very high speed.</td>
+          <td>Without registers, the CPU would have to keep fetching tiny pieces of data from slower memory.</td>
+        </tr>
+        <tr>
+          <td>Buses</td>
+          <td>Carry addresses, data, and control signals between components.</td>
+          <td>They are the communication paths that let the processor and memory operate as one system.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Primary memory supports this cycle in different ways. RAM stores active programs and data, ROM stores
+      fixed startup instructions, and cache keeps frequently needed data closer to the CPU. A cache hit
+      shortens access time; a cache miss forces the processor to wait for slower memory.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Memory type</th>
+          <th scope="col">Persistence</th>
+          <th scope="col">Typical use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RAM</td>
+          <td>Volatile</td>
+          <td>Programs and data currently in use</td>
+        </tr>
+        <tr>
+          <td>ROM</td>
+          <td>Non-volatile</td>
+          <td>Firmware and startup instructions</td>
+        </tr>
+        <tr>
+          <td>Cache (L1-L3)</td>
+          <td>Volatile</td>
+          <td>Frequently reused instructions or data close to the CPU</td>
+        </tr>
+        <tr>
+          <td>Registers</td>
+          <td>Volatile</td>
+          <td>Immediate values needed inside the current instruction cycle</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      The GPU has a different role. It is designed for workloads where many similar calculations happen at
+      the same time, such as image rendering, matrix processing, or video work. The CPU remains the main
+      general-purpose processor; the GPU accelerates specific high-throughput tasks.
+    </p>
+
+    <h3 id="worked-example-following-one-instruction">Worked example: following one instruction</h3>
+    <p>
+      Suppose the program counter contains address <code>120</code> and memory address <code>120</code>
+      stores the instruction <code>ADD 205</code>.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Stage</th>
+          <th scope="col">What happens</th>
+          <th scope="col">Main components involved</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fetch</td>
+          <td>The value in the program counter is copied to the memory address register.</td>
+          <td>PC, MAR, address bus</td>
+        </tr>
+        <tr>
+          <td>Transfer</td>
+          <td>Memory sends the instruction to the memory data register and then to the instruction register.</td>
+          <td>MDR, IR, data bus, control bus</td>
+        </tr>
+        <tr>
+          <td>Decode</td>
+          <td>The control unit identifies that an addition is required and that the operand is at address 205.</td>
+          <td>CU, IR</td>
+        </tr>
+        <tr>
+          <td>Execute</td>
+          <td>The operand is fetched and the ALU adds it to the current accumulator value.</td>
+          <td>ALU, ACC, MAR, MDR</td>
+        </tr>
+        <tr>
+          <td>Advance</td>
+          <td>The program counter updates so the next instruction can be fetched.</td>
+          <td>PC</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      A good description does not treat these as isolated facts. It shows the movement of addresses, data,
+      and control signals through the cycle.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A1.1.7, A1.1.8, A1.1.9"
+    summary="Compare storage media, distinguish lossless from lossy compression, and match cloud services to control requirements."
+    visibility="sl"
+  >
+    <p>
+      Secondary storage is non-volatile, so it keeps data when power is removed. The syllabus expects you to
+      describe storage categories in terms of purpose and use, not just list device names. The best choice
+      depends on speed, capacity, portability, and cost.
+    </p>
+
+    <h3 id="applied-in-context-storage-compression-and-cloud">Applied in context</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Technology</th>
+          <th scope="col">Best fit</th>
+          <th scope="col">Useful distinction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>SSD</td>
+          <td>Fast startup, laptops, applications with frequent reads and writes</td>
+          <td>No moving parts; faster access than HDD</td>
+        </tr>
+        <tr>
+          <td>HDD</td>
+          <td>Large, lower-cost storage</td>
+          <td>Higher capacity per cost, but slower mechanical access</td>
+        </tr>
+        <tr>
+          <td>Optical / removable flash</td>
+          <td>Distribution, transfer, or offline backup</td>
+          <td>Portability matters more than peak speed</td>
+        </tr>
+        <tr>
+          <td>Network or cloud storage</td>
+          <td>Shared access and remote availability</td>
+          <td>Availability depends on network access and provider control</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Compression reduces file size. Lossless compression preserves all original information, which is why it
+      is suitable for text, executable files, and structured data. Lossy compression removes some information
+      permanently in exchange for smaller files, which is acceptable only when a small reduction in quality is
+      tolerated.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Method</th>
+          <th scope="col">Type</th>
+          <th scope="col">Typical use</th>
+          <th scope="col">Main trade-off</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Run-length encoding</td>
+          <td>Lossless</td>
+          <td>Data with repeated values or patterns</td>
+          <td>Works poorly when repetition is limited</td>
+        </tr>
+        <tr>
+          <td>Transform coding</td>
+          <td>Lossy</td>
+          <td>Images, audio, and video</td>
+          <td>Smaller files, but the original cannot be reconstructed exactly</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-matching-a-service-model">Worked example: matching a service model</h3>
+    <p>
+      A school wants to deploy an attendance dashboard. In one case, staff just need to log in and use the
+      software. In another, the computing department wants to build and deploy its own custom application. In
+      a third, the school wants maximum control over virtual machines and storage.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Need</th>
+          <th scope="col">Best cloud model</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Use a ready-made attendance system</td>
+          <td>SaaS</td>
+          <td>The provider manages the application and infrastructure.</td>
+        </tr>
+        <tr>
+          <td>Build and deploy a custom web app</td>
+          <td>PaaS</td>
+          <td>The platform provides deployment tools without exposing all infrastructure management.</td>
+        </tr>
+        <tr>
+          <td>Control servers, operating systems, and storage directly</td>
+          <td>IaaS</td>
+          <td>The user gains the most control, but also the most responsibility.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A1.1.3, A1.1.6"
+    summary="HL extends the section by comparing CPU and GPU design and by describing pipelining as a throughput strategy in multi-core systems."
+    visibility="hl"
+  >
+    <h3 id="core-understanding-cpu-vs-gpu-and-pipelining">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Feature</th>
+          <th scope="col">CPU</th>
+          <th scope="col">GPU</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Design focus</td>
+          <td>General-purpose control and varied workloads</td>
+          <td>Large-scale parallel processing of similar operations</td>
+        </tr>
+        <tr>
+          <td>Typical workload</td>
+          <td>Operating systems, process control, mixed application logic</td>
+          <td>Graphics rendering, matrix-heavy processing, repeated numeric work</td>
+        </tr>
+        <tr>
+          <td>Strength</td>
+          <td>Low-latency decision making</td>
+          <td>High throughput across many simultaneous calculations</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Pipelining is different from adding more cores. It overlaps stages of instruction handling so that one
+      instruction can be fetched while another is decoded and another is executed. The goal is higher
+      throughput, not magical reduction in the time needed for one individual instruction.
+    </p>
+
+    <h3 id="worked-trace-pipeline-overlap">Worked trace: pipeline overlap</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Cycle</th>
+          <th scope="col">Instruction 1</th>
+          <th scope="col">Instruction 2</th>
+          <th scope="col">Instruction 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Fetch</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Decode</td>
+          <td>Fetch</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Execute</td>
+          <td>Decode</td>
+          <td>Fetch</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td></td>
+          <td>Execute</td>
+          <td>Decode</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td></td>
+          <td></td>
+          <td>Execute</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        More cores do not guarantee a proportional speed increase. Performance still depends on whether the
+        workload can be split effectively and whether memory access or other bottlenecks limit throughput.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a12}>
+  <TextbookChunk
+    label="A1.2.1, A1.2.2"
+    summary="Represent values in binary and hexadecimal and explain how different media types are stored as binary."
+    visibility="sl"
+  >
+    <p>
+      Binary is the internal language of digital systems. Hexadecimal matters because it gives humans a more
+      compact way to inspect the same binary patterns. A precise description links representation to storage:
+      computers do not store numbers, characters, images, and audio using different physical principles;
+      they store all of them as binary patterns interpreted according to rules.
+    </p>
+
+    <h3 id="overview-binary-representation-and-storage">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Data type</th>
+          <th scope="col">Binary idea</th>
+          <th scope="col">What changes between examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Integer</td>
+          <td>Value stored as a binary number</td>
+          <td>Range depends on the number of bits available</td>
+        </tr>
+        <tr>
+          <td>Character / text</td>
+          <td>Character code stored as binary</td>
+          <td>The coding scheme maps symbols to bit patterns</td>
+        </tr>
+        <tr>
+          <td>Image</td>
+          <td>Pixels stored as binary colour values</td>
+          <td>Resolution and colour depth determine storage size</td>
+        </tr>
+        <tr>
+          <td>Audio / video</td>
+          <td>Samples or frames stored as binary sequences</td>
+          <td>Sampling, resolution, and compression affect size and quality</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-converting-between-binary-and-hex">Worked example: converting between binary and hex</h3>
+    <p>
+      Convert <code>1110 1100</code> to hexadecimal by grouping the bits into nibbles and converting each
+      nibble separately.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Binary nibble</th>
+          <th scope="col">Decimal value</th>
+          <th scope="col">Hex digit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>1110</code></td>
+          <td>14</td>
+          <td>E</td>
+        </tr>
+        <tr>
+          <td><code>1100</code></td>
+          <td>12</td>
+          <td>C</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The final answer is <code>EC</code>. The value is unchanged; only the representation has become more
+      compact for human reading.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A1.2.3, A1.2.4, A1.2.5"
+    summary="Use logic gates, truth tables, and logic diagrams to model simple digital decision rules."
+    visibility="sl"
+  >
+    <p>
+      Logic gates implement Boolean decisions in hardware. Truth tables let you analyse every possible input
+      combination, and logic diagrams let you construct the physical or conceptual layout of those decisions.
+      These three ideas should be treated as connected representations of the same logic.
+    </p>
+
+    <h3 id="core-understanding-logic-gates-and-truth-tables">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Gate</th>
+          <th scope="col">Meaning</th>
+          <th scope="col">Output is 1 when...</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AND</td>
+          <td>All required conditions must be true</td>
+          <td>Both inputs are 1</td>
+        </tr>
+        <tr>
+          <td>OR</td>
+          <td>Any acceptable condition may be true</td>
+          <td>At least one input is 1</td>
+        </tr>
+        <tr>
+          <td>NOT</td>
+          <td>Reverse the input state</td>
+          <td>The input is 0</td>
+        </tr>
+        <tr>
+          <td>XOR</td>
+          <td>Exactly one of two alternatives is true</td>
+          <td>The inputs are different</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-building-a-logic-rule">Worked example: building a logic rule</h3>
+    <p>
+      A security door opens when a valid keycard is present and either the PIN is correct or the door has
+      been released remotely.
+    </p>
+    <p>
+      Let <code>K</code> be keycard valid, <code>P</code> be PIN correct, and <code>R</code> be remote
+      release. The Boolean expression is <code>K AND (P OR R)</code>.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">K</th>
+          <th scope="col">P</th>
+          <th scope="col">R</th>
+          <th scope="col">Door opens?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+      </tbody>
+    </table>
+    <p>
+      A valid logic diagram would first combine <code>P</code> and <code>R</code> with an OR gate, then
+      combine that output with <code>K</code> using an AND gate.
+    </p>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        XOR is not the same as OR. OR allows both inputs to be 1; XOR gives output 1 only when the inputs
+        are different.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a13}>
+  <TextbookChunk
+    label="A1.3.1, A1.3.2, A1.3.3, A1.3.4"
+    summary="Describe the operating system as a resource manager, compare scheduling approaches, and evaluate when polling or interrupts are appropriate."
+    visibility="sl"
+  >
+    <p>
+      An operating system abstracts hardware complexity so that applications and users do not have to manage
+      the CPU, memory, devices, and files directly. Strong answers explain the operating system as a control
+      layer that allocates resources and keeps the system stable while many processes compete for attention.
+    </p>
+
+    <h3 id="overview-operating-system-functions">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Function</th>
+          <th scope="col">What the OS does</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Memory management</td>
+          <td>Allocates and protects memory for running processes</td>
+          <td>Stops processes interfering with each other</td>
+        </tr>
+        <tr>
+          <td>File management</td>
+          <td>Organizes files, permissions, and storage access</td>
+          <td>Keeps data persistent and structured</td>
+        </tr>
+        <tr>
+          <td>Device management</td>
+          <td>Coordinates input and output devices</td>
+          <td>Lets hardware interact through a consistent system layer</td>
+        </tr>
+        <tr>
+          <td>Scheduling</td>
+          <td>Decides which process gets CPU time and when</td>
+          <td>Balances responsiveness and throughput</td>
+        </tr>
+        <tr>
+          <td>Security and integrity</td>
+          <td>Controls access and background system operations</td>
+          <td>Protects the system while services keep running</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Different scheduling methods fit different priorities. First-come first-served is easy to reason about
+      but can delay short jobs behind long ones. Round robin improves fairness for interactive workloads by
+      rotating CPU time. Priority scheduling helps urgent tasks, but if it is poorly managed it can lead to
+      starvation.
+    </p>
+
+    <h3 id="worked-example-polling-vs-interrupts">Worked example: polling or interrupts?</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Situation</th>
+          <th scope="col">Better approach</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Keyboard input on a laptop</td>
+          <td>Interrupts</td>
+          <td>User events are unpredictable and quick response is needed with low power waste.</td>
+        </tr>
+        <tr>
+          <td>Temperature check every 10 seconds in a simple building system</td>
+          <td>Polling</td>
+          <td>The event is regular and controlled latency is acceptable.</td>
+        </tr>
+        <tr>
+          <td>Network data arriving at irregular times</td>
+          <td>Interrupts</td>
+          <td>Waiting for a poll cycle could delay handling and waste CPU cycles.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="warning" label="Evaluation rule">
+      <p>
+        Do not treat interrupts as automatically better. The syllabus expects evaluation against context:
+        event frequency, overhead, power source, predictability, and required response behaviour.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A1.3.5, A1.3.6, A1.3.7"
+    summary="HL extends OS study into multitasking risks and introduces control-system components, feedback, and real-world applications."
+    visibility="hl"
+  >
+    <p>
+      Higher level work moves from naming operating-system functions to explaining what can go wrong when
+      many tasks compete for shared resources. It also extends the section into control systems, where
+      computing decisions influence physical processes through sensors and actuators.
+    </p>
+
+    <h3 id="core-understanding-multitasking-and-control-systems">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Concept</th>
+          <th scope="col">Meaning</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Resource contention</td>
+          <td>Processes compete for the same CPU time, memory, or device access.</td>
+          <td>Poor control causes delays and unstable performance.</td>
+        </tr>
+        <tr>
+          <td>Deadlock</td>
+          <td>Processes wait on each other in a cycle and cannot progress.</td>
+          <td>The system may appear active, but useful work stops.</td>
+        </tr>
+        <tr>
+          <td>Open-loop control</td>
+          <td>The system acts without measuring the result.</td>
+          <td>It is simpler, but it cannot self-correct.</td>
+        </tr>
+        <tr>
+          <td>Closed-loop control</td>
+          <td>The output is measured and fed back into the controller.</td>
+          <td>The system can correct errors and adapt to changing conditions.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      A control system typically links input, process, output, and feedback. Sensors collect measurements,
+      the controller applies a control algorithm, actuators change the physical system, and transducers help
+      convert signals into a usable form where needed.
+    </p>
+
+    <h3 id="worked-example-thermostat-feedback-loop">Worked example: thermostat feedback loop</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Stage</th>
+          <th scope="col">What happens</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Input</td>
+          <td>The setpoint is <code>22 C</code>.</td>
+        </tr>
+        <tr>
+          <td>Sensor reading</td>
+          <td>The room temperature is measured at <code>19 C</code>.</td>
+        </tr>
+        <tr>
+          <td>Controller decision</td>
+          <td>The controller detects an error and sends a stronger heating command.</td>
+        </tr>
+        <tr>
+          <td>Actuator response</td>
+          <td>The heating system increases output.</td>
+        </tr>
+        <tr>
+          <td>Feedback</td>
+          <td>The sensor measures the new temperature and the cycle repeats.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="recap" label="HL recap">
+      <p>
+        The common thread in this section is control. The operating system controls access to resources inside
+        the computer, while the control system controls behaviour in the external process it manages.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a14}>
+  <TextbookChunk
+    label="A1.4.1"
+    summary="Evaluate interpreters and compilers by comparing translation method, error detection, portability, runtime behaviour, and fit for context."
+    visibility="hl"
+  >
+    <p>
+      Translation is not just a technical mechanism; it is a design choice. Evaluation means judging which
+      approach is most suitable for a scenario and defending that judgement with clear criteria rather than
+      claiming that one translator is always best.
+    </p>
+
+    <h3 id="core-understanding-translation-criteria">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Criterion</th>
+          <th scope="col">Interpreter</th>
+          <th scope="col">Compiler</th>
+          <th scope="col">Bytecode + JIT context</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Translation process</td>
+          <td>Translates and executes during runtime</td>
+          <td>Translates the whole program before execution</td>
+          <td>Compiles to bytecode, then improves hot paths during runtime</td>
+        </tr>
+        <tr>
+          <td>Error detection</td>
+          <td>Errors may appear as the program runs</td>
+          <td>Syntax and some semantic issues are caught before execution</td>
+          <td>Some checking happens before runtime, with further optimisation while running</td>
+        </tr>
+        <tr>
+          <td>Performance</td>
+          <td>Usually slower on repeated execution</td>
+          <td>Usually faster once compiled</td>
+          <td>Can improve long-run speed after warm-up</td>
+        </tr>
+        <tr>
+          <td>Portability</td>
+          <td>High when the interpreter exists on each platform</td>
+          <td>Lower unless a separate build is produced per target</td>
+          <td>High because the runtime handles platform differences</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-choosing-a-translation-approach">Worked example: choosing a translation approach</h3>
+    <p>
+      Consider three different products:
+    </p>
+    <ol>
+      <li>A classroom script changed every day and run on mixed operating systems.</li>
+      <li>A performance-critical game engine shipped to one known platform.</li>
+      <li>A long-running cross-platform service with repeated high-volume workloads.</li>
+    </ol>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Strongest choice</th>
+          <th scope="col">Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Frequently changed classroom script</td>
+          <td>Interpreter</td>
+          <td>Fast testing and high portability matter more than peak execution speed.</td>
+        </tr>
+        <tr>
+          <td>Performance-critical single-platform game engine</td>
+          <td>Compiler</td>
+          <td>Precompiled native code supports stronger runtime performance.</td>
+        </tr>
+        <tr>
+          <td>Long-running cross-platform service</td>
+          <td>Bytecode runtime with JIT</td>
+          <td>It balances portability with runtime optimisation for heavily reused code paths.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Evaluation warning">
+      <p>
+        Compiled does not mean universally better. The command term is <strong>evaluate</strong>, so a strong
+        answer must weigh the benefits and limitations of each approach against a concrete use case.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>

@@ -1,12 +1,8 @@
 import { defineCollection, z } from 'astro:content';
-
-const subtopicSchema = z.object({
-  code: z.string().min(1),
-  title: z.string().min(1)
-});
+import { subtopicSchema, textbookMetadataSchema } from './textbook-schema';
 
 const ibTextbooks = defineCollection({
-  schema: z.object({
+  schema: textbookMetadataSchema.extend({
     level: z.enum(['sl', 'hl']),
     unitNumber: z.number().int().min(1),
     unitName: z.string().min(1),
@@ -17,7 +13,7 @@ const ibTextbooks = defineCollection({
 });
 
 const igcseTextbooks = defineCollection({
-  schema: z.object({
+  schema: textbookMetadataSchema.extend({
     topicNumber: z.number().int().min(1).max(10),
     topicName: z.string().min(1),
     summary: z.string().min(1),

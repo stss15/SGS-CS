@@ -1,0 +1,436 @@
+---
+import TextbookCallout from '../TextbookCallout.astro';
+import TextbookChunk from '../TextbookChunk.astro';
+import TextbookPageIntro from '../TextbookPageIntro.astro';
+import TextbookSectionBlock from '../TextbookSectionBlock.astro';
+import type { TextbookChapterModel, TextbookSectionModel } from '../../../lib/textbook-model';
+
+interface Props {
+  chapter: TextbookChapterModel;
+}
+
+const { chapter } = Astro.props as Props;
+
+const requireSection = (code: string): TextbookSectionModel => {
+  const section = chapter.sections.find((candidate) => candidate.code === code);
+  if (!section) {
+    throw new Error(`Missing textbook section "${code}" for rebuilt chapter ${chapter.code}.`);
+  }
+  return section;
+};
+
+const b41 = requireSection('B4.1');
+---
+
+<TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+  <p>
+    B4 is the HL-only chapter that moves from familiar linear structures into more specialized abstract
+    data types. The central question is not only how each structure is arranged, but also why one
+    structure is more suitable than another for a given task.
+  </p>
+  <TextbookCallout tone="note" label="Reading pattern">
+    <p>
+      Start by separating the abstract idea from the implementation. Then compare how each structure
+      stores data, how it retrieves data, and what trade-offs appear when the collection grows. That
+      sequence makes later evaluation questions much easier.
+    </p>
+  </TextbookCallout>
+</TextbookPageIntro>
+
+<TextbookSectionBlock section={b41}>
+  <TextbookChunk
+    label="B4.1.1"
+    summary="Explain the properties and purpose of ADTs by focusing on the operations a structure supports, rather than on one single implementation."
+    visibility="hl"
+  >
+    <p>
+      An abstract data type is defined by what it does and what operations it supports, not by the
+      exact way it is stored in memory. That distinction matters because the same abstract behavior
+      can often be implemented in more than one concrete way.
+    </p>
+
+    <h3 id="overview-properties-and-purpose-of-adts">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">ADT idea</th>
+          <th scope="col">What stays abstract</th>
+          <th scope="col">Why it is useful</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Behavior over storage</td>
+          <td>The permitted operations and expected results</td>
+          <td>Lets programmers reason about use without committing to one implementation too early</td>
+        </tr>
+        <tr>
+          <td>Implementation flexibility</td>
+          <td>The internal representation may vary</td>
+          <td>Allows the same idea to be optimized for different contexts</td>
+        </tr>
+        <tr>
+          <td>Interface consistency</td>
+          <td>The user of the structure relies on the operations, not internal details</td>
+          <td>Improves modularity and maintainability</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-adt-vs-implementation">Worked example: ADT vs implementation</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">ADT</th>
+          <th scope="col">Core operations</th>
+          <th scope="col">Possible implementation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Stack</td>
+          <td>Push, pop, peek</td>
+          <td>Array-based or linked implementation</td>
+        </tr>
+        <tr>
+          <td>Set</td>
+          <td>Add, remove, membership test</td>
+          <td>Hash-based or tree-based implementation</td>
+        </tr>
+        <tr>
+          <td>Linked list</td>
+          <td>Traverse, insert, delete</td>
+          <td>Nodes connected by references</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The operations define the ADT. The internal structure defines one implementation choice. That
+      is why the same abstract behavior can appear in different programming environments with slightly
+      different underlying mechanics.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B4.1.2, B4.1.3"
+    summary="Evaluate linked lists through their trade-offs, then construct and apply singly, doubly, and circular linked lists by following node and pointer relationships carefully."
+    visibility="hl"
+  >
+    <p>
+      Linked lists store data in nodes connected by references rather than by contiguous indexed
+      positions. This makes them dynamic and flexible, but it also changes what operations are fast
+      and what operations are slow.
+    </p>
+
+    <h3 id="overview-linked-list-types-and-trade-offs">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Structure</th>
+          <th scope="col">Main feature</th>
+          <th scope="col">Strength</th>
+          <th scope="col">Limitation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Singly linked list</td>
+          <td>Each node points to the next node</td>
+          <td>Simple structure and efficient insertion near known positions</td>
+          <td>Traversal works in one direction only</td>
+        </tr>
+        <tr>
+          <td>Doubly linked list</td>
+          <td>Each node points forward and backward</td>
+          <td>Easier reverse traversal and deletion from the middle</td>
+          <td>Uses more memory per node</td>
+        </tr>
+        <tr>
+          <td>Circular linked list</td>
+          <td>The tail links back to the head</td>
+          <td>Useful for repeated cyclic processing</td>
+          <td>Traversal needs careful stopping conditions</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="warning" label="Evaluation rule">
+      <p>
+        Linked lists are not simply “better than arrays.” They are stronger when insertions and
+        deletions matter more than direct indexed access. If fast random access is the main need,
+        arrays or lists are often the better choice.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="worked-example-constructing-a-singly-linked-list">Worked example: constructing a singly linked list</h3>
+    <pre><code class="language-python">class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+head = Node("Aarav")
+head.next = Node("Yuki")
+head.next.next = Node("Sofia")</code></pre>
+    <p>
+      This construction creates three nodes and links them in order. Traversal would begin at
+      <code>head</code> and follow each <code>next</code> reference until a node points to
+      <code>None</code>.
+    </p>
+
+    <h3 id="worked-example-linked-list-evaluation">Worked example: evaluating a use case</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Would a linked list fit?</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A music queue with frequent insertions and removals in the middle</td>
+          <td>Yes, often</td>
+          <td>Pointer updates can be cheaper than shifting many later elements</td>
+        </tr>
+        <tr>
+          <td>A marks table that repeatedly needs direct access to item 500</td>
+          <td>No, usually not</td>
+          <td>Sequential traversal is slower than direct indexed lookup</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B4.1.4"
+    summary="Explain BSTs by linking their ordering rule to search behavior, traversal outcomes, and the effect of tree shape on performance."
+    visibility="hl"
+  >
+    <p>
+      A binary search tree stores values so that smaller values are placed to the left of a node and
+      larger values are placed to the right. That rule gives BSTs their search behavior and explains
+      why traversal order matters.
+    </p>
+
+    <h3 id="overview-bst-structure-and-properties">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">BST property</th>
+          <th scope="col">Effect</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>left &lt; node &lt; right</code></td>
+          <td>Creates a predictable search rule</td>
+          <td>Search can ignore half of the remaining tree at each decision point</td>
+        </tr>
+        <tr>
+          <td>In-order traversal</td>
+          <td>Visits left, node, right</td>
+          <td>Produces sorted output for a valid BST</td>
+        </tr>
+        <tr>
+          <td>Tree shape depends on insertion order</td>
+          <td>A balanced tree behaves differently from a skewed one</td>
+          <td>Performance can degrade toward linear behavior if the tree becomes uneven</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-trace-building-and-traversing-a-bst">Worked trace: building and traversing a BST</h3>
+    <p>Insert the values <code>10, 5, 15, 3, 7</code> in that order.</p>
+    <pre><code class="language-text">      10
+     /  \
+    5    15
+   / \
+  3   7</code></pre>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Traversal</th>
+          <th scope="col">Sequence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>In-order</td>
+          <td><code>3, 5, 7, 10, 15</code></td>
+        </tr>
+        <tr>
+          <td>Pre-order</td>
+          <td><code>10, 5, 3, 7, 15</code></td>
+        </tr>
+        <tr>
+          <td>Post-order</td>
+          <td><code>3, 7, 5, 15, 10</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        A BST is not automatically balanced. The binary-search rule still holds in an unbalanced tree,
+        but search paths may become much longer.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B4.1.5"
+    summary="Construct and apply sets as an ADT by using uniqueness, membership testing, and standard set operations to solve realistic problems."
+    visibility="hl"
+  >
+    <p>
+      A set stores unique values only. Order is not the priority. The strength of a set lies in
+      checking membership quickly and combining collections through operations such as union,
+      intersection, and difference.
+    </p>
+
+    <h3 id="overview-set-operations-and-purpose">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Operation</th>
+          <th scope="col">Meaning</th>
+          <th scope="col">Example question it answers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Union</td>
+          <td>Elements in either set</td>
+          <td>Who is in robotics or coding?</td>
+        </tr>
+        <tr>
+          <td>Intersection</td>
+          <td>Elements in both sets</td>
+          <td>Who is in both clubs?</td>
+        </tr>
+        <tr>
+          <td>Difference</td>
+          <td>Elements in one set but not the other</td>
+          <td>Who is in robotics but not coding?</td>
+        </tr>
+        <tr>
+          <td>Membership test</td>
+          <td>Checks whether a value is already present</td>
+          <td>Has this user already voted?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-applying-set-operations">Worked example: applying set operations</h3>
+    <pre><code class="language-python">robotics = {"Ava", "Noah", "Liam", "Mia"}
+coding = {"Mia", "Liam", "Zoe"}
+
+both = robotics.intersection(coding)
+either = robotics.union(coding)
+only_robotics = robotics.difference(coding)</code></pre>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Expression</th>
+          <th scope="col">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>both</code></td>
+          <td><code>{"Liam", "Mia"}</code></td>
+        </tr>
+        <tr>
+          <td><code>either</code></td>
+          <td><code>{"Ava", "Noah", "Liam", "Mia", "Zoe"}</code></td>
+        </tr>
+        <tr>
+          <td><code>only_robotics</code></td>
+          <td><code>{"Ava", "Noah"}</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B4.1.6"
+    summary="Explain the core principles of ADTs by linking interface versus implementation to hash-based storage, collisions, load factor, and rehashing."
+    visibility="hl"
+  >
+    <p>
+      The core principles of ADTs are about choosing structures for their behavior, not just naming
+      them. In this chapter, hash-based storage is a useful example because it shows how an abstract
+      idea such as fast retrieval depends on careful implementation choices.
+    </p>
+
+    <h3 id="overview-core-principles-of-adts">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Principle</th>
+          <th scope="col">Meaning</th>
+          <th scope="col">Representative example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Interface over representation</td>
+          <td>The user relies on supported operations, not on hidden storage detail</td>
+          <td>Using set membership without needing to know the exact internal structure</td>
+        </tr>
+        <tr>
+          <td>Hashing</td>
+          <td>A key is converted into a storage index</td>
+          <td>Using a student ID to find an array position</td>
+        </tr>
+        <tr>
+          <td>Collision handling</td>
+          <td>Different keys may map to the same index and need a resolution strategy</td>
+          <td>Chaining or probing</td>
+        </tr>
+        <tr>
+          <td>Load factor and rehashing</td>
+          <td>Performance drops as the table fills, so resizing may be needed</td>
+          <td>Creating a larger table and redistributing entries</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-hash-table-collision">Worked example: a simple collision</h3>
+    <p>Suppose a table of size <code>10</code> uses <code>index = key % 10</code>.</p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Key</th>
+          <th scope="col">Computed index</th>
+          <th scope="col">Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>42</code></td>
+          <td><code>2</code></td>
+          <td>Stored at index 2</td>
+        </tr>
+        <tr>
+          <td><code>32</code></td>
+          <td><code>2</code></td>
+          <td>Collision at index 2</td>
+        </tr>
+        <tr>
+          <td><code>17</code></td>
+          <td><code>7</code></td>
+          <td>Stored at index 7</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      If chaining is used, the conflicting values are stored together at the same slot through a linked
+      structure. If probing is used, the program searches for another available slot. In both cases,
+      the core idea is the same: the abstract goal is fast retrieval, but the implementation must deal
+      with collisions safely.
+    </p>
+
+  </TextbookChunk>
+</TextbookSectionBlock>

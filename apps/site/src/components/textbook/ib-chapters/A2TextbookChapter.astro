@@ -1,0 +1,1330 @@
+---
+import TextbookCallout from '../TextbookCallout.astro';
+import TextbookChunk from '../TextbookChunk.astro';
+import TextbookPageIntro from '../TextbookPageIntro.astro';
+import TextbookSectionBlock from '../TextbookSectionBlock.astro';
+import type { TextbookChapterModel, TextbookSectionModel } from '../../../lib/textbook-model';
+
+interface Props {
+  chapter: TextbookChapterModel;
+}
+
+const { chapter } = Astro.props as Props;
+
+const requireSection = (code: string): TextbookSectionModel => {
+  const section = chapter.sections.find((candidate) => candidate.code === code);
+  if (!section) {
+    throw new Error(`Missing textbook section "${code}" for rebuilt chapter ${chapter.code}.`);
+  }
+  return section;
+};
+
+const a21 = requireSection('A2.1');
+const a22 = requireSection('A2.2');
+const a23 = requireSection('A2.3');
+const a24 = requireSection('A2.4');
+---
+
+<TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+  <p>
+    A2 connects the visible parts of a network, such as routers, switches, and access points, to the
+    less visible rules that make transmission reliable and secure. The chapter moves from network
+    purpose and architecture into addressing, packet movement, routing, and the controls used to
+    reduce risk.
+  </p>
+  <TextbookCallout tone="note" label="Reading pattern">
+    <p>
+      Start by asking what kind of network is being described and what the infrastructure is trying to
+      achieve. Then trace how devices, protocols, and addressing move data. Finish by judging how
+      far segmentation, firewalls, encryption, and other controls actually improve security.
+    </p>
+  </TextbookCallout>
+</TextbookPageIntro>
+
+<TextbookSectionBlock section={a21}>
+  <TextbookChunk
+    label="A2.1.1, A2.1.2"
+    summary="Describe network types and modern digital infrastructures by linking each one to its scale, purpose, benefits, and limitations."
+    visibility="sl"
+  >
+    <p>
+      A network is a set of connected devices that exchange data using agreed rules. The first step is
+      to identify the scale and purpose of the connection. After that, the focus shifts to the larger
+      infrastructures that allow services to operate across many locations and devices.
+    </p>
+
+    <h3 id="overview-network-types">Overview: network types</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Network type</th>
+          <th scope="col">Typical scope</th>
+          <th scope="col">Why it is used</th>
+          <th scope="col">Main limitation or consideration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>LAN</td>
+          <td>One building or campus</td>
+          <td>High-speed local resource sharing</td>
+          <td>Limited geographic reach</td>
+        </tr>
+        <tr>
+          <td>WAN</td>
+          <td>Large geographic area</td>
+          <td>Connects multiple LANs over distance</td>
+          <td>Higher cost and more dependency on external links</td>
+        </tr>
+        <tr>
+          <td>PAN</td>
+          <td>One person and nearby devices</td>
+          <td>Short-range personal connectivity</td>
+          <td>Very limited range and capacity</td>
+        </tr>
+        <tr>
+          <td>VPN</td>
+          <td>Private overlay across public infrastructure</td>
+          <td>Secure remote access and protected communication</td>
+          <td>Performance depends on the underlying internet connection</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="overview-modern-digital-infrastructure">Overview: modern digital infrastructure</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Infrastructure</th>
+          <th scope="col">Core idea</th>
+          <th scope="col">Benefit</th>
+          <th scope="col">Limitation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>The internet</td>
+          <td>A global interconnection of networks</td>
+          <td>Worldwide communication and service access</td>
+          <td>Depends on shared public infrastructure</td>
+        </tr>
+        <tr>
+          <td>Cloud computing</td>
+          <td>Remote provision of storage, processing, and services</td>
+          <td>Scalable resources without local ownership of all hardware</td>
+          <td>Ongoing cost and provider dependence</td>
+        </tr>
+        <tr>
+          <td>Distributed systems</td>
+          <td>Multiple computers cooperate as one wider system</td>
+          <td>Improved resilience and workload sharing</td>
+          <td>Coordination is more complex</td>
+        </tr>
+        <tr>
+          <td>Edge computing</td>
+          <td>Processing happens near the source of the data</td>
+          <td>Lower latency and less central traffic</td>
+          <td>Devices at the edge may be less powerful</td>
+        </tr>
+        <tr>
+          <td>Mobile networks</td>
+          <td>Wireless infrastructure supporting moving devices</td>
+          <td>Connectivity without fixed cabling</td>
+          <td>Coverage and bandwidth can vary by location</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-matching-network-and-infrastructure">Worked example: matching a network to a context</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Best fit</th>
+          <th scope="col">Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Classroom devices sharing files and printers inside one school building</td>
+          <td>LAN</td>
+          <td>The main need is fast local communication inside a limited site.</td>
+        </tr>
+        <tr>
+          <td>Staff working from home and accessing internal school systems</td>
+          <td>VPN over the internet</td>
+          <td>The VPN provides protected access across public infrastructure.</td>
+        </tr>
+        <tr>
+          <td>Smart traffic lights responding immediately to local sensor data</td>
+          <td>Edge computing</td>
+          <td>Processing near the junction reduces delay and dependency on a distant server.</td>
+        </tr>
+        <tr>
+          <td>A blockchain service replicated across many machines</td>
+          <td>Distributed system</td>
+          <td>The system depends on multiple nodes sharing and checking the same data.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.1.3"
+    summary="Describe the function of network devices by linking each device to its role in moving or controlling traffic."
+    visibility="sl"
+  >
+    <p>
+      Network devices do not all do the same job. Some connect a device to the network, some direct
+      packets, and some enforce control at the boundary between trusted and untrusted traffic.
+    </p>
+
+    <h3 id="overview-network-devices">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Device</th>
+          <th scope="col">Main function</th>
+          <th scope="col">Typical use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Network interface card (NIC)</td>
+          <td>Connects a device to the network medium</td>
+          <td>Built into a laptop, desktop, or server</td>
+        </tr>
+        <tr>
+          <td>Wireless access point</td>
+          <td>Provides wireless entry to a wired network</td>
+          <td>School or office Wi-Fi</td>
+        </tr>
+        <tr>
+          <td>Switch</td>
+          <td>Forwards frames inside a local network</td>
+          <td>Connects devices inside a LAN</td>
+        </tr>
+        <tr>
+          <td>Router</td>
+          <td>Forwards packets between networks</td>
+          <td>Connects a school LAN to the wider internet</td>
+        </tr>
+        <tr>
+          <td>Gateway</td>
+          <td>Acts as the access point from one network environment to another</td>
+          <td>Default path out of a local network</td>
+        </tr>
+        <tr>
+          <td>Modem</td>
+          <td>Converts signals for the provider connection</td>
+          <td>Links the local network to the ISP service</td>
+        </tr>
+        <tr>
+          <td>Hardware firewall</td>
+          <td>Filters traffic according to security rules</td>
+          <td>Protects the network boundary</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-trace-device-path">Worked trace: one device path through the network</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Step</th>
+          <th scope="col">Device involved</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>NIC</td>
+          <td>The laptop gains a local network connection.</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Wireless access point</td>
+          <td>The wireless signal joins the wired school network.</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Switch</td>
+          <td>Traffic is forwarded inside the local network.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Router or gateway</td>
+          <td>The request is directed toward another network.</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Hardware firewall and modem</td>
+          <td>Traffic is filtered, then converted for the provider connection.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.1.4"
+    summary="Describe the transport and application protocols in scope by explaining what each one contributes to communication."
+    visibility="sl"
+  >
+    <p>
+      Protocols are agreed rules. In this topic, the important distinction is between transport
+      protocols, which control end-to-end delivery, and application protocols, which define the service
+      or message being exchanged.
+    </p>
+
+    <h3 id="overview-transport-and-application-protocols">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Protocol</th>
+          <th scope="col">Type</th>
+          <th scope="col">What it does</th>
+          <th scope="col">Typical use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TCP</td>
+          <td>Transport</td>
+          <td>Provides ordered, reliable delivery with retransmission if needed</td>
+          <td>Web pages, file transfer, login systems</td>
+        </tr>
+        <tr>
+          <td>UDP</td>
+          <td>Transport</td>
+          <td>Sends data with low overhead and no guaranteed delivery</td>
+          <td>Live streaming, gaming, voice traffic</td>
+        </tr>
+        <tr>
+          <td>HTTP</td>
+          <td>Application</td>
+          <td>Transfers standard web requests and responses</td>
+          <td>Ordinary web browsing</td>
+        </tr>
+        <tr>
+          <td>HTTPS</td>
+          <td>Application</td>
+          <td>Transfers web data through an encrypted secure connection</td>
+          <td>Banking, school portals, online shopping</td>
+        </tr>
+        <tr>
+          <td>DHCP</td>
+          <td>Application</td>
+          <td>Assigns IP settings automatically to joining devices</td>
+          <td>Home, school, and office networks</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        TCP and HTTP are not alternatives. TCP handles reliable transport, while HTTP or HTTPS sits
+        above that transport and defines the web request itself.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="worked-example-loading-a-secure-page">Worked example: loading a secure page</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Stage</th>
+          <th scope="col">Protocol in focus</th>
+          <th scope="col">Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Device joins the school network</td>
+          <td>DHCP</td>
+          <td>The device receives an IP address and other configuration settings.</td>
+        </tr>
+        <tr>
+          <td>Connection begins</td>
+          <td>TCP</td>
+          <td>Reliable transport is established for the exchange.</td>
+        </tr>
+        <tr>
+          <td>Web request is sent</td>
+          <td>HTTPS</td>
+          <td>The browser requests secure content from the portal.</td>
+        </tr>
+        <tr>
+          <td>Response arrives</td>
+          <td>TCP plus HTTPS</td>
+          <td>The data is delivered reliably and read securely.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.1.5"
+    summary="Describe the TCP/IP model by identifying the role of each layer and how the layers cooperate during transmission."
+    visibility="hl"
+  >
+    <p>
+      The TCP/IP model explains network communication by grouping responsibilities into layers. Each
+      layer has a different job, and together the layers allow data to move from an application on one
+      device to an application on another.
+    </p>
+
+    <h3 id="overview-tcp-ip-model">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Layer</th>
+          <th scope="col">Main responsibility</th>
+          <th scope="col">Representative example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Application</td>
+          <td>Defines services and message formats for users and software</td>
+          <td>HTTP, HTTPS, DHCP</td>
+        </tr>
+        <tr>
+          <td>Transport</td>
+          <td>Controls end-to-end delivery behavior</td>
+          <td>TCP, UDP</td>
+        </tr>
+        <tr>
+          <td>Internet</td>
+          <td>Handles logical addressing and packet forwarding between networks</td>
+          <td>IP addressing and routing</td>
+        </tr>
+        <tr>
+          <td>Network interface</td>
+          <td>Moves frames across the local medium</td>
+          <td>Ethernet or Wi-Fi transmission</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-trace-layer-encapsulation">Worked trace: one message through the layers</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Layer</th>
+          <th scope="col">What is added or decided</th>
+          <th scope="col">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Application</td>
+          <td>The browser creates an HTTPS request</td>
+          <td>A message ready to be delivered</td>
+        </tr>
+        <tr>
+          <td>Transport</td>
+          <td>TCP organizes the data for reliable transmission</td>
+          <td>Segments can be checked and re-ordered if needed</td>
+        </tr>
+        <tr>
+          <td>Internet</td>
+          <td>IP addresses are attached for routing</td>
+          <td>Packets can travel across networks</td>
+        </tr>
+        <tr>
+          <td>Network interface</td>
+          <td>The packet is framed for the local medium</td>
+          <td>The data is sent over cable or wireless signal</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a22}>
+  <TextbookChunk
+    label="A2.2.1"
+    summary="Describe network topologies by linking structure to reliability, speed, scalability, collisions, and cost."
+    visibility="sl"
+  >
+    <p>
+      A topology is the arrangement of connections in a network. The shape matters because it affects
+      fault tolerance, traffic flow, expansion, and cost.
+    </p>
+
+    <h3 id="overview-network-topologies">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Topology</th>
+          <th scope="col">Main structure</th>
+          <th scope="col">Strength</th>
+          <th scope="col">Limitation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Star</td>
+          <td>Devices connect through one central device</td>
+          <td>Easy to manage and expand</td>
+          <td>The central device is a major point of dependence</td>
+        </tr>
+        <tr>
+          <td>Mesh</td>
+          <td>Nodes have multiple interconnections</td>
+          <td>High reliability if one link fails</td>
+          <td>More expensive and complex to maintain</td>
+        </tr>
+        <tr>
+          <td>Hybrid</td>
+          <td>Combines different topology patterns</td>
+          <td>Can fit varied local needs</td>
+          <td>Planning and troubleshooting are more demanding</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-choosing-a-topology">Worked example: choosing a topology</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Best fit</th>
+          <th scope="col">Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>School computer room with one managed switch</td>
+          <td>Star</td>
+          <td>It is cost-effective, scalable, and simple to troubleshoot.</td>
+        </tr>
+        <tr>
+          <td>Emergency communication network where uptime matters most</td>
+          <td>Mesh</td>
+          <td>Alternative paths keep the network working if one link fails.</td>
+        </tr>
+        <tr>
+          <td>Large campus with offices, labs, and wireless guest access</td>
+          <td>Hybrid</td>
+          <td>Different areas can use different structures while staying connected.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.2.2"
+    summary="Describe server functions by connecting each server type to the service it provides for the network."
+    visibility="hl"
+  >
+    <p>
+      A server is a computer or process that provides a specific network service. In HL, the key point
+      is not only what each server does, but why that service improves scalability, reliability, or
+      security.
+    </p>
+
+    <h3 id="overview-server-functions">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Server type</th>
+          <th scope="col">Function</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DNS server</td>
+          <td>Translates domain names into IP addresses</td>
+          <td>Users can request services by name instead of by number</td>
+        </tr>
+        <tr>
+          <td>DHCP server</td>
+          <td>Assigns IP configuration automatically</td>
+          <td>Reduces manual setup and addressing errors</td>
+        </tr>
+        <tr>
+          <td>File server</td>
+          <td>Stores and shares files centrally</td>
+          <td>Supports controlled access and backup</td>
+        </tr>
+        <tr>
+          <td>Mail server</td>
+          <td>Manages email sending, receiving, and storage</td>
+          <td>Organizes communication as a dedicated service</td>
+        </tr>
+        <tr>
+          <td>Proxy server</td>
+          <td>Handles requests on behalf of clients</td>
+          <td>Can improve filtering, caching, and security control</td>
+        </tr>
+        <tr>
+          <td>Web server</td>
+          <td>Hosts web pages and web applications</td>
+          <td>Delivers content to browsers through HTTP or HTTPS</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-server-chain">Worked example: one client request through several servers</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Step</th>
+          <th scope="col">Server</th>
+          <th scope="col">Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>DHCP server</td>
+          <td>The device receives an IP address and gateway settings.</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>DNS server</td>
+          <td>The school portal name is resolved into an address.</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Proxy server</td>
+          <td>The request is checked against school policy.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Web server</td>
+          <td>The portal page is delivered to the client.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.2.3"
+    summary="Compare and contrast client-server and peer-to-peer models by weighing control, reliability, cost, and typical applications."
+    visibility="sl"
+  >
+    <p>
+      Networking models describe where services and resources are located. The contrast is between a
+      centralized service structure and a more distributed sharing pattern.
+    </p>
+
+    <h3 id="overview-networking-models">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Model</th>
+          <th scope="col">Main idea</th>
+          <th scope="col">Strength</th>
+          <th scope="col">Drawback</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Client-server</td>
+          <td>Clients request resources from dedicated servers</td>
+          <td>Strong control, centralized management, clearer security policy</td>
+          <td>Server failure or overload can affect many clients</td>
+        </tr>
+        <tr>
+          <td>Peer-to-peer</td>
+          <td>Devices share resources directly with one another</td>
+          <td>Simple setup and no need for a major central server</td>
+          <td>Harder to manage consistently at scale</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-matching-networking-models">Worked example: matching the model to the service</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Application</th>
+          <th scope="col">Better fit</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Online banking</td>
+          <td>Client-server</td>
+          <td>Strong centralized control and security are essential.</td>
+        </tr>
+        <tr>
+          <td>Small home file-sharing setup</td>
+          <td>Peer-to-peer</td>
+          <td>Direct sharing can be enough when the scale is small.</td>
+        </tr>
+        <tr>
+          <td>School email platform</td>
+          <td>Client-server</td>
+          <td>Managed accounts and reliable service delivery matter more than decentralization.</td>
+        </tr>
+        <tr>
+          <td>Blockchain network</td>
+          <td>Peer-to-peer</td>
+          <td>Many nodes cooperate without one single central service point.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.2.4"
+    summary="Explain network segmentation by linking segmentation, subnetting, and VLANs to performance, congestion control, and security."
+    visibility="sl"
+  >
+    <p>
+      Segmentation divides a larger network into smaller parts. That division can improve performance,
+      reduce unnecessary traffic, and make access rules easier to manage.
+    </p>
+
+    <h3 id="overview-network-segmentation">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Concept</th>
+          <th scope="col">Main idea</th>
+          <th scope="col">Why it is useful</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Segmentation</td>
+          <td>Divide one network into smaller logical or physical sections</td>
+          <td>Reduces congestion and limits how widely traffic spreads</td>
+        </tr>
+        <tr>
+          <td>Subnetting</td>
+          <td>Split IP address ranges into smaller subnetworks</td>
+          <td>Makes addressing and routing more organized</td>
+        </tr>
+        <tr>
+          <td>VLANs</td>
+          <td>Create separate logical LANs on shared switching hardware</td>
+          <td>Separates groups without needing completely separate hardware</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        Segmentation is not only about blocking access. It is also a performance tool because it
+        reduces unnecessary traffic and helps keep broadcast domains smaller.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="worked-example-school-network-segmentation">Worked example: school network segmentation</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Segment</th>
+          <th scope="col">Reason for separation</th>
+          <th scope="col">Benefit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Administration VLAN</td>
+          <td>Holds sensitive staff and finance systems</td>
+          <td>Access can be restricted tightly</td>
+        </tr>
+        <tr>
+          <td>Student classroom VLAN</td>
+          <td>Handles routine learning traffic</td>
+          <td>Traffic from one class does not flood every other area</td>
+        </tr>
+        <tr>
+          <td>Guest Wi-Fi segment</td>
+          <td>Supports visitors without exposing internal services</td>
+          <td>Improves security and resource control</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a23}>
+  <TextbookChunk
+    label="A2.3.1"
+    summary="Describe IP addressing by distinguishing IPv4 from IPv6 and contrasting public, private, static, and dynamic addresses."
+    visibility="sl"
+  >
+    <p>
+      IP addressing identifies devices and networks. A strong description distinguishes address format,
+      visibility, and assignment method rather than treating every IP address as the same kind of label.
+    </p>
+
+    <h3 id="overview-ip-addressing-types">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Addressing idea</th>
+          <th scope="col">Meaning</th>
+          <th scope="col">Typical implication</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>IPv4</td>
+          <td>32-bit addressing system</td>
+          <td>Still widely used, but the address space is limited</td>
+        </tr>
+        <tr>
+          <td>IPv6</td>
+          <td>128-bit addressing system</td>
+          <td>Provides a much larger address space</td>
+        </tr>
+        <tr>
+          <td>Public IP address</td>
+          <td>Routable on the public internet</td>
+          <td>Used for communication with external networks</td>
+        </tr>
+        <tr>
+          <td>Private IP address</td>
+          <td>Used inside a local network</td>
+          <td>Not directly routable on the public internet</td>
+        </tr>
+        <tr>
+          <td>Static IP address</td>
+          <td>Remains fixed</td>
+          <td>Useful for devices that need a predictable address</td>
+        </tr>
+        <tr>
+          <td>Dynamic IP address</td>
+          <td>Assigned automatically</td>
+          <td>Simplifies onboarding and routine management</td>
+        </tr>
+        <tr>
+          <td>NAT</td>
+          <td>Translates private internal addresses to public-facing ones</td>
+          <td>Reduces public-address demand and hides internal structure</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-nat-in-action">Worked example: NAT in action</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Device or stage</th>
+          <th scope="col">Address in use</th>
+          <th scope="col">What happens</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Student laptop inside the school</td>
+          <td><code>192.168.10.24</code></td>
+          <td>The device uses a private address on the local network.</td>
+        </tr>
+        <tr>
+          <td>Router to the internet</td>
+          <td><code>81.22.14.90</code></td>
+          <td>NAT replaces the private source address with the public one.</td>
+        </tr>
+        <tr>
+          <td>Reply traffic returns</td>
+          <td><code>81.22.14.90</code> then mapped back</td>
+          <td>The router restores the internal destination so the reply reaches the laptop.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.3.2"
+    summary="Compare fibre optic, twisted pair, and wireless transmission media by weighing bandwidth, cost, range, reliability, and security."
+    visibility="sl"
+  >
+    <p>
+      Transmission media determine how signals travel. Comparison questions are strongest when they
+      link the properties of the medium to the context rather than naming one medium as always best.
+    </p>
+
+    <h3 id="overview-data-transmission-media">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Medium</th>
+          <th scope="col">Strength</th>
+          <th scope="col">Limitation</th>
+          <th scope="col">Typical use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fibre optic cable</td>
+          <td>Very high bandwidth, low attenuation, strong resistance to interference</td>
+          <td>Higher installation complexity and cost</td>
+          <td>Backbone links and high-capacity connections</td>
+        </tr>
+        <tr>
+          <td>Twisted pair cable</td>
+          <td>Affordable and widely used</td>
+          <td>Lower bandwidth and shorter effective range than fibre</td>
+          <td>Classrooms, offices, and local wired runs</td>
+        </tr>
+        <tr>
+          <td>Wireless transmission</td>
+          <td>Flexible and mobile</td>
+          <td>More vulnerable to interference, range limits, and security concerns</td>
+          <td>Laptops, tablets, phones, and guest access</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-choosing-a-transmission-medium">Worked example: choosing a transmission medium</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Best fit</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Connect two campus buildings with heavy traffic between them</td>
+          <td>Fibre optic</td>
+          <td>Bandwidth and distance matter more than installation simplicity.</td>
+        </tr>
+        <tr>
+          <td>Wire a standard desktop room inside one building</td>
+          <td>Twisted pair</td>
+          <td>It provides reliable local connectivity at manageable cost.</td>
+        </tr>
+        <tr>
+          <td>Give visitors temporary access in a library or hall</td>
+          <td>Wireless</td>
+          <td>Mobility and convenience are more important than maximum bandwidth.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.3.3"
+    summary="Explain packet switching by showing how data is divided, addressed, forwarded, and reassembled."
+    visibility="sl"
+  >
+    <p>
+      Packet switching sends data as smaller units rather than as one uninterrupted block. Each packet
+      can carry control information that helps the network move it toward the destination and rebuild
+      the original message at the end.
+    </p>
+
+    <h3 id="overview-packet-switching">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Stage</th>
+          <th scope="col">What happens</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Segmentation</td>
+          <td>Data is split into packets</td>
+          <td>Large messages become easier to manage across the network</td>
+        </tr>
+        <tr>
+          <td>Header attachment</td>
+          <td>Each packet gains control information such as addressing</td>
+          <td>Routers can decide where to send it</td>
+        </tr>
+        <tr>
+          <td>Forwarding</td>
+          <td>Switches and routers move packets across the network</td>
+          <td>Traffic can share links efficiently</td>
+        </tr>
+        <tr>
+          <td>Reassembly</td>
+          <td>Packets are put back into the correct order at the destination</td>
+          <td>The original message becomes usable again</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-trace-packet-switching">Worked trace: one file sent as packets</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Packet</th>
+          <th scope="col">Route taken</th>
+          <th scope="col">Key idea</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>School switch -> router A -> router C</td>
+          <td>Packets can be forwarded independently.</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>School switch -> router B -> router C</td>
+          <td>A different available path may still reach the same destination.</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>School switch -> router A -> router C</td>
+          <td>The destination uses sequence information to reassemble the data correctly.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.3.4"
+    summary="Explain static and dynamic routing by comparing how each method handles configuration, maintenance, and change."
+    visibility="hl"
+  >
+    <p>
+      Routing decides the path that packets take. At HL, the comparison matters: static routing is
+      manually defined, while dynamic routing adjusts as routers exchange information about the
+      network.
+    </p>
+
+    <h3 id="overview-static-vs-dynamic-routing">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Factor</th>
+          <th scope="col">Static routing</th>
+          <th scope="col">Dynamic routing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Configuration</td>
+          <td>Manual</td>
+          <td>Built from router exchanges and route updates</td>
+        </tr>
+        <tr>
+          <td>Maintenance</td>
+          <td>Administrator must edit routes when the network changes</td>
+          <td>Routers update paths automatically</td>
+        </tr>
+        <tr>
+          <td>Complexity</td>
+          <td>Lower in small stable networks</td>
+          <td>Higher because routers need more decision-making</td>
+        </tr>
+        <tr>
+          <td>Resource usage</td>
+          <td>Low</td>
+          <td>Higher CPU, memory, and bandwidth use</td>
+        </tr>
+        <tr>
+          <td>Convergence and fault response</td>
+          <td>No automatic recovery</td>
+          <td>Routes can be recalculated after a change</td>
+        </tr>
+        <tr>
+          <td>Scalability</td>
+          <td>Best for smaller, stable networks</td>
+          <td>Better for larger or changing networks</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-routing-failure">Worked example: what happens after a link failure</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Routing mode</th>
+          <th scope="col">Behavior after link failure</th>
+          <th scope="col">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Static</td>
+          <td>Traffic continues to use the stored route until an administrator changes it</td>
+          <td>Outage can last longer</td>
+        </tr>
+        <tr>
+          <td>Dynamic</td>
+          <td>Routers exchange updates and select a new path after convergence</td>
+          <td>Recovery is faster in a changing network</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a24}>
+  <TextbookChunk
+    label="A2.4.1"
+    summary="Discuss firewall effectiveness by balancing what firewalls do well against what they cannot solve on their own."
+    visibility="sl"
+  >
+    <p>
+      A firewall inspects traffic and applies rules to decide what should be allowed or blocked. The
+      command term is discuss, so the answer must be balanced: firewalls are useful, but they are not a
+      complete security solution.
+    </p>
+
+    <h3 id="overview-firewall-effectiveness">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Firewall contribution</th>
+          <th scope="col">Why it helps</th>
+          <th scope="col">Limit or caution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Filters inbound and outbound traffic</td>
+          <td>Blocks traffic that breaks the defined security policy</td>
+          <td>Protection depends on the quality of the rule set</td>
+        </tr>
+        <tr>
+          <td>Uses whitelists, blacklists, and rules</td>
+          <td>Allows only approved traffic patterns</td>
+          <td>Misconfiguration can create major gaps</td>
+        </tr>
+        <tr>
+          <td>Supports NAT at the boundary</td>
+          <td>Reduces exposure of internal private addresses</td>
+          <td>NAT improves obscurity, but it is not a full defence by itself</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="warning" label="Discussion rule">
+      <p>
+        A good discussion names both strengths and limitations. Firewalls help with traffic control,
+        but they do not solve social engineering, weak passwords, or every threat hidden inside allowed
+        traffic.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="worked-example-school-firewall-policy">Worked example: a school firewall policy</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Rule</th>
+          <th scope="col">Purpose</th>
+          <th scope="col">What still remains necessary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Allow outbound HTTPS to approved learning platforms</td>
+          <td>Supports secure web access for lessons</td>
+          <td>Account security and staff awareness still matter</td>
+        </tr>
+        <tr>
+          <td>Block unsolicited inbound traffic from the public internet</td>
+          <td>Reduces direct exposure of student devices</td>
+          <td>Internal patching and endpoint protection are still required</td>
+        </tr>
+        <tr>
+          <td>Restrict staff server access to the staff VLAN</td>
+          <td>Limits who can reach sensitive systems</td>
+          <td>Authentication and monitoring are still needed</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.4.2, A2.4.3"
+    summary="Describe common network vulnerabilities and countermeasures by linking each threat to an appropriate defensive response."
+    visibility="hl"
+  >
+    <p>
+      Vulnerabilities describe how a network can be attacked or exploited. Countermeasures reduce that
+      risk, but no single control solves every threat. The important skill is matching the weakness to
+      the most relevant response.
+    </p>
+
+    <h3 id="overview-vulnerabilities-and-countermeasures">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Vulnerability</th>
+          <th scope="col">Typical effect</th>
+          <th scope="col">Representative countermeasure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DDoS</td>
+          <td>Overwhelms a service with traffic</td>
+          <td>DDoS mitigation tools and traffic filtering</td>
+        </tr>
+        <tr>
+          <td>Insecure protocols</td>
+          <td>Traffic can be exposed or altered more easily</td>
+          <td>Encrypted protocols such as HTTPS or TLS-based services</td>
+        </tr>
+        <tr>
+          <td>Malware</td>
+          <td>Damages systems, steals data, or spreads further</td>
+          <td>Email filtering, patching, and careful update practice</td>
+        </tr>
+        <tr>
+          <td>MitM attack</td>
+          <td>Communication is intercepted or changed</td>
+          <td>TLS or SSL certificates and secure authentication</td>
+        </tr>
+        <tr>
+          <td>Phishing</td>
+          <td>Users are tricked into revealing credentials</td>
+          <td>Email filtering, MFA, and staff training</td>
+        </tr>
+        <tr>
+          <td>SQL injection</td>
+          <td>Database actions become possible through unsafe input</td>
+          <td>Input validation and whitelisting</td>
+        </tr>
+        <tr>
+          <td>XSS</td>
+          <td>Malicious scripts run in trusted pages</td>
+          <td>Input validation and content security policies</td>
+        </tr>
+        <tr>
+          <td>Unpatched software</td>
+          <td>Known weaknesses remain open</td>
+          <td>Regular updates and security testing</td>
+        </tr>
+        <tr>
+          <td>Weak authentication</td>
+          <td>Accounts are easier to compromise</td>
+          <td>Complex password policies and MFA</td>
+        </tr>
+        <tr>
+          <td>Zero-day exploit</td>
+          <td>Attack occurs before a patch is available</td>
+          <td>Layered controls, IDS, IPS, and rapid response planning</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="note" label="Important supporting controls">
+      <p>
+        The guide also expects regular security testing and employee training. For wireless security,
+        MAC-based allow lists or block lists may be used as additional access controls.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="worked-example-matching-threats-and-controls">Worked example: matching threats and controls</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Threat in one school platform</th>
+          <th scope="col">Most relevant control</th>
+          <th scope="col">Why it fits</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Bot traffic floods the parent portal</td>
+          <td>DDoS mitigation tool</td>
+          <td>The main problem is volume and service availability.</td>
+        </tr>
+        <tr>
+          <td>A fake email tries to steal staff passwords</td>
+          <td>Email filtering plus MFA</td>
+          <td>Filtering reduces exposure, and MFA limits damage if a password is stolen.</td>
+        </tr>
+        <tr>
+          <td>A form accepts unsafe text and alters database queries</td>
+          <td>Input validation and whitelisting</td>
+          <td>The defence must stop unsafe input before it reaches the query.</td>
+        </tr>
+        <tr>
+          <td>An outdated server still runs a known weakness</td>
+          <td>Update software and test regularly</td>
+          <td>The exposure remains until patching and review are done.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A2.4.4"
+    summary="Describe encryption and digital certificates by distinguishing symmetric and asymmetric cryptography and explaining how certificates support secure connections."
+    visibility="sl"
+  >
+    <p>
+      Encryption protects data by making it unreadable without the correct key. Digital certificates
+      help confirm that a public key belongs to the organization or server it claims to represent.
+    </p>
+
+    <h3 id="overview-encryption-and-certificates">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Idea</th>
+          <th scope="col">How it works</th>
+          <th scope="col">Why it is used</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Symmetric cryptography</td>
+          <td>The same key encrypts and decrypts the data</td>
+          <td>Efficient for protecting data once both sides share the key</td>
+        </tr>
+        <tr>
+          <td>Asymmetric cryptography</td>
+          <td>A public key encrypts and a private key decrypts, or vice versa for verification</td>
+          <td>Supports secure key exchange and identity checking</td>
+        </tr>
+        <tr>
+          <td>Digital certificate</td>
+          <td>Binds a public key to a verified identity</td>
+          <td>Helps a browser trust that it is connecting to the correct server</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        Encryption alone does not prove who is on the other end of the connection. The certificate is
+        what helps establish trust in the server identity.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="worked-example-https-certificate-process">Worked example: a secure website connection</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Step</th>
+          <th scope="col">What happens</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>The browser requests a secure connection</td>
+          <td>The session begins under HTTPS rather than plain HTTP.</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>The server sends its digital certificate</td>
+          <td>The browser can check the claimed identity and public key.</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>The browser verifies the certificate and uses the public key</td>
+          <td>A secure exchange can be established without sending the private key.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Data is exchanged in encrypted form</td>
+          <td>Confidential information is protected in transit.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+</TextbookSectionBlock>

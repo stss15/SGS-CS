@@ -1,0 +1,953 @@
+---
+import TextbookCallout from '../TextbookCallout.astro';
+import TextbookChunk from '../TextbookChunk.astro';
+import TextbookPageIntro from '../TextbookPageIntro.astro';
+import TextbookSectionBlock from '../TextbookSectionBlock.astro';
+import type { TextbookChapterModel, TextbookSectionModel } from '../../../lib/textbook-model';
+
+interface Props {
+  chapter: TextbookChapterModel;
+}
+
+const { chapter } = Astro.props as Props;
+
+const requireSection = (code: string): TextbookSectionModel => {
+  const section = chapter.sections.find((candidate) => candidate.code === code);
+  if (!section) {
+    throw new Error(`Missing textbook section "${code}" for rebuilt chapter ${chapter.code}.`);
+  }
+  return section;
+};
+
+const a41 = requireSection('A4.1');
+const a42 = requireSection('A4.2');
+const a43 = requireSection('A4.3');
+const a44 = requireSection('A4.4');
+---
+
+<TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+  <p>
+    A4 begins by distinguishing the main forms of machine learning and the hardware contexts in
+    which they are deployed. At HL, the focus moves into preprocessing and model comparison so
+    students can judge not only what a model does, but also why it succeeds or fails.
+  </p>
+  <TextbookCallout tone="note" label="Reading pattern">
+    <p>
+      First identify how the system learns: from labelled data, from unlabelled data, from reward,
+      or by adapting an existing model. Then ask whether the data is clean enough and the hardware
+      suitable enough before comparing specific HL approaches or discussing ethical impact.
+    </p>
+  </TextbookCallout>
+</TextbookPageIntro>
+
+<TextbookSectionBlock section={a41}>
+  <TextbookChunk
+    label="A4.1.1"
+    summary="Describe the main machine-learning types by linking each one to its training pattern, output, and real-world application."
+    visibility="sl"
+  >
+    <p>
+      Artificial intelligence is the broader field; machine learning is the part of that field that
+      learns patterns from data rather than relying only on fixed rules. The first distinction to make
+      is how the learning happens, because that determines what kind of task the model can handle.
+    </p>
+
+    <h3 id="overview-machine-learning-types">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Type</th>
+          <th scope="col">How it learns</th>
+          <th scope="col">Typical output</th>
+          <th scope="col">Example application</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Supervised learning</td>
+          <td>Uses labelled input-output examples</td>
+          <td>Predicted value or predicted class</td>
+          <td>Spam filtering, grade prediction, medical risk scoring</td>
+        </tr>
+        <tr>
+          <td>Unsupervised learning</td>
+          <td>Finds structure in unlabelled data</td>
+          <td>Clusters, associations, or patterns</td>
+          <td>Customer segmentation, recommendation support, basket analysis</td>
+        </tr>
+        <tr>
+          <td>Reinforcement learning</td>
+          <td>Learns through trial, feedback, and reward</td>
+          <td>Improved action policy</td>
+          <td>Game agents, robotics, route optimization</td>
+        </tr>
+        <tr>
+          <td>Deep learning</td>
+          <td>Uses multi-layer neural networks to learn complex features</td>
+          <td>High-dimensional pattern recognition</td>
+          <td>Image classification, speech processing, generative systems</td>
+        </tr>
+        <tr>
+          <td>Transfer learning</td>
+          <td>Adapts an already trained model to a related task</td>
+          <td>Faster improvement on a new but similar problem</td>
+          <td>Specializing a generic image model for plant-disease detection</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        Deep learning is not separate from machine learning. It is one approach within machine
+        learning, distinguished by the use of neural-network layers.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="worked-example-matching-machine-learning-types">Worked example: matching a learning type to a task</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Best fit</th>
+          <th scope="col">Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Predict a student's final score from previous assessment data</td>
+          <td>Supervised learning</td>
+          <td>The target is known in past data, so the model can learn from labelled examples.</td>
+        </tr>
+        <tr>
+          <td>Group music listeners by behaviour without predefined categories</td>
+          <td>Unsupervised learning</td>
+          <td>The system must discover structure rather than predict from given labels.</td>
+        </tr>
+        <tr>
+          <td>Teach a robot to improve movement over repeated attempts</td>
+          <td>Reinforcement learning</td>
+          <td>The robot adjusts future actions using reward from past outcomes.</td>
+        </tr>
+        <tr>
+          <td>Adapt a large image model to identify a specific flower species</td>
+          <td>Transfer learning</td>
+          <td>An existing model already knows useful image features, so only limited retraining is needed.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.1.2"
+    summary="Describe hardware requirements by matching platform and processor choices to training scale, latency, and deployment context."
+    visibility="sl"
+  >
+    <p>
+      Hardware choice depends on the task. Small educational models, large cloud-trained models,
+      and low-latency edge systems do not need the same balance of CPU, GPU, accelerator,
+      memory, and network access.
+    </p>
+
+    <h3 id="overview-machine-learning-hardware-contexts">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Platform</th>
+          <th scope="col">Best use</th>
+          <th scope="col">Main strength</th>
+          <th scope="col">Main constraint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Standard laptop with CPU</td>
+          <td>Learning, prototyping, small models</td>
+          <td>Accessible and flexible</td>
+          <td>Limited speed, memory, and storage for large training jobs</td>
+        </tr>
+        <tr>
+          <td>Dedicated workstation with GPU</td>
+          <td>Medium-scale training and experimentation</td>
+          <td>Parallel processing for matrix-heavy workloads</td>
+          <td>Higher local hardware cost and power demand</td>
+        </tr>
+        <tr>
+          <td>Edge device with accelerator</td>
+          <td>Real-time local inference</td>
+          <td>Low latency and less data transfer</td>
+          <td>Limited model size and hardware flexibility</td>
+        </tr>
+        <tr>
+          <td>Cloud GPU or TPU</td>
+          <td>Large training and scalable deployment</td>
+          <td>Elastic access to specialist compute</td>
+          <td>Provider dependency, data-transfer concerns, and continuing cost</td>
+        </tr>
+        <tr>
+          <td>High-performance computing centre</td>
+          <td>Research-scale work</td>
+          <td>Very large compute capacity</td>
+          <td>Restricted access and less day-to-day convenience</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-choosing-hardware-for-deployment">Worked example: choosing hardware for deployment</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Recommended setup</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Classroom investigation using a small tabular data set</td>
+          <td>Laptop CPU, with optional entry-level GPU</td>
+          <td>The workload is modest, so accessibility matters more than maximum speed.</td>
+        </tr>
+        <tr>
+          <td>Image model trained on a very large shared data set</td>
+          <td>Cloud GPU or TPU</td>
+          <td>Training needs specialist parallel hardware and the ability to scale.</td>
+        </tr>
+        <tr>
+          <td>Safety system running continuously inside a vehicle</td>
+          <td>Edge device</td>
+          <td>Decisions must be local and fast even if network access is unstable.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a42}>
+  <TextbookChunk
+    label="A4.2.1"
+    summary="Describe why data cleaning matters, because models learn from poor-quality data as readily as they learn from useful patterns."
+    visibility="hl"
+  >
+    <p>
+      Data cleaning is significant because machine-learning systems do not automatically recognize
+      that a value is duplicated, misformatted, missing, or implausible. If the training data is poor,
+      the model can learn the wrong pattern with confidence.
+    </p>
+
+    <h3 id="overview-data-cleaning-actions">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Data issue</th>
+          <th scope="col">Why it matters</th>
+          <th scope="col">Typical response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Missing values</td>
+          <td>Incomplete cases weaken pattern detection</td>
+          <td>Impute carefully or remove records when justified</td>
+        </tr>
+        <tr>
+          <td>Duplicate records</td>
+          <td>Over-represented examples can skew the model</td>
+          <td>Deduplicate exact or near-duplicate cases</td>
+        </tr>
+        <tr>
+          <td>Incorrect or inconsistent formats</td>
+          <td>Dates, units, or labels may be interpreted wrongly</td>
+          <td>Standardize formats before training</td>
+        </tr>
+        <tr>
+          <td>Outliers</td>
+          <td>Extreme values may distort the learned relationship</td>
+          <td>Investigate, cap, transform, or remove when invalid</td>
+        </tr>
+        <tr>
+          <td>Irrelevant features</td>
+          <td>Noise adds complexity without useful predictive value</td>
+          <td>Filter them out before or during modelling</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-cleaning-a-school-dataset">Worked example: cleaning a school data set</h3>
+    <p>
+      Imagine a model predicting whether students may need additional support. The raw table
+      contains duplicate attendance rows, missing homework counts, and one impossible sleep value
+      of 52 hours per day. Leaving those values in place risks teaching the model patterns that do
+      not reflect real student behaviour.
+    </p>
+    <p>
+      Cleaning would remove the duplicate, flag or correct the impossible value, and deal with the
+      missing homework field using a justified method rather than ignoring the problem. The result
+      is not perfect data, but it is far more reliable for training.
+    </p>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        More rows do not automatically make a better model. A larger data set full of duplicates,
+        missing values, or invalid records can reduce accuracy rather than improve it.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.2.2, A4.2.3"
+    summary="Describe how feature selection and dimensionality reduction help a model stay focused, efficient, and generalizable."
+    visibility="hl"
+  >
+    <p>
+      Feature selection asks which input variables are actually useful. Dimensionality reduction asks
+      whether the overall feature space has become so large that patterns are harder to find, harder to
+      visualize, and more expensive to process.
+    </p>
+
+    <h3 id="core-understanding-feature-selection-and-dimensionality">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Idea</th>
+          <th scope="col">What it does</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Filter methods</td>
+          <td>Score features statistically before training</td>
+          <td>Fast way to remove obviously weak features</td>
+        </tr>
+        <tr>
+          <td>Wrapper methods</td>
+          <td>Compare different feature subsets with a model</td>
+          <td>Can improve fit, but costs more time and compute</td>
+        </tr>
+        <tr>
+          <td>Embedded methods</td>
+          <td>Select features during model training</td>
+          <td>Combines selection with learning</td>
+        </tr>
+        <tr>
+          <td>Dimensionality reduction</td>
+          <td>Reduces the number of effective variables</td>
+          <td>Can limit sparsity, simplify patterns, and lower hardware demand</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Too many features can create the curse of dimensionality: the data becomes so spread out across
+      many dimensions that meaningful generalizations are harder to form. This is why a smaller,
+      better-chosen feature set can outperform a larger and noisier one.
+    </p>
+
+    <h3 id="worked-example-reducing-a-feature-set">Worked example: reducing a feature set</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Original feature</th>
+          <th scope="col">Keep, reduce, or remove?</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Average homework completion</td>
+          <td>Keep</td>
+          <td>Directly related to the predicted educational outcome</td>
+        </tr>
+        <tr>
+          <td>Three separate but near-identical attendance columns</td>
+          <td>Reduce</td>
+          <td>They may capture the same pattern repeatedly</td>
+        </tr>
+        <tr>
+          <td>Student ID number</td>
+          <td>Remove</td>
+          <td>Acts as an identifier rather than a meaningful predictor</td>
+        </tr>
+        <tr>
+          <td>Thirty detailed questionnaire items with overlapping meaning</td>
+          <td>Reduce</td>
+          <td>Too much detail can increase sparsity and weaken generalization</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Techniques such as PCA and LDA may be used in practice, but the syllabus emphasis here is on
+      understanding why reduction matters, not on deriving the mathematics behind those methods.
+    </p>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a43}>
+  <TextbookChunk
+    label="A4.3.1, A4.3.2"
+    summary="Explain the difference between supervised prediction of continuous outcomes and supervised prediction of discrete categories."
+    visibility="hl"
+  >
+    <p>
+      Supervised learning uses labelled examples, but the nature of the label matters. Linear
+      regression predicts a continuous value, while classification techniques predict which category an
+      item belongs to.
+    </p>
+
+    <h3 id="overview-supervised-prediction-types">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Task type</th>
+          <th scope="col">Target output</th>
+          <th scope="col">Typical techniques</th>
+          <th scope="col">Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Linear regression</td>
+          <td>Continuous numerical value</td>
+          <td>Line of best fit across labelled data</td>
+          <td>Predicting rent, temperature, or final score</td>
+        </tr>
+        <tr>
+          <td>Classification</td>
+          <td>Discrete category</td>
+          <td>K-nearest neighbours, decision trees, neural classifiers</td>
+          <td>Spam vs not spam, disease vs no disease, image class</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      A regression model can be summarized as a rule such as <code>prediction = intercept + slope x input</code>.
+      The key idea is not the algebra itself, but that the model explains a relationship well enough to
+      estimate unseen continuous outcomes. Classification techniques instead construct a decision rule
+      that assigns a new case to a category.
+    </p>
+
+    <h3 id="worked-example-continuous-vs-categorical-prediction">Worked example: continuous vs categorical prediction</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Problem</th>
+          <th scope="col">Best approach</th>
+          <th scope="col">Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Estimate a house price from size and location factors</td>
+          <td>Linear regression</td>
+          <td>The output is numerical and varies across a continuous range.</td>
+        </tr>
+        <tr>
+          <td>Decide whether an email is spam</td>
+          <td>Classification</td>
+          <td>The output is one category from a fixed set.</td>
+        </tr>
+        <tr>
+          <td>Identify whether a flower sample belongs to species A, B, or C</td>
+          <td>Classification</td>
+          <td>The task is to assign a class, not a measurement.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.3.3"
+    summary="Explain how evaluation metrics and hyperparameter tuning help compare supervised models without relying on accuracy alone."
+    visibility="hl"
+  >
+    <p>
+      Hyperparameter tuning adjusts settings chosen before training, such as the number of neighbours
+      in KNN, the depth of a decision tree, or the learning rate in a neural network. Tuning matters
+      because different settings can change whether a model underfits, overfits, or generalizes well.
+    </p>
+
+    <h3 id="core-understanding-evaluation-and-tuning">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Measure or setting</th>
+          <th scope="col">What it tells you</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Accuracy</td>
+          <td>Overall proportion of correct predictions</td>
+          <td>Useful starting point, but can hide uneven performance</td>
+        </tr>
+        <tr>
+          <td>Precision</td>
+          <td>How many positive predictions were actually correct</td>
+          <td>Important when false positives are costly</td>
+        </tr>
+        <tr>
+          <td>Recall</td>
+          <td>How many actual positives were successfully found</td>
+          <td>Important when false negatives are costly</td>
+        </tr>
+        <tr>
+          <td>F1 score</td>
+          <td>Balances precision and recall</td>
+          <td>Useful when both error types matter</td>
+        </tr>
+        <tr>
+          <td>Hyperparameter choice</td>
+          <td>Controls model behaviour before training</td>
+          <td>Can reduce overfitting or improve generalization</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-choosing-a-hyperparameter">Worked example: choosing a hyperparameter</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">K value</th>
+          <th scope="col">Accuracy</th>
+          <th scope="col">Recall</th>
+          <th scope="col">F1</th>
+          <th scope="col">Interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>0.94</td>
+          <td>0.71</td>
+          <td>0.79</td>
+          <td>Very sensitive to local noise; possible overfitting</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>0.92</td>
+          <td>0.83</td>
+          <td>0.84</td>
+          <td>Better balance between stability and sensitivity</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>0.88</td>
+          <td>0.76</td>
+          <td>0.78</td>
+          <td>Decision boundary may now be too smooth</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        The highest accuracy does not automatically mean the best model. A model may appear strong
+        overall while still failing badly on the class that matters most in the scenario.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.3.4, A4.3.5"
+    summary="Describe how unsupervised methods uncover groupings and associations without needing labelled answers."
+    visibility="hl"
+  >
+    <p>
+      Unsupervised learning does not predict against a known target. Instead, it searches for structure
+      already present in the data, such as similar groups or frequently linked attributes.
+    </p>
+
+    <h3 id="overview-unsupervised-pattern-discovery">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Technique</th>
+          <th scope="col">What it produces</th>
+          <th scope="col">Typical use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Clustering</td>
+          <td>Groups of similar data points</td>
+          <td>Customer segmentation, social-group analysis, anomaly grouping</td>
+        </tr>
+        <tr>
+          <td>Association rule learning</td>
+          <td>Rules showing attributes that often appear together</td>
+          <td>Market-basket analysis, recommendation support, pattern discovery</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      In association rule learning, support measures how often a pattern appears in the whole data
+      set, while confidence measures how often the consequent appears when the antecedent appears.
+      These values help judge whether a discovered rule is worth paying attention to.
+    </p>
+
+    <h3 id="worked-example-unsupervised-insights">Worked example: unsupervised insights</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Technique</th>
+          <th scope="col">Insight produced</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Retailer analysing purchase histories</td>
+          <td>Association rules</td>
+          <td>Customers who buy pasta frequently also buy sauce in the same basket.</td>
+        </tr>
+        <tr>
+          <td>Streaming platform exploring user behaviour</td>
+          <td>Clustering</td>
+          <td>Listeners naturally split into groups with different usage patterns.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.3.6, A4.3.7"
+    summary="Describe reinforcement learning and genetic algorithms as two different ways of improving decisions or solutions over time."
+    visibility="hl"
+  >
+    <p>
+      Reinforcement learning improves behaviour through interaction with an environment and a reward
+      signal. Genetic algorithms improve candidate solutions across generations using selection,
+      crossover, and mutation. Both are adaptive, but they solve problems in different ways.
+    </p>
+
+    <h3 id="overview-reward-and-evolution">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Approach</th>
+          <th scope="col">How improvement happens</th>
+          <th scope="col">Strong application</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Reinforcement learning</td>
+          <td>Agent tries actions and adjusts policy from reward feedback</td>
+          <td>Robotics, games, dynamic routing</td>
+        </tr>
+        <tr>
+          <td>Genetic algorithms</td>
+          <td>Population of solutions evolves through fitness-based selection</td>
+          <td>Timetabling, route optimization, design search</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-reward-vs-evolution">Worked example: reward vs evolution</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Problem</th>
+          <th scope="col">Better match</th>
+          <th scope="col">Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Warehouse robot learning safer paths around moving obstacles</td>
+          <td>Reinforcement learning</td>
+          <td>The agent can improve through repeated action, state, and reward cycles.</td>
+        </tr>
+        <tr>
+          <td>School timetable with many competing scheduling constraints</td>
+          <td>Genetic algorithm</td>
+          <td>Candidate timetables can be compared, combined, and mutated to improve fitness.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.3.8, A4.3.9"
+    summary="Outline ANN structure and describe why CNNs are especially effective for image data."
+    visibility="hl"
+  >
+    <p>
+      Artificial neural networks use interconnected layers of nodes to model complex patterns. A
+      multi-layer network can represent relationships that are difficult to capture with a simple line or
+      tree. Convolutional neural networks are a specialized form designed to learn spatial structure in
+      images.
+    </p>
+
+    <h3 id="overview-neural-network-structures">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Model</th>
+          <th scope="col">Main structure</th>
+          <th scope="col">What it is good at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ANN</td>
+          <td>Input layer, one or more hidden layers, output layer</td>
+          <td>Capturing complex relationships in general feature data</td>
+        </tr>
+        <tr>
+          <td>CNN</td>
+          <td>Convolution, activation, pooling, then dense layers</td>
+          <td>Learning edges, textures, shapes, and higher-level image features</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-image-processing-hierarchy">Worked example: image-processing hierarchy</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">CNN stage</th>
+          <th scope="col">Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Early convolution layers</td>
+          <td>Detect simple local features such as edges and corners</td>
+        </tr>
+        <tr>
+          <td>Later convolution layers</td>
+          <td>Combine simpler features into shapes and object parts</td>
+        </tr>
+        <tr>
+          <td>Final dense layers</td>
+          <td>Turn learned features into the final classification or prediction</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.3.10"
+    summary="Explain model selection and comparison by weighing performance against context, constraints, and interpretability."
+    visibility="hl"
+  >
+    <p>
+      Model selection is not a search for the single most fashionable algorithm. It is a reasoned choice
+      based on data type, performance, latency, interpretability, and hardware cost. Model comparison
+      matters because two systems can perform differently under real deployment constraints even when
+      they are trained on the same problem.
+    </p>
+
+    <h3 id="core-understanding-model-selection">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Factor</th>
+          <th scope="col">Question to ask</th>
+          <th scope="col">Effect on choice</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Data type</td>
+          <td>Is the data tabular, text, image, or mixed?</td>
+          <td>Different models suit different structures</td>
+        </tr>
+        <tr>
+          <td>Performance</td>
+          <td>Which metrics matter in this context?</td>
+          <td>Accuracy alone may not be enough</td>
+        </tr>
+        <tr>
+          <td>Latency</td>
+          <td>How fast must the prediction be produced?</td>
+          <td>Slow but accurate models may fail deployment needs</td>
+        </tr>
+        <tr>
+          <td>Interpretability</td>
+          <td>Must a human explain the decision?</td>
+          <td>Highly regulated contexts may prefer simpler models</td>
+        </tr>
+        <tr>
+          <td>Compute cost</td>
+          <td>What hardware is available for training and inference?</td>
+          <td>Resource-heavy models may be impractical</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-comparing-three-models">Worked example: comparing three models</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Model</th>
+          <th scope="col">Validation score</th>
+          <th scope="col">Latency</th>
+          <th scope="col">Interpretability</th>
+          <th scope="col">Decision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Linear model</td>
+          <td>Moderate</td>
+          <td>Very fast</td>
+          <td>High</td>
+          <td>Useful where transparency matters most</td>
+        </tr>
+        <tr>
+          <td>Decision-tree ensemble</td>
+          <td>Strong</td>
+          <td>Fast enough</td>
+          <td>Medium</td>
+          <td>Balanced option for many tabular tasks</td>
+        </tr>
+        <tr>
+          <td>CNN</td>
+          <td>Highest</td>
+          <td>Slowest</td>
+          <td>Low</td>
+          <td>Best only if the task and deployment context justify its cost</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a44}>
+  <TextbookChunk
+    label="A4.4.1"
+    summary="Discuss ethical implications by weighing technical benefits against human consequences, responsibility, and rights."
+    visibility="sl"
+  >
+    <p>
+      Ethical discussion in machine learning requires more than naming a risk. Strong responses weigh
+      different stakeholders, explain how harm could arise, and consider how technical design and
+      social impact interact.
+    </p>
+
+    <h3 id="overview-machine-learning-ethics">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Issue</th>
+          <th scope="col">How it appears</th>
+          <th scope="col">Possible consequence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Accountability</td>
+          <td>Unclear responsibility when an automated decision causes harm</td>
+          <td>Victims struggle to challenge or appeal outcomes</td>
+        </tr>
+        <tr>
+          <td>Fairness and bias</td>
+          <td>Skewed training data or design choices disadvantage some groups</td>
+          <td>Unfair hiring, lending, or policing decisions</td>
+        </tr>
+        <tr>
+          <td>Consent and privacy</td>
+          <td>Data is collected or reused without informed permission</td>
+          <td>Loss of control over personal information</td>
+        </tr>
+        <tr>
+          <td>Security</td>
+          <td>Models are attacked through poisoning, evasion, or inversion</td>
+          <td>Manipulated outputs or exposure of sensitive data</td>
+        </tr>
+        <tr>
+          <td>Environmental impact</td>
+          <td>Large training runs use substantial energy</td>
+          <td>Higher resource consumption and carbon cost</td>
+        </tr>
+        <tr>
+          <td>Transparency</td>
+          <td>Users cannot easily see why a system made a decision</td>
+          <td>Reduced trust and weaker accountability</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-ethical-analysis-of-automated-recruitment">Worked example: ethical analysis of automated recruitment</h3>
+    <p>
+      An automated recruitment system may process applications quickly and reduce repetitive
+      workload for staff. However, if historical training data contains bias, the system can reproduce or
+      amplify unfair patterns while appearing objective.
+    </p>
+    <p>
+      A balanced discussion would consider the employer, applicants, software provider, and the
+      people responsible for auditing the data and outputs. The question is not only whether the tool is
+      efficient, but whether it remains fair, explainable, and open to challenge.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A4.4.2"
+    summary="Discuss why ethics must be reassessed as computer technologies become more deeply integrated into daily life."
+    visibility="sl"
+  >
+    <p>
+      Ethical rules cannot stay fixed while technology keeps changing. As systems move from optional
+      tools to everyday infrastructure, questions of privacy, equity, control, and wellbeing become
+      broader and more persistent.
+    </p>
+
+    <h3 id="core-understanding-technology-integration-and-ethics">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Integration area</th>
+          <th scope="col">Opportunity</th>
+          <th scope="col">Ethical tension</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Pervasive AI services</td>
+          <td>Continuous personalization and automation</td>
+          <td>Surveillance and constant data extraction</td>
+        </tr>
+        <tr>
+          <td>Recommendation systems</td>
+          <td>More relevant content and services</td>
+          <td>Echo chambers, manipulation, and narrowed viewpoints</td>
+        </tr>
+        <tr>
+          <td>AR and VR</td>
+          <td>Richer simulation, learning, and interaction</td>
+          <td>Behavioural tracking and effects on perception or wellbeing</td>
+        </tr>
+        <tr>
+          <td>Public-space analytics</td>
+          <td>Traffic planning, safety monitoring, service optimization</td>
+          <td>Consent, proportionality, and civil-liberty concerns</td>
+        </tr>
+        <tr>
+          <td>Personal data ecosystems</td>
+          <td>Convenient linked services across devices</td>
+          <td>Unclear ownership and control of personal data</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-reassessing-city-scale-technology">Worked example: reassessing city-scale technology</h3>
+    <p>
+      A city may combine transport apps, camera analytics, and personalised alerts to improve traffic
+      flow and service access. The same system may also expand tracking of movement, create unequal
+      effects across communities, and make it harder for people to understand how their data is used.
+    </p>
+
+    <TextbookCallout tone="recap" label="Discussion rule">
+      <p>
+        For A4.4, discussion should compare benefits and risks, identify stakeholders, and explain why
+        ethical review must continue as technologies and social conditions change.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>

@@ -1,0 +1,468 @@
+---
+import TextbookCallout from '../TextbookCallout.astro';
+import TextbookChunk from '../TextbookChunk.astro';
+import TextbookPageIntro from '../TextbookPageIntro.astro';
+import TextbookSectionBlock from '../TextbookSectionBlock.astro';
+import type { TextbookChapterModel, TextbookSectionModel } from '../../../lib/textbook-model';
+
+interface Props {
+  chapter: TextbookChapterModel;
+}
+
+const { chapter } = Astro.props as Props;
+
+const requireSection = (code: string): TextbookSectionModel => {
+  const section = chapter.sections.find((candidate) => candidate.code === code);
+  if (!section) {
+    throw new Error(`Missing textbook section "${code}" for rebuilt chapter ${chapter.code}.`);
+  }
+  return section;
+};
+
+const b31 = requireSection('B3.1');
+const b32 = requireSection('B3.2');
+---
+
+<TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+  <p>
+    B3 shifts programming from sequences of statements to models built from classes and objects. The
+    chapter begins with single-class design, controlled state, and object construction, then extends
+    at HL into class relationships, reusable hierarchies, and common design patterns.
+  </p>
+  <TextbookCallout tone="note" label="Reading pattern">
+    <p>
+      Start by asking what one object should know and what it should do. Then decide how that object
+      protects its state. At HL, extend that thinking to how several classes relate, when inheritance
+      is justified, and when a pattern is useful rather than decorative.
+    </p>
+  </TextbookCallout>
+</TextbookPageIntro>
+
+<TextbookSectionBlock section={b31}>
+  <TextbookChunk
+    label="B3.1.1"
+    summary="Evaluate OOP by linking its modular strengths to realistic trade-offs, rather than describing it as automatically better than every other programming style."
+    visibility="sl"
+  >
+    <p>
+      Object-oriented programming organizes software around objects that combine data with behavior.
+      In evaluation questions, the key point is judgement: OOP is powerful when a problem contains
+      clear entities with state and actions, but it can add unnecessary structure for very small tasks.
+    </p>
+
+    <h3 id="overview-evaluating-oop-fundamentals">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Feature of OOP</th>
+          <th scope="col">Why it helps</th>
+          <th scope="col">Possible limitation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Modularity</td>
+          <td>Classes separate responsibilities into manageable units</td>
+          <td>Poor design can still produce tangled dependencies between classes</td>
+        </tr>
+        <tr>
+          <td>Reusability</td>
+          <td>Well-designed classes can be reused in later projects</td>
+          <td>Reuse is weaker if the class is too specific to one scenario</td>
+        </tr>
+        <tr>
+          <td>Encapsulation</td>
+          <td>Objects control how their internal state changes</td>
+          <td>Extra methods and access rules can feel heavy for trivial scripts</td>
+        </tr>
+        <tr>
+          <td>Abstraction</td>
+          <td>Complex behavior can be used through a simpler interface</td>
+          <td>Too much abstraction can make a design harder to follow</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        OOP is not the same as “good programming” by itself. A weak class design can still be hard
+        to test, hard to understand, and hard to maintain.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B3.1.2"
+    summary="Construct class designs by showing class name, attributes, methods, and visibility clearly enough that the design can be translated into code."
+    visibility="sl"
+  >
+    <p>
+      A class design describes what an object stores and what it can do. In IB terms, this is usually
+      represented as a UML class diagram. The essential skill is to design the class clearly, not to
+      decorate the diagram with unnecessary detail.
+    </p>
+
+    <h3 id="overview-uml-class-design">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">UML part</th>
+          <th scope="col">What to include</th>
+          <th scope="col">Typical example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Class name</td>
+          <td>A singular noun naming the entity</td>
+          <td><code>Book</code></td>
+        </tr>
+        <tr>
+          <td>Attributes</td>
+          <td>Stored data, often with visibility and type</td>
+          <td><code>- title: String</code></td>
+        </tr>
+        <tr>
+          <td>Methods</td>
+          <td>Behaviors the object performs</td>
+          <td><code>+ loan(): Boolean</code></td>
+        </tr>
+        <tr>
+          <td>Visibility</td>
+          <td>Access control for fields and methods</td>
+          <td><code>+</code> public, <code>-</code> private</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-sketching-a-class-design">Worked example: sketching a class design</h3>
+    <pre><code class="language-text">+-------------------------------+
+| LibraryBook                   |
++-------------------------------+
+| - title: String               |
+| - isbn: String                |
+| - isLoaned: Boolean           |
++-------------------------------+
+| + loan(): Boolean             |
+| + returnBook(): Void          |
+| + getTitle(): String          |
++-------------------------------+</code></pre>
+    <p>
+      This design is strong because the attributes describe state, the methods describe behavior,
+      and the visibility makes it clear which data should not be changed directly from outside.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B3.1.3, B3.1.4"
+    summary="Distinguish between static and non-static members, then construct class code that defines a template and instantiates separate objects from it."
+    visibility="sl"
+  >
+    <p>
+      Static members belong to the class itself, while non-static members belong to each object
+      instance. That distinction matters because some values should be shared across all objects,
+      while others should stay unique to one object.
+    </p>
+
+    <h3 id="overview-static-vs-instance-members">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Member type</th>
+          <th scope="col">Belongs to</th>
+          <th scope="col">Typical use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Static variable</td>
+          <td>The class</td>
+          <td>Shared counter, common constant, next available ID</td>
+        </tr>
+        <tr>
+          <td>Instance variable</td>
+          <td>One object</td>
+          <td>Name, balance, speed, quantity</td>
+        </tr>
+        <tr>
+          <td>Static method</td>
+          <td>The class</td>
+          <td>Utility behavior that does not depend on one object's state</td>
+        </tr>
+        <tr>
+          <td>Instance method</td>
+          <td>One object</td>
+          <td>Behavior that reads or updates that object's own data</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-defining-a-class-and-creating-objects">Worked example: defining a class and creating objects</h3>
+    <pre><code class="language-python">class Product:
+    next_id = 1000
+
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+        self.product_id = Product.next_id
+        Product.next_id += 1
+
+    @staticmethod
+    def is_valid_price(value):
+        return value >= 0
+
+keyboard = Product("Keyboard", 49.99)
+mouse = Product("Mouse", 19.99)</code></pre>
+    <p>
+      Here, <code>next_id</code> is static because all objects share it, while
+      <code>name</code>, <code>price</code>, and <code>product_id</code> belong to each separate
+      object. Instantiation happens when the class is called to create <code>keyboard</code> and
+      <code>mouse</code>.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B3.1.5"
+    summary="Explain and apply encapsulation and information hiding so that an object manages its own state through controlled methods rather than unrestricted external changes."
+    visibility="sl"
+  >
+    <p>
+      Encapsulation means that the class controls access to its internal data. Information hiding is
+      the related idea that outside code should not need to know the internal implementation details
+      to use the class correctly.
+    </p>
+
+    <h3 id="overview-encapsulation-and-information-hiding">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Approach</th>
+          <th scope="col">Effect</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Private or protected data</td>
+          <td>Reduces uncontrolled external access</td>
+          <td>Prevents invalid state changes</td>
+        </tr>
+        <tr>
+          <td>Accessor method</td>
+          <td>Reads data in a controlled way</td>
+          <td>Keeps the interface clear without exposing implementation</td>
+        </tr>
+        <tr>
+          <td>Mutator method with validation</td>
+          <td>Updates data only when the rule is valid</td>
+          <td>Protects integrity of the object state</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre><code class="language-python">class BankAccount:
+    def __init__(self, balance):
+        self._balance = balance
+
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount
+
+    def get_balance(self):
+        return self._balance</code></pre>
+
+    <TextbookCallout tone="note" label="Important distinction">
+      <p>
+        Encapsulation does not mean data becomes magically unreachable in every language. The key
+        IB idea is controlled access: the class decides how updates happen.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={b32}>
+  <TextbookChunk
+    label="B3.2.1, B3.2.2"
+    summary="HL extends OOP into inheritance and polymorphism so related classes can reuse shared behavior and still respond differently through overriding."
+    visibility="hl"
+  >
+    <p>
+      Inheritance is appropriate when one class is a genuine specialization of another. Polymorphism
+      then allows related objects to respond to the same method call in type-specific ways.
+    </p>
+
+    <h3 id="overview-inheritance-and-polymorphism">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Concept</th>
+          <th scope="col">Main idea</th>
+          <th scope="col">Typical example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Inheritance</td>
+          <td>A child class reuses and extends parent behavior</td>
+          <td><code>Bus</code> is a <code>Vehicle</code></td>
+        </tr>
+        <tr>
+          <td>Superclass</td>
+          <td>The more general parent class</td>
+          <td><code>Vehicle</code></td>
+        </tr>
+        <tr>
+          <td>Subclass</td>
+          <td>The more specific child class</td>
+          <td><code>Bus</code>, <code>Taxi</code></td>
+        </tr>
+        <tr>
+          <td>Polymorphism</td>
+          <td>One shared method name produces behavior based on runtime type</td>
+          <td><code>describe()</code> called on mixed vehicle objects</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre><code class="language-python">class Animal:
+    def speak(self):
+        return "..."
+
+class Dog(Animal):
+    def speak(self):
+        return "woof"
+
+class Cat(Animal):
+    def speak(self):
+        return "meow"
+
+animals = [Dog(), Cat(), Dog()]
+outputs = [animal.speak() for animal in animals]</code></pre>
+    <p>
+      The loop uses one method call, <code>speak()</code>, but the result depends on the actual object
+      type. That is the core of polymorphism through overriding.
+    </p>
+
+    <TextbookCallout tone="warning" label="Evaluation rule">
+      <p>
+        Inheritance should follow a real “is-a” relationship. If the only goal is code reuse, a
+        different relationship such as composition may be a better fit.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B3.2.3, B3.2.4"
+    summary="Abstraction defines what related classes must provide, while composition and aggregation explain two different kinds of HAS-A relationship between objects."
+    visibility="hl"
+  >
+    <p>
+      Abstraction focuses on essential behavior without forcing one concrete implementation in the
+      parent design. Composition and aggregation then explain how objects can contain or depend on
+      other objects in stronger or weaker ways.
+    </p>
+
+    <h3 id="overview-abstraction-composition-and-aggregation">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Concept</th>
+          <th scope="col">What it does</th>
+          <th scope="col">Representative example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Abstraction</td>
+          <td>Defines essential behavior while hiding implementation detail</td>
+          <td>An abstract <code>Shape</code> requires an <code>area()</code> method</td>
+        </tr>
+        <tr>
+          <td>Composition</td>
+          <td>A strong HAS-A relationship with dependent lifetime</td>
+          <td>A <code>Car</code> composed of an <code>Engine</code></td>
+        </tr>
+        <tr>
+          <td>Aggregation</td>
+          <td>A weaker HAS-A relationship with independent lifetime</td>
+          <td>A <code>Library</code> containing <code>Book</code> objects</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-composition-vs-aggregation">Worked example: composition vs aggregation</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Relationship</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A playlist owns temporary play-history records</td>
+          <td>Composition</td>
+          <td>The record exists only as part of that playlist system</td>
+        </tr>
+        <tr>
+          <td>A classroom stores references to student objects</td>
+          <td>Aggregation</td>
+          <td>Students still exist even if one classroom object is removed</td>
+        </tr>
+        <tr>
+          <td>A phone contains a battery created and managed with the phone</td>
+          <td>Composition</td>
+          <td>The part is tightly bound to the whole object's lifecycle</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B3.2.5"
+    summary="Explain common OOP design patterns by identifying the problem each pattern solves, not by memorizing large architecture catalogues."
+    visibility="hl"
+  >
+    <p>
+      A design pattern is a reusable design idea for a recurring problem. At this level, the important
+      task is to explain what the pattern is for and when it is helpful.
+    </p>
+
+    <h3 id="overview-common-oop-design-patterns">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Pattern</th>
+          <th scope="col">Purpose</th>
+          <th scope="col">Simple example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Singleton</td>
+          <td>Ensure only one instance of a class exists</td>
+          <td>One shared configuration manager for an application</td>
+        </tr>
+        <tr>
+          <td>Factory</td>
+          <td>Create related objects through one construction point</td>
+          <td>Building different notification objects from one request type</td>
+        </tr>
+        <tr>
+          <td>Observer</td>
+          <td>Notify dependent objects when one object changes</td>
+          <td>Subscribers updating when a score or stock value changes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="note" label="Scope boundary">
+      <p>
+        The chapter PDF briefly mentions interfaces when discussing some patterns, but the syllabus
+        point here is the pattern purpose itself. Full interface syntax and wider architecture catalogs
+        are outside the core IB focus for this chapter.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>

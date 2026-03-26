@@ -1,0 +1,32 @@
+---
+import type { TextbookVisibility } from '../../lib/textbook-model';
+import { getTextbookVisibilityLabel } from '../../lib/textbook-model';
+
+interface Props {
+  label?: string;
+  summary?: string;
+  visibility?: TextbookVisibility;
+}
+
+const { label, summary, visibility } = Astro.props as Props;
+const visibilityLabel = visibility ? getTextbookVisibilityLabel(visibility) : undefined;
+---
+
+<section class="textbook-chunk">
+  {(label || summary || visibilityLabel) && (
+    <div class="textbook-chunk__header">
+      {(label || visibilityLabel) && (
+        <div class="textbook-chunk__meta">
+          {label && <p class="textbook-chunk__label">{label}</p>}
+          {visibilityLabel && (
+            <span class:list={['textbook-pill', visibility === 'hl' && 'textbook-pill--hl']}>
+              {visibilityLabel}
+            </span>
+          )}
+        </div>
+      )}
+      {summary && <p class="textbook-chunk__summary">{summary}</p>}
+    </div>
+  )}
+  <slot />
+</section>

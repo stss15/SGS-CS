@@ -1,0 +1,28 @@
+---
+import type { TextbookVisibility } from '../../lib/textbook-model';
+import { getTextbookVisibilityLabel } from '../../lib/textbook-model';
+
+interface Props {
+  code?: string;
+  title?: string;
+  summary: string;
+  visibility?: TextbookVisibility;
+}
+
+const { code, title, summary, visibility } = Astro.props as Props;
+const visibilityLabel = visibility ? getTextbookVisibilityLabel(visibility) : undefined;
+---
+
+<section class="textbook-page-intro">
+  <div class="textbook-page-intro__meta">
+    {code && <p class="textbook-page-intro__code">{code}</p>}
+    {visibilityLabel && (
+      <span class:list={['textbook-pill', visibility === 'hl' && 'textbook-pill--hl']}>
+        {visibilityLabel}
+      </span>
+    )}
+  </div>
+  {title && <h2 class="textbook-page-intro__title">{title}</h2>}
+  <p class="textbook-page-intro__summary">{summary}</p>
+  <slot />
+</section>

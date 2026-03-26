@@ -1,0 +1,639 @@
+---
+import TextbookCallout from '../TextbookCallout.astro';
+import TextbookChunk from '../TextbookChunk.astro';
+import TextbookPageIntro from '../TextbookPageIntro.astro';
+import TextbookSectionBlock from '../TextbookSectionBlock.astro';
+import type { TextbookChapterModel, TextbookSectionModel } from '../../../lib/textbook-model';
+
+interface Props {
+  chapter: TextbookChapterModel;
+}
+
+const { chapter } = Astro.props as Props;
+
+const requireSection = (code: string): TextbookSectionModel => {
+  const section = chapter.sections.find((candidate) => candidate.code === code);
+  if (!section) {
+    throw new Error(`Missing textbook section "${code}" for rebuilt chapter ${chapter.code}.`);
+  }
+  return section;
+};
+
+const a31 = requireSection('A3.1');
+const a32 = requireSection('A3.2');
+const a33 = requireSection('A3.3');
+const a34 = requireSection('A3.4');
+---
+
+<TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+  <p>
+    A3 starts with relational databases because they give the clearest foundation for structure, integrity,
+    and query logic. The chapter then moves from design into SQL, and finally into higher-level choices
+    about scale, analytics, and distributed storage.
+  </p>
+  <TextbookCallout tone="note" label="Reading pattern">
+    <p>
+      Keep the sequence clear: model the data first, then build tables from that model, then query and update
+      the data, and only after that evaluate HL alternatives such as warehouses and distributed databases.
+    </p>
+  </TextbookCallout>
+</TextbookPageIntro>
+
+<TextbookSectionBlock section={a31}>
+  <TextbookChunk
+    label="A3.1.1"
+    summary="Explain what makes a database relational, why that model is useful, and where its limitations begin to matter."
+    visibility="sl"
+  >
+    <p>
+      A relational database stores data in related tables. Each table represents one type of thing, each row
+      represents one record, and each column represents one attribute. The model becomes powerful when keys
+      connect tables without forcing the same information to be repeated everywhere.
+    </p>
+
+    <h3 id="overview-relational-database-features">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Element</th>
+          <th scope="col">What it does</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Primary key</td>
+          <td>Uniquely identifies each record in a table</td>
+          <td>Prevents ambiguity when retrieving or linking data</td>
+        </tr>
+        <tr>
+          <td>Foreign key</td>
+          <td>References a primary key in another table</td>
+          <td>Creates relationships and supports referential integrity</td>
+        </tr>
+        <tr>
+          <td>Composite key</td>
+          <td>Uses more than one attribute to identify a record</td>
+          <td>Useful when one field alone is not unique</td>
+        </tr>
+        <tr>
+          <td>Relationships</td>
+          <td>Connect tables through keys</td>
+          <td>Allow complex systems to be modeled without storing everything in one table</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Relational databases are strong when data is highly structured, integrity matters, and users need
+      reliable querying across related tables. They are weaker when the schema changes constantly, when the
+      data is heavily hierarchical or unstructured, or when the system must scale to very large, varied data
+      sets with minimal schema rigidity.
+    </p>
+
+    <h3 id="worked-example-linking-two-tables">Worked example: linking two tables</h3>
+    <p>
+      A school library might store book details in one table and loan details in another. The book identifier
+      appears once as a primary key in <code>Book</code> and then again as a foreign key in
+      <code>Loan</code>.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Table</th>
+          <th scope="col">Important fields</th>
+          <th scope="col">Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Book</td>
+          <td><code>BookID</code>, <code>Title</code>, <code>Author</code></td>
+          <td>Stores information about each book once</td>
+        </tr>
+        <tr>
+          <td>Loan</td>
+          <td><code>LoanID</code>, <code>BookID</code>, <code>BorrowerID</code>, <code>DueDate</code></td>
+          <td>Stores each borrowing event without repeating full book details</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      This design reduces duplication and makes updates more reliable. A title change happens in one place,
+      not across every loan record.
+    </p>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a32}>
+  <TextbookChunk
+    label="A3.2.1, A3.2.2, A3.2.3, A3.2.4"
+    summary="Move from abstract schema design into ERDs, data types, and table construction for a clean relational model."
+    visibility="sl"
+  >
+    <p>
+      Database design works in layers. First decide what the system needs to represent, then define the
+      entities and relationships, then choose suitable data types, and only then construct the tables.
+      Skipping that order usually produces awkward tables and unreliable data.
+    </p>
+
+    <h3 id="overview-schemas-erds-and-data-types">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Schema level</th>
+          <th scope="col">Main question</th>
+          <th scope="col">Typical content</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Conceptual schema</td>
+          <td>What needs to be represented?</td>
+          <td>Entities, broad relationships, business meaning</td>
+        </tr>
+        <tr>
+          <td>Logical schema</td>
+          <td>How will the relational structure work?</td>
+          <td>Tables, attributes, keys, constraints</td>
+        </tr>
+        <tr>
+          <td>Physical schema</td>
+          <td>How is it implemented in a DBMS?</td>
+          <td>Storage choices, indexes, DBMS-specific details</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      ERDs help at the conceptual and logical stages because they force you to identify entities clearly and
+      define relationships through cardinality and modality. A one-to-many relationship tells you that one
+      record on one side may connect to many on the other side; modality tells you whether that connection is
+      optional or required.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Data type</th>
+          <th scope="col">Good use</th>
+          <th scope="col">Risk of a poor choice</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>INT</code></td>
+          <td>Identifiers or whole-number counts</td>
+          <td>Text-like values such as phone numbers lose formatting or leading zeroes</td>
+        </tr>
+        <tr>
+          <td><code>VARCHAR</code></td>
+          <td>Names, titles, codes with variable length</td>
+          <td>Numeric comparison becomes unreliable if true numbers are stored as text</td>
+        </tr>
+        <tr>
+          <td><code>DATE</code></td>
+          <td>Deadlines, enrolment dates, booking dates</td>
+          <td>Text dates are harder to validate, sort, and compare</td>
+        </tr>
+        <tr>
+          <td><code>DECIMAL</code></td>
+          <td>Prices or measured values that require precision</td>
+          <td>Using integers may force awkward scaling rules</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-from-erd-to-tables">Worked example: from ERD to tables</h3>
+    <p>
+      Suppose the system tracks clubs and student membership. A student can join many clubs, and a club can
+      contain many students. That is a many-to-many relationship, so it cannot be represented directly in one
+      relational link.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Table</th>
+          <th scope="col">Key fields</th>
+          <th scope="col">Why it exists</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Student</td>
+          <td><code>StudentID</code>, <code>StudentName</code></td>
+          <td>Stores each student once</td>
+        </tr>
+        <tr>
+          <td>Club</td>
+          <td><code>ClubID</code>, <code>ClubName</code>, <code>TeacherID</code></td>
+          <td>Stores each club once</td>
+        </tr>
+        <tr>
+          <td>Membership</td>
+          <td><code>StudentID</code>, <code>ClubID</code></td>
+          <td>Acts as the linking table for the many-to-many relationship</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A3.2.5, A3.2.6, A3.2.7"
+    summary="Use normal forms to reduce redundancy, normalize designs to 3NF, and then evaluate when controlled denormalization may be justified."
+    visibility="sl"
+  >
+    <p>
+      Normalization improves integrity by removing avoidable repetition and dependency problems. In exam
+      terms, you need to explain what changes between normal forms and then construct a design that reaches
+      3NF for a realistic scenario.
+    </p>
+
+    <h3 id="core-understanding-normalization-and-3nf">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Normal form</th>
+          <th scope="col">Main rule</th>
+          <th scope="col">Problem it removes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1NF</td>
+          <td>Values must be atomic and repeating groups removed</td>
+          <td>Multiple values stored in one field</td>
+        </tr>
+        <tr>
+          <td>2NF</td>
+          <td>Non-key attributes must depend on the whole key</td>
+          <td>Partial dependency on part of a composite key</td>
+        </tr>
+        <tr>
+          <td>3NF</td>
+          <td>Non-key attributes must depend only on the key</td>
+          <td>Transitive dependency between non-key attributes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-normalizing-a-booking-table">Worked example: normalizing a booking table</h3>
+    <p>
+      Imagine one flat table stores <code>BookingID</code>, <code>StudentName</code>,
+      <code>ClubTitle</code>, <code>TeacherName</code>, and <code>RoomName</code>. If one teacher runs
+      many clubs, teacher and room information is repeated across many rows.
+    </p>
+    <p>
+      A 3NF design separates the repeated ideas into distinct tables such as <code>Student</code>,
+      <code>Club</code>, <code>Teacher</code>, and <code>Booking</code>. The result is easier to update
+      correctly because a room change or teacher-name correction happens once.
+    </p>
+
+    <TextbookCallout tone="warning" label="Evaluation rule">
+      <p>
+        Denormalization is not automatically poor design. It may be justified when read performance or
+        reporting simplicity matters more than perfect reduction of redundancy, but the trade-off is extra
+        duplication and a greater risk of inconsistent data.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a33}>
+  <TextbookChunk
+    label="A3.3.1, A3.3.2, A3.3.3"
+    summary="Use SQL structure definitions, joined queries, and update statements to define and manipulate relational data."
+    visibility="sl"
+  >
+    <p>
+      SQL is the working language of relational databases. The syllabus expects you to distinguish between
+      language types, construct queries between tables, and explain how updates change stored data.
+    </p>
+
+    <h3 id="core-understanding-ddl-dml-and-joins">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Language type</th>
+          <th scope="col">Purpose</th>
+          <th scope="col">Typical commands</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DDL</td>
+          <td>Define or alter structure</td>
+          <td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code></td>
+        </tr>
+        <tr>
+          <td>DML</td>
+          <td>Retrieve or modify stored data</td>
+          <td><code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre><code class="language-sql">CREATE TABLE Department (
+  DepartmentID INT PRIMARY KEY,
+  DepartmentName VARCHAR(40)
+);
+
+CREATE TABLE Employee (
+  EmployeeID INT PRIMARY KEY,
+  DepartmentID INT,
+  LastName VARCHAR(40),
+  Salary DECIMAL(10,2),
+  FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID)
+);</code></pre>
+
+    <h3 id="worked-example-querying-two-related-tables">Worked example: querying two related tables</h3>
+    <pre><code class="language-sql">SELECT Employee.LastName, Department.DepartmentName
+FROM Employee
+JOIN Department ON Employee.DepartmentID = Department.DepartmentID
+WHERE Department.DepartmentName LIKE 'Sc%'
+ORDER BY Employee.LastName ASC;</code></pre>
+    <p>
+      This query joins two tables, filters matching rows, uses pattern matching, and orders the result. That
+      is the kind of constructed query the syllabus expects, even though exact SQL syntax may vary slightly
+      between systems.
+    </p>
+
+    <pre><code class="language-sql">INSERT INTO Employee (EmployeeID, DepartmentID, LastName, Salary)
+VALUES (14, 3, 'Khan', 42000);
+
+UPDATE Employee
+SET Salary = 43500
+WHERE EmployeeID = 14;
+
+DELETE FROM Employee
+WHERE EmployeeID = 14;</code></pre>
+
+    <p>
+      When indexed columns are updated, the database may also need to update the index structure, so heavy
+      modification can have performance costs as well as correctness implications.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A3.3.4, A3.3.5, A3.3.6"
+    summary="HL extends SQL work into aggregation, database views, and transactions that preserve integrity through ACID."
+    visibility="hl"
+  >
+    <p>
+      Higher level work shifts from retrieving or changing single rows to building summaries, controlling
+      access through views, and managing transactions so that the database remains valid even when operations
+      fail part way through.
+    </p>
+
+    <h3 id="overview-aggregation-views-and-transactions">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Concept</th>
+          <th scope="col">Purpose</th>
+          <th scope="col">Representative example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Aggregate function</td>
+          <td>Summarize many rows into one result</td>
+          <td><code>COUNT</code>, <code>AVG</code>, <code>SUM</code></td>
+        </tr>
+        <tr>
+          <td>View</td>
+          <td>Present data in a controlled or simplified way</td>
+          <td>Virtual view or materialized snapshot view</td>
+        </tr>
+        <tr>
+          <td>Transaction</td>
+          <td>Treat several operations as one unit of work</td>
+          <td><code>BEGIN TRANSACTION</code>, <code>COMMIT</code>, <code>ROLLBACK</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre><code class="language-sql">SELECT DepartmentID, AVG(Salary) AS AvgSalary
+FROM Employee
+GROUP BY DepartmentID
+HAVING AVG(Salary) &gt; 35000;</code></pre>
+
+    <p>
+      Views help with security and simplification because users do not always need direct access to every
+      table and every attribute. A virtual view stores the query definition; a materialized view stores a
+      snapshot result for faster repeated access.
+    </p>
+
+    <h3 id="worked-example-acid-in-action">Worked example: ACID in action</h3>
+    <pre><code class="language-sql">BEGIN TRANSACTION;
+
+UPDATE Inventory
+SET Quantity = Quantity - 1
+WHERE ItemID = 27;
+
+INSERT INTO Orders (OrderID, ItemID, CustomerID)
+VALUES (9041, 27, 301);
+
+COMMIT;</code></pre>
+    <p>
+      If the insert fails after the stock level has already changed, the transaction should be rolled back.
+      Atomicity prevents a half-complete update; consistency keeps rules valid; isolation prevents conflicts
+      between simultaneous work; durability preserves committed changes.
+    </p>
+  </TextbookChunk>
+</TextbookSectionBlock>
+
+<TextbookSectionBlock section={a34}>
+  <TextbookChunk
+    label="A3.4.1"
+    summary="Outline alternative database models by matching structure, scale, and use case rather than treating them as interchangeable replacements."
+    visibility="hl"
+  >
+    <p>
+      Relational databases are not the only way to store data. Different models exist because different
+      problems demand different structures, performance characteristics, and operational trade-offs.
+    </p>
+
+    <h3 id="overview-alternative-database-models">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Model</th>
+          <th scope="col">Best fit</th>
+          <th scope="col">Key strength</th>
+          <th scope="col">Key limitation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>NoSQL</td>
+          <td>Large, varied, fast-changing data</td>
+          <td>Flexible schema and scalability</td>
+          <td>Less natural for strict relational integrity</td>
+        </tr>
+        <tr>
+          <td>Cloud database</td>
+          <td>Managed web or enterprise deployment</td>
+          <td>Elastic scaling and managed availability</td>
+          <td>Provider dependence and reduced infrastructure control</td>
+        </tr>
+        <tr>
+          <td>Spatial database</td>
+          <td>Geographic and mapping queries</td>
+          <td>Native support for coordinates and geometry</td>
+          <td>Requires specialized data types and querying</td>
+        </tr>
+        <tr>
+          <td>In-memory database</td>
+          <td>Real-time access and low-latency analytics</td>
+          <td>Very fast read and write operations</td>
+          <td>Higher cost and volatility concerns if persistence is weak</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-choosing-a-database-model">Worked example: choosing a database model</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Scenario</th>
+          <th scope="col">Strongest model</th>
+          <th scope="col">Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Social-media content with changing post metadata</td>
+          <td>NoSQL document database</td>
+          <td>Flexible schema handles semi-structured records well</td>
+        </tr>
+        <tr>
+          <td>School mapping tool with route and area data</td>
+          <td>Spatial database</td>
+          <td>Coordinates, regions, and location queries are central</td>
+        </tr>
+        <tr>
+          <td>Session caching for a high-traffic online service</td>
+          <td>In-memory key-value database</td>
+          <td>Low latency matters more than complex relational structure</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A3.4.2, A3.4.3"
+    summary="Explain what data warehouses are for and how OLAP and data mining support business intelligence."
+    visibility="hl"
+  >
+    <p>
+      A data warehouse is designed for analysis rather than day-to-day transaction processing. It gathers
+      historical data from multiple sources so that trends, patterns, and comparisons can be studied over
+      time.
+    </p>
+
+    <h3 id="core-understanding-data-warehousing-and-bi">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Warehouse characteristic</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Append-only</td>
+          <td>Keeps historical versions so change over time can be analysed</td>
+        </tr>
+        <tr>
+          <td>Subject-oriented</td>
+          <td>Organizes data around themes such as finance, sales, or operations</td>
+        </tr>
+        <tr>
+          <td>Integrated</td>
+          <td>Combines data from multiple sources into one analytical view</td>
+        </tr>
+        <tr>
+          <td>Time-variant</td>
+          <td>Supports trends, comparisons, and historical reporting</td>
+        </tr>
+        <tr>
+          <td>Non-volatile</td>
+          <td>Data is stable for analysis rather than constantly rewritten</td>
+        </tr>
+        <tr>
+          <td>Optimized for query performance</td>
+          <td>Supports fast retrieval of analytical summaries</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      OLAP helps users explore summarized data from multiple dimensions such as time, product, or region.
+      Data mining goes further by finding patterns in large data sets using techniques such as classification,
+      clustering, regression, or association discovery.
+    </p>
+
+    <h3 id="worked-example-business-intelligence-workflow">Worked example: business intelligence workflow</h3>
+    <p>
+      A retailer wants to understand falling weekend sales. The warehouse stores several years of sales data.
+      OLAP can compare region, week, and product category quickly. Data mining can then look for patterns
+      such as products frequently bought together or customer groups whose buying behaviour has changed.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="A3.4.4"
+    summary="Describe distributed databases through the features needed to keep data available, consistent, and usable across several nodes."
+    visibility="hl"
+  >
+    <p>
+      A distributed database presents one usable system view even though the data is stored across multiple
+      sites. The challenge is not only storage location; it is maintaining reliable behaviour while data,
+      queries, and transactions are spread across the network.
+    </p>
+
+    <h3 id="overview-distributed-database-features">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Feature</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Concurrency control</td>
+          <td>Prevents conflicting updates when several nodes access the same data at once</td>
+        </tr>
+        <tr>
+          <td>Data consistency</td>
+          <td>Keeps multiple copies synchronized to a correct state</td>
+        </tr>
+        <tr>
+          <td>Replication</td>
+          <td>Improves availability and resilience by storing copies across nodes</td>
+        </tr>
+        <tr>
+          <td>Fault tolerance</td>
+          <td>Allows service to continue despite hardware, software, or network failure</td>
+        </tr>
+        <tr>
+          <td>Location and distribution transparency</td>
+          <td>Lets users work with the system without needing to know where data physically sits</td>
+        </tr>
+        <tr>
+          <td>Scalability and partitioning</td>
+          <td>Support growth in data volume and workload by spreading storage and requests</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="recap" label="Transaction link">
+      <p>
+        ACID still matters here. In a distributed setting, atomicity, consistency, isolation, and durability
+        are harder to preserve because more than one node may be involved in the same transaction.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>

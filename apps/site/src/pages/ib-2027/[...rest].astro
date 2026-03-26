@@ -10,9 +10,16 @@ interface StaticContentPageProps {
 
 export async function getStaticPaths() {
   const allFiles = await collectPublicHtmlFiles('ib-2027');
+  const legacyFiles = allFiles.filter((relativePath) => {
+    const normalized = relativePath.toLowerCase();
+    return !(
+      /^[ab]\d\/textbook\.html$/.test(normalized) ||
+      /^(sl|hl)\/scenarios\/[^/]+\.html$/.test(normalized)
+    );
+  });
 
   return Promise.all(
-    allFiles.map(async (relativePath) => {
+    legacyFiles.map(async (relativePath) => {
       const routePath = `/ib-2027/${relativePath}`;
       const restParam = relativePath.toLowerCase().replace(/\.html$/, '');
       const html = await readPublicHtml(routePath);

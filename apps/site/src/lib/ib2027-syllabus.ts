@@ -812,6 +812,67 @@ export const getIbThemeShell = (themeId: IbThemeId): ShellContext => {
 export const getIbThemePrevNext = (themeId: IbThemeId, currentPath: string): { prevLink?: ShellPageLink; nextLink?: ShellPageLink } =>
   buildPrevNextLinks(getIbThemeShell(themeId).groups, currentPath);
 
+export const getIbThemeTextbookShell = (themeId: IbThemeId): ShellContext => {
+  const theme = getIbThemeOrThrow(themeId);
+  const themeA = getIbThemes().filter((entry) => entry.themeLabel === 'Theme A');
+  const themeB = getIbThemes().filter((entry) => entry.themeLabel === 'Theme B');
+
+  const textbookChapterItems = (entries: IbTheme[]) =>
+    entries.map((entry) => ({
+      label: entry.title,
+      href: getIbThemeTextbookPath(entry.id),
+      number: entry.code,
+      meta: entry.id === themeId ? 'Current chapter' : entry.level === 'hl' ? 'HL only' : undefined,
+      tone: getIbThemeTone(entry.level)
+    }));
+
+  return {
+    title: 'IB textbook',
+    meta: `${theme.code} · ${theme.title}`,
+    icon: 'fa-solid fa-book-open',
+    collapsible: false,
+    groups: [
+      {
+        id: `${theme.id}-textbook-context`,
+        label: 'Current unit',
+        static: true,
+        items: [
+          {
+            label: 'Unit overview',
+            href: getIbThemePath(theme.id),
+            number: theme.code
+          },
+          {
+            label: 'Textbook chapter',
+            href: getIbThemeTextbookPath(theme.id),
+            meta: theme.title
+          }
+        ]
+      },
+      {
+        id: 'ib-textbook-theme-a',
+        label: 'Theme A chapters',
+        static: true,
+        sequence: true,
+        items: textbookChapterItems(themeA)
+      },
+      {
+        id: 'ib-textbook-theme-b',
+        label: 'Theme B chapters',
+        static: true,
+        sequence: true,
+        items: textbookChapterItems(themeB)
+      }
+    ]
+  };
+};
+
+export const getIbThemeTextbookPrevNext = (
+  themeId: IbThemeId,
+  currentPath: string
+): { prevLink?: ShellPageLink; nextLink?: ShellPageLink } =>
+  buildPrevNextLinks(getIbThemeTextbookShell(themeId).groups, currentPath);
+
 export const getIbLandingShell = (): ShellContext => {
   const themeA = getIbThemes().filter((theme) => theme.themeLabel === 'Theme A');
   const themeB = getIbThemes().filter((theme) => theme.themeLabel === 'Theme B');

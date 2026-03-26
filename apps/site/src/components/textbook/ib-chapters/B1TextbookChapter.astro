@@ -1,0 +1,334 @@
+---
+import TextbookCallout from '../TextbookCallout.astro';
+import TextbookChunk from '../TextbookChunk.astro';
+import TextbookPageIntro from '../TextbookPageIntro.astro';
+import TextbookSectionBlock from '../TextbookSectionBlock.astro';
+import type { TextbookChapterModel, TextbookSectionModel } from '../../../lib/textbook-model';
+
+interface Props {
+  chapter: TextbookChapterModel;
+}
+
+const { chapter } = Astro.props as Props;
+
+const requireSection = (code: string): TextbookSectionModel => {
+  const section = chapter.sections.find((candidate) => candidate.code === code);
+  if (!section) {
+    throw new Error(`Missing textbook section "${code}" for rebuilt chapter ${chapter.code}.`);
+  }
+  return section;
+};
+
+const b11 = requireSection('B1.1');
+---
+
+<TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+  <p>
+    B1 sets up the problem-solving toolkit used throughout the rest of the course. The chapter
+    begins with defining a problem clearly, then moves through the main computational-thinking
+    concepts, and ends by tracing flowcharts as a way of checking algorithmic logic.
+  </p>
+  <TextbookCallout tone="note" label="Reading pattern">
+    <p>
+      Start by asking what the problem actually is, who it affects, and how success will be judged.
+      Then reduce the problem through abstraction, decomposition, and pattern recognition before
+      checking the final logic with a flowchart trace.
+    </p>
+  </TextbookCallout>
+</TextbookPageIntro>
+
+<TextbookSectionBlock section={b11}>
+  <TextbookChunk
+    label="B1.1.1"
+    summary="Construct a problem specification by defining the problem, its stakeholders, its limits, and the criteria for judging success."
+    visibility="sl"
+  >
+    <p>
+      A problem specification is a short, precise definition of what needs to be solved and why. The
+      command term matters here: to construct a problem specification means producing one, not
+      only listing the parts it should contain.
+    </p>
+
+    <h3 id="overview-problem-specification">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Component</th>
+          <th scope="col">What it should make clear</th>
+          <th scope="col">Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Problem statement</td>
+          <td>What the issue is, who it affects, and what is currently going wrong</td>
+          <td>Keeps the solution focused on a real need</td>
+        </tr>
+        <tr>
+          <td>Stakeholders</td>
+          <td>Who uses, supports, manages, or is affected by the system</td>
+          <td>Different users often have different priorities</td>
+        </tr>
+        <tr>
+          <td>Constraints and limitations</td>
+          <td>Time, budget, hardware, legal, ethical, or staffing limits</td>
+          <td>Prevents unrealistic planning</td>
+        </tr>
+        <tr>
+          <td>Inputs and outputs</td>
+          <td>What data enters the system and what the system must produce</td>
+          <td>Clarifies the required data flow</td>
+        </tr>
+        <tr>
+          <td>Evaluation criteria</td>
+          <td>Specific, measurable tests of success</td>
+          <td>Allows the final solution to be judged properly</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-drafting-a-problem-specification">Worked example: drafting a problem specification</h3>
+    <p>
+      Suppose a school canteen wants to replace paper lunch orders with a digital kiosk system.
+      A strong problem specification would identify students, catering staff, and school managers as
+      stakeholders, note the budget and allergy-reporting requirements as constraints, and define
+      inputs and outputs clearly.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Part</th>
+          <th scope="col">Example for the canteen system</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Problem statement</td>
+          <td>Lunch queues are too slow and spoken orders sometimes lead to mistakes.</td>
+        </tr>
+        <tr>
+          <td>Constraints</td>
+          <td>Limited budget, allergy rules, and the need to continue working during network problems.</td>
+        </tr>
+        <tr>
+          <td>Inputs</td>
+          <td>Touchscreen choices, student identification, allergy data.</td>
+        </tr>
+        <tr>
+          <td>Outputs</td>
+          <td>Confirmed meal order on screen, kitchen order ticket, and updated queue record.</td>
+        </tr>
+        <tr>
+          <td>Evaluation criteria</td>
+          <td>Queue time below five minutes and no recorded mismatch between order and meal.</td>
+        </tr>
+      </tbody>
+    </table>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B1.1.2, B1.1.3"
+    summary="Describe the fundamental computational-thinking concepts and explain how they are applied across computer-science problem solving."
+    visibility="sl"
+  >
+    <p>
+      Computational thinking is a toolkit for solving problems in a structured way. It is not the same
+      as programming itself. Instead, it shapes how a computer scientist approaches a problem before
+      implementation begins.
+    </p>
+
+    <h3 id="core-understanding-computational-thinking-concepts">Core understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Concept</th>
+          <th scope="col">Definition</th>
+          <th scope="col">Useful effect</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Abstraction</td>
+          <td>Focus on the essential features and ignore irrelevant detail</td>
+          <td>Makes complex systems manageable</td>
+        </tr>
+        <tr>
+          <td>Decomposition</td>
+          <td>Break a complex problem into smaller sub-problems</td>
+          <td>Supports planning and parallel work</td>
+        </tr>
+        <tr>
+          <td>Pattern recognition</td>
+          <td>Identify similarities that allow reuse of ideas or methods</td>
+          <td>Reduces repeated effort</td>
+        </tr>
+        <tr>
+          <td>Algorithmic thinking</td>
+          <td>Design a clear, ordered sequence of steps to solve the problem</td>
+          <td>Produces predictable and testable solutions</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="misconception" label="Common misconception">
+      <p>
+        Decomposition means breaking down the problem, not breaking down a finished program.
+        At the point decomposition happens, the code may not exist yet.
+      </p>
+    </TextbookCallout>
+
+    <h3 id="applied-understanding-computational-thinking">Applied understanding</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Area</th>
+          <th scope="col">How computational thinking helps</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Software development</td>
+          <td>Breaks a large system into modules, removes unnecessary features, and plans logic before coding.</td>
+        </tr>
+        <tr>
+          <td>Data analysis</td>
+          <td>Finds repeating trends, separates useful from irrelevant data, and automates repeated tasks.</td>
+        </tr>
+        <tr>
+          <td>Machine learning</td>
+          <td>Uses pattern recognition to classify data and abstraction to keep only useful features.</td>
+        </tr>
+        <tr>
+          <td>Database design</td>
+          <td>Uses decomposition to separate entities and pattern recognition to avoid repeated structures.</td>
+        </tr>
+        <tr>
+          <td>Network security</td>
+          <td>Breaks security problems into roles, threats, and responses while designing clear defensive procedures.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      These concepts are strongest when used together. A good solution rarely depends on only one of
+      them. For example, a database designer may decompose the system into entities and
+      relationships, abstract away irrelevant detail, recognize repeated data patterns, and then design
+      an algorithmic process for validation or querying.
+    </p>
+  </TextbookChunk>
+
+  <TextbookChunk
+    label="B1.1.4"
+    summary="Trace flowcharts by following the execution path carefully and recording each variable change, decision, and output."
+    visibility="sl"
+  >
+    <p>
+      Flowcharts are diagrammatic representations of algorithms. They help show input, processing,
+      decisions, and output clearly enough that a reader can follow the logic and trace the result for
+      given data.
+    </p>
+
+    <h3 id="overview-flowchart-symbols">Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Symbol type</th>
+          <th scope="col">Purpose</th>
+          <th scope="col">Typical wording</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Terminator</td>
+          <td>Shows the start or end of the algorithm</td>
+          <td><code>START</code>, <code>END</code></td>
+        </tr>
+        <tr>
+          <td>Input/Output</td>
+          <td>Reads data or displays a result</td>
+          <td><code>INPUT a</code>, <code>OUTPUT total</code></td>
+        </tr>
+        <tr>
+          <td>Process</td>
+          <td>Performs an assignment or calculation</td>
+          <td><code>sum = a + b</code></td>
+        </tr>
+        <tr>
+          <td>Decision</td>
+          <td>Tests a condition and branches</td>
+          <td><code>a &gt; b?</code></td>
+        </tr>
+        <tr>
+          <td>Flowline</td>
+          <td>Shows direction of execution</td>
+          <td>Arrow between symbols</td>
+        </tr>
+        <tr>
+          <td>Connector</td>
+          <td>Continues a flow across the chart</td>
+          <td>Linked symbol marker</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="worked-example-tracing-a-flowchart">Worked example: tracing a flowchart</h3>
+    <p>
+      Imagine a flowchart that inputs two different numbers and outputs the larger value. The decision
+      is whether <code>a &gt; b</code>. If the condition is true, the algorithm stores <code>a</code> as the
+      maximum; otherwise it stores <code>b</code>.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Step</th>
+          <th scope="col">a</th>
+          <th scope="col">b</th>
+          <th scope="col">max</th>
+          <th scope="col">Decision</th>
+          <th scope="col">Output</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Input values</td>
+          <td>7</td>
+          <td>-3</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Check condition</td>
+          <td>7</td>
+          <td>-3</td>
+          <td>-</td>
+          <td>True</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Assign maximum</td>
+          <td>7</td>
+          <td>-3</td>
+          <td>7</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Display result</td>
+          <td>7</td>
+          <td>-3</td>
+          <td>7</td>
+          <td>-</td>
+          <td>The larger value is 7</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <TextbookCallout tone="warning" label="Tracing rule">
+      <p>
+        Label both branches of every decision clearly and record the outcome of the condition while
+        tracing. A missing Yes/No branch makes the flowchart ambiguous and weakens the explanation.
+      </p>
+    </TextbookCallout>
+  </TextbookChunk>
+</TextbookSectionBlock>

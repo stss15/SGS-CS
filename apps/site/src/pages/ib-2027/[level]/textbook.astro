@@ -1,18 +1,46 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
+import A1TextbookChapter from '../../../components/textbook/ib-chapters/A1TextbookChapter.astro';
+import A2TextbookChapter from '../../../components/textbook/ib-chapters/A2TextbookChapter.astro';
+import A3TextbookChapter from '../../../components/textbook/ib-chapters/A3TextbookChapter.astro';
+import A4TextbookChapter from '../../../components/textbook/ib-chapters/A4TextbookChapter.astro';
+import B1TextbookChapter from '../../../components/textbook/ib-chapters/B1TextbookChapter.astro';
+import B2TextbookChapter from '../../../components/textbook/ib-chapters/B2TextbookChapter.astro';
+import B3TextbookChapter from '../../../components/textbook/ib-chapters/B3TextbookChapter.astro';
+import B4TextbookChapter from '../../../components/textbook/ib-chapters/B4TextbookChapter.astro';
 import ReaderShell from '../../../layouts/ReaderShell.astro';
+import TextbookCallout from '../../../components/textbook/TextbookCallout.astro';
+import TextbookPageIntro from '../../../components/textbook/TextbookPageIntro.astro';
+import TextbookSectionBlock from '../../../components/textbook/TextbookSectionBlock.astro';
 import {
   getIbPointIndex,
   getIbThemeBreadcrumbs,
   getIbThemeOrThrow,
-  getIbThemePrevNext,
-  getIbThemeShell,
+  getIbThemeTextbookPrevNext,
+  getIbThemeTextbookShell,
   getIbThemeStaticPaths,
   type IbThemeId
 } from '../../../lib/ib2027-syllabus';
+import {
+  buildIbThemeChapterModel,
+  getEntryVisibility,
+  getTextbookSectionPrefix,
+  getTextbookVisibilityLabel,
+  type TextbookVisibility
+} from '../../../lib/textbook-model';
+import { bucketMarkdownBySection, renderMarkdownToHtml } from '../../../lib/textbook-markdown';
 
 interface ThemeTextbookPageProps {
   themeId: IbThemeId;
+}
+
+interface RenderedEntryPart {
+  sectionCode: string;
+  codeLabel: string;
+  summary?: string;
+  visibility: TextbookVisibility;
+  html: string;
+  order: number;
 }
 
 export function getStaticPaths() {
@@ -28,26 +56,104 @@ export function getStaticPaths() {
 
 const { themeId } = Astro.props as ThemeTextbookPageProps;
 const theme = getIbThemeOrThrow(themeId);
-const courseShell = getIbThemeShell(themeId);
-const { prevLink, nextLink } = getIbThemePrevNext(themeId, Astro.url.pathname);
-const entries = (
-  await getCollection('ib-textbooks', ({ data }) =>
-    data.subtopics.some((subtopic) => subtopic.code.toUpperCase().startsWith(theme.code))
-  )
-).sort((left, right) => {
-  const leftCodes = left.data.subtopics.map((subtopic) => getIbPointIndex(theme, subtopic.code)).filter((index) => index >= 0);
-  const rightCodes = right.data.subtopics.map((subtopic) => getIbPointIndex(theme, subtopic.code)).filter((index) => index >= 0);
-  const leftIndex = leftCodes.length > 0 ? Math.min(...leftCodes) : Number.MAX_SAFE_INTEGER;
-  const rightIndex = rightCodes.length > 0 ? Math.min(...rightCodes) : Number.MAX_SAFE_INTEGER;
-  return leftIndex - rightIndex;
-});
+const chapter = buildIbThemeChapterModel(theme);
+const courseShell = getIbThemeTextbookShell(themeId);
+const { prevLink, nextLink } = getIbThemeTextbookPrevNext(themeId, Astro.url.pathname);
+const rebuiltChapterComponents = {
+  a1: A1TextbookChapter,
+  a2: A2TextbookChapter,
+  a3: A3TextbookChapter,
+  a4: A4TextbookChapter,
+  b1: B1TextbookChapter,
+  b2: B2TextbookChapter,
+  b3: B3TextbookChapter,
+  b4: B4TextbookChapter
+};
+const RebuiltChapter = rebuiltChapterComponents[themeId as keyof typeof rebuiltChapterComponents];
 
-const renderedEntries = await Promise.all(
-  entries.map(async (entry) => ({
-    entry,
-    rendered: await render(entry)
-  }))
-);
+const sectionGroups: Array<{ section: (typeof chapter.sections)[number]; parts: RenderedEntryPart[] }> = [];
+const uncategorizedParts: RenderedEntryPart[] = [];
+
+if (!RebuiltChapter) {
+  const entries = (
+    await getCollection('ib-textbooks', ({ data }) =>
+      data.subtopics.some((subtopic) => subtopic.code.toUpperCase().startsWith(theme.code))
+    )
+  ).sort((left, right) => {
+    const leftCodes = left.data.subtopics.map((subtopic) => getIbPointIndex(theme, subtopic.code)).filter((index) => index >= 0);
+    const rightCodes = right.data.subtopics.map((subtopic) => getIbPointIndex(theme, subtopic.code)).filter((index) => index >= 0);
+    const leftIndex = leftCodes.length > 0 ? Math.min(...leftCodes) : Number.MAX_SAFE_INTEGER;
+    const rightIndex = rightCodes.length > 0 ? Math.min(...rightCodes) : Number.MAX_SAFE_INTEGER;
+    return leftIndex - rightIndex;
+  });
+
+  const knownSectionCodes = new Set(chapter.sections.map((section) => section.code.toUpperCase()));
+  const renderedEntryParts: RenderedEntryPart[] = [];
+  let nextPartOrder = 0;
+
+  for (const entry of entries) {
+    const entrySectionSource = entry.data.sections?.length ? entry.data.sections : entry.data.subtopics;
+    const entrySectionCodes = Array.from(
+      new Set(
+        entrySectionSource
+          .map((section) => getTextbookSectionPrefix(section.code))
+          .filter((sectionCode): sectionCode is string => Boolean(sectionCode))
+      )
+    );
+    const fallbackSectionCode = entrySectionCodes[0] || chapter.sections[0]?.code;
+    if (!fallbackSectionCode) continue;
+
+    const markdownBuckets = bucketMarkdownBySection(entry.body, fallbackSectionCode.toUpperCase(), knownSectionCodes);
+
+    for (const [sectionCode, markdownParts] of markdownBuckets.entries()) {
+      const matchingSections = entrySectionSource.filter(
+        (section) => getTextbookSectionPrefix(section.code) === sectionCode
+      );
+      const matchingCodes = entry.data.subtopics
+        .filter((subtopic) => getTextbookSectionPrefix(subtopic.code) === sectionCode)
+        .map((subtopic) => subtopic.code);
+      const matchingVisibilities = Array.from(
+        new Set(matchingSections.map((section) => section.visibility).filter(Boolean))
+      ) as TextbookVisibility[];
+      const partVisibility =
+        matchingVisibilities.length === 1
+          ? matchingVisibilities[0]
+          : matchingVisibilities.length > 1
+            ? 'mixed'
+            : getEntryVisibility(entry);
+      const sectionOverview = matchingSections.find((section) => section.overview)?.overview;
+      const partSummary =
+        sectionOverview ||
+        (entrySectionCodes.length === 1 ? entry.data.summary : undefined);
+
+      renderedEntryParts.push({
+        sectionCode,
+        codeLabel: matchingCodes.length > 0 ? matchingCodes.join(', ') : entry.data.subtopics.map((subtopic) => subtopic.code).join(', '),
+        summary: partSummary,
+        visibility: partVisibility,
+        html: await renderMarkdownToHtml(markdownParts.join('\n\n')),
+        order: nextPartOrder
+      });
+
+      nextPartOrder += 1;
+    }
+  }
+
+  sectionGroups.push(
+    ...chapter.sections.map((section) => ({
+      section,
+      parts: renderedEntryParts
+        .filter((part) => part.sectionCode === section.code.toUpperCase())
+        .sort((left, right) => left.order - right.order)
+    }))
+  );
+
+  uncategorizedParts.push(
+    ...renderedEntryParts.filter(
+      (part) => !chapter.sections.some((section) => section.code.toUpperCase() === part.sectionCode)
+    )
+  );
+}
 ---
 
 <ReaderShell
@@ -57,30 +163,51 @@ const renderedEntries = await Promise.all(
   breadcrumbs={getIbThemeBreadcrumbs(themeId, 'Textbook')}
   shellPath={Astro.url.pathname}
   courseShell={courseShell}
+  layoutMode="reading"
   prevLink={prevLink}
   nextLink={nextLink}
   kicker={`${theme.themeLabel} · ${theme.code}`}
   heading={`${theme.code} textbook`}
   subtitle={`Combined reading view for ${theme.title}`}
 >
-  <section class="ib-syllabus-reader-block">
-    <p><strong>Unit overview:</strong> {theme.overview}</p>
-    <p>This reader assembles the currently published textbook coverage already mapped to {theme.code}. It keeps the material in one place while the remaining revision and assessment resources are rebuilt.</p>
-  </section>
+  {RebuiltChapter ? (
+    <RebuiltChapter chapter={chapter} />
+  ) : (
+    <>
+      <TextbookPageIntro code={chapter.code} title={chapter.title} summary={chapter.summary} visibility={chapter.visibility}>
+        <p>This reader assembles the published textbook coverage already mapped to {theme.code}. It now follows the shared textbook model: shell navigation handles chapter location, while the page contents block tracks major subchapters inside the chapter.</p>
+      </TextbookPageIntro>
 
-  {renderedEntries.map(({ entry, rendered }) => {
-    const Content = rendered.Content;
-    const codeLabel = entry.data.subtopics.map((subtopic) => subtopic.code).join(', ');
-    const levelLabel = entry.data.level === 'hl' ? 'HL extension' : 'SL core';
+      {sectionGroups.map(({ section, parts }) => (
+        <TextbookSectionBlock section={section}>
+          {parts.length > 0 ? (
+            parts.map((part) => (
+              <section class="textbook-chunk">
+                <div class="textbook-chunk__header">
+                  <div class="textbook-chunk__meta">
+                    <p class="textbook-chunk__label">{part.codeLabel}</p>
+                    <span class:list={['textbook-pill', part.visibility === 'hl' && 'textbook-pill--hl']}>
+                      {getTextbookVisibilityLabel(part.visibility)}
+                    </span>
+                  </div>
+                  {part.summary && <p class="textbook-chunk__summary">{part.summary}</p>}
+                </div>
+                <div set:html={part.html}></div>
+              </section>
+            ))
+          ) : (
+            <TextbookCallout tone="note" label="Migration status">
+              <p>{section.label} is wired into the shared textbook structure, but its rewritten body content has not been attached yet.</p>
+            </TextbookCallout>
+          )}
+        </TextbookSectionBlock>
+      ))}
 
-    return (
-      <section class="ib-syllabus-reader-block">
-        <div class="ib-syllabus-reader-block__header">
-          <p class="ib-syllabus-kicker">{levelLabel}</p>
-          <h2>{codeLabel}</h2>
-        </div>
-        <Content />
-      </section>
-    );
-  })}
+      {uncategorizedParts.length > 0 && (
+        <TextbookCallout tone="warning" label="Unmapped content">
+          <p>Some mapped textbook content does not yet align cleanly to a chapter section in the shared model and should be split during the next migration pass.</p>
+        </TextbookCallout>
+      )}
+    </>
+  )}
 </ReaderShell>

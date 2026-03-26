@@ -7,16 +7,13 @@
   if (!contentRoot) return;
 
   const announceEl = shell.querySelector('[data-reader-announcer]');
-  const drawerOverlay = shell.querySelector('[data-reader-drawer-overlay]');
-  const tocEl = shell.querySelector('[data-reader-toc]');
-  const tocSearch = shell.querySelector('[data-reader-toc-search]');
-  const tocToggleBtns = Array.from(shell.querySelectorAll('[data-reader-action="toc-toggle"]'));
+  const contentsBlocks = Array.from(shell.querySelectorAll('[data-reader-contents-block]'));
+  const tocRoots = Array.from(shell.querySelectorAll('[data-reader-toc]'));
   const modalOverlay = document.querySelector('[data-reader-modal-overlay]');
   const defModal = document.getElementById('reader-def-modal');
   const defTitle = defModal?.querySelector('[data-reader-def-title]');
   const defBody = defModal?.querySelector('[data-reader-def-body]');
 
-  const isNarrowViewport = () => window.matchMedia && window.matchMedia('(max-width: 1100px)').matches;
   const prefersReducedMotion = () =>
     window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -37,44 +34,8 @@
     root.style.setProperty('--reader-nav-offset', `${Math.max(0, Math.round(rect.height))}px`);
   };
 
-  const syncTocButtons = () => {
-    const expanded = isNarrowViewport() && root.dataset.readerToc === 'open';
-    tocToggleBtns.forEach((button) => {
-      button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-    });
-    drawerOverlay?.setAttribute('aria-hidden', expanded ? 'false' : 'true');
-  };
-
-  const setTocState = (open) => {
-    root.dataset.readerToc = isNarrowViewport() ? (open ? 'open' : 'closed') : 'open';
-    syncTocButtons();
-  };
-
-  const closeToc = () => {
-    if (!isNarrowViewport()) return;
-    setTocState(false);
-  };
-
-  const toggleToc = () => {
-    if (!isNarrowViewport()) return;
-    setTocState(root.dataset.readerToc !== 'open');
-  };
-
   syncHeaderOffset();
-  setTocState(false);
-
-  window.addEventListener('resize', () => {
-    syncHeaderOffset();
-    if (!isNarrowViewport()) {
-      root.dataset.readerToc = 'open';
-    } else if (root.dataset.readerToc !== 'open') {
-      root.dataset.readerToc = 'closed';
-    }
-    syncTocButtons();
-  });
-
-  drawerOverlay?.addEventListener('click', closeToc);
-  tocToggleBtns.forEach((button) => button.addEventListener('click', toggleToc));
+  window.addEventListener('resize', syncHeaderOffset);
 
   const slugify = (value) =>
     String(value || '')
@@ -104,99 +65,137 @@
     });
   };
 
-  const headings = Array.from(contentRoot.querySelectorAll('h2, h3'));
-  ensureHeadingIds(headings);
+  const allHeadings = Array.from(contentRoot.querySelectorAll('h2, h3')).filter(
+    (heading) => (heading.textContent || '').trim().length > 0
+  );
+  ensureHeadingIds(allHeadings);
 
-  const tocLinkById = new Map();
+  const topLevelHeadings = allHeadings.some((heading) => heading.tagName === 'H2')
+    ? allHeadings.filter((heading) => heading.tagName === 'H2')
+    : allHeadings;
+
+  const minimumContentsItems = 2;
+  const tocLinksById = new Map();
+
+  const registerTocLink = (headingId, link) => {
+    const existing = tocLinksById.get(headingId);
+    if (existing) {
+      existing.push(link);
+      return;
+    }
+    tocLinksById.set(headingId, [link]);
+  };
+
+  const createTocLink = (heading, className) => {
+    const link = document.createElement('a');
+    link.href = `#${heading.id}`;
+    link.dataset.readerTocLink = 'true';
+    link.dataset.targetId = heading.id;
+    link.className = className;
+
+    const text = document.createElement('span');
+    text.className = 'reader-toc-link__label';
+    text.textContent = (heading.textContent || '').trim() || 'Untitled';
+    link.appendChild(text);
+
+    registerTocLink(heading.id, link);
+    return link;
+  };
 
   const buildToc = () => {
-    if (!tocEl) return;
+    tocLinksById.clear();
 
-    if (!headings.length) {
-      tocEl.innerHTML = '<p class="reader-empty">No section headings yet.</p>';
+    if (!tocRoots.length) return;
+
+    if (topLevelHeadings.length < minimumContentsItems) {
+      contentsBlocks.forEach((block) => {
+        block.hidden = true;
+      });
+      tocRoots.forEach((tocRoot) => {
+        tocRoot.innerHTML = '';
+      });
       return;
     }
 
-    const isGroupHeader = (h) => h.tagName === 'H2' && !!h.closest('.ib-syllabus-reader-block__header');
-
-    const container = document.createDocumentFragment();
-    let currentDetails = null;
-    let currentSubList = null;
-
-    headings.forEach((heading) => {
-      // Skip H3s from TOC entirely — only show H2 subheadings
-      if (heading.tagName === 'H3') return;
-
-      const headingText = (heading.textContent || '').trim() || 'Untitled';
-
-      if (isGroupHeader(heading)) {
-        // Group header H2 → collapsible <details> section
-        currentDetails = document.createElement('details');
-        currentDetails.className = 'toc-section';
-        currentDetails.dataset.tocText = headingText.toLowerCase();
-
-        const summary = document.createElement('summary');
-        summary.className = 'toc-section__summary';
-
-        const link = document.createElement('a');
-        link.href = `#${heading.id}`;
-        link.dataset.readerTocLink = 'true';
-        link.dataset.targetId = heading.id;
-        link.textContent = headingText;
-        summary.appendChild(link);
-
-        currentDetails.appendChild(summary);
-        currentSubList = document.createElement('ul');
-        currentSubList.className = 'toc-section__children';
-        currentDetails.appendChild(currentSubList);
-        container.appendChild(currentDetails);
-        tocLinkById.set(heading.id, link);
-      } else {
-        // Content H2 → list item inside current section
-        const item = document.createElement('li');
-        item.className = 'toc-level-2';
-        item.dataset.tocText = headingText.toLowerCase();
-
-        const link = document.createElement('a');
-        link.href = `#${heading.id}`;
-        link.dataset.readerTocLink = 'true';
-        link.dataset.targetId = heading.id;
-
-        const text = document.createElement('span');
-        text.textContent = headingText;
-        link.appendChild(text);
-        item.appendChild(link);
-
-        if (currentSubList) {
-          currentSubList.appendChild(item);
-        } else {
-          const standaloneList = document.createElement('ul');
-          standaloneList.appendChild(item);
-          container.appendChild(standaloneList);
-        }
-        tocLinkById.set(heading.id, link);
-      }
+    contentsBlocks.forEach((block) => {
+      block.hidden = false;
     });
 
-    tocEl.innerHTML = '';
-    tocEl.appendChild(container);
+    tocRoots.forEach((tocRoot) => {
+      tocRoot.innerHTML = '';
+
+      const standaloneList = document.createElement('ul');
+      standaloneList.className = 'reader-toc-list';
+      let hasStandaloneItems = false;
+
+      const groupedSections = document.createDocumentFragment();
+      let currentGroupList = null;
+
+      allHeadings.forEach((heading) => {
+        const isGroupHeading =
+          heading.tagName === 'H2' &&
+          !!heading.closest('[data-textbook-section-header], .ib-syllabus-reader-block__header');
+
+        if (isGroupHeading) {
+          const section = document.createElement('section');
+          section.className = 'reader-toc-group';
+
+          const header = document.createElement('div');
+          header.className = 'reader-toc-group__header';
+          header.appendChild(createTocLink(heading, 'reader-toc-link reader-toc-link--group'));
+          section.appendChild(header);
+
+          currentGroupList = document.createElement('ul');
+          currentGroupList.className = 'reader-toc-group__list';
+          section.appendChild(currentGroupList);
+          groupedSections.appendChild(section);
+          return;
+        }
+
+        if (heading.tagName === 'H2') {
+          currentGroupList = null;
+        }
+
+        const item = document.createElement('li');
+        item.className = 'reader-toc-list__item';
+        item.appendChild(createTocLink(heading, 'reader-toc-link reader-toc-link--section'));
+
+        if (currentGroupList) {
+          currentGroupList.appendChild(item);
+        } else {
+          standaloneList.appendChild(item);
+          hasStandaloneItems = true;
+        }
+      });
+
+      if (hasStandaloneItems) {
+        tocRoot.appendChild(standaloneList);
+      }
+
+      tocRoot.appendChild(groupedSections);
+    });
   };
 
   const setActiveTocLink = (id) => {
-    tocLinkById.forEach((link) => link.removeAttribute('aria-current'));
-    const activeLink = tocLinkById.get(id);
-    if (activeLink) {
-      activeLink.setAttribute('aria-current', 'location');
-    }
+    tocLinksById.forEach((links) => {
+      links.forEach((link) => link.removeAttribute('aria-current'));
+    });
+
+    const activeLinks = tocLinksById.get(id);
+    if (!activeLinks) return;
+
+    activeLinks.forEach((link) => {
+      link.setAttribute('aria-current', 'location');
+    });
   };
 
   const scrollToHeading = (heading, behavior = prefersReducedMotion() ? 'auto' : 'smooth') => {
     const navOffset = parseCssPx(getComputedStyle(root).getPropertyValue('--reader-nav-offset'), 56);
-    const top = window.scrollY + heading.getBoundingClientRect().top - navOffset - 14;
+    const top = window.scrollY + heading.getBoundingClientRect().top - navOffset - 16;
     window.scrollTo({ top: Math.max(0, top), behavior });
   };
 
-  let navigateToId = (id, { updateHistory = true, closeTocOnNavigate = true, behavior } = {}) => {
+  const navigateToId = (id, { updateHistory = true, behavior } = {}) => {
     const heading = document.getElementById(id);
     if (!heading) return;
 
@@ -207,79 +206,21 @@
       history.pushState(null, '', `#${id}`);
     }
 
-    if (closeTocOnNavigate) {
-      closeToc();
-    }
-
     announce(`Section: ${(heading.textContent || '').trim()}`);
   };
 
   buildToc();
 
-  // Wrap H2 content sections in collapsible <details> elements
-  const h2Headings = headings.filter((h) => h.tagName === 'H2' && !h.closest('.ib-syllabus-reader-block__header'));
-  h2Headings.forEach((h2) => {
-    const details = document.createElement('details');
-    details.className = 'reader-chapter';
+  tocRoots.forEach((tocRoot) => {
+    tocRoot.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
 
-    const summary = document.createElement('summary');
-    summary.className = 'reader-chapter__summary';
-    summary.appendChild(h2.cloneNode(true));
+      const link = target.closest('a[data-reader-toc-link]');
+      if (!(link instanceof HTMLElement)) return;
 
-    const parent = h2.parentNode;
-    let next = h2.nextSibling;
-    parent.insertBefore(details, h2);
-    h2.remove();
-    details.appendChild(summary);
-
-    while (next) {
-      if (next.nodeType === 1 && next.tagName === 'H2') break;
-      if (next.nodeType === 1 && next.classList && next.classList.contains('reader-chapter')) break;
-      const toMove = next;
-      next = next.nextSibling;
-      details.appendChild(toMove);
-    }
-  });
-
-  // When navigating to a heading, expand its chapter
-  const expandChapterForId = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const chapter = el.closest('details.reader-chapter');
-    if (chapter) chapter.open = true;
-  };
-
-  // Also open the matching TOC section when a heading is activated
-  const expandTocForId = (id) => {
-    const link = tocLinkById.get(id);
-    if (!link) return;
-    const section = link.closest('details.toc-section');
-    if (section) section.open = true;
-  };
-
-  const originalNavigateToId = navigateToId;
-  navigateToId = (id, opts) => {
-    expandChapterForId(id);
-    expandTocForId(id);
-    originalNavigateToId(id, opts);
-  };
-
-  tocEl?.addEventListener('click', (event) => {
-    const link = event.target.closest('a[data-reader-toc-link]');
-    if (!link) return;
-    event.preventDefault();
-    navigateToId(link.dataset.targetId);
-  });
-
-  tocSearch?.addEventListener('input', () => {
-    const query = String(tocSearch.value || '').trim().toLowerCase();
-    const items = tocEl ? Array.from(tocEl.querySelectorAll('li')) : [];
-    items.forEach((item) => {
-      if (!query) {
-        item.hidden = false;
-        return;
-      }
-      item.hidden = !(item.dataset.tocText || '').includes(query);
+      event.preventDefault();
+      navigateToId(link.dataset.targetId);
     });
   });
 
@@ -287,19 +228,21 @@
     const initialId = window.location.hash.replace('#', '');
     const initialTarget = document.getElementById(initialId);
     if (initialTarget) {
-      requestAnimationFrame(() => navigateToId(initialId, { updateHistory: false, closeTocOnNavigate: false, behavior: 'auto' }));
+      requestAnimationFrame(() =>
+        navigateToId(initialId, { updateHistory: false, behavior: 'auto' })
+      );
     }
-  } else if (headings[0]?.id) {
-    setActiveTocLink(headings[0].id);
+  } else if (topLevelHeadings[0]?.id) {
+    setActiveTocLink(topLevelHeadings[0].id);
   }
 
   window.addEventListener('hashchange', () => {
     const id = (window.location.hash || '').replace('#', '');
     if (!id) return;
-    navigateToId(id, { updateHistory: false, closeTocOnNavigate: false, behavior: 'auto' });
+    navigateToId(id, { updateHistory: false, behavior: 'auto' });
   });
 
-  if ('IntersectionObserver' in window && headings.length) {
+  if ('IntersectionObserver' in window && allHeadings.length) {
     let currentId = '';
     const observer = new IntersectionObserver(
       (entries) => {
@@ -319,7 +262,7 @@
       }
     );
 
-    headings.forEach((heading) => observer.observe(heading));
+    allHeadings.forEach((heading) => observer.observe(heading));
   }
 
   const keywordNodes = Array.from(contentRoot.querySelectorAll('[data-def]'));
@@ -401,16 +344,22 @@
   };
 
   document.body.addEventListener('click', (event) => {
-    const target = event.target.closest('[data-def]');
-    if (!target || !shell.contains(target)) return;
-    openDefinitionFromTarget(target);
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const definitionTrigger = target.closest('[data-def]');
+    if (!definitionTrigger || !shell.contains(definitionTrigger)) return;
+    openDefinitionFromTarget(definitionTrigger);
   });
 
   document.body.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
-    const target = event.target.closest('[data-def]');
-    if (!target || !shell.contains(target)) return;
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const definitionTrigger = target.closest('[data-def]');
+    if (!definitionTrigger || !shell.contains(definitionTrigger)) return;
     event.preventDefault();
-    openDefinitionFromTarget(target);
+    openDefinitionFromTarget(definitionTrigger);
   });
 })();
