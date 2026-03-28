@@ -108,10 +108,7 @@ main.reader-main>* {
   max-width: none;
   margin: 0;
   padding: 0.1rem 0 0.5rem;
-  display: grid;
-  grid-template-columns: minmax(14rem, 16.5rem) minmax(0, 1fr);
-  gap: 0.85rem;
-  align-items: start;
+  display: block;
 }
 
 /* ── Rails (shared) ─────────────────────────────────────────── */
@@ -248,31 +245,9 @@ main.reader-main>* {
 
 .reader-stage {
   min-width: 0;
-}
-
-.reader-mobilebar {
-  display: none;
-}
-
-.reader-mobiletoggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  min-height: 2.25rem;
-  padding: 0 0.85rem;
-  border: 1px solid var(--reader-border);
-  border-radius: 999px;
-  background: #ffffff;
-  color: var(--primary-color);
-  font-family: var(--reader-font-display);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.reader-mobiletoggle:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: 2px;
+  max-width: 58rem;
+  margin: 0 auto;
+  padding: 0 0.5rem;
 }
 
 .reader-article {
@@ -1327,14 +1302,24 @@ main.reader-main>* {
 /* ── Collapsible content chapters ────────────────────────────── */
 
 .reader-chapter {
-  border-bottom: 1px solid color-mix(in srgb, var(--reader-ink) 8%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--reader-ink) 6%, transparent);
   margin-bottom: 0;
+}
+
+.reader-chapter + .reader-chapter {
+  margin-top: 0;
 }
 
 .reader-chapter__summary {
   cursor: pointer;
   list-style: none;
-  padding: 0.15rem 0;
+  padding: 0.55rem 0.25rem;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.reader-chapter__summary:hover {
+  background: color-mix(in srgb, var(--reader-accent) 4%, transparent);
 }
 
 .reader-chapter__summary::-webkit-details-marker {
@@ -1346,13 +1331,14 @@ main.reader-main>* {
   padding-right: 2.2rem;
   margin: 0;
   padding-top: 0;
-  padding-bottom: 0.35em;
+  padding-bottom: 0;
   border: none !important;
   border-left: none !important;
   border-bottom: none !important;
   border-radius: 0 !important;
   background: none !important;
   box-shadow: none !important;
+  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
 }
 
 .reader-chapter__summary h2::before {
@@ -1366,20 +1352,86 @@ main.reader-main>* {
   top: 50% !important;
   left: auto !important;
   bottom: auto !important;
-  width: 0.5rem !important;
-  height: 0.5rem !important;
+  width: 0.45rem !important;
+  height: 0.45rem !important;
   border: none !important;
-  border-right: 2.5px solid currentColor !important;
-  border-bottom: 2.5px solid currentColor !important;
+  border-right: 2px solid currentColor !important;
+  border-bottom: 2px solid currentColor !important;
   border-radius: 0 !important;
   background: none !important;
   transform: translateY(-50%) rotate(-45deg) !important;
-  opacity: 0.3;
-  transition: transform 0.2s ease;
+  opacity: 0.25;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.reader-chapter__summary:hover h2::after {
+  opacity: 0.5;
 }
 
 .reader-chapter[open] > .reader-chapter__summary h2::after {
   transform: translateY(-50%) rotate(45deg) !important;
+}
+
+.reader-chapter > :not(.reader-chapter__summary) {
+  padding: 0 0.25rem 0.6rem;
+}
+
+/* ── IB textbook section blocks ────────────────────────────── */
+
+.ib-textbook-section {
+  margin: 0;
+  padding: 0;
+}
+
+.ib-textbook-section + .ib-textbook-section {
+  margin-top: 0.25rem;
+}
+
+.ib-textbook-section__code {
+  font-weight: 800;
+  color: var(--reader-accent);
+  margin-right: 0.35em;
+  font-size: 0.92em;
+}
+
+.ib-textbook-hl-badge {
+  display: inline-block;
+  font-size: 0.62em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: color-mix(in srgb, var(--reader-accent) 14%, transparent);
+  color: var(--reader-accent);
+  border: 1px solid color-mix(in srgb, var(--reader-accent) 25%, transparent);
+  border-radius: 4px;
+  padding: 0.12em 0.45em;
+  vertical-align: middle;
+  margin-left: 0.5em;
+}
+
+.ib-textbook-section__overview {
+  margin: 0.2rem 0 0.6rem;
+  font-size: 0.92em;
+  color: var(--reader-muted);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.ib-textbook-section__empty {
+  margin: 0.5rem 0;
+  font-size: 0.9em;
+  color: var(--reader-muted);
+  font-style: italic;
+}
+
+.ib-textbook-entry {
+  margin: 0;
+}
+
+.ib-textbook-entry--hl {
+  border-left: 3px solid color-mix(in srgb, var(--reader-accent) 40%, transparent);
+  padding-left: 0.8rem;
+  margin-left: 0.1rem;
 }
 
 /* ── Support rail sections ──────────────────────────────────── */
@@ -1783,49 +1835,15 @@ body.reader-modal-open {
   padding: 1rem 1.1rem 1.2rem;
 }
 
-/* ── Mobile: rails become drawers ───────────────────────────── */
+/* ── Mobile adjustments ─────────────────────────────────────── */
 
 @media (max-width: 1100px) {
-  .reader-shell {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .reader-rail {
-    position: fixed;
-    top: var(--reader-nav-offset);
-    bottom: 0;
-    left: 0;
-    width: min(88vw, 340px);
-    max-height: none;
-    transform: translateX(-105%);
-    transition: transform 0.3s var(--reader-ease);
-    z-index: 200;
-    border-radius: 0 var(--reader-radius) var(--reader-radius) 0;
-  }
-
-  :root[data-reader-toc="open"] .reader-rail--toc {
-    transform: translateX(0);
-  }
-
-  .reader-rail__mobile-close {
-    display: inline-flex;
-  }
-
-  .reader-mobilebar {
-    display: flex;
+  .reader-stage {
+    padding: 0 0.25rem;
   }
 
   .reader-dochead {
     padding: 0.9rem 0.95rem 0.55rem;
-  }
-
-  .reader-drawer-overlay {
-    display: none;
-  }
-
-  :root[data-reader-toc="open"] .reader-drawer-overlay {
-    display: block;
   }
 
   .reader-content {
@@ -1878,8 +1896,7 @@ body.reader-modal-open {
 }
 
 .reader-shell {
-  gap: 1.1rem;
-  grid-template-columns: minmax(15rem, 17.75rem) minmax(0, 1fr);
+  display: block;
 }
 
 .reader-rail {
@@ -2196,14 +2213,6 @@ body.reader-modal-open {
 }
 
 @media (max-width: 1100px) {
-  .reader-shell {
-    gap: 1rem;
-  }
-
-  .reader-rail {
-    border-radius: 0 1.8rem 1.8rem 0;
-  }
-
   .reader-dochead {
     padding: 0.95rem 1rem 0.7rem;
   }

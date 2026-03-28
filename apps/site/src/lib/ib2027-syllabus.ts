@@ -795,11 +795,24 @@ export const getIbThemeShell = (themeId: IbThemeId): ShellContext => {
         }))
       },
       {
+        id: `${theme.id}-textbook`,
+        label: 'Textbook',
+        icon: 'fa-solid fa-book-open-reader',
+        items: theme.sections.map((section) => {
+          const anchor = section.code.toLowerCase().replace(/\./g, '-');
+          return {
+            label: section.title,
+            number: section.code,
+            href: `${getIbThemeTextbookPath(theme.id)}#${anchor}`,
+            meta: section.level === 'hl' ? 'HL only' : undefined
+          };
+        })
+      },
+      {
         id: `${theme.id}-resources`,
         label: 'Resources',
         static: true,
         items: [
-          { label: 'Textbook', href: getIbThemeTextbookPath(theme.id) },
           disabledResource('Revision'),
           disabledResource('Assessment'),
           disabledResource('Independent tasks')

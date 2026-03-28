@@ -8,7 +8,8 @@ import {
   getIbThemePrevNext,
   getIbThemeShell,
   getIbThemeStaticPaths,
-  type IbThemeId
+  type IbThemeId,
+  type IbThemeSection
 } from '../../../lib/ib2027-syllabus';
 
 interface ThemeTextbookPageProps {
@@ -30,6 +31,8 @@ const { themeId } = Astro.props as ThemeTextbookPageProps;
 const theme = getIbThemeOrThrow(themeId);
 const courseShell = getIbThemeShell(themeId);
 const { prevLink, nextLink } = getIbThemePrevNext(themeId, Astro.url.pathname);
+
+// ── Fetch and render all matching textbook entries ──────────
 const entries = (
   await getCollection('ib-textbooks', ({ data }) =>
     data.subtopics.some((subtopic) => subtopic.code.toUpperCase().startsWith(theme.code))
@@ -48,39 +51,85 @@ const renderedEntries = await Promise.all(
     rendered: await render(entry)
   }))
 );
+
+// ── Group entries by syllabus section (A1.1, A1.2, …) ──────
+// Each entry is assigned to its earliest matching section so content is
+// never duplicated across sections.
+const assignedEntryIds = new Set<string>();
+
+interface SectionBlock {
+  section: IbThemeSection;
+  anchorId: string;
+  entries: typeof renderedEntries;
+}
+
+const sectionBlocks: SectionBlock[] = theme.sections.map((section) => {
+  const matching = renderedEntries.filter(({ entry }) => {
+    if (assignedEntryIds.has(entry.id)) return false;
+    return entry.data.subtopics.some((subtopic) =>
+      subtopic.code.toUpperCase().startsWith(section.code)
+    );
+  });
+
+  matching.forEach(({ entry }) => assignedEntryIds.add(entry.id));
+
+  return {
+    section,
+    anchorId: section.code.toLowerCase().replace(/\./g, '-'),
+    entries: matching
+  };
+});
+
+// Catch entries that didn't match any section (safety net)
+const unassigned = renderedEntries.filter(({ entry }) => !assignedEntryIds.has(entry.id));
 ---
 
 <ReaderShell
   title={`IB ${theme.code} Textbook - SGS Computer Science`}
-  description={`Combined ${theme.code} textbook reader for the syllabus-first IB route.`}
+  description={`${theme.code} ${theme.title} — textbook reading for IB Computer Science 2027.`}
   activeSection="ib"
   breadcrumbs={getIbThemeBreadcrumbs(themeId, 'Textbook')}
-  shellPath={Astro.url.pathname}
-  courseShell={courseShell}
-  prevLink={prevLink}
-  nextLink={nextLink}
   kicker={`${theme.themeLabel} · ${theme.code}`}
-  heading={`${theme.code} textbook`}
-  subtitle={`Combined reading view for ${theme.title}`}
+  heading={`${theme.code} ${theme.title}`}
+  subtitle={theme.guidingQuestion}
 >
-  <section class="ib-syllabus-reader-block">
-    <p><strong>Unit overview:</strong> {theme.overview}</p>
-    <p>This reader assembles the currently published textbook coverage already mapped to {theme.code}. It keeps the material in one place while the remaining revision and assessment resources are rebuilt.</p>
-  </section>
+  {sectionBlocks.map(({ section, anchorId, entries: sectionEntries }) => (
+    <section class="ib-textbook-section">
+      <h2 id={anchorId}>
+        <span class="ib-textbook-section__code">{section.code}</span>
+        {section.title}
+        {section.level === 'hl' && <span class="ib-textbook-hl-badge">HL</span>}
+      </h2>
+      <p class="ib-textbook-section__overview">{section.overview}</p>
 
-  {renderedEntries.map(({ entry, rendered }) => {
-    const Content = rendered.Content;
-    const codeLabel = entry.data.subtopics.map((subtopic) => subtopic.code).join(', ');
-    const levelLabel = entry.data.level === 'hl' ? 'HL extension' : 'SL core';
+      {sectionEntries.length > 0 ? (
+        sectionEntries.map(({ entry, rendered }) => {
+          const Content = rendered.Content;
+          const levelLabel = entry.data.level === 'hl' ? 'HL extension' : '';
+          return (
+            <div class:list={['ib-textbook-entry', entry.data.level === 'hl' && 'ib-textbook-entry--hl']}>
+              {levelLabel && <p class="ib-syllabus-kicker">{levelLabel}</p>}
+              <Content />
+            </div>
+          );
+        })
+      ) : (
+        <p class="ib-textbook-section__empty">Content for this section is being developed.</p>
+      )}
+    </section>
+  ))}
 
-    return (
-      <section class="ib-syllabus-reader-block">
-        <div class="ib-syllabus-reader-block__header">
-          <p class="ib-syllabus-kicker">{levelLabel}</p>
-          <h2>{codeLabel}</h2>
-        </div>
-        <Content />
-      </section>
-    );
-  })}
+  {unassigned.length > 0 && (
+    <section class="ib-textbook-section">
+      <h2>Additional material</h2>
+      {unassigned.map(({ entry, rendered }) => {
+        const Content = rendered.Content;
+        return (
+          <div class="ib-textbook-entry">
+            <Content />
+          </div>
+        );
+      })}
+    </section>
+  )}
 </ReaderShell>

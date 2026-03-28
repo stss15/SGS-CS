@@ -1039,11 +1039,27 @@ const buildIbLocalGroups = async (
     sequence: true, icon: 'fa-solid fa-laptop-code', allowEmpty: true
   });
 
-  // ── Textbook (non-collapsible) ───────────────────────────────
-  const textbookGroup = buildSectionGroup('unit-textbook', 'Textbook',
-    [{ label: 'Textbook', href: `${unitBasePath}/textbook/index.html` }],
-    { collapsible: false, icon: 'fa-solid fa-book-open-reader' }
-  );
+  // ── Textbook (collapsible — subtopic sections as child links) ─
+  const textbookItems: ShellNavItem[] = [];
+  const unitUpper = unitCode.toUpperCase();
+  const subtopicCodes = Object.keys(IB_SUBTOPIC_NAMES)
+    .filter((code) => code.startsWith(`${unitUpper}.`))
+    .sort();
+
+  for (const code of subtopicCodes) {
+    const name = IB_SUBTOPIC_NAMES[code];
+    const anchor = code.toLowerCase().replace(/\./g, '-');
+    textbookItems.push({
+      label: name,
+      number: code,
+      href: `${unitBasePath}/textbook/index.html#${anchor}`
+    });
+  }
+
+  const textbookGroup = buildSectionGroup('unit-textbook', 'Textbook', textbookItems, {
+    icon: 'fa-solid fa-book-open-reader',
+    allowEmpty: true
+  });
 
   // ── Homework (collapsible — empty for now) ───────────────────
   const homeworkGroup = buildSectionGroup('unit-homework', 'Homework', [], {
