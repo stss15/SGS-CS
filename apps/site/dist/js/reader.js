@@ -7,16 +7,11 @@
   if (!contentRoot) return;
 
   const announceEl = shell.querySelector('[data-reader-announcer]');
-  const drawerOverlay = shell.querySelector('[data-reader-drawer-overlay]');
-  const tocEl = shell.querySelector('[data-reader-toc]');
-  const tocSearch = shell.querySelector('[data-reader-toc-search]');
-  const tocToggleBtns = Array.from(shell.querySelectorAll('[data-reader-action="toc-toggle"]'));
   const modalOverlay = document.querySelector('[data-reader-modal-overlay]');
   const defModal = document.getElementById('reader-def-modal');
   const defTitle = defModal?.querySelector('[data-reader-def-title]');
   const defBody = defModal?.querySelector('[data-reader-def-body]');
 
-  const isNarrowViewport = () => window.matchMedia && window.matchMedia('(max-width: 1100px)').matches;
   const prefersReducedMotion = () =>
     window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -30,6 +25,7 @@
     return Number.isFinite(parsed) ? parsed : fallback;
   };
 
+  // ── Header offset sync ────────────────────────────────────────
   const syncHeaderOffset = () => {
     const header = document.querySelector('.site-header');
     if (!header) return;
@@ -37,45 +33,10 @@
     root.style.setProperty('--reader-nav-offset', `${Math.max(0, Math.round(rect.height))}px`);
   };
 
-  const syncTocButtons = () => {
-    const expanded = isNarrowViewport() && root.dataset.readerToc === 'open';
-    tocToggleBtns.forEach((button) => {
-      button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-    });
-    drawerOverlay?.setAttribute('aria-hidden', expanded ? 'false' : 'true');
-  };
-
-  const setTocState = (open) => {
-    root.dataset.readerToc = isNarrowViewport() ? (open ? 'open' : 'closed') : 'open';
-    syncTocButtons();
-  };
-
-  const closeToc = () => {
-    if (!isNarrowViewport()) return;
-    setTocState(false);
-  };
-
-  const toggleToc = () => {
-    if (!isNarrowViewport()) return;
-    setTocState(root.dataset.readerToc !== 'open');
-  };
-
   syncHeaderOffset();
-  setTocState(false);
+  window.addEventListener('resize', syncHeaderOffset);
 
-  window.addEventListener('resize', () => {
-    syncHeaderOffset();
-    if (!isNarrowViewport()) {
-      root.dataset.readerToc = 'open';
-    } else if (root.dataset.readerToc !== 'open') {
-      root.dataset.readerToc = 'closed';
-    }
-    syncTocButtons();
-  });
-
-  drawerOverlay?.addEventListener('click', closeToc);
-  tocToggleBtns.forEach((button) => button.addEventListener('click', toggleToc));
-
+  // ── Heading IDs ───────────────────────────────────────────────
   const slugify = (value) =>
     String(value || '')
       .trim()
@@ -107,116 +68,7 @@
   const headings = Array.from(contentRoot.querySelectorAll('h2, h3'));
   ensureHeadingIds(headings);
 
-  const tocLinkById = new Map();
-
-  const buildToc = () => {
-    if (!tocEl) return;
-
-    if (!headings.length) {
-      tocEl.innerHTML = '<p class="reader-empty">No section headings yet.</p>';
-      return;
-    }
-
-    const isGroupHeader = (h) => h.tagName === 'H2' && !!h.closest('.ib-syllabus-reader-block__header');
-
-    const container = document.createDocumentFragment();
-    let currentDetails = null;
-    let currentSubList = null;
-
-    headings.forEach((heading) => {
-      // Skip H3s from TOC entirely — only show H2 subheadings
-      if (heading.tagName === 'H3') return;
-
-      const headingText = (heading.textContent || '').trim() || 'Untitled';
-
-      if (isGroupHeader(heading)) {
-        // Group header H2 → collapsible <details> section
-        currentDetails = document.createElement('details');
-        currentDetails.className = 'toc-section';
-        currentDetails.dataset.tocText = headingText.toLowerCase();
-
-        const summary = document.createElement('summary');
-        summary.className = 'toc-section__summary';
-
-        const link = document.createElement('a');
-        link.href = `#${heading.id}`;
-        link.dataset.readerTocLink = 'true';
-        link.dataset.targetId = heading.id;
-        link.textContent = headingText;
-        summary.appendChild(link);
-
-        currentDetails.appendChild(summary);
-        currentSubList = document.createElement('ul');
-        currentSubList.className = 'toc-section__children';
-        currentDetails.appendChild(currentSubList);
-        container.appendChild(currentDetails);
-        tocLinkById.set(heading.id, link);
-      } else {
-        // Content H2 → list item inside current section
-        const item = document.createElement('li');
-        item.className = 'toc-level-2';
-        item.dataset.tocText = headingText.toLowerCase();
-
-        const link = document.createElement('a');
-        link.href = `#${heading.id}`;
-        link.dataset.readerTocLink = 'true';
-        link.dataset.targetId = heading.id;
-
-        const text = document.createElement('span');
-        text.textContent = headingText;
-        link.appendChild(text);
-        item.appendChild(link);
-
-        if (currentSubList) {
-          currentSubList.appendChild(item);
-        } else {
-          const standaloneList = document.createElement('ul');
-          standaloneList.appendChild(item);
-          container.appendChild(standaloneList);
-        }
-        tocLinkById.set(heading.id, link);
-      }
-    });
-
-    tocEl.innerHTML = '';
-    tocEl.appendChild(container);
-  };
-
-  const setActiveTocLink = (id) => {
-    tocLinkById.forEach((link) => link.removeAttribute('aria-current'));
-    const activeLink = tocLinkById.get(id);
-    if (activeLink) {
-      activeLink.setAttribute('aria-current', 'location');
-    }
-  };
-
-  const scrollToHeading = (heading, behavior = prefersReducedMotion() ? 'auto' : 'smooth') => {
-    const navOffset = parseCssPx(getComputedStyle(root).getPropertyValue('--reader-nav-offset'), 56);
-    const top = window.scrollY + heading.getBoundingClientRect().top - navOffset - 14;
-    window.scrollTo({ top: Math.max(0, top), behavior });
-  };
-
-  let navigateToId = (id, { updateHistory = true, closeTocOnNavigate = true, behavior } = {}) => {
-    const heading = document.getElementById(id);
-    if (!heading) return;
-
-    setActiveTocLink(id);
-    scrollToHeading(heading, behavior);
-
-    if (updateHistory && window.location.hash !== `#${id}`) {
-      history.pushState(null, '', `#${id}`);
-    }
-
-    if (closeTocOnNavigate) {
-      closeToc();
-    }
-
-    announce(`Section: ${(heading.textContent || '').trim()}`);
-  };
-
-  buildToc();
-
-  // Wrap H2 content sections in collapsible <details> elements
+  // ── Collapsible content chapters ──────────────────────────────
   const h2Headings = headings.filter((h) => h.tagName === 'H2' && !h.closest('.ib-syllabus-reader-block__header'));
   h2Headings.forEach((h2) => {
     const details = document.createElement('details');
@@ -241,7 +93,13 @@
     }
   });
 
-  // When navigating to a heading, expand its chapter
+  // ── Hash navigation ───────────────────────────────────────────
+  const scrollToHeading = (heading, behavior = prefersReducedMotion() ? 'auto' : 'smooth') => {
+    const navOffset = parseCssPx(getComputedStyle(root).getPropertyValue('--reader-nav-offset'), 56);
+    const top = window.scrollY + heading.getBoundingClientRect().top - navOffset - 14;
+    window.scrollTo({ top: Math.max(0, top), behavior });
+  };
+
   const expandChapterForId = (id) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -249,79 +107,46 @@
     if (chapter) chapter.open = true;
   };
 
-  // Also open the matching TOC section when a heading is activated
-  const expandTocForId = (id) => {
-    const link = tocLinkById.get(id);
-    if (!link) return;
-    const section = link.closest('details.toc-section');
-    if (section) section.open = true;
-  };
+  const navigateToId = (id, { updateHistory = true, behavior } = {}) => {
+    const heading = document.getElementById(id);
+    if (!heading) return;
 
-  const originalNavigateToId = navigateToId;
-  navigateToId = (id, opts) => {
     expandChapterForId(id);
-    expandTocForId(id);
-    originalNavigateToId(id, opts);
+    scrollToHeading(heading, behavior);
+
+    if (updateHistory && window.location.hash !== `#${id}`) {
+      history.pushState(null, '', `#${id}`);
+    }
+
+    announce(`Section: ${(heading.textContent || '').trim()}`);
   };
-
-  tocEl?.addEventListener('click', (event) => {
-    const link = event.target.closest('a[data-reader-toc-link]');
-    if (!link) return;
-    event.preventDefault();
-    navigateToId(link.dataset.targetId);
-  });
-
-  tocSearch?.addEventListener('input', () => {
-    const query = String(tocSearch.value || '').trim().toLowerCase();
-    const items = tocEl ? Array.from(tocEl.querySelectorAll('li')) : [];
-    items.forEach((item) => {
-      if (!query) {
-        item.hidden = false;
-        return;
-      }
-      item.hidden = !(item.dataset.tocText || '').includes(query);
-    });
-  });
 
   if (window.location.hash) {
     const initialId = window.location.hash.replace('#', '');
     const initialTarget = document.getElementById(initialId);
     if (initialTarget) {
-      requestAnimationFrame(() => navigateToId(initialId, { updateHistory: false, closeTocOnNavigate: false, behavior: 'auto' }));
+      requestAnimationFrame(() => navigateToId(initialId, { updateHistory: false, behavior: 'auto' }));
     }
-  } else if (headings[0]?.id) {
-    setActiveTocLink(headings[0].id);
   }
 
   window.addEventListener('hashchange', () => {
     const id = (window.location.hash || '').replace('#', '');
     if (!id) return;
-    navigateToId(id, { updateHistory: false, closeTocOnNavigate: false, behavior: 'auto' });
+    navigateToId(id, { updateHistory: false, behavior: 'auto' });
   });
 
-  if ('IntersectionObserver' in window && headings.length) {
-    let currentId = '';
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((left, right) => Math.abs(left.boundingClientRect.top) - Math.abs(right.boundingClientRect.top));
+  // ── Contents-block jump links ─────────────────────────────────
+  const contentsNav = contentRoot.querySelector('.ib-textbook-contents');
+  contentsNav?.addEventListener('click', (event) => {
+    const link = event.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || !href.startsWith('#')) return;
+    event.preventDefault();
+    navigateToId(href.slice(1));
+  });
 
-        const next = visible[0]?.target;
-        if (!next?.id || next.id === currentId) return;
-        currentId = next.id;
-        setActiveTocLink(currentId);
-      },
-      {
-        root: null,
-        rootMargin: '-20% 0px -65% 0px',
-        threshold: [0, 1]
-      }
-    );
-
-    headings.forEach((heading) => observer.observe(heading));
-  }
-
+  // ── Keyword definitions ───────────────────────────────────────
   const keywordNodes = Array.from(contentRoot.querySelectorAll('[data-def]'));
   keywordNodes.forEach((node) => {
     if (!(node instanceof HTMLElement)) return;
