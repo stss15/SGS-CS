@@ -5,8 +5,6 @@ import {
   getIbPointIndex,
   getIbThemeBreadcrumbs,
   getIbThemeOrThrow,
-  getIbThemePrevNext,
-  getIbThemeShell,
   getIbThemeStaticPaths,
   type IbThemeId,
   type IbThemeSection
@@ -29,8 +27,8 @@ export function getStaticPaths() {
 
 const { themeId } = Astro.props as ThemeTextbookPageProps;
 const theme = getIbThemeOrThrow(themeId);
-const courseShell = getIbThemeShell(themeId);
-const { prevLink, nextLink } = getIbThemePrevNext(themeId, Astro.url.pathname);
+// Let auto-shell generate the sidebar so it matches the overview page exactly
+// (same Lessons, Activities, Textbook, Homework, Revision, Assessment groups)
 
 // ── Fetch and render all matching textbook entries ──────────
 const entries = (
