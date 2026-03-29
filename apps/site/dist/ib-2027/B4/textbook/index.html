@@ -68,203 +68,70 @@
   })();
 })();</script> <button type="button" class="sidebar-collapse-btn" aria-label="Collapse sidebar" id="sidebar-collapse-btn"> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> <span>Collapse</span> </button> </aside> <div class="page-shell__content"> <button type="button" class="sidebar-expand-btn" aria-label="Expand sidebar" id="sidebar-expand-btn"> <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg> </button> <div class="page-shell__mobilebar"> <label for="course-explorer-toggle" class="page-shell__mobiletoggle">
 Browse Course
-</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB 2027</a></li><li><a href="/ib-2027/b4/index.html">B4</a></li><li><span aria-current="page">Textbook</span></li></ol></nav>  <div class="reader-shell reader-shell--textbook" data-sgs-reader> <div class="sr-only" aria-live="polite" data-reader-announcer></div> <section class="reader-stage"> <article class="reader-article"> <div class="reader-dochead"> <p class="reader-kicker">Theme B · B4</p> <h1 class="reader-title">B4 Abstract data types</h1> <p class="reader-subtitle">Which abstract data types are most appropriate for different situations?</p> </div> <div class="reader-content"> <div class="reader-prose" data-reader-content>  <nav class="ib-textbook-contents" aria-label="Chapter contents"> <p class="ib-textbook-contents__title">In this chapter</p> <ol class="ib-textbook-contents__list"> <li> <a href="#b4-1" class="ib-textbook-contents__link"> <span class="ib-textbook-contents__code">B4.1</span> <span class="ib-textbook-contents__label">Fundamentals of ADTs</span> <span class="ib-textbook-hl-badge">HL</span> </a> </li> </ol> </nav> <section class="ib-textbook-section"> <h2 id="b4-1"> <span class="ib-textbook-section__code">B4.1</span> Fundamentals of ADTs <span class="ib-textbook-hl-badge">HL</span> </h2> <p class="ib-textbook-section__overview">This HL-only section covers the purpose of ADTs and the major abstract structures used for linked, tree-based, set-based, and hash-based organization.</p> <div class="ib-textbook-entry ib-textbook-entry--hl"> <p class="ib-syllabus-kicker">HL extension</p> <h2 id="key-terms-and-definitions">Key Terms and Definitions</h2>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody><tr><td>abstract data type (ADT)</td><td>Type defined by operations/behavior rather than one concrete implementation.</td></tr><tr><td>linked list</td><td>Sequence of nodes connected by references, not contiguous indexes.</td></tr><tr><td>node</td><td>Structure containing data and one or more references to other nodes.</td></tr><tr><td>traversal</td><td>Systematic visit of every element/node in a structure.</td></tr><tr><td>binary search tree (BST)</td><td>Tree where left descendants are smaller and right descendants are larger than parent.</td></tr><tr><td>in-order traversal</td><td>Left, Node, Right visit order; yields sorted output for a valid BST.</td></tr><tr><td>hash function</td><td>Function mapping a key to an index location.</td></tr><tr><td>collision</td><td>Two different keys map to the same hash index.</td></tr><tr><td>chaining</td><td>Collision strategy where each table slot stores a list of entries.</td></tr><tr><td>load factor</td><td>Ratio of stored elements to table capacity, used to decide rehashing.</td></tr></tbody></table>
-<h2 id="b412-evaluating-linked-lists">B4.1.2 Evaluating Linked Lists</h2>
-<h3 id="overview">Overview</h3>
-<div class="reader-section-body reader-section-body--concept">
-<p><strong>Command term:</strong> Evaluate</p>
-<p>Evaluation requires trade-off judgement, not one-sided praise.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Criterion</th><th>Linked list</th><th>Array</th></tr></thead><tbody><tr><td>Indexed access</td><td>Slow (<code>O(n)</code>)</td><td>Fast (<code>O(1)</code>)</td></tr><tr><td>Insert near head</td><td>Fast (<code>O(1)</code> after pointer access)</td><td>Often slow due to shifting</td></tr><tr><td>Memory layout</td><td>Dynamic node allocation</td><td>Contiguous block</td></tr><tr><td>Cache locality</td><td>Usually weaker</td><td>Usually stronger</td></tr></tbody></table>
-<p>Linked lists are preferable when frequent insertion/deletion is more important than random index access.</p>
-</div>
-<h3 id="applied-in-context">Applied in context</h3>
-<div class="reader-section-body reader-section-body--apply">
-<p>For a music queue with frequent insertions at start and middle, linked representation can reduce data shifting.</p>
-<p>For a marks table that needs rapid <code>marks[500]</code> style access, array/list indexing is usually a better fit.</p>
-<p>An evaluation is complete only after matching structure behavior to use case behavior.</p>
-</div>
-<h3 id="worked-example-insertion-cost-comparison">Worked example: insertion cost comparison</h3>
-<div class="reader-section-body reader-section-body--example">
-<p>Insert new element at position 2 in a 100,000-element collection.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Structure</th><th>Main work required</th></tr></thead><tbody><tr><td>Linked list</td><td>Repoint two references after reaching insertion position</td></tr><tr><td>Array</td><td>Shift nearly all subsequent elements one position</td></tr></tbody></table>
-<p>When insertion frequency is high and indexed lookup is low, linked lists can be more suitable despite slower random access.</p>
-</div>
-<h2 id="b414-binary-search-trees">B4.1.4 Binary Search Trees</h2>
-<h3 id="overview-1">Overview</h3>
-<div class="reader-section-body reader-section-body--concept">
-<p><strong>Command term:</strong> Explain</p>
-<p>A BST explanation should include ordering rule and traversal outcomes.</p>
-<p>BST rule: <code>left &#x3C; node &#x3C; right</code></p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Traversal</th><th>Order</th><th>Common use</th></tr></thead><tbody><tr><td>In-order</td><td>Left, Node, Right</td><td>Sorted output</td></tr><tr><td>Pre-order</td><td>Node, Left, Right</td><td>Prefix tree serialization</td></tr><tr><td>Post-order</td><td>Left, Right, Node</td><td>Safe delete-style processing</td></tr></tbody></table>
-<p>Balanced trees enable efficient search paths; skewed trees can degrade toward linear behavior.</p>
-</div>
-<h3 id="common-misconceptions">Common misconceptions</h3>
-<div class="reader-section-body reader-section-body--apply">
+</label> </div> <nav class="site-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/ib-2027/index.html">IB 2027</a></li><li><a href="/ib-2027/b4/index.html">B4</a></li><li><span aria-current="page">Textbook</span></li></ol></nav>  <div class="reader-shell reader-shell--textbook" data-sgs-reader> <div class="sr-only" aria-live="polite" data-reader-announcer></div> <section class="reader-stage"> <article class="reader-article"> <div class="reader-dochead"> <p class="reader-kicker">Theme B · B4</p> <h1 class="reader-title">B4 Abstract data types</h1> <p class="reader-subtitle">Which abstract data types are most appropriate for different situations?</p> </div> <div class="reader-content"> <div class="reader-prose" data-reader-content>  <nav class="ib-textbook-contents" aria-label="Chapter contents"> <p class="ib-textbook-contents__title">In this chapter</p> <ol class="ib-textbook-contents__list"> <li> <a href="#b4-1" class="ib-textbook-contents__link"> <span class="ib-textbook-contents__code">B4.1</span> <span class="ib-textbook-contents__label">Fundamentals of ADTs</span> <span class="ib-textbook-hl-badge">HL</span> </a> </li> </ol> </nav> <section class="ib-textbook-section"> <h2 id="b4-1"> <span class="ib-textbook-section__code">B4.1</span> Fundamentals of ADTs <span class="ib-textbook-hl-badge">HL</span> </h2> <p class="ib-textbook-section__overview">This HL-only section covers the purpose of ADTs and the major abstract structures used for linked, tree-based, set-based, and hash-based organization.</p> <div class="ib-textbook-entry ib-textbook-entry--hl"> <p class="ib-syllabus-kicker">HL extension</p> <h2 id="b411-properties-and-purpose-of-abstract-data-types">B4.1.1 Properties and purpose of abstract data types</h2>
+<p>An <span data-def="A data type defined by its behaviour (the operations it supports) rather than by its implementation. Users interact with the ADT through its interface without needing to know how it works internally.">abstract data type (ADT)</span> is a theoretical model of a data structure defined by what it <em>does</em>, not how it does it. An ADT specifies:</p>
 <ul>
-<li>A BST is not automatically balanced.</li>
-<li>In-order output is sorted only if BST property is maintained.</li>
-<li>Insertion order directly affects tree shape and search depth.</li>
+<li>the <strong>data</strong> it stores,</li>
+<li>the <strong>operations</strong> it supports (e.g., insert, delete, search),</li>
+<li>the <strong>rules</strong> governing those operations (e.g., LIFO for a stack).</li>
 </ul>
+<p>The actual implementation — whether the data is stored in an array, a linked structure, or a tree — is hidden from the user.</p>
+<h3 id="interface-vs-implementation">Interface vs implementation</h3>
+<p>The <strong>interface</strong> is what operations are available. The <strong>implementation</strong> is how those operations are carried out. This separation is central to ADTs.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Concept</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td>Interface</td><td>What operations exist and what they do</td><td>A stack supports <code>push</code>, <code>pop</code>, <code>peek</code>, <code>is_empty</code></td></tr><tr><td>Implementation</td><td>How those operations work internally</td><td>A stack could be backed by an array or a linked list</td></tr></tbody></table>
+<p>The same ADT can have multiple implementations. A queue, for example, can be implemented with an array (circular buffer) or a linked list. The user interacts with the same operations regardless.</p>
+<h3 id="why-adts-matter">Why ADTs matter</h3>
+<ul>
+<li><strong>Abstraction</strong> — users focus on <em>what</em> the data structure does, not <em>how</em>. This simplifies program design.</li>
+<li><strong>Encapsulation</strong> — internal data is accessed only through defined operations, preventing invalid states.</li>
+<li><strong>Modularity</strong> — the implementation can be changed without affecting code that uses the ADT.</li>
+<li><strong>Reusability</strong> — a well-defined ADT can be used across different programs and contexts.</li>
+</ul>
+<div class="ib-textbook-warning">
+  <p class="ib-textbook-warning__label">Common mistake</p>
+  <p class="ib-textbook-warning__body">Confusing interface with implementation. The interface is <em>what</em> operations are available; the implementation is <em>how</em> those operations are carried out. An ADT defines the interface — the implementation is a separate decision.</p>
 </div>
-<h3 id="worked-trace-build-and-traverse-a-bst">Worked trace: build and traverse a BST</h3>
-<div class="reader-section-body reader-section-body--example">
-<p>Insert values: <code>[10, 5, 15, 3, 7]</code></p>
-<p>Tree shape:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>      10</span></span>
-<span class="line"><span>     /  \</span></span>
-<span class="line"><span>    5    15</span></span>
-<span class="line"><span>   / \</span></span>
-<span class="line"><span>  3   7</span></span></code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Traversal type</th><th>Sequence</th></tr></thead><tbody><tr><td>In-order</td><td><code>3, 5, 7, 10, 15</code></td></tr><tr><td>Pre-order</td><td><code>10, 5, 3, 7, 15</code></td></tr><tr><td>Post-order</td><td><code>3, 7, 5, 15, 10</code></td></tr></tbody></table>
+<div class="ib-textbook-summary">
+  <p class="ib-textbook-summary__label">Key takeaways — B4.1.1</p>
+  <div class="ib-textbook-summary__body">
+    <ul>
+      <li>An ADT is defined by its operations and behaviour, not its implementation.</li>
+      <li>The interface (what) is separated from the implementation (how).</li>
+      <li>ADTs promote abstraction, encapsulation, modularity, and reusability.</li>
+      <li>The same ADT can have multiple valid implementations.</li>
+    </ul>
+  </div>
 </div>
-<h2 id="b417-hash-tables">B4.1.7 Hash Tables</h2>
-<h3 id="overview-2">Overview</h3>
-<div class="reader-section-body reader-section-body--concept">
-<p><strong>Command term:</strong> Explain</p>
-<p>Hash tables map keys to indexes for fast average lookup.</p>
+<h2 id="b412-evaluating-linked-lists">B4.1.2 Evaluating linked lists</h2>
+<p>A <span data-def="A data structure consisting of a sequence of nodes, where each node contains data and a reference (pointer) to the next node. Unlike arrays, elements are not stored in contiguous memory.">linked list</span> is a sequence of <span data-def="A basic unit of a data structure containing data and one or more references (pointers) to other nodes.">nodes</span> connected by <span data-def="A variable that stores the memory address of another variable or node, used to link elements in dynamic data structures.">pointers</span>. Each node holds data and a reference to the next node (and sometimes the previous node). The first node is the <strong>head</strong>; the last node’s pointer is <code>None</code> (null), marking the end.</p>
+<h3 id="types-of-linked-lists">Types of linked lists</h3>
+<p><strong>Singly linked list</strong> — each node has one pointer, pointing to the next node. Traversal is forward-only.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>head → [A | →] → [B | →] → [C | →] → None</span></span></code></pre>
+<p><strong>Doubly linked list</strong> — each node has two pointers: one to the next node and one to the previous. Traversal can go forward or backward.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>None ← [A | ↔] ↔ [B | ↔] ↔ [C | ↔] → None</span></span></code></pre>
+<p><strong>Circular linked list</strong> — the last node points back to the head instead of <code>None</code>, forming a loop. Can be singly or doubly linked.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>head → [A | →] → [B | →] → [C | →] → (back to head)</span></span></code></pre>
+<h3 id="linked-lists-vs-arrays">Linked lists vs arrays</h3>
 
 
 
@@ -286,17 +153,168 @@ Browse Course
 
 
 
-<table><thead><tr><th>Mechanism</th><th>Explanation</th></tr></thead><tbody><tr><td>Hashing</td><td>Compute index from key</td></tr><tr><td>Collision handling</td><td>Resolve same-index conflicts (for example chaining or probing)</td></tr><tr><td>Rehashing</td><td>Resize and redistribute entries when load factor grows too high</td></tr></tbody></table>
-<p>Performance depends on distribution quality of hash function and collision strategy.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Criterion</th><th>Linked list</th><th>Array</th></tr></thead><tbody><tr><td>Access by index</td><td>O(n) — must traverse from head</td><td>O(1) — direct access</td></tr><tr><td>Insert at head</td><td>O(1) — repoint head</td><td>O(n) — shift all elements</td></tr><tr><td>Insert in middle</td><td>O(1) after finding position</td><td>O(n) — shift subsequent elements</td></tr><tr><td>Memory layout</td><td>Scattered (dynamic allocation)</td><td>Contiguous block</td></tr><tr><td>Size flexibility</td><td>Dynamic — grows and shrinks freely</td><td>Fixed size (or costly resizing)</td></tr><tr><td>Memory overhead</td><td>Extra space for pointers in each node</td><td>No pointer overhead</td></tr></tbody></table>
+<h3 id="when-to-use-linked-lists">When to use linked lists</h3>
+<p>Linked lists are preferable when:</p>
+<ul>
+<li>frequent insertions and deletions occur (especially at the start or middle),</li>
+<li>the size of the collection is unpredictable,</li>
+<li>indexed access is not required.</li>
+</ul>
+<p>Arrays are better when:</p>
+<ul>
+<li>fast random access by index is needed,</li>
+<li>the size is known in advance,</li>
+<li>cache performance matters (contiguous memory).</li>
+</ul>
+<div class="ib-textbook-note">
+  <p class="ib-textbook-note__label">Evaluation requires trade-offs</p>
+  <p class="ib-textbook-note__body">The IB command term "evaluate" requires you to weigh advantages and disadvantages against a specific use case. Stating that linked lists are "better" or "worse" without context is insufficient — you must explain <em>why</em> a linked list is or is not appropriate for the given scenario.</p>
 </div>
-<h3 id="applied-in-context-1">Applied in context</h3>
-<div class="reader-section-body reader-section-body--apply">
-<p>A user-session store may require near-constant-time lookup by session ID.</p>
-<p>Hashing supports this pattern well, but with heavy collisions performance drops. Monitoring load factor and resizing at thresholds keeps lookup times stable.</p>
+<div class="ib-textbook-summary">
+  <p class="ib-textbook-summary__label">Key takeaways — B4.1.2</p>
+  <div class="ib-textbook-summary__body">
+    <ul>
+      <li>Linked lists store elements in nodes connected by pointers, not contiguous memory.</li>
+      <li>Three types: singly linked, doubly linked, and circular.</li>
+      <li>Strengths: efficient insertion/deletion, dynamic size. Weaknesses: no indexed access, pointer overhead.</li>
+      <li>Choose linked lists over arrays when insertion/deletion frequency outweighs the need for random access.</li>
+    </ul>
+  </div>
 </div>
-<h3 id="worked-example-modulo-hashing-with-collisions">Worked example: modulo hashing with collisions</h3>
-<div class="reader-section-body reader-section-body--example">
-<p>Use table size <code>10</code> and hash <code>index = key % 10</code> for keys <code>42, 32, 52, 17</code>.</p>
+<h2 id="b413-constructing-linked-lists">B4.1.3 Constructing linked lists</h2>
+<h3 id="node-and-linked-list-classes">Node and linked list classes</h3>
+<p>A linked list is built from two classes: a <code>Node</code> class (holding data and pointers) and a <code>LinkedList</code> class (managing the head pointer and operations).</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> Node</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    def</span><span style="color:#79B8FF"> __init__</span><span style="color:#E1E4E8">(self, data):</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.data </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> data</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.next </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> None</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> LinkedList</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    def</span><span style="color:#79B8FF"> __init__</span><span style="color:#E1E4E8">(self):</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.head </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> None</span></span></code></pre>
+<h3 id="traversal">Traversal</h3>
+<p>To visit every node, start at the head and follow each <code>next</code> pointer until reaching <code>None</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> print_list</span><span style="color:#E1E4E8">(self):</span></span>
+<span class="line"><span style="color:#E1E4E8">    current </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> self</span><span style="color:#E1E4E8">.head</span></span>
+<span class="line"><span style="color:#F97583">    while</span><span style="color:#E1E4E8"> current </span><span style="color:#F97583">is</span><span style="color:#F97583"> not</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">        print</span><span style="color:#E1E4E8">(current.data, </span><span style="color:#FFAB70">end</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">" -> "</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">        current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"None"</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<h3 id="insertion">Insertion</h3>
+<p><strong>At the beginning</strong> — create a new node, point it to the current head, update head:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> insert_at_beginning</span><span style="color:#E1E4E8">(self, data):</span></span>
+<span class="line"><span style="color:#E1E4E8">    new_node </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Node(data)</span></span>
+<span class="line"><span style="color:#E1E4E8">    new_node.next </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> self</span><span style="color:#E1E4E8">.head</span></span>
+<span class="line"><span style="color:#79B8FF">    self</span><span style="color:#E1E4E8">.head </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> new_node</span></span></code></pre>
+<p><strong>At the end</strong> — traverse to the last node, set its <code>next</code> to the new node:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> insert_at_end</span><span style="color:#E1E4E8">(self, data):</span></span>
+<span class="line"><span style="color:#E1E4E8">    new_node </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Node(data)</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#79B8FF"> self</span><span style="color:#E1E4E8">.head </span><span style="color:#F97583">is</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.head </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> new_node</span></span>
+<span class="line"><span style="color:#F97583">        return</span></span>
+<span class="line"><span style="color:#E1E4E8">    current </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> self</span><span style="color:#E1E4E8">.head</span></span>
+<span class="line"><span style="color:#F97583">    while</span><span style="color:#E1E4E8"> current.next </span><span style="color:#F97583">is</span><span style="color:#F97583"> not</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">        current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span>
+<span class="line"><span style="color:#E1E4E8">    current.next </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> new_node</span></span></code></pre>
+<p><strong>After a specific value</strong> — find the target node, insert the new node after it:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> insert_after</span><span style="color:#E1E4E8">(self, target_data, data):</span></span>
+<span class="line"><span style="color:#E1E4E8">    current </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> self</span><span style="color:#E1E4E8">.head</span></span>
+<span class="line"><span style="color:#F97583">    while</span><span style="color:#E1E4E8"> current </span><span style="color:#F97583">is</span><span style="color:#F97583"> not</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> current.data </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> target_data:</span></span>
+<span class="line"><span style="color:#E1E4E8">            new_node </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Node(data)</span></span>
+<span class="line"><span style="color:#E1E4E8">            new_node.next </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span>
+<span class="line"><span style="color:#E1E4E8">            current.next </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> new_node</span></span>
+<span class="line"><span style="color:#F97583">            return</span></span>
+<span class="line"><span style="color:#E1E4E8">        current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">"Node with data </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">target_data</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> not found."</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<div class="ib-textbook-warning">
+  <p class="ib-textbook-warning__label">Common mistake</p>
+  <p class="ib-textbook-warning__body">When inserting in the middle, you must set the new node's <code>next</code> pointer <strong>before</strong> updating the existing node's pointer. If you update the existing pointer first, you lose the reference to the rest of the list.</p>
+</div>
+<h3 id="deletion">Deletion</h3>
+<p>Deletion must handle three cases: removing the head, removing a middle/end node, and the node not being found.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> delete_node</span><span style="color:#E1E4E8">(self, data):</span></span>
+<span class="line"><span style="color:#E1E4E8">    current </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> self</span><span style="color:#E1E4E8">.head</span></span>
+<span class="line"><span style="color:#E1E4E8">    prev </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> None</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Case 1: deleting the head</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> current </span><span style="color:#F97583">is</span><span style="color:#F97583"> not</span><span style="color:#79B8FF"> None</span><span style="color:#F97583"> and</span><span style="color:#E1E4E8"> current.data </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> data:</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.head </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span>
+<span class="line"><span style="color:#F97583">        return</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Search for the node, tracking the previous node</span></span>
+<span class="line"><span style="color:#F97583">    while</span><span style="color:#E1E4E8"> current </span><span style="color:#F97583">is</span><span style="color:#F97583"> not</span><span style="color:#79B8FF"> None</span><span style="color:#F97583"> and</span><span style="color:#E1E4E8"> current.data </span><span style="color:#F97583">!=</span><span style="color:#E1E4E8"> data:</span></span>
+<span class="line"><span style="color:#E1E4E8">        prev </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current</span></span>
+<span class="line"><span style="color:#E1E4E8">        current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Case 3: node not found</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> current </span><span style="color:#F97583">is</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">        print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">"Node with data </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">data</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> not found."</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">        return</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Case 2: unlink the node</span></span>
+<span class="line"><span style="color:#E1E4E8">    prev.next </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span></code></pre>
+<h3 id="search">Search</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> search</span><span style="color:#E1E4E8">(self, key):</span></span>
+<span class="line"><span style="color:#E1E4E8">    current </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> self</span><span style="color:#E1E4E8">.head</span></span>
+<span class="line"><span style="color:#F97583">    while</span><span style="color:#E1E4E8"> current </span><span style="color:#F97583">is</span><span style="color:#F97583"> not</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> current.data </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> key:</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> True</span></span>
+<span class="line"><span style="color:#E1E4E8">        current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> current.next</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> False</span></span></code></pre>
+<div class="ib-textbook-worked">
+  <p class="ib-textbook-worked__label">Worked example</p>
+  <p class="ib-textbook-worked__title">Building and modifying a linked list</p>
+  <div class="ib-textbook-worked__body">
+    <pre><code>ll = LinkedList()
+ll.insert_at_end("A")
+ll.insert_at_end("B")
+ll.insert_at_end("C")
+ll.print_list()          # A -> B -> C -> None
+<p>ll.insert_at_beginning(“Z”)
+ll.print_list()          # Z -> A -> B -> C -> None</p>
+<p>ll.insert_after(“B”, “X”)
+ll.print_list()          # Z -> A -> B -> X -> C -> None</p>
+<p>ll.delete_node(“B”)
+ll.print_list()          # Z -> A -> X -> C -> None</p>
+</code><p><code>print(ll.search(“X”))   # True
+print(ll.search(“B”))   # False</code></p></pre><p></p>
+  </div>
+</div>
+<div class="ib-textbook-summary">
+  <p class="ib-textbook-summary__label">Key takeaways — B4.1.3</p>
+  <div class="ib-textbook-summary__body">
+    <ul>
+      <li>A linked list is built from <code>Node</code> objects (data + pointer) managed by a <code>LinkedList</code> class (head pointer + operations).</li>
+      <li>Traversal follows <code>next</code> pointers from head to <code>None</code>.</li>
+      <li>Insertion: at beginning (O(1)), at end (O(n)), after a value (O(n) to find, O(1) to insert).</li>
+      <li>Deletion: handle head, middle/end, and not-found cases. Always update pointers in the correct order.</li>
+    </ul>
+  </div>
+</div>
+<h2 id="b414-binary-search-trees">B4.1.4 Binary search trees</h2>
+<p>A <span data-def="A tree data structure where each node has at most two children, and for every node, all values in the left subtree are less than the node and all values in the right subtree are greater.">binary search tree (BST)</span> organises data in a hierarchical structure with one strict rule: for any node, all values in its left subtree are <strong>less than</strong> the node, and all values in its right subtree are <strong>greater than</strong> the node.</p>
+<h3 id="terminology">Terminology</h3>
 
 
 
@@ -326,74 +344,124 @@ Browse Course
 
 
 
+<table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td>Root</td><td>The topmost node — the starting point for all operations</td></tr><tr><td>Parent</td><td>A node with one or two children below it</td></tr><tr><td>Child</td><td>A node directly beneath a parent</td></tr><tr><td>Leaf</td><td>A node with no children (at the “bottom” of the tree)</td></tr><tr><td>Subtree</td><td>A node and all its descendants, forming a smaller tree</td></tr></tbody></table>
+<h3 id="insertion-1">Insertion</h3>
+<p>New values are inserted by comparing them to existing nodes, moving left if smaller and right if larger, until an empty position is found.</p>
+<div class="ib-textbook-worked">
+  <p class="ib-textbook-worked__label">Worked example</p>
+  <p class="ib-textbook-worked__title">Building a BST from a sequence</p>
+  <div class="ib-textbook-worked__body">
+    <p>Insert values in order: <code>[10, 5, 15, 3, 7, 12, 16]</code></p>
+    <pre><code>        10
+       /  \
+      5    15
+     / \   / \
+    3   7 12  16</code></pre>
+    <table>
+      <tbody><tr><th>Value</th><th>Comparison path</th><th>Position</th></tr>
+      <tr><td>10</td><td>Empty tree</td><td>Root</td></tr>
+      <tr><td>5</td><td>5 &#x3C; 10 → left</td><td>Left child of 10</td></tr>
+      <tr><td>15</td><td>15 > 10 → right</td><td>Right child of 10</td></tr>
+      <tr><td>3</td><td>3 &#x3C; 10 → left, 3 &#x3C; 5 → left</td><td>Left child of 5</td></tr>
+      <tr><td>7</td><td>7 &#x3C; 10 → left, 7 > 5 → right</td><td>Right child of 5</td></tr>
+      <tr><td>12</td><td>12 > 10 → right, 12 &#x3C; 15 → left</td><td>Left child of 15</td></tr>
+      <tr><td>16</td><td>16 > 10 → right, 16 > 15 → right</td><td>Right child of 15</td></tr>
+    </tbody></table>
+    <p><strong>Note:</strong> insertion order affects tree shape. The same values in a different order produce a different tree structure.</p>
+  </div>
+</div>
+<h3 id="searching">Searching</h3>
+<p>To search for a value, start at the root and compare: move left if the target is smaller, right if larger. If you reach <code>None</code>, the value is not in the tree.</p>
+<p>In a balanced BST, search is O(log n) — each comparison eliminates half the remaining nodes. In a skewed tree (e.g., values inserted in sorted order), search degrades to O(n).</p>
+<h3 id="traversals">Traversals</h3>
+<p>BSTs support three depth-first traversals. Each visits every node exactly once, in a different order:</p>
 
-<table><thead><tr><th>Key</th><th>Index</th><th>Result</th></tr></thead><tbody><tr><td>42</td><td>2</td><td>slot 2</td></tr><tr><td>32</td><td>2</td><td>collision at slot 2</td></tr><tr><td>52</td><td>2</td><td>collision at slot 2</td></tr><tr><td>17</td><td>7</td><td>slot 7</td></tr></tbody></table>
-<p>With chaining, slot <code>2</code> stores linked entries <code>[42, 32, 52]</code>.</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">keys </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">42</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">32</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">52</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">17</span><span style="color:#E1E4E8">]</span></span>
-<span class="line"><span style="color:#E1E4E8">indices </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [k </span><span style="color:#F97583">%</span><span style="color:#79B8FF"> 10</span><span style="color:#F97583"> for</span><span style="color:#E1E4E8"> k </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> keys]  </span><span style="color:#6A737D"># [2, 2, 2, 7]</span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Traversal</th><th>Order</th><th>Mnemonic</th><th>Use case</th></tr></thead><tbody><tr><td>In-order</td><td>Left, Node, Right</td><td>LNR</td><td>Produces sorted output</td></tr><tr><td>Pre-order</td><td>Node, Left, Right</td><td>NLR</td><td>Copying/serialising the tree</td></tr><tr><td>Post-order</td><td>Left, Right, Node</td><td>LRN</td><td>Safely deleting nodes (children first)</td></tr></tbody></table>
+<div class="ib-textbook-worked">
+  <p class="ib-textbook-worked__label">Worked example</p>
+  <p class="ib-textbook-worked__title">Tracing all three traversals</p>
+  <div class="ib-textbook-worked__body">
+    <p>Using the BST built above:</p>
+    <pre><code>        10
+       /  \
+      5    15
+     / \   / \
+    3   7 12  16</code></pre>
+    <table>
+      <tbody><tr><th>Traversal</th><th>Output sequence</th></tr>
+      <tr><td>In-order (LNR)</td><td>3, 5, 7, 10, 12, 15, 16</td></tr>
+      <tr><td>Pre-order (NLR)</td><td>10, 5, 3, 7, 15, 12, 16</td></tr>
+      <tr><td>Post-order (LRN)</td><td>3, 7, 5, 12, 16, 15, 10</td></tr>
+    </tbody></table>
+    <p>In-order traversal produces the values in ascending sorted order — this is a fundamental property of BSTs.</p>
+  </div>
+</div>
+<h3 id="deletion-1">Deletion</h3>
+<p>Deleting a node has three cases:</p>
+<ol>
+<li><strong>Leaf node</strong> (no children) — remove it by setting its parent’s pointer to <code>None</code>.</li>
+<li><strong>One child</strong> — bypass the node by linking its parent directly to its child.</li>
+<li><strong>Two children</strong> — find the in-order successor (smallest value in the right subtree) or in-order predecessor (largest in the left subtree), replace the node’s value with it, then delete the successor/predecessor.</li>
+</ol>
+<div class="ib-textbook-warning">
+  <p class="ib-textbook-warning__label">Common mistake</p>
+  <p class="ib-textbook-warning__body">A BST is not automatically balanced. If values are inserted in sorted order (e.g., 1, 2, 3, 4, 5), the tree becomes a straight chain — effectively a linked list — and all operations degrade to O(n). Insertion order directly affects tree shape and performance.</p>
+</div>
+<div class="ib-textbook-summary">
+  <p class="ib-textbook-summary__label">Key takeaways — B4.1.4</p>
+  <div class="ib-textbook-summary__body">
+    <ul>
+      <li>BST rule: left child &#x3C; parent &#x3C; right child.</li>
+      <li>In-order traversal (LNR) produces sorted output; pre-order (NLR) for copying; post-order (LRN) for safe deletion.</li>
+      <li>Search is O(log n) in a balanced tree, O(n) in a skewed tree.</li>
+      <li>Deletion has three cases depending on the number of children: leaf, one child, or two children.</li>
+    </ul>
+  </div>
 </div>
 <h2 id="b415-sets-as-an-adt">B4.1.5 Sets as an ADT</h2>
-<h3 id="overview-3">Overview</h3>
-<div class="reader-section-body reader-section-body--concept">
-<p><strong>Command term:</strong> Construct and apply</p>
-<p>Set construction requires unique-element collections and correct operation use.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Operation</th><th>Meaning</th></tr></thead><tbody><tr><td>Union</td><td>Elements in either set</td></tr><tr><td>Intersection</td><td>Elements in both sets</td></tr><tr><td>Difference</td><td>Elements in first set but not second</td></tr></tbody></table>
-<p>Sets are useful when uniqueness and membership checks are more important than order.</p>
-</div>
-<h3 id="the-domain-matrix">The domain matrix</h3>
-<div class="reader-section-body reader-section-body--apply">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>Scenario</th><th>Useful set operation</th></tr></thead><tbody><tr><td>Students in either robotics or coding club</td><td>Union</td></tr><tr><td>Students in both clubs</td><td>Intersection</td></tr><tr><td>Students in robotics but not coding</td><td>Difference</td></tr></tbody></table>
-</div>
-<h3 id="worked-example-concrete-set-operations-in-python">Worked example: concrete set operations in Python</h3>
-<div class="reader-section-body reader-section-body--example">
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">robotics </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span><span style="color:#9ECBFF">"Ava"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"Noah"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"Liam"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"Mia"</span><span style="color:#E1E4E8">}</span></span>
-<span class="line"><span style="color:#E1E4E8">coding </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span><span style="color:#9ECBFF">"Mia"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"Liam"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"Zoe"</span><span style="color:#E1E4E8">}</span></span>
+<p>A <span data-def="An unordered collection of unique elements that supports membership testing and mathematical operations like union, intersection, and difference.">set</span> is a collection with two defining properties: elements are <strong>unique</strong> (no duplicates) and <strong>unordered</strong> (no index-based access). Sets are optimised for membership testing — checking whether an element is in the set — and for mathematical operations between collections.</p>
+<h3 id="creating-and-modifying-sets">Creating and modifying sets</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># Creating sets</span></span>
+<span class="line"><span style="color:#E1E4E8">colours </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span><span style="color:#9ECBFF">"red"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"green"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"blue"</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">numbers </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> set</span><span style="color:#E1E4E8">([</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">])  </span><span style="color:#6A737D"># duplicates removed → {1, 2, 3}</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">both </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> robotics.intersection(coding)</span></span>
-<span class="line"><span style="color:#E1E4E8">either </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> robotics.union(coding)</span></span>
-<span class="line"><span style="color:#E1E4E8">only_robotics </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> robotics.difference(coding)</span></span></code></pre>
+<span class="line"><span style="color:#6A737D"># Adding and removing</span></span>
+<span class="line"><span style="color:#E1E4E8">colours.add(</span><span style="color:#9ECBFF">"yellow"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">colours.remove(</span><span style="color:#9ECBFF">"red"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Membership test</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"green"</span><span style="color:#F97583"> in</span><span style="color:#E1E4E8"> colours)  </span><span style="color:#6A737D"># True</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"red"</span><span style="color:#F97583"> in</span><span style="color:#E1E4E8"> colours)    </span><span style="color:#6A737D"># False</span></span></code></pre>
+<h3 id="set-operations">Set operations</h3>
+<p>Three core operations allow sets to be combined and compared:</p>
 
 
 
@@ -415,7 +483,169 @@ Browse Course
 
 
 
-<table><thead><tr><th>Expression</th><th>Result</th></tr></thead><tbody><tr><td><code>both</code></td><td><code>{ 'Liam', 'Mia' }</code></td></tr><tr><td><code>either</code></td><td><code>{ 'Ava', 'Noah', 'Liam', 'Mia', 'Zoe' }</code></td></tr><tr><td><code>only_robotics</code></td><td><code>{ 'Ava', 'Noah' }</code></td></tr></tbody></table>
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Operation</th><th>Meaning</th><th>Python syntax</th><th>Result for A={1,2,3,4}, B={3,4,5,6}</th></tr></thead><tbody><tr><td>Union</td><td>All elements in either set</td><td><code>A | B</code> or <code>A.union(B)</code></td><td>{1, 2, 3, 4, 5, 6}</td></tr><tr><td>Intersection</td><td>Only elements in both sets</td><td><code>A &#x26; B</code> or <code>A.intersection(B)</code></td><td>{3, 4}</td></tr><tr><td>Difference</td><td>Elements in A but not in B</td><td><code>A - B</code> or <code>A.difference(B)</code></td><td>{1, 2}</td></tr></tbody></table>
+<div class="ib-textbook-worked">
+  <p class="ib-textbook-worked__label">Worked example</p>
+  <p class="ib-textbook-worked__title">Applying set operations to a school scenario</p>
+  <div class="ib-textbook-worked__body">
+    <pre><code>robotics = {"Ava", "Noah", "Liam", "Mia"}
+coding = {"Mia", "Liam", "Zoe"}
+<h1 id="students-in-either-club">Students in either club</h1>
+<p>either = robotics | coding</p>
+<h1 id="ava-noah-liam-mia-zoe">{“Ava”, “Noah”, “Liam”, “Mia”, “Zoe”}</h1>
+<h1 id="students-in-both-clubs">Students in both clubs</h1>
+<p>both = robotics &#x26; coding</p>
+<h1 id="mia-liam">{“Mia”, “Liam”}</h1>
+<h1 id="students-in-robotics-but-not-coding">Students in robotics but not coding</h1>
+<p>only_robotics = robotics - coding</p>
+</code><h1 id="ava-noah"><code>{“Ava”, “Noah”}</code></h1></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>&#x3C;table></span></span>
+<span class="line"><span>  &#x3C;tr>&#x3C;th>Question&#x3C;/th>&#x3C;th>Operation&#x3C;/th>&#x3C;th>Result&#x3C;/th>&#x3C;/tr></span></span>
+<span class="line"><span>  &#x3C;tr>&#x3C;td>Who is in at least one club?&#x3C;/td>&#x3C;td>Union&#x3C;/td>&#x3C;td>Ava, Noah, Liam, Mia, Zoe&#x3C;/td>&#x3C;/tr></span></span>
+<span class="line"><span>  &#x3C;tr>&#x3C;td>Who is in both clubs?&#x3C;/td>&#x3C;td>Intersection&#x3C;/td>&#x3C;td>Mia, Liam&#x3C;/td>&#x3C;/tr></span></span>
+<span class="line"><span>  &#x3C;tr>&#x3C;td>Who is only in robotics?&#x3C;/td>&#x3C;td>Difference&#x3C;/td>&#x3C;td>Ava, Noah&#x3C;/td>&#x3C;/tr></span></span>
+<span class="line"><span>&#x3C;/table></span></span></code></pre>
+  </div>
+</div>
+<h3 id="subset-and-superset">Subset and superset</h3>
+<p>A set A is a <strong>subset</strong> of B if every element of A is also in B. B is then a <strong>superset</strong> of A.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">A </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">7</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">B </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">6</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">7</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(A.issubset(B))    </span><span style="color:#6A737D"># True — all of A's elements are in B</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(B.issuperset(A))  </span><span style="color:#6A737D"># True — B contains all of A</span></span></code></pre>
+<h3 id="when-to-use-sets">When to use sets</h3>
+<p>Sets are the right choice when:</p>
+<ul>
+<li>uniqueness must be enforced (e.g., usernames, IDs),</li>
+<li>fast membership testing is needed (O(1) average for <code>in</code>),</li>
+<li>mathematical set operations are required (union, intersection, difference).</li>
+</ul>
+<p>Sets are <strong>not</strong> suitable when order matters or when duplicate values need to be preserved.</p>
+<div class="ib-textbook-summary">
+  <p class="ib-textbook-summary__label">Key takeaways — B4.1.5</p>
+  <div class="ib-textbook-summary__body">
+    <ul>
+      <li>Sets store unique, unordered elements with O(1) average membership testing.</li>
+      <li>Core operations: union (all from both), intersection (common), difference (in one but not the other).</li>
+      <li>Subset/superset tests check containment relationships between sets.</li>
+      <li>Use sets when uniqueness and fast membership checks matter more than order.</li>
+    </ul>
+  </div>
+</div>
+<h2 id="b416-core-principles-of-adts">B4.1.6 Core principles of ADTs</h2>
+<p>This section ties together the core principles that underpin all abstract data types, using <span data-def="A data structure that maps keys to values using a hash function to compute an index into an array of slots. Provides O(1) average-case lookup, insertion, and deletion.">hash tables</span> as a key example of how ADT principles apply in practice.</p>
+<h3 id="hash-tables">Hash tables</h3>
+<p>A hash table stores key-value pairs. A <span data-def="A function that takes a key as input and computes an integer index indicating where the corresponding value should be stored in the hash table&#x27;s array.">hash function</span> converts each key into an array index, allowing near-instant lookup.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>key → hash function → index → stored value</span></span></code></pre>
+<p>Under ideal conditions, hash tables achieve <strong>O(1) average time</strong> for search, insert, and delete operations.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># Python's dict is a hash table</span></span>
+<span class="line"><span style="color:#E1E4E8">students </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {}</span></span>
+<span class="line"><span style="color:#E1E4E8">students[</span><span style="color:#9ECBFF">"Alice"</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 85</span></span>
+<span class="line"><span style="color:#E1E4E8">students[</span><span style="color:#9ECBFF">"Bob"</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 92</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(students[</span><span style="color:#9ECBFF">"Alice"</span><span style="color:#E1E4E8">])  </span><span style="color:#6A737D"># 85 — direct lookup by key</span></span></code></pre>
+<h3 id="hash-functions">Hash functions</h3>
+<p>A hash function maps a key to an index. A simple example uses the modulo operator:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> simple_hash</span><span style="color:#E1E4E8">(key, table_size):</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> key </span><span style="color:#F97583">%</span><span style="color:#E1E4E8"> table_size</span></span></code></pre>
+<p>For string keys, a common approach sums the character codes and applies modulo:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Hash "name" with table_size = 10:</span></span>
+<span class="line"><span>  'n'=110, 'a'=97, 'm'=109, 'e'=101</span></span>
+<span class="line"><span>  Sum = 417</span></span>
+<span class="line"><span>  Index = 417 % 10 = 7</span></span></code></pre>
+<h3 id="collisions">Collisions</h3>
+<p>A <span data-def="When two different keys produce the same hash index, meaning both would be assigned to the same slot in the hash table.">collision</span> occurs when two different keys hash to the same index. Collisions are inevitable — no hash function can guarantee unique indices for all possible keys.</p>
+<div class="ib-textbook-worked">
+  <p class="ib-textbook-worked__label">Worked example</p>
+  <p class="ib-textbook-worked__title">Collisions with modulo hashing</p>
+  <div class="ib-textbook-worked__body">
+    <p>Hash function: <code>index = key % 6</code>. Keys: 35, 800, 82, 92, 122, 94.</p>
+    <table>
+      <tbody><tr><th>Key</th><th>Index (key % 6)</th><th>Result</th></tr>
+      <tr><td>35</td><td>5</td><td>Slot 5</td></tr>
+      <tr><td>800</td><td>2</td><td>Slot 2</td></tr>
+      <tr><td>82</td><td>4</td><td>Slot 4</td></tr>
+      <tr><td>92</td><td>2</td><td>Collision at slot 2</td></tr>
+      <tr><td>122</td><td>2</td><td>Collision at slot 2</td></tr>
+      <tr><td>94</td><td>4</td><td>Collision at slot 4</td></tr>
+    </tbody></table>
+    <p>Keys 800, 92, and 122 all hash to index 2. A collision resolution strategy is needed.</p>
+  </div>
+</div>
+<h3 id="collision-resolution">Collision resolution</h3>
+<p>Two main strategies handle collisions:</p>
+<p><strong>Chaining</strong> — each slot stores a list (or linked list) of entries. Colliding keys are appended to the list at that index.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Index 0: []</span></span>
+<span class="line"><span>Index 1: []</span></span>
+<span class="line"><span>Index 2: [800, 92, 122]    ← three entries chained</span></span>
+<span class="line"><span>Index 3: []</span></span>
+<span class="line"><span>Index 4: [82, 94]           ← two entries chained</span></span>
+<span class="line"><span>Index 5: [35]</span></span></code></pre>
+<ul>
+<li>Advantage: simple, handles high load gracefully.</li>
+<li>Disadvantage: extra memory for lists; lookup slows when chains grow long.</li>
+</ul>
+<p><strong>Open addressing</strong> — all entries are stored directly in the table. On collision, the algorithm probes for the next available slot.</p>
+<ul>
+<li><strong>Linear probing</strong> — check the next slot, then the next, until an empty one is found. Risk: clustering (groups of filled slots slow subsequent insertions).</li>
+<li><strong>Quadratic probing</strong> — check slots at increasing squared intervals (1, 4, 9, …) to spread entries more evenly.</li>
+</ul>
+<h3 id="load-factor-and-rehashing">Load factor and rehashing</h3>
+<p>The <span data-def="The ratio of the number of stored entries to the total number of slots in a hash table. A higher load factor means more collisions and slower operations.">load factor</span> measures how full a hash table is:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Load factor = number of entries / number of slots</span></span></code></pre>
+<p>As the load factor increases, collisions become more frequent and performance degrades. When the load factor exceeds a threshold (commonly 0.7), the table is <strong>rehashed</strong>: a new, larger array is created and all existing entries are re-inserted using the hash function with the new table size.</p>
+<h3 id="adt-principles-in-practice">ADT principles in practice</h3>
+<p>Hash tables illustrate all the core ADT principles:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Principle</th><th>How hash tables demonstrate it</th></tr></thead><tbody><tr><td>Abstraction</td><td>Users insert/lookup by key without knowing the hashing mechanism</td></tr><tr><td>Encapsulation</td><td>Internal array, hash function, and collision handling are hidden</td></tr><tr><td>Interface</td><td>Operations: insert, lookup, delete — independent of implementation</td></tr><tr><td>Modularity</td><td>Hash function, collision strategy, and resizing logic are separate concerns</td></tr></tbody></table>
+<p>These same principles apply to every ADT: stacks, queues, linked lists, BSTs, and sets all separate their interface (what operations are available) from their implementation (how those operations work internally).</p>
+<div class="ib-textbook-warning">
+  <p class="ib-textbook-warning__label">Common mistake</p>
+  <p class="ib-textbook-warning__body">Do not overlook the impact of load factor on hash table performance. A hash table with O(1) average lookup can degrade to O(n) if the load factor is too high and collisions are not managed. Keeping the load factor low through rehashing is essential for maintaining efficiency.</p>
+</div>
+<div class="ib-textbook-summary">
+  <p class="ib-textbook-summary__label">Key takeaways — B4.1.6</p>
+  <div class="ib-textbook-summary__body">
+    <ul>
+      <li>Hash tables map keys to values via a hash function, achieving O(1) average-case operations.</li>
+      <li>Collisions are handled by chaining (lists at each slot) or open addressing (probing for empty slots).</li>
+      <li>Load factor = entries / slots. Rehashing occurs when the load factor exceeds a threshold to maintain performance.</li>
+      <li>All ADTs share core principles: abstraction, encapsulation, interface separation, and modularity.</li>
+    </ul>
+  </div>
 </div> </div> </section> </div> </div> </article> </section> </div> <div class="reader-modal-overlay" data-reader-modal-overlay aria-hidden="true"></div> <div class="reader-modal reader-modal--definition" id="reader-def-modal" role="dialog" aria-modal="true" aria-labelledby="reader-def-modal-title" aria-hidden="true"> <div class="reader-modal__header"> <h2 class="reader-modal__title" id="reader-def-modal-title" data-reader-def-title>Definition</h2> <button class="reader-modal__close" type="button" data-reader-close-modal aria-label="Close"> <i class="fa-solid fa-xmark" aria-hidden="true"></i> </button> </div> <div class="reader-modal__body"> <p class="reader-empty" data-reader-def-body></p> </div> </div> <script src="/js/reader.js"></script>    </div> </main> <footer class="site-footer"> <p>&copy; 2026 SGS Education &middot; SG Stewart. All rights reserved.</p> </footer> <script>
       (() => {
         const collapseBtn = document.getElementById('sidebar-collapse-btn');
