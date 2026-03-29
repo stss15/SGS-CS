@@ -5,6 +5,65 @@
 
 ---
 
+## Session 3b — 2026-03-29 (follow-up fixes)
+
+### Overview
+
+Five UI bug fixes deployed after reviewing the live textbook page:
+
+---
+
+### Fix 1: Python syntax highlighting restored (reader.css)
+
+Shiki (Astro's built-in code highlighter) injects inline `style="color:..."` spans for keywords, strings, comments etc. Our `reader.css` had `color: #e6edf9 !important;` on `.reader-content pre.astro-code`, which overrode all Shiki inline styles and made code blocks a flat single colour. Removed the `!important` so Shiki's syntax colours now render correctly (keywords pink/red, strings light blue, comments grey).
+
+**File changed:** `src/static/css/reader.css` (line 430)
+
+---
+
+### Fix 2: Full-width layout (reader.css)
+
+The reader was constrained by three width limits:
+- `--reader-page-width: 72rem` on `:root`
+- `max-width: min(100%, 62rem)` on `.reader-prose`
+- `max-width: 68ch` on `.reader-content p`
+
+All three removed (`100%`/`none`). The textbook now fills the full available content track beside the sidebar.
+
+**File changed:** `src/static/css/reader.css`
+
+---
+
+### Fix 3: Modal overlay full-viewport coverage (reader.css)
+
+The definition keyword modal overlay was not covering the full screen — an artifact gap appeared around the edges. Changed from `inset: 0` (which can be affected by parent stacking context) to explicit `top/left/right/bottom: 0` with `width: 100vw; height: 100vh`. Also increased backdrop opacity (0.22 → 0.38) and blur (3px → 4px).
+
+**File changed:** `src/static/css/reader.css`
+
+---
+
+### Fix 4: Improved whitespace / spacing (reader.css)
+
+Everything felt "rammed together". Increased margins and padding:
+- Paragraph/list-item margin: `0.55em → 0.75em`
+- H2 margin-top: `2rem → 2.5rem`
+- H3 margin-top: `1.35rem → 2rem`
+- Chapter-level spacing between major IB sections: `2rem/3rem → 3rem/4rem`
+
+**File changed:** `src/static/css/reader.css`
+
+---
+
+### Fix 5: Sidebar textbook sub-unit numbers visible (CourseExplorer.astro)
+
+The textbook sidebar items (B2.1, B2.2, etc.) all pointed to `textbook/index.html#b2-1`, `textbook/index.html#b2-2`, etc. The `hrefMatchesCurrentPath()` function strips hash fragments, so ALL items matched as "current" and received the gold-background + white-text active style — making the B2.1 numbers invisible.
+
+Fixed by adding an `itemIsCurrent()` helper that returns `false` for any link containing a `#` hash fragment. This prevents hash-anchored links from being marked as current at SSR time.
+
+**File changed:** `apps/site/src/components/CourseExplorer.astro`
+
+---
+
 ## Session 3 — 2026-03-29
 
 ### Overview
