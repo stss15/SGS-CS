@@ -427,7 +427,7 @@ main.reader-main:not(.page-shell)>* {
 
 .reader-content pre.astro-code {
   background: #0b1220 !important;
-  color: #e6edf9 !important;
+  color: #e6edf9;
   border: 1px solid #1f3352;
   border-radius: 14px;
   padding: 1.8rem 1.1rem 1rem !important;
@@ -1351,10 +1351,15 @@ body.reader-modal-open {
 
 .reader-modal-overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(10, 22, 40, 0.22);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 22, 40, 0.38);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 300;
   display: none;
 }
@@ -1522,7 +1527,7 @@ body.reader-modal-open {
 :root {
   --reader-scale: 0.96;
   --reader-line-height: 1.68;
-  --reader-page-width: 72rem;
+  --reader-page-width: 100%;
   --reader-rule: color-mix(in srgb, var(--reader-accent) 16%, rgba(13, 28, 51, 0.08));
   --reader-rule-strong: color-mix(in srgb, var(--reader-accent) 28%, rgba(13, 28, 51, 0.14));
   --reader-paper-shadow: 0 20px 44px rgba(13, 28, 51, 0.08);
@@ -1533,8 +1538,8 @@ body.reader-modal-open {
 }
 
 .reader-stage {
-  max-width: min(100%, var(--reader-page-width));
-  margin: 0 auto 0 0;
+  max-width: none;
+  margin: 0;
 }
 
 .reader-paper {
@@ -1583,7 +1588,7 @@ body.reader-modal-open {
 }
 
 .reader-prose {
-  max-width: min(100%, 62rem);
+  max-width: none;
 }
 
 .reader-content :is(h2, h3) {
@@ -1606,17 +1611,17 @@ body.reader-modal-open {
 
 .reader-content p,
 .reader-content li {
-  margin: 0.55em 0;
+  margin: 0.75em 0;
 }
 
 .reader-content p {
   line-height: 1.72;
-  max-width: 68ch;
+  max-width: none;
 }
 
 .reader-content ul,
 .reader-content ol {
-  margin: 0.55em 0 1em;
+  margin: 0.75em 0 1.2em;
 }
 
 .reader-content ul {
@@ -1633,8 +1638,8 @@ body.reader-modal-open {
 }
 
 .reader-content h2 {
-  margin: 2rem 0 0.65rem;
-  padding: 0.4rem 0 0;
+  margin: 2.5rem 0 1rem;
+  padding: 0.6rem 0 0;
   border-bottom: 0;
   font-size: clamp(1.1rem, 1.45vw, 1.3rem);
 }
@@ -1646,8 +1651,8 @@ body.reader-modal-open {
 .reader-content h2[id^="paper"],
 .reader-content h2#hl,
 .reader-content h2#internal-assessment {
-  margin-top: 3.5rem;
-  padding: 1.6rem 0 0;
+  margin-top: 4rem;
+  padding: 2rem 0 0;
   border: 0;
   border-radius: 0;
   background: none;
@@ -1671,7 +1676,7 @@ body.reader-modal-open {
 
 .reader-content h3 {
   --reader-subsection-accent: var(--reader-accent);
-  margin: 1.35rem 0 0.45rem;
+  margin: 2rem 0 0.75rem;
   padding: 0 0 0 0.8rem;
   border: 0;
   border-radius: 0;
@@ -1925,11 +1930,11 @@ body.reader-modal-open {
 /* ── IB textbook section blocks — chapter-level spacing ────── */
 
 .ib-textbook-section {
-  padding: 0 0 2rem;
+  padding: 0 0 3rem;
 }
 
 .ib-textbook-section + .ib-textbook-section {
-  padding-top: 3rem;
+  padding-top: 4rem;
 }
 
 .ib-textbook-section + .ib-textbook-section::before {

@@ -12,8 +12,11 @@ const isRailVariant = context.variant === 'rail';
 const railItems = context.groups.flatMap((group) => group.items);
 const explorerId = `course-explorer-${currentPath.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') || 'root'}`;
 
+const hrefHasHash = (href: string) => href.includes('#');
 const groupIsActive = (group: ShellNavGroup) =>
   group.items.some((item) => hrefMatchesCurrentPath(item.href, currentPath));
+const itemIsCurrent = (item: ShellNavItem) =>
+  hrefHasHash(item.href) ? false : hrefMatchesCurrentPath(item.href, currentPath);
 
 const hasActiveLocalGroup = context.groups.some((group) => !group.courseLevel && groupIsActive(group));
 
@@ -71,7 +74,7 @@ const isGenericMeta = (value?: string): boolean => {
   {isRailVariant ? (
     <ul class="course-explorer__rail" role="list">
       {railItems.map((item) => {
-        const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
+        const isCurrent = itemIsCurrent(item);
         return (
           <li>
             <a href={item.href} aria-current={isCurrent ? 'page' : undefined} class:list={{ current: isCurrent }}>
@@ -145,7 +148,7 @@ const isGenericMeta = (value?: string): boolean => {
               </div>
               <ul>
                 {group.items.map((item) => {
-                  const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
+                  const isCurrent = itemIsCurrent(item);
                   const isDisabled = itemIsDisabled(item);
                   return (
                     <li>
@@ -208,7 +211,7 @@ const isGenericMeta = (value?: string): boolean => {
             {group.items.length > 0 && (
               <ul>
                 {group.items.map((item) => {
-                  const isCurrent = hrefMatchesCurrentPath(item.href, currentPath);
+                  const isCurrent = itemIsCurrent(item);
                   const isDisabled = itemIsDisabled(item);
                   return (
                     <li>
