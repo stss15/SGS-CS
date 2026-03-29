@@ -149,13 +149,15 @@ main.reader-main>* {
 }
 
 .reader-content h2 {
-  margin: 1.4em 0 0.5em;
-  font-size: clamp(1.15rem, 1.4vw, 1.35rem);
+  margin: 2em 0 0.6em;
+  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
   line-height: 1.25;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   color: var(--primary-color);
-  padding-bottom: 0.25em;
-  border-bottom: 2px solid color-mix(in srgb, var(--reader-accent) 16%, transparent);
+  font-weight: 800;
+  padding: 0.5em 0 0.35em;
+  border-bottom: 2px solid color-mix(in srgb, var(--reader-accent) 20%, transparent);
+  border-top: none;
 }
 
 .reader-content h3 {
@@ -188,6 +190,8 @@ main.reader-main>* {
   overflow: hidden;
 }
 
+/* ── Subtopic headings (B2.1.1, A1.1.2, etc.) ──────────── */
+
 .reader-content h2[id^="a"],
 .reader-content h2[id^="b"],
 .reader-content h2[id^="crit"],
@@ -195,34 +199,28 @@ main.reader-main>* {
 .reader-content h2[id^="paper"],
 .reader-content h2#hl,
 .reader-content h2#internal-assessment {
-  margin-top: 1.5em;
+  margin-top: 2.5em;
   border-bottom: 0;
-  border: 1px solid color-mix(in srgb, var(--reader-border) 45%, transparent);
-  border-left: 4px solid color-mix(in srgb, var(--primary-color) 65%, var(--reader-accent) 35%);
-  border-radius: 8px;
-  padding: 0.4rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 35%, transparent);
+  border-left: 4px solid color-mix(in srgb, var(--primary-color) 55%, var(--reader-accent) 45%);
+  border-radius: 0 10px 10px 0;
+  padding: 0.55rem 0.75rem;
   background: color-mix(in srgb, var(--reader-tone-subtopic) 55%, white 45%);
-  box-shadow: none;
-}
-
-/* ── Subtopic divider ──────────────────────────────────── */
-.reader-content h2[id^="a"]:not(#key-terms-and-definitions),
-.reader-content h2[id^="b"]:not(#key-terms-and-definitions) {
-  margin-top: 2em;
-  padding-top: 1.2em;
+  box-shadow: 0 1px 6px rgba(10, 22, 40, 0.03);
+  font-size: clamp(1.1rem, 1.35vw, 1.25rem);
   position: relative;
 }
 
+/* Subtle top rule before each subtopic */
 .reader-content h2[id^="a"]:not(#key-terms-and-definitions)::before,
 .reader-content h2[id^="b"]:not(#key-terms-and-definitions)::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: -1.4em;
   left: 0;
-  width: min(60%, 28ch);
-  height: 1px;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--reader-accent) 18%, transparent);
+  width: 100%;
+  height: 0;
+  border-top: 1px dashed color-mix(in srgb, var(--reader-accent) 12%, transparent);
 }
 
 .reader-content h2#key-terms-and-definitions {
@@ -978,175 +976,142 @@ main.reader-main>* {
   margin-bottom: 0.22rem;
 }
 
-/* ── Collapsible content chapters ────────────────────────────── */
+/* ── Flat chapter sections (no collapsing) ──────────────────── */
 
-.reader-chapter {
-  border-bottom: 1px solid color-mix(in srgb, var(--reader-ink) 5%, transparent);
-  margin: 0;
-}
-
-.reader-chapter:last-child {
-  border-bottom: none;
-}
-
-.reader-chapter + .reader-chapter {
-  margin-top: 0;
-}
-
-.reader-chapter__summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 0.5rem 0.4rem;
-  border-radius: 0;
-  transition: background 0.12s ease;
-}
-
-.reader-chapter__summary:hover {
-  background: color-mix(in srgb, var(--reader-accent) 3%, transparent);
-}
-
-.reader-chapter__summary::-webkit-details-marker {
-  display: none;
-}
-
-.reader-chapter__summary h2 {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding-right: 1.6rem;
-  margin: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  border: none !important;
-  border-left: none !important;
-  border-bottom: none !important;
-  border-radius: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: -0.005em;
-}
-
-.reader-chapter__summary h2::before {
-  display: none !important;
-}
-
-.reader-chapter__summary h2::after {
-  content: '' !important;
-  position: absolute !important;
-  right: 0.35rem !important;
-  top: 50% !important;
-  left: auto !important;
-  bottom: auto !important;
-  width: 0.35rem !important;
-  height: 0.35rem !important;
-  border: none !important;
-  border-right: 1.5px solid currentColor !important;
-  border-bottom: 1.5px solid currentColor !important;
-  border-radius: 0 !important;
-  background: none !important;
-  transform: translateY(-50%) rotate(-45deg) !important;
-  opacity: 0.2;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.reader-chapter__summary:hover h2::after {
-  opacity: 0.45;
-}
-
-.reader-chapter[open] > .reader-chapter__summary h2::after {
-  transform: translateY(-50%) rotate(45deg) !important;
-}
-
-.reader-chapter[open] > .reader-chapter__summary {
-  border-bottom: 1px solid color-mix(in srgb, var(--reader-ink) 4%, transparent);
-}
-
-.reader-chapter > :not(.reader-chapter__summary) {
-  padding: 0.5rem 0.5rem 0.65rem;
-}
-
-/* ── IB textbook section blocks ────────────────────────────── */
+/* ── IB textbook section blocks — editorial chapter dividers ── */
 
 .ib-textbook-section {
   margin: 0;
-  padding: 0;
+  padding: 0 0 2.5rem;
+  position: relative;
 }
 
 .ib-textbook-section + .ib-textbook-section {
-  margin-top: 0.25rem;
+  margin-top: 0;
+  padding-top: 1rem;
+}
+
+/* Full-width divider line between chapters */
+.ib-textbook-section + .ib-textbook-section::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 0;
+  border-top: 1px solid color-mix(in srgb, var(--reader-accent) 22%, transparent);
+  margin-bottom: 1rem;
+}
+
+/* ── Section header (the H2 that names the chapter) ──────── */
+.ib-textbook-section > h2 {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.65rem;
+  margin: 0 0 0.15rem !important;
+  padding: 0.75rem 0.85rem 0.65rem !important;
+  border: none !important;
+  border-left: 5px solid var(--reader-accent) !important;
+  border-radius: 0 10px 10px 0 !important;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary-color) 5%, #ffffff 95%),
+    color-mix(in srgb, var(--reader-accent) 7%, #ffffff 93%)
+  ) !important;
+  box-shadow: 0 2px 12px rgba(10, 22, 40, 0.04) !important;
+  font-family: var(--reader-font-display);
+  font-size: clamp(1.35rem, 2vw, 1.65rem) !important;
+  font-weight: 800;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--primary-color) !important;
+}
+
+.ib-textbook-section > h2::before {
+  display: none !important;
+}
+
+.ib-textbook-section > h2::after {
+  display: none !important;
 }
 
 .ib-textbook-section__code {
+  font-family: var(--reader-font-display);
   font-weight: 800;
   color: var(--reader-accent);
-  margin-right: 0.35em;
-  font-size: 0.92em;
+  font-size: 0.82em;
+  letter-spacing: 0.02em;
+  flex: none;
 }
 
 .ib-textbook-hl-badge {
   display: inline-block;
-  font-size: 0.62em;
+  font-size: 0.55em;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  background: color-mix(in srgb, var(--reader-accent) 14%, transparent);
+  letter-spacing: 0.1em;
+  background: color-mix(in srgb, var(--reader-accent) 16%, transparent);
   color: var(--reader-accent);
-  border: 1px solid color-mix(in srgb, var(--reader-accent) 25%, transparent);
-  border-radius: 4px;
-  padding: 0.12em 0.45em;
+  border: 1px solid color-mix(in srgb, var(--reader-accent) 28%, transparent);
+  border-radius: 5px;
+  padding: 0.18em 0.55em;
   vertical-align: middle;
-  margin-left: 0.5em;
+  margin-left: 0.25em;
 }
 
 .ib-textbook-section__overview {
-  margin: 0.2rem 0 0.6rem;
+  margin: 0.35rem 0 1rem;
+  padding: 0 0.85rem;
   font-size: 0.92em;
   color: var(--reader-muted);
   font-style: italic;
-  line-height: 1.5;
+  line-height: 1.55;
+  max-width: 72ch;
 }
 
 .ib-textbook-section__empty {
-  margin: 0.5rem 0;
+  margin: 0.5rem 0.85rem;
   font-size: 0.9em;
   color: var(--reader-muted);
   font-style: italic;
 }
 
+/* ── Entry containers ──────────────────────────────────────── */
+
 .ib-textbook-entry {
   margin: 0;
+  padding: 0 0.4rem;
 }
 
 .ib-textbook-entry--hl {
   border-left: 3px solid color-mix(in srgb, var(--reader-accent) 40%, transparent);
-  padding-left: 0.8rem;
-  margin-left: 0.1rem;
+  padding-left: 1rem;
+  margin-left: 0.4rem;
 }
 
-/* ── IB Textbook Contents Block ────────────────────────────── */
+/* ── IB Textbook Contents Block (jump-nav) ─────────────────── */
 
 .ib-textbook-contents {
-  margin: 0.5rem 0 1.5rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--reader-border) 60%, transparent);
-  border-radius: var(--reader-radius);
-  background: linear-gradient(135deg,
-      color-mix(in srgb, var(--primary-color) 3%, #ffffff 97%),
-      color-mix(in srgb, var(--reader-accent) 4%, #ffffff 96%));
+  margin: 0.75rem 0 2rem;
+  padding: 1.1rem 1.35rem 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 55%, transparent);
+  border-left: 5px solid var(--reader-accent);
+  border-radius: 0 var(--reader-radius) var(--reader-radius) 0;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary-color) 3%, #ffffff 97%),
+    color-mix(in srgb, var(--reader-accent) 5%, #ffffff 95%)
+  );
+  box-shadow: 0 2px 10px rgba(10, 22, 40, 0.04);
 }
 
 .ib-textbook-contents__title {
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.65rem;
   font-family: var(--reader-font-display);
   font-weight: 800;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--reader-muted);
+  letter-spacing: 0.12em;
+  color: var(--reader-accent);
 }
 
 .ib-textbook-contents__list {
@@ -1154,27 +1119,28 @@ main.reader-main>* {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: 0.35rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 0.3rem;
 }
 
 .ib-textbook-contents__link {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.65rem;
-  border-radius: 10px;
+  gap: 0.55rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
   border: 1px solid transparent;
   text-decoration: none;
   color: var(--reader-ink);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 600;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
 }
 
 .ib-textbook-contents__link:hover {
-  background: color-mix(in srgb, var(--primary-color) 6%, transparent);
-  border-color: color-mix(in srgb, var(--reader-border) 50%, transparent);
+  background: color-mix(in srgb, var(--primary-color) 7%, transparent);
+  border-color: color-mix(in srgb, var(--reader-border) 45%, transparent);
+  transform: translateX(3px);
 }
 
 .ib-textbook-contents__code {

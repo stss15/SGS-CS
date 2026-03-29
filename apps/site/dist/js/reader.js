@@ -68,30 +68,7 @@
   const headings = Array.from(contentRoot.querySelectorAll('h2, h3'));
   ensureHeadingIds(headings);
 
-  // ── Collapsible content chapters ──────────────────────────────
-  const h2Headings = headings.filter((h) => h.tagName === 'H2' && !h.closest('.ib-syllabus-reader-block__header'));
-  h2Headings.forEach((h2) => {
-    const details = document.createElement('details');
-    details.className = 'reader-chapter';
-
-    const summary = document.createElement('summary');
-    summary.className = 'reader-chapter__summary';
-    summary.appendChild(h2.cloneNode(true));
-
-    const parent = h2.parentNode;
-    let next = h2.nextSibling;
-    parent.insertBefore(details, h2);
-    h2.remove();
-    details.appendChild(summary);
-
-    while (next) {
-      if (next.nodeType === 1 && next.tagName === 'H2') break;
-      if (next.nodeType === 1 && next.classList && next.classList.contains('reader-chapter')) break;
-      const toMove = next;
-      next = next.nextSibling;
-      details.appendChild(toMove);
-    }
-  });
+  // ── Chapter sections (flat, no collapsing) ─────────────────────
 
   // ── Hash navigation ───────────────────────────────────────────
   const scrollToHeading = (heading, behavior = prefersReducedMotion() ? 'auto' : 'smooth') => {
@@ -100,18 +77,10 @@
     window.scrollTo({ top: Math.max(0, top), behavior });
   };
 
-  const expandChapterForId = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const chapter = el.closest('details.reader-chapter');
-    if (chapter) chapter.open = true;
-  };
-
   const navigateToId = (id, { updateHistory = true, behavior } = {}) => {
     const heading = document.getElementById(id);
     if (!heading) return;
 
-    expandChapterForId(id);
     scrollToHeading(heading, behavior);
 
     if (updateHistory && window.location.hash !== `#${id}`) {
