@@ -5,6 +5,180 @@
 
 ---
 
+## Session 3 — 2026-03-29
+
+### Overview
+
+This session focused on a full editorial UI refinement of the IB textbook reader. No content was changed — all work was purely stylistic, applied globally via `reader.css` and `tokens.css`. The goal was to make the textbook feel closer to a polished e-reader / print-ready textbook, rather than raw HTML content.
+
+---
+
+### 5a. Progress log updated (IB-TEXTBOOK-PROGRESS.md)
+
+Added entries for the two commits made since the last session:
+
+- `bcb73f83` — **Redesign textbook reader UI**: Major overhaul of `reader.css` introducing the Academic Atelier theme, paper-effect containers, editorial dividers, scroll-spy, and responsive breakpoints.
+- `1a338d34` — **Finalize textbook reader refinements**: Follow-up polish pass tightening spacing, refining component blocks, and fixing mobile overflow.
+
+---
+
+### 5b. Removed "In this chapter" jump-nav (textbook.astro)
+
+The top-of-page contents block (`.ib-textbook-contents`) was a jump-nav listing all chapter sections (B2.1, B2.2, etc.) with anchor links. This was removed because:
+
+- It duplicated the sidebar navigation exactly — students already have section links in the sidebar.
+- It added visual weight before any content appeared.
+- The scroll-spy JS that powered it was tied to this block; with the block gone the JS was also cleaned up.
+
+**File changed:** `apps/site/src/pages/ib-2027/[level]/textbook.astro` — removed `<div class="ib-textbook-contents">` block (~16 lines).
+
+---
+
+### 5c. Fixed sidebar textbook topic link colors (tokens.css)
+
+**Problem:** Sub-unit anchor links in the Textbook group of the sidebar (e.g. B2.1, B2.2, B3.1) were rendering in `rgba(23, 34, 49, 0.88)` — a dark semi-transparent tone that blended with the warm cream sidebar background (`#f8f6f2`), making links hard to distinguish.
+
+**Fix:** Changed `.course-explorer__item-link` and `.course-explorer__direct-link` color to `var(--navy-900)` (`#0a1628`) for solid legibility. The active/hover state retains the gold highlight.
+
+**File changed:** `apps/site/src/styles/tokens.css` — line ~2434.
+
+---
+
+### 5d. Full reader CSS editorial overhaul (reader.css)
+
+This was the largest change — a ground-up rewrite of the post-redesign CSS layer in `reader.css`. Key changes:
+
+#### Typography scale
+- Reduced `--reader-scale` from `1.05` → `0.96` — everything was slightly too large, causing excessive scrolling.
+- Reader body line height: `1.72` for paragraphs (generous reading rhythm).
+- Paragraph max-width capped at `68ch` to prevent excessively long lines.
+
+#### Heading hierarchy
+- **Section H2** (chapter names like A1.1, B2.3): `clamp(1.6rem, 2.3vw, 2.1rem)` bold display — large and clear, no card border.
+- **Sub-section H2** (within-content headings): `clamp(1.1rem, 1.45vw, 1.3rem)` — clearly subordinate.
+- **H3** (subsection labels): `0.95rem` with a 2px left-bar accent in semantic color (blue = exam, gold = concept, green = applied, purple = worked example). No card/box background — cleaner editorial style.
+
+#### Section / chapter spacing
+- Between chapter sections (`.ib-textbook-section + .ib-textbook-section`): `3rem` padding-top with a gradient rule line (fades left → right).
+- Subtopic H2 headings inside content have `3.5rem` top margin with a short top-rule (`2px` line, `3.5rem` wide) above them.
+- This creates clear visual breaks between major topics without card borders.
+
+#### Component blocks
+All callout blocks switched from heavy card-with-border to minimal left-bar + gradient-fade:
+- **Definitions** (`.ib-textbook-defn`): 2px gold left border, gradient fade.
+- **Notes** (`.ib-textbook-note`): 3px blue left border, light rounded card.
+- **Warnings** (`.ib-textbook-warning`): 3px red left border, light rounded card.
+- **Worked examples** (`.ib-textbook-worked`): 3px purple left border, very subtle background.
+- **Summaries** (`.ib-textbook-summary`): 3px green left border, very subtle background.
+
+#### Keyword styling
+Keywords changed from pill-style chips to **inline highlight underlay** — a subtle warm-gold bar behind the text (like a highlighter pen), no box or border. Much less visually cluttered.
+
+#### Code blocks
+- Border radius reduced from `14px` → `0.85rem`.
+- Shadow tightened.
+- Language badge repositioned slightly.
+
+#### Tables
+- Border radius reduced from `14px` → `0.75rem`.
+- Background slightly transparent (`rgba(255,255,255,0.86)`).
+
+#### Responsive breakpoints
+- **≤1100px**: Reduced content padding.
+- **≤900px**: Unconstrained stage width, smaller dochead padding, single-column contents list.
+- **≤640px**: Compact mobile padding, tables/code become horizontally scrollable, adjusted H2/H3 sizes.
+
+**File changed:** `src/static/css/reader.css` — full rewrite of the editorial refinement section (~800 lines changed/added).
+
+---
+
+### 5e. Build and deploy
+
+After all changes were committed:
+
+```bash
+npm run build          # Astro + Eleventy build
+npx firebase deploy --only hosting
+```
+
+Live site: https://sgs-science.web.app
+
+---
+
+## What still needs to be done
+
+### A-theme textbook content (not yet written)
+
+| Theme | Section | Syllabus points | Status |
+|-------|---------|-----------------|--------|
+| A1 | A1.3 Networks and communications | A1.3.1–A1.3.6 | ❌ Not started |
+| A1 | A1.4 Cybersecurity | A1.4.1–A1.4.5 | ❌ Not started |
+| A1 | HL extensions (A1.1 HL, A1.3 HL, A1.4 HL) | Various | ❌ Not started |
+| A2 | A2.1 Abstraction and thinking | A2.1.1–A2.1.4 | ❌ Not started |
+| A2 | A2.2 Algorithms and program design | A2.2.1–A2.2.5 | ❌ Not started |
+| A2 | A2.3 Impacts of computing | A2.3.1–A2.3.4 | ❌ Not started |
+| A2 | A2.4 Emerging technologies | A2.4.1–A2.4.3 | ❌ Not started |
+| A3 | A3.1 Databases and SQL | A3.1.1–A3.1.6 | ❌ Not started |
+| A3 | A3.2 Data modelling | A3.2.1–A3.2.4 | ❌ Not started |
+| A3 | A3.3 Data analysis | A3.3.1–A3.3.3 | ❌ Not started |
+| A3 | A3.4 HL extensions | A3.4.1–A3.4.4 | ❌ Not started |
+| A4 | A4.1 Networks — infrastructure | A4.1.1–A4.1.5 | ❌ Not started |
+| A4 | A4.2 Communication protocols | A4.2.1–A4.2.4 | ❌ Not started |
+| A4 | A4.3 Internet technologies | A4.3.1–A4.3.4 | ❌ Not started |
+| A4 | A4.4 HL extensions | A4.4.1–A4.4.3 | ❌ Not started |
+
+### B-theme gaps
+
+| Theme | Section | Issue | Status |
+|-------|---------|-------|--------|
+| B1 | B1.2 Systems thinking | Not written yet | ❌ Not started |
+| B1 | B1.3 System design | Not written yet | ❌ Not started |
+| B1 | B1.4 System change | Not written yet | ❌ Not started |
+
+### Reader / UX improvements
+
+- [ ] Add a scroll-spy to the sidebar so the active B2.1/B2.2 anchor link highlights as you scroll past each section on the textbook page
+- [ ] Add a "Back to top" button that appears after scrolling down on the textbook page
+- [ ] Consider adding a progress indicator (e.g. thin progress bar at top) for long textbook pages
+
+### Content quality
+
+- [ ] Peer-review all textbook content against the official IB 2027 guide once it's finalised
+- [ ] Add more worked examples and Python code samples to B2.3 (programming constructs)
+- [ ] B3.2 (OOP advanced HL) design patterns section could be expanded with UML diagrams
+- [ ] B4.1 (ADTs) linked list diagrams would benefit from SVG visual representations of node/pointer structures
+
+### Workflow improvements for next session
+
+- Create a feature branch before starting: `git checkout -b feat/ib-textbook-a-themes`
+- Keep `src/static/` as the single source of truth for JS/CSS — don't edit `public/` directly
+- Use `npm run build && firebase deploy --only hosting` after every major content chunk, not just at the end
+
+---
+
+## Session 2 — 2026-03-29
+
+### Textbook reader editorial redesign (reader.css + reader.js)
+
+Major editorial-style visual overhaul of the textbook reader:
+
+- Added "Academic Atelier" theme refresh with warm accent colors, updated radius values, and refined surface backgrounds.
+- Added "Editorial textbook refinement" layer — paper-effect container with gradient background and shadow, constrained page width (72rem), generous dochead padding, and large display title.
+- Overhauled subtopic headings (H2/H3) — removed card-style borders in favour of minimal left-accent bars with semantic colour coding (blue for commands, gold for concepts, green for applied, purple for examples).
+- Replaced card-style section body wrappers with subtle left-border + gradient-fade backgrounds.
+- Refined typography: increased line-height, adjusted heading sizes with clamp(), improved list and blockquote spacing.
+- Improved code blocks with larger border radius, dark border, and deeper shadow.
+- Added scroll-spy to "In this chapter" contents block — active link highlights as you scroll past each section, with `aria-current` support.
+- Fixed overflow-x issues on reader body and main container.
+- Added responsive breakpoints for mobile (900px, 640px) with adjusted spacing, font sizes, and single-column contents grid.
+- Prevented wide tables and code blocks from expanding the mobile page track.
+
+**Files changed:** `src/static/css/reader.css`, `src/static/js/reader.js`, `public/css/reader.css`, `public/js/reader.js`
+
+---
+
+## Session 1
+
 ## What was done this session
 
 ### 1. Textbook reader redesign (reader.css + reader.js)
@@ -93,63 +267,9 @@ Early textbook content used sequential `unitNumber` values that didn't match any
 
 ---
 
-## What still needs to be done
-
-### A-theme textbook content (not yet written)
-
-| Theme | Section | Syllabus points | Status |
-|-------|---------|-----------------|--------|
-| A1 | A1.3 Networks and communications | A1.3.1–A1.3.6 | ❌ Not started |
-| A1 | A1.4 Cybersecurity | A1.4.1–A1.4.5 | ❌ Not started |
-| A1 | HL extensions (A1.1 HL, A1.3 HL, A1.4 HL) | Various | ❌ Not started |
-| A2 | A2.1 Abstraction and thinking | A2.1.1–A2.1.4 | ❌ Not started |
-| A2 | A2.2 Algorithms and program design | A2.2.1–A2.2.5 | ❌ Not started |
-| A2 | A2.3 Impacts of computing | A2.3.1–A2.3.4 | ❌ Not started |
-| A2 | A2.4 Emerging technologies | A2.4.1–A2.4.3 | ❌ Not started |
-| A3 | A3.1 Databases and SQL | A3.1.1–A3.1.6 | ❌ Not started |
-| A3 | A3.2 Data modelling | A3.2.1–A3.2.4 | ❌ Not started |
-| A3 | A3.3 Data analysis | A3.3.1–A3.3.3 | ❌ Not started |
-| A3 | A3.4 HL extensions | A3.4.1–A3.4.4 | ❌ Not started |
-| A4 | A4.1 Networks — infrastructure | A4.1.1–A4.1.5 | ❌ Not started |
-| A4 | A4.2 Communication protocols | A4.2.1–A4.2.4 | ❌ Not started |
-| A4 | A4.3 Internet technologies | A4.3.1–A4.3.4 | ❌ Not started |
-| A4 | A4.4 HL extensions | A4.4.1–A4.4.3 | ❌ Not started |
-
-### B-theme gaps
-
-| Theme | Section | Issue | Status |
-|-------|---------|-------|--------|
-| B1 | B1.2 Systems thinking | Not written yet | ❌ Not started |
-| B1 | B1.3 System design | Not written yet | ❌ Not started |
-| B1 | B1.4 System change | Not written yet | ❌ Not started |
-
-### Reader / UX improvements
-
-- [ ] Add a scroll-spy to the sidebar so the active B2.1/B2.2 anchor link highlights as you scroll past each section on the textbook page
-- [ ] Add a "Back to top" button that appears after scrolling down on the textbook page
-- [ ] Consider adding a progress indicator (e.g. thin progress bar at top) for long textbook pages
-
-### Content quality
-
-- [ ] Peer-review all textbook content against the official IB 2027 guide once it's finalised
-- [ ] Add more worked examples and Python code samples to B2.3 (programming constructs)
-- [ ] B3.2 (OOP advanced HL) design patterns section could be expanded with UML diagrams
-- [ ] B4.1 (ADTs) linked list diagrams would benefit from SVG visual representations of node/pointer structures
-
-### Workflow improvements for next session
-
-- Create a feature branch before starting: `git checkout -b feat/ib-textbook-a-themes`
-- Keep `src/static/` as the single source of truth for JS/CSS — don't edit `public/` directly
-- Use `npm run build && firebase deploy --only hosting` after every major content chunk, not just at the end
-
----
-
 ## How to start the next session
 
 ```bash
-# Create a feature branch
-git checkout -b feat/ib-textbook-a-themes
-
 # Start with A1.3 (Networks) — PDF pages are in:
 # docs/content/ib-content/IB Textbook Improvements/A1/
 
