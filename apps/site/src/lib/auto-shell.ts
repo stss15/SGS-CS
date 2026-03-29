@@ -204,6 +204,7 @@ const buildSectionGroup = (
     divider?: boolean;
     icon?: string;
     allowEmpty?: boolean;
+    groupHref?: string;
   } = {}
 ): ShellNavGroup | null => {
   if (items.length === 0 && !options.allowEmpty) {
@@ -219,7 +220,8 @@ const buildSectionGroup = (
     open: options.open,
     collapsible: options.collapsible,
     divider: options.divider,
-    icon: options.icon
+    icon: options.icon,
+    groupHref: options.groupHref
   };
 };
 
@@ -1058,7 +1060,8 @@ const buildIbLocalGroups = async (
 
   const textbookGroup = buildSectionGroup('unit-textbook', 'Textbook', textbookItems, {
     icon: 'fa-solid fa-book-open-reader',
-    allowEmpty: true
+    allowEmpty: true,
+    groupHref: `${unitBasePath}/textbook/index.html`
   });
 
   // ── Homework (collapsible — empty for now) ───────────────────

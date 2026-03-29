@@ -20,6 +20,8 @@ export interface ShellNavGroup {
   collapsible?: boolean;
   divider?: boolean;
   icon?: string;
+  /** When set, clicking the group header navigates to this URL (in addition to toggling). */
+  groupHref?: string;
 }
 
 export interface ShellContext {
