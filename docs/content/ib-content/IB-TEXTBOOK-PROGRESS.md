@@ -5,6 +5,128 @@
 
 ---
 
+## Session 4 — 2026-03-29
+
+### Overview
+
+Completed the source-pack-driven textbook rebuild for themes `A2`, `A3`, and `A4` in the post-UI-overhaul textbook format. This was a full replacement of the old A2-A4 unit markdown, not a revision pass on the legacy files.
+
+Primary source hierarchy used for the rewrite:
+
+- `apps/site/src/lib/ib2027-syllabus.ts`
+- `docs/content/ib-content/IB Textbook Improvements/A2.pdf`
+- `docs/content/ib-content/IB Textbook Improvements/A3/*.pdf`
+- `docs/content/ib-content/IB Textbook Improvements/A4/*.pdf`
+- `docs/content/ib-content/IB Textbook Improvements/IB_Writing_Style.html`
+- `docs/content/ib-content/IB Textbook Improvements/agent_style_guide.html`
+- `docs/content/ib-content/IB Textbook Improvements/agent_textbook_skill_guide.md`
+- `docs/content/ib-content/IB_Content_MD/*` structure PDFs as scope and terminology guardrails
+- existing B-theme textbook files as the style benchmark
+
+Editorial rules enforced throughout:
+
+- no `reader-section-body`
+- no top-of-file glossary dumps
+- no activity or worksheet voice
+- dedicated HL files for HL-only material
+- deliberate variation in section openings, callout use, and worked-example placement to avoid rinse-repeat structure
+
+### 4a. Added A2 textbook files
+
+New files created:
+
+- `apps/site/src/content/ib-textbooks/sl/a2-1-network-fundamentals.md`
+- `apps/site/src/content/ib-textbooks/hl/a2-1-tcp-ip-model.md`
+- `apps/site/src/content/ib-textbooks/sl/a2-2-network-architecture.md`
+- `apps/site/src/content/ib-textbooks/hl/a2-2-servers.md`
+- `apps/site/src/content/ib-textbooks/sl/a2-3-data-transmissions.md`
+- `apps/site/src/content/ib-textbooks/hl/a2-3-routing.md`
+- `apps/site/src/content/ib-textbooks/sl/a2-4-network-security.md`
+- `apps/site/src/content/ib-textbooks/hl/a2-4-security-extensions.md`
+
+Legacy files removed:
+
+- `apps/site/src/content/ib-textbooks/sl/unit-11.md`
+- `apps/site/src/content/ib-textbooks/hl/unit-11.md`
+
+Notes:
+
+- `A2.1-A2.4` now render entirely from the new theme-based files.
+- `A2.4.1` was rewritten as a balanced discussion rather than a one-sided firewall description.
+- `A2.4.4` explicitly separates symmetric encryption, asymmetric encryption, and the role of certificate authorities/digital certificates.
+
+### 4b. Added A3 textbook files
+
+New files created:
+
+- `apps/site/src/content/ib-textbooks/sl/a3-1-database-fundamentals.md`
+- `apps/site/src/content/ib-textbooks/sl/a3-2-database-design.md`
+- `apps/site/src/content/ib-textbooks/sl/a3-3-database-programming.md`
+- `apps/site/src/content/ib-textbooks/hl/a3-3-advanced-database-programming.md`
+- `apps/site/src/content/ib-textbooks/hl/a3-4-alternative-databases.md`
+
+Legacy files removed:
+
+- `apps/site/src/content/ib-textbooks/sl/unit-6.md`
+- `apps/site/src/content/ib-textbooks/hl/unit-5.md`
+
+Notes:
+
+- `A3.3` is now correctly split between core SQL content and HL extension content.
+- `A3.4.4` distributed databases is now present in the active textbook content.
+
+### 4c. Added A4 textbook files
+
+New files created:
+
+- `apps/site/src/content/ib-textbooks/sl/a4-1-machine-learning-fundamentals.md`
+- `apps/site/src/content/ib-textbooks/hl/a4-2-data-preprocessing.md`
+- `apps/site/src/content/ib-textbooks/hl/a4-3-core-approaches.md`
+- `apps/site/src/content/ib-textbooks/hl/a4-3-advanced-approaches.md`
+- `apps/site/src/content/ib-textbooks/sl/a4-4-ethical-considerations.md`
+
+Legacy files removed:
+
+- `apps/site/src/content/ib-textbooks/sl/unit-7.md`
+- `apps/site/src/content/ib-textbooks/hl/unit-7.md`
+- `apps/site/src/content/ib-textbooks/hl/unit-8.md`
+- `apps/site/src/content/ib-textbooks/hl/unit-9.md`
+
+Notes:
+
+- Canonical scope was kept to `A4.1.1-A4.4.2`.
+- Legacy `A4.2.4` and `A4.3.11` were intentionally not preserved as active standalone textbook entries.
+- Discussion prompts from the source PDFs were excluded where they drifted into activity design instead of textbook exposition.
+
+### 4d. Verification
+
+Verification completed:
+
+- `npm run build` passed
+- `A2`, `A3`, and `A4` textbook coverage was checked against the new files and the syllabus codes
+- `rg "reader-section-body|## Key Terms and Definitions" apps/site/src/content/ib-textbooks/{sl,hl}/a2* apps/site/src/content/ib-textbooks/{sl,hl}/a3* apps/site/src/content/ib-textbooks/{sl,hl}/a4*` returned no matches
+- `rg "A4\\.2\\.4|A4\\.3\\.11" apps/site/src/content/ib-textbooks/{sl,hl}/a4*` returned no matches
+
+Build notes:
+
+- Existing Astro route-conflict warnings from `src/pages/ib-2027/[...rest].astro` were still present but unchanged and non-blocking.
+
+### 4e. Remaining legacy-unit caveat
+
+Not all remaining `unit-*` textbook files were deleted in this session.
+
+Files still present after the A2-A4 cutover:
+
+- `apps/site/src/content/ib-textbooks/hl/unit-1.md`
+- `apps/site/src/content/ib-textbooks/hl/unit-2.md`
+- `apps/site/src/content/ib-textbooks/hl/unit-10.md`
+- `apps/site/src/content/ib-textbooks/sl/unit-8.md`
+- `apps/site/src/content/ib-textbooks/sl/unit-12.md`
+
+These were left in place because the current repo source still relies on them for unreplaced `A1`, `IA`, and `Case Study` textbook coverage. They are now the only remaining unit-based textbook files and should be removed immediately after their theme-based replacements exist.
+
+---
+
 ## Session 3b — 2026-03-29 (follow-up fixes)
 
 ### Overview
@@ -323,6 +445,43 @@ The `.gitignore` lists `public/` and `apps/site/dist/` but they're already track
 
 ### Mistake 5 — `unitNumber` frontmatter collisions
 Early textbook content used sequential `unitNumber` values that didn't match anything meaningful. The field is used for ordering, so any duplicate or wrong value causes content to appear out of order. Use a high unique number (e.g. 31, 32) for content not yet assigned a canonical number.
+
+---
+
+## Session 5 — 2026-03-29 remediation pass
+
+This session was a targeted quality pass over the first A2-A4 rewrite after a structured multi-agent review against the local textbook rubric and the rewritten B-theme benchmark files.
+
+### Files revised
+
+| File | Focus of remediation |
+|------|----------------------|
+| `src/content/ib-textbooks/sl/a3-2-database-design.md` | Added clearer normalization reasoning-in-motion and restored peer syllabus-heading structure |
+| `src/content/ib-textbooks/sl/a3-3-database-programming.md` | Removed HL bleed, promoted `A3.3.2` and `A3.3.3` to peer sections, tightened SL scope |
+| `src/content/ib-textbooks/hl/a3-3-advanced-database-programming.md` | Added a concrete grouped-results aggregate example with `GROUP BY` / `HAVING` distinction |
+| `src/content/ib-textbooks/hl/a3-4-alternative-databases.md` | Rebuilt around fuller textbook exposition and the current A3 source material |
+| `src/content/ib-textbooks/hl/a4-2-data-preprocessing.md` | Rewrote around before/after dataset work, clearer feature-selection judgement, and stronger dimensionality-reduction trade-offs |
+| `src/content/ib-textbooks/hl/a4-3-core-approaches.md` | Added traced linear-regression residuals, a worked classification example, and counted association-rule metrics |
+| `src/content/ib-textbooks/hl/a4-3-advanced-approaches.md` | Rebuilt CNN explanation around filter/pooling motion and added a more concrete genetic-algorithm process example |
+| `src/content/ib-textbooks/sl/a4-4-ethical-considerations.md` | Rewrote as scenario-led IB discussion rather than generic issue listing |
+| `src/content/ib-textbooks/hl/a2-4-security-extensions.md` | Reframed around clearer vulnerability distinctions and stronger threat-to-countermeasure logic |
+
+### Review-guided decisions
+
+- Prioritized hard scope and style failures before minor line edits:
+  - removed aggregate-query drift from SL A3.3
+  - rebuilt weaker A4 sections around worked thinking rather than overview prose
+  - reduced the taxonomy-heavy feel in A2.4 HL
+- Used the following local rubric sources as calibration:
+  - `docs/content/ib-content/IB Textbook Improvements/agent_textbook_skill_guide.md`
+  - `docs/content/ib-content/IB Textbook Improvements/IB_Writing_Style.html`
+- Used rewritten B-theme textbook files as the live benchmark for component use, pacing, and rhetorical variation.
+
+### Verification
+
+- `npm run build`
+  - passed after remediation
+  - Astro still emitted one duplicate-content-id warning for `hl/a3-4-alternative-databases` during content sync, but the build completed and the textbook routes generated successfully
 
 ---
 

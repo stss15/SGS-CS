@@ -73,7 +73,7 @@ const routeToNestedHtmlIndexPath = (targetDir, route) => {
   return routeToFilePath(targetDir, fallbackRoute);
 };
 
-const AUTO_HTML_ALIAS_SEGMENTS = ['textbook', 'unit-plan'];
+const AUTO_HTML_ALIAS_SEGMENTS = ['textbook', 'unit-plan', 'sql-playground'];
 
 const discoverAstroHtmlRoutes = async (targetDir) => {
   const routes = new Set();
