@@ -70,6 +70,58 @@
 
   // ── Chapter sections (flat, no collapsing) ─────────────────────
 
+  // ── Contents-block active state ────────────────────────────────
+  const contentsNav = contentRoot.querySelector('.ib-textbook-contents');
+  const contentsLinks = contentsNav
+    ? Array.from(contentsNav.querySelectorAll('a[href^="#"]'))
+        .map((link) => {
+          const href = link.getAttribute('href') || '';
+          const id = href.startsWith('#') ? href.slice(1) : '';
+          const heading = id ? document.getElementById(id) : null;
+          return id && heading ? { id, link, heading } : null;
+        })
+        .filter(Boolean)
+    : [];
+
+  const setActiveContentsLink = (activeId) => {
+    contentsLinks.forEach((entry) => {
+      const isActive = entry.id === activeId;
+      entry.link.classList.toggle('is-active', isActive);
+      if (isActive) {
+        entry.link.setAttribute('aria-current', 'true');
+      } else {
+        entry.link.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  const updateActiveContentsLink = () => {
+    if (!contentsLinks.length) return;
+
+    const navOffset = parseCssPx(getComputedStyle(root).getPropertyValue('--reader-nav-offset'), 56);
+    const activationOffset = navOffset + 40;
+    let activeId = contentsLinks[0].id;
+
+    contentsLinks.forEach((entry) => {
+      const top = entry.heading.getBoundingClientRect().top;
+      if (top - activationOffset <= 0) {
+        activeId = entry.id;
+      }
+    });
+
+    setActiveContentsLink(activeId);
+  };
+
+  let contentsUpdateScheduled = false;
+  const scheduleActiveContentsUpdate = () => {
+    if (contentsUpdateScheduled) return;
+    contentsUpdateScheduled = true;
+    requestAnimationFrame(() => {
+      contentsUpdateScheduled = false;
+      updateActiveContentsLink();
+    });
+  };
+
   // ── Hash navigation ───────────────────────────────────────────
   const scrollToHeading = (heading, behavior = prefersReducedMotion() ? 'auto' : 'smooth') => {
     const navOffset = parseCssPx(getComputedStyle(root).getPropertyValue('--reader-nav-offset'), 56);
@@ -87,6 +139,7 @@
       history.pushState(null, '', `#${id}`);
     }
 
+    setActiveContentsLink(id);
     announce(`Section: ${(heading.textContent || '').trim()}`);
   };
 
@@ -105,7 +158,6 @@
   });
 
   // ── Contents-block jump links ─────────────────────────────────
-  const contentsNav = contentRoot.querySelector('.ib-textbook-contents');
   contentsNav?.addEventListener('click', (event) => {
     const link = event.target.closest('a');
     if (!link) return;
@@ -114,6 +166,12 @@
     event.preventDefault();
     navigateToId(href.slice(1));
   });
+
+  if (contentsLinks.length) {
+    updateActiveContentsLink();
+    window.addEventListener('scroll', scheduleActiveContentsUpdate, { passive: true });
+    window.addEventListener('resize', scheduleActiveContentsUpdate);
+  }
 
   // ── Keyword definitions ───────────────────────────────────────
   const keywordNodes = Array.from(contentRoot.querySelectorAll('[data-def]'));

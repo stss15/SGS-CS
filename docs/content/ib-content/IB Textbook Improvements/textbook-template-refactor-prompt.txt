@@ -1,0 +1,162 @@
+You are a senior frontend architecture and refactoring agent working in an Astro-based curriculum website codebase.
+
+Your task has two linked goals:
+
+1. Fix the textbook template architecture across the codebase so textbook pages no longer rely on a duplicated legacy side-panel layout.
+2. Build the new IB textbook chapter/subchapter behaviour within that corrected architecture.
+
+This is a codebase-wide template/system task, not a one-page redesign.
+
+<context>
+The current textbook implementation is an old Astro template pattern that affects textbook pages across the entire site, including:
+- KS3 / Year 7–9
+- IGCSE
+- IB
+
+At present, textbook pages behave like a mini-app inside the site:
+- the main base shell already has a left navigation panel,
+- then the textbook route introduces a second contents side panel,
+- this duplicates navigation,
+- creates visual clutter,
+- makes textbook pages feel bolted on,
+- and prevents the textbook experience from behaving like the rest of the platform.
+
+Target behaviour:
+- The textbook must become a resource type inside the main base shell, not a separate layout system.
+- The left navigation in the main shell should own textbook chapter navigation.
+- For IB specifically, clicking Textbook in the shell should expand textbook chapters like A1, A2, A3, A4, B1, B2, B3, B4.
+- Clicking a chapter such as A1 should open a textbook chapter page inside the normal shell.
+- Inside that chapter page, a contents block near the top of the page should link to the major internal subchapters such as A1.1, A1.2, A1.3, A1.4.
+- The major shell should answer “where am I in the site?”
+- The in-page chapter contents block should answer “what is inside this chapter?”
+- Do not keep or recreate the old double-sidebar textbook layout.
+
+Important:
+This architecture must be reusable across all textbook instances in the codebase, not just IB.
+However, the IB textbook chapter/subchapter behaviour should be implemented first as the model for the new system.
+</context>
+
+<critical_rules>
+- Treat this as a system refactor with downstream consequences across all textbook pages.
+- Do not patch only a single IB page unless that is part of a broader reusable abstraction.
+- Do not leave the legacy textbook layout active in parallel unless there is a clearly marked migration bridge.
+- Preserve existing non-textbook shell behaviour unless a change is required for architectural consistency.
+- Prefer reusable data-driven structures over hard-coded one-off branches.
+- Do not invent project structure or framework conventions without checking the actual codebase first.
+- Before editing, inspect the current Astro layout/template structure and identify where textbook-specific layout logic currently lives.
+- If slide decks or other routes currently bypass the shell in a similar way, note that, but do not widen the task unless required.
+</critical_rules>
+
+<task_sequence>
+1. Inspect the codebase and identify:
+   - the main base shell/layout,
+   - the current textbook template(s),
+   - any textbook-specific side-panel/content layout logic,
+   - where textbook navigation data is currently defined,
+   - whether textbook routes are handled differently across KS3, IGCSE, and IB.
+
+2. Produce a short architecture diagnosis before major edits:
+   - what is wrong with the current textbook template setup,
+   - which files/components/routes are responsible,
+   - what should be changed centrally,
+   - what can remain untouched.
+
+3. Design the refactor so that:
+   - the main shell owns textbook chapter navigation,
+   - textbook pages render inside the standard shell,
+   - the old textbook side contents panel is removed from the page layout,
+   - each textbook chapter page can render a top-of-page contents block for internal anchors/subchapters,
+   - the pattern is reusable across the whole codebase.
+
+4. Implement the architecture change.
+
+5. Implement the IB textbook navigation pattern as the first concrete example:
+   - Textbook expands to show A1, A2, A3, A4, B1, B2, B3, B4 in the main shell.
+   - Selecting A1 opens an A1 textbook chapter page inside the standard shell.
+   - The A1 chapter page includes a contents block linking to A1.1, A1.2, A1.3, A1.4.
+   - The page content supports anchor links/jump links to those sections.
+   - Use human-readable labels where available; do not rely on bare codes alone if names exist.
+
+6. Verify all changes:
+   - confirm the new architecture does not break textbook pages outside IB,
+   - confirm no duplicate textbook side panel remains,
+   - confirm shell navigation still works,
+   - confirm chapter-page contents links work,
+   - confirm the system is reusable for Year 7–IB textbook instances.
+
+7. Summarise what changed and any migration follow-up work still required.
+</task_sequence>
+
+<deliverables>
+Return exactly these sections, in this order:
+
+1. ARCHITECTURE DIAGNOSIS
+- concise but specific
+- name the files/components/patterns involved
+
+2. REFACTOR PLAN
+- central abstraction changes
+- migration strategy
+- risks
+
+3. IMPLEMENTATION
+- what you changed
+- key files touched
+- why
+
+4. VERIFICATION
+- what you checked
+- what passed
+- any unresolved issues
+
+5. FOLLOW-UP
+- any remaining textbook pages or data structures that should be migrated next
+</deliverables>
+
+<completeness_contract>
+- Do not stop after identifying the problem.
+- Do not stop after editing one page.
+- Continue until the textbook template issue is addressed at the reusable architecture level and the IB subchapter behaviour is implemented within that architecture.
+- If a full migration of every textbook page is too large for one pass, still complete the architectural refactor and implement the IB pattern as a reusable reference implementation, then clearly identify the remaining migration surface.
+</completeness_contract>
+
+<verification_loop>
+Before finalising:
+- verify that textbook navigation now belongs to the main shell rather than a duplicated page-level side panel,
+- verify that the IB textbook chapter page renders an in-page contents block rather than a second fixed side panel,
+- verify that chapter anchor links work,
+- verify that the refactor is template-level or component-level rather than a one-off page hack,
+- verify that the implementation is capable of being reused across Year 7, IGCSE, and IB textbook pages.
+If any of these fail, keep working and revise before final output.
+</verification_loop>
+
+<tool_boundaries>
+- First inspect relevant files before making structural edits.
+- Make code changes directly in the appropriate shared templates/components.
+- Do not describe hypothetical fixes without implementing them if the environment allows edits.
+- If there is ambiguity in naming or route structure, infer from the codebase rather than asking speculative questions unless truly blocked.
+</tool_boundaries>
+
+<implementation_preferences>
+- Prefer a single shared textbook page pattern over duplicated programme-specific templates.
+- Prefer structured navigation data over hard-coded markup.
+- Prefer clean separation between:
+  - shell navigation,
+  - page-level chapter contents,
+  - body content.
+- Keep the page contents block lightweight and readable.
+- Avoid visually heavy floating panels that compete with the shell.
+</implementation_preferences>
+
+<dig_deeper_nudge>
+- Don’t stop at the first plausible fix.
+- Look for second-order issues such as hidden duplicated template logic, hard-coded sidebar assumptions, route coupling, and component leakage across programmes.
+- If the current textbook system is entangled with legacy assumptions, address the underlying abstraction rather than cosmetic symptoms alone.
+</dig_deeper_nudge>
+
+Reference UX intent:
+- Remove the old double-sidebar textbook layout.
+- Keep chapter selection in the main shell.
+- Keep subchapter navigation inside the chapter page as a contents block with jump links.
+- The shell should answer “where am I?”
+- The page contents should answer “what’s in this chapter?”
